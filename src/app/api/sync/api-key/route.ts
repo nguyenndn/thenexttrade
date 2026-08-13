@@ -98,7 +98,7 @@ export async function POST() {
 
 /**
  * DELETE /api/sync/api-key
- * Revoke user's sync API key (disconnects all TNT Connect apps).
+ * Revoke user's sync API key (disconnects all Trade Manager connections).
  */
 export async function DELETE() {
     try {

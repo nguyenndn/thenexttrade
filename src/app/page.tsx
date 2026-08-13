@@ -184,7 +184,7 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                 <TradeJournalPreviewSection isLoggedIn={isLoggedIn} />
             </FadeIn>
 
-            {/* 4. Spreadsheet vs TNT Comparison */}
+            {/* 4. Spreadsheet vs TheNextTrade Comparison */}
             <FadeIn delay={0.1} direction="up">
                 <SpreadsheetComparisonSection isLoggedIn={isLoggedIn} />
             </FadeIn>

@@ -301,7 +301,6 @@ export function Sidebar({
               Content: "CONTENT",
               Academy: "EDUCATION",
               "IB & VIP": "IB & VIP",
-              "Copy Trading": "INVESTING",
               System: "SYSTEM",
           }
         : {
@@ -310,7 +309,6 @@ export function Sidebar({
               "Trading Journal": "EXECUTION",
               "Analytics Hub": "REVIEW",
               Academy: "RESOURCES",
-              "Copy Trading": "INVESTING",
           };
 
     return (

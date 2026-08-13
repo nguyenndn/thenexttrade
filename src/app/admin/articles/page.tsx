@@ -149,7 +149,7 @@ interface PageProps {
 
 export default async function AdminArticlesPage({ searchParams }: PageProps) {
     const params = await searchParams;
-    const page = parseInt(params.page || "1");
+    const page = parseInt(params.page || "1", 10) || 1;
     const query = params.q || "";
     const status = params.status;
     const authorId = params.author;

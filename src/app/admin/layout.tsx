@@ -23,8 +23,8 @@ export default async function AdminLayout({
         select: { role: true },
     });
 
-    // Non-admin users trying to access admin pages get redirected
-    if (profile?.role !== "ADMIN" && profile?.role !== "EDITOR") {
+    // Only ADMIN can access admin pages
+    if (profile?.role !== "ADMIN") {
         redirect("/dashboard");
     }
 

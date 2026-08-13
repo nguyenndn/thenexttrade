@@ -1,8 +1,8 @@
 # System
 
-Last reviewed: 2026-06-16
+Last reviewed: 2026-08-11
 
-TheNextTrade is a trader operating system: account sync, journal, analytics, Academy, Edge missions, Partner Pro/VIP operations, and admin reporting in one Next.js app. For route-level behavior specs, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
+TheNextTrade is a trader operating system: Trade Manager EA/manual trade capture, journal, analytics, Academy, Edge missions, Partner Pro/VIP operations, AI Gateway, trading-system access, and admin reporting in one Next.js app. For route-level behavior specs, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
 
 ## Stack
 
@@ -29,8 +29,8 @@ flowchart TD
   Prisma --> Postgres[(PostgreSQL)]
   App --> R2[Cloudflare R2]
   App --> SMTP[SMTP provider]
-  EA[MT5 EA] --> EaApi[/api/ea/*/]
-  TNT[TNT Connect] --> SyncApi[/api/sync/*/]
+  EA[Trade Manager EA / MT5 EA] --> EaApi[/api/ea/*/]
+  LegacySync[Legacy sync clients] --> SyncApi[/api/sync/*/]
   EaApi --> Prisma
   SyncApi --> Prisma
 ```
@@ -41,7 +41,8 @@ Source of truth: `prisma/schema.prisma`.
 
 - Auth and user profile: `User`, `Profile`, `UserSession`, `AuditLog`, `SecurityLog`, `BlockedIP`.
 - Trading: `TradingAccount`, `JournalEntry`, `SyncHistory`, `TradePlan`, `TradingRule`, `TradeRuleCheck`, `TraderGoal`, broker/account sync metadata.
-- Product access: Pro/VIP entitlement, EA licenses, downloads, copy trading registration.
+- Growth & Improvement Loop: `TraderInsightSnapshot` (`trader_insight_snapshots`), `ImprovementExperiment` (`improvement_experiments`), `CoachActionPlan`, `CoachActionPlanItem`.
+- Product access: Pro/VIP entitlement, trading-system licenses/downloads.
 - Academy: levels, modules, lessons, quizzes, progress, certificates.
 - Gamification: Edge points, missions, achievements, daily check-in.
 - Analytics: `PageView`, `AnalyticsEvent`, country/referrer/device/campaign data.
@@ -54,8 +55,8 @@ Source of truth: `src/app`.
 
 - Public: `/`, `/about`, `/contact`, `/edge`, `/legal/*`, `/articles`, `/academy`, `/brokers`, `/tools`.
 - Auth: `/auth/login`, `/auth/register`, callbacks, reset/verify flows.
-- User dashboard: `/dashboard`, accounts, journal, rules, analytics, reports, mistakes, intelligence, academy, missions, trading systems, copy trading, settings.
-- Admin: `/admin`, users, reports, analytics, articles, article ops, academy, IB, EA, security, release health.
+- User dashboard: `/dashboard`, accounts, journal, rules, analytics, reports, mistakes, intelligence, academy, missions, trading systems, settings.
+- Admin: `/admin`, users, reports, analytics, articles, article ops, academy, IB, AI Gateway, trading systems, email lab, security, release health.
 - APIs: `/api/auth/*`, `/api/sync/*`, `/api/ea/*`, `/api/analytics/*`, `/api/admin/*`, `/api/articles/*`, `/api/app/version`, `/api/trade-plans`, `/api/sync/health`.
 
 Navigation source of truth: `src/config/navigation.ts`.
@@ -73,8 +74,8 @@ Use this table when assigning bugs or feature work.
 | Main dashboard | `/dashboard` | `src/app/dashboard/page.tsx`, `src/app/dashboard/DashboardClient.tsx` | dashboard stats, chart queries, performance helpers, first-session activation state |
 | Account hub | `/dashboard/accounts` | `src/components/trading-accounts`, account APIs | `TradingAccount`, Pro eligibility, sync state |
 | Sync Health Center | `/dashboard/accounts?health=sync` | `src/components/trading-accounts/SyncHealthCenter.tsx`, `SyncHealthSummaryCard.tsx`, `SyncHealthAccountRow.tsx`, `SyncRecoveryAction.tsx` | `TradingAccount`, `SyncHistory`, `ImportHistory`, `src/lib/sync-health.ts` |
-| EA Sync | account setup, EA APIs | `public/downloads/TheNextTrade_TradeSync.mq5`, `src/app/api/ea` | API key auth, commands, account heartbeat |
-| TNT Connect | account setup, app version API | `apps/tnt-connect`, `src/app/api/sync`, `src/app/api/app/version` | sync import, timezone normalization, release manifest |
+| Trade Manager EA sync | account setup, EA APIs | `src/app/api/ea`, trading-system download/config surfaces | API key auth, commands, account heartbeat, first-data sync |
+| Legacy sync compatibility | old sync APIs/app artifacts | `src/app/api/sync`, `src/app/api/app/version`, legacy app folders if still present | backwards-compatible import handling only; do not promote in new UI |
 | Journal | `/dashboard/journal` | journal pages/components/actions | `JournalEntry`, imports, manual trades |
 | Trade plans | `/dashboard/journal?tab=plans` | `src/components/journal/TradePlanList.tsx`, `TradePlanCard.tsx`, `TradePlanModal.tsx`, `PlanVsActualPanel.tsx`, `src/actions/trade-plans.ts` | `TradePlan`, `JournalEntry`, account/symbol matching |
 | Rulebook and goals | `/dashboard/rules` | `src/app/dashboard/rules/page.tsx`, `src/components/rules/*`, `src/actions/rulebook.ts` | `TradingRule`, `TradeRuleCheck`, `TraderGoal` |
@@ -82,8 +83,7 @@ Use this table when assigning bugs or feature work.
 | Reports/analytics | `/dashboard/analytics`, `/dashboard/reports`, `/admin/reports`, `/admin/analytics` | dashboard/admin report pages, `src/lib/analytics.ts`, `src/lib/track.ts` | `PageView`, `AnalyticsEvent`, trade/account/user aggregates |
 | Edge missions | `/dashboard/missions` | missions pages/components, gamification helpers | Edge/XP, missions, daily check-in, achievements |
 | Academy | `/academy`, `/dashboard/academy`, `/admin/academy` | academy routes/components/actions | levels, modules, lessons, quizzes, progress |
-| Trading systems | `/dashboard/trading-systems`, `/admin/ea` | trading system and EA admin pages | downloads, licenses, products |
-| Copy trading | `/dashboard/copy-trading` | copy trading route/actions | registration/status records |
+| Trading systems | `/trading-systems`, `/dashboard/trading-systems`, `/admin/trading-systems` | trading system public, user, and admin pages | downloads, licenses, products |
 | Admin users | `/admin/users` | admin user list/detail components | user/profile/country/session/account data |
 | Security | `/admin/security` | security admin pages/APIs | `AuditLog`, `SecurityLog`, `BlockedIP` |
 | Email | no single route | `src/lib/services/email.service.ts`, email actions | SMTP provider, templates, send logs later |
@@ -107,7 +107,7 @@ Stored state under `User.settings.onboarding.firstSession`:
 
 | Field | Meaning |
 | --- | --- |
-| `selectedSyncMethod` | User's chosen setup path: `tnt`, `ea`, or `manual`. |
+| `selectedSyncMethod` | User's chosen setup path. Current user-facing values are `ea` for Trade Manager EA and `manual` for Manual Journal. Legacy `tnt` may exist only for historical data. |
 | `dismissedUntil` | Temporarily hides the full first-session wizard. |
 | `firstDataReminderDismissedUntil` | Temporarily hides the 24h "sync/log first trade" reminder. |
 | `completedAt` | Marks first-session setup as completed. |
@@ -119,7 +119,7 @@ Zero-trade rule:
 - If the user has no `JournalEntry`, dashboard filters that depend on account/date context should stay hidden.
 - This applies to `/dashboard`, `/dashboard/journal`, `/dashboard/sessions`, `/dashboard/analytics`, `/dashboard/intelligence`, and `/dashboard/psychology`.
 - Once the user has at least one `JournalEntry`, the relevant filters return on each route.
-- Account Hub cards with `totalTrades = 0` use first-data CTAs instead of generic sync actions: TNT/EA accounts show `Sync first trades`; manual users should be guided to log the first trade.
+- Account Hub cards with `totalTrades = 0` use first-data CTAs instead of generic sync actions: Trade Manager EA accounts show `Sync first trades`; manual users should be guided to log the first trade.
 
 ## Common Bug Entry Points
 
@@ -127,8 +127,8 @@ Zero-trade rule:
 | --- | --- |
 | Dashboard crashes on date range | dashboard loader, `src/lib/utils.ts`, account timezone values |
 | Wrong win rate/trade score | dashboard stats query/calculation, `JournalEntry` filtering, break-even handling |
-| TNT Connect import issue | `apps/tnt-connect`, `/api/sync/*`, sync log, timezone normalization |
-| EA shows connected but API errors | `/api/ea/*`, EA API key, account mapping, command polling |
+| Legacy sync import issue | `/api/sync/*`, sync log, timezone normalization, legacy source mapping |
+| Trade Manager EA shows connected but API errors | `/api/ea/*`, EA API key, account mapping, command polling |
 | Country shows unknown/wrong | auth/register country detection, `Profile.country`, admin user components |
 | Duplicate account/trader rows | account uniqueness query, IB/trader aggregation, `TradingAccount` identity fields |
 | Article SEO/image issue | `/admin/articles/ops`, article SEO checker, storage path resolver |
@@ -143,14 +143,15 @@ Zero-trade rule:
 | Trade plan matching or Plan vs Actual is wrong | `src/actions/trade-plans.ts`, `/api/trade-plans/*`, `TradePlan.journalEntryId`, `PlanVsActualPanel.tsx` |
 | Public share leaks private values | `src/lib/profile/privacy-presets.ts`, `/trader/[username]`, `/share/[id]`, `/api/og/trader/[username]` |
 
-## TraderWaves Hardening Watchlist
+## Release Hardening Watchlist
 
-The active hardening report is `docs/traderwaves-gap-production-hardening-qa-report.md`.
+Completed QA report files should be deleted after verification. Keep only active bug reports in `docs/`.
 
-Keep these as release blockers for the current TraderWaves parity scope:
+Current recurring release checks:
 
-- True fresh-user E2E fixture: do not test onboarding with an old user that already has accounts/trades.
-- `syncSource` DB backfill: no legacy `APP` values should remain after running the audit/backfill script.
+- Fresh-user onboarding must be tested with a true fresh-user fixture, not an old user that already has accounts/trades.
+- Legacy sync source values should not leak into current UI copy. New UI should say Trade Manager EA or Manual Journal.
+- Dashboard and homepage should expose one next action per context, not every feature at once.
 
 ## API Rules
 
@@ -162,12 +163,12 @@ Keep these as release blockers for the current TraderWaves parity scope:
 
 ## Trade Sync
 
-The system supports two sync paths:
+The current user-facing sync paths are:
 
-- EA Sync: `public/downloads/TheNextTrade_TradeSync.mq5` and `/api/ea/*`.
-- TNT Connect: `apps/tnt-connect` and `/api/sync/*`.
+- Trade Manager EA: `/api/ea/*`.
+- Manual Journal: `/dashboard/journal`.
 
-Both write into trading account, journal, and sync history data. Current TNT Connect release is `1.0.2`, published through `/api/app/version`.
+Legacy `/api/sync/*` code may remain for backwards compatibility, but it should not appear as a primary setup path in new product surfaces.
 
 Timezone rule: broker timezones must be validated before writing to the database. Invalid values fall back to `Etc/UTC` so dashboard date ranges cannot crash.
 

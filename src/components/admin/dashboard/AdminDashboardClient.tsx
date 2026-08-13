@@ -4,7 +4,6 @@ import {
     Users,
     Activity,
     Crown,
-    Copy,
     Magnet,
     ShieldCheck,
     GraduationCap,
@@ -24,7 +23,6 @@ interface Props {
     users: HeroStat;
     tradingAccounts: HeroStat;
     vipRequests: HeroStat;
-    copyTrading: HeroStat;
     ibLeadsCount: number;
     proEntitlementsCount: number;
     tradingVolume: number;
@@ -72,7 +70,7 @@ export function AdminDashboardClient(props: Props) {
             </motion.div>
 
             {/* Hero Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <AnimatedStatCard
                     title="Total Users"
                     value={props.users.value}
@@ -99,15 +97,6 @@ export function AdminDashboardClient(props: Props) {
                     icon={Crown}
                     color="cyan"
                     index={2}
-                />
-                <AnimatedStatCard
-                    title="Copy Trading"
-                    value={props.copyTrading.value}
-                    sparklineData={props.copyTrading.sparkline}
-                    trendPercent={props.copyTrading.trendPercent}
-                    icon={Copy}
-                    color="green"
-                    index={3}
                 />
             </div>
 

@@ -1,6 +1,6 @@
 # TheNextTrade Docs
 
-Last reviewed: 2026-06-16
+Last reviewed: 2026-08-11
 
 This folder is the active source of truth for the product, system, operations, design, and email behavior. Old sprint plans, completed QA reports, and stale implementation notes should not live here.
 
@@ -14,8 +14,7 @@ This folder is the active source of truth for the product, system, operations, d
 | [OPERATIONS.md](OPERATIONS.md) | Environment, self-host stack, deploy, storage, monitoring, release ops |
 | [DESIGN.md](DESIGN.md) | UI standards for dashboard, auth pages, cards, buttons, metrics |
 | [EMAIL.md](EMAIL.md) | Transactional email strategy, templates needed, delivery rules |
-| [../traderwaves-gap-production-hardening-plan.md](../traderwaves-gap-production-hardening-plan.md) | Current TraderWaves-level hardening target for sync health, privacy, rules, plans, and coach loop |
-| [traderwaves-gap-production-hardening-qa-report.md](traderwaves-gap-production-hardening-qa-report.md) | Only remaining hardening bugs/gaps to fix before calling this scope clean |
+| [features/personalized-improvement-loop.md](features/personalized-improvement-loop.md) | Deep architecture/spec for the Personalized Trading Improvement Loop |
 
 ## Current Snapshot
 
@@ -26,10 +25,11 @@ This folder is the active source of truth for the product, system, operations, d
 - Storage: Cloudflare R2 for generated assets, uploads, article media, and backups.
 - Email: SMTP-compatible service. Brevo or Postmark recommended for production.
 - Analytics: internal Postgres analytics plus optional GA4.
-- Trade sync: EA Sync and TNT Connect. Current TNT Connect release is `1.0.2`.
+- Trade sync: Trade Manager EA is the supported automated sync path. Manual Journal remains the fallback. Legacy TNT Connect code may exist for compatibility, but it is not the current user-facing setup path.
 - New-user activation polish is shipped and documented in `PRODUCT.md` and `FEATURE_SPECS.md`; old implementation plans should not be treated as the source of truth.
-- TraderWaves-inspired product loop is now active in code: Sync Health Center, Privacy Presets, Rulebook & Goals, Trade Plans, Plan vs Actual, Weekly Coach action loop, safe public profile/share behavior.
-- Current open hardening items are intentionally isolated in `docs/traderwaves-gap-production-hardening-qa-report.md`.
+- TraderWaves-inspired product loop is active in code: Sync Health Center, Privacy Presets, Rulebook & Goals, Trade Plans, Plan vs Actual, Weekly Coach action loop, safe public profile/share behavior, first insight, and measurable improvement experiments.
+- AI Gateway now uses an internal gateway layer plus provider adapters such as OpenRouter so admin can monitor requests, route models, and avoid direct client-to-provider calls.
+- Completed QA reports are deleted after verification. If a report file exists in `/docs`, it should contain active bugs only.
 
 ## New Developer Handoff
 
@@ -41,7 +41,7 @@ If a new developer needs to fix bugs or continue feature work, use this order:
 4. Read [DESIGN.md](DESIGN.md) before changing user-facing UI.
 5. Read [OPERATIONS.md](OPERATIONS.md) before touching env vars, deploy, storage, sync releases, or production services.
 6. Read [EMAIL.md](EMAIL.md) before changing transactional email behavior.
-7. For the current TraderWaves parity/hardening scope, read [../traderwaves-gap-production-hardening-plan.md](../traderwaves-gap-production-hardening-plan.md), then fix only the open items in [traderwaves-gap-production-hardening-qa-report.md](traderwaves-gap-production-hardening-qa-report.md).
+7. For a shipped feature, update these docs immediately after code changes. Old implementation plans are not the source of truth once `PRODUCT.md`, `FEATURE_SPECS.md`, and `SYSTEM.md` are updated.
 
 Most bug fixes should start from the feature inventory in [PRODUCT.md](PRODUCT.md), then jump to the route spec in [FEATURE_SPECS.md](FEATURE_SPECS.md), then use the code ownership map in [SYSTEM.md](SYSTEM.md).
 

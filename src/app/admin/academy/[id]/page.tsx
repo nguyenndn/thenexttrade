@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { LevelDetailView } from "@/components/admin/academy/LevelDetailView";
+import { requireAdminPageAccess } from "@/lib/admin/auth.server";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +11,7 @@ export default async function LevelDetailPage({
     params: Promise<{ id: string }>;
 }) {
     const { id } = await params;
+    await requireAdminPageAccess();
 
     const level = await prisma.level.findUnique({
         where: { id },

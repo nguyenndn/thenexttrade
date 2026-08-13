@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { login, signInWithMagicLink } from "@/app/auth/actions";
 import {
@@ -103,6 +103,7 @@ function LoginSuccessOverlay({
 
 export default function LoginPage() {
     const [loading, setLoading] = useState(false);
+    const [isHydrated, setIsHydrated] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
     const [mode, setMode] = useState<"password" | "magic">("password");
@@ -119,6 +120,10 @@ export default function LoginPage() {
 
     const primaryButtonClassName =
         "w-full h-14 rounded-xl border-none bg-[linear-gradient(135deg,#F8D46B_0%,#D99A26_45%,#8A5A13_100%)] text-base font-black text-white shadow-[0_18px_36px_rgba(217,154,38,0.32)] hover:shadow-[0_20px_44px_rgba(217,154,38,0.42)]";
+
+    useEffect(() => {
+        setIsHydrated(true);
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -224,7 +229,11 @@ export default function LoginPage() {
                 )}
 
                 {mode === "password" && (
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form
+                        method="post"
+                        onSubmit={handleSubmit}
+                        className="space-y-6"
+                    >
                         <Input
                             name="email"
                             type="email"
@@ -309,6 +318,7 @@ export default function LoginPage() {
                             variant="primary"
                             className={primaryButtonClassName}
                             isLoading={loading}
+                            disabled={!isHydrated}
                         >
                             Login
                         </Button>
@@ -316,7 +326,11 @@ export default function LoginPage() {
                 )}
 
                 {mode === "magic" && !magicLinkSent && (
-                    <form onSubmit={handleMagicLink} className="space-y-6">
+                    <form
+                        method="post"
+                        onSubmit={handleMagicLink}
+                        className="space-y-6"
+                    >
                         <div className="text-center mb-2">
                             <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
                                 Enter your email and we will send you a magic
@@ -349,6 +363,7 @@ export default function LoginPage() {
                             variant="primary"
                             className={`${primaryButtonClassName} flex items-center justify-center gap-2`}
                             isLoading={loading}
+                            disabled={!isHydrated}
                         >
                             <Sparkles size={18} />
                             Send Magic Link

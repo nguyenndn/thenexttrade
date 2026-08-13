@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Users, ShieldCheck, Copy, Settings } from "lucide-react";
+import { Users, ShieldCheck, Settings } from "lucide-react";
 
 export function QuickActionsWidget() {
     const actions = [
@@ -22,14 +22,6 @@ export function QuickActionsWidget() {
             bgColor: "bg-purple-50 dark:bg-purple-500/10",
         },
         {
-            title: "Copy Trading",
-            description: "Manage accounts",
-            icon: Copy,
-            href: "/admin/copy-trading",
-            textColor: "text-amber-500",
-            bgColor: "bg-amber-50 dark:bg-amber-500/10",
-        },
-        {
             title: "Settings",
             description: "Configure platform",
             icon: Settings,
@@ -40,7 +32,7 @@ export function QuickActionsWidget() {
     ];
 
     return (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
             {actions.map((action, idx) => (
                 <Link
                     key={idx}

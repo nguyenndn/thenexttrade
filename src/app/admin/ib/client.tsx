@@ -9,12 +9,17 @@ import {
     ShieldOff,
     Sparkles,
     TrendingUp,
-    UserCheck,
     Users,
+    DollarSign,
+    Briefcase,
+    Zap,
+    AlertTriangle,
+    ShieldCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { AnimatedStatCard } from "@/components/admin/dashboard/AnimatedStatCard";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
+import { CANONICAL_PRODUCTS } from "@/lib/admin/ib/ib-monitor.constants";
 
 interface OverviewStats {
     totalLeads: number;
@@ -24,6 +29,15 @@ interface OverviewStats {
     activeProUsers: number;
     graceUsers: number;
     revokedUsers: number;
+    activeAccounts?: number;
+    reportedCapitalUSD?: number | null;
+    freshCapitalUSD?: number | null;
+    reportedEquityUSD?: number | null;
+    staleAccounts?: number;
+    disconnectedAccounts?: number;
+    vipUsersWithoutFirstSync?: number;
+    activeToolUsers?: number;
+    duplicateAccountWarnings?: number;
 }
 
 interface LeadStats {
@@ -70,17 +84,29 @@ export function IbOverviewClient({
         );
     }
 
+    const asOfTimestamp = new Date().toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+    });
+
     const rangeLabel =
         range === "7d"
             ? "last 7 days"
             : range === "30d"
               ? "last 30 days"
               : "all time";
+
+    const formatUsd = (value: number | null | undefined) =>
+        value === null || value === undefined
+            ? "Mixed"
+            : `$${value.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
+
     const nextActions = [
         {
             title: "Review pending Pro requests",
             description: `${overview.pendingRequests} request${overview.pendingRequests !== 1 ? "s" : ""} waiting for admin review`,
-            href: "/admin/ib/pipeline",
+            href: "/admin/ib/pipeline?status=PENDING",
             value: overview.pendingRequests,
             tone: "amber",
             icon: Crown,
@@ -88,17 +114,17 @@ export function IbOverviewClient({
         },
         {
             title: "Check active Pro traders",
-            description: `${overview.activeProUsers} linked Pro account${overview.activeProUsers !== 1 ? "s" : ""} currently active`,
-            href: "/admin/ib/traders",
+            description: `${overview.activeProUsers} active VIP trader${overview.activeProUsers !== 1 ? "s" : ""} currently monitored`,
+            href: "/admin/ib/traders?vip=ACTIVE",
             value: overview.activeProUsers,
             tone: "cyan",
             icon: Activity,
             cta: "View traders",
         },
         {
-            title: "Watch grace period users",
+            title: "Review temporary VIP users",
             description: `${overview.graceUsers} user${overview.graceUsers !== 1 ? "s" : ""} need follow-up before access expires`,
-            href: "/admin/ib/traders",
+            href: "/admin/ib/traders?vip=GRACE",
             value: overview.graceUsers,
             tone: "red",
             icon: ShieldOff,
@@ -108,7 +134,11 @@ export function IbOverviewClient({
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-end">
+            {/* Header Controls */}
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs font-bold text-gray-400">
+                    <Clock size={13} /> Updated as of <span className="font-mono text-gray-700 dark:text-gray-300">{asOfTimestamp}</span>
+                </div>
                 <div className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-1 shadow-sm">
                     {rangeOptions.map((option) => (
                         <Link
@@ -126,17 +156,102 @@ export function IbOverviewClient({
                 </div>
             </div>
 
-            <Tabs
-                defaultValue="overview"
-                className="mt-2"
-                tabsId="ib-overview-tabs"
-            >
+            {/* 10 Operational KPI Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                <AnimatedStatCard
+                    title="Total Leads"
+                    value={leadStats.totalLeads}
+                    icon={Users}
+                    color="blue"
+                    index={0}
+                    trendPercent={null}
+                />
+                <AnimatedStatCard
+                    title="Active VIP Users"
+                    value={overview.activeProUsers}
+                    icon={Crown}
+                    color="amber"
+                    index={1}
+                    trendPercent={null}
+                />
+                <AnimatedStatCard
+                    title="Connected Accounts"
+                    value={overview.activeAccounts || 0}
+                    icon={Briefcase}
+                    color="cyan"
+                    index={2}
+                    trendPercent={null}
+                />
+                <AnimatedStatCard
+                    title="Pending Requests"
+                    value={overview.pendingRequests}
+                    icon={Clock}
+                    color="amber"
+                    index={3}
+                    trendPercent={null}
+                />
+                <AnimatedStatCard
+                    title="Conversion Rate"
+                    value={Math.round(leadStats.conversionRate)}
+                    icon={TrendingUp}
+                    color="green"
+                    index={4}
+                    trendPercent={null}
+                />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                <div className="rounded-xl border border-amber-200/70 bg-amber-50/60 p-4 dark:border-amber-500/20 dark:bg-amber-500/10">
+                    <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-amber-700 dark:text-amber-300">
+                        <DollarSign size={15} /> Reported Capital
+                    </div>
+                    <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">{formatUsd(overview.reportedCapitalUSD)}</p>
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Equity {formatUsd(overview.reportedEquityUSD)}</p>
+                </div>
+                <div className="rounded-xl border border-emerald-200/70 bg-emerald-50/60 p-4 dark:border-emerald-500/20 dark:bg-emerald-500/10">
+                    <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">
+                        <ShieldCheck size={15} /> Fresh Capital
+                    </div>
+                    <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">{formatUsd(overview.freshCapitalUSD)}</p>
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Accounts updated within 24h</p>
+                </div>
+                <div className="rounded-xl border border-orange-200/70 bg-orange-50/60 p-4 dark:border-orange-500/20 dark:bg-orange-500/10">
+                    <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-orange-700 dark:text-orange-300">
+                        <AlertTriangle size={15} /> Data Quality
+                    </div>
+                    <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">{overview.staleAccounts || 0} sync overdue</p>
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        {overview.disconnectedAccounts || 0} disconnected · {overview.duplicateAccountWarnings || 0} duplicate warning{overview.duplicateAccountWarnings === 1 ? "" : "s"}
+                    </p>
+                </div>
+                <div className="rounded-xl border border-cyan-200/70 bg-cyan-50/60 p-4 dark:border-cyan-500/20 dark:bg-cyan-500/10">
+                    <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-cyan-700 dark:text-cyan-300">
+                        <Zap size={15} /> Tool Activity
+                    </div>
+                    <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">{overview.activeToolUsers || 0}</p>
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">users with product activity in 24h</p>
+                </div>
+            </div>
+
+            {(overview.vipUsersWithoutFirstSync || 0) > 0 && (
+                <Link
+                    href="/admin/ib/traders?vip=ACTIVE&accountHealth=NEVER_SYNCED"
+                    className="flex items-center justify-between gap-4 rounded-xl border border-amber-200 bg-amber-50/70 px-4 py-3 text-sm transition-colors hover:bg-amber-100 dark:border-amber-500/20 dark:bg-amber-500/10 dark:hover:bg-amber-500/15"
+                >
+                    <span className="font-bold text-amber-800 dark:text-amber-200">
+                        {overview.vipUsersWithoutFirstSync} active VIP user{overview.vipUsersWithoutFirstSync === 1 ? "" : "s"} have not completed a first sync.
+                    </span>
+                    <span className="text-xs font-black text-amber-700 dark:text-amber-300">Review traders →</span>
+                </Link>
+            )}
+
+            <Tabs defaultValue="overview" className="mt-2" tabsId="ib-overview-tabs">
                 <div className="overflow-x-auto scrollbar-hide pb-2 flex">
                     <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1 gap-1 shrink-0">
                         {[
-                            { id: "overview", label: "Overview" },
+                            { id: "overview", label: "Command Center" },
+                            { id: "products", label: "Product Adoption" },
                             { id: "analytics", label: "Lead Analytics" },
-                            { id: "status", label: "Trader Status" },
                         ].map((t) => (
                             <TabsTrigger
                                 key={t.id}
@@ -155,6 +270,7 @@ export function IbOverviewClient({
                     value="overview"
                     className="mt-6 space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300"
                 >
+                    {/* Hero North Star */}
                     <div className="rounded-xl border border-emerald-200/70 bg-gradient-to-br from-emerald-50 via-white to-amber-50/60 p-6 shadow-sm dark:border-emerald-500/20 dark:from-emerald-500/10 dark:via-[#11151F] dark:to-amber-500/10">
                         <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
                             <div className="max-w-xl">
@@ -167,13 +283,11 @@ export function IbOverviewClient({
                                         {overview.activeProUsers}
                                     </p>
                                     <p className="pb-2 text-sm font-bold text-gray-500 dark:text-gray-400">
-                                        active now
+                                        distinct active users
                                     </p>
                                 </div>
                                 <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-300">
-                                    Use this page as the command center: review
-                                    pending requests, monitor Pro activation,
-                                    and spot funnel drops before revenue leaks.
+                                    Use this page as the command center: review pending requests, monitor Pro activation, and spot funnel drops before revenue leaks.
                                 </p>
                             </div>
                             <div className="grid flex-1 gap-3 sm:grid-cols-3">
@@ -214,6 +328,7 @@ export function IbOverviewClient({
                         </div>
                     </div>
 
+                    {/* Operational Action Cards */}
                     <div className="grid gap-4 lg:grid-cols-3">
                         {nextActions.map((action) => {
                             const Icon = action.icon;
@@ -231,9 +346,7 @@ export function IbOverviewClient({
                                     className="group rounded-xl border border-gray-200 dark:border-white/10 bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:bg-[#1E2028]"
                                 >
                                     <div className="flex items-start justify-between gap-4">
-                                        <div
-                                            className={`rounded-xl p-3 ring-1 ${toneClass}`}
-                                        >
+                                        <div className={`rounded-xl p-3 ring-1 ${toneClass}`}>
                                             <Icon size={20} strokeWidth={2.5} />
                                         </div>
                                         <span className="text-3xl font-black tracking-tight text-gray-900 dark:text-white">
@@ -250,310 +363,65 @@ export function IbOverviewClient({
                                         {action.cta}
                                         <ArrowRight
                                             size={14}
-                                            className="transition-transform group-hover:translate-x-0.5"
+                                            className="transition-transform group-hover:translate-x-1"
                                         />
                                     </div>
                                 </Link>
                             );
                         })}
                     </div>
-
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        <AnimatedStatCard
-                            title="Total Leads"
-                            value={overview.totalLeads}
-                            icon={TrendingUp}
-                            color="blue"
-                            index={0}
-                            trendPercent={null}
-                        />
-                        <AnimatedStatCard
-                            title="Pending Review"
-                            value={overview.pendingRequests}
-                            icon={Clock}
-                            color="amber"
-                            index={1}
-                            trendPercent={null}
-                        />
-                        <AnimatedStatCard
-                            title="New Verified Pro"
-                            value={overview.verifiedUsers}
-                            icon={Crown}
-                            color="emerald"
-                            index={2}
-                            trendPercent={null}
-                        />
-                    </div>
                 </TabsContent>
 
-                <TabsContent
-                    value="analytics"
-                    className="mt-6 space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300"
-                >
-                    <div className="grid gap-4 lg:grid-cols-2">
-                        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white p-6 shadow-sm dark:bg-[#1E2028] hover:shadow-md transition-shadow group">
-                            <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                                <div>
-                                    <h2 className="text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-white flex items-center gap-2">
-                                        <Activity
-                                            size={18}
-                                            className="text-primary"
-                                        />
-                                        Conversion Funnel
-                                    </h2>
-                                    <p className="mt-1 text-xs font-medium text-gray-500 dark:text-gray-400">
-                                        Measured for {rangeLabel}
-                                    </p>
-                                </div>
-                                <Link
-                                    href="/admin/ib/pipeline"
-                                    className="inline-flex items-center gap-1 text-xs font-black text-primary hover:text-primary/80 transition-colors bg-primary/10 hover:bg-primary/20 px-3 py-1.5 rounded-lg"
-                                >
-                                    Review requests
-                                    <ArrowUpRight size={14} />
-                                </Link>
-                            </div>
-                            <div className="space-y-4">
-                                {[
-                                    {
-                                        label: "Broker Clicks",
-                                        value: leadStats.totalLeads,
-                                        color: "bg-blue-500",
-                                    },
-                                    {
-                                        label: "VIP Requests",
-                                        value: vipStats.total,
-                                        color: "bg-amber-500",
-                                    },
-                                    {
-                                        label: "Approved",
-                                        value: vipStats.approved,
-                                        color: "bg-emerald-500",
-                                    },
-                                    {
-                                        label: "Active Pro",
-                                        value: overview.activeProUsers,
-                                        color: "bg-cyan-500",
-                                    },
-                                ].map((step) => {
-                                    const maxVal = Math.max(
-                                        leadStats.totalLeads,
-                                        1
-                                    );
-                                    const width = Math.max(
-                                        5,
-                                        Math.min(
-                                            100,
-                                            (step.value / maxVal) * 100
-                                        )
-                                    );
-                                    return (
-                                        <div key={step.label}>
-                                            <div className="mb-1.5 flex justify-between text-sm">
-                                                <span className="font-medium text-gray-600 dark:text-gray-300">
-                                                    {step.label}
-                                                </span>
-                                                <span className="font-bold text-gray-700 dark:text-white">
-                                                    {step.value}
-                                                </span>
-                                            </div>
-                                            <div className="h-2 w-full rounded-full bg-gray-100 dark:bg-[#151925] overflow-hidden shadow-inner">
-                                                <div
-                                                    className={`h-full rounded-full ${step.color} transition-all`}
-                                                    style={{
-                                                        width: `${width}%`,
-                                                    }}
-                                                />
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                            {leadStats.totalLeads > 0 && (
-                                <div className="mt-5 rounded-xl border border-gray-100 dark:border-white/5 bg-gray-50 px-4 py-3 dark:bg-white/[0.02]">
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                                        Lead conversion:{" "}
-                                        <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                                            {leadStats.conversionRate.toFixed(
-                                                1
-                                            )}
-                                            %
-                                        </span>
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white p-6 shadow-sm dark:bg-[#1E2028] hover:shadow-md transition-shadow group">
-                            <h2 className="mb-5 text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-white flex items-center gap-2">
-                                <Users size={18} className="text-blue-500" />
-                                Lead Sources
-                            </h2>
-                            {leadStats.leadsBySource.length > 0 ? (
-                                <div className="space-y-2">
-                                    {leadStats.leadsBySource.map((source) => (
-                                        <div
-                                            key={source.source}
-                                            className="flex items-center justify-between rounded-xl border border-gray-100 dark:border-white/5 bg-gray-50 px-4 py-2.5 dark:bg-white/[0.02]"
-                                        >
-                                            <span className="text-sm font-medium capitalize text-gray-600 dark:text-gray-300">
-                                                {source.source
-                                                    .toLowerCase()
-                                                    .replace("_", " ")}
-                                            </span>
-                                            <span className="text-sm font-bold tabular-nums text-gray-700 dark:text-white">
-                                                {source.count}
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <p className="text-sm text-gray-400 dark:text-gray-500">
-                                    No leads tracked yet.
-                                </p>
-                            )}
-
-                            <h3 className="mb-3 mt-6 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                                By Broker
-                            </h3>
-                            {leadStats.leadsByBroker.length > 0 ? (
-                                <div className="space-y-2">
-                                    {leadStats.leadsByBroker.map((broker) => (
-                                        <div
-                                            key={broker.broker}
-                                            className="flex items-center justify-between rounded-xl border border-gray-100 dark:border-white/5 bg-gray-50 px-4 py-2.5 dark:bg-white/[0.02]"
-                                        >
-                                            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                                {broker.broker}
-                                            </span>
-                                            <span className="text-sm font-bold tabular-nums text-gray-700 dark:text-white">
-                                                {broker.count}
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <p className="text-sm text-gray-400 dark:text-gray-500">
-                                    No broker clicks tracked yet.
-                                </p>
-                            )}
-                        </div>
-                    </div>
-                </TabsContent>
-
-                <TabsContent
-                    value="status"
-                    className="mt-6 space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300"
-                >
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white p-5 shadow-sm dark:bg-[#1E2028] hover:shadow-md transition-shadow">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                                        Active Traders
-                                    </p>
-                                    <p className="mt-1 text-2xl font-black text-gray-700 dark:text-white">
-                                        {overview.activeProUsers}
-                                    </p>
-                                </div>
-                                <div className="rounded-xl bg-cyan-50/50 p-3 text-cyan-600 ring-1 ring-cyan-500/20 dark:bg-cyan-500/10 dark:text-cyan-400">
-                                    <UserCheck size={20} strokeWidth={2.5} />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white p-5 shadow-sm dark:bg-[#1E2028] hover:shadow-md transition-shadow">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                                        Grace Period
-                                    </p>
-                                    <p className="mt-1 text-2xl font-black text-gray-700 dark:text-white">
-                                        {overview.graceUsers}
-                                    </p>
-                                </div>
-                                <div className="rounded-xl bg-amber-50/50 p-3 text-amber-600 ring-1 ring-amber-500/20 dark:bg-amber-500/10 dark:text-amber-400">
-                                    <Activity size={20} strokeWidth={2.5} />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white p-5 shadow-sm dark:bg-[#1E2028] hover:shadow-md transition-shadow">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                                        Revoked
-                                    </p>
-                                    <p className="mt-1 text-2xl font-black text-gray-700 dark:text-white">
-                                        {overview.revokedUsers}
-                                    </p>
-                                </div>
-                                <div className="rounded-xl bg-red-50/50 p-3 text-red-600 ring-1 ring-red-500/20 dark:bg-red-500/10 dark:text-red-400">
-                                    <ShieldOff size={20} strokeWidth={2.5} />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                <TabsContent value="products" className="mt-6 space-y-6">
                     <div className="grid gap-4 sm:grid-cols-3">
-                        <Link
-                            href="/admin/ib/pipeline"
-                            className="group flex items-center gap-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white px-5 py-4 shadow-sm transition-shadow hover:shadow-md dark:bg-[#1E2028]"
-                        >
-                            <div className="rounded-xl bg-amber-50/50 p-2.5 text-amber-600 ring-1 ring-amber-500/20 dark:bg-amber-500/10 dark:text-amber-400">
-                                <Crown size={18} strokeWidth={2.5} />
-                            </div>
-                            <div className="flex-1">
-                                <p className="text-sm font-bold text-gray-700 dark:text-white">
-                                    VIP Pipeline
+                        {CANONICAL_PRODUCTS.map((prod) => (
+                            <div
+                                key={prod.id}
+                                className="p-5 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm space-y-3"
+                            >
+                                <div className="flex items-center justify-between">
+                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
+                                        {prod.slug}
+                                    </span>
+                                    <Zap size={16} className="text-amber-500" />
+                                </div>
+                                <h3 className="font-bold text-gray-900 dark:text-white">
+                                    {prod.name}
+                                </h3>
+                                <p className="text-xs text-gray-500 leading-relaxed">
+                                    {prod.description}
                                 </p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                    {overview.pendingRequests} pending review
-                                </p>
+                                <div className="pt-3 border-t border-gray-100 dark:border-white/5 flex items-center justify-between text-xs font-medium text-gray-500">
+                                    <span>Monitoring Active</span>
+                                    <Link
+                                        href={`/admin/ib/traders?product=${prod.slug}`}
+                                        className="text-primary font-bold hover:underline"
+                                    >
+                                        View Users &rarr;
+                                    </Link>
+                                </div>
                             </div>
-                            <ArrowUpRight
-                                size={14}
-                                className="text-gray-300 transition-colors group-hover:text-amber-500 dark:text-gray-600"
-                            />
-                        </Link>
-                        <Link
-                            href="/admin/ib/traders"
-                            className="group flex items-center gap-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white px-5 py-4 shadow-sm transition-shadow hover:shadow-md dark:bg-[#1E2028]"
-                        >
-                            <div className="rounded-xl bg-cyan-50/50 p-2.5 text-cyan-600 ring-1 ring-cyan-500/20 dark:bg-cyan-500/10 dark:text-cyan-400">
-                                <Activity size={18} strokeWidth={2.5} />
-                            </div>
-                            <div className="flex-1">
-                                <p className="text-sm font-bold text-gray-700 dark:text-white">
-                                    Trader Monitor
-                                </p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                    Activity tracking and alerts
-                                </p>
-                            </div>
-                            <ArrowUpRight
-                                size={14}
-                                className="text-gray-300 transition-colors group-hover:text-cyan-500 dark:text-gray-600"
-                            />
-                        </Link>
-                        <Link
-                            href="/admin/community"
-                            className="group flex items-center gap-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white px-5 py-4 shadow-sm transition-shadow hover:shadow-md dark:bg-[#1E2028]"
-                        >
-                            <div className="rounded-xl bg-gray-50/50 p-2.5 text-gray-500 ring-1 ring-gray-200 dark:bg-white/5 dark:text-gray-400 dark:ring-white/10">
-                                <Users size={18} strokeWidth={2.5} />
-                            </div>
-                            <div className="flex-1">
-                                <p className="text-sm font-bold text-gray-700 dark:text-white">
-                                    Legacy VIP View
-                                </p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                    Original VIP management
-                                </p>
-                            </div>
-                            <ArrowUpRight
-                                size={14}
-                                className="text-gray-300 transition-colors group-hover:text-gray-500 dark:text-gray-600"
-                            />
-                        </Link>
+                        ))}
+                    </div>
+                </TabsContent>
+
+                <TabsContent value="analytics" className="mt-6 space-y-6">
+                    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-sm">
+                        <h3 className="font-black text-gray-900 dark:text-white mb-4">
+                            Broker Referral Breakdown
+                        </h3>
+                        <div className="space-y-3">
+                            {leadStats.leadsByBroker.map((item) => (
+                                <div key={item.broker} className="flex items-center justify-between text-sm">
+                                    <span className="font-bold text-gray-800 dark:text-gray-200">
+                                        {item.broker}
+                                    </span>
+                                    <span className="font-mono font-bold text-primary">
+                                        {item.count} leads
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </TabsContent>
             </Tabs>

@@ -142,7 +142,7 @@ export function EmailLabClient({
             id: "activation_still_no_first_value_72h",
             title: "Onboarding: Inactive (T+72h)",
             description:
-                "Final activation reminder prompting the user to explore copy trading, academy or link accounts.",
+                "Final activation reminder prompting the user to explore the academy or link their trading accounts.",
             sourceFile: "src/lib/emails/activation-reminders.ts",
             status: "active",
             statusLabel: "Active SMTP",

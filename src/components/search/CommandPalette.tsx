@@ -65,9 +65,6 @@ function flattenNavItems(menuList: any[]) {
     const seen = new Set<string>();
     for (const group of menuList) {
         if (group.href && group.href !== "#" && !seen.has(group.href)) {
-            // Explicitly exclude copy trading from search
-            if (group.name === "Copy Trading") continue;
-
             if (!group.featureFlag) {
                 seen.add(group.href);
                 items.push({
@@ -82,9 +79,6 @@ function flattenNavItems(menuList: any[]) {
         if ("items" in group && Array.isArray((group as any).items)) {
             for (const sub of (group as any).items) {
                 if (!seen.has(sub.href)) {
-                    // Explicitly exclude copy trading from search
-                    if (sub.name === "Copy Trading") continue;
-
                     if (!sub.featureFlag) {
                         seen.add(sub.href);
                         items.push({

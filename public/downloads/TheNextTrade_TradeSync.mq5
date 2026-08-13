@@ -108,10 +108,10 @@ bool g_CheckTradesNow = false;
 int OnInit() {
   //--- Validate API key
   if (InpApiKey == "") {
-    Alert("TheNextTrade Trade Sync: Please paste your Sync API Key.\n"
-          "Find it at Dashboard > Settings > TNT Connect.");
+    Alert("TheNextTrade Trade Manager: Please paste your Sync API Key.\n"
+          "Find it at Dashboard > Settings > Sync Settings.");
     Print("Error: Sync API Key is required. Get it from TheNextTrade Dashboard "
-          "> Settings > TNT Connect");
+          "> Settings > Sync Settings");
     return (INIT_FAILED);
   }
 

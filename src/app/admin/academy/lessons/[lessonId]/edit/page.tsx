@@ -1,6 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { LessonEditForm } from "@/components/admin/academy/LessonEditForm";
+import { requireAdminPageAccess } from "@/lib/admin/auth.server";
+
+export const dynamic = "force-dynamic";
 
 export default async function LessonEditPage({
     params,
@@ -8,6 +11,7 @@ export default async function LessonEditPage({
     params: Promise<{ lessonId: string }>;
 }) {
     const { lessonId } = await params;
+    await requireAdminPageAccess();
 
     const lesson = await prisma.lesson.findUnique({
         where: { id: lessonId },

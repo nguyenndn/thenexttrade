@@ -10,34 +10,40 @@ export const Logo = ({
 }) => {
     const sizeClasses = {
         sm: "text-lg",
-        md: "text-2xl",
-        lg: "text-3xl",
-        xl: "text-4xl",
+        md: "text-xl",
+        lg: "text-2xl",
+        xl: "text-3xl",
     };
 
     const imgSizes = {
-        sm: 32,
-        md: 40,
+        sm: 28,
+        md: 36,
         lg: 48,
-        xl: 64,
+        xl: 56,
     };
 
     return (
         <Link
             href="/"
-            className={`font-outfit font-bold flex items-center gap-2 ${className}`}
+            className={`font-outfit font-black flex items-center gap-2.5 ${className}`}
         >
-            {/* <Image
- src="/images/thenexttrade-avatar.png"
- alt="TheNextTrade"
- width={imgSizes[size]}
- height={imgSizes[size]}
- className="rounded-lg"
- /> */}
-            <span
-                className={`${sizeClasses[size] || "text-xl"} tracking-tight hover:text-inherit`}
+            <div
+                className="relative shrink-0"
+                style={{ width: imgSizes[size], height: imgSizes[size] }}
             >
-                The Next<span className="text-primary"> Trade</span>
+                <Image
+                    src="/images/logo_sentinel_shield.png"
+                    alt="TheNextTrade"
+                    width={imgSizes[size]}
+                    height={imgSizes[size]}
+                    className="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(0,200,136,0.35)]"
+                    priority
+                />
+            </div>
+            <span
+                className={`${sizeClasses[size] || "text-xl"} font-black tracking-tight hover:text-inherit text-gray-900 dark:text-white`}
+            >
+                TheNext<span className="text-emerald-500">Trade</span>
             </span>
         </Link>
     );

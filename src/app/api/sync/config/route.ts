@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 
 /**
  * GET /api/sync/config
- * TNT Connect app polls for sync configuration & resync requests.
+ * Trade Manager app polls for sync configuration & resync requests.
  * Auth: X-Sync-Key header
  */
 export async function GET(request: NextRequest) {

@@ -1,5 +1,6 @@
 import type { AdminReportsData } from "@/lib/admin/reports/types";
 import { NorthStarPanel } from "./NorthStarPanel";
+import { ActivationImprovementFunnelPanel } from "./ActivationImprovementFunnelPanel";
 import { ActionQueuePanel } from "./ActionQueuePanel";
 import { AlertsPanel } from "./AlertsPanel";
 import { UserLifecyclePanel } from "./UserLifecyclePanel";
@@ -19,6 +20,8 @@ export function AdminReportsDashboard({ data }: Props) {
     return (
         <div className="space-y-6">
             <NorthStarPanel data={data.northStar} />
+
+            <ActivationImprovementFunnelPanel />
 
             {/* Admin Activation Inbox */}
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6 group hover:shadow-md transition-shadow">

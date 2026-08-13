@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { revalidatePath } from "next/cache";
+import { onUserTradesUpdated } from "@/lib/experiments/progress.server";
 import { z } from "zod";
 import { TradeType, TradeStatus, TradeResult } from "@prisma/client";
 import { buildDateRangeFilter } from "@/lib/utils";
@@ -65,7 +66,9 @@ export async function getJournalEntries(
         hasImages,
         timezone,
     } = filters;
-    const skip = (page - 1) * limit;
+    const safePage = Number.isInteger(page) && page > 0 ? page : 1;
+    const safeLimit = Number.isInteger(limit) && limit > 0 ? limit : 20;
+    const skip = (safePage - 1) * safeLimit;
 
     const where: any = { userId: user.id };
     if (accountId) where.accountId = accountId;
@@ -242,6 +245,12 @@ export async function createJournalEntry(data: z.infer<typeof journalSchema>) {
             /* XP award failure should not block journal creation */
         }
 
+        try {
+            await onUserTradesUpdated(user.id, entry.accountId || undefined);
+        } catch {
+            /* Experiment progress update should not block journal creation */
+        }
+
         revalidatePath("/dashboard/journal");
         return { success: true, gamification: { xpEarned, isFirstTrade } };
     } catch (error) {
@@ -262,10 +271,16 @@ export async function updateJournalEntry(
         if (data.entryDate) updateData.entryDate = new Date(data.entryDate);
         if (data.exitDate) updateData.exitDate = new Date(data.exitDate);
 
-        await prisma.journalEntry.update({
+        const updated = await prisma.journalEntry.update({
             where: { id, userId: user.id },
             data: updateData,
         });
+
+        try {
+            await onUserTradesUpdated(user.id, updated.accountId || undefined);
+        } catch {
+            /* Experiment progress update should not block journal update */
+        }
 
         revalidatePath("/dashboard/journal");
         return { success: true };

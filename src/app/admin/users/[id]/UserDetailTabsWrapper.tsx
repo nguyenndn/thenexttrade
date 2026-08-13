@@ -18,15 +18,15 @@ export function UserDetailTabsWrapper({
     return (
         <Tabs defaultValue="overview" className="w-full space-y-6">
             <div className="border-b border-gray-200 dark:border-white/10 pb-4">
-                <TabsList className="bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-xl border border-gray-200 dark:border-white/10 w-fit">
-                    <TabsTrigger value="overview" className="gap-2">
-                        <ShieldCheck size={16} /> Overview
+                <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto rounded-xl border border-gray-200 bg-[#F1F3F5] p-1 dark:border-white/10 dark:bg-[#1A1D27] sm:w-fit">
+                    <TabsTrigger value="overview" className="shrink-0 gap-2">
+                        <ShieldCheck size={16} /> Account Overview
                     </TabsTrigger>
-                    <TabsTrigger value="vip-pro" className="gap-2">
-                        <KeyRound size={16} /> VIP & Pro Services
+                    <TabsTrigger value="vip-pro" className="shrink-0 gap-2">
+                        <KeyRound size={16} /> Access & Products
                     </TabsTrigger>
-                    <TabsTrigger value="ib-perf" className="gap-2">
-                        <LineChart size={16} /> IB & Performance
+                    <TabsTrigger value="ib-perf" className="shrink-0 gap-2">
+                        <LineChart size={16} /> Broker & Performance
                     </TabsTrigger>
                 </TabsList>
             </div>

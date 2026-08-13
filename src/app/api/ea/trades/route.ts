@@ -227,6 +227,16 @@ export async function POST(request: NextRequest) {
             },
         });
 
+        // Trigger experiment progress update
+        if (imported > 0) {
+            try {
+                const { onUserTradesUpdated } = await import("@/lib/experiments/progress.server");
+                await onUserTradesUpdated(account.userId, account.id);
+            } catch {
+                /* non-blocking experiment progress sync */
+            }
+        }
+
         return NextResponse.json({
             success: true,
             imported,

@@ -34,6 +34,8 @@ import type { FirstSessionComputedState } from "@/lib/onboarding/first-session.s
 import { redirect } from "next/navigation";
 import { getWeeklyReviewEligibility } from "@/lib/reports/weekly-review-eligibility";
 import type { WeeklyReviewEligibility } from "@/lib/reports/weekly-review-eligibility";
+import { getTraderGrowthViewModel } from "@/lib/trader-growth/orchestrator.server";
+import type { TraderGrowthViewModel } from "@/lib/trader-growth/types";
 
 // ─── Types ──────────────────────────────────────────────────────────────
 
@@ -121,6 +123,7 @@ export interface DashboardPageData {
         positiveInsight?: boolean;
         coachNudge?: boolean;
     };
+    growthViewModel?: TraderGrowthViewModel;
 }
 
 // ─── Account & Date Resolution ──────────────────────────────────────────
@@ -342,6 +345,8 @@ export async function getEmptyDashboardData(
     const settings = (userData?.settings as Record<string, any>) || {};
     const tradingGoal = (settings.onboarding as any)?.tradingGoal || null;
 
+    const growthViewModel = await getTraderGrowthViewModel(userId, accountId);
+
     return {
         userName: userData?.name || "Trader",
         hasGlobalTrades: false,
@@ -390,6 +395,7 @@ export async function getEmptyDashboardData(
         tradingGoal,
         weeklyReviewEligibility,
         dailyPerformance: [],
+        growthViewModel,
         suppress: {
             activationChecklist: false,
             reportNudge: true,
@@ -633,10 +639,12 @@ export async function getFullDashboardData(
     const userSettings = (userData?.settings as Record<string, any>) || {};
     const tradingGoal = (userSettings.onboarding as any)?.tradingGoal || null;
 
+    const growthViewModel = await getTraderGrowthViewModel(userId, accountId);
+    const nextBestAction = growthViewModel.nextAction;
+
     // Coach & recommendations
-    const [nextBestAction, signals, firstSessionState, activeCoachPlan] =
+    const [signals, firstSessionState, activeCoachPlan] =
         await Promise.all([
-            getNextBestAction(userId, tradingGoal),
             computeTraderSignals(userId, { persist: true }),
             getFirstSessionState(userId),
             prisma.coachActionPlan.findFirst({
@@ -753,6 +761,7 @@ export async function getFullDashboardData(
         firstSessionState,
         tradingGoal,
         weeklyReviewEligibility,
+        growthViewModel,
         suppress,
         dailyPerformance,
     };

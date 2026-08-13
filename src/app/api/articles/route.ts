@@ -89,7 +89,7 @@ export async function POST(request: Request) {
         select: { role: true },
     });
 
-    if (profile?.role !== "ADMIN" && profile?.role !== "EDITOR") {
+    if (profile?.role !== "ADMIN") {
         return NextResponse.json(
             { error: "Forbidden: Admin access required" },
             { status: 403 }

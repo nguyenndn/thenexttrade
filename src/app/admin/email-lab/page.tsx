@@ -1,11 +1,12 @@
 import { redirect, notFound } from "next/navigation";
+import { Metadata } from "next";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { EmailLabClient } from "./EmailLabClient";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Email Lab | Admin Terminal",
     description: "Internal email template test suite for administrators",
 };

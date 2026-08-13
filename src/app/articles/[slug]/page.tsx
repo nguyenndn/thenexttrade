@@ -211,10 +211,10 @@ export default async function ArticlePage({
             <BreadcrumbJsonLd
                 items={[
                     { name: "Home", href: "/" },
-                    { name: "Knowledge", href: "/articles" },
+                    { name: "Knowledge", href: "/knowledge" },
                     {
                         name: article.category.name,
-                        href: `/articles/category/${article.category.slug}`,
+                        href: `/knowledge?category=${article.category.slug}`,
                     },
                     { name: article.title, href: `/articles/${slug}` },
                 ]}
@@ -327,7 +327,7 @@ export default async function ArticlePage({
                                 className="text-gray-300 dark:text-gray-600 shrink-0"
                             />
                             <Link
-                                href="/articles"
+                                href="/knowledge"
                                 className="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors shrink-0"
                             >
                                 Knowledge

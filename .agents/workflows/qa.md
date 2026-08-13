@@ -190,5 +190,5 @@ npx vitest run
 - [ ] Console clean
 
 ## Workflow tiếp theo
-→ `/super_dev` (Fix bugs found)
+→ `/dev` (Fix bugs found)
 → `/push_code` (nếu APPROVED)

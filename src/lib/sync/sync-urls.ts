@@ -1,6 +1,6 @@
 /**
  * Sync URL utilities
- * Centralizes URL generation for TNT Connect and EA Sync downloads/connections.
+ * Centralizes URL generation for Trade Manager and EA Sync downloads/connections.
  */
 
 export function getPublicAppOrigin(): string {
@@ -17,13 +17,6 @@ export function getSyncServerUrl(fallbackOrigin?: string): string {
     if (fallbackOrigin) return fallbackOrigin;
     if (typeof window !== "undefined") return window.location.origin;
     return "";
-}
-
-/**
- * Returns the download URL for the TNT Connect installer.
- */
-export function getTntConnectDownloadUrl(): string {
-    return `${getPublicAppOrigin()}/downloads/tnt-connect-setup.exe`;
 }
 
 /**

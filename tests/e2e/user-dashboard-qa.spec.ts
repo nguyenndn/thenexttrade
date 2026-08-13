@@ -219,7 +219,6 @@ async function cleanup() {
     }).catch(() => {});
     await prisma.strategy.deleteMany({ where: { name: { startsWith: prefix } } }).catch(() => {});
     await prisma.feedback.deleteMany({ where: { message: { startsWith: prefix } } }).catch(() => {});
-    await prisma.copyTradingRegistration.deleteMany({ where: { message: { startsWith: prefix } } }).catch(() => {});
     await prisma.notification.deleteMany({ where: { title: { startsWith: prefix } } }).catch(() => {});
     await prisma.tradingAccount.deleteMany({ where: { name: { startsWith: prefix } } }).catch(() => {});
 
@@ -336,8 +335,6 @@ async function routeSmoke(page: Page, viewport: ViewportName) {
         quiz ? `/dashboard/academy/quiz/${quiz.id}` : null,
         "/dashboard/leaderboard",
         "/dashboard/trading-systems",
-        "/dashboard/copy-trading",
-        "/dashboard/funded-challenge",
         "/dashboard/notifications",
         "/dashboard/search?q=trade",
         "/dashboard/settings",
@@ -410,6 +407,12 @@ async function accountFlow(page: Page, viewport: ViewportName) {
     await recordStep(viewport, "Accounts", "Create trading account and show setup instructions", async () => {
         await gotoHealthy(page, "/dashboard/accounts");
         await page.getByRole("button", { name: /add account/i }).last().click();
+        // The rebuilt Add Account modal opens a chooser step first.
+        const chooser = page.getByText("Add Trading Account", { exact: true });
+        await chooser.waitFor({ state: "visible", timeout: 4_000 }).catch(() => {});
+        if (await chooser.isVisible()) {
+            await page.getByText("Free Account", { exact: true }).click();
+        }
         await expect(page.getByText("Account Details")).toBeVisible();
         await page.getByPlaceholder(/My MT5 Growth/i).fill(created.accountName(viewport));
         await dismissBlockingOverlays(page);
@@ -418,7 +421,7 @@ async function accountFlow(page: Page, viewport: ViewportName) {
             () => prisma.tradingAccount.count({ where: { name: created.accountName(viewport) } }),
             { timeout: 15_000 },
         ).toBe(1);
-        await expect(page.getByText("Setup Instructions")).toBeVisible({ timeout: 5_000 });
+        await expect(page.getByText("Your Sync API Key")).toBeVisible({ timeout: 5_000 });
         return "Account record created and setup-instructions step remained visible.";
     });
 }
@@ -593,49 +596,6 @@ async function notificationsFlow(page: Page, viewport: ViewportName) {
     });
 }
 
-async function copyTradingFlow(page: Page, viewport: ViewportName) {
-        await recordStep(viewport, "Copy Trading", "Registration validation and submission", async () => {
-        await gotoHealthy(page, "/dashboard/copy-trading");
-        await page.getByRole("button", { name: /my account/i }).click();
-        await page.getByRole("button", { name: /register now|add another account/i }).first().click();
-        await expect(page.getByText("Register for Copy Trading")).toBeVisible({ timeout: 8_000 });
-        await expect(page.getByRole("button", { name: /^next/i })).toBeDisabled();
-        await page.getByPlaceholder("John Doe").fill(`${prefix} ${viewport}`);
-        await page.getByPlaceholder("john@example.com").fill(`qa.user.${runId}.${viewport}@example.com`);
-        await page.getByPlaceholder("@yourusername").fill(`@qa_${runId}_${viewport}`);
-        await page.getByPlaceholder(/1000/i).fill("1000");
-        await page.getByRole("button", { name: /^next/i }).click();
-        await page.getByRole("button", { name: /select your broker/i }).click();
-        await page.getByRole("button", { name: "Exness" }).last().click();
-        await page.getByText("Select server").click();
-        await page.getByRole("button", { name: "Exness-MT5Real", exact: true }).click();
-        await page.getByPlaceholder("52629080").fill(created.copyAccount(viewport));
-        await page.locator("textarea").last().fill(`${prefix} ${viewport} copy trading`);
-        await page.locator('input[type="checkbox"]').check();
-        await page.getByRole("button", { name: /submit registration/i }).click();
-        await expect(page.getByText("Registration Submitted!")).toBeVisible({ timeout: 15_000 });
-        await expect.poll(
-            () => prisma.copyTradingRegistration.count({ where: { mt5AccountNumber: created.copyAccount(viewport), message: { startsWith: prefix } } }),
-            { timeout: 12_000 },
-        ).toBe(1);
-        return "Copy-trading registration validation and submit completed.";
-    });
-}
-
-async function fundedChallengeButtons(page: Page, viewport: ViewportName) {
-    await recordStep(viewport, "Funded Challenge", "CTA buttons do not break screen", async () => {
-        await gotoHealthy(page, "/dashboard/funded-challenge");
-        const buttons = page.getByRole("button", { name: /get started|start your challenge/i });
-        const count = await buttons.count();
-        for (let i = 0; i < Math.min(count, 2); i += 1) {
-            await buttons.nth(i).click();
-            await page.waitForTimeout(300);
-            await expectHealthyScreen(page, "/dashboard/funded-challenge");
-        }
-        return count ? "Clicked funded-challenge CTA buttons." : "Feature currently renders coming-soon state with no CTA buttons.";
-    });
-}
-
 async function streakFlow(page: Page, viewport: ViewportName) {
     await recordStep(viewport, "Streak", "Check-in button state/action", async () => {
         await gotoHealthy(page, "/dashboard/settings/streak");
@@ -676,8 +636,6 @@ test("user dashboard complete QA across desktop and mobile", async ({ page }) =>
         await feedbackFlow(page, viewport);
         await settingsFlow(page, viewport);
         await notificationsFlow(page, viewport);
-        await copyTradingFlow(page, viewport);
-        await fundedChallengeButtons(page, viewport);
         await streakFlow(page, viewport);
     }
 

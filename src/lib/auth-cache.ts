@@ -85,7 +85,7 @@ export const requireAdminAuth = cache(async () => {
         select: { role: true },
     });
 
-    if (profile?.role !== "ADMIN" && profile?.role !== "EDITOR") {
+    if (profile?.role !== "ADMIN") {
         throw new Error("Forbidden");
     }
 

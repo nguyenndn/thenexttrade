@@ -64,12 +64,35 @@ export const GoogleAdapter: AiGatewayProviderAdapter = {
                     contents: [
                         {
                             role: "user",
-                            parts: [{ text: JSON.stringify(input.snapshot) }],
+                            parts: input.imageBase64
+                                ? [
+                                      {
+                                          inline_data: {
+                                              mime_type:
+                                                  input.imageMimeType ||
+                                                  "image/png",
+                                              data: input.imageBase64,
+                                          },
+                                      },
+                                      {
+                                          text:
+                                              typeof input.snapshot === "string"
+                                                  ? input.snapshot
+                                                  : JSON.stringify(
+                                                        input.snapshot
+                                                    ),
+                                      },
+                                  ]
+                                : [
+                                      {
+                                          text: JSON.stringify(input.snapshot),
+                                      },
+                                  ],
                         },
                     ],
                     generationConfig: {
                         temperature: 0.2,
-                        maxOutputTokens: 1500,
+                        maxOutputTokens: input.imageBase64 ? 3000 : 1500,
                         responseMimeType: "application/json",
                     },
                 }),

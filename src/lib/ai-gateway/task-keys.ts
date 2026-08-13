@@ -35,6 +35,10 @@ export const AI_TASK_KEYS = [
         key: "ACADEMY_COACH",
         label: "Academy Coach",
     },
+    {
+        key: "CHART_ANALYSIS",
+        label: "AI Chart Analysis",
+    },
 ] as const;
 
 export type AiTaskKey = (typeof AI_TASK_KEYS)[number]["key"];

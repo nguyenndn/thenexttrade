@@ -40,7 +40,7 @@ async function checkAdmin() {
         select: { role: true },
     });
 
-    if (profile?.role !== "ADMIN" && profile?.role !== "EDITOR") {
+    if (profile?.role !== "ADMIN") {
         return { isAuthorized: false, user };
     }
 

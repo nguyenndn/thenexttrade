@@ -6,13 +6,17 @@ import { Megaphone, Plus, Clock, CheckCircle } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/Button";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { requireAdminPageAccess } from "@/lib/admin/auth.server";
 
 export const metadata: Metadata = {
     title: "Broadcasts | Admin",
     description: "Manage system-wide announcements",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminNotificationsPage() {
+    await requireAdminPageAccess();
     const broadcasts = await prisma.adminBroadcast.findMany({
         include: {
             creator: { select: { name: true, email: true } },

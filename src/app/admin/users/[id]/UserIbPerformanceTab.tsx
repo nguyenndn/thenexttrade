@@ -4,11 +4,8 @@ import { format } from "date-fns";
 import {
     LineChart,
     Users,
-    ArrowUpRight,
     CheckCircle2,
     AlertCircle,
-    TrendingUp,
-    TrendingDown,
     Layers,
     FileSpreadsheet,
     Calendar,
@@ -37,7 +34,6 @@ interface UserIbPerformanceTabProps {
             tradeCount: number;
             closedLotVolume: number;
             netPnl: number;
-            estimatedIbRevenue: number;
             activityStatus: string;
             lastTradeAt: string | Date | null;
         }>;
@@ -65,10 +61,6 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
             ? ((convertedLeads / totalLeads) * 100).toFixed(1)
             : "0.0";
 
-    const totalIbRevenue = user.ibActivitySnapshots.reduce(
-        (acc, curr) => acc + curr.estimatedIbRevenue,
-        0
-    );
     const totalLots = user.ibActivitySnapshots.reduce(
         (acc, curr) => acc + curr.closedLotVolume,
         0
@@ -77,15 +69,14 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
     return (
         <div className="space-y-6">
             {/* Overview stats cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-                {/* Card 1: Affiliate Leads */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm flex items-center gap-4">
                     <div className="p-3 bg-blue-500/10 text-blue-500 rounded-xl">
                         <Users size={22} />
                     </div>
                     <div>
                         <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                            Affiliate Leads
+                            Broker Link Activity
                         </p>
                         <h4 className="text-2xl font-black text-gray-700 dark:text-white mt-1">
                             {convertedLeads}{" "}
@@ -97,19 +88,18 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                             <span className="font-bold text-blue-500">
                                 {conversionRate}%
                             </span>{" "}
-                            conversion rate
+                            linked-account rate
                         </p>
                     </div>
                 </div>
 
-                {/* Card 2: Closed Lots */}
                 <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm flex items-center gap-4">
                     <div className="p-3 bg-green-500/10 text-green-500 rounded-xl">
                         <Layers size={22} />
                     </div>
                     <div>
                         <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                            Traded Volume
+                            Recorded Broker Volume
                         </p>
                         <h4 className="text-2xl font-black text-gray-700 dark:text-white mt-1">
                             {totalLots.toFixed(2)}{" "}
@@ -118,41 +108,18 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                             </span>
                         </h4>
                         <p className="text-[11px] text-gray-600 mt-1">
-                            Across registered active snapshots
+                            From stored broker activity snapshots
                         </p>
                     </div>
                 </div>
 
-                {/* Card 3: Est IB Revenue */}
-                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm flex items-center gap-4">
-                    <div className="p-3 bg-amber-500/10 text-amber-500 rounded-xl">
-                        <ArrowUpRight size={22} />
-                    </div>
-                    <div>
-                        <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                            Est. IB Revenue
-                        </p>
-                        <h4 className="text-2xl font-black text-amber-500 mt-1">
-                            $
-                            {totalIbRevenue.toLocaleString(undefined, {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2,
-                            })}
-                        </h4>
-                        <p className="text-[11px] text-gray-600 mt-1">
-                            Broker rebates & commissions
-                        </p>
-                    </div>
-                </div>
-
-                {/* Card 4: Reports Count */}
                 <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm flex items-center gap-4">
                     <div className="p-3 bg-purple-500/10 text-purple-500 rounded-xl">
                         <FileSpreadsheet size={22} />
                     </div>
                     <div>
                         <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                            Trading Reports
+                            Generated Reports
                         </p>
                         <h4 className="text-2xl font-black text-gray-700 dark:text-white mt-1">
                             {user.tradingReports.length}{" "}
@@ -176,11 +143,11 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                         <div className="p-4 sm:p-5 border-b border-gray-200 dark:border-white/10">
                             <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
                                 <Users size={16} className="text-primary" />{" "}
-                                Affiliate & IB Lead Clicks
+                                Broker Referral Journey
                             </h3>
                             <p className="text-xs text-gray-500 mt-0.5">
-                                Visits and conversions tracked via referral
-                                links
+                                Broker links opened by this user and whether an
+                                account was linked
                             </p>
                         </div>
 
@@ -210,7 +177,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                                 <td className="p-3 sm:px-5 font-bold text-gray-700 dark:text-white">
                                                     {lead.broker}
                                                     <p className="text-[10px] font-medium text-gray-500 mt-0.5">
-                                                        Route: {lead.source}
+                                                        Entry point: {lead.source}
                                                     </p>
                                                 </td>
                                                 <td className="p-3">
@@ -223,7 +190,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                                             ? `src: ${lead.utmSource}`
                                                             : ""}{" "}
                                                         {lead.utmMedium
-                                                            ? `· med: ${lead.utmMedium}`
+                                                            ? `/ medium: ${lead.utmMedium}`
                                                             : ""}
                                                     </p>
                                                 </td>
@@ -232,7 +199,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                                         new Date(
                                                             lead.clickedAt
                                                         ),
-                                                        "MMM d, yyyy · HH:mm"
+                                                        "MMM d, yyyy / HH:mm"
                                                     )}
                                                 </td>
                                                 <td className="p-3 text-right">
@@ -274,11 +241,11 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                     size={16}
                                     className="text-green-500"
                                 />{" "}
-                                Introducing Broker Activity Logs
+                                Broker-linked Trading Snapshots
                             </h3>
                             <p className="text-xs text-gray-500 mt-0.5">
-                                Historical snapshots of volume, pnl, and
-                                commission rebates
+                                Stored trade volume and PnL snapshots linked to
+                                this user
                             </p>
                         </div>
 
@@ -295,9 +262,6 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                                 Volume (Lots)
                                             </th>
                                             <th className="p-3">Net PnL</th>
-                                            <th className="p-3 text-right">
-                                                IB Revenue
-                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 dark:divide-white/10 text-xs">
@@ -324,7 +288,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                                             )}
                                                         </p>
                                                         <p className="text-[10px] text-gray-500 mt-0.5">
-                                                            {snap.broker} · #
+                                                            {snap.broker} / #
                                                             {snap.accountNumberMasked ||
                                                                 "Unknown"}
                                                         </p>
@@ -338,7 +302,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                                                     new Date(
                                                                         snap.lastTradeAt
                                                                     ),
-                                                                    "MMM d · HH:mm"
+                                                                    "MMM d / HH:mm"
                                                                 )}
                                                             </p>
                                                         )}
@@ -366,16 +330,6 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                                             )}
                                                         </span>
                                                     </td>
-                                                    <td className="p-3 text-right font-black text-amber-500">
-                                                        $
-                                                        {snap.estimatedIbRevenue.toLocaleString(
-                                                            undefined,
-                                                            {
-                                                                minimumFractionDigits: 2,
-                                                                maximumFractionDigits: 2,
-                                                            }
-                                                        )}
-                                                    </td>
                                                 </tr>
                                             )
                                         )}
@@ -392,7 +346,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                     </div>
                 </div>
 
-                {/* Right column: Trading Reports */}
+                {/* Right column: generated reports */}
                 <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm flex flex-col">
                     <div className="p-4 sm:p-5 border-b border-gray-200 dark:border-white/10">
                         <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
@@ -400,20 +354,28 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                 size={16}
                                 className="text-purple-500"
                             />{" "}
-                            Trading Reports
+                            Generated Performance Reports
                         </h3>
                         <p className="text-xs text-gray-500 mt-0.5">
-                            Performance summaries compiled for the user
+                            Weekly and monthly summaries generated for this user
                         </p>
                     </div>
 
                     {user.tradingReports.length > 0 ? (
                         <div className="divide-y divide-gray-200 dark:divide-white/10 flex-1 overflow-y-auto max-h-[660px]">
-                            {user.tradingReports.map((report) => (
-                                <div
-                                    key={report.id}
-                                    className="p-4 space-y-3 hover:bg-gray-50/30 dark:hover:bg-white/[0.01] transition-colors"
-                                >
+                            {user.tradingReports.map((report) => {
+                                const breakEvenCount = Math.max(
+                                    0,
+                                    report.totalTrades -
+                                        report.winCount -
+                                        report.lossCount
+                                );
+
+                                return (
+                                    <div
+                                        key={report.id}
+                                        className="p-4 space-y-3 hover:bg-gray-50/30 dark:hover:bg-white/[0.01] transition-colors"
+                                    >
                                     <div className="flex items-center justify-between">
                                         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20">
                                             {report.type}
@@ -438,10 +400,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                                 Win Rate
                                             </p>
                                             <p className="font-bold text-gray-700 dark:text-white mt-0.5">
-                                                {(report.winRate * 100).toFixed(
-                                                    1
-                                                )}
-                                                %
+                                                {report.winRate.toFixed(1)}%
                                             </p>
                                         </div>
                                         <div>
@@ -459,9 +418,13 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
 
                                     <div className="flex items-center justify-between text-[10px] text-gray-600">
                                         <span>
-                                            Wins/Losses:{" "}
+                                            Wins / BE / Losses:{" "}
                                             <span className="font-bold text-green-500">
                                                 {report.winCount}
+                                            </span>{" "}
+                                            /{" "}
+                                            <span className="font-bold text-gray-600 dark:text-gray-300">
+                                                {breakEvenCount}
                                             </span>{" "}
                                             /{" "}
                                             <span className="font-bold text-red-500">
@@ -480,13 +443,14 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                             )}
                                         </span>
                                     </div>
-                                </div>
-                            ))}
+                                    </div>
+                                );
+                            })}
                         </div>
                     ) : (
                         <div className="p-8 text-center flex-1 flex flex-col items-center justify-center bg-gray-50/30 dark:bg-transparent">
                             <p className="text-xs text-gray-600">
-                                No performance trading reports compiled.
+                                No generated performance reports yet.
                             </p>
                         </div>
                     )}

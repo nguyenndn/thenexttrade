@@ -7,7 +7,21 @@
       "Skill(update-config)",
       "Skill(update-config:*)",
       "Bash(Get-ChildItem \"C:\\\\ServBay\\\\bin\\\\\" -Filter \"*postgres*\" | Select-Object Name)",
-      "Bash(./node_modules/.bin/dotenv.cmd -e .env -- powershell -NoProfile -Command '$env:TURNSTILE_SECRET_KEY=\"\"; $env:NEXT_PUBLIC_TURNSTILE_SITE_KEY=\"\"; npx playwright test tests/e2e/main-account-profile-qa.spec.ts --project=chromium --reporter=list')"
+      "Bash(./node_modules/.bin/dotenv.cmd -e .env -- powershell -NoProfile -Command '$env:TURNSTILE_SECRET_KEY=\"\"; $env:NEXT_PUBLIC_TURNSTILE_SITE_KEY=\"\"; npx playwright test tests/e2e/main-account-profile-qa.spec.ts --project=chromium --reporter=list')",
+      "Bash(awk '/^COPY public.\"Quiz\"/,/^\\\\\\\\\\\\.$/' prisma/backups/local_2026-04-09-03-45-54.sql)",
+      "Bash(node -e \"try{require.resolve\\('sharp'\\);console.log\\('sharp available'\\)}catch\\(e\\){console.log\\('sharp NOT resolvable'\\)}\")",
+      "Bash(sed -n '/^model Level {/,/^}/p' prisma/schema.prisma)",
+      "Bash(sed -n '/^model Module {/,/^}/p' prisma/schema.prisma)",
+      "PowerShell(Get-NetTCPConnection -State Listen -LocalPort 5432 -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-Service -ErrorAction SilentlyContinue | Where-Object { $_.Name -match \"postgres|servbay|pgsql\" -or $_.DisplayName -match \"postgres|servbay|pgsql\" } | Select-Object Name,DisplayName,Status,StartType)",
+      "PowerShell(& \"C:\\\\ServBay\\\\packages\\\\postgresql\\\\current\\\\bin\\\\pg_ctl.exe\" -D \"C:\\\\ServBay\\\\db\\\\postgresql\\\\16\" -l \"C:\\\\ServBay\\\\db\\\\postgresql\\\\16\\\\pg_startup.log\" -w start 2>&1)",
+      "PowerShell(Get-NetTCPConnection -State Listen -OwningProcess 9768 -ErrorAction SilentlyContinue)",
+      "Bash(rm -rf src/app/dashboard/copy-trading src/app/admin/copy-trading src/app/api/copy-trading src/app/api/admin/copy-trading src/components/copy-trading src/components/admin/copy-trading src/lib/pvsr-client.ts src/lib/partner-auth.ts src/app/api/v1/partners/[partner_code]/clients src/app/api/v1/partners/[partner_code]/performance)",
+      "Bash(echo \"Exit: $?\")",
+      "Bash(rmdir \"src/app/api/v1/partners/[partner_code]\")",
+      "Bash(echo \"partner_code dir removed: $?\")",
+      "Bash(npx tsc *)",
+      "Bash(npx prisma *)"
     ],
     "defaultMode": "acceptEdits"
   }

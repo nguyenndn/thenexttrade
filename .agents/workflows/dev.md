@@ -2,7 +2,7 @@
 description: Core Full-Stack Developer — Implementing features and fixing complex bugs
 ---
 
-# Super Dev Workflow (/super_dev)
+# Super Dev Workflow (/dev)
 
 ## Vai trò & Mục tiêu
 Hóa thân thành **Senior Full-Stack Engineer** của dự án. Nhận bản thiết kế (`implementation_plan.md`) hoặc Bug Report, phân tích logic, chẻ nhỏ file, viết code tuân thủ Design System tuyệt đối, kết nối API mượt mà và fix bug tận gốc.
@@ -14,6 +14,7 @@ Hóa thân thành **Senior Full-Stack Engineer** của dự án. Nhận bản th
 
 ## Mandatory References (Tài liệu bắt buộc đọc TRƯỚC KHI CODE)
 > **NGHIÊM CẤM** bắt tay code mà chưa đọc các file này:
+- `AGENTS.md` — Standing Execution Contract (**7 rules — đọc TUYỆT ĐỐI trước tiên**)
 - `design/ui-guide.md` — Breek Premium Design System (THE LAW)
 - `rules.md` — Workspace Rules & Conventions
 - `implementation_plan.md` — Bản thiết kế (nếu có)
@@ -33,6 +34,7 @@ Hóa thân thành **Senior Full-Stack Engineer** của dự án. Nhận bản th
 - **Fix Bug:** Thu thập evidence (Console Error, Network tab, Screenshot). Dùng `view_file` chui vào file khả nghi để chẩn bệnh.
 - Quét nhanh các file liên quan để hiểu code hiện tại.
 - **State assumptions explicitly** — nếu không chắc chắn, HỎI trước khi code.
+- **Restate plan as checklist** (AGENTS.md Rule 2): copy **mọi bước** của `implementation_plan.md` / scope bug-fix thành checklist đánh số ngay trong tin nhắn đầu tiên; bước nào nhiều deliverable → tách thành item riêng. Checklist này là thước đo DUY NHẤT để tự audit ở Bước 7.
 
 ### 2. Chẻ Nhỏ Công Việc (Task Breakdown)
 - Lập **Task List** rõ ràng vào `task.md`:
@@ -126,10 +128,11 @@ npm run build
 - Re-run lại từ 6.1 sau khi fix.
 - **KHÔNG chuyển Step 7 khi còn errors.**
 
-### 7. Self-Review & Chuyển Giao (Hand-off)
-- Tự review lại code: có lỡ thay đổi logic component khác không?
+### 7. Self-Review, Self-Audit & Chuyển Giao (Hand-off)
+- **Tự audit diff vs checklist** (AGENTS.md Rule 6): soát toàn bộ diff so với checklist ở Bước 1 — mọi item phải hiện diện trong diff; thứ không có trong plan phải gỡ bỏ hoặc giải thích. Soát "mối nối" dễ quên: import mới có được export chưa, API route mới reachable chưa, field mới có trong type + form + DB chưa, DB ↔ UI đồng bộ chưa.
 - Update `task.md` (mark completed) và viết `walkthrough.md`.
-- Báo cáo cho User: *"Code xong tính năng X, đã pass type check và unit tests. Sẵn sàng cho Review."*
+- **Báo cáo theo template AGENTS.md Rule 7:** mỗi item trong checklist = `DONE` (file nào, verify bằng lệnh nào) hoặc `BLOCKED` (lý do chính xác + cần gì để gỡ). **KHÔNG có item âm thầm bị bỏ.**
+- Kết thúc báo cáo: *"Sẵn sàng cho Review."*
 
 ## Output Artifacts (Sản phẩm đầu ra)
 - [ ] Source code hoàn chỉnh (các file đã tạo/sửa)
@@ -138,6 +141,7 @@ npm run build
 - [ ] Unit Tests — pass 100%
 
 ## Definition of Done
+- [ ] Mọi item trong plan đều DONE (đã verify) hoặc được báo BLOCKED kèm lý do — KHÔNG có item âm thầm bị bỏ
 - [ ] Code tuân thủ 100% Breek Premium UI Guide
 - [ ] Không có text Tiếng Việt trên UI
 - [ ] `npx tsc --noEmit` pass (0 errors)

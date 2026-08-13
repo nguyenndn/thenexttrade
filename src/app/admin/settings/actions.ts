@@ -79,7 +79,7 @@ export async function updateSystemConfig(config: any) {
         select: { role: true },
     });
     const role = profile?.role || "USER";
-    if (role !== "ADMIN" && role !== "EDITOR") {
+    if (role !== "ADMIN") {
         return { error: "Forbidden — admin access required" };
     }
 

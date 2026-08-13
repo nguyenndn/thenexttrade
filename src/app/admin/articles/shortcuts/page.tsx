@@ -26,12 +26,10 @@ interface Shortcut {
 }
 
 export default function ShortcutsManagerPage() {
-    const {
-        data,
-        error: _error,
-        isLoading,
-        mutate,
-    } = useSWR("/api/articles/shortcuts", fetcher, {
+    const { data, isLoading, mutate } = useSWR(
+        "/api/articles/shortcuts",
+        fetcher,
+        {
         onError: (err) => {
             toast.error(err.message || "Failed to load shortcuts");
         },

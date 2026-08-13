@@ -242,9 +242,9 @@ export async function generateWeeklyActionPlan(
         const topRec = recommendations[0];
         nextActions.push({
             stableKey: `STUDY:${topRec.slug}`,
-            label: `Study recommended ${topRec.type === "ACADEMY_LESSON" ? "lesson" : "post"}`,
+            label: `Study recommended ${topRec.type === "LESSON" ? "lesson" : "post"}`,
             detail: `Read "${topRec.title}" to target trading leaks.`,
-            ctaHref: topRec.url,
+            ctaHref: topRec.href || "/dashboard/academy",
         });
     }
 

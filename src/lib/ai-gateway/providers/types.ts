@@ -6,6 +6,10 @@ export interface ProviderExecutionInput {
     systemPrompt: string;
     snapshot: any;
     timeoutMs: number;
+    /** Base64-encoded image data for Vision/multimodal requests */
+    imageBase64?: string;
+    /** MIME type of the image (e.g. "image/png", "image/jpeg") */
+    imageMimeType?: string;
 }
 
 export interface ProviderExecutionResult {

@@ -23,7 +23,9 @@ export async function getStrategies(page = 1, limit = 20) {
             meta: { total: 0, page, limit, totalPages: 0 },
         };
 
-    const skip = (page - 1) * limit;
+    const safePage = Number.isInteger(page) && page > 0 ? page : 1;
+    const safeLimit = Number.isInteger(limit) && limit > 0 ? limit : 20;
+    const skip = (safePage - 1) * safeLimit;
 
     const [strategies, total] = await Promise.all([
         prisma.strategy.findMany({

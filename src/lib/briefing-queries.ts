@@ -75,7 +75,7 @@ async function getWeekStats(userId: string, accountId?: string) {
             grossLoss > 0
                 ? grossProfit / grossLoss
                 : grossProfit > 0
-                  ? Infinity
+                  ? 99
                   : 0,
         bestPair: null,
     };

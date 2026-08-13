@@ -17,7 +17,7 @@ async function requireAiGatewayAdmin() {
         select: { role: true },
     });
 
-    if (!profile || !["ADMIN", "EDITOR"].includes(profile.role)) {
+    if (!profile || profile.role !== "ADMIN") {
         throw new Error("Forbidden");
     }
     return user;

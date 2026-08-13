@@ -26,7 +26,6 @@ Required transactional emails:
 - Weekly/no-trade report emails.
 - Pro/VIP request submitted, approved, rejected.
 - EA license or download delivery.
-- Copy trading registration status.
 - Account sync issue or disconnected account.
 - New-user activation reminder emails when a user is stuck before first value.
 
@@ -46,7 +45,7 @@ Approved lifecycle reminders:
 - **T+24h no account**: user verified but has no `TradingAccount`.
 - **T+24h account connected, no trade data**: user has at least one `TradingAccount` but zero `JournalEntry` and `totalTrades = 0`.
 - **T+72h still no first value**: user still has no first synced/logged trade after the first reminder.
-- **Desktop setup link request**: user on mobile asks to send TNT/EA setup instructions to desktop email.
+- **Desktop setup link request**: user on mobile asks to send Trade Manager EA setup instructions to desktop email.
 
 Caps:
 
@@ -100,4 +99,3 @@ To prevent accidental delivery or unauthorized access, the following environment
 
 ### Audit Logs
 All manual dispatch actions are recorded in the PostgreSQL database using Prisma's `AuditLog` model under the action `EMAIL_TEST_SEND`. Recipient email addresses are automatically masked in the audit log (e.g. `te***@example.com`) to protect personal data.
-

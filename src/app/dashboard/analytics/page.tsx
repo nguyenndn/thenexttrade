@@ -216,7 +216,7 @@ async function AnalyticsDataWrapper({
         type: t.type,
         pnl: Number(t.pnl),
         entryDate: t.entryDate.toISOString(),
-        exitDate: t.exitDate?.toISOString(),
+        exitDate: t.exitDate ? t.exitDate.toISOString() : null,
         result: t.result || "BREAK_EVEN",
     }));
 
@@ -244,14 +244,21 @@ async function AnalyticsDataWrapper({
         winRate: p.winRate,
     }));
 
-    // 4. Construct Final Data Object
+    // 4. Calculate Psychology Diagnostic & Intraday Heatmap
+    const { calculatePsychologyDiagnostic } = await import("@/lib/analytics/psychology-engine.server");
+    const psychologyData = await calculatePsychologyDiagnostic(user.id, accountId);
+
+    // 5. Construct Final Data Object
     const data: AnalyticsData = {
         summary: {
             totalTrades: stats.totalTrades,
             winRate: stats.winRate ?? 0,
             profitFactor: stats.profitFactor,
             totalPnL: stats.totalPnL,
-            avgRRR: stats.lossCount > 0 ? stats.avgWin / stats.avgLoss : 0,
+            avgRRR:
+                stats.lossCount > 0 && stats.avgLoss > 0
+                    ? stats.avgWin / stats.avgLoss
+                    : 0,
             currentStreak:
                 streak.type === "none"
                     ? { type: "win", count: 0 }
@@ -267,11 +274,18 @@ async function AnalyticsDataWrapper({
         recentTrades,
     };
 
+    const { TradingPsychologyPanel } = await import("@/components/analytics/TradingPsychologyPanel");
+    const { IntradayHeatmapChart } = await import("@/components/analytics/IntradayHeatmapChart");
+
     return (
-        <AnalyticsDashboard
-            data={data}
-            accountId={accountId}
-            dateRange={{ start: startDate, end: endDate }}
-        />
+        <div className="space-y-6">
+            <AnalyticsDashboard
+                data={data}
+                accountId={accountId}
+                dateRange={{ start: startDate, end: endDate }}
+            />
+            <TradingPsychologyPanel data={psychologyData} />
+            <IntradayHeatmapChart data={psychologyData.heatmap} />
+        </div>
     );
 }

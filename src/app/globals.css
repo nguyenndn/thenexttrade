@@ -42,6 +42,17 @@ body {
     line-height: 1.65;
 }
 
+/* Mobile Touch & Form Zoom Optimization */
+button, a, input, select, textarea {
+    touch-action: manipulation;
+}
+
+@media (max-width: 767px) {
+    input, select, textarea {
+        font-size: 16px !important;
+    }
+}
+
 .dark body {
     background: linear-gradient(135deg, #2b2344 0%, #193451 50%, #06454f 100%)
         no-repeat fixed;

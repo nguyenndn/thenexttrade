@@ -9,7 +9,7 @@ import Image from "next/image";
 
 export interface PendingApproval {
     id: string;
-    type: "VIP_REQUEST" | "COPY_TRADING";
+    type: "VIP_REQUEST";
     title: string;
     broker: string;
     account: string;
@@ -85,9 +85,7 @@ export function PendingApprovalsWidget({
                                     <div
                                         className={cn(
                                             "w-10 h-10 rounded-xl flex items-center justify-center shadow-sm shrink-0",
-                                            item.type === "VIP_REQUEST"
-                                                ? "bg-purple-50 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400 ring-1 ring-purple-500/20"
-                                                : "bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 ring-1 ring-blue-500/20"
+                                            "bg-purple-50 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400 ring-1 ring-purple-500/20"
                                         )}
                                     >
                                         {item.user?.image ? (
@@ -107,14 +105,7 @@ export function PendingApprovalsWidget({
                                             {item.user?.name || "Unknown User"}
                                         </div>
                                         <div className="text-xs text-gray-500 truncate mt-0.5">
-                                            <span
-                                                className={cn(
-                                                    "font-medium mr-1",
-                                                    item.type === "VIP_REQUEST"
-                                                        ? "text-purple-500"
-                                                        : "text-blue-500"
-                                                )}
-                                            >
+                                            <span className="font-medium mr-1 text-purple-500">
                                                 {item.title}
                                             </span>
                                             • {item.broker} ({item.account})

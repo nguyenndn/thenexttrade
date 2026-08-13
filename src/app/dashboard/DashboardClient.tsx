@@ -26,6 +26,8 @@ import { FirstSessionWizard } from "@/components/onboarding/FirstSessionWizard";
 import { FirstSessionLauncher } from "@/components/onboarding/FirstSessionLauncher";
 import { FirstSyncSuccessModal } from "@/components/onboarding/FirstSyncSuccessModal";
 import { FirstDataReminderBanner } from "@/components/onboarding/FirstDataReminderBanner";
+import { ExperimentResult } from "@/components/experiments/ExperimentResult";
+import { ExperimentProgress } from "@/components/experiments/ExperimentProgress";
 import {
     celebrateFirstSyncAction,
     markFirstInsightViewedAction,
@@ -39,6 +41,7 @@ import {
 // Static imports for above-fold charts (always visible — no skeleton needed)
 import { BalanceGrowthChart } from "@/components/dashboard/BalanceGrowthChart";
 import { DailyWinRateChart } from "@/components/dashboard/DailyWinRateChart";
+import { DataConfidenceBadge } from "@/components/insights/DataConfidenceBadge";
 
 // Lazy load below-fold chart components — only loaded when user scrolls to them
 const ChartSkeleton = () => (
@@ -163,8 +166,8 @@ export default function DashboardClient(data: DashboardPageData) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
 
-    // Remove mock nudge card
-    const actualNextBestAction = nextBestAction;
+    // Use canonical growthViewModel.nextAction as single source for coach action
+    const actualNextBestAction = data.growthViewModel?.nextAction || nextBestAction;
 
     // Modal State
     const [selectedTrade, setSelectedTrade] = useState<any>(null);
@@ -228,7 +231,7 @@ export default function DashboardClient(data: DashboardPageData) {
 
     const shouldSuppressCoachNudge =
         hasNoData ||
-        (nextBestAction?.id === "NO_ACCOUNT" &&
+        (actualNextBestAction?.id === "NO_ACCOUNT" &&
             firstSessionState &&
             !firstSessionState.isCompleted &&
             firstSessionState.accountCount === 0);
@@ -250,84 +253,6 @@ export default function DashboardClient(data: DashboardPageData) {
 
     const [isCoachNudgeOpen, setIsCoachNudgeOpen] = useState(false);
 
-    // Push custom dynamic notifications to the global NotificationBell
-    useEffect(() => {
-        import("@/hooks/useNotifications").then(
-            ({ localNotificationStore }) => {
-                // Coach Nudge
-                if (
-                    nextBestAction &&
-                    !shouldSuppressCoachNudge &&
-                    !suppress?.coachNudge
-                ) {
-                    const isWeakness = [
-                        "LOSS_STREAK",
-                        "SL_CLUSTER",
-                        "REVENGE_SIZE_UP",
-                        "LOW_PLAN_COMPLIANCE",
-                        "BE_HEAVY",
-                        "WEAK_SYMBOL",
-                        "WEAK_SESSION",
-                        "RECURRING_MISTAKE",
-                    ].includes(nextBestAction.id);
-
-                    localNotificationStore.add({
-                        id: "coach-nudge",
-                        title: isWeakness
-                            ? `Leak Alert: ${nextBestAction.title}`
-                            : nextBestAction.title,
-                        message: "View Action Plan",
-                        isRead: false,
-                        type: "FEATURE_UPDATE",
-                        createdAt: new Date().toISOString(),
-                        onClick: () => setIsCoachNudgeOpen(true),
-                    });
-                } else {
-                    localNotificationStore.remove("coach-nudge");
-                }
-
-                // Report Nudge
-                if (
-                    !reportNudgeDismissed &&
-                    !suppress?.reportNudge &&
-                    weeklyReviewEligibility?.ready
-                ) {
-                    localNotificationStore.add({
-                        id: "weekly-review-nudge",
-                        title: weeklyReviewEligibility.isFirstWeeklyReview
-                            ? "Your first review is ready"
-                            : "Your weekly review is ready",
-                        message:
-                            "Generate your latest review to update your action plan.",
-                        isRead: false,
-                        type: "WEEKLY_REPORT",
-                        createdAt: new Date().toISOString(),
-                        link: "/dashboard/reports?type=weekly-review",
-                    });
-                } else {
-                    localNotificationStore.remove("weekly-review-nudge");
-                }
-            }
-        );
-
-        return () => {
-            import("@/hooks/useNotifications").then(
-                ({ localNotificationStore }) => {
-                    localNotificationStore.remove("coach-nudge");
-                    localNotificationStore.remove("weekly-review-nudge");
-                }
-            );
-        };
-    }, [
-        nextBestAction,
-        shouldSuppressCoachNudge,
-        suppress?.coachNudge,
-        reportNudgeDismissed,
-        suppress?.reportNudge,
-        weeklyReviewEligibility?.ready,
-        weeklyReviewEligibility?.isFirstWeeklyReview,
-    ]);
-
     return (
         <div className="w-full relative min-h-screen">
             <JournalEntryModal
@@ -345,13 +270,34 @@ export default function DashboardClient(data: DashboardPageData) {
             />
 
             {/* Header Section */}
-            <GreetingHeader
-                userName={userName}
-                currentAccountId={currentAccountId}
-                hideFilters={hasNoData}
-            />
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <GreetingHeader
+                    userName={userName}
+                    currentAccountId={currentAccountId}
+                    hideFilters={hasNoData}
+                />
+                {data.growthViewModel?.dataConfidence && !hasNoData && (
+                    <div className="shrink-0 self-start sm:self-auto">
+                        <DataConfidenceBadge confidence={data.growthViewModel.dataConfidence} />
+                    </div>
+                )}
+            </div>
 
             <div className="mt-4 space-y-4 lg:mt-5 lg:space-y-5">
+                {/* Active Experiment Banner */}
+                {data.growthViewModel?.activeExperiment && (
+                    <div className="mb-4">
+                        <ExperimentProgress experiment={data.growthViewModel.activeExperiment} />
+                    </div>
+                )}
+
+                {/* Completed Experiment Result Card */}
+                {!data.growthViewModel?.activeExperiment && data.growthViewModel?.completedExperiment && (
+                    <div className="mb-4">
+                        <ExperimentResult experiment={data.growthViewModel.completedExperiment} />
+                    </div>
+                )}
+
                 {/* Mobile Pro Status Banner — suppress for brand-new users */}
                 {!hasNoData && <MobileProStatusBanner />}
 

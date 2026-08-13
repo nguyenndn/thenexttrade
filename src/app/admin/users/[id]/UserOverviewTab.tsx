@@ -176,10 +176,10 @@ export function UserOverviewTab({ user }: UserOverviewTabProps) {
     return (
         <div className="space-y-6">
             <div className="space-y-6">
-                {/* Activity Overview — Compact inline stats */}
+                {/* Compact user activity summary */}
                 <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-4 sm:p-6 overflow-hidden">
                     <h3 className="text-base font-bold text-gray-700 dark:text-white border-b border-gray-200 dark:border-white/10 pb-3 mb-4">
-                        Activity Overview
+                        User Activity
                     </h3>
 
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -302,10 +302,10 @@ export function UserOverviewTab({ user }: UserOverviewTabProps) {
 
             {/* ---- below: free-flowing content ---- */}
             <div className="grid grid-cols-1 gap-6 xl:grid-cols-5">
-                {/* Recent Activity Timeline — 3/5 width */}
+                {/* Recent account activity */}
                 <div className="xl:col-span-3 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-4 sm:p-6">
                     <h3 className="text-base font-bold text-gray-700 dark:text-white border-b border-gray-200 dark:border-white/10 pb-3 mb-4">
-                        Recent Activity Timeline
+                        Recent Account Activity
                     </h3>
                     {timelineEvents.length > 0 ? (
                         <div className="max-h-[290px] overflow-y-auto pr-1">

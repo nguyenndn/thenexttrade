@@ -144,4 +144,4 @@ User: /audit [scope]
 
 ## Workflow tiếp theo
 → `/push_code` (nếu PRODUCTION-READY)
-→ `/super_dev` (nếu cần fix Critical)
+→ `/dev` (nếu cần fix Critical)

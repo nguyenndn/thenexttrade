@@ -4,24 +4,9 @@ import { getArticleOpsData } from "@/lib/articles/article-readiness.server";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { ArrowLeft } from "lucide-react";
-import { getAuthUser } from "@/lib/auth-cache";
-import { prisma } from "@/lib/prisma";
-import { isAdminRole } from "@/lib/permissions";
-import { redirect } from "next/navigation";
+import { requireAdminPageAccess } from "@/lib/admin/auth.server";
 
 export const dynamic = "force-dynamic";
-
-async function requireAdminPageAccess() {
-    const user = await getAuthUser();
-    if (!user) redirect("/auth/login");
-
-    const profile = await prisma.profile.findUnique({
-        where: { userId: user.id },
-        select: { role: true },
-    });
-
-    if (!profile || !isAdminRole(profile.role)) redirect("/forbidden");
-}
 
 export default async function ArticleOpsPage() {
     await requireAdminPageAccess();

@@ -165,7 +165,7 @@ export async function getKeyStats(
             grossLoss > 0
                 ? grossProfit / grossLoss
                 : grossProfit > 0
-                  ? Infinity
+                  ? 99
                   : 0,
         grossProfit,
         grossLoss,

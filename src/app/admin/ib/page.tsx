@@ -5,13 +5,16 @@ import {
 } from "@/actions/ib-lead";
 import { getVipRequestStats } from "@/actions/vip-request";
 import { IbOverviewClient } from "./client";
+import { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "IB Overview — Admin",
 };
 
+export const dynamic = "force-dynamic";
+
 type PageProps = {
-    searchParams?: Promise<{ range?: string }> | { range?: string };
+    searchParams: Promise<{ range?: string }>;
 };
 
 function normalizeRange(range?: string): IbStatsRange {
@@ -20,7 +23,7 @@ function normalizeRange(range?: string): IbStatsRange {
 }
 
 export default async function IbOverviewPage({ searchParams }: PageProps) {
-    const params = await Promise.resolve(searchParams);
+    const params = await searchParams;
     const range = normalizeRange(params?.range);
 
     const [overview, leadStats, vipStats] = await Promise.all([

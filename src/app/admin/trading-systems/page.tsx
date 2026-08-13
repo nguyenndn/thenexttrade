@@ -6,11 +6,14 @@ import { AccountStatus } from "@prisma/client";
 import { Button } from "@/components/ui/Button";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { EADashboardClient } from "@/components/admin/trading-systems/EADashboardClient";
+import { requireAdminPageAccess } from "@/lib/admin/auth.server";
 
 export const metadata: Metadata = {
     title: "Trading Systems | Admin",
     description: "Manage EA licenses and products",
 };
+
+export const dynamic = "force-dynamic";
 
 // Helper: get daily counts for last N days
 async function getDailyCountsForDays(
@@ -208,6 +211,7 @@ async function getLicensesByBroker() {
 }
 
 export default async function EADashboardPage() {
+    await requireAdminPageAccess();
     const [heroStats, recentActivity, recentPending, brokerStats] =
         await Promise.all([
             getHeroStats(),

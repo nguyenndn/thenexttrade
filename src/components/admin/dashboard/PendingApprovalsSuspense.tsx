@@ -3,24 +3,14 @@ import { PendingApprovalsWidget } from "@/components/admin/widgets/PendingApprov
 
 export async function PendingApprovalsSuspense() {
     try {
-        const [vipRequests, copyRegistrations] = await Promise.all([
-            prisma.vipRequest.findMany({
-                where: { status: "PENDING" },
-                take: 5,
-                orderBy: { createdAt: "desc" },
-                include: {
-                    user: { select: { name: true, image: true, email: true } },
-                },
-            }),
-            prisma.copyTradingRegistration.findMany({
-                where: { status: "PENDING" },
-                take: 5,
-                orderBy: { createdAt: "desc" },
-                include: {
-                    user: { select: { name: true, image: true, email: true } },
-                },
-            }),
-        ]);
+        const vipRequests = await prisma.vipRequest.findMany({
+            where: { status: "PENDING" },
+            take: 5,
+            orderBy: { createdAt: "desc" },
+            include: {
+                user: { select: { name: true, image: true, email: true } },
+            },
+        });
 
         const combined = [
             ...vipRequests.map((r) => ({
@@ -32,16 +22,6 @@ export async function PendingApprovalsSuspense() {
                 createdAt: r.createdAt,
                 user: r.user,
                 href: `/admin/ib/pipeline?id=${r.id}`,
-            })),
-            ...copyRegistrations.map((r) => ({
-                id: r.id,
-                type: "COPY_TRADING" as const,
-                title: "Copy Trading",
-                broker: r.brokerName,
-                account: r.mt5AccountNumber,
-                createdAt: r.createdAt,
-                user: r.user,
-                href: `/admin/copy-trading/${r.id}`,
             })),
         ];
 

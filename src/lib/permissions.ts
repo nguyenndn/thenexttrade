@@ -76,7 +76,7 @@ export function hasPermission(
     return getPermissions(role)[permission];
 }
 
-export const ADMIN_ROLES: UserRole[] = ["ADMIN", "EDITOR"];
+export const ADMIN_ROLES: UserRole[] = ["ADMIN"];
 
 export function isAdminRole(role: string | undefined | null): boolean {
     return ADMIN_ROLES.includes(role as UserRole);

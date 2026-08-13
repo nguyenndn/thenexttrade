@@ -5,7 +5,6 @@ import { getAuthUser } from "@/lib/auth-cache";
 import { revalidatePath } from "next/cache";
 import { vipRequestSchema } from "@/lib/validations/vip-request";
 import { verifyTurnstile } from "@/lib/turnstile";
-import type { VipRequestStatus } from "@prisma/client";
 import { NotificationType, NotificationPriority } from "@prisma/client";
 import { maskAccountNumber, findOrMatchTradingAccount } from "@/lib/pro-access";
 import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
@@ -134,56 +133,6 @@ export async function getVipLink() {
 // ADMIN ACTIONS
 // ============================================================================
 
-export async function getVipRequests(filter?: {
-    status?: VipRequestStatus;
-    broker?: string;
-    page?: number;
-    limit?: number;
-}) {
-    const user = await getAuthUser();
-    if (!user) return { requests: [], total: 0 };
-
-    // Check admin role
-    const profile = await prisma.profile.findUnique({
-        where: { userId: user.id },
-    });
-    if (profile?.role !== "ADMIN") return { requests: [], total: 0 };
-
-    const page = filter?.page || 1;
-    const limit = filter?.limit || 20;
-    const skip = (page - 1) * limit;
-
-    const where: Record<string, unknown> = {};
-    if (filter?.status) where.status = filter.status;
-    if (filter?.broker) where.broker = filter.broker;
-
-    const [requests, total] = await Promise.all([
-        prisma.vipRequest.findMany({
-            where,
-            include: {
-                user: {
-                    select: { name: true, email: true, image: true },
-                },
-                tradingAccount: {
-                    select: {
-                        id: true,
-                        name: true,
-                        broker: true,
-                        accountNumber: true,
-                        status: true,
-                    },
-                },
-            },
-            orderBy: { createdAt: "desc" },
-            skip,
-            take: limit,
-        }),
-        prisma.vipRequest.count({ where }),
-    ]);
-
-    return { requests, total };
-}
-
 function getVipStatsRangeStart(range: IbStatsRange) {
     const now = new Date();
     if (range === "7d")
@@ -311,6 +260,41 @@ export async function approveVipRequest(requestId: string) {
         });
     }
 
+    // Also grant product-level access for canonical products
+    try {
+        const { grantUserProductAccess } = await import(
+            "@/lib/admin/ib/product-usage.server"
+        );
+        const { ToolAccessSource } = await import("@prisma/client");
+        await grantUserProductAccess({
+            adminUserId: user.id,
+            targetUserId: vipRequest.userId,
+            productSlug: "goldscalperninja",
+            tradingAccountId: accountId || null,
+            source: ToolAccessSource.IB_VERIFIED,
+        });
+        await grantUserProductAccess({
+            adminUserId: user.id,
+            targetUserId: vipRequest.userId,
+            productSlug: "trade-manager",
+            tradingAccountId: accountId || null,
+            source: ToolAccessSource.IB_VERIFIED,
+        });
+    } catch (err) {
+        console.error("Failed to grant product access on VIP approval:", err);
+    }
+
+    // Audit log
+    await prisma.auditLog.create({
+        data: {
+            adminId: user.id,
+            action: "APPROVE_VIP_REQUEST",
+            targetType: "VIP_REQUEST",
+            targetId: requestId,
+            details: { userId: vipRequest.userId, tradingAccountId: accountId },
+        },
+    });
+
     // Notify user
     await prisma.notification.create({
         data: {
@@ -325,7 +309,6 @@ export async function approveVipRequest(requestId: string) {
     });
 
     revalidatePath("/admin/ib/pipeline");
-    revalidatePath("/admin/community");
     revalidatePath("/dashboard");
     return { success: true };
 }
@@ -363,7 +346,6 @@ export async function rejectVipRequest(requestId: string, reason: string) {
         },
     });
 
-    revalidatePath("/admin/community");
     revalidatePath("/dashboard");
     return { success: true };
 }
@@ -402,7 +384,6 @@ export async function deleteVipRequest(requestId: string) {
 
     revalidatePath("/admin/ib/pipeline");
     revalidatePath("/admin/ib/traders");
-    revalidatePath("/admin/community");
     revalidatePath("/dashboard");
     return { success: true };
 }
@@ -479,7 +460,6 @@ export async function grantGracePeriod(
     });
 
     revalidatePath("/admin/ib/pipeline");
-    revalidatePath("/admin/community");
     return { success: true };
 }
 
@@ -548,7 +528,6 @@ export async function revokeProAccess(
     });
 
     revalidatePath("/admin/ib/pipeline");
-    revalidatePath("/admin/community");
     return { success: true };
 }
 
@@ -607,6 +586,5 @@ export async function grantManualPro(
     }
 
     revalidatePath("/admin/ib/pipeline");
-    revalidatePath("/admin/community");
     return { success: true };
 }

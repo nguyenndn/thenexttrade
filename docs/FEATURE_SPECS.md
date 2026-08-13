@@ -1,6 +1,6 @@
 # Feature Specs
 
-Last reviewed: 2026-06-16
+Last reviewed: 2026-08-11
 
 This file is the developer handoff layer. Use it when fixing bugs or continuing feature work. `PRODUCT.md` explains what exists at a high level; this file explains what each important URL/function must do.
 
@@ -15,6 +15,12 @@ For every bug or new task:
 5. Run the route-specific QA checklist.
 
 If a new route or feature is added, add a section here before the feature is considered complete.
+
+Feature-density rule:
+
+- Do not add a new dashboard/homepage block unless it owns the next best action for that page.
+- Supporting features should live behind their dedicated route, modal, tab, or admin tool.
+- Current user-facing sync copy should say **Trade Manager EA** or **Manual Journal**. Do not reintroduce TNT Connect or VPS import into new UI copy unless explicitly re-approved.
 
 ## Spec Template
 
@@ -105,7 +111,7 @@ Users:
 
 Expected behavior:
 
-- Anonymous users see public copy, gold visual direction, signup/login CTAs, launch steps, and TNT Connect recommended path.
+- Anonymous users see public copy, gold visual direction, signup/login CTAs, launch steps, and Trade Manager EA as the recommended desktop/MT5 sync path.
 - Logged-in users see progress cards, next best action, and ordered setup steps.
 - Correct key routes:
   - Signup: `/auth/signup`
@@ -369,11 +375,11 @@ Expected behavior:
 - Step 1 (Identity): Username (required), Avatar (optional), Bio (optional). Profile persisted to `Profile` model.
 - Country prefill priority: `Profile.country` -> Supabase `user_metadata.country` captured at signup -> request geo header (`cf-ipcountry`/Vercel geo) -> local dev fallback `VN` / production fallback `US`.
 - Step 2 (Trading Goal): Select one goal. Stored in `User.settings.onboarding.tradingGoal`.
-- Step 3 (Sync Path): Choose TNT Connect, EA Sync, or Manual Journal. Stored in `User.settings.onboarding.preferredSyncMethod`.
+- Step 3 (Sync Path): Choose Trade Manager EA or Manual Journal. Stored in `User.settings.onboarding.preferredSyncMethod`.
 - Step 4 (Next Action): Dynamic CTA based on sync choice + shows unlocked features.
 - Skip button available on all steps. Stores `skippedAt` in `User.settings.onboarding`.
-- Final redirects: TNT → `/dashboard/accounts?setup=sync&method=tnt`, EA → `/dashboard/accounts?setup=sync&method=ea`, Manual → `/dashboard`, Skip → `/dashboard`.
-- Downstream setup surfaces must respect `User.settings.onboarding.preferredSyncMethod`. If the user chose TNT Connect, Account Hub/Add Account setup instructions must show TNT Connect, not EA Sync.
+- Final redirects: Trade Manager EA -> `/dashboard/accounts?setup=sync&method=ea`, Manual -> `/dashboard`, Skip -> `/dashboard`.
+- Downstream setup surfaces must respect `User.settings.onboarding.preferredSyncMethod`. If the user chose Trade Manager EA, Account Hub/Add Account setup instructions must show Trade Manager EA setup, not generic/legacy sync copy.
 - Users who completed onboarding should not be forced through it again.
 - Progress bar shows current step position.
 
@@ -390,8 +396,7 @@ Analytics events:
 
 QA checklist:
 
-- Complete all 4 steps with TNT selected.
-- Complete all 4 steps with EA selected.
+- Complete all 4 steps with Trade Manager EA selected.
 - Complete all 4 steps with Manual selected.
 - Skip at each step.
 - Duplicate username.
@@ -442,15 +447,14 @@ Steps:
 | Step | When | Primary CTA |
 | --- | --- | --- |
 | `CONNECT_ACCOUNT` | User has no trading account. | `/dashboard/accounts?action=add&source=first-session` |
-| `CHOOSE_SYNC_METHOD` | User has account but no selected sync method. | TNT, EA, or Manual choice |
+| `CHOOSE_SYNC_METHOD` | User has account but no selected sync method. | Trade Manager EA or Manual choice |
 | `BRING_FIRST_DATA` | User has account and sync method but no trades. | Sync setup or manual log |
 | `REVIEW_DASHBOARD` | User has first trade data. | Open dashboard and complete |
 
 Supported routing:
 
 - Add account: `/dashboard/accounts?action=add&source=first-session`
-- TNT setup: `/dashboard/accounts?setup=sync&method=tnt&source=first-session`
-- EA setup: `/dashboard/accounts?setup=sync&method=ea&source=first-session`
+- Trade Manager EA setup: `/dashboard/accounts?setup=sync&method=ea&source=first-session`
 - Manual journal: `/dashboard/journal?action=log-trade&source=first-session`
 - Force open for QA/support: `/dashboard?firstSession=1` or `/dashboard?onboarding=1`
 
@@ -468,8 +472,7 @@ Supported routing:
   - `Your account is connected, but no trade data yet.`
   - `Sync your first trades to unlock charts, Trade Score, and your first review.`
 - Primary CTA follows `User.settings.onboarding.preferredSyncMethod`:
-  - `TNT_CONNECT`: `Open TNT Connect Setup` -> `/dashboard/accounts?setup=sync&method=tnt&source=first-data-reminder`
-  - `EA_SYNC`: `Open EA Setup` -> `/dashboard/accounts?setup=sync&method=ea&source=first-data-reminder`
+  - `EA_SYNC`: `Open Trade Manager EA Setup` -> `/dashboard/accounts?setup=sync&method=ea&source=first-data-reminder`
   - `MANUAL`: `Log First Trade` -> `/dashboard/journal?action=log-trade&source=first-data-reminder`
 - Secondary action `Remind me tomorrow` calls `dismissFirstDataReminderAction()` and revalidates `/dashboard`.
 
@@ -492,7 +495,7 @@ Expected behavior:
 - `Remind me later` closes the modal and leaves a compact launcher.
 - Launcher reopens the wizard.
 - `Add Account` routes to Account Hub and opens the Add Account flow.
-- TNT and EA choices persist the selected method, close the wizard, and route to Account Hub sync setup.
+- Trade Manager EA choice persists the selected method, closes the wizard, and routes to Account Hub sync setup.
 - Manual choice persists `MANUAL` and routes to Journal manual trade logging.
 - User with at least one trade does not get interrupted.
 - Mobile modal remains readable and buttons must not overflow.
@@ -528,14 +531,12 @@ QA checklist:
 - Force open `/dashboard?firstSession=1`: full wizard shows `You are here` and all four steps.
 - Add Account CTA: routes to `/dashboard/accounts` and opens add account flow.
 - Account but no sync method: wizard starts at `CHOOSE_SYNC_METHOD`.
-- TNT selected: preference saves as `TNT_CONNECT` and Account Hub sync wizard opens.
-- EA selected: preference saves as `EA_SYNC` and Account Hub sync wizard opens.
+- Trade Manager EA selected: preference saves as `EA_SYNC` and Account Hub sync wizard opens.
 - Manual selected: preference saves as `MANUAL` and Journal opens.
 - Account created less than 24h ago and no trades: no 24h reminder.
 - Account created more than 24h ago and no trades: reminder appears.
 - Reminder `Remind me tomorrow`: hides reminder after reload.
-- TNT reminder CTA opens TNT Connect setup.
-- EA reminder CTA opens EA setup.
+- Trade Manager EA reminder CTA opens EA setup.
 - Manual reminder CTA opens Journal log-trade route.
 - Active user with account and trade: no wizard, no launcher.
 - `/dashboard?firstSession=1`: force opens only if first session is incomplete.
@@ -604,14 +605,14 @@ QA checklist:
 - Break-even trades.
 - Mixed win/loss trades.
 - Invalid/missing account timezone.
-- Date range from TNT Connect deep link.
+- Date range from Trade Manager EA/deep-link setup context.
 - Mobile layout.
 
 ### `/dashboard/accounts`
 
 Purpose:
 
-- Account hub for MT5 accounts, Pro eligibility, EA Sync, TNT Connect, and Free vs Pro explanation.
+- Account hub for MT5 accounts, Pro eligibility, Trade Manager EA setup, Manual Journal fallback, and Free vs Pro explanation.
 
 Inputs/actions:
 
@@ -625,8 +626,7 @@ Inputs/actions:
 Query param support:
 
 - `?setup=sync`: opens TradeSyncWizard.
-- `?setup=sync&method=tnt`: opens wizard with TNT Connect pre-selected.
-- `?setup=sync&method=ea`: opens wizard with EA Sync pre-selected.
+- `?setup=sync&method=ea`: opens wizard with Trade Manager EA pre-selected.
 - `?action=add`: opens Add Account flow.
 - `source=first-session`: keeps analytics/support context for first-session routing.
 - After opening, query params are cleaned with `window.history.replaceState`.
@@ -641,8 +641,7 @@ Expected behavior:
 - Unsupported brokers/accounts should explain why no Pro request is available.
 - JustMarkets is not in the official Partner Pro flow unless explicitly approved.
 - For accounts with `totalTrades = 0`, the main account-card CTA is first-data oriented:
-  - `TNT_CONNECT`: show `Sync first trades`, open `TradeSyncWizard` with TNT Connect selected.
-  - `EA_SYNC`: show `Sync first trades`, open `TradeSyncWizard` with EA Sync selected.
+  - `EA_SYNC`: show `Sync first trades`, open `TradeSyncWizard` with Trade Manager EA selected.
   - `MANUAL`: show `Log first trade`, route to `/dashboard/journal?action=log-trade&accountId={account.id}&source=account-card`.
 - For accounts with `totalTrades > 0`, keep normal `Dashboard` + `Sync` actions.
 - `lastSync` can support sync-status copy, but first-data CTA should be based on `totalTrades > 0`.
@@ -671,10 +670,8 @@ QA checklist:
 - Free account.
 - Pro account.
 - Unsupported account.
-- TNT synced account.
-- EA synced account.
-- Zero-trade TNT account: `Sync first trades` opens TNT setup.
-- Zero-trade EA account: `Sync first trades` opens EA setup.
+- Trade Manager EA synced account.
+- Zero-trade Trade Manager EA account: `Sync first trades` opens EA setup.
 - Zero-trade Manual account: `Log first trade` routes to Journal and includes `accountId`.
 - Account with trade data: no `Sync first trades`; normal `Dashboard` + `Sync` actions.
 - Empty account list.
@@ -703,7 +700,7 @@ Expected behavior:
 Code paths:
 
 - `src/app/dashboard/settings/sync-settings/page.tsx`
-- `src/app/dashboard/settings/sync-settings/TNTConnectClient.tsx`
+- `src/app/dashboard/settings/sync-settings/TNTConnectClient.tsx` (legacy file name; UI copy should describe current Trade Manager EA setup)
 - `src/app/api/app/version/route.ts`
 - `public/downloads/app-release.json`
 
@@ -711,7 +708,7 @@ QA checklist:
 
 - `/api/app/version` returns current version.
 - Download URL exists.
-- Setup instructions match current app UI.
+- Setup instructions match current Trade Manager EA UI.
 
 ### `/dashboard/journal`
 
@@ -1012,44 +1009,18 @@ QA checklist:
 - Existing license.
 - Download route.
 
-### `/dashboard/copy-trading`
-
-Purpose:
-
-- Let users register or manage copy trading access.
-
-Expected behavior:
-
-- User can submit registration.
-- Current registration/status is visible.
-- Reconnect/disconnect/delete flows should be explicit.
-
-Code paths:
-
-- `src/app/dashboard/copy-trading/page.tsx`
-- `src/components/copy-trading/*`
-- `src/app/api/copy-trading/*`
-
-QA checklist:
-
-- New registration.
-- Already registered.
-- Reconnect.
-- Disconnect.
-- Delete account link.
-
 ### `/dashboard/settings/*`
 
 Purpose:
 
-- User profile, account, security, referrals, feedback, streak, and TNT Connect settings.
+- User profile, account, security, referrals, feedback, streak, and sync/trading-system settings.
 
 Expected behavior:
 
 - Profile updates should persist to `Profile`.
 - Security settings should avoid exposing secrets.
 - Feedback submits to admin-visible feedback.
-- TNT Connect settings should match current release.
+- Sync settings should match the current Trade Manager EA setup path.
 
 Key routes:
 
@@ -1130,7 +1101,7 @@ Expected behavior:
 - Funnel should show drop-off percentage between adjacent stages and a recommended admin action for the biggest drop-off.
 - Admin Activation Inbox should map stuck users to the same stage names as the funnel so the report and inbox tell one story.
 - Admin should be able to filter stuck users by stage: no account, no sync method, account but no first trade, mobile sync fallback needed, no first insight, no weekly review.
-- Mobile fallback state should be tracked when a user on a mobile viewport/device chooses TNT Connect or EA Sync but does not complete desktop sync.
+- Mobile fallback state should be tracked when a user on a mobile viewport/device chooses Trade Manager EA sync but does not complete desktop/VPS setup.
 - First Insight Moment should be tracked as its own activation step, not hidden inside dashboard page views.
 - Stuck reminders should be visible in admin context: last reminder sent, next eligible reminder date, and whether the user dismissed the in-app reminder.
 - Email reminders must be capped and respect user notification preferences.
@@ -1300,24 +1271,26 @@ QA checklist:
 - Import questions.
 - Preview lesson.
 
-### `/admin/ea/*`
+### `/admin/trading-systems/*`
 
 Purpose:
 
-- Manage EA products, brokers, accounts, pending accounts, licenses, and settings.
+- Manage trading-system products, brokers/access rules, accounts, pending approvals, licenses, versions, and settings.
 
 Expected behavior:
 
 - Admin can review pending accounts/licenses.
 - Products have files/versions.
 - Broker settings affect eligibility/sync behavior as designed.
+- Current product catalog should cover GoldScalperNinja, Trade Manager, and GSN Phoenix Grid.
+- Do not mention `Partner Toolkit` unless a real product is added.
 
 Code paths:
 
-- `src/app/admin/ea/*`
-- `src/components/admin/ea/*`
-- `src/app/api/admin/ea/settings/route.ts`
-- `src/lib/ea/*`
+- `src/app/admin/trading-systems/*`
+- `src/components/admin/trading-systems/*`
+- `src/app/admin/trading-systems/actions.ts`
+- `src/lib/admin/trading-systems/*` or product access helpers where applicable
 
 QA checklist:
 
@@ -1407,11 +1380,11 @@ QA checklist:
 
 ## Sync And API Feature Specs
 
-### EA Sync APIs: `/api/ea/*`
+### Trade Manager EA Sync APIs: `/api/ea/*`
 
 Purpose:
 
-- Let the MT5 EA authenticate, heartbeat, receive commands, and upload trades/history.
+- Let the Trade Manager EA / MT5 EA authenticate, heartbeat, receive commands, and upload trades/history.
 
 Expected behavior:
 
@@ -1433,7 +1406,6 @@ Key routes:
 Code paths:
 
 - `src/app/api/ea/*`
-- `public/downloads/TheNextTrade_TradeSync.mq5`
 - `src/lib/sync-auth.ts`
 - `src/lib/ea/*`
 
@@ -1446,17 +1418,17 @@ QA checklist:
 - Pending sync command.
 - Duplicate trade import.
 
-### TNT Connect APIs: `/api/sync/*`
+### Legacy Sync APIs: `/api/sync/*`
 
 Purpose:
 
-- Let the desktop app connect to MT5, discover accounts, sync selected periods, and update heartbeat.
+- Preserve backwards-compatible sync/import behavior for legacy clients. This is not the current promoted onboarding path.
 
 Expected behavior:
 
-- `/api/sync/connect` validates API key/account mapping.
+- `/api/sync/connect` validates API key/account mapping if legacy clients still call it.
 - `/api/sync/trades` imports trades idempotently.
-- `/api/sync/heartbeat` keeps account online/offline state fresh.
+- `/api/sync/heartbeat` keeps account online/offline state fresh for legacy sources.
 - Broker timezone must be normalized before save.
 - Invalid broker timezone must fallback to `Etc/UTC`.
 
@@ -1470,7 +1442,6 @@ Key routes:
 
 Code paths:
 
-- `apps/tnt-connect/*`
 - `src/app/api/sync/*`
 - `src/app/api/app/version/route.ts`
 - `src/lib/utils.ts`
@@ -1478,12 +1449,12 @@ Code paths:
 
 QA checklist:
 
-- Connect app.
-- Sync today.
-- Sync last week.
-- Sync custom range.
+- Legacy connect/import.
+- Legacy sync today.
+- Legacy sync last week.
+- Legacy sync custom range.
 - Invalid timezone from MT5 bridge.
-- Version update prompt/download.
+- Version update prompt/download only if the legacy client is still shipped.
 
 ### Analytics APIs
 
@@ -1602,7 +1573,7 @@ Expected behavior:
 - Lists recent sync/import attempts and key timestamps.
 - Shows one primary recovery action per problem state.
 - Normalizes sync labels through `src/lib/sync/sync-source.ts`.
-- TNT Connect, EA Sync, Manual, and unknown/legacy sources should display safely.
+- Trade Manager EA, Manual, and unknown/legacy sources should display safely.
 - Accounts with `totalTrades = 0` should guide the user to sync first trades instead of sending them to an empty dashboard.
 
 Data ownership:
@@ -1787,16 +1758,86 @@ QA checklist:
 - Trade share with hidden monetary values.
 - Mobile public card layout.
 
-### TraderWaves Hardening Follow-up
+### Release Hardening Follow-up
 
-Current open report:
+Completed QA reports should be removed from `docs/`. Keep only active bug reports.
 
-- `docs/traderwaves-gap-production-hardening-qa-report.md`
-
-Current open items:
+Recurring checks:
 
 - Create/use a true fresh-user E2E fixture for onboarding regression instead of testing with an old data-rich QA account.
-- Backfill legacy `syncSource = APP` values to `TNT_CONNECT` and verify with `scripts/audit-sync-source.ts`.
+- Legacy sync source values must not leak into current UI copy. New UI should say Trade Manager EA or Manual Journal.
+- Dashboard/homepage changes must preserve the one-next-action rule.
+
+### Personalized Trading Improvement Loop & Growth Orchestrator
+
+Purpose:
+
+- Turn trader insights and coach recommendations into 1-click 10-trade measurable experiments.
+- Track trade execution progress automatically from Trade Manager EA/API-synced trades or manual journal entries.
+- Review results against baseline performance, evaluate outcomes (IMPROVED, NO_CHANGE, WORSE), and promote successful actions to Trading Rules (`TradingRule`).
+
+Users:
+
+- Authenticated traders on Dashboard, Reports, and Intelligence pages.
+
+Inputs & UI Controls:
+
+- "Try for Next 10 Trades" CTA button on Coach Plan modal and Insight cards.
+- Active Experiment progress card (`ExperimentProgress.tsx`) and mobile bottom sheet (`MobileExperimentBottomSheet.tsx`).
+- "Review Results" button upon reaching 10/10 trade count target.
+- "Promote to Trading Rule" button when status is COMPLETED and outcome is IMPROVED.
+
+Code paths:
+
+- `src/lib/trader-growth/orchestrator.server.ts`
+- `src/lib/trader-growth/maturity.server.ts`
+- `src/lib/insights/first-insight.server.ts`
+- `src/actions/improvement-experiments.ts`
+- `src/lib/experiments/baseline.server.ts`
+- `src/lib/experiments/evaluate.server.ts`
+- `src/components/experiments/ExperimentProgress.tsx`
+- `src/components/experiments/ExperimentResult.tsx`
+- `src/components/experiments/MobileExperimentBottomSheet.tsx`
+
+---
+
+### Deep AI & Analytics Diagnostic Engine
+
+Purpose:
+
+- Provide deep behavioral and execution diagnostics including Disposition Effect (holding losses vs holding wins), Tilt & Revenge Trading Index, 24-Hour Intraday Heatmap, and Risk-Reward Optimizer.
+
+Users:
+
+- Traders on `/dashboard/analytics` and `/dashboard/intelligence`.
+
+Inputs & Visualizations:
+
+- `TradingPsychologyPanel`: Disposition Effect Ratio Bar, Tilt Index Score Gauge, and Optimal R:R Simulator Card.
+- `IntradayHeatmapChart`: 24-Hour x 5-Day (Mon-Fri) matrix displaying Gold Zone (high win rate green) vs Danger Zone (loss heavy red).
+
+Code paths:
+
+- `src/lib/analytics/psychology-engine.server.ts`
+- `src/components/analytics/TradingPsychologyPanel.tsx`
+- `src/components/analytics/IntradayHeatmapChart.tsx`
+- `src/app/dashboard/analytics/page.tsx`
+
+---
+
+### Mobile WebApp UX Optimization
+
+Purpose:
+
+- Guarantee seamless 1-hand touch interaction, eliminate mobile touch delay, prevent iOS Safari auto-zooming on form inputs, and enforce zero horizontal scrolling across viewports 375px - 430px.
+
+Code paths:
+
+- `src/app/globals.css` (`touch-action: manipulation`, 16px min input font-size)
+- `src/components/experiments/MobileExperimentBottomSheet.tsx`
+- `src/components/dashboard/MobileSidebar.tsx`
+
+---
 
 ## Documentation Maintenance Rule
 

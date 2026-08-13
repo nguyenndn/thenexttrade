@@ -573,7 +573,6 @@ model User {
   account_notifications                   account_notifications[]
   analytics_events                        analytics_events[]
   content_shortcuts                       content_shortcuts[]
-  copy_trading_registrations              copy_trading_registrations[]
   ea_commands                             ea_commands[]
   import_history                          import_history[]
   strategies                              strategies[]
@@ -708,40 +707,6 @@ model content_shortcuts {
   @@index([authorId])
 }
 
-model copy_trading_registrations {
-  id                 String            @id
-  userId             String            @db.Uuid
-  fullName           String
-  email              String
-  telegramHandle     String?
-  tradingCapital     Float             @default(0)
-  brokerName         String
-  custom_broker_name String?
-  mt5_server         String?
-  custom_server      String?
-  mt5_account_number String
-  master_password    String?
-  message            String?
-  status             CopyTradingStatus @default(PENDING)
-  reviewed_by        String?           @db.Uuid
-  reviewed_at        DateTime?         @db.Timestamptz(6)
-  reject_reason      String?
-  admin_note         String?
-  created_at         DateTime          @default(now()) @db.Timestamptz(6)
-  updated_at         DateTime          @db.Timestamptz(6)
-  disconnect_reason  String?
-  disconnected_at    DateTime?         @db.Timestamptz(6)
-  partner_code       String?
-  phone              String?           @db.VarChar(20)
-  partners           partners?         @relation(fields: [partner_code], references: [partner_code])
-  User               User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([mt5_account_number, brokerName])
-  @@index([created_at])
-  @@index([status])
-  @@index([userId])
-}
-
 model ea_brokers {
   id           String   @id
   name         String
@@ -837,7 +802,6 @@ model partners {
   status                     String                       @default("ACTIVE")
   created_at                 DateTime                     @default(now())
   updated_at                 DateTime
-  copy_trading_registrations copy_trading_registrations[]
 }
 
 model security_logs {
@@ -1021,13 +985,6 @@ enum ArticleStatus {
   ARCHIVED
 }
 
-enum CopyTradingStatus {
-  PENDING
-  APPROVED
-  REJECTED
-  DISCONNECTED
-}
-
 enum EAType {
   AUTO_TRADE
   MANUAL_ASSIST
@@ -1056,9 +1013,6 @@ enum NotificationType {
   MAINTENANCE
   PROMOTION
   FEATURE_UPDATE
-  COPY_TRADING_REGISTERED
-  COPY_TRADING_APPROVED
-  COPY_TRADING_REJECTED
   WEEKLY_REPORT
   MONTHLY_REPORT
   NO_TRADES_NUDGE

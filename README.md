@@ -8,11 +8,13 @@ TheNextTrade is a trading education and journal platform built around one loop:
 
 - Public education site, articles, Academy, brokers, and trading tools.
 - Auth, onboarding, first-session setup, and new-user activation.
-- MT5 sync through TNT Connect and EA Sync.
+- MT5 sync through Trade Manager EA, with Manual Journal as the fallback path.
 - Trading journal, dashboard metrics, analytics, sessions, psychology, and reports.
 - Sync Health Center for account/sync troubleshooting.
 - Rulebook, behavior goals, trade plans, and Plan vs Actual review.
-- Weekly Coach action loop.
+- Weekly Coach action loop and Personalized Trading Improvement Loop (1-click 10-trade experiments).
+- Deep AI & Analytics (Disposition Effect, Tilt Index, 24-Hour Intraday Heatmap, and R:R Optimizer).
+- Mobile WebApp UX Optimization (Touch-friendly bottom sheet, 16px min font-size fix, zero horizontal scroll).
 - Privacy presets for public trader cards, trade shares, and OG images.
 - Admin reports, analytics, users, articles, Academy, IB/VIP, EA products, notifications, and security.
 
@@ -27,8 +29,8 @@ Start here:
 
 Current hardening scope:
 
-- [traderwaves-gap-production-hardening-plan.md](traderwaves-gap-production-hardening-plan.md)
-- [docs/traderwaves-gap-production-hardening-qa-report.md](docs/traderwaves-gap-production-hardening-qa-report.md)
+- Completed QA reports are removed after verification.
+- Current feature behavior lives in [docs/PRODUCT.md](docs/PRODUCT.md), [docs/FEATURE_SPECS.md](docs/FEATURE_SPECS.md), and [docs/SYSTEM.md](docs/SYSTEM.md).
 
 Competitor research reference:
 
@@ -67,7 +69,7 @@ npm run db:seed
 npm run db:studio
 ```
 
-TraderWaves hardening checks:
+Regression checks:
 
 ```bash
 npx tsx scripts/audit-sync-source.ts

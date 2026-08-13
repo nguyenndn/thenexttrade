@@ -80,7 +80,7 @@ export async function requireAdmin(): Promise<AuthResult | NextResponse> {
 
     const role = profile?.role || "USER";
 
-    if (role !== "ADMIN" && role !== "EDITOR") {
+    if (role !== "ADMIN") {
         return NextResponse.json(
             { error: "Forbidden — admin access required" },
             { status: 403 }

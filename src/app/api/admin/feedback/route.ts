@@ -9,7 +9,7 @@ async function isAdmin() {
         where: { userId: user.id },
         select: { role: true },
     });
-    if (profile?.role !== "ADMIN" && profile?.role !== "EDITOR") return null;
+    if (profile?.role !== "ADMIN") return null;
     return user;
 }
 

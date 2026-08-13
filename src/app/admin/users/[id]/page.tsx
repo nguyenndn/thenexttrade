@@ -10,6 +10,9 @@ import {
     LineChart,
     Key,
     Globe,
+    WalletCards,
+    CircleDollarSign,
+    RefreshCw,
 } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { Button } from "@/components/ui/Button";
@@ -19,12 +22,41 @@ import { UserVipProTab } from "./UserVipProTab";
 import { UserIbPerformanceTab } from "./UserIbPerformanceTab";
 import { UserOverviewTab } from "./UserOverviewTab";
 import { UserDetailTabsWrapper } from "./UserDetailTabsWrapper";
+import {
+    computeCapitalBreakdown,
+    isDemoTradingAccount,
+    isLiveCapitalAccount,
+} from "@/lib/admin/ib/capital.server";
+import { requireAdminPageAccess } from "@/lib/admin/auth.server";
+
+export const dynamic = "force-dynamic";
+
+function formatCurrencyBreakdown(values: Record<string, number>): string {
+    const entries = Object.entries(values);
+    if (entries.length === 0) return "No real account data";
+
+    return entries
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([currency, value]) => {
+            if (currency === "UNKNOWN") {
+                return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })} (currency unknown)`;
+            }
+
+            return new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency,
+                maximumFractionDigits: 2,
+            }).format(value);
+        })
+        .join(" / ");
+}
 
 export default async function UserDetailPage({
     params,
 }: {
     params: Promise<{ id: string }>;
 }) {
+    await requireAdminPageAccess();
     const { id } = await params;
 
     if (!id) return notFound();
@@ -40,11 +72,17 @@ export default async function UserDetailPage({
                     name: true,
                     broker: true,
                     balance: true,
+                    equity: true,
+                    currency: true,
                     status: true,
                     platform: true,
                     accountNumber: true,
                     accountType: true,
                     server: true,
+                    lastHeartbeat: true,
+                    lastSync: true,
+                    totalTrades: true,
+                    syncSource: true,
                     createdAt: true,
                 },
             },
@@ -176,6 +214,18 @@ export default async function UserDetailPage({
     };
 
     const serializedUser = JSON.parse(JSON.stringify(user));
+    const capital = computeCapitalBreakdown(user.tradingAccounts);
+    const realAccounts = user.tradingAccounts.filter(isLiveCapitalAccount);
+    const demoAccountCount = user.tradingAccounts.filter(
+        isDemoTradingAccount
+    ).length;
+    const latestRealAccountSignal = realAccounts
+        .flatMap((account) => [account.lastHeartbeat, account.lastSync])
+        .filter((value): value is Date => value !== null)
+        .sort((left, right) => right.getTime() - left.getTime())[0];
+    const isSyncCurrent = latestRealAccountSignal
+        ? Date.now() - latestRealAccountSignal.getTime() <= 24 * 60 * 60 * 1000
+        : false;
 
     return (
         <div className="space-y-6 pb-20">
@@ -192,8 +242,82 @@ export default async function UserDetailPage({
                 </Button>
             </AdminPageHeader>
 
-            <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[420px_minmax(0,1fr)]">
-                <div className="space-y-6">
+            <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="grid grid-cols-1 divide-y divide-gray-200 dark:divide-white/10 sm:grid-cols-2 sm:divide-y-0 xl:grid-cols-4">
+                    <div className="flex min-w-0 items-center gap-3 p-4 sm:p-5 sm:border-r sm:border-gray-200 sm:dark:border-white/10">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
+                            <WalletCards size={19} />
+                        </div>
+                        <div className="min-w-0">
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                                Real Accounts
+                            </p>
+                            <p className="mt-0.5 text-lg font-black text-gray-800 dark:text-white">
+                                {realAccounts.length}
+                            </p>
+                            <p className="text-[11px] text-gray-500">
+                                Demo excluded{demoAccountCount > 0 ? ` / ${demoAccountCount} demo` : ""}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex min-w-0 items-center gap-3 p-4 sm:p-5 xl:border-r xl:border-gray-200 xl:dark:border-white/10">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
+                            <CircleDollarSign size={19} />
+                        </div>
+                        <div className="min-w-0">
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                                Total Real Balance
+                            </p>
+                            <p className="mt-0.5 truncate text-lg font-black text-gray-800 dark:text-white" title={formatCurrencyBreakdown(capital.byCurrency)}>
+                                {formatCurrencyBreakdown(capital.byCurrency)}
+                            </p>
+                            <p className="text-[11px] text-gray-500">Real accounts only</p>
+                        </div>
+                    </div>
+
+                    <div className="flex min-w-0 items-center gap-3 p-4 sm:border-r sm:border-gray-200 sm:p-5 sm:dark:border-white/10">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
+                            <CircleDollarSign size={19} />
+                        </div>
+                        <div className="min-w-0">
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                                Total Real Equity
+                            </p>
+                            <p className="mt-0.5 truncate text-lg font-black text-gray-800 dark:text-white" title={formatCurrencyBreakdown(capital.equityByCurrency)}>
+                                {formatCurrencyBreakdown(capital.equityByCurrency)}
+                            </p>
+                            <p className="text-[11px] text-gray-500">No currency conversion</p>
+                        </div>
+                    </div>
+
+                    <div className="flex min-w-0 items-center gap-3 p-4 sm:p-5">
+                        <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${isSyncCurrent ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400" : "bg-orange-50 text-orange-600 dark:bg-orange-500/10 dark:text-orange-400"}`}>
+                            <RefreshCw size={19} />
+                        </div>
+                        <div className="min-w-0">
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                                Real Account Sync
+                            </p>
+                            <p className="mt-0.5 text-sm font-black text-gray-800 dark:text-white">
+                                {!latestRealAccountSignal
+                                    ? "Never synced"
+                                    : isSyncCurrent
+                                      ? "Up to date"
+                                      : "Sync overdue"}
+                            </p>
+                            <p className="truncate text-[11px] text-gray-500">
+                                {latestRealAccountSignal
+                                    ? `Last signal ${formatDistanceToNow(latestRealAccountSignal, { addSuffix: true })}`
+                                    : "No sync signal from a real account"}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[420px_minmax(0,1fr)] 2xl:grid-cols-[460px_minmax(0,1fr)]">
+                <div className="min-w-0 space-y-6">
                     <div className="relative overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white shadow-sm dark:bg-[#151925]">
                         <div className="h-28 bg-gradient-to-br from-emerald-100 via-teal-50 to-white dark:from-primary/20 dark:via-primary/5 dark:to-transparent" />
 

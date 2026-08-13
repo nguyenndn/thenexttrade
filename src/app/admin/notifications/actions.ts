@@ -34,8 +34,7 @@ async function checkAdmin() {
         select: { role: true },
     });
 
-    const isAuthorized =
-        profile?.role === "ADMIN" || profile?.role === "EDITOR";
+    const isAuthorized = profile?.role === "ADMIN";
     return { isAuthorized, user };
 }
 

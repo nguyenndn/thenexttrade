@@ -34,19 +34,19 @@ export function NewsletterSection() {
                     <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
                         <Link
                             href="/auth/signup?source=home_final_cta&intent=track"
-                            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-gold px-7 py-3 text-sm font-black text-white shadow-[0_14px_30px_rgba(245,158,11,0.24)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-amber-500 hover:shadow-[0_18px_38px_rgba(245,158,11,0.34)] active:translate-y-0"
+                            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-gold px-5 py-2.5 text-xs sm:text-sm font-extrabold text-white shadow-[0_10px_24px_rgba(245,158,11,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-amber-500 hover:shadow-[0_14px_30px_rgba(245,158,11,0.3)] active:translate-y-0"
                         >
                             Start Free Journal
-                            <Zap size={16} className="text-yellow-200" />
+                            <Zap size={15} className="text-yellow-200" />
                         </Link>
 
                         <a
                             href="https://t.me/GoldScalperNinja"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-black text-gray-800 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#2AABEE]/40 hover:text-[#2AABEE] hover:shadow-md active:translate-y-0 dark:border-white/10 dark:bg-white/[0.04] dark:text-white"
+                            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-xs sm:text-sm font-extrabold text-gray-800 shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-[#2AABEE]/40 hover:text-[#2AABEE] hover:shadow-md active:translate-y-0 dark:border-white/10 dark:bg-white/[0.04] dark:text-white"
                         >
-                            <MessageCircle size={16} />
+                            <MessageCircle size={15} />
                             Join Telegram
                         </a>
                     </div>

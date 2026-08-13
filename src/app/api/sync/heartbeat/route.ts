@@ -4,7 +4,7 @@ import { detectBroker } from "@/lib/ea/broker-detection";
 
 /**
  * POST /api/sync/heartbeat
- * TNT Connect app sends periodic heartbeats for all connected accounts.
+ * Trade Manager app sends periodic heartbeats for all connected accounts.
  * Auth: X-Sync-Key header
  */
 export async function POST(request: NextRequest) {
@@ -100,6 +100,23 @@ export async function POST(request: NextRequest) {
                 where: { id: dbAccount.id },
                 data: updateData,
             });
+
+            if (acct.balance !== undefined) {
+                try {
+                    const { captureCapitalSnapshot } = await import(
+                        "@/lib/admin/ib/capital.server"
+                    );
+                    await captureCapitalSnapshot({
+                        tradingAccountId: dbAccount.id,
+                        balance: parseFloat(String(acct.balance)),
+                        equity: acct.equity !== undefined ? parseFloat(String(acct.equity)) : null,
+                        currency: acct.currency || "USD",
+                        source: "HEARTBEAT",
+                    });
+                } catch (e) {
+                    // Non-blocking snapshot error
+                }
+            }
 
             updated.push(acct.accountNumber);
         }

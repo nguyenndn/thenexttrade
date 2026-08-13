@@ -105,7 +105,7 @@
 | `/push_code` | Git commit + push (Conventional Commits) |
 | `/qa` | Test planning + automated tests |
 | `/status` | Project status board |
-| `/super_dev` | Full-stack feature implementation |
+| `/dev` | Full-stack feature implementation |
 | `/tech_lead` | Technical team leader workflow |
 | `/update-gstack` | Update gstack skills |
 

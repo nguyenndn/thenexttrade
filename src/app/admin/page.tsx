@@ -45,7 +45,6 @@ const getStats = unstable_cache(
             usersCount,
             tradingAccountsCount,
             vipRequestsCount,
-            copyTradingCount,
             ibLeadsCount,
             proEntitlementsCount,
             lessonsCount,
@@ -56,21 +55,17 @@ const getStats = unstable_cache(
             prevUsersCount,
             prevTradingAccountsCount,
             prevVipRequestsCount,
-            prevCopyTradingCount,
             // Trend: recent period counts
             recentTradingAccountsCount,
             recentVipRequestsCount,
-            recentCopyTradingCount,
             // Sparkline: 7-day raw data
             rawTradingAccounts7d,
             rawVipRequests7d,
-            rawCopyTrading7d,
         ] = await Promise.all([
             // Totals
             prisma.user.count(),
             prisma.tradingAccount.count(),
             prisma.vipRequest.count(),
-            prisma.copyTradingRegistration.count(),
             prisma.ibLead.count(),
             prisma.proEntitlement.count({ where: { status: "ACTIVE" } }),
             prisma.lesson.count(),
@@ -92,17 +87,11 @@ const getStats = unstable_cache(
             prisma.vipRequest.count({
                 where: { createdAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo } },
             }),
-            prisma.copyTradingRegistration.count({
-                where: { createdAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo } },
-            }),
             // Recent 30-day period
             prisma.tradingAccount.count({
                 where: { createdAt: { gte: thirtyDaysAgo } },
             }),
             prisma.vipRequest.count({
-                where: { createdAt: { gte: thirtyDaysAgo } },
-            }),
-            prisma.copyTradingRegistration.count({
                 where: { createdAt: { gte: thirtyDaysAgo } },
             }),
             // 7-day sparkline raw
@@ -111,10 +100,6 @@ const getStats = unstable_cache(
                 select: { createdAt: true },
             }),
             prisma.vipRequest.findMany({
-                where: { createdAt: { gte: sevenDaysAgo } },
-                select: { createdAt: true },
-            }),
-            prisma.copyTradingRegistration.findMany({
                 where: { createdAt: { gte: sevenDaysAgo } },
                 select: { createdAt: true },
             }),
@@ -147,7 +132,6 @@ const getStats = unstable_cache(
         const userSparkline = userGrowthChart.slice(-7).map((d) => d.count);
         const tradingAccountSparkline = toDailySparkline(rawTradingAccounts7d);
         const vipRequestSparkline = toDailySparkline(rawVipRequests7d);
-        const copyTradingSparkline = toDailySparkline(rawCopyTrading7d);
 
         // Trends
         const recentUsersCount = rawUserGrowth.length;
@@ -172,14 +156,6 @@ const getStats = unstable_cache(
                 trendPercent: calcTrend(
                     recentVipRequestsCount,
                     prevVipRequestsCount
-                ),
-            },
-            copyTrading: {
-                total: copyTradingCount,
-                sparkline: copyTradingSparkline,
-                trendPercent: calcTrend(
-                    recentCopyTradingCount,
-                    prevCopyTradingCount
                 ),
             },
             ibLeadsCount,
@@ -215,11 +191,6 @@ export default async function AdminDashboard() {
                     value: stats.vipRequests.total,
                     sparkline: stats.vipRequests.sparkline,
                     trendPercent: stats.vipRequests.trendPercent,
-                }}
-                copyTrading={{
-                    value: stats.copyTrading.total,
-                    sparkline: stats.copyTrading.sparkline,
-                    trendPercent: stats.copyTrading.trendPercent,
                 }}
                 ibLeadsCount={stats.ibLeadsCount}
                 proEntitlementsCount={stats.proEntitlementsCount}

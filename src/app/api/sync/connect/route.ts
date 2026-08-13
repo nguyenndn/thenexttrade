@@ -10,7 +10,7 @@ const limiter = rateLimit({
 
 /**
  * POST /api/sync/connect
- * TNT Connect app authenticates with user-level syncApiKey.
+ * Trade Manager app authenticates with user-level syncApiKey.
  * Returns user info + list of trading accounts for auto-matching.
  */
 export async function POST(request: NextRequest) {

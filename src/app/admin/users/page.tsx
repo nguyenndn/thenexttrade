@@ -87,7 +87,7 @@ async function getHeroStats() {
             },
             activeTraders: {
                 value: activeTraders.length,
-                sparkline: sparkline.map((v) => Math.max(0, v - 1)),
+                sparkline,
                 trendPercent: null,
             },
         };
@@ -207,7 +207,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
     }
 
     const params = await searchParams;
-    const page = parseInt(params.page || "1");
+    const page = parseInt(params.page || "1", 10) || 1;
     const query = params.q || "";
     const role = params.role || "";
     const country = normalizeCountryCode(params.country) || "";

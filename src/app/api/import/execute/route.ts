@@ -164,6 +164,15 @@ export async function POST(request: NextRequest) {
             },
         });
 
+        if (importedCount > 0) {
+            try {
+                const { onUserTradesUpdated } = await import("@/lib/experiments/progress.server");
+                await onUserTradesUpdated(user.id, accountId || undefined);
+            } catch {
+                /* non-blocking experiment progress sync */
+            }
+        }
+
         return NextResponse.json({
             success: true,
             importId: importRecord.id,

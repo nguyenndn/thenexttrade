@@ -12,7 +12,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         { path: "/about", priority: 0.8, frequency: "monthly" as const },
         { path: "/academy", priority: 0.9, frequency: "weekly" as const },
         { path: "/knowledge", priority: 0.9, frequency: "daily" as const },
-        { path: "/articles", priority: 0.9, frequency: "daily" as const },
         { path: "/brokers", priority: 0.8, frequency: "weekly" as const },
         { path: "/tools", priority: 0.9, frequency: "monthly" as const },
         { path: "/contact", priority: 0.5, frequency: "yearly" as const },
@@ -94,6 +93,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // 3. Fetch Academy Lessons
     const lessons = await prisma.lesson.findMany({
+        where: { status: "published" },
         select: {
             slug: true,
             updatedAt: true,
@@ -113,7 +113,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
 
     const categoryUrls = categories.map((cat) => ({
-        url: `${baseUrl}/articles/category/${cat.slug}`,
+        url: `${baseUrl}/knowledge?category=${cat.slug}`,
         lastModified: cat.updatedAt,
         changeFrequency: "weekly" as const,
         priority: 0.9,
@@ -125,7 +125,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
 
     const tagUrls = tags.map((tag) => ({
-        url: `${baseUrl}/articles/tag/${tag.slug}`,
+        url: `${baseUrl}/knowledge?tag=${tag.slug}`,
         lastModified: new Date(), // Tags don't have updatedAt, use current date
         changeFrequency: "weekly" as const,
         priority: 0.6,

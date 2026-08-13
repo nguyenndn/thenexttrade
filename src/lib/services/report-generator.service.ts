@@ -205,7 +205,7 @@ async function getCoreStats(
             grossLoss > 0
                 ? grossProfit / grossLoss
                 : grossProfit > 0
-                  ? Infinity
+                  ? 99
                   : 0,
         avgWin: winCount > 0 ? grossProfit / winCount : 0,
         avgLoss: lossCount > 0 ? grossLoss / lossCount : 0,

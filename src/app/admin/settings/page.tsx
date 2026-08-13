@@ -19,7 +19,6 @@ export default async function AdminSettingsPage() {
             where: { key: "site_config" },
         }),
     ]);
-    // const systemConfigRecord = null;
 
     const savedConfig = (systemConfigRecord?.value as any) || {};
 

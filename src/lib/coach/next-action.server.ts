@@ -1,89 +1,148 @@
+import {
+    NextBestActionView,
+    TraderMaturity,
+    InsightSnapshotView,
+    ImprovementExperimentView,
+} from "@/lib/trader-growth/types";
 import { computeTraderSignals } from "./signal-engine.server";
 
-import { InsightEvidence } from "@/lib/insights/types";
-
-export interface NextBestAction {
-    id: string;
-    title: string;
-    description: string;
-    ctaLabel: string;
-    ctaHref: string;
-    priority: number;
-    reason: string;
-    sourceSignalType?: string;
-    evidence?: InsightEvidence[];
+export interface NextBestActionInput {
+    userId: string;
+    maturity: TraderMaturity;
+    firstInsight?: InsightSnapshotView | null;
+    activeExperiment?: ImprovementExperimentView | null;
+    tradingGoal?: string | null;
 }
 
-const PRIORITY_ORDER: Record<string, number> = {
-    NO_ACCOUNT: 1,
-    ACCOUNT_NEVER_SYNCED: 2,
-    SYNC_STALE: 3,
-    NO_FIRST_TRADE: 4,
-    NO_WEEKLY_REVIEW: 5,
-    NO_LESSON_STARTED: 6,
-    REVENGE_SIZE_UP: 7,
-    LOW_PLAN_COMPLIANCE: 8,
-    LOSS_STREAK: 9,
-    SL_CLUSTER: 10,
-    BE_HEAVY: 11,
-    WEAK_SYMBOL: 12,
-    WEAK_SESSION: 13,
-    RECURRING_MISTAKE: 14,
-    INSUFFICIENT_DATA: 15,
-};
-
 export async function getNextBestAction(
-    userId: string,
-    tradingGoal?: string | null
-): Promise<NextBestAction> {
-    // Dynamically compute the latest signals
-    const signals = await computeTraderSignals(userId, { persist: true });
-    const activeSignals = signals.filter((s) => s.status !== "RESOLVED");
+    input: NextBestActionInput | string,
+    tradingGoalParam?: string | null
+): Promise<NextBestActionView> {
+    // Backward compatibility for legacy string userId signature
+    if (typeof input === "string") {
+        const { evaluateTraderMaturity } = await import("@/lib/trader-growth/maturity.server");
+        const maturity = await evaluateTraderMaturity(input);
+        const { getOrCreateFirstInsight } = await import("@/lib/insights/first-insight.server");
+        const firstInsight = await getOrCreateFirstInsight(input);
 
-    if (activeSignals.length === 0) {
+        return getNextBestAction({
+            userId: input,
+            maturity,
+            firstInsight,
+            tradingGoal: tradingGoalParam,
+        });
+    }
+
+    const { userId, maturity, firstInsight, activeExperiment, tradingGoal } = input;
+
+    // Priority 1: Profile incomplete
+    if (maturity.stage === "PROFILE_PENDING") {
         return {
-            id: "maintenance",
-            title: "Consistency is your edge",
-            description:
-                "You have connected accounts, synced your trades, and are actively studying. Review your journal to find minor trade optimizations today.",
-            ctaLabel: "Open Journal",
-            ctaHref: "/dashboard/journal",
-            priority: 99,
-            reason: "All core onboarding and activation tasks are completed, and no critical trade weaknesses were detected in the last 30 days.",
+            id: "complete_profile",
+            priority: 1,
+            title: "Complete your trader profile",
+            reason: "Setting up your identity and preferences helps tailor your learning roadmap.",
+            ctaText: "Complete Setup",
+            ctaHref: "/onboarding",
+            category: "SETUP",
         };
     }
 
-    // Sort active signals by priority order (lowest priority value is highest priority action)
-    const sorted = activeSignals.sort((a, b) => {
-        const pA = PRIORITY_ORDER[a.signalType] ?? 999;
-        const pB = PRIORITY_ORDER[b.signalType] ?? 999;
-        return pA - pB;
-    });
-
-    const top = sorted[0];
-
-    // Apply goal-specific nudge overrides when available
-    let title = top.title;
-    let description = top.summary;
-
-    if (tradingGoal) {
-        const { GOAL_NUDGE_OVERRIDES } = await import("./goal-content-map");
-        const goalOverrides = GOAL_NUDGE_OVERRIDES[tradingGoal];
-        if (goalOverrides && goalOverrides[top.signalType]) {
-            title = goalOverrides[top.signalType].title;
-            description = goalOverrides[top.signalType].summary;
-        }
+    // Priority 2: No account
+    if (maturity.stage === "NO_ACCOUNT") {
+        return {
+            id: "connect_account",
+            priority: 2,
+            title: "Connect your MetaTrader 5 account",
+            reason: "Connect MT5 with TradeSync EA to automatically analyze your trades and find leaks.",
+            ctaText: "Connect Account",
+            ctaHref: "/dashboard/accounts",
+            category: "SETUP",
+        };
     }
 
+    // Priority 3: Account has no data
+    if (maturity.stage === "ACCOUNT_NO_DATA") {
+        return {
+            id: "sync_first_trades",
+            priority: 3,
+            title: "Sync your first closed trades",
+            reason: "No closed trades detected. Trade on MT5 or log trades manually in your journal.",
+            ctaText: "Log First Trade",
+            ctaHref: "/dashboard/journal",
+            category: "SETUP",
+        };
+    }
+
+    // Priority 5: Experiment review ready
+    if (maturity.stage === "ACTION_REVIEW_READY" || activeExperiment?.status === "READY_FOR_REVIEW") {
+        return {
+            id: "review_experiment",
+            priority: 5,
+            title: "Review your experiment results",
+            reason: `Your experiment "${activeExperiment?.title || "Risk Execution"}" reached its target trade count.`,
+            ctaText: "Review Experiment Results",
+            ctaHref: "/dashboard/reports",
+            category: "REVIEW",
+        };
+    }
+
+    // Priority 7: First insight ready
+    if (firstInsight && maturity.stage === "INSIGHT_READY") {
+        return {
+            id: "view_first_insight",
+            priority: 7,
+            title: firstInsight.title,
+            reason: firstInsight.summary,
+            ctaText: "View Evidence & Fix",
+            ctaHref: "/dashboard/intelligence",
+            category: "INSIGHT",
+            evidenceId: firstInsight.id,
+            evidenceDetails: {
+                metric: firstInsight.insightType,
+                sampleSize: firstInsight.sampleSize,
+                confidence: firstInsight.confidence,
+            },
+        };
+    }
+
+    // Priority 9: Active experiment
+    if (activeExperiment && activeExperiment.status === "ACTIVE") {
+        return {
+            id: "continue_experiment",
+            priority: 9,
+            title: `Active Experiment: ${activeExperiment.title}`,
+            reason: `Progress: ${activeExperiment.currentTradeCount}/${activeExperiment.targetTradeCount} trades logged (${activeExperiment.progressPercent}%).`,
+            ctaText: "Open Trading Journal",
+            ctaHref: "/dashboard/journal",
+            category: "EXPERIMENT",
+        };
+    }
+
+    // Signals check for high severity
+    const signals = await computeTraderSignals(userId, { persist: false });
+    const highSeverity = signals.find((s) => s.status === "ACTIVE" && s.severity === "HIGH");
+
+    if (highSeverity) {
+        return {
+            id: highSeverity.signalType,
+            priority: 6,
+            title: highSeverity.title,
+            reason: highSeverity.summary,
+            ctaText: highSeverity.actionLabel || "Review Leak",
+            ctaHref: highSeverity.actionHref || "/dashboard/intelligence",
+            category: "INSIGHT",
+        };
+    }
+
+    // Default Maintenance State (Priority 99)
     return {
-        id: top.signalType,
-        title,
-        description,
-        ctaLabel: top.actionLabel || "Take Action",
-        ctaHref: top.actionHref || "/dashboard",
-        priority: PRIORITY_ORDER[top.signalType] ?? 99,
-        reason: `Generated automatically from high-priority active signal: ${top.signalType}`,
-        sourceSignalType: top.signalType,
-        evidence: top.metadata?.evidence || top.evidence || [],
+        id: "maintenance_review",
+        priority: 99,
+        title: "Maintain your trading discipline",
+        reason: "All core setup tasks are completed and your trading rules are in healthy standing.",
+        ctaText: "Review Journal",
+        ctaHref: "/dashboard/journal",
+        category: "MAINTENANCE",
     };
 }

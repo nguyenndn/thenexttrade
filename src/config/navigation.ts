@@ -25,7 +25,6 @@ import {
     FolderTree,
     Quote,
     MoreHorizontal,
-    Copy,
     ShieldAlert,
     MessageCircle,
     Crown,
@@ -152,14 +151,6 @@ export const dashboardMenuItems = [
         requiresTradeData: false,
     },
 
-    // --- INVESTING ---
-    {
-        name: "Copy Trading",
-        href: "/dashboard/copy-trading",
-        icon: Copy,
-        featureFlag: "feature_copy_trading",
-        requiresTradeData: false,
-    },
 ];
 
 export const adminMenuItems = [
@@ -214,9 +205,6 @@ export const adminMenuItems = [
             { name: "Trader Monitor (CRM)", href: "/admin/ib/traders" },
         ],
     },
-
-    // --- INVESTING ---
-    { name: "Copy Trading", href: "/admin/copy-trading", icon: Copy },
 
     // --- SYSTEM ---
     {
@@ -295,12 +283,6 @@ export const dashboardMenuGroups = [
                 href: "/dashboard/trading-systems",
                 icon: Bot,
             },
-            {
-                name: "Copy Trading",
-                href: "/dashboard/copy-trading",
-                icon: Copy,
-                featureFlag: "feature_copy_trading",
-            },
         ],
     },
 ];
@@ -363,7 +345,6 @@ export const adminMenuGroups = [
         icon: MoreHorizontal,
         items: [
             { name: "Academy", href: "/admin/academy", icon: GraduationCap },
-            { name: "Copy Trading", href: "/admin/copy-trading", icon: Copy },
             { name: "Trading Systems", href: "/admin/trading-systems", icon: Bot },
             { name: "Feedback", href: "/admin/feedback", icon: MessageSquare },
             { name: "Settings", href: "/admin/settings", icon: Settings },

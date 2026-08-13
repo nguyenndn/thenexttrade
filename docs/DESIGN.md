@@ -89,7 +89,7 @@ Empty states should explain the next action.
 
 Good:
 
-- "No trades yet. Log your first trade or connect TNT Connect."
+- "No trades yet. Log your first trade or set up Trade Manager EA sync."
 - CTA to the relevant page/action.
 
 Bad:
@@ -130,4 +130,3 @@ Onboarding at `/onboarding` uses a 4-step card wizard:
 - Style: matches auth page gold-accented, mobile-first design.
 - Container: `max-w-lg`, `rounded-2xl`, `shadow-xl`.
 - The wizard persists progress in `User.settings.onboarding`.
-

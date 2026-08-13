@@ -15,7 +15,6 @@ import {
     Lightbulb,
     BarChart3,
     TrendingUp,
-    Copy,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -58,16 +57,6 @@ const typeConfig: Record<
         icon: TrendingUp,
         color: "text-blue-600 dark:text-blue-400",
         bg: "bg-blue-100 dark:bg-blue-900/30",
-    },
-    COPY_TRADING_APPROVED: {
-        icon: Copy,
-        color: "text-emerald-600 dark:text-emerald-400",
-        bg: "bg-emerald-100 dark:bg-emerald-900/30",
-    },
-    COPY_TRADING_REJECTED: {
-        icon: Copy,
-        color: "text-red-600 dark:text-red-400",
-        bg: "bg-red-100 dark:bg-red-900/30",
     },
     VIP_APPROVED: {
         icon: CreditCard,

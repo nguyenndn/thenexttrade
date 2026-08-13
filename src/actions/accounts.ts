@@ -24,7 +24,9 @@ export async function getTradingAccounts(page = 1, limit = 12) {
     if (!user)
         return { accounts: [], meta: { total: 0, page, limit, totalPages: 0 } };
 
-    const skip = (page - 1) * limit;
+    const safePage = Number.isInteger(page) && page > 0 ? page : 1;
+    const safeLimit = Number.isInteger(limit) && limit > 0 ? limit : 12;
+    const skip = (safePage - 1) * safeLimit;
 
     const [accounts, total] = await Promise.all([
         prisma.tradingAccount.findMany({

@@ -76,7 +76,7 @@ export async function adminLogin(formData: FormData) {
         select: { role: true },
     });
 
-    if (profile?.role !== "ADMIN" && profile?.role !== "EDITOR") {
+    if (profile?.role !== "ADMIN") {
         // Sign out non-admin user immediately
         await supabase.auth.signOut();
         const ip = await getClientIP();

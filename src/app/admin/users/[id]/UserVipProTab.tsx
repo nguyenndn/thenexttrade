@@ -5,7 +5,6 @@ import { format } from "date-fns";
 import {
     KeyRound,
     ShieldCheck,
-    ShieldAlert,
     CheckCircle2,
     XCircle,
     Clock,
@@ -14,8 +13,15 @@ import {
     AlertCircle,
     AlertTriangle,
     Trash2,
+    ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import {
     approveVipRequest,
@@ -89,6 +95,18 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
     const [revokingId, setRevokingId] = useState<string | null>(null);
     const [revokeReason, setRevokeReason] = useState("");
 
+    const accessStatusLabels: Record<string, string> = {
+        ACTIVE: "Active Access",
+        GRACE: "Temporary Access",
+        REVOKED: "Access Removed",
+        EXPIRED: "Expired",
+    };
+    const accessSourceLabels: Record<string, string> = {
+        IB_VERIFIED: "Partner Account Verified",
+        MANUAL: "Granted by Admin",
+        SYSTEM: "Granted by System",
+    };
+
     // VIP Actions
     const handleApproveVip = async (requestId: string) => {
         setLoading(`vip-approve-${requestId}`);
@@ -101,7 +119,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
             } else {
                 toast.error(res.error || "Failed to approve request");
             }
-        } catch (err) {
+        } catch {
             toast.error("An error occurred while approving");
         } finally {
             setLoading(null);
@@ -123,7 +141,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
             } else {
                 toast.error(res.error || "Failed to reject request");
             }
-        } catch (err) {
+        } catch {
             toast.error("An error occurred while rejecting");
         } finally {
             setLoading(null);
@@ -147,14 +165,14 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
             }
 
             if (res.success) {
-                toast.success("Pro entitlement granted successfully!");
+                toast.success("Product access granted successfully.");
                 setGrantNote("");
                 setSelectedAccountId("user-level");
                 setGrantType("permanent");
             } else {
-                toast.error(res.error || "Failed to grant Pro");
+                toast.error(res.error || "Failed to grant product access");
             }
-        } catch (err) {
+        } catch {
             toast.error("An error occurred");
         } finally {
             setLoading(null);
@@ -177,13 +195,13 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                 tradingAccountId
             );
             if (res.success) {
-                toast.success("Pro entitlement revoked.");
+                toast.success("Product access removed.");
                 setRevokingId(null);
                 setRevokeReason("");
             } else {
-                toast.error(res.error || "Failed to revoke entitlement");
+                toast.error(res.error || "Failed to remove product access");
             }
-        } catch (err) {
+        } catch {
             toast.error("An error occurred");
         } finally {
             setLoading(null);
@@ -192,17 +210,17 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
 
     return (
         <div className="space-y-6">
-            {/* 1. VIP Verification Requests */}
+            {/* 1. Partner account verification */}
             <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                 <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                     <div>
                         <h3 className="text-base font-bold text-gray-700 dark:text-white flex items-center gap-2">
                             <ShieldCheck size={18} className="text-primary" />{" "}
-                            VIP Verification Requests
+                            Partner Account Verification
                         </h3>
                         <p className="text-xs text-gray-500 mt-1">
-                            Review broker account verification requests
-                            submitted by the user
+                            Review the broker account evidence submitted for
+                            product access
                         </p>
                     </div>
                     <span className="text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-lg">
@@ -243,7 +261,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                                 </span>
                                             </p>
                                             <p className="text-xs text-gray-500 mt-0.5">
-                                                Balance:{" "}
+                                                Submitted Balance:{" "}
                                                 <span className="font-bold text-gray-700 dark:text-white">
                                                     $
                                                     {parseFloat(
@@ -461,9 +479,9 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                 )}
             </div>
 
-            {/* 2. Pro Entitlements & Management Forms */}
+            {/* 2. Current access and management */}
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                {/* Left/Middle: Current Pro Entitlements Status */}
+                {/* Left/Middle: Current access */}
                 <div className="xl:col-span-2 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm flex flex-col">
                     <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <div>
@@ -472,11 +490,11 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                     size={18}
                                     className="text-amber-500"
                                 />{" "}
-                                Pro Entitlement Subscriptions
+                                Current Access
                             </h3>
                             <p className="text-xs text-gray-500 mt-1">
-                                Status of this user's active or temporary Pro
-                                access benefits
+                                Product access currently assigned to this user
+                                or trading account
                             </p>
                         </div>
                         <span className="text-xs font-bold text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-lg">
@@ -511,10 +529,10 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                                 )}
                                             </div>
                                             <p className="text-xs text-gray-500">
-                                                Granted by:{" "}
-                                                {ent.source === "IB_VERIFIED"
-                                                    ? "IB Auto-Verify"
-                                                    : ent.source}
+                                                Access source:{" "}
+                                                {accessSourceLabels[
+                                                    ent.source
+                                                ] || ent.source}
                                             </p>
                                         </div>
 
@@ -531,7 +549,9 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                                             : "bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-500"
                                                 }`}
                                             >
-                                                {ent.status}
+                                                {accessStatusLabels[
+                                                    ent.status
+                                                ] || ent.status}
                                             </span>
                                         </div>
                                     </div>
@@ -539,7 +559,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                                         <div>
                                             <p className="text-gray-600">
-                                                Start Date
+                                                Access Started
                                             </p>
                                             <p className="font-bold text-gray-700 dark:text-white mt-0.5">
                                                 {format(
@@ -550,7 +570,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                         </div>
                                         <div>
                                             <p className="text-gray-600">
-                                                Expiration Date
+                                                Access Ends
                                             </p>
                                             <p className="font-bold text-gray-700 dark:text-white mt-0.5">
                                                 {ent.expiresAt
@@ -645,7 +665,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                                         className="h-8 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-1 rounded-lg"
                                                     >
                                                         <Trash2 size={14} />{" "}
-                                                        Revoke Pro Access
+                                                        Remove Access
                                                     </Button>
                                                 )}
                                             </div>
@@ -660,22 +680,20 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                 size={24}
                             />
                             <p className="text-sm text-gray-500">
-                                No Pro entitlement privileges set for this user
-                                yet.
+                                No product access has been assigned to this user.
                             </p>
                             <p className="text-xs text-gray-600 mt-1">
-                                Use the panel on the right to manually grant Pro
-                                features.
+                                Use the panel on the right to grant access.
                             </p>
                         </div>
                     )}
                 </div>
 
-                {/* Right: Manual Grant Form */}
+                {/* Right: Manual access form */}
                 <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm">
                     <h3 className="text-base font-bold text-gray-700 dark:text-white flex items-center gap-2 mb-4 border-b border-gray-200 dark:border-white/10 pb-3">
                         <KeyRound size={18} className="text-primary" /> Grant
-                        Pro Access
+                        Product Access
                     </h3>
 
                     <form onSubmit={handleGrantPro} className="space-y-4">
@@ -684,29 +702,38 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                             <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-1.5">
                                 Target Trading Account
                             </label>
-                            <select
-                                value={selectedAccountId}
-                                onChange={(e) =>
-                                    setSelectedAccountId(e.target.value)
-                                }
-                                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-sm text-gray-700 dark:text-white focus:outline-none focus:border-primary/50 transition-colors"
-                            >
-                                <option value="user-level">
-                                    Global (User-level access)
-                                </option>
-                                {user.tradingAccounts.map((acc) => (
-                                    <option key={acc.id} value={acc.id}>
-                                        {acc.broker} · #{acc.accountNumber} (
-                                        {acc.name || "Unnamed"})
-                                    </option>
-                                ))}
-                            </select>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        type="button"
+                                        className="w-full justify-between px-3 py-2.5 h-auto text-sm font-normal rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-gray-700 dark:text-white"
+                                    >
+                                        {selectedAccountId === "user-level"
+                                            ? "Global (User-level access)"
+                                            : user.tradingAccounts.find(a => a.id === selectedAccountId)
+                                            ? `${user.tradingAccounts.find(a => a.id === selectedAccountId)?.broker} · #${user.tradingAccounts.find(a => a.id === selectedAccountId)?.accountNumber}`
+                                            : "Select Target Account"}
+                                        <ChevronDown size={16} className="opacity-60" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start" className="w-full min-w-[240px]">
+                                    <DropdownMenuItem onClick={() => setSelectedAccountId("user-level")}>
+                                        Global (User-level access)
+                                    </DropdownMenuItem>
+                                    {user.tradingAccounts.map((acc) => (
+                                        <DropdownMenuItem key={acc.id} onClick={() => setSelectedAccountId(acc.id)}>
+                                            {acc.broker} · #{acc.accountNumber} ({acc.name || "Unnamed"})
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
 
                         {/* Grant Type */}
                         <div>
                             <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-1.5">
-                                Privilege Model
+                                Access Duration
                             </label>
                             <div className="grid grid-cols-2 gap-2">
                                 <button
@@ -718,7 +745,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                             : "border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-50"
                                     }`}
                                 >
-                                    Permanent Pro
+                                    Ongoing
                                 </button>
                                 <button
                                     type="button"
@@ -729,16 +756,16 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                             : "border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-50"
                                     }`}
                                 >
-                                    Grace Period (Temp)
+                                    Temporary
                                 </button>
                             </div>
                         </div>
 
-                        {/* Grace Days input */}
+                        {/* Temporary access duration */}
                         {grantType === "grace" && (
                             <div>
                                 <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-1.5">
-                                    Grace Period (Days)
+                                    Temporary Access (Days)
                                 </label>
                                 <input
                                     type="number"
@@ -757,12 +784,12 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                         {/* Note */}
                         <div>
                             <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-1.5">
-                                Admin Note / Motivation
+                                Admin Note
                             </label>
                             <textarea
                                 value={grantNote}
                                 onChange={(e) => setGrantNote(e.target.value)}
-                                placeholder="Why is Pro being granted manually?..."
+                                placeholder="Why is this access being granted?"
                                 rows={3}
                                 className="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-sm text-gray-700 dark:text-white placeholder:text-gray-400 focus:outline-none focus:border-primary/50 transition-colors resize-none"
                             />
@@ -779,7 +806,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                             ) : (
                                 <KeyRound size={14} />
                             )}
-                            Grant Access Privilege
+                            Grant Product Access
                         </Button>
                     </form>
                 </div>

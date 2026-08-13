@@ -5,9 +5,9 @@ async function main() {
   console.log("Seeding AI Gateway models and providers...");
   const defaults = [
     { providerEnum: 1, providerCode: "openrouter", displayName: "OpenRouter", defaultModelId: "deepseek/deepseek-chat", baseUrl: "https://openrouter.ai/api/v1/chat/completions", enabled: true },
-    { providerEnum: 2, providerCode: "anthropic", displayName: "Anthropic (Claude)", defaultModelId: "claude-3-5-sonnet-latest", baseUrl: "https://api.anthropic.com/v1/messages", enabled: false },
-    { providerEnum: 3, providerCode: "openai", displayName: "OpenAI (GPT)", defaultModelId: "gpt-4o", baseUrl: "https://api.openai.com/v1/chat/completions", enabled: false },
-    { providerEnum: 4, providerCode: "google", displayName: "Google (Gemini)", defaultModelId: "gemini-1.5-pro", baseUrl: "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={secret}", enabled: false },
+    { providerEnum: 2, providerCode: "anthropic", displayName: "Anthropic (Claude)", defaultModelId: "claude-3-5-sonnet-latest", baseUrl: "https://api.anthropic.com/v1/messages", enabled: true },
+    { providerEnum: 3, providerCode: "openai", displayName: "OpenAI (GPT)", defaultModelId: "gpt-4o", baseUrl: "https://api.openai.com/v1/chat/completions", enabled: true },
+    { providerEnum: 4, providerCode: "google", displayName: "Google (Gemini)", defaultModelId: "gemini-1.5-pro", baseUrl: "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={secret}", enabled: true },
     { providerEnum: 5, providerCode: "deepseek", displayName: "DeepSeek", defaultModelId: "deepseek-chat", baseUrl: "https://api.deepseek.com/v1/chat/completions", enabled: false },
     { providerEnum: 6, providerCode: "xai", displayName: "xAI (Grok)", defaultModelId: "grok-beta", baseUrl: "https://api.x.ai/v1/chat/completions", enabled: false },
   ];

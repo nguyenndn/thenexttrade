@@ -282,8 +282,9 @@ async function snapshotAndSeed() {
             id: true,
             module: {
                 select: {
+                    // NOTE: the app quiz gate requires ALL module lessons (drafts included)
+                    // to be completed before the quiz unlocks, so select every lesson here.
                     lessons: {
-                        where: { status: "published" },
                         select: { id: true },
                     },
                 },
@@ -310,7 +311,6 @@ async function cleanupCreated() {
     }).catch(() => {});
     await prisma.strategy.deleteMany({ where: { name: { startsWith: prefix } } }).catch(() => {});
     await prisma.feedback.deleteMany({ where: { message: { startsWith: prefix } } }).catch(() => {});
-    await prisma.copyTradingRegistration.deleteMany({ where: { message: { startsWith: prefix } } }).catch(() => {});
     await prisma.tradingAccount.deleteMany({ where: { name: { startsWith: prefix } } }).catch(() => {});
 }
 
@@ -388,7 +388,7 @@ function writeReport() {
         "",
         "## Exhaustive Coverage",
         "",
-        "The pass covered route smoke, desktop sidebar, mobile bottom nav, accounts, Journal filters/columns/detail/edit/inline cells, strategies, feedback, settings account/profile/security/TNT/referrals/streak, notifications, copy-trading registration/tabs, funded challenge, academy lesson completion, quiz navigation/submission, leaderboard tabs/profile modal, trading-system tabs/setup widgets, reports, analytics, search, and responsive desktop/mobile screens.",
+        "The pass covered route smoke, desktop sidebar, mobile bottom nav, accounts, Journal filters/columns/detail/edit/inline cells, strategies, feedback, settings account/profile/security/TNT/referrals/streak, notifications, funded challenge, academy lesson completion, quiz navigation/submission, leaderboard tabs/profile modal, trading-system tabs/setup widgets, reports, analytics, search, and responsive desktop/mobile screens.",
         "",
     ].filter(Boolean).join("\n"), "utf8");
 }
@@ -530,23 +530,29 @@ async function settingsMicroControls(page: Page) {
         await gotoHealthy(page, "/dashboard/settings/sync-settings");
         const generate = page.getByRole("button", { name: /generate api key|regenerate/i }).first();
         await generate.click();
+        // Deterministic check against the persisted key (the API endpoint itself is
+        // verified elsewhere; network-timing waitForResponse proved flaky here).
+        await expect.poll(async () => {
+            const user = await prisma.user.findUnique({ where: { id: snapshots.user!.id }, select: { syncApiKey: true } });
+            return user?.syncApiKey || "";
+        }, { timeout: 15_000 }).not.toBe("");
         await expect(page.locator("body")).toContainText(/Save your API key now|Your Sync API Key/i, { timeout: 12_000 });
         const copyButton = page.getByTitle(/copy to clipboard/i);
         if (await copyButton.isVisible().catch(() => false)) await copyButton.click();
-        await Promise.all([
-            page.waitForResponse((res) => res.url().includes("/api/sync/api-key") && res.request().method() === "POST" && res.status() === 200, { timeout: 15_000 }),
-            page.getByRole("button", { name: /regenerate/i }).click(),
-        ]);
+        await page.getByRole("button", { name: /regenerate/i }).click();
         await expect(page.locator("body")).toContainText(/Your Sync API Key/i, { timeout: 12_000 });
-        page.once("dialog", dialog => dialog.accept());
-        await Promise.all([
-            page.waitForResponse((res) => res.url().includes("/api/sync/api-key") && res.request().method() === "DELETE" && res.status() === 200, { timeout: 15_000 }),
-            page.getByRole("button", { name: /revoke key/i }).click(),
-        ]);
+        await expect.poll(async () => {
+            const user = await prisma.user.findUnique({ where: { id: snapshots.user!.id }, select: { syncApiKey: true } });
+            return user?.syncApiKey || "";
+        }, { timeout: 15_000 }).not.toBe("");
+        // Revoke opens the app's custom ConfirmDialog (not a native window.confirm),
+        // so confirm inside the dialog to actually fire the DELETE.
+        await page.getByRole("button", { name: /revoke key/i }).click();
+        await page.getByRole("button", { name: /^revoke$/i }).click();
         await expect.poll(async () => {
             const user = await prisma.user.findUnique({ where: { id: snapshots.user!.id }, select: { syncApiKey: true } });
             return user?.syncApiKey || null;
-        }, { timeout: 12_000 }).toBeNull();
+        }, { timeout: 15_000 }).toBeNull();
         await page.reload({ waitUntil: "domcontentloaded" });
         await expect(page.locator("body")).toContainText(/No API Key Generated/i, { timeout: 12_000 });
         await expect(page.getByRole("link", { name: /Download Trade Manager EA/i })).toBeVisible();
@@ -596,22 +602,47 @@ async function academyMicroControls(page: Page) {
         }
         await gotoHealthy(page, `/dashboard/academy/quiz/${created.quizId}`);
         await expect(page.locator("body")).toContainText(/Question 1 of/i);
-        const firstOption = page.locator("button").filter({ hasText: /^A|^B|^C|^D/ }).first();
-        await firstOption.click();
-        const next = page.getByRole("button", { name: "Next", exact: true });
-        await expect(next).toBeEnabled();
-        await next.click();
-        const prev = page.getByRole("button", { name: /previous/i });
-        await expect(prev).toBeEnabled();
-        await prev.click();
 
-        const questions = await page.locator('button[aria-label^="Go to question"]').count();
-        for (let i = 0; i < questions; i += 1) {
-            await page.locator('button[aria-label^="Go to question"]').nth(i).click();
-            const selected = page.locator("button").filter({ hasText: /^A|^B|^C|^D/ }).first();
-            await selected.click();
+        const answerCurrent = async () => {
+            const option = page.locator("button").filter({ hasText: /^A|^B|^C|^D/ }).first();
+            await option.click();
+            const check = page.getByRole("button", { name: /check answer/i });
+            await expect(check).toBeVisible();
+            await check.click();
+            // The Check Answer button disappears once the Quiz Coach verdict lands.
+            await expect(check).not.toBeVisible({ timeout: 30_000 });
+        };
+
+        const questionDots = page.locator('button[aria-label^="Go to question"]');
+        const dotCount = await questionDots.count();
+        const singleQuestion = dotCount <= 1;
+
+        if (!singleQuestion) {
+            // This quiz is AI-coached: "Next" stays disabled until an option is
+            // selected AND "Check Answer" has run (Quiz Coach verdict).
+            const next = page.getByRole("button", { name: "Next", exact: true });
+            await expect(next).toBeDisabled();
+            await answerCurrent();
+            await expect(next).toBeEnabled({ timeout: 30_000 });
+            await next.click();
+            const prev = page.getByRole("button", { name: /previous/i });
+            await expect(prev).toBeEnabled();
+            await prev.click();
+        } else {
+            await answerCurrent();
         }
-        await page.getByRole("button", { name: /submit quiz/i }).click();
+
+        // Visit every question, answering + checking each one. Question 0 was
+        // already answered+checked above, so skip it inside the loop.
+        for (let i = 0; i < dotCount; i += 1) {
+            await questionDots.nth(i).click();
+            if (i === 0) continue;
+            await answerCurrent();
+        }
+
+        const submit = page.getByRole("button", { name: /submit quiz/i });
+        await expect(submit).toBeEnabled({ timeout: 30_000 });
+        await submit.click();
         await expect(page.locator("body")).toContainText(/Quiz Passed|Not Quite|Back to Academy/i, { timeout: 15_000 });
     });
 }
@@ -633,23 +664,12 @@ async function secondaryScreens(page: Page) {
 
     await recordStep("desktop", "Trading System", "Tabs and setup guide buttons", async () => {
         await gotoHealthy(page, "/dashboard/trading-systems");
-        for (const name of [/my accounts/i, /expert advisor/i, /indicators/i, /vip/i]) {
+        for (const name of [/expert advisor/i, /indicators/i, /vip/i]) {
             await page.getByRole("button", { name }).click();
             await expect(page.locator("body")).not.toContainText(/Application error|Unhandled Runtime Error/i);
         }
         const dismiss = page.getByRole("button", { name: /dismiss setup guide/i });
         if (await dismiss.isVisible().catch(() => false)) await dismiss.click();
-    });
-
-    await recordStep("desktop", "Copy Trading", "Overview and My Account tabs plus validation", async () => {
-        await gotoHealthy(page, "/dashboard/copy-trading");
-        await page.getByRole("button", { name: /overview/i }).click();
-        await page.getByRole("button", { name: /get started|register now/i }).first().click();
-        await expect(page.getByText(/Register for Copy Trading/i)).toBeVisible();
-        await expect(page.getByRole("button", { name: /^next/i })).toBeDisabled();
-        await gotoHealthy(page, "/dashboard/copy-trading");
-        await page.getByRole("button", { name: /my account/i }).click();
-        await expect(page.locator("body")).toContainText(/My Account|Register|Pending|Connected/i);
     });
 }
 

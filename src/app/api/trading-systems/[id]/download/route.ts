@@ -84,7 +84,7 @@ export async function GET(
                 where: { userId: user.id },
                 select: { role: true },
             });
-            if (profile?.role === "ADMIN" || profile?.role === "EDITOR") {
+            if (profile?.role === "ADMIN") {
                 hasAccess = true;
             }
         }
@@ -110,6 +110,29 @@ export async function GET(
                 version: product.version,
             },
         });
+
+        // Record product usage event (DOWNLOAD) and update EAProductAccess
+        try {
+            await prisma.eAProductUsageEvent.create({
+                data: {
+                    userId: user.id,
+                    productId: product.id,
+                    eventType: "DOWNLOAD",
+                    productVersion: product.version,
+                },
+            });
+            await prisma.eAProductAccess.updateMany({
+                where: {
+                    userId: user.id,
+                    productId: product.id,
+                },
+                data: {
+                    lastDownloadedAt: new Date(),
+                },
+            });
+        } catch (err) {
+            console.error("[API] Error updating product download access telemetry:", err);
+        }
 
         // Set response headers
         const filename = filePath.split("/").pop() || "download.ex5";

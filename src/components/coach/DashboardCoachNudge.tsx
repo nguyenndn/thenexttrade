@@ -25,21 +25,12 @@ import {
     DialogDescription,
     DialogTrigger,
 } from "@/components/ui/Dialog";
-import { LearningRecommendation } from "@/lib/coach/lesson-recommendations.server";
+import { LearningRecommendation } from "@/lib/trader-growth/types";
 
-import { InsightEvidence } from "@/lib/insights/types";
+import { NextBestActionView } from "@/lib/trader-growth/types";
 
 interface DashboardCoachNudgeProps {
-    nextBestAction: {
-        id: string;
-        title: string;
-        description: string;
-        ctaLabel: string;
-        ctaHref: string;
-        priority: number;
-        sourceSignalType?: string;
-        evidence?: InsightEvidence[];
-    };
+    nextBestAction: NextBestActionView;
     learningRecommendations: LearningRecommendation[];
     coachPlan?: any;
     open?: boolean;
@@ -209,76 +200,74 @@ export function DashboardCoachNudge({
                                         wordBreak: "break-word",
                                     }}
                                 >
-                                    {nextBestAction.description}
+                                    {nextBestAction.reason}
                                 </p>
                             </div>
                         </div>
 
                         {/* Evidence Section */}
-                        {nextBestAction.evidence &&
-                            nextBestAction.evidence.length > 0 && (
-                                <div className="w-full mt-3 border-t border-amber-500/10 dark:border-gold/10 pt-3 space-y-2">
-                                    <h4 className="text-[10px] font-black uppercase tracking-widest text-amber-600/70 dark:text-gold/70">
-                                        Data Evidence
-                                    </h4>
-                                    <div className="space-y-2">
-                                        {nextBestAction.evidence.map(
-                                            (ev, i) => (
-                                                <div
-                                                    key={i}
-                                                    className="flex items-center justify-between text-xs p-2.5 bg-white/50 dark:bg-black/20 rounded-lg border border-amber-500/10 dark:border-gold/10"
-                                                >
-                                                    <div className="flex flex-col">
-                                                        <span className="font-bold text-gray-700 dark:text-gray-300">
-                                                            {ev.label}
-                                                        </span>
-                                                        {ev.description && (
-                                                            <span className="text-gray-500 text-[12px] mt-0.5">
-                                                                {ev.description}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                    <div className="text-right flex flex-col items-end shrink-0 pl-2">
-                                                        {ev.count !==
-                                                            undefined && (
-                                                                <span className="font-bold text-amber-600 dark:text-gold">
-                                                                    {ev.count}
-                                                                    {ev.kind ===
-                                                                        "METRIC" &&
-                                                                        ev.sampleSize ===
-                                                                        undefined
-                                                                        ? "%"
-                                                                        : ""}{" "}
-                                                                    {ev.kind !==
-                                                                        "METRIC" &&
-                                                                        ev.sampleSize ===
-                                                                        undefined
-                                                                        ? "times"
-                                                                        : ""}
-                                                                </span>
-                                                            )}
-                                                        {ev.sampleSize !==
-                                                            undefined && (
-                                                                <span className="text-[9px] text-gray-400 mt-0.5">
-                                                                    out of{" "}
-                                                                    {ev.sampleSize}
-                                                                </span>
-                                                            )}
-                                                    </div>
-                                                </div>
-                                            )
-                                        )}
+                        {nextBestAction.evidenceDetails && (
+                            <div className="w-full mt-3 border-t border-amber-500/10 dark:border-gold/10 pt-3 space-y-2">
+                                <h4 className="text-[10px] font-black uppercase tracking-widest text-amber-600/70 dark:text-gold/70">
+                                    Data Evidence
+                                </h4>
+                                <div className="space-y-2">
+                                    <div className="flex items-center justify-between text-xs p-2.5 bg-white/50 dark:bg-black/20 rounded-lg border border-amber-500/10 dark:border-gold/10">
+                                        <div className="flex flex-col">
+                                            <span className="font-bold text-gray-700 dark:text-gray-300">
+                                                {nextBestAction.evidenceDetails.metric}
+                                            </span>
+                                            <span className="text-gray-500 text-[12px] mt-0.5">
+                                                Confidence Level: {nextBestAction.evidenceDetails.confidence}
+                                            </span>
+                                        </div>
+                                        <div className="text-right flex flex-col items-end shrink-0 pl-2">
+                                            <span className="font-bold text-amber-600 dark:text-gold">
+                                                Sample: {nextBestAction.evidenceDetails.sampleSize} trades
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            )}
+                            </div>
+                        )}
 
-                        <div className="flex justify-end pt-1 w-full">
+                        <div className="flex flex-wrap items-center justify-end gap-2 pt-1 w-full">
+                            <Button
+                                variant="outline"
+                                className="border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 font-bold text-xs h-9 px-3 rounded-lg flex items-center gap-1.5"
+                                onClick={async () => {
+                                    try {
+                                        const { createAndAcceptExperiment } = await import("@/actions/improvement-experiments");
+                                        const desc = nextBestAction.reason || nextBestAction.title || "Follow trading discipline";
+                                        const res = await createAndAcceptExperiment({
+                                            actionType: nextBestAction.id || "GENERIC_ACTION",
+                                            title: nextBestAction.title,
+                                            hypothesis: desc,
+                                            instruction: desc,
+                                            primaryMetric: "WIN_RATE",
+                                            targetTradeCount: 10,
+                                        });
+                                        if (res.success) {
+                                            const { toast } = await import("sonner");
+                                            toast.success("Started 10-trade experiment!");
+                                            setIsOpen(false);
+                                        }
+                                    } catch (err: any) {
+                                        const { toast } = await import("sonner");
+                                        toast.error(err.message || "Could not start experiment");
+                                    }
+                                }}
+                            >
+                                <Sparkles size={14} />
+                                <span>Try for Next 10 Trades</span>
+                            </Button>
+
                             <Link
                                 href={nextBestAction.ctaHref}
                                 onClick={() => setIsOpen(false)}
                             >
                                 <Button className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-extrabold text-xs h-9 px-4 rounded-lg shadow-sm shadow-amber-500/15 hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-1.5 border-0 group">
-                                    <span>{nextBestAction.ctaLabel}</span>
+                                    <span>{nextBestAction.ctaText}</span>
                                     <ArrowRight
                                         size={14}
                                         className="transition-transform group-hover:translate-x-0.5"
@@ -378,7 +367,7 @@ export function DashboardCoachNudge({
                                 <div className="space-y-3 w-full">
                                     {learningRecommendations.map((rec) => {
                                         const isLesson =
-                                            rec.type === "ACADEMY_LESSON";
+                                            rec.type === "LESSON";
                                         return (
                                             <div
                                                 key={rec.id}
@@ -408,13 +397,13 @@ export function DashboardCoachNudge({
                                                                 ? "Academy Lesson"
                                                                 : "Article"}
                                                         </span>
-                                                        {rec.estimatedMinutes && (
+                                                        {rec.readTimeMinutes && (
                                                             <span className="inline-flex items-center gap-1 text-[9px] font-bold text-gray-400 dark:text-gray-500">
                                                                 <Clock
                                                                     size={9}
                                                                 />{" "}
                                                                 {
-                                                                    rec.estimatedMinutes
+                                                                    rec.readTimeMinutes
                                                                 }{" "}
                                                                 min
                                                             </span>
@@ -440,13 +429,13 @@ export function DashboardCoachNudge({
                                                                 "break-word",
                                                         }}
                                                     >
-                                                        Coach: "{rec.reason}"
+                                                        Coach: "{rec.reasonToRead || rec.description}"
                                                     </p>
                                                 </div>
 
                                                 <div className="shrink-0 self-center pl-2">
                                                     <Link
-                                                        href={rec.url}
+                                                        href={rec.href}
                                                         onClick={() =>
                                                             setIsOpen(false)
                                                         }

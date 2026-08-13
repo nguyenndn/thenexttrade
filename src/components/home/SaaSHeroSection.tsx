@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 interface SaaSHeroSectionProps {
@@ -31,26 +31,43 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                     weekly action to improve your trading.
                 </p>
 
-                {/* Single Primary CTA */}
-                <div className="flex flex-col items-center justify-center gap-4 mb-4 w-full sm:w-auto animate-in fade-in duration-1000">
+                {/* Dual Primary CTAs (2-Path Intent) */}
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4 w-full sm:w-auto animate-in fade-in duration-1000">
                     <Link
                         href={
                             isLoggedIn
                                 ? "/dashboard"
-                                : "/auth/signup?source=homepage_hero"
+                                : "/auth/signup?intent=TRADE_FIRST&source=homepage_hero"
                         }
                         className="w-full sm:w-auto group"
                     >
                         <Button className="w-full sm:w-auto min-h-12 px-8 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-sm shadow-[0_10px_24px_rgba(245,158,11,0.22)] hover:shadow-[0_14px_30px_rgba(245,158,11,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap animate-btn-shine">
                             <span>
                                 {isLoggedIn
-                                    ? "Open Dashboard"
-                                    : "Start Free Journal"}
+                                    ? "Open Journal"
+                                    : "Start Free Journal (Sync MT5)"}
                             </span>
                             <ArrowRight
                                 size={16}
                                 className="group-hover:translate-x-1 transition-transform duration-300"
                             />
+                        </Button>
+                    </Link>
+
+                    <Link
+                        href={
+                            isLoggedIn
+                                ? "/dashboard/academy"
+                                : "/auth/signup?intent=LEARN_FIRST&source=homepage_hero"
+                        }
+                        className="w-full sm:w-auto group"
+                    >
+                        <Button
+                            variant="outline"
+                            className="w-full sm:w-auto min-h-12 px-8 rounded-xl border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900/80 text-slate-700 dark:text-slate-200 hover:border-gold hover:text-amber-600 dark:hover:text-gold font-bold text-sm shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
+                        >
+                            <GraduationCap size={18} className="text-amber-500 dark:text-gold shrink-0" />
+                            <span>Explore Academy Roadmap</span>
                         </Button>
                     </Link>
                 </div>

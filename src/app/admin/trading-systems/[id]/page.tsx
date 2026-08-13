@@ -2,17 +2,21 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { ProductDetailClient } from "./ProductDetailClient";
+import { requireAdminPageAccess } from "@/lib/admin/auth.server";
 
 export const metadata: Metadata = {
     title: "Product Detail | Admin",
     description: "View and manage EA product details",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function ProductDetailPage({
     params,
 }: {
     params: Promise<{ id: string }>;
 }) {
+    await requireAdminPageAccess();
     const { id } = await params;
     if (!id) return notFound();
 

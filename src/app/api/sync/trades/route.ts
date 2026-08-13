@@ -43,7 +43,7 @@ interface AccountSync {
 
 /**
  * POST /api/sync/trades
- * Batch sync trades from TNT Connect app.
+ * Batch sync trades from the Trade Manager app.
  * Accepts multiple accounts in a single request.
  * Auth: X-Sync-Key header (user-level API key)
  */
@@ -285,7 +285,7 @@ export async function POST(request: NextRequest) {
                                     result,
                                     syncSource: "APP",
                                     syncedAt: new Date(),
-                                    entryReason: "Synced from TNT Connect",
+                                    entryReason: "Synced from Trade Manager",
                                     notes: trade.comment || null,
                                     magicNumber:
                                         trade.magic !== undefined
@@ -308,7 +308,7 @@ export async function POST(request: NextRequest) {
                     tradesReceived: trades?.length || 0,
                     tradesImported: imported,
                     tradesSkipped: skipped,
-                    eaVersion: "TNT-Connect",
+                    eaVersion: "Trade Manager",
                 },
             });
 

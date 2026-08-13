@@ -49,7 +49,6 @@ model User {
   accountNotifications     AccountNotification[]
   analyticsEvents          AnalyticsEvent[]
   shortcuts                ContentShortcut[]
-  copyTradingRegistrations CopyTradingRegistration[]
   eaCommands               EaCommand[]
   edgeEvents               EdgeEvent[]
   ibActivitySnapshots      IbActivitySnapshot[]
@@ -75,6 +74,10 @@ model User {
   mt5ImportJobs            Mt5ImportJob[]
   TradeCheckSnapshot       TradeCheckSnapshot[]
   tradingDayNotes          TradingDayNote[]
+  eaProductAccesses        EAProductAccess[]
+  eaProductUsageEvents     EAProductUsageEvent[]
+  insightSnapshots         TraderInsightSnapshot[]
+  improvementExperiments   ImprovementExperiment[]
 
   @@index([createdAt])
   @@index([email])
@@ -419,6 +422,11 @@ model TradingAccount {
   rawOrders                Mt5RawOrder[]
   rawDeals                 Mt5RawDeal[]
   tradeCheckSnapshots      TradeCheckSnapshot[]
+  productAccesses          EAProductAccess[]
+  productUsageEvents       EAProductUsageEvent[]
+  capitalSnapshots         TradingAccountCapitalSnapshot[]
+  insightSnapshots         TraderInsightSnapshot[]
+  improvementExperiments   ImprovementExperiment[]
 
   @@index([userId])
   @@map("trading_accounts")
@@ -732,8 +740,10 @@ model EAProduct {
   totalDownloads Int          @default(0)
   createdAt      DateTime     @default(now()) @db.Timestamptz(6)
   updatedAt      DateTime     @updatedAt @db.Timestamptz(6)
-  isFree         Boolean      @default(false)
+  isFree         Boolean               @default(false)
   downloads      EADownload[]
+  accessRecords  EAProductAccess[]
+  usageEvents    EAProductUsageEvent[]
 
   @@index([isActive])
   @@index([type])
@@ -768,6 +778,9 @@ model Notification {
   isRead      Boolean              @default(false)
   readAt      DateTime?            @db.Timestamptz(6)
   broadcastId String?
+  dedupeKey   String?              @map("dedupe_key") @db.VarChar(180)
+  metadata    Json?
+  expiresAt   DateTime?            @map("expires_at") @db.Timestamptz(6)
   createdAt   DateTime             @default(now()) @db.Timestamptz(6)
   broadcast   AdminBroadcast?      @relation(fields: [broadcastId], references: [id])
   user        User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -776,6 +789,74 @@ model Notification {
   @@index([isRead])
   @@index([createdAt])
   @@index([broadcastId])
+  @@unique([userId, dedupeKey], map: "unique_user_notification_dedupe")
+}
+
+model TraderInsightSnapshot {
+  id                 String   @id @default(cuid())
+  userId             String   @db.Uuid
+  accountId          String?
+  insightType        String   @db.VarChar(80)
+  fingerprint        String   @db.VarChar(160)
+  title              String   @db.VarChar(160)
+  summary            String
+  evidence           Json
+  sampleSize         Int
+  confidence         String   @db.VarChar(20)
+  periodStart        DateTime @db.Timestamptz(6)
+  periodEnd          DateTime @db.Timestamptz(6)
+  sourceLastSyncAt   DateTime? @db.Timestamptz(6)
+  engineVersion      String   @db.VarChar(30)
+  status             String   @default("ACTIVE") @db.VarChar(20)
+  viewedAt           DateTime? @db.Timestamptz(6)
+  dismissedAt        DateTime? @db.Timestamptz(6)
+  supersededAt       DateTime? @db.Timestamptz(6)
+  createdAt          DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime @updatedAt @db.Timestamptz(6)
+
+  user         User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account      TradingAccount?        @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  experiments  ImprovementExperiment[]
+
+  @@unique([userId, fingerprint, engineVersion])
+  @@index([userId, status, createdAt])
+  @@index([userId, accountId, insightType])
+  @@map("trader_insight_snapshots")
+}
+
+model ImprovementExperiment {
+  id                  String   @id @default(cuid())
+  userId              String   @db.Uuid
+  accountId           String?
+  sourceInsightId     String?
+  coachActionPlanId   String?
+  coachPlanItemId     String?
+  actionType          String   @db.VarChar(80)
+  title               String   @db.VarChar(160)
+  hypothesis          String
+  instruction         String
+  primaryMetric       String   @db.VarChar(60)
+  targetTradeCount    Int      @default(10)
+  baseline            Json
+  followUp            Json?
+  result              Json?
+  status              String   @default("DRAFT") @db.VarChar(30)
+  outcome             String?  @db.VarChar(30)
+  acceptedAt          DateTime? @db.Timestamptz(6)
+  reviewReadyAt       DateTime? @db.Timestamptz(6)
+  completedAt         DateTime? @db.Timestamptz(6)
+  cancelledAt         DateTime? @db.Timestamptz(6)
+  createdAt           DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime @updatedAt @db.Timestamptz(6)
+
+  user          User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account       TradingAccount?        @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  sourceInsight TraderInsightSnapshot? @relation(fields: [sourceInsightId], references: [id], onDelete: SetNull)
+
+  @@index([userId, status, createdAt])
+  @@index([userId, accountId, acceptedAt])
+  @@index([sourceInsightId])
+  @@map("improvement_experiments")
 }
 
 model AdminBroadcast {
@@ -900,41 +981,6 @@ model Quote {
   @@index([isActive])
 }
 
-model CopyTradingRegistration {
-  id               String            @id @default(uuid())
-  userId           String            @db.Uuid
-  fullName         String
-  email            String
-  telegramHandle   String?
-  tradingCapital   Float             @default(0)
-  brokerName       String
-  customBrokerName String?           @map("custom_broker_name")
-  mt5Server        String?           @map("mt5_server")
-  customServer     String?           @map("custom_server")
-  mt5AccountNumber String            @map("mt5_account_number")
-  masterPassword   String?           @map("master_password")
-  message          String?
-  status           CopyTradingStatus @default(PENDING)
-  reviewedBy       String?           @map("reviewed_by") @db.Uuid
-  reviewedAt       DateTime?         @map("reviewed_at") @db.Timestamptz(6)
-  rejectReason     String?           @map("reject_reason")
-  adminNote        String?           @map("admin_note")
-  createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt        DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
-  partnerCode      String?           @map("partner_code")
-  phone            String?           @db.VarChar(20)
-  disconnectReason String?           @map("disconnect_reason")
-  disconnectedAt   DateTime?         @map("disconnected_at") @db.Timestamptz(6)
-  partner          Partner?          @relation(fields: [partnerCode], references: [partnerCode])
-  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([mt5AccountNumber, brokerName])
-  @@index([userId])
-  @@index([status])
-  @@index([createdAt])
-  @@map("copy_trading_registrations")
-}
-
 model Partner {
   id             Int                       @id @default(autoincrement())
   partnerCode    String                    @unique @map("partner_code")
@@ -946,7 +992,6 @@ model Partner {
   status         String                    @default("ACTIVE")
   createdAt      DateTime                  @default(now()) @map("created_at")
   updatedAt      DateTime                  @updatedAt @map("updated_at")
-  registrations  CopyTradingRegistration[]
 
   @@map("partners")
 }
@@ -1289,9 +1334,6 @@ enum NotificationType {
   MAINTENANCE
   PROMOTION
   FEATURE_UPDATE
-  COPY_TRADING_REGISTERED
-  COPY_TRADING_APPROVED
-  COPY_TRADING_REJECTED
   WEEKLY_REPORT
   MONTHLY_REPORT
   NO_TRADES_NUDGE
@@ -1305,13 +1347,6 @@ enum NotificationPriority {
   NORMAL
   HIGH
   URGENT
-}
-
-enum CopyTradingStatus {
-  PENDING
-  APPROVED
-  REJECTED
-  DISCONNECTED
 }
 
 enum ReportType {
@@ -1871,4 +1906,89 @@ model TradeCheckSnapshot {
   @@index([userId, passed])
   @@index([journalEntryId])
   @@map("trade_check_snapshots")
+}
+
+enum ToolAccessStatus {
+  GRANTED
+  EXPIRED
+  REVOKED
+}
+
+enum ToolAccessSource {
+  IB_VERIFIED
+  MANUAL_ADMIN
+  PROMO
+  LEGACY_PRO
+}
+
+enum ToolUsageEventType {
+  HEARTBEAT
+  SYNC
+  DOWNLOAD
+  SETUP_CONFIRMED
+}
+
+model EAProductAccess {
+  id               String           @id @default(uuid())
+  userId           String           @db.Uuid
+  productId        String
+  tradingAccountId String?
+  scopeKey         String           @unique @map("scope_key")
+  status           ToolAccessStatus @default(GRANTED)
+  source           ToolAccessSource?
+  startsAt         DateTime?        @map("starts_at") @db.Timestamptz(6)
+  expiresAt        DateTime?        @map("expires_at") @db.Timestamptz(6)
+  lastDownloadedAt DateTime?        @map("last_downloaded_at") @db.Timestamptz(6)
+  lastUsedAt       DateTime?        @map("last_used_at") @db.Timestamptz(6)
+  lastHeartbeatAt  DateTime?        @map("last_heartbeat_at") @db.Timestamptz(6)
+  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime         @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product        EAProduct       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  tradingAccount TradingAccount? @relation(fields: [tradingAccountId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([productId, status])
+  @@index([tradingAccountId, status])
+  @@index([lastUsedAt])
+  @@map("ea_product_accesses")
+}
+
+model EAProductUsageEvent {
+  id               String             @id @default(uuid())
+  userId           String             @db.Uuid
+  productId        String
+  tradingAccountId String?
+  eventType        ToolUsageEventType @map("event_type")
+  occurredAt       DateTime           @default(now()) @map("occurred_at") @db.Timestamptz(6)
+  productVersion   String?            @map("product_version")
+  syncSource       String?            @map("sync_source")
+  metadata         Json?
+  createdAt        DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product        EAProduct       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  tradingAccount TradingAccount? @relation(fields: [tradingAccountId], references: [id], onDelete: Cascade)
+
+  @@index([userId, productId, occurredAt])
+  @@index([tradingAccountId, occurredAt])
+  @@index([eventType, occurredAt])
+  @@map("ea_product_usage_events")
+}
+
+model TradingAccountCapitalSnapshot {
+  id               String   @id @default(uuid())
+  tradingAccountId String   @map("trading_account_id")
+  balance          Float
+  equity           Float?
+  currency         String   @default("USD") @db.VarChar(10)
+  source           String   @db.VarChar(30)
+  capturedAt       DateTime @default(now()) @map("captured_at") @db.Timestamptz(6)
+
+  tradingAccount TradingAccount @relation(fields: [tradingAccountId], references: [id], onDelete: Cascade)
+
+  @@index([tradingAccountId, capturedAt])
+  @@index([capturedAt])
+  @@map("trading_account_capital_snapshots")
 }

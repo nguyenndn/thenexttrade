@@ -42,8 +42,7 @@ export async function DELETE(
         }
 
         const isAuthor = comment.userId === user.id;
-        const isAdmin =
-            userProfile?.role === "ADMIN" || userProfile?.role === "EDITOR"; // Editors effectively moderate content too
+        const isAdmin = userProfile?.role === "ADMIN";
 
         if (!isAuthor && !isAdmin) {
             return NextResponse.json(

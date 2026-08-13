@@ -92,7 +92,6 @@ async function cleanup() {
     await prisma.comment.deleteMany({ where: { content: { startsWith: prefix } } }).catch(() => {});
     await prisma.feedback.deleteMany({ where: { message: { startsWith: prefix } } }).catch(() => {});
     await prisma.vipRequest.deleteMany({ where: { accountNumber: created.vipAccount } }).catch(() => {});
-    await prisma.copyTradingRegistration.deleteMany({ where: { mt5AccountNumber: created.copyAccount } }).catch(() => {});
     await prisma.tag.deleteMany({ where: { name: { startsWith: prefix } } }).catch(() => {});
     await prisma.category.deleteMany({ where: { name: { startsWith: prefix } } }).catch(() => {});
     await prisma.user.deleteMany({ where: { email: created.userEmail } }).catch(() => {});
@@ -345,7 +344,7 @@ test("deep admin dashboard functions with local QA data", async ({ page }) => {
         return "Feedback search, status update, and status filter completed.";
     });
 
-    await recordStep("Community", "Seed VIP request, view, approve, delete", async () => {
+    await recordStep("VIP Pipeline", "Seed VIP request, view, approve, delete", async () => {
         await prisma.vipRequest.create({
             data: {
                 userId: admin.id,
@@ -359,48 +358,19 @@ test("deep admin dashboard functions with local QA data", async ({ page }) => {
                 status: "PENDING",
             },
         });
-        await page.goto(`/admin/community?qa=${runId}`, { waitUntil: "domcontentloaded" });
-        await page.getByPlaceholder(/Search Telegram, email, account/i).fill(created.vipAccount);
+        await page.goto(`/admin/ib/pipeline?qa=${runId}`, { waitUntil: "domcontentloaded" });
+        await page.getByPlaceholder(/Search name, email, Telegram, account #/i).fill(created.vipAccount);
+        await page.getByRole("button", { name: /^Search$/i }).click();
         await expectBody(page, new RegExp(created.vipAccount));
         const row = page.locator("tr", { hasText: created.vipAccount });
-        await row.getByRole("button", { name: /actions/i }).click();
-        await page.getByText("View Details").click();
-        await expectBody(page, /Request Details/i);
-        await page.getByRole("button", { name: /^Approve$/i }).click();
-        await expectBody(page, /Approved/i, 10_000);
-        await page.getByRole("button", { name: /close modal/i }).click();
-        await page.locator("tr", { hasText: created.vipAccount }).getByRole("button", { name: /actions/i }).click();
-        await page.getByText("Delete").last().click();
+        await row.getByRole("button", { name: /^Approve$/i }).click();
+        await expectBody(page, /approved/i, 10_000);
+        const actionsBtn = page.locator("tr", { hasText: created.vipAccount }).getByRole("button").last();
+        await actionsBtn.click();
+        await page.getByText("Delete Request").click();
         await confirmDanger(page);
         await expect(page.locator("body")).not.toContainText(created.vipAccount, { timeout: 10_000 });
         return "VIP request view, approve, and delete flow completed.";
-    });
-
-    await recordStep("Copy Trading", "Seed registration, search, approve, reject validation dialog", async () => {
-        await prisma.copyTradingRegistration.create({
-            data: {
-                userId: admin.id,
-                fullName: prefix,
-                email: admin.email || adminEmail!,
-                telegramHandle: "@qa",
-                tradingCapital: 1000,
-                brokerName: "Exness",
-                mt5AccountNumber: created.copyAccount,
-                status: "PENDING",
-                message: `${prefix} copy trading`,
-            },
-        });
-        await page.goto("/admin/copy-trading", { waitUntil: "domcontentloaded" });
-        await page.getByPlaceholder(/Search name, email, broker/i).fill(created.copyAccount);
-        await page.waitForURL(/q=/, { timeout: 10_000 });
-        await expectBody(page, new RegExp(created.copyAccount), 10_000);
-        const row = page.locator("tr", { hasText: created.copyAccount });
-        await row.locator('button[title="Reject"]').click();
-        await expectBody(page, /Reject Registration/i);
-        await page.getByRole("button", { name: /cancel/i }).click();
-        await row.locator('button[title="Approve"]').click();
-        await expectBody(page, /Registration approved/i, 10_000);
-        return "Copy trading search, reject dialog, and approve action completed.";
     });
 
     const failures = results.filter((r) => r.status === "FAIL");

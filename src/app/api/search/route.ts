@@ -47,7 +47,7 @@ export async function GET(request: Request) {
 
             if (
                 !profile ||
-                (profile.role !== "ADMIN" && profile.role !== "EDITOR")
+                profile.role !== "ADMIN"
             ) {
                 return NextResponse.json(
                     { error: "Forbidden" },

@@ -11,6 +11,10 @@ export interface GatewayExecutionInput {
     systemPrompt: string;
     taskKey?: string;
     skipTradingSchemaValidation?: boolean;
+    /** Base64-encoded image data for Vision/multimodal requests */
+    imageBase64?: string;
+    /** MIME type of the image (e.g. "image/png", "image/jpeg") */
+    imageMimeType?: string;
 }
 
 export interface ProviderAttemptResult {
@@ -301,7 +305,11 @@ export async function executeAiGateway(
                 decryptedSecret,
                 systemPrompt: input.systemPrompt,
                 snapshot: input.snapshot,
-                timeoutMs: plan.policy.timeoutMs || provider.timeoutMs || 30000,
+                timeoutMs: input.imageBase64
+                    ? Math.max(plan.policy.timeoutMs || provider.timeoutMs || 30000, 60000)
+                    : plan.policy.timeoutMs || provider.timeoutMs || 30000,
+                imageBase64: input.imageBase64,
+                imageMimeType: input.imageMimeType,
             });
 
             let errorCode = providerResult.error_code;

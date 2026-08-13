@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import type { IbLeadSource } from "@prisma/client";
+import { computeCapitalBreakdown } from "@/lib/admin/ib/capital.server";
 
 // ============================================================================
 // IB LEAD TRACKING
@@ -180,43 +181,127 @@ export async function getIbOverviewStats(range: IbStatsRange = "30d") {
     });
     if (profile?.role !== "ADMIN") return null;
 
+    const now = new Date();
     const rangeStart = getRangeStart(range);
     const leadWhere = rangeStart ? { clickedAt: { gte: rangeStart } } : {};
     const requestWhere = rangeStart ? { createdAt: { gte: rangeStart } } : {};
-    const entitlementWhere = rangeStart
-        ? { createdAt: { gte: rangeStart } }
-        : {};
 
     const [
         totalLeads,
         pendingRequests,
-        verifiedUsers,
-        activeProUsers,
-        graceUsers,
-        revokedUsers,
+        requestsInRange,
+        activeEntitlements,
+        graceEntitlements,
+        revokedEntitlements,
+        activeAccounts,
+        monitoredAccounts,
+        activeToolUsers,
     ] = await Promise.all([
         prisma.ibLead.count({ where: leadWhere }),
         prisma.vipRequest.count({ where: { status: "PENDING" } }),
-        prisma.proEntitlement.count({
-            where: { status: "ACTIVE", ...entitlementWhere },
-        }),
-        prisma.proEntitlement.count({
+        prisma.vipRequest.count({ where: requestWhere }),
+        prisma.proEntitlement.findMany({
             where: {
                 status: "ACTIVE",
-                tradingAccountId: { not: null },
+                OR: [{ expiresAt: null }, { expiresAt: { gt: now } }],
+            },
+            select: { userId: true },
+            distinct: ["userId"],
+        }),
+        prisma.proEntitlement.findMany({
+            where: {
+                status: "GRACE",
+                OR: [{ expiresAt: null }, { expiresAt: { gt: now } }],
+            },
+            select: { userId: true },
+            distinct: ["userId"],
+        }),
+        prisma.proEntitlement.findMany({
+            where: { status: "REVOKED" },
+            select: { userId: true },
+            distinct: ["userId"],
+        }),
+        prisma.tradingAccount.count({
+            where: {
+                status: { notIn: ["PENDING", "REJECTED", "SUSPENDED"] },
+                OR: [
+                    { lastHeartbeat: { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) } },
+                    { lastSync: { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) } },
+                ],
             },
         }),
-        prisma.proEntitlement.count({ where: { status: "GRACE" } }),
-        prisma.proEntitlement.count({ where: { status: "REVOKED" } }),
+        prisma.tradingAccount.findMany({
+            where: { status: { notIn: ["PENDING", "REJECTED", "SUSPENDED"] } },
+            select: {
+                userId: true,
+                broker: true,
+                accountNumber: true,
+                balance: true,
+                equity: true,
+                currency: true,
+                accountType: true,
+                server: true,
+                status: true,
+                lastHeartbeat: true,
+                lastSync: true,
+            },
+        }),
+        prisma.eAProductUsageEvent.findMany({
+            where: {
+                occurredAt: { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) },
+                eventType: { in: ["HEARTBEAT", "SYNC", "SETUP_CONFIRMED"] },
+            },
+            select: { userId: true },
+            distinct: ["userId"],
+        }),
     ]);
+
+    const activeUserSet = new Set(activeEntitlements.map((e) => e.userId));
+    const graceUserSet = new Set(graceEntitlements.map((e) => e.userId));
+    const revokedUserSet = new Set(revokedEntitlements.map((e) => e.userId));
+    const capital = computeCapitalBreakdown(monitoredAccounts);
+    const staleAccounts = monitoredAccounts.filter((account) => {
+        const signal = [account.lastHeartbeat, account.lastSync]
+            .filter(Boolean)
+            .map((value) => new Date(value as Date).getTime())
+            .sort((a, b) => b - a)[0];
+        if (!signal) return false;
+        const age = now.getTime() - signal;
+        return age > 24 * 60 * 60 * 1000 && age <= 7 * 24 * 60 * 60 * 1000;
+    }).length;
+    const disconnectedAccounts = monitoredAccounts.filter((account) => {
+        const signal = [account.lastHeartbeat, account.lastSync]
+            .filter(Boolean)
+            .map((value) => new Date(value as Date).getTime())
+            .sort((a, b) => b - a)[0];
+        return !signal || now.getTime() - signal > 7 * 24 * 60 * 60 * 1000;
+    }).length;
+    const accountKeys = new Set<string>();
+    let duplicateAccountWarnings = 0;
+    for (const account of monitoredAccounts) {
+        const key = `${account.userId}:${account.broker || ""}:${account.accountNumber || ""}`.toLowerCase();
+        if (key !== ":" && accountKeys.has(key)) duplicateAccountWarnings += 1;
+        if (key !== ":") accountKeys.add(key);
+    }
 
     return {
         totalLeads,
         pendingRequests,
-        requestsInRange: await prisma.vipRequest.count({ where: requestWhere }),
-        verifiedUsers,
-        activeProUsers,
-        graceUsers,
-        revokedUsers,
+        requestsInRange,
+        verifiedUsers: activeUserSet.size,
+        activeProUsers: activeUserSet.size + graceUserSet.size,
+        graceUsers: graceUserSet.size,
+        revokedUsers: revokedUserSet.size,
+        activeAccounts,
+        reportedCapitalUSD: capital.usdBalanceTotal,
+        freshCapitalUSD: capital.usdFreshBalanceTotal,
+        reportedEquityUSD: capital.usdEquityTotal,
+        staleAccounts,
+        disconnectedAccounts,
+        vipUsersWithoutFirstSync: [...activeUserSet, ...graceUserSet].filter(
+            (userId) => !monitoredAccounts.some((account) => account.userId === userId && account.lastSync)
+        ).length,
+        activeToolUsers: activeToolUsers.length,
+        duplicateAccountWarnings,
     };
 }

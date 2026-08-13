@@ -7,7 +7,6 @@ import { z } from "zod";
 // ── Types ──
 export interface NotificationPreferences {
     ea_trading: { inApp: boolean; email: boolean };
-    copy_trading: { inApp: boolean; email: boolean };
     trading_reports: { inApp: boolean; email: boolean };
     platform_updates: { inApp: boolean; email: boolean };
     security: { inApp: boolean; email: boolean }; // Always true, enforced server-side
@@ -15,7 +14,6 @@ export interface NotificationPreferences {
 
 const DEFAULT_PREFERENCES: NotificationPreferences = {
     ea_trading: { inApp: true, email: true },
-    copy_trading: { inApp: true, email: true },
     trading_reports: { inApp: true, email: true },
     platform_updates: { inApp: true, email: false },
     security: { inApp: true, email: true },
@@ -24,7 +22,6 @@ const DEFAULT_PREFERENCES: NotificationPreferences = {
 // ── Validation ──
 const preferencesSchema = z.object({
     ea_trading: z.object({ inApp: z.boolean(), email: z.boolean() }),
-    copy_trading: z.object({ inApp: z.boolean(), email: z.boolean() }),
     trading_reports: z.object({ inApp: z.boolean(), email: z.boolean() }),
     platform_updates: z.object({ inApp: z.boolean(), email: z.boolean() }),
     security: z.object({ inApp: z.boolean(), email: z.boolean() }),

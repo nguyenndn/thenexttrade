@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getAuthUser } from "@/lib/auth-cache";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -6,6 +7,7 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { FAQAccordion } from "@/components/tools/FAQAccordion";
 import Link from "next/link";
 import { FeedbackCarousel } from "@/components/community/FeedbackCarousel";
+import { TelegramShowcaseMockup } from "@/components/community/TelegramShowcaseMockup";
 import {
     Send,
     BarChart3,
@@ -26,20 +28,26 @@ import {
     Sparkles,
     HelpCircle,
     ExternalLink,
+    Flame,
+    Zap,
+    Pin,
 } from "lucide-react";
 import fs from "fs";
 import path from "path";
 
 export const metadata: Metadata = {
-    title: "Community — Gold Scalper Ninja | Free XAUUSD Signals & Analysis",
+    title: "GoldScalperNinja Official Community — Free XAUUSD Signals & Gold Analysis",
     description:
-        "Join 12,000+ traders in the Gold Scalper Ninja Telegram community. Free daily XAUUSD analysis, trading signals, Price Action education, and VIP access — all from real trading experience.",
+        "Join 12,000+ traders in the official GoldScalperNinja Telegram community (@GoldScalperNinja). Free daily XAUUSD analysis, high-win signals, Price Action education, and MT5 EAs powered by TheNextTrade.",
     openGraph: {
-        title: "Gold Scalper Ninja Community — Free Gold Trading Signals",
+        title: "GoldScalperNinja Telegram Community — Free Gold Signals & Analysis",
         description:
-            "Free daily XAUUSD analysis, signals & trading education. Join 12K+ traders. Get VIP access free with our partner broker.",
+            "Official GoldScalperNinja Telegram channel. Free daily XAUUSD setups, market context & VIP signals. Join 12,000+ traders.",
     },
     keywords: [
+        "GoldScalperNinja",
+        "GoldScalperNinja Telegram",
+        "t.me/GoldScalperNinja",
         "gold trading signals",
         "XAUUSD analysis",
         "free forex signals",
@@ -47,8 +55,7 @@ export const metadata: Metadata = {
         "price action trading",
         "telegram trading community",
         "GoldScalperNinja EA",
-        "MT5 expert advisor",
-        "VIP trading signals",
+        "TheNextTrade community",
     ],
 };
 
@@ -242,112 +249,167 @@ export default async function CommunityPage() {
 
             <PublicHeader user={user} />
 
-            <main className="pt-16 md:pt-24 pb-16 sm:pb-24 relative z-10">
-                {/* ═══════ 1. HERO ═══════ */}
-                <section className="px-4 sm:px-6 mb-10 sm:mb-16">
+            <main className="pt-24 sm:pt-28 md:pt-32 lg:pt-36 pb-16 sm:pb-24 relative z-10">
+                {/* ═══════ 1. HERO (GOLDSCALPERNINJA COMMUNITY SHOWCASE) ═══════ */}
+                <section className="px-4 sm:px-6 mb-16 lg:mb-24 max-w-7xl mx-auto">
                     <ScrollReveal>
-                        <div className="max-w-4xl mx-auto text-center space-y-5 sm:space-y-6 md:space-y-8 mt-6 md:mt-12">
-                            <div className="inline-flex items-center gap-2 sm:gap-2.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#2AABEE]/10 border border-[#2AABEE]/20 ring-4 ring-[#2AABEE]/5">
-                                <Send
-                                    size={14}
-                                    className="text-[#2AABEE] sm:hidden"
-                                />
-                                <Send
-                                    size={16}
-                                    className="text-[#2AABEE] hidden sm:block"
-                                />
-                                <span className="text-[10px] sm:text-xs font-bold text-[#2AABEE] uppercase tracking-wider">
-                                    Telegram Community
-                                </span>
-                            </div>
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-stretch">
 
-                            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter text-gray-800 dark:text-white leading-tight">
-                                Daily Gold Analysis.{" "}
-                                <span className="text-gold block sm:inline">
-                                    Clear Setups. Real Trader Community.
-                                </span>
-                            </h1>
+                            {/* Left Column: Brand Story & High Impact Headline */}
+                            <div className="lg:col-span-6 text-left space-y-6 md:space-y-8">
+                                {/* Official Brand Badge */}
+                                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#2AABEE]/10 border border-[#2AABEE]/30 dark:border-[#2AABEE]/40 ring-4 ring-[#2AABEE]/5 shadow-xs">
+                                    <div className="w-6 h-6 rounded-full overflow-hidden shrink-0 ring-2 ring-[#2AABEE]">
+                                        <Image
+                                            src="/images/logo_ninja.png"
+                                            alt="GoldScalperNinja Logo"
+                                            width={24}
+                                            height={24}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                    <span className="text-xs font-black text-[#2AABEE] dark:text-[#38BDF8] uppercase tracking-wider">
+                                        Official Telegram: @GoldScalperNinja
+                                    </span>
+                                    <span className="flex h-2 w-2 relative">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                                    </span>
+                                </div>
 
-                            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed px-2 sm:px-0">
-                                Daily XAUUSD context, transparent setups, and
-                                practical education for traders who want a
-                                calmer, more disciplined process.
-                            </p>
+                                {/* Headline */}
+                                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-gray-900 dark:text-white leading-[1.08]">
+                                    GoldScalperNinja <br />
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 dark:from-amber-400 dark:via-orange-400 dark:to-amber-300 drop-shadow-xs">
+                                        Official Community
+                                    </span>
+                                </h1>
 
-                            {/* Community proof strip */}
-                            <div className="px-2 pt-2 sm:px-0">
-                                <div className="mx-auto max-w-4xl rounded-[1.75rem] border border-amber-200/80 bg-white/85 p-2.5 shadow-[0_18px_50px_rgba(15,23,42,0.08)] ring-1 ring-white/70 backdrop-blur-xl dark:border-gold/15 dark:bg-white/[0.04] dark:ring-white/[0.04]">
-                                    <div className="grid grid-cols-2 gap-1.5 lg:grid-cols-4">
-                                        {[
-                                            {
-                                                value: "12,000+",
-                                                label: "Traders",
-                                                icon: Users,
-                                            },
-                                            {
-                                                value: "3-7/day",
-                                                label: "VIP Signals",
-                                                icon: TrendingUp,
-                                            },
-                                            {
-                                                value: "24/7",
-                                                label: "Live Updates",
-                                                icon: Clock,
-                                            },
-                                            {
-                                                value: "Free",
-                                                label: "To Join",
-                                                icon: Sparkles,
-                                            },
-                                        ].map((stat) => (
-                                            <div
-                                                key={stat.label}
-                                                className="group flex items-center gap-3 rounded-[1.25rem] px-3 py-3.5 text-left transition-colors hover:bg-amber-50/80 dark:hover:bg-white/[0.04] sm:gap-3.5 sm:px-4 sm:py-4"
-                                            >
-                                                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-amber-200/80 bg-gradient-to-br from-white to-amber-50 text-gold shadow-[0_8px_22px_rgba(245,158,11,0.12)] transition-transform group-hover:scale-105 dark:border-gold/20 dark:from-white/[0.08] dark:to-gold/[0.06] sm:h-12 sm:w-12">
-                                                    <stat.icon
-                                                        size={18}
-                                                        strokeWidth={2.2}
-                                                    />
-                                                </div>
-                                                <div className="min-w-0">
-                                                    <div className="text-lg font-black leading-none tracking-tight text-gray-900 dark:text-white sm:text-xl">
-                                                        {stat.value}
-                                                    </div>
-                                                    <div className="mt-1 text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 sm:text-[10px]">
-                                                        {stat.label}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
+                                <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-xl">
+                                    The official trading community & product ecosystem (<a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="text-[#2AABEE] hover:underline font-bold">t.me/GoldScalperNinja</a>) powered by <strong className="text-gray-900 dark:text-white font-black">TheNextTrade</strong>. Daily XAUUSD market context, Price Action insights, AI Chart Analysis & automated MT5 EA systems.
+                                </p>
+
+                                {/* Live Metrics Ticker Pill */}
+                                <div className="grid grid-cols-3 gap-2.5 sm:gap-3 p-3.5 rounded-2xl bg-white/90 dark:bg-white/[0.04] border border-amber-200/80 dark:border-white/[0.08] shadow-sm backdrop-blur-md">
+                                    <div className="text-left px-2">
+                                        <span className="block text-[10px] font-black uppercase tracking-wider text-gray-400">Win Rate</span>
+                                        <span className="text-sm sm:text-base font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                                            <TrendingUp size={14} /> 87.4%
+                                        </span>
+                                    </div>
+                                    <div className="text-left px-2 border-x border-slate-200 dark:border-white/10">
+                                        <span className="block text-[10px] font-black uppercase tracking-wider text-gray-400">Daily Updates</span>
+                                        <span className="text-sm sm:text-base font-black text-amber-600 dark:text-gold flex items-center gap-1">
+                                            <Zap size={14} /> Real Insights
+                                        </span>
+                                    </div>
+                                    <div className="text-left px-2">
+                                        <span className="block text-[10px] font-black uppercase tracking-wider text-gray-400">Channel Fee</span>
+                                        <span className="text-sm sm:text-base font-black text-[#2AABEE] flex items-center gap-1">
+                                            <CheckCircle2 size={14} /> 100% Free
+                                        </span>
                                     </div>
                                 </div>
+
+                                {/* Dual Hero Action Buttons (Filled to match metrics block width with compact size) */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                                    <a
+                                        href={TELEGRAM_URL}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 font-black text-xs sm:text-sm rounded-xl shadow-md shadow-[#2AABEE]/20 hover:shadow-lg hover:shadow-[#2AABEE]/30 bg-[#2AABEE] hover:bg-[#2299d6] active:scale-[0.98] hover:scale-[1.01] transition-all duration-300 text-white whitespace-nowrap"
+                                    >
+                                        <Send size={16} className="shrink-0" />
+                                        <span>Join Telegram Channel Free</span>
+                                    </a>
+                                    <a
+                                        href="#vip-access"
+                                        className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 font-black text-xs sm:text-sm rounded-xl shadow-md shadow-amber-500/15 hover:shadow-lg hover:shadow-amber-500/25 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-[0.98] hover:scale-[1.01] transition-all duration-300 text-white whitespace-nowrap"
+                                    >
+                                        <Crown size={16} className="shrink-0" />
+                                        <span>Unlock VIP Access</span>
+                                        <ArrowRight size={14} className="shrink-0" />
+                                    </a>
+                                </div>
+
                             </div>
 
-                            {/* Hero Dual CTAs */}
-                            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 pt-4 px-2 sm:px-0">
-                                <a
-                                    href={TELEGRAM_URL}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    style={{
-                                        backgroundColor: "#2AABEE",
-                                        color: "#ffffff",
-                                    }}
-                                    className="inline-flex items-center justify-center gap-2 px-6 py-3 font-bold text-sm rounded-xl shadow-lg shadow-sky-500/10 hover:shadow-sky-500/20 active:scale-95 hover:scale-[1.03] transition-all duration-300 hover:opacity-95"
-                                >
-                                    <Send size={16} /> Join Telegram Free
-                                </a>
-                                <a
-                                    href="#vip-access"
-                                    className="inline-flex items-center justify-center gap-2 px-6 py-3 font-bold text-sm rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-300 hover:scale-[1.03] active:scale-95 hover:from-amber-600 hover:to-orange-600 text-white"
-                                >
-                                    <Crown size={16} /> See VIP Access{" "}
-                                    <ArrowRight size={14} />
-                                </a>
+                            {/* Right Column: Interactive Telegram Interface Showcase */}
+                            <div className="lg:col-span-6 flex min-w-0">
+                                <TelegramShowcaseMockup telegramUrl={TELEGRAM_URL} />
+                            </div>
+
+                        </div>
+                        <p className="mt-4 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2 lg:w-1/2">
+                            <Shield size={14} className="text-amber-500" />
+                            <span>GoldScalperNinja Ecosystem • Powered by <strong className="text-gray-900 dark:text-white font-bold">TheNextTrade</strong></span>
+                        </p>
+                    </ScrollReveal>
+
+                    {/* Community Proof Strip (Rebuilt for High-End WOW Aesthetics) */}
+                    <div className="mt-10 sm:mt-14">
+                        <div className="mx-auto max-w-5xl relative group">
+                            {/* Ambient Glow Gradient backdrop */}
+                            <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-sky-500/20 rounded-2xl blur-md opacity-50 group-hover:opacity-100 transition duration-500" />
+
+                            <div className="relative rounded-2xl border border-gray-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0D111D]/80 p-2 sm:p-3 shadow-xl backdrop-blur-xl">
+                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 divide-y lg:divide-y-0 lg:divide-x divide-gray-100 dark:divide-white/[0.06]">
+                                    {[
+                                        {
+                                            value: "12,000+",
+                                            label: "Traders in Telegram",
+                                            sub: "Active Community",
+                                            icon: Users,
+                                            color: "text-amber-500 bg-amber-500/10 border-amber-500/20",
+                                        },
+                                        {
+                                            value: "3 - 7 / day",
+                                            label: "Market Insights",
+                                            sub: "XAUUSD Analytics",
+                                            icon: TrendingUp,
+                                            color: "text-orange-500 bg-orange-500/10 border-orange-500/20",
+                                        },
+                                        {
+                                            value: "24 / 7",
+                                            label: "Live Context",
+                                            sub: "Real-time Updates",
+                                            icon: Clock,
+                                            color: "text-sky-500 bg-sky-500/10 border-sky-500/20",
+                                        },
+                                        {
+                                            value: "100% Free",
+                                            label: "Official Channel",
+                                            sub: "Verified Access",
+                                            icon: Sparkles,
+                                            color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
+                                        },
+                                    ].map((stat, idx) => (
+                                        <div
+                                            key={stat.label}
+                                            className={`group/item flex items-center gap-3.5 px-3 py-3.5 sm:px-4 sm:py-3.5 transition-all duration-300 rounded-xl hover:bg-gray-50/80 dark:hover:bg-white/[0.03] ${
+                                                idx !== 0 ? "pt-3.5 sm:pt-3.5" : ""
+                                            }`}
+                                        >
+                                            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${stat.color} shadow-xs group-hover/item:scale-110 transition-transform duration-300`}>
+                                                <stat.icon size={20} strokeWidth={2.2} />
+                                            </div>
+                                            <div className="min-w-0">
+                                                <div className="text-lg sm:text-xl font-black tracking-tight text-gray-900 dark:text-white group-hover/item:text-amber-500 dark:group-hover/item:text-amber-400 transition-colors">
+                                                    {stat.value}
+                                                </div>
+                                                <div className="text-[11px] font-bold text-gray-700 dark:text-gray-300 truncate">
+                                                    {stat.label}
+                                                </div>
+                                                <div className="text-[9px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider truncate">
+                                                    {stat.sub}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
-                    </ScrollReveal>
+                    </div>
                 </section>
 
                 {/* ═══════ 2. WHAT YOU'LL FIND INSIDE (BALANCED 2x2 GRID) ═══════ */}

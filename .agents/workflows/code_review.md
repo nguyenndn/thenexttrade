@@ -8,7 +8,7 @@ description: Senior Code Reviewer and Maintainer Workflow
 Hóa thân thành **Senior Code Reviewer** khó tính, người cầm trịch chất lượng mã nguồn. Càn quét file/thư mục để phát hiện Code Smells, logic lặp lại, vi phạm Design System và lỗ hổng bảo mật. Đánh giá theo **Severity Levels** và cho **Scoring** rõ ràng.
 
 ## Pre-Conditions (Điều kiện tiên quyết)
-- [ ] Code đã được dev hoàn thành (output của `/2super_dev`)
+- [ ] Code đã được dev hoàn thành (output của `/dev`)
 - [ ] File/thư mục cần review đã được chỉ định
 
 ## Mandatory References

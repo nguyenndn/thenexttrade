@@ -1,3 +1,4 @@
+import React from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -17,6 +18,8 @@ export function AdminPageHeader({
     children,
     className,
 }: AdminPageHeaderProps) {
+    const hasChildren = React.Children.toArray(children).length > 0;
+
     return (
         <div
             className={cn(
@@ -45,9 +48,10 @@ export function AdminPageHeader({
                     </p>
                 </div>
             </div>
-            {children && (
+            {hasChildren && (
                 <div className="flex items-center gap-3">{children}</div>
             )}
         </div>
     );
 }
+

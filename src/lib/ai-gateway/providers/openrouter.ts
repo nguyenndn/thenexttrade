@@ -41,12 +41,27 @@ export const OpenRouterAdapter: AiGatewayProviderAdapter = {
                             { role: "system", content: input.systemPrompt },
                             {
                                 role: "user",
-                                content: JSON.stringify(input.snapshot),
+                                content: input.imageBase64
+                                    ? [
+                                          {
+                                              type: "image_url",
+                                              image_url: {
+                                                  url: `data:${input.imageMimeType || "image/png"};base64,${input.imageBase64}`,
+                                              },
+                                          },
+                                          {
+                                              type: "text",
+                                              text: typeof input.snapshot === "string"
+                                                  ? input.snapshot
+                                                  : JSON.stringify(input.snapshot),
+                                          },
+                                      ]
+                                    : JSON.stringify(input.snapshot),
                             },
                         ],
                         response_format: { type: "json_object" },
                         temperature: 0.2,
-                        max_tokens: 1500,
+                        max_tokens: input.imageBase64 ? 3000 : 1500,
                     }),
                     signal: controller.signal,
                 }

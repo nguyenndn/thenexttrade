@@ -2,24 +2,22 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
     Crown,
     Clock,
     CheckCircle2,
     XCircle,
     ShieldOff,
-    Timer,
-    Eye,
-    ChevronDown,
-    Trash2,
     Search,
     Users,
     AlertTriangle,
-    X,
-    Loader2,
-    Send,
-    Image as ImageIcon,
+    Trash2,
+    Eye,
+    ChevronDown,
     MoreHorizontal,
+    ExternalLink,
+    Filter,
 } from "lucide-react";
 import {
     approveVipRequest,
@@ -39,33 +37,10 @@ import { PremiumInput } from "@/components/ui/PremiumInput";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { AnimatedStatCard } from "@/components/admin/dashboard/AnimatedStatCard";
 import { toast } from "sonner";
-
-interface VipRequest {
-    id: string;
-    userId: string;
-    tradingAccountId: string | null;
-    broker: string;
-    accountNumber: string;
-    balance: string;
-    email: string;
-    telegramId: string;
-    fullName: string | null;
-    country: string | null;
-    screenshotUrl: string | null;
-    status: string;
-    rejectReason: string | null;
-    reviewedBy: string | null;
-    reviewedAt: string | null;
-    createdAt: string;
-    user: {
-        name: string | null;
-        email: string | null;
-        image: string | null;
-    };
-}
+import { IbPipelineItem, LifecycleStage } from "@/lib/admin/ib/ib-monitor.types";
 
 interface Props {
-    requests: VipRequest[];
+    items: IbPipelineItem[];
     total: number;
     stats: {
         total: number;
@@ -73,107 +48,126 @@ interface Props {
         approved: number;
         rejected: number;
     } | null;
+    currentParams: Record<string, string | undefined>;
+}
+
+function FilterMenu({
+    label,
+    value,
+    options,
+    onChange,
+}: {
+    label: string;
+    value?: string;
+    options: Array<{ value: string; label: string }>;
+    onChange: (value: string) => void;
+}) {
+    const selected = options.find((option) => option.value === value) || options[0];
+    return (
+        <div className="flex items-center gap-1.5">
+            <span className="text-xs font-bold text-gray-400">{label}:</span>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="h-[38px] gap-1.5 rounded-xl px-3 text-xs font-bold">
+                        {selected.label}
+                        <ChevronDown size={14} className="opacity-60" />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-52">
+                    {options.map((option) => (
+                        <DropdownMenuItem key={option.value} onClick={() => onChange(option.value)}>
+                            {option.label}
+                        </DropdownMenuItem>
+                    ))}
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </div>
+    );
 }
 
 export function VipPipelineClient({
-    requests: initialRequests,
+    items,
     total,
     stats,
+    currentParams,
 }: Props) {
-    const [requests, setRequests] = useState(initialRequests);
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
     const [isPending, startTransition] = useTransition();
-    const [filter, setFilter] = useState<string>("ALL");
-    const [searchQuery, setSearchQuery] = useState("");
-    const [selectedRequest, setSelectedRequest] = useState<VipRequest | null>(
-        null
-    );
+
+    const [searchInputValue, setSearchInputValue] = useState(currentParams.q || "");
+    const [selectedItem, setSelectedItem] = useState<IbPipelineItem | null>(null);
     const [rejectModalId, setRejectModalId] = useState<string | null>(null);
     const [rejectReason, setRejectReason] = useState("");
     const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
-    const filtered = requests.filter((r) => {
-        const matchStatus = filter === "ALL" || r.status === filter;
-        const searchLower = searchQuery.toLowerCase();
-        const matchSearch =
-            searchQuery === "" ||
-            r.telegramId.toLowerCase().includes(searchLower) ||
-            r.email.toLowerCase().includes(searchLower) ||
-            (r.fullName && r.fullName.toLowerCase().includes(searchLower)) ||
-            (r.user.name && r.user.name.toLowerCase().includes(searchLower)) ||
-            r.accountNumber.includes(searchQuery);
-        return matchStatus && matchSearch;
-    });
-
-    const handleApprove = (id: string) => {
-        startTransition(async () => {
-            const result = await approveVipRequest(id);
-            if (result.success) {
-                setRequests((prev) =>
-                    prev.map((r) =>
-                        r.id === id
-                            ? {
-                                  ...r,
-                                  status: "APPROVED",
-                                  reviewedAt: new Date().toISOString(),
-                              }
-                            : r
-                    )
-                );
-                setSelectedRequest(null);
-                toast.success("VIP request approved & Pro access granted");
+    const updateFilterParams = (updates: Record<string, string | null>) => {
+        const params = new URLSearchParams(searchParams.toString());
+        Object.entries(updates).forEach(([key, val]) => {
+            if (val === null || val === "" || val === "ALL") {
+                params.delete(key);
             } else {
-                toast.error(
-                    result.error ||
-                        "Failed to approve request. Check server logs."
-                );
+                params.set(key, val);
+            }
+        });
+        params.set("page", "1");
+        startTransition(() => {
+            router.push(`${pathname}?${params.toString()}`);
+        });
+    };
+
+    const handleSearchSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        updateFilterParams({ q: searchInputValue.trim() });
+    };
+
+    const handleApprove = (requestId: string) => {
+        startTransition(async () => {
+            const result = await approveVipRequest(requestId);
+            if (result.success) {
+                toast.success("VIP request approved & Pro access granted");
+                setSelectedItem(null);
+                router.refresh();
+            } else {
+                toast.error(result.error || "Failed to approve request.");
             }
         });
     };
 
-    const handleReject = (id: string) => {
+    const handleReject = (requestId: string) => {
         if (!rejectReason.trim()) return;
         startTransition(async () => {
-            const result = await rejectVipRequest(id, rejectReason);
+            const result = await rejectVipRequest(requestId, rejectReason);
             if (result.success) {
-                setRequests((prev) =>
-                    prev.map((r) =>
-                        r.id === id
-                            ? {
-                                  ...r,
-                                  status: "REJECTED",
-                                  rejectReason,
-                                  reviewedAt: new Date().toISOString(),
-                              }
-                            : r
-                    )
-                );
+                toast.success("Request rejected");
                 setRejectModalId(null);
                 setRejectReason("");
-                setSelectedRequest(null);
-                toast.success("Request rejected");
+                setSelectedItem(null);
+                router.refresh();
+            } else {
+                toast.error(result.error || "Failed to reject request");
             }
         });
     };
 
     const handleGrace = (userId: string, tradingAccountId?: string | null) => {
         startTransition(async () => {
-            const result = await grantGracePeriod(
-                userId,
-                14,
-                tradingAccountId || undefined
-            );
-            if (result.success) toast.success("14-day grace period granted");
+            const result = await grantGracePeriod(userId, 14, tradingAccountId || undefined);
+            if (result.success) {
+                toast.success("14-day grace period granted");
+                router.refresh();
+            }
         });
     };
 
     const handleRevoke = (userId: string, tradingAccountId?: string | null) => {
         startTransition(async () => {
-            const result = await revokeProAccess(
-                userId,
-                undefined,
-                tradingAccountId || undefined
-            );
-            if (result.success) toast.success("Pro access revoked");
+            const result = await revokeProAccess(userId, undefined, tradingAccountId || undefined);
+            if (result.success) {
+                toast.success("Pro access revoked");
+                router.refresh();
+            }
         });
     };
 
@@ -182,37 +176,64 @@ export function VipPipelineClient({
         startTransition(async () => {
             const result = await deleteVipRequest(deleteModalId);
             if (result.success) {
-                setRequests((prev) =>
-                    prev.filter((r) => r.id !== deleteModalId)
-                );
-                if (selectedRequest?.id === deleteModalId)
-                    setSelectedRequest(null);
                 toast.success("Request deleted");
                 setDeleteModalId(null);
+                setSelectedItem(null);
+                router.refresh();
             } else {
                 toast.error(result.error || "Failed to delete");
             }
         });
     };
 
-    const statusBadge = (status: string) => {
-        switch (status) {
-            case "PENDING":
+    const lifecycleBadge = (stage: LifecycleStage) => {
+        switch (stage) {
+            case "TOOL_ACTIVE":
                 return (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/20">
-                        <Clock size={10} /> Pending
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20">
+                        ⚡ Tool Active
                     </span>
                 );
-            case "APPROVED":
+            case "TOOL_UNLOCKED":
                 return (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 border-green-200 dark:border-green-500/20">
-                        <CheckCircle2 size={10} /> Approved
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-cyan-50 text-cyan-700 border border-cyan-200 dark:bg-cyan-500/10 dark:text-cyan-300 dark:border-cyan-500/20">
+                        🔓 Tool Unlocked
                     </span>
                 );
-            case "REJECTED":
+            case "VIP_APPROVED":
                 return (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 border-red-200 dark:border-red-500/20">
-                        <XCircle size={10} /> Rejected
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-500/10 dark:text-blue-300 dark:border-blue-500/20">
+                        ✅ VIP Approved
+                    </span>
+                );
+            case "VIP_REQUESTED":
+                return (
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/20">
+                        ⏳ VIP Requested
+                    </span>
+                );
+            case "FIRST_TRADE":
+                return (
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-500/10 dark:text-purple-300 dark:border-purple-500/20">
+                        📈 First Trade
+                    </span>
+                );
+            case "ACCOUNT_CONNECTED":
+                return (
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-500/10 dark:text-teal-300 dark:border-teal-500/20">
+                        🔗 Account Connected
+                    </span>
+                );
+            case "AT_RISK":
+                return (
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-50 text-red-700 border border-red-200 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/20">
+                        🚨 At Risk
+                    </span>
+                );
+            default:
+                return (
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-gray-50 text-gray-600 border border-gray-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10">
+                        {stage}
                     </span>
                 );
         }
@@ -251,532 +272,375 @@ export function VipPipelineClient({
                         title="Rejected"
                         value={stats.rejected}
                         icon={XCircle}
-                        color="cyan"
+                        color="amber"
                         index={3}
                         trendPercent={null}
                     />
                 </div>
             )}
 
-            {/* Toolbar */}
-            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex items-center gap-4">
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
+            {/* Filter & Controls Bar */}
+            <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
+                <form onSubmit={handleSearchSubmit} className="flex flex-col md:flex-row gap-3 items-center">
+                    <div className="w-full md:w-96">
+                        <PremiumInput
+                            placeholder="Search name, email, Telegram, account #..."
+                            value={searchInputValue}
+                            onChange={(e) => setSearchInputValue(e.target.value)}
+                            icon={Search}
+                            className="w-full"
+                        />
+                    </div>
+                    <Button type="submit" variant="outline" className="h-[42px] px-5 font-bold text-xs">
+                        Search
+                    </Button>
+                    {currentParams.q && (
                         <Button
-                            variant="outline"
-                            size="md"
-                            className="flex items-center gap-2 h-[42px] text-xs font-medium text-gray-700 dark:text-gray-300 shrink-0 justify-between"
+                            type="button"
+                            variant="ghost"
+                            className="h-[42px] px-4 font-bold text-xs"
+                            onClick={() => {
+                                setSearchInputValue("");
+                                updateFilterParams({ q: null });
+                            }}
                         >
-                            <span>
-                                Status:{" "}
-                                <span className="text-primary">
-                                    {filter === "ALL"
-                                        ? "All"
-                                        : filter.charAt(0) +
-                                          filter.slice(1).toLowerCase()}
-                                </span>
-                            </span>
-                            <ChevronDown size={14} />
+                            Clear
                         </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                        align="start"
-                        className="w-40 rounded-xl border-gray-200 dark:border-white/10"
-                    >
-                        {["ALL", "PENDING", "APPROVED", "REJECTED"].map((f) => (
-                            <DropdownMenuItem
-                                key={f}
-                                onClick={() => setFilter(f)}
-                                className="font-medium cursor-pointer rounded-lg mx-1 my-0.5"
-                            >
-                                {f === "ALL"
-                                    ? `All (${total})`
-                                    : `${f.charAt(0) + f.slice(1).toLowerCase()} (${stats?.[f.toLowerCase() as keyof typeof stats] || 0})`}
-                            </DropdownMenuItem>
-                        ))}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                    )}
+                </form>
 
-                <div className="flex-1 w-full sm:max-w-sm">
-                    <PremiumInput
-                        icon={Search}
-                        placeholder="Search Telegram, email, account..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
+                 <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-gray-100 dark:border-white/5">
+                    {/* Lifecycle stage filter */}
+                    <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-bold text-gray-400">Stage:</span>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-xl">
+                                    {currentParams.stage && currentParams.stage !== "ALL" ? currentParams.stage.replaceAll("_", " ") : "All Stages"}
+                                    <ChevronDown size={14} className="opacity-60" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start" className="w-52">
+                                <DropdownMenuItem onClick={() => updateFilterParams({ stage: "ALL" })}>All Stages</DropdownMenuItem>
+                                {[
+                                    "SIGNED_UP", "VERIFIED", "ACCOUNT_CONNECTED", "FIRST_SYNC", "FIRST_TRADE",
+                                    "VIP_REQUESTED", "VIP_APPROVED", "TOOL_UNLOCKED", "TOOL_ACTIVE", "AT_RISK",
+                                ].map((stage) => (
+                                    <DropdownMenuItem key={stage} onClick={() => updateFilterParams({ stage })}>
+                                        {stage.replaceAll("_", " ")}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+
+                    {/* Product evidence filter */}
+                    <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-bold text-gray-400">Product:</span>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-xl">
+                                    {currentParams.product && currentParams.product !== "ALL" ? currentParams.product : "All Products"}
+                                    <ChevronDown size={14} className="opacity-60" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start" className="w-52">
+                                <DropdownMenuItem onClick={() => updateFilterParams({ product: "ALL" })}>All Products</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => updateFilterParams({ product: "goldscalperninja" })}>GoldScalperNinja</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => updateFilterParams({ product: "trade-manager" })}>Trade Manager</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => updateFilterParams({ product: "gsn-phoenix-grid" })}>GSN Phoenix Grid</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+
+                    {/* Status Filter */}
+                    <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-bold text-gray-400">Status:</span>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-xl">
+                                    {currentParams.status === "PENDING"
+                                        ? "Pending"
+                                        : currentParams.status === "APPROVED"
+                                        ? "Approved"
+                                        : currentParams.status === "REJECTED"
+                                        ? "Rejected"
+                                        : "All Statuses"}
+                                    <ChevronDown size={14} className="opacity-60" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start" className="w-44">
+                                <DropdownMenuItem onClick={() => updateFilterParams({ status: "ALL" })}>
+                                    All Statuses
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => updateFilterParams({ status: "PENDING" })}>
+                                    Pending
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => updateFilterParams({ status: "APPROVED" })}>
+                                    Approved
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => updateFilterParams({ status: "REJECTED" })}>
+                                    Rejected
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+
+                    {/* Broker Filter */}
+                    <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-bold text-gray-400">Broker:</span>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-xl">
+                                    {currentParams.broker && currentParams.broker !== "ALL"
+                                        ? currentParams.broker
+                                        : "All Brokers"}
+                                    <ChevronDown size={14} className="opacity-60" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start" className="w-44">
+                                <DropdownMenuItem onClick={() => updateFilterParams({ broker: "ALL" })}>
+                                    All Brokers
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => updateFilterParams({ broker: "Exness" })}>
+                                    Exness
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => updateFilterParams({ broker: "XM" })}>
+                                    XM
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => updateFilterParams({ broker: "IC Markets" })}>
+                                    IC Markets
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
                 </div>
 
-                <div className="text-xs text-gray-500 dark:text-gray-400 ml-auto">
-                    Showing {filtered.length} request
-                    {filtered.length !== 1 ? "s" : ""}
+                <div className="flex flex-wrap items-center gap-3 border-t border-gray-100 pt-3 dark:border-white/5">
+                    <FilterMenu
+                        label="Health"
+                        value={currentParams.accountHealth}
+                        options={[
+                            { value: "ALL", label: "All Health" },
+                            { value: "CONNECTED", label: "Connected (<24h)" },
+                            { value: "STALE", label: "Sync Overdue (1-7d)" },
+                            { value: "DISCONNECTED", label: "Disconnected (>7d)" },
+                        ]}
+                        onChange={(value) => updateFilterParams({ accountHealth: value })}
+                    />
+                    <FilterMenu
+                        label="Capital"
+                        value={currentParams.capitalBand}
+                        options={[
+                            { value: "ALL", label: "All Capital" },
+                            { value: "0_1K", label: "Under $1K" },
+                            { value: "1K_10K", label: "$1K-$10K" },
+                            { value: "10K_50K", label: "$10K-$50K" },
+                            { value: "50K_PLUS", label: "$50K+" },
+                        ]}
+                        onChange={(value) => updateFilterParams({ capitalBand: value })}
+                    />
+                    <FilterMenu
+                        label="Request Age"
+                        value={
+                            currentParams.minAgeHours === "0" && currentParams.maxAgeHours === "24"
+                                ? "FRESH"
+                                : currentParams.minAgeHours === "24" && !currentParams.maxAgeHours
+                                  ? "FOLLOW_UP"
+                                  : currentParams.minAgeHours === "72" && !currentParams.maxAgeHours
+                                    ? "OVERDUE"
+                                    : "ALL"
+                        }
+                        options={[
+                            { value: "ALL", label: "Any Request Age" },
+                            { value: "FRESH", label: "Under 24h" },
+                            { value: "FOLLOW_UP", label: "24h+ Follow-up" },
+                            { value: "OVERDUE", label: "72h+ Overdue" },
+                        ]}
+                        onChange={(value) => {
+                            if (value === "FRESH") updateFilterParams({ minAgeHours: "0", maxAgeHours: "24" });
+                            else if (value === "FOLLOW_UP") updateFilterParams({ minAgeHours: "24", maxAgeHours: "" });
+                            else if (value === "OVERDUE") updateFilterParams({ minAgeHours: "72", maxAgeHours: "" });
+                            else updateFilterParams({ minAgeHours: "", maxAgeHours: "" });
+                        }}
+                    />
                 </div>
             </div>
 
-            {/* Table */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
-                {filtered.length === 0 ? (
-                    <div className="text-center py-16">
-                        <AlertTriangle
-                            size={32}
-                            className="text-gray-300 dark:text-gray-600 mx-auto mb-3"
-                        />
-                        <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                            No requests found
-                        </p>
-                    </div>
-                ) : (
-                    <div className="overflow-x-auto custom-scrollbar">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-600 dark:text-gray-400 font-bold tracking-wider">
-                                    <th className="px-6 py-4">User</th>
-                                    <th className="px-6 py-4">Broker</th>
-                                    <th className="px-6 py-4">Account</th>
-                                    <th className="px-6 py-4">Balance</th>
-                                    <th className="px-6 py-4">Telegram</th>
-                                    <th className="px-6 py-4">Status</th>
-                                    <th className="px-6 py-4">Date</th>
-                                    <th className="px-6 py-4 text-right">
-                                        Actions
-                                    </th>
+            {/* Pipeline Table */}
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="border-b border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] text-[11px] font-black uppercase text-gray-500 tracking-wider">
+                                <th className="py-3 px-4">Trader / Request</th>
+                                <th className="py-3 px-4">Lifecycle Stage</th>
+                                <th className="py-3 px-4">Broker & Account</th>
+                                <th className="py-3 px-4">Submitted vs Live Capital</th>
+                                <th className="py-3 px-4">Age / Time</th>
+                                <th className="py-3 text-right px-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 dark:divide-white/5 text-sm">
+                            {items.length === 0 ? (
+                                <tr>
+                                    <td colSpan={6} className="text-center py-12 text-gray-400">
+                                        No pipeline requests found.
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-200 dark:divide-white/10">
-                                {filtered.map((req) => (
-                                    <tr
-                                        key={req.id}
-                                        className="group hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors"
-                                    >
-                                        <td className="px-6 py-4">
+                            ) : (
+                                items.map((req) => (
+                                    <tr key={req.requestId} className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                                        {/* Trader Info */}
+                                        <td className="py-3.5 px-4">
                                             <div>
-                                                <p className="font-bold text-sm text-gray-700 dark:text-white truncate max-w-[160px]">
-                                                    {req.user.name ||
-                                                        req.fullName ||
-                                                        "-"}
-                                                </p>
-                                                <p className="text-[11px] text-gray-400 truncate max-w-[160px]">
-                                                    {req.email}
+                                                <Link
+                                                    href={`/admin/users/${req.userId}`}
+                                                    className="font-bold text-gray-900 dark:text-white hover:text-primary transition-colors flex items-center gap-1.5"
+                                                >
+                                                    {req.userName}
+                                                    <ExternalLink size={12} className="opacity-50" />
+                                                </Link>
+                                                <p className="text-xs text-gray-500 font-mono">
+                                                    {req.userEmail} | TG: {req.telegramId}
                                                 </p>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4">
-                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 uppercase">
-                                                {req.broker}
+
+                                        {/* Lifecycle Stage */}
+                                        <td className="py-3.5 px-4">
+                                            {lifecycleBadge(req.lifecycleStage)}
+                                        </td>
+
+                                        {/* Broker & Masked Account */}
+                                        <td className="py-3.5 px-4">
+                                            <div>
+                                                <p className="font-bold text-gray-900 dark:text-white text-xs">
+                                                    {req.broker}
+                                                </p>
+                                                <p className="font-mono text-xs text-gray-500">
+                                                    #{req.accountNumber}
+                                                </p>
+                                            </div>
+                                        </td>
+
+                                        {/* Capital Comparison */}
+                                        <td className="py-3.5 px-4">
+                                            <div>
+                                                <p className="text-xs text-gray-500 font-medium">
+                                                    Sub: <span className="font-mono font-bold text-gray-800 dark:text-white">${req.submittedBalance}</span>
+                                                </p>
+                                                <p className="text-xs text-gray-500 font-medium">
+                                                    Live: {req.liveBalance !== null ? (
+                                                        <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">${req.liveBalance.toLocaleString("en-US")} {req.liveCurrency || "UNKNOWN"}</span>
+                                                    ) : (
+                                                        <span className="text-gray-400 italic">Not Linked</span>
+                                                    )}
+                                                </p>
+                                            </div>
+                                        </td>
+
+                                        {/* Age */}
+                                        <td className="py-3.5 px-4">
+                                            <span className="text-xs text-gray-500 font-medium">
+                                                {req.requestAgeHours}h ago
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4">
-                                            <span className="text-sm font-mono text-gray-700 dark:text-gray-300">
-                                                {req.accountNumber}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                                                ${req.balance}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <a
-                                                href={`https://t.me/${req.telegramId.replace("@", "")}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-sm text-[#2AABEE] hover:underline font-medium"
-                                            >
-                                                {req.telegramId}
-                                            </a>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {statusBadge(req.status)}
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                                            {new Date(
-                                                req.createdAt
-                                            ).toLocaleDateString("en-US", {
-                                                month: "short",
-                                                day: "numeric",
-                                            })}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center justify-end">
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger
-                                                        asChild
-                                                    >
+
+                                        {/* Actions */}
+                                        <td className="py-3.5 px-4 text-right">
+                                            <div className="flex items-center justify-end gap-2">
+                                                {req.vipStatus === "PENDING" && (
+                                                    <>
                                                         <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            aria-label="Actions"
-                                                            className="h-8 w-8 p-0 text-gray-500 hover:text-gray-700 dark:hover:text-white transition-colors border-none bg-transparent hover:bg-gray-100 dark:hover:bg-white/10"
+                                                            size="sm"
+                                                            variant="primary"
+                                                            disabled={isPending}
+                                                            onClick={() => handleApprove(req.requestId)}
                                                         >
-                                                            <MoreHorizontal
-                                                                size={18}
-                                                            />
+                                                            Approve
+                                                        </Button>
+                                                        <Button
+                                                            size="sm"
+                                                            variant="destructive"
+                                                            disabled={isPending}
+                                                            onClick={() => setRejectModalId(req.requestId)}
+                                                        >
+                                                            Reject
+                                                        </Button>
+                                                    </>
+                                                )}
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                                                            <MoreHorizontal size={16} />
                                                         </Button>
                                                     </DropdownMenuTrigger>
-                                                    <DropdownMenuContent
-                                                        align="end"
-                                                        className="w-48 rounded-xl border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-lg"
-                                                    >
-                                                        <DropdownMenuItem
-                                                            onClick={() =>
-                                                                setSelectedRequest(
-                                                                    req
-                                                                )
-                                                            }
-                                                            className="font-medium cursor-pointer rounded-lg mx-1 my-1 outline-none focus:bg-gray-100 dark:focus:bg-white/10"
-                                                        >
-                                                            <Eye
-                                                                size={14}
-                                                                className="mr-2 text-gray-500"
-                                                            />{" "}
-                                                            View Details
+                                                    <DropdownMenuContent align="end" className="w-48">
+                                                        <DropdownMenuItem onClick={() => handleGrace(req.userId, req.linkedAccountId)}>
+                                                            <Clock size={14} className="mr-2" /> Grant Temporary VIP (14d)
                                                         </DropdownMenuItem>
-                                                        {req.status ===
-                                                            "PENDING" && (
-                                                            <>
-                                                                <DropdownMenuItem
-                                                                    onClick={() =>
-                                                                        handleApprove(
-                                                                            req.id
-                                                                        )
-                                                                    }
-                                                                    disabled={
-                                                                        isPending
-                                                                    }
-                                                                    className="text-emerald-600 focus:text-emerald-700 focus:bg-emerald-50 dark:focus:bg-emerald-500/10 font-medium cursor-pointer rounded-lg mx-1 my-1 outline-none"
-                                                                >
-                                                                    <CheckCircle2
-                                                                        size={
-                                                                            14
-                                                                        }
-                                                                        className="mr-2"
-                                                                    />{" "}
-                                                                    Approve &
-                                                                    Grant Pro
-                                                                </DropdownMenuItem>
-                                                                <DropdownMenuItem
-                                                                    onClick={() =>
-                                                                        handleGrace(
-                                                                            req.userId,
-                                                                            req.tradingAccountId
-                                                                        )
-                                                                    }
-                                                                    disabled={
-                                                                        isPending
-                                                                    }
-                                                                    className="text-purple-600 focus:text-purple-700 focus:bg-purple-50 dark:focus:bg-purple-500/10 font-medium cursor-pointer rounded-lg mx-1 my-1 outline-none"
-                                                                >
-                                                                    <Timer
-                                                                        size={
-                                                                            14
-                                                                        }
-                                                                        className="mr-2"
-                                                                    />{" "}
-                                                                    Grant 14d
-                                                                    Grace
-                                                                </DropdownMenuItem>
-                                                                <DropdownMenuItem
-                                                                    onClick={() =>
-                                                                        setRejectModalId(
-                                                                            req.id
-                                                                        )
-                                                                    }
-                                                                    disabled={
-                                                                        isPending
-                                                                    }
-                                                                    className="text-amber-600 focus:text-amber-700 focus:bg-amber-50 dark:focus:bg-amber-500/10 font-medium cursor-pointer rounded-lg mx-1 my-1 outline-none"
-                                                                >
-                                                                    <XCircle
-                                                                        size={
-                                                                            14
-                                                                        }
-                                                                        className="mr-2"
-                                                                    />{" "}
-                                                                    Reject
-                                                                </DropdownMenuItem>
-                                                            </>
-                                                        )}
-                                                        {req.status ===
-                                                            "APPROVED" && (
-                                                            <DropdownMenuItem
-                                                                onClick={() =>
-                                                                    handleRevoke(
-                                                                        req.userId,
-                                                                        req.tradingAccountId
-                                                                    )
-                                                                }
-                                                                disabled={
-                                                                    isPending
-                                                                }
-                                                                className="text-red-500 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-500/10 font-medium cursor-pointer rounded-lg mx-1 my-1 outline-none"
-                                                            >
-                                                                <ShieldOff
-                                                                    size={14}
-                                                                    className="mr-2"
-                                                                />{" "}
-                                                                Revoke Pro
-                                                            </DropdownMenuItem>
-                                                        )}
                                                         <DropdownMenuItem
-                                                            onClick={() =>
-                                                                setDeleteModalId(
-                                                                    req.id
-                                                                )
-                                                            }
-                                                            disabled={isPending}
-                                                            className="text-red-500 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-500/10 font-medium cursor-pointer rounded-lg mx-1 my-1 outline-none"
+                                                            onClick={() => setDeleteModalId(req.requestId)}
+                                                            className="text-red-600 dark:text-red-400"
                                                         >
-                                                            <Trash2
-                                                                size={14}
-                                                                className="mr-2"
-                                                            />{" "}
-                                                            Delete
+                                                            <Trash2 size={14} className="mr-2" /> Delete Request
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
                                             </div>
                                         </td>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </div>
-
-            {/* Detail Modal */}
-            {selectedRequest && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                    <div className="bg-white dark:bg-[#1A1D27] rounded-xl border border-gray-200 dark:border-white/10 shadow-2xl w-full max-w-md max-h-[80vh] overflow-y-auto">
-                        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/10">
-                            <h3 className="text-sm font-bold text-gray-800 dark:text-white">
-                                Request Details
-                            </h3>
-                            <button
-                                onClick={() => setSelectedRequest(null)}
-                                className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500"
-                                aria-label="Close modal"
-                            >
-                                <X size={16} />
-                            </button>
-                        </div>
-                        <div className="p-4 space-y-3">
-                            {[
-                                {
-                                    label: "User",
-                                    value: selectedRequest.user.name || "-",
-                                },
-                                {
-                                    label: "Email",
-                                    value: selectedRequest.email,
-                                },
-                                {
-                                    label: "Broker",
-                                    value: selectedRequest.broker,
-                                },
-                                {
-                                    label: "Account #",
-                                    value: selectedRequest.accountNumber,
-                                },
-                                {
-                                    label: "Balance",
-                                    value: `$${selectedRequest.balance} USD`,
-                                },
-                                {
-                                    label: "Telegram",
-                                    value: selectedRequest.telegramId,
-                                },
-                                ...(selectedRequest.fullName
-                                    ? [
-                                          {
-                                              label: "Full Name",
-                                              value: selectedRequest.fullName,
-                                          },
-                                      ]
-                                    : []),
-                                ...(selectedRequest.country
-                                    ? [
-                                          {
-                                              label: "Country",
-                                              value: selectedRequest.country,
-                                          },
-                                      ]
-                                    : []),
-                            ].map((row) => (
-                                <div
-                                    key={row.label}
-                                    className="flex items-center justify-between"
-                                >
-                                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                                        {row.label}
-                                    </span>
-                                    <span className="text-sm font-medium text-gray-800 dark:text-white">
-                                        {row.value}
-                                    </span>
-                                </div>
-                            ))}
-
-                            {selectedRequest.screenshotUrl && (
-                                <div className="pt-2">
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
-                                        Screenshot
-                                    </p>
-                                    <a
-                                        href={selectedRequest.screenshotUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
-                                    >
-                                        <ImageIcon size={12} /> View Screenshot
-                                    </a>
-                                </div>
+                                ))
                             )}
-
-                            {selectedRequest.rejectReason && (
-                                <div className="p-3 rounded-lg bg-red-50 dark:bg-red-500/10 text-xs text-red-700 dark:text-red-300">
-                                    <strong>Reject Reason:</strong>{" "}
-                                    {selectedRequest.rejectReason}
-                                </div>
-                            )}
-
-                            <div className="flex items-center justify-between pt-2">
-                                <div>{statusBadge(selectedRequest.status)}</div>
-                                {selectedRequest.status === "PENDING" && (
-                                    <div className="flex items-center gap-2">
-                                        <Button
-                                            onClick={() =>
-                                                handleApprove(
-                                                    selectedRequest.id
-                                                )
-                                            }
-                                            disabled={isPending}
-                                            className="text-xs px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
-                                        >
-                                            {isPending ? (
-                                                <Loader2
-                                                    size={12}
-                                                    className="animate-spin"
-                                                />
-                                            ) : (
-                                                <CheckCircle2 size={12} />
-                                            )}{" "}
-                                            Approve
-                                        </Button>
-                                        <Button
-                                            onClick={() =>
-                                                handleGrace(
-                                                    selectedRequest.userId,
-                                                    selectedRequest.tradingAccountId
-                                                )
-                                            }
-                                            disabled={isPending}
-                                            variant="outline"
-                                            className="text-xs px-3 py-1.5 rounded-lg font-bold text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-500/20"
-                                        >
-                                            <Timer size={12} /> Grace
-                                        </Button>
-                                        <Button
-                                            onClick={() => {
-                                                setRejectModalId(
-                                                    selectedRequest.id
-                                                );
-                                                setSelectedRequest(null);
-                                            }}
-                                            variant="outline"
-                                            className="text-xs px-3 py-1.5 rounded-lg font-bold text-red-600 dark:text-red-400 border-red-200 dark:border-red-500/20"
-                                        >
-                                            <XCircle size={12} /> Reject
-                                        </Button>
-                                    </div>
-                                )}
-                            </div>
-
-                            <a
-                                href={`https://t.me/${selectedRequest.telegramId.replace("@", "")}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-xs font-bold rounded-xl text-white transition-all hover:opacity-90"
-                                style={{ backgroundColor: "#2AABEE" }}
-                            >
-                                <Send size={14} /> Message on Telegram
-                            </a>
-                        </div>
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
-            )}
+            </div>
 
             {/* Reject Modal */}
             {rejectModalId && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                    <div className="bg-white dark:bg-[#1A1D27] rounded-xl border border-gray-200 dark:border-white/10 shadow-2xl w-full max-w-sm">
-                        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/10">
-                            <h3 className="text-sm font-bold text-red-600 dark:text-red-400">
-                                Reject Request
-                            </h3>
-                            <button
-                                onClick={() => {
-                                    setRejectModalId(null);
-                                    setRejectReason("");
-                                }}
-                                className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500"
-                                aria-label="Close"
+                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-6 max-w-md w-full space-y-4 shadow-xl">
+                        <h3 className="text-lg font-black text-gray-900 dark:text-white">
+                            Reject VIP Request
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                            Please specify a reason for rejecting this request. The trader will receive a notification with this explanation.
+                        </p>
+                        <textarea
+                            value={rejectReason}
+                            onChange={(e) => setRejectReason(e.target.value)}
+                            placeholder="Reason for rejection (e.g. Account number does not match IB partner link)..."
+                            className="w-full h-24 p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                        <div className="flex justify-end gap-2 pt-2">
+                            <Button variant="ghost" onClick={() => setRejectModalId(null)}>
+                                Cancel
+                            </Button>
+                            <Button
+                                variant="destructive"
+                                disabled={!rejectReason.trim() || isPending}
+                                onClick={() => handleReject(rejectModalId)}
                             >
-                                <X size={16} />
-                            </button>
-                        </div>
-                        <div className="p-4 space-y-3">
-                            <textarea
-                                value={rejectReason}
-                                onChange={(e) =>
-                                    setRejectReason(e.target.value)
-                                }
-                                placeholder="Enter rejection reason..."
-                                rows={3}
-                                className="w-full px-3 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-400 resize-none"
-                            />
-                            <div className="flex items-center gap-2 justify-end">
-                                <Button
-                                    onClick={() => {
-                                        setRejectModalId(null);
-                                        setRejectReason("");
-                                    }}
-                                    variant="outline"
-                                    className="text-xs px-3 py-1.5 rounded-lg font-bold"
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    onClick={() => handleReject(rejectModalId)}
-                                    disabled={isPending || !rejectReason.trim()}
-                                    className="text-xs px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold disabled:opacity-50"
-                                >
-                                    {isPending ? (
-                                        <Loader2
-                                            size={12}
-                                            className="animate-spin"
-                                        />
-                                    ) : (
-                                        <XCircle size={12} />
-                                    )}{" "}
-                                    Reject
-                                </Button>
-                            </div>
+                                Confirm Rejection
+                            </Button>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Delete Confirm */}
-            <ConfirmDialog
-                isOpen={!!deleteModalId}
-                title="Delete VIP Request"
-                description="Are you sure you want to delete this VIP request? This action cannot be undone."
-                confirmText="Delete"
-                cancelText="Cancel"
-                isLoading={isPending}
-                onConfirm={handleDelete}
-                onCancel={() => setDeleteModalId(null)}
-                variant="danger"
-            />
+            {/* Delete Confirm Modal */}
+            {deleteModalId && (
+                <ConfirmDialog
+                    isOpen={!!deleteModalId}
+                    title="Delete Request"
+                    description="Are you sure you want to delete this VIP request? Associated entitlements will be removed."
+                    confirmText="Delete"
+                    onConfirm={handleDelete}
+                    onCancel={() => setDeleteModalId(null)}
+                />
+            )}
         </div>
     );
 }

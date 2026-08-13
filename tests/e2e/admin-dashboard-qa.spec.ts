@@ -36,10 +36,8 @@ const menuRoutes: RouteCheck[] = [
     { label: "Taxonomy", path: "/admin/taxonomy", kind: "menu" },
     { label: "Quotes", path: "/admin/quotes", kind: "menu" },
     { label: "Academy", path: "/admin/academy", kind: "menu" },
-    { label: "VIP Requests", path: "/admin/community", kind: "menu" },
-    { label: "Copy Trading", path: "/admin/copy-trading", kind: "menu" },
-    { label: "Funded Challenge", path: "/admin/funded-challenge", kind: "menu" },
-    { label: "EA Management", path: "/admin/ea", kind: "menu" },
+    { label: "VIP Pipeline", path: "/admin/ib/pipeline", kind: "menu" },
+    { label: "Trading Systems", path: "/admin/trading-systems", kind: "menu" },
     { label: "Users", path: "/admin/users", kind: "menu" },
     { label: "Security", path: "/admin/security", kind: "menu" },
     { label: "Feedback", path: "/admin/feedback", kind: "menu" },
@@ -52,13 +50,13 @@ const staticSubroutes: RouteCheck[] = [
     { label: "Create Notification", path: "/admin/notifications/create", kind: "subroute" },
     { label: "Create Article", path: "/admin/articles/create", kind: "subroute" },
     { label: "Create Lesson", path: "/admin/academy/lessons/create", kind: "subroute" },
-    { label: "EA Accounts", path: "/admin/ea/accounts", kind: "subroute" },
-    { label: "EA Pending Accounts", path: "/admin/ea/accounts/pending", kind: "subroute" },
-    { label: "EA Products", path: "/admin/ea/products", kind: "subroute" },
-    { label: "Create EA Product", path: "/admin/ea/products/create", kind: "subroute" },
-    { label: "EA Brokers", path: "/admin/ea/brokers", kind: "subroute" },
-    { label: "Create EA Broker", path: "/admin/ea/brokers/create", kind: "subroute" },
-    { label: "EA Settings", path: "/admin/ea/settings", kind: "subroute" },
+    { label: "Trading System Accounts", path: "/admin/trading-systems/accounts", kind: "subroute" },
+    { label: "Trading System Pending Accounts", path: "/admin/trading-systems/accounts/pending", kind: "subroute" },
+    { label: "Trading System Products", path: "/admin/trading-systems/products", kind: "subroute" },
+    { label: "Create Trading System", path: "/admin/trading-systems/create", kind: "subroute" },
+    { label: "Trading System Brokers", path: "/admin/trading-systems/brokers", kind: "subroute" },
+    { label: "Create Trading System Broker", path: "/admin/trading-systems/brokers/create", kind: "subroute" },
+    { label: "Trading System Settings", path: "/admin/trading-systems/settings", kind: "subroute" },
 ];
 
 async function getDynamicRoutes(): Promise<RouteCheck[]> {
@@ -77,7 +75,7 @@ async function getDynamicRoutes(): Promise<RouteCheck[]> {
         level && { label: "Academy Level Detail", path: `/admin/academy/${level.id}`, kind: "dynamic" as const },
         lesson && { label: "Edit Lesson", path: `/admin/academy/lessons/${lesson.id}/edit`, kind: "dynamic" as const },
         quiz && { label: "Edit Quiz", path: `/admin/academy/quiz/${quiz.id}`, kind: "dynamic" as const },
-        product && { label: "Edit EA Product", path: `/admin/ea/products/${product.id}`, kind: "dynamic" as const },
+        product && { label: "Edit Trading System", path: `/admin/trading-systems/${product.id}`, kind: "dynamic" as const },
     ].filter(Boolean) as RouteCheck[];
 }
 
@@ -351,7 +349,7 @@ function writeReport(routeResults: Array<RouteCheck & { status: number; heading:
 
 test.describe("Admin dashboard QA pass", () => {
     test.setTimeout(12 * 60 * 1000);
-    test.skip(!adminEmail || !adminPassword, "Set ADMIN_QA_EMAIL and ADMIN_QA_PASSWORD to run admin QA.");
+    test.skip(!adminEmail || !adminPassword, "Skipping admin E2E test: ADMIN_QA_EMAIL and ADMIN_QA_PASSWORD must be set in environment to run admin QA.");
 
     test.afterAll(async () => {
         await prisma.$disconnect();

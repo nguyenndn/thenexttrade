@@ -1,6 +1,6 @@
 # Product
 
-Last reviewed: 2026-06-16
+Last reviewed: 2026-08-11
 
 This file describes the current product behavior at a practical level. For detailed URL/query-param behavior and QA checklists, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
 
@@ -8,9 +8,24 @@ This file describes the current product behavior at a practical level. For detai
 
 This is the product map a new developer should read before fixing bugs or adding features.
 
+### Product Scope Decision
+
+The recent feature expansion is useful, but only if the UI keeps one clear user journey:
+
+`Start -> Connect/log trades -> Understand what happened -> Take one next action -> Improve`
+
+The features are not all equal:
+
+- **Core user loop**: Journal, Trade Manager EA sync, Dashboard, Analytics, Reports, Rules, Academy, and Weekly Coach.
+- **Conversion/supporting loop**: Homepage, Community, Trading Systems, Brokers, Tools, Public Trader Card, Free vs Pro, Partner Pro.
+- **Retention loop**: Edge Missions, daily check-in, experiments, reminders, first insight, and weekly action plans.
+- **Admin/ops loop**: Admin reports, AI Gateway, Email Lab, IB/VIP, user detail, content ops, and trading-system licensing.
+
+Product rule: do not show every feature at once. Dashboard and homepage should always promote the next most useful action, not the full feature catalog.
+
 | Feature | User/Admin value | Current state | Primary routes |
 | --- | --- | --- | --- |
-| Public marketing site | Explain product, trust, and conversion paths | Active | `/`, `/about`, `/contact`, `/edge` |
+| Public marketing site | Explain product, trust, and conversion paths without overwhelming visitors | Active | `/`, `/about`, `/contact`, `/edge`, `/faq` |
 | Legal pages | Compliance and trust | Active | `/legal/privacy-policy`, `/legal/terms-of-service`, `/legal/cookie-policy` |
 | Articles | SEO traffic and education | Active with admin ops | `/articles`, `/admin/articles`, `/admin/articles/ops` |
 | Article SEO ops | Find/fix missing SEO and images | Active | `/admin/articles/ops` |
@@ -22,20 +37,21 @@ This is the product map a new developer should read before fixing bugs or adding
 | Account hub | Manage MT5 accounts and sync setup | Active | `/dashboard/accounts` |
 | Free vs Pro comparison | Explain access limits clearly | Active modal | `/dashboard/accounts` |
 | Partner Pro request | Upgrade eligible accounts | Active with eligibility rules | `/dashboard/accounts` |
-| EA Sync | MT5 chart-based sync | Active | `/dashboard/accounts`, `/api/ea/*` |
-| TNT Connect | Desktop MT5 sync by selected period | Active, current release `1.0.2` | `/dashboard/accounts`, `/dashboard/settings/sync-settings` |
+| Trade Manager EA Sync | MT5 chart/VPS sync and execution helper | Active, current recommended sync path | `/dashboard/accounts`, `/api/ea/*` |
+| Manual Journal | No-install fallback for users who are not ready to connect MT5 | Active | `/dashboard/journal` |
 | Trading journal | Manual/imported trade review | Active | `/dashboard/journal` |
 | Performance analytics | User trading insights | Active | `/dashboard/analytics`, `/dashboard/reports` |
 | Mistake tracking | Behavioral review | Active | `/dashboard/mistakes` |
 | Intelligence/Pro analytics | Premium insight layer | Active/Pro-gated where applicable | `/dashboard/intelligence` |
 | Edge missions | Retention and habit loop | Active | `/dashboard/missions` |
 | Daily check-in | Daily engagement and Edge reward | Active expectation | `/dashboard/missions` |
-| Trading systems/downloads | EA/indicator/product downloads | Active | `/dashboard/trading-systems`, `/admin/ea` |
-| Copy trading registration | User applies for copy trading | Active | `/dashboard/copy-trading` |
+| Trading systems/downloads | Unlock and manage GoldScalperNinja, Trade Manager, and GSN Phoenix Grid | Active | `/trading-systems`, `/dashboard/trading-systems`, `/admin/trading-systems` |
 | Admin reports | System health and business reporting | Active | `/admin/reports` |
 | Admin analytics | Traffic, country, campaign, event analysis | Active | `/admin/analytics` |
 | Admin users/detail | User support and management | Active | `/admin/users` |
 | Admin IB/VIP | VIP pipeline and trader monitoring | Active | `/admin/ib` |
+| Admin AI Gateway | Configure providers/models, route AI requests, and monitor gateway activity | Active | `/admin/ai`, `/admin/ai/providers`, `/admin/ai/models`, `/admin/ai/requests`, `/admin/ai/audit` |
+| Email Lab | Test every transactional email against Mailtrap/SMTP before production | Active | `/admin/email-lab` |
 | Security admin | Security logs and blocked IPs | Active | `/admin/security` |
 | GA4 | External web analytics | Optional | Config-driven |
 | Email notifications | Transactional and product lifecycle email | Partially active, see [EMAIL.md](EMAIL.md) | Service-driven |
@@ -46,6 +62,12 @@ This is the product map a new developer should read before fixing bugs or adding
 | Plan vs Actual | Compare a planned setup to the executed trade | Active | `/dashboard/journal?tab=plans`, trade detail |
 | Safe public sharing | Public trader card, OG image, and share card respect privacy | Active | `/trader/[username]`, `/share/[id]`, `/api/og/trader/[username]` |
 | Weekly Coach action loop | Turns trade data, rules, leaks, and reports into next actions | Active | `/dashboard`, `/dashboard/reports/weekly` |
+| Personalized Improvement Loop | 1-click 10-trade experiment, auto progress sync, result review, and rule promotion | Active | `/dashboard`, `/dashboard/reports`, `/dashboard/rules` |
+| Deep AI & Analytics | Disposition Effect, Tilt Index, 24-Hour Intraday Heatmap, and R:R Optimizer | Active | `/dashboard/analytics`, `/dashboard/intelligence` |
+| Mobile WebApp UX Optimization | Touch-friendly bottom sheet, 16px min font-size fix, zero horizontal scroll | Active | Site-wide mobile viewport |
+| Admin Activation & Funnel | Real-time 9-stage conversion funnel, 7-14 day retention window, stage drilldowns | Active | `/admin/reports` |
+| Community / GoldScalperNinja | Public Telegram/community ecosystem page | Active | `/community`, `/admin/ib/pipeline` |
+| Economic Calendar | Public market-events tool | Active | `/tools/economic-calendar` |
 
 ## Current Product Decisions
 
@@ -53,10 +75,10 @@ This is the product map a new developer should read before fixing bugs or adding
 - Keep Prop firm functionality out of the current public/product direction unless re-approved.
 - Use Edge as the user-facing progress language. Keep internal `xp` naming only for compatibility until refactored.
 - Prioritize user-facing clarity over admin-only polish when tradeoffs are needed.
-- For sync, both EA and TNT Connect remain valid paths. The UI should help users pick and troubleshoot either path.
+- Current user-facing sync paths are **Trade Manager EA** and **Manual Journal**. Legacy TNT Connect/API code may remain for compatibility, but should not be promoted in new UI unless the product direction changes again.
 - For metrics, never show technically correct but confusing values without explanation.
 - TraderWaves-inspired features should strengthen TheNextTrade's core loop, not copy competitor features blindly.
-- Current hardening work is tracked in `docs/traderwaves-gap-production-hardening-qa-report.md`. Do not add new feature scope there.
+- Completed QA reports should be deleted after verification. New feature work should be judged by whether it improves activation, trade review quality, retention, or admin support.
 
 ## TraderWaves-Level Improvement Loop
 
@@ -68,7 +90,7 @@ The loop is implemented through these user surfaces:
 
 | Loop step | Primary route | Product behavior |
 | --- | --- | --- |
-| Connect/log trades | `/dashboard/accounts`, `/dashboard/journal` | User brings MT5 trades through TNT Connect, EA Sync, or manual journal. |
+| Connect/log trades | `/dashboard/accounts`, `/dashboard/journal` | User brings MT5 trades through Trade Manager EA sync or Manual Journal. |
 | Check sync health | `/dashboard/accounts?health=sync` | User sees account health, stale/disconnected states, sync attempts, and recovery actions. |
 | Define rules/goals | `/dashboard/rules` | User creates personal rules and behavior goals, then tracks compliance. |
 | Plan trades | `/dashboard/journal?tab=plans` | User creates a trade plan before execution. |
@@ -77,12 +99,11 @@ The loop is implemented through these user surfaces:
 | Weekly coach action | `/dashboard/reports/weekly`, `/dashboard` | Weekly Coach converts leaks and strengths into one next action. |
 | Share safely | `/trader/[username]`, `/share/[id]`, `/api/og/trader/[username]` | Privacy presets decide which values appear publicly. |
 
-Parity status:
+Feature status:
 
 - The core loop is feature-complete for internal/staging use.
-- Two hardening items remain before calling it fully clean:
-  - Create a true fresh-user E2E fixture for onboarding regression.
-  - Backfill legacy `syncSource = APP` data to `TNT_CONNECT`.
+- The main release risk is feature density, not missing screens. Keep the UI focused on one next action per context.
+- Legacy sync labels/data may still exist in old code paths. New copy and flows should use Trade Manager EA or Manual Journal.
 
 ## Public Product
 
@@ -111,10 +132,10 @@ Onboarding is a 4-step wizard:
 
 1. **Identity**: Username (required), Avatar (optional), Bio (optional).
 2. **Trading Goal**: Track trades, Find mistakes, Build discipline, Prepare for Pro.
-3. **Sync Path**: TNT Connect (recommended), EA Sync (advanced), Manual Journal.
+3. **Sync Path**: Trade Manager EA (recommended desktop/MT5 path) or Manual Journal.
 4. **Next Action**: Dynamic CTA based on sync choice, shows unlocked features.
 
-Onboarding stores progress in `User.settings.onboarding` (JSON field, no migration needed). `preferredSyncMethod` is the source of truth for downstream setup copy, so Account Hub must keep showing the user's chosen TNT Connect / EA Sync / Manual path. Users who complete or skip onboarding are not forced through it again.
+Onboarding stores progress in `User.settings.onboarding` (JSON field, no migration needed). `preferredSyncMethod` is the source of truth for downstream setup copy, so Account Hub must keep showing the user's chosen Trade Manager EA / Manual path. Users who complete or skip onboarding are not forced through it again.
 
 Dashboard activation continues from onboarding through the **First Session Wizard**.
 
@@ -125,12 +146,11 @@ First Session Wizard behavior:
 - Does not replace `/onboarding`. It does not ask for username, avatar, country, or bio again.
 - Uses existing product surfaces instead of rebuilding them:
   - Add account: `/dashboard/accounts?action=add&source=first-session`
-  - TNT setup: `/dashboard/accounts?setup=sync&method=tnt&source=first-session`
-  - EA setup: `/dashboard/accounts?setup=sync&method=ea&source=first-session`
+  - Trade Manager EA setup: `/dashboard/accounts?setup=sync&method=ea&source=first-session`
   - Manual journal: `/dashboard/journal?action=log-trade&source=first-session`
-- Supports three paths: TNT Connect, EA Sync, and Manual Journal.
+- Supports two current user-facing paths: Trade Manager EA and Manual Journal.
 - Stores state in `User.settings.onboarding.firstSession`.
-- Also writes `User.settings.onboarding.preferredSyncMethod` when the user chooses TNT, EA, or Manual, so the dashboard activation checklist stays consistent.
+- Also writes `User.settings.onboarding.preferredSyncMethod` when the user chooses Trade Manager EA or Manual, so the dashboard activation checklist stays consistent.
 - Auto-opens only for users who have not reached first value yet.
 - First value means the user has at least one trading account and at least one synced or manually logged trade.
 - Existing active users with trade history are not interrupted.
@@ -138,8 +158,7 @@ First Session Wizard behavior:
 - The same no-trade filter rule applies to `/dashboard/journal`, `/dashboard/sessions`, `/dashboard/analytics`, `/dashboard/intelligence`, and `/dashboard/psychology`.
 - If a user has at least one account but no trades after 24 hours, `/dashboard` shows a small first-data reminder instead of a modal.
 - The first-data reminder CTA follows `preferredSyncMethod`:
-  - TNT Connect: opens `/dashboard/accounts?setup=sync&method=tnt&source=first-data-reminder`
-  - EA Sync: opens `/dashboard/accounts?setup=sync&method=ea&source=first-data-reminder`
+  - Trade Manager EA: opens `/dashboard/accounts?setup=sync&method=ea&source=first-data-reminder`
   - Manual Journal: opens `/dashboard/journal?action=log-trade&source=first-data-reminder`
 - `Remind me tomorrow` stores `firstDataReminderDismissedUntil` in `User.settings.onboarding.firstSession`.
 
@@ -150,7 +169,7 @@ Approved next optimizations for new users:
 - **Activation funnel reporting**: `/admin/reports` already has a partial funnel, but it must be expanded from a Pro-oriented funnel into a first-value funnel. Track `Signed Up -> Verified -> Onboarding Started -> Onboarding Completed/Skipped -> Sync Method Selected -> Account Connected -> First Trade Data -> First Insight Viewed -> Weekly Review Generated -> Pro Requested -> Pro Active`.
 - **Light stuck-user reminders**: use in-app reminders first, then at most one 24h and one 72h lifecycle email if the user has not connected an account or has connected an account but still has zero trade data.
 - **First Insight Moment**: after the first synced or manually logged trade, show a one-time success moment that tells the user what changed and gives one next action, such as `View my first insight`.
-- **Mobile fallback**: if the user is on mobile and picks TNT/EA sync, explain that MT5 sync requires desktop/VPS, offer `Send setup link to desktop`, and keep `Log manually for now` as a clear fallback.
+- **Mobile fallback**: if the user is on mobile and picks Trade Manager EA sync, explain that MT5 sync requires desktop/VPS, offer `Send setup link to desktop`, and keep `Log manually for now` as a clear fallback.
 
 ## Account Hub
 
@@ -160,7 +179,7 @@ User goals:
 
 - Add/connect MT5 accounts.
 - Understand whether an account is Free or Pro.
-- Set up EA Sync or TNT Connect.
+- Set up Trade Manager EA sync or start Manual Journal.
 - View account dashboard.
 - Request Partner Pro only when the broker/account is eligible.
 
@@ -171,20 +190,22 @@ UX rules:
 - Do not show duplicate negative states such as `Not Supported` and `Not eligible` for the same account.
 - Keep account-card footer actions aligned and easy to scan.
 - Accounts with `totalTrades = 0` prioritize first-data CTA:
-  - TNT/EA users see `Sync first trades`, opening the selected sync setup.
+  - Trade Manager EA users see `Sync first trades`, opening the selected sync setup.
   - Manual users see `Log first trade`, routing to Journal with `source=account-card`.
   - `Dashboard` remains secondary because opening an empty dashboard is less useful for a new user.
 - Accounts with `totalTrades > 0` return to the normal `Dashboard` + `Sync` action layout.
 
 ## Trade Sync
 
-Two sync methods exist:
+Current user-facing sync methods:
 
-- **TNT Connect** (recommended): Desktop app that reads MT5 data and syncs selected periods. Best for most Windows MT5 users. Runs as a system tray app.
-- **EA Sync** (advanced): MT5 Expert Advisor dropped on a chart. Best for VPS workflows, continuous heartbeat, or users comfortable with Expert Advisors.
+- **Trade Manager EA**: MT5 Expert Advisor/utility path for users on desktop or VPS. This is the recommended automated sync/execution-support path.
 - **Manual Journal**: Users can start without sync and log trades manually.
 
-Current TNT Connect version: `1.0.2`.
+Legacy compatibility:
+
+- TNT Connect and old `/api/sync/*` references may remain in code/history for backwards compatibility, but they are not the current recommended setup path.
+- If legacy sync data is displayed, label it safely as a legacy import/source rather than promoting it as a new onboarding option.
 
 The Sync Wizard (`TradeSyncWizard`) is a 4-step flow: Choose Method → Prepare → Connect → Verify.
 

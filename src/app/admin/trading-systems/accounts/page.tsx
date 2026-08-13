@@ -2,13 +2,17 @@ import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { AccountsTable } from "@/components/admin/trading-systems/AccountsTable";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { requireAdminPageAccess } from "@/lib/admin/auth.server";
 
 export const metadata: Metadata = {
     title: "All Accounts | Admin",
     description: "View all EA trading accounts",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function AllAccountsPage() {
+    await requireAdminPageAccess();
     let licenses: any[] = [];
     try {
         licenses = await prisma.eALicense.findMany({

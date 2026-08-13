@@ -22,11 +22,11 @@ export default async function TradingAccountsPage({
     const resolvedParams = await searchParams;
     const page =
         typeof resolvedParams.page === "string"
-            ? parseInt(resolvedParams.page)
+            ? parseInt(resolvedParams.page) || 1
             : 1;
     const limit =
         typeof resolvedParams.limit === "string"
-            ? parseInt(resolvedParams.limit)
+            ? parseInt(resolvedParams.limit) || 12
             : 12;
 
     const [{ accounts, meta }, profile, dbUser] = await Promise.all([

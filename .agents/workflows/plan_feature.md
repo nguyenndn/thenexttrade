@@ -62,7 +62,7 @@ description: Business Analyst & System Architect Feature Planning Workflow
 ### 7. Chốt Hạ Kế Hoạch (Implementation Blueprint)
 - Tổng hợp tất cả phân tích thành file `implementation_plan.md` bằng Tiếng Việt.
 - **BẮT BUỘC chờ User phê duyệt** trước khi chuyển sang EXECUTION.
-- Sau khi User duyệt → chuyển sang `/2super_dev` để thi công.
+- Sau khi User duyệt → chuyển sang `/dev` để thi công.
 
 ## Output Artifacts (Sản phẩm đầu ra)
 - [ ] `implementation_plan.md` — Bản thiết kế hoàn chỉnh
@@ -77,4 +77,4 @@ description: Business Analyst & System Architect Feature Planning Workflow
 - [ ] User đã **approve** implementation plan
 
 ## Workflow tiếp theo
-→ `/2super_dev` (Thi công code) hoặc quay về bước 1 nếu User yêu cầu chỉnh sửa plan.
+→ `/dev` (Thi công code — workflow sẽ đọc `AGENTS.md` + `rules.md` trước khi code) hoặc quay về bước 1 nếu User yêu cầu chỉnh sửa plan.

@@ -68,7 +68,7 @@ export default function StreakClient() {
 
                 // Parse XP from message (e.g. "+30 Edge Bonus!")
                 const xpMatch = data.message?.match(/(\d+)\s*Edge/);
-                const xpAmount = xpMatch ? parseInt(xpMatch[1]) : 10;
+                const xpAmount = xpMatch ? parseInt(xpMatch[1], 10) || 10 : 10;
 
                 // Celebration with confetti (shared effect)
                 await celebrateXP({

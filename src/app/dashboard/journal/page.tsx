@@ -35,11 +35,11 @@ export default async function JournalPage({
     // Parse Pagination
     const page =
         typeof resolvedParams.page === "string"
-            ? parseInt(resolvedParams.page)
+            ? parseInt(resolvedParams.page) || 1
             : 1;
     const limit =
         typeof resolvedParams.limit === "string"
-            ? parseInt(resolvedParams.limit)
+            ? parseInt(resolvedParams.limit) || 20
             : 20;
 
     // Parse Filters

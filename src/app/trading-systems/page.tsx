@@ -13,15 +13,17 @@ import {
 
 import { TradingSystemsPageShell } from "@/components/trading-systems/TradingSystemsPageShell";
 import { TradingSystemsTabbedGuide } from "@/components/trading-systems/TradingSystemsTabbedGuide";
+import { TradingSystemsTabNav } from "@/components/trading-systems/TradingSystemsTabNav";
+import { AiChartAnalysisLab } from "@/components/trading-systems/ai/AiChartAnalysisLab";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { TRADING_SYSTEMS_DATA } from "@/config/trading-systems-data";
 
 export const metadata: Metadata = {
-    title: "MT5 Trading Systems & Expert Advisors | TheNextTrade",
+    title: "AI Chart Analysis & MT5 Trading Systems | TheNextTrade",
     description:
-        "Unlock EA GoldScalperNinja, Trade Manager, and MT5 Expert Advisors through an eligible partner account. Pure execution support with zero custody risk.",
+        "AI-powered chart analysis and MT5 Expert Advisors. Upload chart screenshots for instant AI trading insights, or unlock EA GoldScalperNinja and Trade Manager.",
 };
 
 export const revalidate = 60;
@@ -125,6 +127,10 @@ export default async function TradingSystemsIndexPage() {
 
     return (
         <TradingSystemsPageShell maxWidth="max-w-7xl">
+            <TradingSystemsTabNav
+                aiLabContent={<AiChartAnalysisLab />}
+                eaContent={
+                    <>
             {/* Block 1: Hero Section */}
             <section className="mb-10 grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr] pt-4">
                 <div className="space-y-6 text-left">
@@ -464,6 +470,9 @@ export default async function TradingSystemsIndexPage() {
                     </div>
                 </div>
             </section>
+                    </>
+                }
+            />
         </TradingSystemsPageShell>
     );
 }

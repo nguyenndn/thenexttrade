@@ -28,7 +28,7 @@ User Request
 └──────────┬───────────┘
            ▼
 ┌──────────────────────┐
-│ Phase 2: EXECUTION   │  ← Code (vai /2super_dev)
+│ Phase 2: EXECUTION   │  ← Code (vai /dev)
 │ + Unit Tests         │
 └──────────┬───────────┘
            ▼
@@ -62,7 +62,7 @@ User Request
 - Nếu yêu cầu đơn giản → lên task list trong đầu và nhảy thẳng Phase 2.
 
 ### Phase 2: Super Dev Execution (EXECUTION)
-Tự động áp dụng toàn bộ quy trình `/super_dev`:
+Tự động áp dụng toàn bộ quy trình `/dev`:
 - Code **chuẩn ngay từ đầu** — không code bừa rồi fix sau.
 - Tuân thủ nghiêm ngặt **THE LAW** table (English Only, Button Component, No Native Select, A11y, etc.)
 - **Viết Unit Tests** cho logic quan trọng:

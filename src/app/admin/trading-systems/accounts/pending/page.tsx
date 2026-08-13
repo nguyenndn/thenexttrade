@@ -3,13 +3,17 @@ import { prisma } from "@/lib/prisma";
 import { AccountStatus } from "@prisma/client";
 import { PendingAccountsList } from "@/components/admin/trading-systems/PendingAccountsList";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { requireAdminPageAccess } from "@/lib/admin/auth.server";
 
 export const metadata: Metadata = {
     title: "Pending Requests | Admin",
     description: "Approve or reject EA license requests",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function PendingAccountsPage() {
+    await requireAdminPageAccess();
     let licenses: any[] = [];
     try {
         licenses = await prisma.eALicense.findMany({

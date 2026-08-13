@@ -31,15 +31,12 @@ export function SiteFooter() {
                     <div className="lg:col-span-4 flex flex-col justify-between">
                         <div>
                             <Link href="/" className="inline-block mb-4">
-                                <h4 className="text-3xl font-black tracking-tight text-gray-700 dark:text-white">
-                                    The Next{" "}
-                                    <span className="text-primary">Trade</span>
+                                <h4 className="text-3xl font-black tracking-tight text-gray-900 dark:text-white">
+                                    TheNext<span className="text-amber-500 font-black">Trade</span>
                                 </h4>
                             </Link>
                             <p className="text-base leading-relaxed font-semibold text-gray-600 dark:text-gray-400 mb-8">
-                                Empowering global traders with
-                                institutional-grade data, expert education, and
-                                advanced analysis tools.
+                                Empowering global traders with institutional-grade journal analytics, expert education, and advanced analysis tools. Home of the <strong className="text-amber-500 font-bold">GoldScalperNinja</strong> trading community & EA ecosystem.
                             </p>
                         </div>
 

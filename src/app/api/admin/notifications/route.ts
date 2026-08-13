@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
             select: { role: true },
         });
 
-        if (profile?.role !== "ADMIN" && profile?.role !== "EDITOR") {
+        if (profile?.role !== "ADMIN") {
             return NextResponse.json(createErrorResponse(ErrorCode.NOT_ADMIN), {
                 status: 403,
             });
@@ -37,38 +37,24 @@ export async function GET(request: NextRequest) {
         const { searchParams } = new URL(request.url);
         const limit = parseInt(searchParams.get("limit") || "5");
 
-        const [
-            pendingLicenses,
-            recentRequests,
-            pendingCopyTrading,
-            recentCopyTrading,
-            dbNotifications,
-        ] = await Promise.all([
-            prisma.eALicense.count({
-                where: { status: AccountStatus.PENDING },
-            }),
-            prisma.eALicense.findMany({
-                where: { status: AccountStatus.PENDING },
-                orderBy: { createdAt: "desc" },
-                take: limit,
-                include: { user: { select: { email: true, name: true } } },
-            }),
-            prisma.copyTradingRegistration.count({
-                where: { status: "PENDING" },
-            }),
-            prisma.copyTradingRegistration.findMany({
-                where: { status: "PENDING" },
-                orderBy: { createdAt: "desc" },
-                take: limit,
-                include: { user: { select: { email: true, name: true } } },
-            }),
-            // Fetch real notifications from Notification table for this admin
-            prisma.notification.findMany({
-                where: { userId: user.id, isRead: false },
-                orderBy: { createdAt: "desc" },
-                take: limit,
-            }),
-        ]);
+        const [pendingLicenses, recentRequests, dbNotifications] =
+            await Promise.all([
+                prisma.eALicense.count({
+                    where: { status: AccountStatus.PENDING },
+                }),
+                prisma.eALicense.findMany({
+                    where: { status: AccountStatus.PENDING },
+                    orderBy: { createdAt: "desc" },
+                    take: limit,
+                    include: { user: { select: { email: true, name: true } } },
+                }),
+                // Fetch real notifications from Notification table for this admin
+                prisma.notification.findMany({
+                    where: { userId: user.id, isRead: false },
+                    orderBy: { createdAt: "desc" },
+                    take: limit,
+                }),
+            ]);
 
         const notifications = recentRequests.map((license) => ({
             id: license.id,
@@ -78,16 +64,6 @@ export async function GET(request: NextRequest) {
             link: NOTIFICATION_ROUTES.EA_PENDING_ADMIN,
             isRead: false,
             createdAt: license.createdAt.toISOString(),
-        }));
-
-        const copyTradingNotifications = recentCopyTrading.map((reg) => ({
-            id: `ct-${reg.id}`,
-            type: "NEW_COPY_TRADING_REQUEST" as const,
-            title: "New Copy Trading",
-            message: `${reg.user.name || reg.user.email} — ${reg.brokerName} ${reg.mt5AccountNumber}`,
-            link: NOTIFICATION_ROUTES.COPY_TRADING_ADMIN,
-            isRead: false,
-            createdAt: reg.createdAt.toISOString(),
         }));
 
         // Map real DB notifications
@@ -101,11 +77,7 @@ export async function GET(request: NextRequest) {
             createdAt: n.createdAt.toISOString(),
         }));
 
-        const allNotifications = [
-            ...notifications,
-            ...copyTradingNotifications,
-            ...realNotifications,
-        ]
+        const allNotifications = [...notifications, ...realNotifications]
             .sort(
                 (a, b) =>
                     new Date(b.createdAt).getTime() -
@@ -113,14 +85,12 @@ export async function GET(request: NextRequest) {
             )
             .slice(0, limit);
 
-        const unreadCount =
-            pendingLicenses + pendingCopyTrading + dbNotifications.length;
+        const unreadCount = pendingLicenses + dbNotifications.length;
 
         return NextResponse.json(
             createSuccessResponse({
                 notifications: allNotifications,
                 pendingLicenses,
-                pendingCopyTrading,
                 unreadCount,
             })
         );
