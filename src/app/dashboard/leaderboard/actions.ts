@@ -422,7 +422,9 @@ async function getTradingLeaderboard(
  INNER JOIN "trading_accounts" ta ON ta."userId" = u.id AND ta.use_for_leaderboard = true
  INNER JOIN "JournalEntry" je ON je."accountId" = ta.id
  WHERE u."showOnLeaderboard" = true
- AND je."entryDate" >= ${cutoffDate}
+ -- A closed trade's PnL belongs to the period it was closed in, matching
+ -- the exitDate-based date filters used everywhere else in analytics.
+ AND je."exitDate" >= ${cutoffDate}
  AND je.status = 'CLOSED'
  GROUP BY u.id, u.name, u.image, u.xp, u.level
  HAVING COUNT(*) >= 10

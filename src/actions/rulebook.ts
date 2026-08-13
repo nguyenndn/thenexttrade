@@ -75,6 +75,23 @@ export async function createTradingRule(data: z.infer<typeof ruleSchema>) {
     if (!parsed.success) return { error: "Invalid rule details" };
 
     try {
+        // Linked account/strategy must belong to the user, otherwise a rule
+        // could be attached to someone else's account or strategy.
+        if (parsed.data.accountId) {
+            const acct = await prisma.tradingAccount.findFirst({
+                where: { id: parsed.data.accountId, userId: user.id },
+                select: { id: true },
+            });
+            if (!acct) return { error: "Invalid account" };
+        }
+        if (parsed.data.strategyId) {
+            const strat = await prisma.strategy.findFirst({
+                where: { id: parsed.data.strategyId, userId: user.id },
+                select: { id: true },
+            });
+            if (!strat) return { error: "Invalid strategy" };
+        }
+
         const rule = await prisma.tradingRule.create({
             data: {
                 userId: user.id,
@@ -105,6 +122,22 @@ export async function updateTradingRule(
     if (!user) return { error: "Unauthorized" };
 
     try {
+        // Linked account/strategy must belong to the user.
+        if (data.accountId) {
+            const acct = await prisma.tradingAccount.findFirst({
+                where: { id: data.accountId, userId: user.id },
+                select: { id: true },
+            });
+            if (!acct) return { error: "Invalid account" };
+        }
+        if (data.strategyId) {
+            const strat = await prisma.strategy.findFirst({
+                where: { id: data.strategyId, userId: user.id },
+                select: { id: true },
+            });
+            if (!strat) return { error: "Invalid strategy" };
+        }
+
         const rule = await prisma.tradingRule.update({
             where: { id, userId: user.id },
             data: {
@@ -356,9 +389,18 @@ export async function saveTradeRuleChecks(
     if (!user) return { error: "Unauthorized" };
 
     try {
+        // The journal entry must belong to the current user, otherwise a
+        // caller could delete/inject rule checks on someone else's entry.
+        const entry = await prisma.journalEntry.findUnique({
+            where: { id: journalEntryId },
+            select: { userId: true },
+        });
+        if (!entry) return { error: "Journal entry not found" };
+        if (entry.userId !== user.id) return { error: "Forbidden" };
+
         // Delete existing rule checks for this entry
         await prisma.tradeRuleCheck.deleteMany({
-            where: { journalEntryId },
+            where: { journalEntryId, userId: user.id },
         });
 
         // Create new checks

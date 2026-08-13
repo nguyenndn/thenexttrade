@@ -1,8 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
+import { startOfDay, endOfDay, parseISO } from "date-fns";
 
 export const dynamic = "force-dynamic";
+
+/**
+ * Quote and escape a CSV cell, neutralizing spreadsheet formula injection
+ * (OWASP): values that begin with = + @ tab or CR can be interpreted as
+ * formulas by Excel/Sheets. A "-" prefix is only dangerous when it is not
+ * part of a plain number, so negative PnL/prices stay numeric.
+ */
+function sanitizeCsvCell(value: unknown): string {
+    const str = value === null || value === undefined ? "" : String(value);
+    const escaped = str.replace(/"/g, '""');
+    const dangerous =
+        /^[=+@\t\r]/.test(str) ||
+        (str.startsWith("-") && !/^-\d/.test(str));
+    return dangerous ? `"'${escaped}"` : `"${escaped}"`;
+}
 
 export async function GET(request: NextRequest) {
     try {
@@ -15,8 +31,34 @@ export async function GET(request: NextRequest) {
             );
         }
 
+        // Honor the date-range filter the Reports dashboard sends
+        // (trades/tax exports). Export everything when omitted.
+        const searchParams = request.nextUrl.searchParams;
+        const startDateParam = searchParams.get("startDate");
+        const endDateParam = searchParams.get("endDate");
+
+        const where: Record<string, unknown> = { userId: user.id };
+        if (startDateParam) {
+            const start = parseISO(startDateParam);
+            if (!isNaN(start.getTime())) {
+                where.exitDate = {
+                    ...((where.exitDate as object) || {}),
+                    gte: startOfDay(start),
+                };
+            }
+        }
+        if (endDateParam) {
+            const end = parseISO(endDateParam);
+            if (!isNaN(end.getTime())) {
+                where.exitDate = {
+                    ...((where.exitDate as object) || {}),
+                    lte: endOfDay(end),
+                };
+            }
+        }
+
         const trades = await prisma.journalEntry.findMany({
-            where: { userId: user.id },
+            where,
             orderBy: { entryDate: "desc" },
         });
 
@@ -59,7 +101,7 @@ export async function GET(request: NextRequest) {
                 mistakes,
                 trade.status,
             ]
-                .map((val) => `"${String(val).replace(/"/g, '""')}"`)
+                .map(sanitizeCsvCell)
                 .join(",");
         });
 

@@ -3,6 +3,7 @@ import {
     cn,
     isValidTimeZone,
     normalizeBrokerTimezone,
+    parseBrokerNumber,
     parseLocalEndOfDay,
     parseLocalStartOfDay,
 } from "./utils";
@@ -57,6 +58,40 @@ describe("timezone date utilities", () => {
         expect(normalizeBrokerTimezone("Etc/GMT+37", 133200)).toBe("Etc/UTC");
         expect(normalizeBrokerTimezone(undefined, 10800)).toBe("Etc/GMT-3");
         expect(normalizeBrokerTimezone(undefined, "10800")).toBe("Etc/GMT-3");
-        expect(normalizeBrokerTimezone(undefined, 19800)).toBeUndefined();
+        expect(normalizeBrokerTimezone(undefined, 19800)).toBe(
+            "Asia/Kolkata"
+        );
+        expect(normalizeBrokerTimezone(undefined, 34200)).toBe(
+            "Australia/Adelaide"
+        );
+        // An unmapped half-hour offset must not guess a whole-hour Etc/GMT.
+        expect(normalizeBrokerTimezone(undefined, 23400)).toBe(undefined);
+    });
+});
+
+describe("parseBrokerNumber", () => {
+    it("passes through plain numbers and finite numeric strings", () => {
+        expect(parseBrokerNumber(1234.56)).toBe(1234.56);
+        expect(parseBrokerNumber("1234.56")).toBe(1234.56);
+        expect(parseBrokerNumber("-0.5")).toBe(-0.5);
+    });
+
+    it("handles US thousands separators", () => {
+        expect(parseBrokerNumber("1,234.56")).toBe(1234.56);
+        expect(parseBrokerNumber("1,234")).toBe(1234);
+    });
+
+    it("handles European decimal-comma formats", () => {
+        expect(parseBrokerNumber("1234,56")).toBe(1234.56);
+        expect(parseBrokerNumber("1.234,56")).toBe(1234.56);
+        expect(parseBrokerNumber("1.234,56")).toBe(1234.56);
+    });
+
+    it("returns null for empty, null, undefined and junk", () => {
+        expect(parseBrokerNumber(null)).toBeNull();
+        expect(parseBrokerNumber(undefined)).toBeNull();
+        expect(parseBrokerNumber("")).toBeNull();
+        expect(parseBrokerNumber("abc")).toBeNull();
+        expect(parseBrokerNumber("1.2.3")).toBeNull();
     });
 });

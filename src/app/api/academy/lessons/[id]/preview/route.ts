@@ -7,9 +7,11 @@ export async function GET(
 ) {
     const { id } = await params;
 
-    // Look up by slug (the "id" param is actually a slug for preview)
+    // Look up by slug (the "id" param is actually a slug for preview).
+    // Only published lessons may ever be previewed — otherwise a draft slug
+    // would leak full lesson HTML to anonymous visitors.
     const lesson = await prisma.lesson.findFirst({
-        where: { slug: id },
+        where: { slug: id, status: "published" },
         select: {
             id: true,
             title: true,

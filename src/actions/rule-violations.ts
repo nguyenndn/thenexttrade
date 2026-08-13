@@ -2,7 +2,6 @@
 
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
-import { getUserProAccess } from "@/lib/pro-access";
 
 // ============================================================================
 // RULE VIOLATION TRACKER — Server Actions
@@ -38,14 +37,7 @@ export async function getRuleViolations(
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
 
-    const pro = await getUserProAccess(user.id);
-    if (!pro.isPro) return { error: "Pro required" };
-
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-    startDate.setHours(0, 0, 0, 0);
-
-    // Get trading account with rules
+    // Get trading account with rules FIRST so the Pro gate is account-scoped.
     const account = accountId
         ? await prisma.tradingAccount.findFirst({
               where: { id: accountId, userId: user.id },
@@ -55,6 +47,25 @@ export async function getRuleViolations(
           });
 
     if (!account) return { error: "No trading account found" };
+
+    // Account-scoped Pro gate — rule violations are an account-specific feature.
+    // Grant access if THIS account is Pro/GRACE (unexpired) OR the user holds a
+    // legacy user-level entitlement (tradingAccountId null). This prevents a Pro
+    // account-A user from running violations on a fresh un-entitled account B.
+    const now = new Date();
+    const proEntitlement = await prisma.proEntitlement.findFirst({
+        where: {
+            userId: user.id,
+            status: { in: ["ACTIVE", "GRACE"] },
+            OR: [{ tradingAccountId: account.id }, { tradingAccountId: null }],
+            AND: [{ OR: [{ expiresAt: null }, { expiresAt: { gte: now } }] }],
+        },
+    });
+    if (!proEntitlement) return { error: "Pro required" };
+
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+    startDate.setHours(0, 0, 0, 0);
 
     const {
         maxDailyLoss,

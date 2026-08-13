@@ -60,8 +60,15 @@ export async function POST(
             }
         }
 
-        let correctCount = 0;
         const totalQuestions = quiz.questions.length;
+        if (totalQuestions === 0) {
+            return NextResponse.json(
+                { error: "Quiz has no questions" },
+                { status: 400 }
+            );
+        }
+
+        let correctCount = 0;
 
         // Calculate score
         quiz.questions.forEach((q) => {

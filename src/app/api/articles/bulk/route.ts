@@ -12,6 +12,20 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // DB-backed ADMIN role check — this endpoint can delete or force-publish
+    // any article, so it must never be reachable by a plain USER.
+    const profile = await prisma.profile.findUnique({
+        where: { userId: user.id },
+        select: { role: true },
+    });
+
+    if (profile?.role !== "ADMIN") {
+        return NextResponse.json(
+            { error: "Forbidden: Admin access required" },
+            { status: 403 }
+        );
+    }
+
     try {
         const body = await request.json();
         const { ids, action, value } = body;

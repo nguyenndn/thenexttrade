@@ -63,7 +63,7 @@ export async function getNorthStarReport(
         prisma.journalEntry
             .groupBy({
                 by: ["userId"],
-                where: { createdAt: { gte: since } },
+                where: { createdAt: { gte: since }, status: "CLOSED" },
             })
             .then((r: { userId: string }[]) => r.length),
 
@@ -74,9 +74,16 @@ export async function getNorthStarReport(
             })
             .then((r: { userId: string }[]) => r.length),
 
-        prisma.vipRequest.count({ where: { createdAt: { gte: since } } }),
+        prisma.vipRequest
+            .groupBy({ by: ["userId"], where: { createdAt: { gte: since } } })
+            .then((r) => r.length),
 
-        prisma.proEntitlement.count({ where: { status: "ACTIVE" } }),
+        prisma.proEntitlement
+            .groupBy({
+                by: ["userId"],
+                where: { status: "ACTIVE", createdAt: { gte: since } },
+            })
+            .then((r) => r.length),
     ]);
 
     const currentSet = new Set([...currentJournalUsers, ...currentSyncedUsers]);

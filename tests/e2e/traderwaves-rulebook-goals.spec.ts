@@ -58,15 +58,13 @@ test.describe("TraderWaves - Rulebook & Goals E2E Loop", () => {
     await expect(page.getByText("Rule updated successfully!")).toBeVisible();
     await expect(page.locator("body")).toContainText(editedTitle);
 
-    // Set up dialog handler for confirm popup
-    page.once("dialog", async (dialog) => {
-      expect(dialog.message()).toContain("delete this trading rule");
-      await dialog.accept();
-    });
-
-    // Delete the rule
+    // Delete the rule — the app uses a custom ConfirmDialog, not window.confirm
     const editedCard = page.locator("div.grid > div").filter({ hasText: editedTitle }).first();
     await editedCard.getByTitle("Delete Rule").click();
+    await page
+      .getByRole("alertdialog")
+      .getByRole("button", { name: "Delete", exact: true })
+      .click();
     await expect(page.getByText("Rule deleted successfully!")).toBeVisible();
     await expect(page.locator("body")).not.toContainText(editedTitle);
   });
@@ -91,8 +89,10 @@ test.describe("TraderWaves - Rulebook & Goals E2E Loop", () => {
     // Select Manual Goal type "STUDY"
     await page.locator('select').first().selectOption("STUDY");
     
-    // Set Target Value
-    await page.locator('input[type="number"]').fill("5");
+    // Set Target Value — use the modal's unique placeholder (the goal card's
+    // stepper also renders an input[type="number"], so a bare type selector
+    // hits a strict-mode violation)
+    await page.getByPlaceholder("e.g. 5").fill("5");
     
     // Submit
     await page.getByRole("button", { name: /create goal/i }).click();
@@ -120,14 +120,12 @@ test.describe("TraderWaves - Rulebook & Goals E2E Loop", () => {
     await expect(page.getByText("Progress updated!")).toBeVisible();
     await expect(goalCard.locator("text=0 / 5")).toBeVisible();
 
-    // Set up dialog handler for confirm popup
-    page.once("dialog", async (dialog) => {
-      expect(dialog.message()).toContain("delete this goal");
-      await dialog.accept();
-    });
-
-    // Delete the goal
+    // Delete the goal — the app uses a custom ConfirmDialog, not window.confirm
     await goalCard.getByTitle("Delete Goal").click();
+    await page
+      .getByRole("alertdialog")
+      .getByRole("button", { name: "Delete", exact: true })
+      .click();
     await expect(page.getByText("Goal deleted successfully!")).toBeVisible();
     await expect(page.locator("body")).not.toContainText(goalTitle);
   });

@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { revalidatePath } from "next/cache";
-import { vipRequestSchema } from "@/lib/validations/vip-request";
+import { vipRequestSchema, SUPPORTED_BROKERS } from "@/lib/validations/vip-request";
 import { z } from "zod";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { generateApiKey } from "@/lib/utils/api-key";
@@ -250,7 +250,38 @@ export async function upgradeToPartnerPro(
             : (formData.get("balance") as string) || "0";
 
     try {
-        // 4. Block duplicate pending VipRequest for this exact account
+        // 4. Require a supported broker — a UI-created Free account has broker=null,
+        // and submitting an upgrade with empty/invalid broker creates a VipRequest
+        // the IB pipeline can never verify (silent dead end).
+        if (
+            !normalizedBroker ||
+            !(SUPPORTED_BROKERS as readonly string[]).includes(normalizedBroker)
+        ) {
+            return {
+                error: "Your trading account is missing a supported broker. Add your broker in Account Settings before applying for Pro access.",
+            };
+        }
+
+        // 4b. Block redundant requests when the account (or a user-level grant)
+        // already has an ACTIVE/GRACE entitlement.
+        const existingPro = await prisma.proEntitlement.findFirst({
+            where: {
+                userId: user.id,
+                status: { in: ["ACTIVE", "GRACE"] },
+                OR: [
+                    { tradingAccountId: account.id },
+                    { tradingAccountId: null },
+                ],
+            },
+            select: { status: true },
+        });
+        if (existingPro) {
+            return {
+                error: `This account already has ${existingPro.status.toLowerCase()} Pro access. No further upgrade request is needed.`,
+            };
+        }
+
+        // 4c. Block duplicate pending VipRequest for this exact account
         const existingRequest = await prisma.vipRequest.findFirst({
             where: {
                 userId: user.id,

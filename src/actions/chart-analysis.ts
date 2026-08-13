@@ -68,6 +68,19 @@ export async function analyzeChartImage(
         };
     }
 
+    // 1b. Pro gate — AI Chart Analysis is the most expensive capability (vision
+    // model + headless browser capture). Mirror ai-coach.ts: hard-gate on Pro so
+    // free users can't burn real provider dollars via the shared free quota pool.
+    const { getUserProAccess } = await import("@/lib/pro-access");
+    const pro = await getUserProAccess(user.id);
+    if (!pro.isPro) {
+        return {
+            ok: false,
+            error: "AI Chart Analysis is a Pro feature. Unlock Pro for free by verifying as a VIP trader.",
+            errorCode: "PRO_REQUIRED",
+        };
+    }
+
     // 2. Extract inputs
     const imageFile = formData.get("image") as File | null;
     const userPrompt = (formData.get("prompt") as string) || "";

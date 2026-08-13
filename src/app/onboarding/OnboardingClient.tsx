@@ -77,21 +77,33 @@ interface OnboardingClientProps {
         bio: string;
         avatarUrl: string | null;
         country: string;
+        // Onboarding resume data so a refresh / guard bounce does not restart
+        // the wizard from the identity form.
+        lastCompletedStep?: number;
+        tradingGoal?: string | null;
+        preferredSyncMethod?: SyncMethod;
     };
 }
 
 export default function OnboardingClient({
     initialData,
 }: OnboardingClientProps) {
-    const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+    // Resume at the step after the last one the user completed (stored 1-based).
+    const [step, setStep] = useState<1 | 2 | 3 | 4>(
+        Math.min(4, (initialData.lastCompletedStep ?? 0) + 1) as 1 | 2 | 3 | 4
+    );
     const [avatarPreview, setAvatarPreview] = useState<string | null>(
         initialData.avatarUrl
     );
     const [country, setCountry] = useState<string>(initialData.country);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [tradingGoal, setTradingGoal] = useState<string | null>(null);
-    const [syncMethod, setSyncMethod] = useState<SyncMethod>("EA_SYNC");
+    const [tradingGoal, setTradingGoal] = useState<string | null>(
+        initialData.tradingGoal ?? null
+    );
+    const [syncMethod, setSyncMethod] = useState<SyncMethod>(
+        initialData.preferredSyncMethod ?? "EA_SYNC"
+    );
     const isMobile = useIsMobileSyncDevice();
     const [linkSent, setLinkSent] = useState(false);
 
@@ -151,8 +163,17 @@ export default function OnboardingClient({
     const handleStep2Submit = async () => {
         if (!tradingGoal) return;
         setIsLoading(true);
+        setError(null);
         try {
-            await saveTradingGoalStep(tradingGoal);
+            const result = await saveTradingGoalStep(tradingGoal);
+            if (result?.error) {
+                if (result.error === "Unauthorized") {
+                    router.push("/auth/login");
+                    return;
+                }
+                setError(result.error);
+                return;
+            }
             trackEvent("onboarding_step_completed", {
                 step: "goal",
                 goal: tradingGoal,
@@ -167,8 +188,17 @@ export default function OnboardingClient({
 
     const handleStep3Submit = async () => {
         setIsLoading(true);
+        setError(null);
         try {
-            await saveSyncPreferenceStep(syncMethod);
+            const result = await saveSyncPreferenceStep(syncMethod);
+            if (result?.error) {
+                if (result.error === "Unauthorized") {
+                    router.push("/auth/login");
+                    return;
+                }
+                setError(result.error);
+                return;
+            }
             trackEvent("onboarding_step_completed", { step: "sync" });
             trackEvent("onboarding_sync_method_selected", {
                 method: syncMethod,
@@ -183,8 +213,17 @@ export default function OnboardingClient({
 
     const handleComplete = async () => {
         setIsLoading(true);
+        setError(null);
         try {
-            await completeOnboardingAction();
+            const result = await completeOnboardingAction();
+            if (result?.error) {
+                if (result.error === "Unauthorized") {
+                    router.push("/auth/login");
+                    return;
+                }
+                setError(result.error);
+                return;
+            }
             trackEvent("onboarding_completed", { syncMethod });
 
             // Redirect based on sync method
@@ -194,17 +233,31 @@ export default function OnboardingClient({
                 router.push("/dashboard/journal?action=log-trade");
             }
         } catch {
-            router.push("/dashboard");
+            setError("Failed to complete. Please try again.");
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const handleSkip = async () => {
         setIsLoading(true);
+        setError(null);
         trackEvent("onboarding_skipped", { atStep: step });
         try {
-            await skipOnboardingAction();
-        } finally {
+            const result = await skipOnboardingAction();
+            if (result?.error) {
+                if (result.error === "Unauthorized") {
+                    router.push("/auth/login");
+                    return;
+                }
+                setError(result.error);
+                return;
+            }
             router.push("/dashboard");
+        } catch {
+            setError("Failed to skip. Please try again.");
+        } finally {
+            setIsLoading(false);
         }
     };
 

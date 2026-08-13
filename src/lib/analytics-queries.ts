@@ -132,6 +132,7 @@ export async function getKeyStats(
   SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "totalPnL",
   SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "wins",
   SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "losses",
+  SUM(CASE WHEN "result" = 'BREAK_EVEN' THEN 1 ELSE 0 END) as "breakEvens",
   SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossProfit",
   SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN ABS(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossLoss",
   SUM(COALESCE("commission", 0)) as "commission",
@@ -151,7 +152,11 @@ export async function getKeyStats(
     const totalTrades = Number(stats.totalTrades || 0);
     const wins = Number(stats.wins || 0);
     const losses = Number(stats.losses || 0);
-    const decisiveTrades = wins + losses;
+    const breakEvens = Number(stats.breakEvens || 0);
+    // Denominator = decided trades (win + loss + break-even), matching the
+    // win-rate convention used by getMonthlyAnalytics / getJournalEntries so
+    // the dashboard KPI and charts never disagree.
+    const decisiveTrades = wins + losses + breakEvens;
     const grossProfit = Number(stats.grossProfit || 0);
     const grossLoss = Number(stats.grossLoss || 0);
 
@@ -322,7 +327,8 @@ export async function getSymbolPerformance(
   SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netProfit",
   SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossProfit",
   SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount",
-  SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "lossCount"
+  SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "lossCount",
+  SUM(CASE WHEN "result" = 'BREAK_EVEN' THEN 1 ELSE 0 END) as "breakEvenCount"
   FROM "JournalEntry"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
@@ -337,7 +343,10 @@ export async function getSymbolPerformance(
     return (result as any[]).map((row) => {
         const wins = Number(row.winCount || 0);
         const losses = Number(row.lossCount || 0);
-        const decisiveTrades = wins + losses;
+        const breakEvens = Number(row.breakEvenCount || 0);
+        // Decided-trades denominator (win + loss + break-even) to match the
+        // rest of analytics, so per-symbol win rate agrees with the KPI.
+        const decisiveTrades = wins + losses + breakEvens;
 
         return {
             symbol: row.symbol,
@@ -475,7 +484,8 @@ export async function getDayOfWeekPerformance(
   COUNT(*) as "tradeCount",
   SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netProfit",
   SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount",
-  SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "lossCount"
+  SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "lossCount",
+  SUM(CASE WHEN "result" = 'BREAK_EVEN' THEN 1 ELSE 0 END) as "breakEvenCount"
   FROM "JournalEntry"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
@@ -499,7 +509,10 @@ export async function getDayOfWeekPerformance(
     return (result as any[]).map((row) => {
         const wins = Number(row.winCount || 0);
         const losses = Number(row.lossCount || 0);
-        const decisiveTrades = wins + losses;
+        const breakEvens = Number(row.breakEvenCount || 0);
+        // Decided-trades denominator (win + loss + break-even) to match the
+        // rest of analytics, so per-day win rate agrees with the KPI.
+        const decisiveTrades = wins + losses + breakEvens;
 
         return {
             day: dayNames[Number(row.dayIndex)],
@@ -577,7 +590,8 @@ export async function getSessionPerformance(
   COUNT(*) as "tradeCount",
   SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netProfit",
   SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount",
-  SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "lossCount"
+  SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "lossCount",
+  SUM(CASE WHEN "result" = 'BREAK_EVEN' THEN 1 ELSE 0 END) as "breakEvenCount"
   FROM "JournalEntry"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
@@ -593,7 +607,10 @@ export async function getSessionPerformance(
     const mapped = (result as any[]).map((row) => {
         const wins = Number(row.winCount || 0);
         const losses = Number(row.lossCount || 0);
-        const decisiveTrades = wins + losses;
+        const breakEvens = Number(row.breakEvenCount || 0);
+        // Decided-trades denominator (win + loss + break-even) to match the
+        // rest of analytics, so per-session win rate agrees with the KPI.
+        const decisiveTrades = wins + losses + breakEvens;
 
         return {
             session: row.session as string,

@@ -71,6 +71,20 @@ export async function sendEmailLabTest(input: {
             };
         }
 
+        // Hard safety: never dispatch real SMTP in production unless the
+        // operator explicitly opts in. Without this, flipping the two env
+        // flags above would turn the page into an arbitrary-address spam
+        // launcher from the platform's own SMTP identity.
+        if (
+            process.env.NODE_ENV === "production" &&
+            process.env.EMAIL_TEST_ALLOW_PRODUCTION !== "true"
+        ) {
+            return {
+                success: false,
+                message: "Email dispatch is disabled in production",
+            };
+        }
+
         // 3. Resolve recipient
         let recipient = process.env.EMAIL_TEST_TO || "";
         const allowCustom = process.env.EMAIL_TEST_ALLOW_CUSTOM_TO === "true";

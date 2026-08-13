@@ -37,6 +37,7 @@ interface LessonEditFormProps {
         tone?: string;
         sourceUrls?: string[];
         metaDescription?: string;
+        status?: string;
     };
     modules: { id: string; title: string; levelTitle: string }[];
     backHref: string;

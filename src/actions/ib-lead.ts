@@ -24,18 +24,33 @@ export async function trackBrokerClick(data: {
 }) {
     const user = await getAuthUser().catch(() => null);
 
+    // This action runs from public pages (anonymous attribution is by design),
+    // so validate inputs and cap lengths — otherwise a junk payload writes
+    // garbage rows into the IB funnel (e.g. VipRequestForm passes
+    // `selectedBroker || ""`, which can be empty).
+    const broker = (data.broker || "").trim();
+    if (!broker || broker.length > 50) return { success: false };
+    const sessionId = (data.sessionId || "").trim();
+    if (!sessionId || sessionId.length > 100) return { success: false };
+    const cap = (v?: string, max = 200) =>
+        v && v.length <= max ? v : null;
+    const affiliateUrl = cap(data.affiliateUrl, 500);
+    const utmSource = cap(data.utmSource);
+    const utmMedium = cap(data.utmMedium);
+    const utmCampaign = cap(data.utmCampaign);
+
     await Promise.all([
         // Create IbLead record
         prisma.ibLead.create({
             data: {
                 userId: user?.id || null,
-                sessionId: data.sessionId,
-                broker: data.broker,
-                affiliateUrl: data.affiliateUrl || null,
+                sessionId,
+                broker,
+                affiliateUrl,
                 source: data.source,
-                utmSource: data.utmSource || null,
-                utmMedium: data.utmMedium || null,
-                utmCampaign: data.utmCampaign || null,
+                utmSource,
+                utmMedium,
+                utmCampaign,
             },
         }),
         // Also track as AnalyticsEvent for unified analytics
@@ -43,11 +58,11 @@ export async function trackBrokerClick(data: {
             data: {
                 name: "broker_ref_click",
                 data: {
-                    broker: data.broker,
+                    broker,
                     source: data.source,
-                    affiliateUrl: data.affiliateUrl || null,
+                    affiliateUrl,
                 },
-                sessionId: data.sessionId,
+                sessionId,
                 userId: user?.id || null,
             },
         }),
@@ -224,6 +239,8 @@ export async function getIbOverviewStats(range: IbStatsRange = "30d") {
         prisma.tradingAccount.count({
             where: {
                 status: { notIn: ["PENDING", "REJECTED", "SUSPENDED"] },
+                // DEMO accounts aren't real active clients — exclude them.
+                accountType: { not: "DEMO" },
                 OR: [
                     { lastHeartbeat: { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) } },
                     { lastSync: { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) } },
@@ -289,7 +306,10 @@ export async function getIbOverviewStats(range: IbStatsRange = "30d") {
         pendingRequests,
         requestsInRange,
         verifiedUsers: activeUserSet.size,
-        activeProUsers: activeUserSet.size + graceUserSet.size,
+        // A user can hold both an ACTIVE and a GRACE entitlement (legacy
+        // user-level + per-account), so union the two sets instead of adding
+        // their sizes — otherwise that user is double-counted.
+        activeProUsers: new Set([...activeUserSet, ...graceUserSet]).size,
         graceUsers: graceUserSet.size,
         revokedUsers: revokedUserSet.size,
         activeAccounts,

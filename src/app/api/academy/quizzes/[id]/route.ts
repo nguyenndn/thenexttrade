@@ -7,6 +7,12 @@ export async function GET(
     req: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
+    // Quiz options carry isCorrect (the answer key) — this endpoint is admin
+    // editor tooling and must never be reachable anonymously. The public quiz
+    // runner uses /api/quizzes/[id] which explicitly strips isCorrect.
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
+
     try {
         const { id } = await params;
         const quiz = await prisma.quiz.findUnique({

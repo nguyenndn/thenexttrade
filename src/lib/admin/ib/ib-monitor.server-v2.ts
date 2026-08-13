@@ -66,6 +66,7 @@ type AccountView = {
     type: "REAL" | "DEMO" | "UNKNOWN";
     signal: Date | null;
     freshness: Freshness;
+    duplicate: boolean;
 };
 
 type TraderView = {
@@ -284,20 +285,45 @@ export async function getPaginatedTraderMonitorV2(filters: IbTraderFilters): Pro
     for (const trade of accountTrades) if (trade.accountId && trade.exitDate && !lastTradeByAccount.has(trade.accountId)) lastTradeByAccount.set(trade.accountId, trade.exitDate.toISOString());
 
     const views: TraderView[] = users.map((user) => {
+        // Flag duplicate accounts (same broker+accountNumber for this user)
+        // at view-build time so they can be excluded from the capital
+        // breakdown — a duplicated account must not double-count funds.
+        const seenKeys = new Set<string>();
         const accounts = user.tradingAccounts.map((raw) => {
             const signal = signalAt(raw);
-            return { raw, type: accountType(raw.accountType), signal, freshness: freshness(signal, now) };
+            const key = `${raw.broker || ""}:${raw.accountNumber || ""}`.toLowerCase();
+            const duplicate = Boolean(key !== ":" && seenKeys.has(key));
+            if (key !== ":") seenKeys.add(key);
+            return {
+                raw,
+                type: accountType(raw.accountType),
+                signal,
+                freshness: freshness(signal, now),
+                duplicate,
+            };
         });
         const stats = tradeStats.get(user.id) || { count: 0, lots: 0, last: null };
+        const uniqueAccounts = accounts
+            .filter((item) => !item.duplicate)
+            .map((item) => item.raw);
+        // lastTradeAt must reflect the FULL history (like the per-account
+        // card's lastTrade), not just the trailing 30-day window — otherwise
+        // a trader with a 40-day-old trade reads as "never traded".
+        const accountLastTrades = accounts
+            .map((item) => lastTradeByAccount.get(item.raw.id))
+            .filter((value): value is string => Boolean(value));
+        const fullLastTradeAt = accountLastTrades.length
+            ? accountLastTrades.sort((a, b) => (b > a ? 1 : -1))[0]
+            : null;
         return {
             user,
             vip: vipStatus(user.proEntitlements, now),
             products: productMap.get(user.id) || [],
             accounts,
-            capital: computeCapitalBreakdown(user.tradingAccounts),
+            capital: computeCapitalBreakdown(uniqueAccounts),
             trades30d: stats.count,
             lots30d: stats.lots,
-            lastTradeAt: stats.last,
+            lastTradeAt: fullLastTradeAt,
         };
     }).filter((view) => matches(view, filters, now));
 
@@ -312,7 +338,16 @@ export async function getPaginatedTraderMonitorV2(filters: IbTraderFilters): Pro
     const total = views.length;
     const rows = views.slice((page - 1) * pageSize, page * pageSize).map((view) => buildRow(view, lastTradeByAccount));
     const allRows = views.map((view) => buildRow(view, lastTradeByAccount));
-    const capital = computeCapitalBreakdown(views.flatMap((view) => view.user.tradingAccounts));
+    // Exclude duplicated accounts from the aggregate capital too — they are
+    // already flagged per-row, but summing them here would double-count funds
+    // in the summary cards.
+    const capital = computeCapitalBreakdown(
+        views.flatMap((view) =>
+            view.accounts
+                .filter((account) => !account.duplicate)
+                .map((account) => account.raw)
+        )
+    );
     return {
         rows, total, page, pageSize, totalPages: Math.ceil(total / pageSize) || 1,
         summary: {

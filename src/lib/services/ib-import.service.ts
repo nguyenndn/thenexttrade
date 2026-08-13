@@ -110,6 +110,7 @@ export async function previewCsvImport(rows: CsvRow[]): Promise<ImportResult> {
         },
         select: {
             accountNumber: true,
+            broker: true,
             userId: true,
             user: { select: { name: true, email: true } },
         },
@@ -123,24 +124,45 @@ export async function previewCsvImport(rows: CsvRow[]): Promise<ImportResult> {
         },
         select: {
             accountNumber: true,
+            broker: true,
             userId: true,
             user: { select: { name: true, email: true } },
         },
     });
 
-    // Build lookup
-    const accountMap = new Map<string, { userId: string; userName: string }>();
+    // Build lookup. Matching is broker-aware: two users can share the same
+    // account number at different brokers, so when a row carries a broker we
+    // prefer the `${broker}|${accountNumber}` exact key and only fall back to
+    // a bare accountNumber when the row (or the account) has no broker.
+    type AccountMatch = { userId: string; userName: string };
+    const exactMap = new Map<string, AccountMatch>();
+    const fallbackMap = new Map<string, AccountMatch>();
+
+    const index = (
+        broker: string | null | undefined,
+        accountNumber: string,
+        value: AccountMatch
+    ) => {
+        if (broker) {
+            const key = `${broker.toUpperCase()}|${accountNumber}`;
+            if (!exactMap.has(key)) exactMap.set(key, value);
+        }
+        if (!fallbackMap.has(accountNumber)) {
+            fallbackMap.set(accountNumber, value);
+        }
+    };
+
     for (const acc of accounts) {
         if (acc.accountNumber) {
-            accountMap.set(acc.accountNumber, {
+            index(acc.broker, acc.accountNumber, {
                 userId: acc.userId,
                 userName: acc.user.name || acc.user.email || "Unknown",
             });
         }
     }
     for (const vr of vipRequests) {
-        if (!accountMap.has(vr.accountNumber)) {
-            accountMap.set(vr.accountNumber, {
+        if (vr.accountNumber) {
+            index(vr.broker, vr.accountNumber, {
                 userId: vr.userId,
                 userName: vr.user.name || vr.user.email || "Unknown",
             });
@@ -149,7 +171,15 @@ export async function previewCsvImport(rows: CsvRow[]): Promise<ImportResult> {
 
     // Match rows
     for (const row of rows) {
-        const match = accountMap.get(row.accountNumber);
+        let match: AccountMatch | undefined;
+        if (row.broker?.trim()) {
+            match =
+                exactMap.get(
+                    `${row.broker.trim().toUpperCase()}|${row.accountNumber}`
+                ) ||
+                exactMap.get(`|${row.accountNumber}`);
+        }
+        if (!match) match = fallbackMap.get(row.accountNumber);
         if (match) {
             result.matched++;
             result.matchedRows.push({
@@ -197,47 +227,65 @@ export async function executeCsvImport(
         999
     );
 
+    // Aggregate matched rows by userId. The snapshot unique key is
+    // (userId, periodStart, periodEnd) with NO account dimension, so a
+    // multi-account user's rows must SUM into a single snapshot. The old
+    // code upserted per row and silently clobbered the first account's
+    // numbers with the last one.
+    const byUser = new Map<
+        string,
+        { lots: number; commission: number; accountNumber: string }
+    >();
     for (const match of preview.matchedRows) {
-        try {
-            // Check for duplicate
-            const existing = await prisma.ibActivitySnapshot.findFirst({
-                where: {
-                    userId: match.userId,
-                    periodStart,
-                    periodEnd,
-                },
+        const agg = byUser.get(match.userId);
+        if (agg) {
+            agg.lots += match.lots;
+            agg.commission += match.commission;
+        } else {
+            byUser.set(match.userId, {
+                lots: match.lots,
+                commission: match.commission,
+                accountNumber: match.accountNumber,
             });
+        }
+    }
 
-            if (existing) {
-                // Update with exact data instead of estimated
-                await prisma.ibActivitySnapshot.update({
-                    where: { id: existing.id },
-                    data: {
-                        closedLotVolume: match.lots,
-                        estimatedIbRevenue: match.commission,
-                    },
-                });
-                imported++;
-            } else {
-                await prisma.ibActivitySnapshot.create({
-                    data: {
-                        userId: match.userId,
-                        accountNumberMasked:
-                            "****" + match.accountNumber.slice(-4),
+    for (const [userId, agg] of byUser) {
+        try {
+            // Upsert by the composite unique key — no findFirst-then-update
+            // race, and one snapshot per user per period.
+            await prisma.ibActivitySnapshot.upsert({
+                where: {
+                    userId_periodStart_periodEnd: {
+                        userId,
                         periodStart,
                         periodEnd,
-                        closedLotVolume: match.lots,
-                        estimatedIbRevenue: match.commission,
-                        activityStatus:
-                            match.lots > 0
-                                ? "ACTIVE_TRADER"
-                                : "CONNECTED_NO_TRADES",
                     },
-                });
-                imported++;
-            }
+                },
+                create: {
+                    userId,
+                    accountNumberMasked: "****" + agg.accountNumber.slice(-4),
+                    periodStart,
+                    periodEnd,
+                    closedLotVolume: agg.lots,
+                    estimatedIbRevenue: agg.commission,
+                    activityStatus:
+                        agg.lots > 0
+                            ? "ACTIVE_TRADER"
+                            : "CONNECTED_NO_TRADES",
+                },
+                update: {
+                    closedLotVolume: agg.lots,
+                    estimatedIbRevenue: agg.commission,
+                    activityStatus:
+                        agg.lots > 0
+                            ? "ACTIVE_TRADER"
+                            : "CONNECTED_NO_TRADES",
+                },
+            });
+            imported++;
         } catch (err: any) {
-            errors.push(`Account ${match.accountNumber}: ${err.message}`);
+            errors.push(`User ${userId}: ${err.message}`);
             skipped++;
         }
     }

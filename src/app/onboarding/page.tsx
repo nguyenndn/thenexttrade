@@ -45,6 +45,9 @@ export default async function OnboardingPage() {
     const normalizedIpCountry = normalizeCountryCode(ipCountry);
     const fallbackCountry = process.env.NODE_ENV === "production" ? "US" : "VN";
 
+    const rawSettings = (dbUser?.settings as Record<string, any>) || {};
+    const onboardingSettings = rawSettings.onboarding || {};
+
     const initialData = {
         email: user.email ?? "",
         fullName:
@@ -60,6 +63,22 @@ export default async function OnboardingPage() {
             metadataCountry ??
             normalizedIpCountry ??
             fallbackCountry,
+        // Resume the wizard at the step the user last completed instead of
+        // restarting from the identity form after a refresh / guard bounce.
+        lastCompletedStep:
+            typeof onboardingSettings.lastCompletedStep === "number"
+                ? onboardingSettings.lastCompletedStep
+                : undefined,
+        tradingGoal:
+            typeof onboardingSettings.tradingGoal === "string"
+                ? onboardingSettings.tradingGoal
+                : null,
+        preferredSyncMethod:
+            onboardingSettings.preferredSyncMethod === "MANUAL"
+                ? ("MANUAL" as const)
+                : onboardingSettings.preferredSyncMethod === "EA_SYNC"
+                  ? ("EA_SYNC" as const)
+                  : undefined,
     };
 
     return <OnboardingClient initialData={initialData} />;

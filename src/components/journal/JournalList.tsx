@@ -330,21 +330,24 @@ export default function JournalList({
         setIsModalOpen(true);
     };
 
-    // Auto-open trade log modal from ?action=log-trade
+    // Auto-open trade log modal from ?action=log-trade. Depend on the action
+    // param value (not searchParams itself) so a client-side navigation to the
+    // same journal page — e.g. the empty-state "Log a New Trade" link — re-opens
+    // the modal instead of only firing on mount.
+    const autoLogAction = searchParams.get("action");
     useEffect(() => {
-        if (searchParams.get("action") === "log-trade") {
-            handleCreate();
-            const params = new URLSearchParams(searchParams.toString());
-            params.delete("action");
-            router.replace(
-                params.toString()
-                    ? `?${params.toString()}`
-                    : "/dashboard/journal",
-                { scroll: false }
-            );
-        }
+        if (autoLogAction !== "log-trade") return;
+        handleCreate();
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete("action");
+        router.replace(
+            params.toString()
+                ? `?${params.toString()}`
+                : "/dashboard/journal",
+            { scroll: false }
+        );
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [autoLogAction]);
 
     const handleEdit = (entry: JournalEntry) => {
         setEditingEntry(entry);

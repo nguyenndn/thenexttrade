@@ -80,6 +80,13 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        if (!account.autoSync) {
+            return NextResponse.json(
+                { error: "Sync disabled" },
+                { status: 403 }
+            );
+        }
+
         // Legacy account number mismatch check
         if (authMode === "LEGACY_ACCOUNT_KEY" && account.accountNumber) {
             if (account.accountNumber !== String(accountNumber)) {
@@ -100,62 +107,58 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        let imported = 0;
-        let skipped = 0;
-
+        // Batch import with skipDuplicates so a concurrent duplicate post
+        // can't abort mid-way or drop trades without a count.
+        const importData: any[] = [];
         for (const rawTrade of trades) {
             try {
                 const trade = parseEATrade(rawTrade, account.platform || "MT4");
-
-                // Check duplicate
-                const existing = await prisma.journalEntry.findFirst({
-                    where: {
-                        accountId: account.id,
-                        externalTicket: trade.ticket,
-                    },
+                const isClosed = trade.closeTime !== null;
+                importData.push({
+                    userId: account.userId,
+                    accountId: account.id,
+                    symbol: trade.symbol,
+                    type: trade.type,
+                    entryDate: trade.openTime,
+                    entryPrice: trade.openPrice,
+                    exitDate: isClosed ? trade.closeTime : null,
+                    exitPrice: isClosed ? trade.closePrice : null,
+                    lotSize: trade.volume,
+                    pnl: trade.profit,
+                    commission: trade.commission,
+                    swap: trade.swap,
+                    stopLoss: trade.stopLoss,
+                    takeProfit: trade.takeProfit,
+                    status: isClosed ? "CLOSED" : "OPEN",
+                    result: isClosed
+                        ? classifyTradeResult({ pnl: trade.profit })
+                        : null,
+                    externalTicket: trade.ticket,
+                    syncSource: "EA_HISTORY",
+                    syncedAt: new Date(),
                 });
-
-                if (existing) {
-                    skipped++;
-                    continue;
-                }
-
-                await prisma.journalEntry.create({
-                    data: {
-                        userId: account.userId,
-                        accountId: account.id,
-                        symbol: trade.symbol,
-                        type: trade.type,
-                        entryDate: trade.openTime,
-                        entryPrice: trade.openPrice,
-                        exitDate: trade.closeTime,
-                        exitPrice: trade.closePrice,
-                        lotSize: trade.volume,
-                        pnl: trade.profit,
-                        commission: trade.commission,
-                        swap: trade.swap,
-                        stopLoss: trade.stopLoss,
-                        takeProfit: trade.takeProfit,
-                        status: "CLOSED",
-                        result: classifyTradeResult({ pnl: trade.profit }),
-                        externalTicket: trade.ticket,
-                        syncSource: "EA_HISTORY",
-                        syncedAt: new Date(),
-                    },
-                });
-
-                imported++;
             } catch (err) {
                 // Skip invalid trades
                 console.error("Error importing trade:", err);
             }
         }
 
-        // Update account lastSync
+        const imported = importData.length
+            ? (
+                  await prisma.journalEntry.createMany({
+                      data: importData,
+                      skipDuplicates: true, // Safeguard against concurrent dupes
+                  })
+              ).count
+            : 0;
+        const skipped = trades.length - imported;
+
+        // Update account lastSync + totalTrades
         await prisma.tradingAccount.update({
             where: { id: account.id },
             data: {
                 lastSync: new Date(),
+                totalTrades: { increment: imported },
             },
         });
 

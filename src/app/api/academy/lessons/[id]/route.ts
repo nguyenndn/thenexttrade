@@ -15,12 +15,20 @@ const lessonUpdateSchema = z.object({
     tone: z.string().optional().nullable(),
     sourceUrls: z.array(z.string()).optional(),
     metaDescription: z.string().optional().nullable(),
+    // Enables the Published toggle on the edit form (was previously stripped).
+    status: z.enum(["draft", "published"]).optional(),
 });
 
 export async function GET(
     req: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
+    // This GET returns the full lesson row (content, rawContent, tone,
+    // sourceUrls, videoUrl) for any id — drafts included. It is only used by
+    // admin tooling, so it must be ADMIN-gated.
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
+
     try {
         const { id } = await params;
         const lesson = await prisma.lesson.findUnique({

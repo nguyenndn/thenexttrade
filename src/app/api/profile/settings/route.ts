@@ -1,11 +1,20 @@
 import { NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
+import {
+    getEmailPreferences,
+    DEFAULT_EMAIL_PREFERENCES,
+} from "@/lib/email/preferences";
 
 export async function GET() {
     const user = await getAuthUser();
     if (!user)
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const dbUser = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { settings: true },
+    });
 
     const profile = await prisma.profile.findUnique({
         where: { userId: user.id },
@@ -25,24 +34,28 @@ export async function GET() {
         },
     });
 
+    const base = {
+        username: null,
+        isPublicProfile: false,
+        showTradeScore: false,
+        showBadges: true,
+        showPairStats: true,
+        showSessionStats: true,
+        profileHeadline: null,
+        showMoney: false,
+        showBroker: false,
+        showAccountNumber: false,
+        showRealName: false,
+        showPercentMetrics: true,
+    };
+
+    const emailPreferences = getEmailPreferences(dbUser?.settings);
+
     if (!profile) {
-        return NextResponse.json({
-            username: null,
-            isPublicProfile: false,
-            showTradeScore: false,
-            showBadges: true,
-            showPairStats: true,
-            showSessionStats: true,
-            profileHeadline: null,
-            showMoney: false,
-            showBroker: false,
-            showAccountNumber: false,
-            showRealName: false,
-            showPercentMetrics: true,
-        });
+        return NextResponse.json({ ...base, emailPreferences });
     }
 
-    return NextResponse.json(profile);
+    return NextResponse.json({ ...profile, emailPreferences });
 }
 
 export async function PUT(request: Request) {
@@ -51,6 +64,36 @@ export async function PUT(request: Request) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const body = await request.json();
+
+    // Persist email preferences inside User.settings.emailPreferences,
+    // merging with the stored blob so unrelated settings keys survive.
+    if (body.emailPreferences && typeof body.emailPreferences === "object") {
+        const incoming = body.emailPreferences as Record<string, unknown>;
+        const existing = getEmailPreferences(undefined);
+        const merged: Record<string, boolean> = { ...existing };
+        for (const key of Object.keys(DEFAULT_EMAIL_PREFERENCES) as Array<
+            keyof typeof DEFAULT_EMAIL_PREFERENCES
+        >) {
+            if (typeof incoming[key] === "boolean") {
+                merged[key] = incoming[key];
+            }
+        }
+
+        const dbUser = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: { settings: true },
+        });
+        const settings = (dbUser?.settings as Record<string, unknown>) || {};
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                settings: {
+                    ...settings,
+                    emailPreferences: merged,
+                },
+            },
+        });
+    }
 
     const profile = await prisma.profile.upsert({
         where: { userId: user.id },

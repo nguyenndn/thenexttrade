@@ -109,8 +109,11 @@ export async function getMyVipRequest(tradingAccountId?: string) {
     return request;
 }
 
-// VIP Telegram group invite link (hardcoded)
-const VIP_TELEGRAM_URL = "https://t.me/+YourVipGroupLink"; // TODO: Replace with actual VIP group invite link
+// VIP Telegram group invite link — env-configurable so the placeholder is
+// never served in production by accident. Falls back to a clearly-fake default.
+const VIP_TELEGRAM_URL =
+    process.env.VIP_TELEGRAM_URL ||
+    "https://t.me/+YourVipGroupLink"; // TODO: Replace with actual VIP group invite link
 
 export async function getVipLink() {
     const user = await getAuthUser();
@@ -156,7 +159,7 @@ export async function getVipRequestStats(range: IbStatsRange = "30d") {
 
     const [total, pending, approved, rejected] = await Promise.all([
         prisma.vipRequest.count({ where: rangeWhere }),
-        prisma.vipRequest.count({ where: { status: "PENDING" } }),
+        prisma.vipRequest.count({ where: { status: "PENDING", ...rangeWhere } }),
         prisma.vipRequest.count({
             where: { status: "APPROVED", ...rangeWhere },
         }),
@@ -180,14 +183,17 @@ export async function approveVipRequest(requestId: string) {
     });
     if (profile?.role !== "ADMIN") return { error: "Forbidden" };
 
-    const vipRequest = await prisma.vipRequest.update({
+    // Status guard — only a PENDING request can be approved. Re-approving an
+    // already-reviewed request would flip status in place and re-grant.
+    const vipRequest = await prisma.vipRequest.findUnique({
         where: { id: requestId },
-        data: {
-            status: "APPROVED",
-            reviewedBy: user.id,
-            reviewedAt: new Date(),
-        },
     });
+    if (!vipRequest) return { error: "Not found" };
+    if (vipRequest.status !== "PENDING") {
+        return {
+            error: `Cannot approve a request in status "${vipRequest.status}"`,
+        };
+    }
 
     // If no tradingAccountId on the request, try to match now
     let accountId = vipRequest.tradingAccountId;
@@ -197,71 +203,79 @@ export async function approveVipRequest(requestId: string) {
             vipRequest.broker,
             vipRequest.accountNumber
         );
-        // Update VipRequest with linked account
+    }
+
+    // Wrap the whole approval in ONE transaction: entitlement + product grants +
+    // audit + notification + status flip commit together, so a failure anywhere
+    // rolls back everything and the request stays PENDING (no half-granted state).
+    // Product-grant failures are now surfaced to the admin instead of swallowed.
+    try {
+        await prisma.$transaction(async (tx) => {
+        // Create or update ProEntitlement (account-scoped)
         if (accountId) {
-            await prisma.vipRequest.update({
+            await tx.proEntitlement.upsert({
+                where: { tradingAccountId: accountId },
+                create: {
+                    userId: vipRequest.userId,
+                    tradingAccountId: accountId,
+                    status: "ACTIVE",
+                    source: "IB_VERIFIED",
+                    vipRequestId: requestId,
+                    broker: vipRequest.broker,
+                    accountNumber: vipRequest.accountNumber,
+                    accountNumberMasked: maskAccountNumber(
+                        vipRequest.accountNumber
+                    ),
+                    startsAt: new Date(),
+                    lastReviewedAt: new Date(),
+                    reviewedBy: user.id,
+                },
+                update: {
+                    status: "ACTIVE",
+                    source: "IB_VERIFIED",
+                    vipRequestId: requestId,
+                    broker: vipRequest.broker,
+                    accountNumber: vipRequest.accountNumber,
+                    accountNumberMasked: maskAccountNumber(
+                        vipRequest.accountNumber
+                    ),
+                    startsAt: new Date(),
+                    expiresAt: null,
+                    lastReviewedAt: new Date(),
+                    reviewedBy: user.id,
+                },
+            });
+        } else {
+            // Fallback: create user-level entitlement (legacy, no account linked)
+            await tx.proEntitlement.create({
+                data: {
+                    userId: vipRequest.userId,
+                    status: "ACTIVE",
+                    source: "IB_VERIFIED",
+                    vipRequestId: requestId,
+                    broker: vipRequest.broker,
+                    accountNumber: vipRequest.accountNumber,
+                    accountNumberMasked: maskAccountNumber(
+                        vipRequest.accountNumber
+                    ),
+                    startsAt: new Date(),
+                    lastReviewedAt: new Date(),
+                    reviewedBy: user.id,
+                },
+            });
+        }
+
+        // Link the matched account back onto the request
+        if (accountId && vipRequest.tradingAccountId !== accountId) {
+            await tx.vipRequest.update({
                 where: { id: requestId },
                 data: { tradingAccountId: accountId },
             });
         }
-    }
 
-    // Create or update ProEntitlement (account-scoped)
-    if (accountId) {
-        await prisma.proEntitlement.upsert({
-            where: { tradingAccountId: accountId },
-            create: {
-                userId: vipRequest.userId,
-                tradingAccountId: accountId,
-                status: "ACTIVE",
-                source: "IB_VERIFIED",
-                vipRequestId: requestId,
-                broker: vipRequest.broker,
-                accountNumber: vipRequest.accountNumber,
-                accountNumberMasked: maskAccountNumber(
-                    vipRequest.accountNumber
-                ),
-                startsAt: new Date(),
-                lastReviewedAt: new Date(),
-                reviewedBy: user.id,
-            },
-            update: {
-                status: "ACTIVE",
-                source: "IB_VERIFIED",
-                vipRequestId: requestId,
-                broker: vipRequest.broker,
-                accountNumber: vipRequest.accountNumber,
-                accountNumberMasked: maskAccountNumber(
-                    vipRequest.accountNumber
-                ),
-                startsAt: new Date(),
-                expiresAt: null,
-                lastReviewedAt: new Date(),
-                reviewedBy: user.id,
-            },
-        });
-    } else {
-        // Fallback: create user-level entitlement (legacy, no account linked)
-        await prisma.proEntitlement.create({
-            data: {
-                userId: vipRequest.userId,
-                status: "ACTIVE",
-                source: "IB_VERIFIED",
-                vipRequestId: requestId,
-                broker: vipRequest.broker,
-                accountNumber: vipRequest.accountNumber,
-                accountNumberMasked: maskAccountNumber(
-                    vipRequest.accountNumber
-                ),
-                startsAt: new Date(),
-                lastReviewedAt: new Date(),
-                reviewedBy: user.id,
-            },
-        });
-    }
-
-    // Also grant product-level access for canonical products
-    try {
+        // Grant product-level access for canonical products. If this throws, the
+        // transaction aborts — the request stays PENDING and no entitlement/status
+        // change is committed.
         const { grantUserProductAccess } = await import(
             "@/lib/admin/ib/product-usage.server"
         );
@@ -280,36 +294,54 @@ export async function approveVipRequest(requestId: string) {
             tradingAccountId: accountId || null,
             source: ToolAccessSource.IB_VERIFIED,
         });
+
+        // Audit log
+        await tx.auditLog.create({
+            data: {
+                adminId: user.id,
+                action: "APPROVE_VIP_REQUEST",
+                targetType: "VIP_REQUEST",
+                targetId: requestId,
+                details: {
+                    userId: vipRequest.userId,
+                    tradingAccountId: accountId,
+                },
+            },
+        });
+
+        // Notify user
+        await tx.notification.create({
+            data: {
+                userId: vipRequest.userId,
+                type: NotificationType.VIP_APPROVED,
+                title: "🎉 Pro Access Activated!",
+                message:
+                    "Your VIP request has been approved. You now have full Pro access to all premium features!",
+                priority: NotificationPriority.HIGH,
+                link: NOTIFICATION_ROUTES.VIP_ACCOUNTS,
+            },
+        });
+
+        // Flip status LAST — everything above succeeded
+        await tx.vipRequest.update({
+            where: { id: requestId },
+            data: {
+                status: "APPROVED",
+                reviewedBy: user.id,
+                reviewedAt: new Date(),
+            },
+        });
+        });
     } catch (err) {
-        console.error("Failed to grant product access on VIP approval:", err);
+        console.error("Failed to approve VIP request:", err);
+        return { error: "Approval failed. Please try again." };
     }
 
-    // Audit log
-    await prisma.auditLog.create({
-        data: {
-            adminId: user.id,
-            action: "APPROVE_VIP_REQUEST",
-            targetType: "VIP_REQUEST",
-            targetId: requestId,
-            details: { userId: vipRequest.userId, tradingAccountId: accountId },
-        },
-    });
-
-    // Notify user
-    await prisma.notification.create({
-        data: {
-            userId: vipRequest.userId,
-            type: NotificationType.VIP_APPROVED,
-            title: "🎉 Pro Access Activated!",
-            message:
-                "Your VIP request has been approved. You now have full Pro access to all premium features!",
-            priority: NotificationPriority.HIGH,
-            link: NOTIFICATION_ROUTES.VIP_ACCOUNTS,
-        },
-    });
-
     revalidatePath("/admin/ib/pipeline");
+    revalidatePath("/admin/ib/traders");
     revalidatePath("/dashboard");
+    revalidatePath("/dashboard/accounts");
+    revalidatePath("/dashboard/trading-systems");
     return { success: true };
 }
 
@@ -323,6 +355,18 @@ export async function rejectVipRequest(requestId: string, reason: string) {
     if (profile?.role !== "ADMIN") return { error: "Forbidden" };
 
     if (!reason?.trim()) return { error: "Reject reason is required" };
+
+    // Status guard — mirror of approveVipRequest. Only a PENDING request can be
+    // rejected; re-rejecting a reviewed request would overwrite its state.
+    const existing = await prisma.vipRequest.findUnique({
+        where: { id: requestId },
+    });
+    if (!existing) return { error: "Not found" };
+    if (existing.status !== "PENDING") {
+        return {
+            error: `Cannot reject a request in status "${existing.status}"`,
+        };
+    }
 
     const vipRequest = await prisma.vipRequest.update({
         where: { id: requestId },
@@ -365,18 +409,34 @@ export async function deleteVipRequest(requestId: string) {
 
     if (!existingRequest) return { error: "Not found" };
 
-    // Clean up associated ProEntitlement so user reverts to "Free Plan"
+    // Clean up associated ProEntitlement so user reverts to "Free Plan".
+    // Match by vipRequestId ONLY — the old OR(tradingAccountId) arm could delete
+    // entitlements belonging to OTHER pending requests on the same account.
     await prisma.proEntitlement.deleteMany({
-        where: {
-            OR: [
-                { vipRequestId: requestId },
-                // Also match by user + account number if vipRequestId wasn't linked
-                ...(existingRequest.tradingAccountId
-                    ? [{ tradingAccountId: existingRequest.tradingAccountId }]
-                    : []),
-            ],
-        },
+        where: { vipRequestId: requestId },
     });
+
+    // Also revoke product-level access for canonical products so eAProductAccess
+    // rows aren't left orphaned as GRANTED after the request is deleted.
+    try {
+        const { revokeUserProductAccess } = await import(
+            "@/lib/admin/ib/product-usage.server"
+        );
+        await revokeUserProductAccess({
+            adminUserId: user.id,
+            targetUserId: existingRequest.userId,
+            productSlug: "goldscalperninja",
+            tradingAccountId: existingRequest.tradingAccountId || null,
+        });
+        await revokeUserProductAccess({
+            adminUserId: user.id,
+            targetUserId: existingRequest.userId,
+            productSlug: "trade-manager",
+            tradingAccountId: existingRequest.tradingAccountId || null,
+        });
+    } catch (err) {
+        console.error("Failed to revoke product access on VIP request delete:", err);
+    }
 
     await prisma.vipRequest.delete({
         where: { id: requestId },
@@ -385,6 +445,8 @@ export async function deleteVipRequest(requestId: string) {
     revalidatePath("/admin/ib/pipeline");
     revalidatePath("/admin/ib/traders");
     revalidatePath("/dashboard");
+    revalidatePath("/dashboard/accounts");
+    revalidatePath("/dashboard/trading-systems");
     return { success: true };
 }
 
@@ -434,18 +496,37 @@ export async function grantGracePeriod(
             },
         });
     } else {
-        // Legacy user-level grace
-        await prisma.proEntitlement.create({
-            data: {
-                userId,
-                status: "GRACE",
-                source: "MANUAL_ADMIN",
-                startsAt: new Date(),
-                expiresAt,
-                lastReviewedAt: new Date(),
-                reviewedBy: user.id,
-            },
+        // Legacy user-level grace — upsert by userId to avoid stacking duplicate
+        // user-level entitlements (the @@unique([userId, tradingAccountId]) allows
+        // multiple rows where tradingAccountId IS NULL in Postgres).
+        const existingUserLevel = await prisma.proEntitlement.findFirst({
+            where: { userId, tradingAccountId: null },
+            orderBy: { createdAt: "desc" },
         });
+        if (existingUserLevel) {
+            await prisma.proEntitlement.update({
+                where: { id: existingUserLevel.id },
+                data: {
+                    status: "GRACE",
+                    startsAt: new Date(),
+                    expiresAt,
+                    lastReviewedAt: new Date(),
+                    reviewedBy: user.id,
+                },
+            });
+        } else {
+            await prisma.proEntitlement.create({
+                data: {
+                    userId,
+                    status: "GRACE",
+                    source: "MANUAL_ADMIN",
+                    startsAt: new Date(),
+                    expiresAt,
+                    lastReviewedAt: new Date(),
+                    reviewedBy: user.id,
+                },
+            });
+        }
     }
 
     await prisma.notification.create({
@@ -460,6 +541,8 @@ export async function grantGracePeriod(
     });
 
     revalidatePath("/admin/ib/pipeline");
+    revalidatePath("/dashboard/accounts");
+    revalidatePath("/dashboard/trading-systems");
     return { success: true };
 }
 
@@ -528,6 +611,8 @@ export async function revokeProAccess(
     });
 
     revalidatePath("/admin/ib/pipeline");
+    revalidatePath("/dashboard/accounts");
+    revalidatePath("/dashboard/trading-systems");
     return { success: true };
 }
 
@@ -571,20 +656,42 @@ export async function grantManualPro(
             },
         });
     } else {
-        // Legacy user-level grant
-        await prisma.proEntitlement.create({
-            data: {
-                userId,
-                status: "ACTIVE",
-                source: "MANUAL_ADMIN",
-                startsAt: new Date(),
-                lastReviewedAt: new Date(),
-                reviewedBy: user.id,
-                adminNote: note || null,
-            },
+        // Legacy user-level grant — upsert by userId to avoid stacking duplicate
+        // user-level entitlements (same null tradingAccountId caveat as grace).
+        const existingUserLevel = await prisma.proEntitlement.findFirst({
+            where: { userId, tradingAccountId: null },
+            orderBy: { createdAt: "desc" },
         });
+        if (existingUserLevel) {
+            await prisma.proEntitlement.update({
+                where: { id: existingUserLevel.id },
+                data: {
+                    status: "ACTIVE",
+                    source: "MANUAL_ADMIN",
+                    startsAt: new Date(),
+                    expiresAt: null,
+                    lastReviewedAt: new Date(),
+                    reviewedBy: user.id,
+                    adminNote: note || null,
+                },
+            });
+        } else {
+            await prisma.proEntitlement.create({
+                data: {
+                    userId,
+                    status: "ACTIVE",
+                    source: "MANUAL_ADMIN",
+                    startsAt: new Date(),
+                    lastReviewedAt: new Date(),
+                    reviewedBy: user.id,
+                    adminNote: note || null,
+                },
+            });
+        }
     }
 
     revalidatePath("/admin/ib/pipeline");
+    revalidatePath("/dashboard/accounts");
+    revalidatePath("/dashboard/trading-systems");
     return { success: true };
 }

@@ -31,7 +31,10 @@ export async function getTradingAccounts(page = 1, limit = 12) {
     const [accounts, total] = await Promise.all([
         prisma.tradingAccount.findMany({
             where: { userId: user.id },
-            orderBy: { createdAt: "asc" },
+            // Default account first so "accounts[0]" (used to auto-set the
+            // main account) resolves to the user's chosen default, not just
+            // the oldest one.
+            orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
             select: {
                 id: true,
                 name: true,
@@ -85,7 +88,15 @@ export async function getTradingAccounts(page = 1, limit = 12) {
     // Enrich with connection + Pro/EA/VIP status + eligibility
     const accountsWithStatus = accounts.map((acc) => {
         const proEntitlement = acc.proEntitlement;
-        const proStatus = proEntitlement?.status || "NONE";
+        // Treat expired GRACE as EXPIRED here instead of reading the raw status,
+        // so the account list doesn't keep reporting "GRACE / Pro / EA INCLUDED"
+        // after the grace window passes (mirrors getAccountProAccess auto-expire).
+        const rawProStatus = proEntitlement?.status || "NONE";
+        const proExpired =
+            rawProStatus === "GRACE" &&
+            proEntitlement?.expiresAt &&
+            new Date(proEntitlement.expiresAt).getTime() <= Date.now();
+        const proStatus = proExpired ? "EXPIRED" : rawProStatus;
         const proSource = proEntitlement?.source || null;
         const proExpiresAt = proEntitlement?.expiresAt?.toISOString() || null;
         const vipStatus = acc.vipRequests?.[0]?.status || null;
@@ -161,6 +172,24 @@ export async function createTradingAccount(
     } = validation.data;
 
     try {
+        // Reject duplicate account numbers within the same user. The schema
+        // has no unique constraint (prod may already contain dupes), so we
+        // guard at the code level.
+        if (accountNumber) {
+            const existing = await prisma.tradingAccount.findFirst({
+                where: {
+                    userId: user.id,
+                    accountNumber: String(accountNumber),
+                },
+                select: { id: true },
+            });
+            if (existing) {
+                return {
+                    error: `An account with number ${accountNumber} already exists`,
+                };
+            }
+        }
+
         // Handle Default Account Logic
         if (isDefault) {
             await prisma.tradingAccount.updateMany({

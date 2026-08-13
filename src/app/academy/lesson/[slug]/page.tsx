@@ -28,6 +28,7 @@ export async function generateMetadata({
         select: {
             title: true,
             content: true,
+            status: true,
             metaDescription: true,
             module: {
                 select: {
@@ -38,7 +39,7 @@ export async function generateMetadata({
         },
     });
 
-    if (!lesson) {
+    if (!lesson || lesson.status !== "published") {
         return { title: "Lesson Not Found | TheNextTrade Academy" };
     }
 
@@ -124,6 +125,11 @@ export default async function PublicLessonPage({
 
     if (!lesson) return notFound();
 
+    // Draft/unlisted lessons must never render on the public site — even though
+    // generateStaticParams only lists published PUBLIC lessons, dynamicParams
+    // defaults to true, so any slug would otherwise be served on demand.
+    if (lesson.status !== "published") return notFound();
+
     const level = lesson.module.level;
     const courseLessons = lesson.module.lessons;
 
@@ -134,6 +140,25 @@ export default async function PublicLessonPage({
     const prevLesson = allLessonsInLevel[globalIndex - 1] || null;
 
     const isPremiumLocked = level.accessLevel !== "PUBLIC";
+
+    // For premium levels, do NOT ship the full lesson HTML to anonymous
+    // visitors: only a short plain-text teaser is rendered, so the rest of the
+    // material is neither visible in the page source nor indexed by search
+    // engines. (Previously the full content was sent and merely CSS-clipped.)
+    if (isPremiumLocked) {
+        const plainText = lesson.content
+            .replace(/<[^>]*>/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+        const teaser =
+            plainText.length > 800
+                ? plainText.slice(0, 800).trimEnd() + "…"
+                : plainText;
+        lesson.content = `<p>${teaser
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")}</p>`;
+    }
 
     return (
         <PublicLessonView

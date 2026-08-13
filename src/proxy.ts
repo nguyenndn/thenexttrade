@@ -9,6 +9,18 @@ import {
 } from "@/lib/analytics";
 
 // =============================================================================
+// TRUSTED INTERNAL ORIGIN
+// Never derive internal fetch targets from the request's Host header: an
+// attacker can spoof Host so that request.nextUrl.origin resolves to an
+// attacker-controlled host, and the middleware would then POST internal
+// secrets (INTERNAL_SECURITY_SECRET, ANALYTICS_SECRET) straight to it (SSRF).
+// Resolve edge-to-origin calls against a known-good URL instead.
+// =============================================================================
+
+const INTERNAL_BASE_URL =
+    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+// =============================================================================
 // RATE LIMITER (In-memory, sliding window)
 // Resets on cold start — acceptable for Vercel Serverless/Edge
 // =============================================================================
@@ -197,7 +209,7 @@ function addSecurityHeaders(response: NextResponse, isDev: boolean): void {
         "default-src 'self'",
         "script-src 'self' 'unsafe-inline' https://*.supabase.co https://*.google.com https://*.googleapis.com https://*.googletagmanager.com https://challenges.cloudflare.com",
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-        "img-src 'self' blob: data: https://*.supabase.co https://*.unsplash.com https://flagcdn.com https://images.unsplash.com https://cdn.jsdelivr.net",
+        "img-src 'self' blob: data: https://*.supabase.co https://*.unsplash.com https://flagcdn.com https://images.unsplash.com https://cdn.jsdelivr.net https://*.r2.dev https://*.thenexttrade.com",
         "font-src 'self' data: https://fonts.gstatic.com",
         "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://*.googleapis.com wss://*.supabase.co https://challenges.cloudflare.com https://cdn.jsdelivr.net",
         "frame-src https://challenges.cloudflare.com",
@@ -267,7 +279,7 @@ function logSecurityToAPI(
 // MIDDLEWARE ENTRY POINT
 // =============================================================================
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
     const ip =
         request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
@@ -275,9 +287,8 @@ export async function middleware(request: NextRequest) {
     const userAgent = request.headers.get("user-agent");
     const isDev = process.env.NODE_ENV !== "production";
 
-    // 0. Sync blocked IPs (non-blocking)
-    const baseUrl = request.nextUrl.origin;
-    syncBlockedIPs(baseUrl).catch(() => {});
+    // 0. Sync blocked IPs (non-blocking) — always against the trusted origin
+    syncBlockedIPs(INTERNAL_BASE_URL).catch(() => {});
 
     // 0.5 Check blocked IP
     if (blockedIPSet.has(ip)) {
@@ -286,7 +297,7 @@ export async function middleware(request: NextRequest) {
 
     // 1. Bot Detection (production only)
     if (!isDev && isMaliciousBot(userAgent)) {
-        logSecurityToAPI(baseUrl, {
+        logSecurityToAPI(INTERNAL_BASE_URL, {
             type: "BOT_BLOCKED",
             ip,
             userAgent,
@@ -299,7 +310,7 @@ export async function middleware(request: NextRequest) {
     // 2. CRON Route Protection
     if (isCronRoute(pathname)) {
         if (!validateCronSecret(request)) {
-            logSecurityToAPI(baseUrl, {
+            logSecurityToAPI(INTERNAL_BASE_URL, {
                 type: "CRON_FAILED",
                 ip,
                 userAgent,
@@ -340,7 +351,7 @@ export async function middleware(request: NextRequest) {
             rateLimitResult = checkRateLimit(ip, rateLimitCategory);
 
             if (!rateLimitResult.allowed) {
-                logSecurityToAPI(baseUrl, {
+                logSecurityToAPI(INTERNAL_BASE_URL, {
                     type: "RATE_LIMIT",
                     ip,
                     userAgent,
@@ -409,7 +420,7 @@ export async function middleware(request: NextRequest) {
                 request.nextUrl.searchParams.get("utm_campaign") || null;
 
             // Fire and forget — don't await, don't block response
-            const collectUrl = new URL("/api/analytics/collect", request.url);
+            const collectUrl = new URL("/api/analytics/collect", INTERNAL_BASE_URL);
             fetch(collectUrl.toString(), {
                 method: "POST",
                 headers: {

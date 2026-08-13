@@ -153,82 +153,144 @@ export async function POST(request: NextRequest) {
 
         const tickets = parsedTrades.map((t) => t.ticket);
 
-        // 2. Query all existing tickets in a single findMany call
+        // 2. Query all existing tickets in a single findMany call, including
+        // their status so we can detect OPEN→CLOSED transitions.
         const existingEntries = await prisma.journalEntry.findMany({
             where: {
                 accountId: account.id,
                 externalTicket: { in: tickets },
             },
-            select: { externalTicket: true },
+            select: { externalTicket: true, status: true },
         });
 
-        const existingTicketsSet = new Set(
-            existingEntries.map((e) => e.externalTicket)
+        const existingByTicket = new Map(
+            existingEntries.map((e) => [e.externalTicket, e])
         );
 
         // 3. Filter out existing trades
         const newTrades = parsedTrades.filter(
-            (t) => !existingTicketsSet.has(t.ticket)
+            (t) => !existingByTicket.has(t.ticket)
         );
-        const skipped = trades.length - newTrades.length;
-        let imported = 0;
 
-        if (newTrades.length > 0) {
-            // 4. Batch insert new trades in a single createMany transaction
-            const insertData = newTrades.map((trade) => ({
-                userId: account.userId,
-                accountId: account.id,
-                symbol: trade.symbol,
-                type: trade.type, // "BUY" | "SELL" (matches enum)
-                entryDate: trade.openTime,
-                entryPrice: trade.openPrice,
-                exitDate: trade.closeTime,
-                exitPrice: trade.closePrice,
-                stopLoss: trade.stopLoss || null,
-                takeProfit: trade.takeProfit || null,
-                lotSize: trade.volume,
-                pnl: trade.profit,
-                commission: trade.commission,
-                swap: trade.swap,
-                status: "CLOSED" as const,
-                result: classifyTradeResult({ pnl: trade.profit }),
-                externalTicket: trade.ticket,
-                syncSource: "EA_SYNC",
-                syncedAt: new Date(),
-            }));
-
-            // Use createMany to insert in bulk
-            const result = await prisma.journalEntry.createMany({
-                data: insertData,
-                skipDuplicates: true, // Safeguard
-            });
-            imported = result.count;
+        // 3b. OPEN→CLOSED transitions — the EA re-sends an open ticket with a
+        // close time once it fills. A pure ticket-filter dedup (the old
+        // behavior) would keep the journal entry OPEN forever with null exit
+        // data/result/pnl. Close those here so stats and reports stay accurate.
+        const closingTrades = parsedTrades.filter((t) => {
+            const existing = existingByTicket.get(t.ticket);
+            return (
+                existing &&
+                existing.status === "OPEN" &&
+                t.closeTime !== null
+            );
+        });
+        const skipped =
+            trades.length - newTrades.length - closingTrades.length;
+        // Sanitize optional metadata BEFORE any DB write so a malformed
+        // value can't fail the request after trades were already committed.
+        const safeEaVersion = eaVersion
+            ? String(eaVersion).slice(0, 20) || null
+            : null;
+        let safeClientTime: Date | null = null;
+        if (clientTime) {
+            const parsed = new Date(clientTime);
+            if (!isNaN(parsed.getTime())) safeClientTime = parsed;
         }
 
-        // Log sync history
-        await prisma.syncHistory.create({
-            data: {
-                tradingAccountId: account.id,
-                tradesReceived: trades.length,
-                tradesImported: imported,
-                tradesSkipped: skipped,
-                eaVersion,
-                clientTime: clientTime ? new Date(clientTime) : null,
-            },
-        });
+        // Wrap insert + syncHistory + account update in one transaction so a
+        // failure can't leave trades committed with stale totals/syncHistory.
+        const imported = await prisma.$transaction(async (tx) => {
+            let inserted = 0;
+            let closed = 0;
 
-        // Update account stats
-        await prisma.tradingAccount.update({
-            where: { id: account.id },
-            data: {
-                lastSync: new Date(),
-                eaVersion,
-                totalTrades: { increment: imported },
-            },
+            if (newTrades.length > 0) {
+                // 4. Batch insert new trades in a single createMany transaction
+                const insertData = newTrades.map((trade) => {
+                    const isClosed = trade.closeTime !== null;
+                    return {
+                        userId: account.userId,
+                        accountId: account.id,
+                        symbol: trade.symbol,
+                        type: trade.type, // "BUY" | "SELL" (matches enum)
+                        entryDate: trade.openTime,
+                        entryPrice: trade.openPrice,
+                        // Open positions: no exit data, no fabricated result
+                        exitDate: isClosed ? trade.closeTime : null,
+                        exitPrice: isClosed ? trade.closePrice : null,
+                        stopLoss: trade.stopLoss || null,
+                        takeProfit: trade.takeProfit || null,
+                        lotSize: trade.volume,
+                        pnl: trade.profit,
+                        commission: trade.commission,
+                        swap: trade.swap,
+                        status: isClosed ? ("CLOSED" as const) : ("OPEN" as const),
+                        result: isClosed
+                            ? classifyTradeResult({ pnl: trade.profit })
+                            : null,
+                        externalTicket: trade.ticket,
+                        syncSource: "EA_SYNC",
+                        syncedAt: new Date(),
+                    };
+                });
+
+                const result = await tx.journalEntry.createMany({
+                    data: insertData,
+                    skipDuplicates: true, // Safeguard
+                });
+                inserted = result.count;
+            }
+
+            // 4b. Apply OPEN→CLOSED transitions on re-sent tickets. The
+            // where status:"OPEN" guard makes this idempotent — a second
+            // delivery of the same closed ticket updates nothing.
+            for (const trade of closingTrades) {
+                const update = await tx.journalEntry.updateMany({
+                    where: {
+                        accountId: account.id,
+                        externalTicket: trade.ticket,
+                        status: "OPEN",
+                    },
+                    data: {
+                        status: "CLOSED",
+                        exitDate: trade.closeTime,
+                        exitPrice: trade.closePrice,
+                        pnl: trade.profit,
+                        commission: trade.commission,
+                        swap: trade.swap,
+                        result: classifyTradeResult({ pnl: trade.profit }),
+                        syncedAt: new Date(),
+                    },
+                });
+                closed += update.count;
+            }
+
+            // Log sync history
+            await tx.syncHistory.create({
+                data: {
+                    tradingAccountId: account.id,
+                    tradesReceived: trades.length,
+                    tradesImported: inserted + closed,
+                    tradesSkipped: skipped,
+                    eaVersion: safeEaVersion,
+                    clientTime: safeClientTime,
+                },
+            });
+
+            // Update account stats
+            await tx.tradingAccount.update({
+                where: { id: account.id },
+                data: {
+                    lastSync: new Date(),
+                    eaVersion: safeEaVersion,
+                    totalTrades: { increment: inserted },
+                },
+            });
+
+            return { inserted, closed };
         });
 
         // Trigger experiment progress update
-        if (imported > 0) {
+        if (imported.inserted > 0 || imported.closed > 0) {
             try {
                 const { onUserTradesUpdated } = await import("@/lib/experiments/progress.server");
                 await onUserTradesUpdated(account.userId, account.id);
@@ -239,7 +301,8 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({
             success: true,
-            imported,
+            imported: imported.inserted,
+            updated: imported.closed,
             skipped,
             errors: errors.length > 0 ? errors : undefined,
         });

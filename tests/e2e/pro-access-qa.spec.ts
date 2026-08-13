@@ -147,7 +147,15 @@ async function createAuthUser(user: typeof users.trader, role: UserRole) {
   await prisma.user.upsert({
     where: { id: user.id },
     update: { email: user.email, name: user.name },
-    create: { id: user.id, email: user.email, name: user.name },
+    create: {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      // Mark onboarding as already completed so the dashboard layout does not
+      // redirect this fresh QA trader to /onboarding. This spec verifies the
+      // Pro/VIP access gate on the trading dashboard, not the onboarding flow.
+      settings: { onboarding: { completedAt: new Date().toISOString() } },
+    },
   });
   await prisma.profile.upsert({
     where: { userId: user.id },
@@ -360,9 +368,15 @@ test("visual deep QA for IB-powered Pro Access", async ({ browser, request }) =>
   if (await fullNameInput.isVisible().catch(() => false)) {
     await fullNameInput.fill(users.trader.name);
   }
-  const countryInput = proTextboxes.nth(5);
-  if (await countryInput.isVisible().catch(() => false)) {
-    await countryInput.fill("Vietnam");
+  // Country is a `CountrySelect` (trigger button + searchable list), NOT a
+  // textbox — the old `proTextboxes.nth(5)` target landed on the "Account
+  // Screenshot URL (optional)" field, leaving Country empty so the Review step
+  // blocked on "Please fill in all required fields".
+  const countryTrigger = traderPage.getByText("Select Country", { exact: true });
+  if (await countryTrigger.isVisible({ timeout: 3000 }).catch(() => false)) {
+    await countryTrigger.click();
+    await traderPage.getByPlaceholder("Search country...").fill("Vietnam");
+    await traderPage.getByText("Vietnam", { exact: true }).first().click();
   }
 
   const screenshotInput = traderPage.getByText(/screenshot|proof|upload/i);
@@ -413,22 +427,24 @@ test("visual deep QA for IB-powered Pro Access", async ({ browser, request }) =>
   await shot(traderPage, "sidebar-pending-request");
 
   await adminPage.goto("/admin/ib");
-  await expect(adminPage.getByRole("heading", { name: "IB Overview" })).toBeVisible();
+  // The admin/ib section shares one standardized header — "Partner Pro
+  // Operations" — via `admin/ib/layout.tsx` (the "standardize header layout"
+  // redesign removed the page-level "IB Overview" <h1>).
+  await expect(adminPage.getByRole("heading", { name: "Partner Pro Operations" })).toBeVisible();
   await shot(adminPage, "admin-ib-overview");
 
   await adminPage.goto("/admin/ib/pipeline");
-  await expect(adminPage.getByRole("heading", { name: "VIP Pipeline" })).toBeVisible();
-  await adminPage.getByPlaceholder("Search Telegram, email, account...").fill(users.trader.email);
+  // "VIP Pipeline" is a tab label in the shared layout, not an <h1> — assert
+  // the pipeline page's page-specific search input instead.
+  await expect(adminPage.getByPlaceholder("Search name, email, Telegram, account #...")).toBeVisible();
+  await adminPage.getByPlaceholder("Search name, email, Telegram, account #...").fill(users.trader.email);
   await expect(adminPage.getByText(users.trader.email)).toBeVisible();
   await shot(adminPage, "admin-pipeline-pending-filtered");
 
-  await adminPage.getByRole("button", { name: "Actions" }).first().click();
-  await adminPage.getByText("View Details").click();
-  await expect(adminPage.getByText("Request Details")).toBeVisible();
-  await shot(adminPage, "admin-request-details-modal");
-  await adminPage.getByLabel("Close modal").click();
-  await adminPage.getByRole("button", { name: "Actions" }).first().click();
-  await adminPage.getByText("Approve & Grant Pro").click();
+  // The pipeline redesign replaced the old "Actions → View Details → Approve &
+  // Grant Pro" menu with an inline "Approve" button on PENDING rows.
+  const traderPipelineRow = adminPage.getByRole("row").filter({ hasText: users.trader.email });
+  await traderPipelineRow.getByRole("button", { name: "Approve", exact: true }).click();
   await expect.poll(async () => {
     const entitlement = await prisma.proEntitlement.findFirst({
       where: {
@@ -562,10 +578,24 @@ test("visual deep QA for IB-powered Pro Access", async ({ browser, request }) =>
   await shot(traderPage, "pro-user-intelligence-unlocked");
 
   await adminPage.goto("/admin/ib/pipeline");
-  await adminPage.getByPlaceholder("Search Telegram, email, account...").fill(users.trader.email);
-  await expect(adminPage.getByRole("table").getByText("Approved")).toBeVisible();
-  await adminPage.getByRole("button", { name: "Actions" }).first().click();
-  await adminPage.getByText("Revoke Pro").click();
+  await adminPage.getByPlaceholder("Search name, email, Telegram, account #...").fill(users.trader.email);
+  // Scope to the trader's row. After a successful approval the row shows the
+  // richer lifecycle badge "🔓 Tool Unlocked" (approved + product grant written),
+  // falling back to "✅ VIP Approved" when the grant is skipped — accept either
+  // approved-state badge. A global `getByText("Approved")` substring match trips
+  // strict mode when other rows also carry one of these badges.
+  await expect(
+    adminPage.getByRole("row").filter({ hasText: users.trader.email }).getByText(/VIP Approved|Tool Unlocked/)
+  ).toBeVisible();
+
+  // The pipeline redesign removed the "Revoke Pro" menu item — revoke now lives
+  // on the Trader Monitor (CRM) page under the row ⋮ menu ("Revoke VIP Access").
+  await adminPage.goto("/admin/ib/traders");
+  await expect(adminPage.getByPlaceholder("Search trader name, email or account #...")).toBeVisible();
+  await adminPage.getByPlaceholder("Search trader name, email or account #...").fill(users.trader.name);
+  const revokeTraderRow = adminPage.getByRole("row").filter({ hasText: users.trader.name });
+  await revokeTraderRow.locator("td").last().getByRole("button").click();
+  await adminPage.getByText("Revoke VIP Access").click();
   await adminPage.waitForTimeout(1500);
   const revokedEntitlement = await prisma.proEntitlement.findFirst({ where: { userId: users.trader.id } });
   expect(revokedEntitlement?.status).toBe("REVOKED");
@@ -620,10 +650,13 @@ test("visual deep QA for IB-powered Pro Access", async ({ browser, request }) =>
   graceRequestId = graceRequest.id;
 
   await adminPage.goto("/admin/ib/pipeline");
-  await adminPage.getByPlaceholder("Search Telegram, email, account...").fill(users.grace.email);
+  await adminPage.getByPlaceholder("Search name, email, Telegram, account #...").fill(users.grace.email);
   await expect(adminPage.getByText(users.grace.email)).toBeVisible();
-  await adminPage.getByRole("button", { name: "Actions" }).first().click();
-  await adminPage.getByText("Grant 14d Grace").click();
+  // Grace grant is now the "Grant Temporary VIP (14d)" item in the row ⋮ menu
+  // (the old "Grant 14d Grace" menu item was renamed).
+  const gracePipelineRow = adminPage.getByRole("row").filter({ hasText: users.grace.email });
+  await gracePipelineRow.locator("td").last().getByRole("button").last().click();
+  await adminPage.getByText("Grant Temporary VIP (14d)").click();
   await adminPage.waitForTimeout(1500);
   await shot(adminPage, "admin-grace-granted");
 
@@ -769,14 +802,17 @@ test("visual deep QA for IB-powered Pro Access", async ({ browser, request }) =>
   }
 
   await adminPage.goto("/admin/ib/traders");
-  await expect(adminPage.getByRole("heading", { name: "Active Trader Monitor" })).toBeVisible();
-  await adminPage.getByPlaceholder("Search user...").fill(users.trader.name);
+  // Trader Monitor page-specific search input (the shared layout header is the
+  // generic "Partner Pro Operations", so the search input pins the page).
+  await expect(adminPage.getByPlaceholder("Search trader name, email or account #...")).toBeVisible();
+  await adminPage.getByPlaceholder("Search trader name, email or account #...").fill(users.trader.name);
   await expect(adminPage.getByText(users.trader.name)).toBeVisible();
-  if (!(await isVisible(adminPage.getByText("Active", { exact: true }), 5000))) {
+  const traderMonitorRow = adminPage.getByRole("row").filter({ hasText: users.trader.name });
+  if (!(await isVisible(traderMonitorRow.getByText("Active VIP"), 5000))) {
     recordFinding({
       severity: "MEDIUM",
       area: "Active Trader Monitor",
-      evidence: "A user with an ACTIVE account-scoped Pro entitlement and recent closed trades appeared in `/admin/ib/traders`, but the row did not show `Active`.",
+      evidence: "A user with an ACTIVE account-scoped Pro entitlement and recent closed trades appeared in `/admin/ib/traders`, but the row did not show the `Active VIP` badge.",
       recommendation: "Verify `getActiveTraderMonitor()` classifies activity from `JournalEntry.accountId` / `TradingAccount` correctly for account-scoped entitlements.",
     });
   }

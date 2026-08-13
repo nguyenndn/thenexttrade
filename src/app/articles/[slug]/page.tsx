@@ -46,8 +46,11 @@ const generateId = (text: string) => {
 const getCachedArticle = unstable_cache(
     async (slug: string) => {
         // 1. Fast Path: Strict Slug Lookup (Indexed)
+        // Only PUBLISHED articles are ever served — the fallback below already
+        // filters status, so the fast path must agree or draft slugs would
+        // render publicly with full content + JSON-LD.
         let article = await prisma.article.findUnique({
-            where: { slug },
+            where: { slug, status: "PUBLISHED" },
             include: {
                 author: {
                     select: { id: true, name: true, image: true },

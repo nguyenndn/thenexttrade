@@ -254,7 +254,7 @@ export function QuizClient({
                 });
                 toast.success(`Passed! Score: ${data.results.score}%`);
             } else {
-                toast.error(`Score: ${data.results.score}%. Need 70% to pass.`);
+                toast.error(`Score: ${data.results.score}%. Need 75% to pass.`);
             }
         } catch {
             toast.error("Failed to submit quiz. Please try again.");
@@ -319,7 +319,7 @@ export function QuizClient({
                         <span
                             className={cn(
                                 "font-bold",
-                                bestScore >= 70
+                                bestScore >= 75
                                     ? "text-emerald-500"
                                     : "text-amber-500"
                             )}

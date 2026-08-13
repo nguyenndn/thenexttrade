@@ -27,6 +27,74 @@ export async function POST(
         });
         const wasAlreadyCompleted = existing?.isCompleted === true;
 
+        // Anti-cheat guard: a NEW completion is only valid when the lesson is
+        // published and every lesson ordered before it (level-wide) is already
+        // completed. Without this, a logged-in user could POST this endpoint for
+        // arbitrary lesson IDs to farm XP, earn badges, and unlock quizzes /
+        // certificates without actually learning. Idempotent re-completion of an
+        // already-completed lesson stays allowed (no XP is granted anyway).
+        if (!wasAlreadyCompleted) {
+            const lessonRow = await prisma.lesson.findUnique({
+                where: { id },
+                select: {
+                    status: true,
+                    module: {
+                        select: {
+                            level: {
+                                select: {
+                                    modules: {
+                                        orderBy: { order: "asc" },
+                                        select: {
+                                            lessons: {
+                                                orderBy: { order: "asc" },
+                                                select: { id: true },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+
+            if (!lessonRow)
+                return NextResponse.json(
+                    { error: "Lesson not found" },
+                    { status: 404 }
+                );
+            if (lessonRow.status !== "published") {
+                return NextResponse.json(
+                    { error: "Lesson is not published" },
+                    { status: 403 }
+                );
+            }
+
+            const allLessonsInLevel =
+                lessonRow.module.level.modules.flatMap((m) => m.lessons);
+            const lessonIndex = allLessonsInLevel.findIndex(
+                (l) => l.id === id
+            );
+            if (lessonIndex > 0) {
+                const previousIds = allLessonsInLevel
+                    .slice(0, lessonIndex)
+                    .map((l) => l.id);
+                const completedPrev = await prisma.userProgress.count({
+                    where: {
+                        userId,
+                        lessonId: { in: previousIds },
+                        isCompleted: true,
+                    },
+                });
+                if (completedPrev < previousIds.length) {
+                    return NextResponse.json(
+                        { error: "Complete the previous lessons first" },
+                        { status: 403 }
+                    );
+                }
+            }
+        }
+
         const progress = await prisma.userProgress.upsert({
             where: {
                 userId_lessonId: {

@@ -287,10 +287,25 @@ export async function generateAiCoachInsights(
             },
         });
 
+        // Max updatedAt across closed entries — catches EDITS to existing trades
+        // (changing result/PnL/SL/emotion does not change the count or the latest
+        // entryDate, so without this the cached insight would go stale).
+        const latestEntryUpdate = await prisma.journalEntry.aggregate({
+            where: {
+                userId: user.id,
+                status: "CLOSED",
+                ...(accountId ? { accountId } : {}),
+            },
+            _max: { updatedAt: true },
+        });
+
         const lastTradeTime = cacheCheck?.entryDate
             ? new Date(cacheCheck.entryDate).getTime()
             : 0;
-        const currentCacheKey = `coach_${AI_COACH_PROMPT_VERSION}_${totalClosedCount}_${lastTradeTime}_${accountId || "all"}_${dateFrom || "all"}_${dateTo || "all"}_${timezone || "UTC"}`;
+        const lastUpdatedTime = latestEntryUpdate._max.updatedAt
+            ? new Date(latestEntryUpdate._max.updatedAt).getTime()
+            : 0;
+        const currentCacheKey = `coach_${AI_COACH_PROMPT_VERSION}_${totalClosedCount}_${lastTradeTime}_${lastUpdatedTime}_${accountId || "all"}_${dateFrom || "all"}_${dateTo || "all"}_${timezone || "UTC"}`;
 
         const cachedData = existingSettings.cachedCoachInsights as
             | {

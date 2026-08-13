@@ -15,6 +15,9 @@ const lessonSchema = z.object({
     tone: z.string().optional(),
     sourceUrls: z.array(z.string()).optional(),
     metaDescription: z.string().optional(),
+    // Without this key the Published toggle was silently stripped by
+    // safeParse (default: strip) and every lesson stayed a draft forever.
+    status: z.enum(["draft", "published"]).optional(),
 });
 
 export async function POST(req: Request) {
@@ -44,6 +47,7 @@ export async function POST(req: Request) {
             tone,
             sourceUrls,
             metaDescription,
+            status,
         } = validation.data;
 
         let newOrder = order;
@@ -68,6 +72,7 @@ export async function POST(req: Request) {
                 tone: tone || null,
                 sourceUrls: sourceUrls || [],
                 metaDescription: metaDescription || null,
+                status: status || "draft",
             },
         });
 

@@ -121,7 +121,10 @@ export async function getNextBestAction(
 
     // Signals check for high severity
     const signals = await computeTraderSignals(userId, { persist: false });
-    const highSeverity = signals.find((s) => s.status === "ACTIVE" && s.severity === "HIGH");
+    // Signals returned by computeTraderSignals are computed on the fly from the
+    // user's current state (persist: false) and never carry a `status` field —
+    // anything pushed is active by definition, so match on severity alone.
+    const highSeverity = signals.find((s) => s.severity === "HIGH");
 
     if (highSeverity) {
         return {

@@ -130,6 +130,10 @@ export function AddAccountModal({
     const platform = "MT5";
     const [name, setName] = useState("");
     const [freeAccountNumber, setFreeAccountNumber] = useState("");
+    // Optional on free create — lets users who already hold a supported broker
+    // account set it up front instead of being stuck in MISSING_ACCOUNT_INFO
+    // for Pro eligibility until they edit Settings.
+    const [freeBroker, setFreeBroker] = useState<string>("");
     const [color, setColor] = useState("hsl(var(--primary))");
     const [createdAccount, setCreatedAccount] = useState<any>(null);
     const [copied, setCopied] = useState(false);
@@ -207,6 +211,7 @@ export function AddAccountModal({
                 const result = await createTradingAccount({
                     platform,
                     name,
+                    broker: freeBroker || undefined,
                     accountNumber: freeAccountNumber || undefined,
                     color,
                     balance: 0,
@@ -593,6 +598,36 @@ export function AddAccountModal({
                                 }
                                 helperText="Find this in MT5 → Navigator → Accounts. Required for Trade Manager sync."
                             />
+
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
+                                    Broker{" "}
+                                    <span className="text-[10px] font-black bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-md tracking-wider uppercase ml-1">
+                                        Optional
+                                    </span>
+                                </label>
+                                <select
+                                    value={freeBroker}
+                                    onChange={(e) =>
+                                        setFreeBroker(e.target.value)
+                                    }
+                                    className="w-full rounded-xl border border-dashboard bg-white dark:bg-[#151925] px-3 py-2.5 text-sm text-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/40"
+                                >
+                                    <option value="">
+                                        Select your broker (if any)...
+                                    </option>
+                                    {SUPPORTED_BROKERS.map((b) => (
+                                        <option key={b} value={b}>
+                                            {BROKER_INFO[b].name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1.5">
+                                    Required later to apply for free Partner Pro.
+                                    You can also set it anytime in Account
+                                    Settings.
+                                </p>
+                            </div>
 
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">

@@ -16,7 +16,11 @@ export async function GET() {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const [accounts, tradeCount] = await Promise.all([
+    const [userWithKey, accounts, tradeCount] = await Promise.all([
+        prisma.user.findUnique({
+            where: { id: user.id },
+            select: { syncApiKey: true },
+        }),
         prisma.tradingAccount.findMany({
             where: { userId: user.id },
             select: {
@@ -47,7 +51,10 @@ export async function GET() {
         }),
     ]);
 
-    const hasApiKey = accounts.some((a) => !!a.apiKey);
+    // Every account gets a legacy per-account apiKey on creation, so checking
+    // accounts would always be true. The meaningful signal is the user-level
+    // syncApiKey that the EA / Trade Manager actually connects with.
+    const hasApiKey = !!userWithKey?.syncApiKey;
     const eaAccounts = accounts.filter((a) => {
         const src = normalizeSyncSource(a.syncSource);
         return src === "EA_SYNC";

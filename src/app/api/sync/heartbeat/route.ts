@@ -1,6 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { detectBroker } from "@/lib/ea/broker-detection";
+import { parseBrokerNumber } from "@/lib/utils";
+import { rateLimit } from "@/lib/rate-limit";
+
+const limiter = rateLimit({
+    uniqueTokenPerInterval: 500,
+    interval: 60000,
+});
+
+/**
+ * Parse a numeric value from a Trade Manager payload, tolerating locale
+ * formatting (US "1,234.56" or EU "1.234,56") and rejecting null/empty/NaN
+ * instead of corrupting the column.
+ */
+function parseNumeric(val: unknown): number | undefined {
+    const n = parseBrokerNumber(val);
+    return n === null ? undefined : n;
+}
 
 /**
  * POST /api/sync/heartbeat
@@ -16,6 +33,16 @@ export async function POST(request: NextRequest) {
             return NextResponse.json(
                 { error: "Missing sync API key" },
                 { status: 401 }
+            );
+        }
+
+        // Rate limit by key (consistent with the other sync routes)
+        try {
+            await limiter.check(120, syncApiKey);
+        } catch {
+            return NextResponse.json(
+                { error: "Rate limit exceeded" },
+                { status: 429 }
             );
         }
 
@@ -78,11 +105,11 @@ export async function POST(request: NextRequest) {
                 status: acct.connected ? "CONNECTED" : "DISCONNECTED",
             };
 
-            // Update balance/equity if provided
-            if (acct.balance !== undefined)
-                updateData.balance = parseFloat(String(acct.balance));
-            if (acct.equity !== undefined)
-                updateData.equity = parseFloat(String(acct.equity));
+            // Update balance/equity if provided (locale-tolerant, no NaN)
+            const balance = parseNumeric(acct.balance);
+            const equity = parseNumeric(acct.equity);
+            if (balance !== undefined) updateData.balance = balance;
+            if (equity !== undefined) updateData.equity = equity;
 
             // Auto-detect broker
             if (acct.server) {
@@ -101,15 +128,15 @@ export async function POST(request: NextRequest) {
                 data: updateData,
             });
 
-            if (acct.balance !== undefined) {
+            if (balance !== undefined) {
                 try {
                     const { captureCapitalSnapshot } = await import(
                         "@/lib/admin/ib/capital.server"
                     );
                     await captureCapitalSnapshot({
                         tradingAccountId: dbAccount.id,
-                        balance: parseFloat(String(acct.balance)),
-                        equity: acct.equity !== undefined ? parseFloat(String(acct.equity)) : null,
+                        balance,
+                        equity: equity ?? null,
                         currency: acct.currency || "USD",
                         source: "HEARTBEAT",
                     });

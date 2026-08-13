@@ -16,8 +16,15 @@ export async function GET(request: NextRequest) {
         }
 
         const { searchParams } = new URL(request.url);
-        const page = parseInt(searchParams.get("page") || "1");
-        const limit = parseInt(searchParams.get("limit") || "12");
+        const rawPage = parseInt(searchParams.get("page") || "1", 10);
+        const rawLimit = parseInt(searchParams.get("limit") || "12", 10);
+        // Clamp so malformed/negative/huge values can't produce NaN skips or
+        // an unbounded query.
+        const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
+        const limit =
+            Number.isFinite(rawLimit) && rawLimit > 0
+                ? Math.min(rawLimit, 100)
+                : 12;
         const skip = (page - 1) * limit;
 
         const [accounts, total] = await Promise.all([
@@ -123,6 +130,23 @@ export async function POST(request: NextRequest) {
 
         // Legacy per-account key for backward compatibility (hidden from UI)
         const legacyApiKey = generateApiKey();
+
+        // Reject duplicate account numbers within the same user.
+        if (accountNumber) {
+            const existing = await prisma.tradingAccount.findFirst({
+                where: {
+                    userId: user.id,
+                    accountNumber: String(accountNumber),
+                },
+                select: { id: true },
+            });
+            if (existing) {
+                return NextResponse.json(
+                    { error: `An account with number ${accountNumber} already exists` },
+                    { status: 400 }
+                );
+            }
+        }
 
         const account = await prisma.tradingAccount.create({
             data: {

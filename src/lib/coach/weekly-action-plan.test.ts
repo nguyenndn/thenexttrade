@@ -57,7 +57,9 @@ vi.mock("@/lib/prisma", () => ({
             count: vi.fn().mockResolvedValue(2),
         },
         tradingReport: {
-            findUnique: vi.fn().mockResolvedValue({
+            // generateWeeklyActionPlan scopes the report lookup by ownership
+            // (findFirst with { id, userId }), so the mock must stub findFirst.
+            findFirst: vi.fn().mockResolvedValue({
                 id: "acc-1",
                 type: "WEEKLY",
                 netPnL: 30,

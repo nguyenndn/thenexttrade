@@ -16,8 +16,11 @@ export async function generateWeeklyActionPlan(
     userId: string,
     reportId: string
 ) {
-    const report = await prisma.tradingReport.findUnique({
-        where: { id: reportId },
+    // Scoped to the caller so a foreign reportId can never be read or have its
+    // plan overwritten by another user (defense-in-depth; today's only caller
+    // already passes the authenticated user's own report).
+    const report = await prisma.tradingReport.findFirst({
+        where: { id: reportId, userId },
     });
 
     if (!report || report.type !== "WEEKLY") {
@@ -93,9 +96,11 @@ export async function generateWeeklyActionPlan(
         (p) => p.status === "REVIEWED" || p.reviewedAt !== null
     ).length;
 
+    // Count only CLOSED trades — OPEN/draft journal rows are not actual trades.
     const actualTradesCount = await prisma.journalEntry.count({
         where: {
             userId,
+            status: "CLOSED",
             createdAt: {
                 gte: report.periodStart,
                 lte: report.periodEnd,
@@ -106,6 +111,7 @@ export async function generateWeeklyActionPlan(
     const actualTradesWithPlanCount = await prisma.journalEntry.count({
         where: {
             userId,
+            status: "CLOSED",
             createdAt: {
                 gte: report.periodStart,
                 lte: report.periodEnd,
@@ -226,9 +232,9 @@ export async function generateWeeklyActionPlan(
                 });
             }
         } else {
-            if (report.winRate > 0.5) {
+            if (report.winRate > 50) {
                 title = "Weekly Action Plan: Scale your Edge";
-                summary = `Excellent consistency! Win rate at ${Math.round(report.winRate * 100)}% with profit factor of ${report.profitFactor.toFixed(2)}.`;
+                summary = `Excellent consistency! Win rate at ${Math.round(report.winRate)}% with profit factor of ${report.profitFactor.toFixed(2)}.`;
                 keepDoing = "Fantastic plan compliance and execution quality.";
             }
         }

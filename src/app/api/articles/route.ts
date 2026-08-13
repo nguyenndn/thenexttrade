@@ -25,13 +25,35 @@ export async function GET(request: Request) {
     const status = searchParams.get("status");
     const categoryId = searchParams.get("categoryId");
 
+    // Public callers must never receive drafts/PENDING/ARCHIVED content. Only
+    // an authenticated ADMIN may pass an explicit status filter (for admin
+    // tooling); everyone else is forced to published-only regardless of input.
+    const supabase = await createClient();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+    let isAdmin = false;
+    if (user) {
+        const profile = await prisma.profile.findUnique({
+            where: { userId: user.id },
+            select: { role: true },
+        });
+        isAdmin = profile?.role === "ADMIN";
+    }
+
     const skip = (page - 1) * limit;
 
     const where: any = {};
-    if (status) where.status = status;
+    if (isAdmin && status) {
+        where.status = status;
+    } else {
+        where.status = "PUBLISHED";
+    }
     if (categoryId) where.categoryId = categoryId;
 
-    const cacheKey = `articles:list:${page}:${limit}:${status || "all"}:${categoryId || "all"}`;
+    const cacheKey = `articles:list:${page}:${limit}:${
+        isAdmin ? status || "all" : "published"
+    }:${categoryId || "all"}`;
 
     try {
         const { articles, total } = await cache.wrap(
@@ -124,12 +146,63 @@ export async function POST(request: Request) {
             );
         }
 
-        let finalSlug = slug;
-        if (!finalSlug || finalSlug.trim() === "") {
-            finalSlug = title
+        const slugify = (s: string) =>
+            s
+                .trim()
                 .toLowerCase()
                 .replace(/[^a-z0-9]+/g, "-")
                 .replace(/^-|-$/g, "");
+
+        // Always normalize the slug — a raw user-supplied slug (spaces,
+        // uppercase, slashes) would be unreachable at /articles/<slug> and
+        // would break collision detection.
+        let finalSlug = slugify(slug || title);
+        if (!finalSlug) finalSlug = "article";
+
+        // Validate status enum before it reaches Prisma (a bogus value would
+        // otherwise surface as a generic 500).
+        const VALID_STATUSES = ["DRAFT", "PUBLISHED", "PENDING", "ARCHIVED"];
+        if (status && !VALID_STATUSES.includes(status)) {
+            return NextResponse.json(
+                { error: "Invalid status" },
+                { status: 400 }
+            );
+        }
+
+        // Validate numeric/date fields so parseInt("abc") / new Date("junk")
+        // don't throw Prisma errors (NaN / Invalid Date) into a 500.
+        const parsedEstimatedTime = estimatedTime
+            ? parseInt(estimatedTime, 10)
+            : null;
+        if (
+            parsedEstimatedTime !== null &&
+            Number.isNaN(parsedEstimatedTime)
+        ) {
+            return NextResponse.json(
+                { error: "estimatedTime must be a number" },
+                { status: 400 }
+            );
+        }
+        const parsedPublishedAt = publishedAt
+            ? new Date(publishedAt)
+            : null;
+        if (parsedPublishedAt && Number.isNaN(parsedPublishedAt.getTime())) {
+            return NextResponse.json(
+                { error: "publishedAt must be a valid date" },
+                { status: 400 }
+            );
+        }
+
+        // Verify the category exists — a bogus id is an FK error → 500.
+        const categoryExists = await prisma.category.findUnique({
+            where: { id: categoryId },
+            select: { id: true },
+        });
+        if (!categoryExists) {
+            return NextResponse.json(
+                { error: "Category not found" },
+                { status: 400 }
+            );
         }
 
         const existing = await prisma.article.findUnique({
@@ -149,7 +222,14 @@ export async function POST(request: Request) {
             });
 
             let maxNumber = 0;
-            const regex = new RegExp(`^${finalSlug}-(\\d+)$`);
+            // Escape the slug before interpolating into the regex — a slug with
+            // regex metacharacters (a+b, a(1), a.b) would otherwise silently
+            // mis-detect collisions.
+            const escapedSlug = finalSlug.replace(
+                /[.*+?^${}()|[\]\\]/g,
+                "\\$&"
+            );
+            const regex = new RegExp(`^${escapedSlug}-(\\d+)$`);
 
             for (const item of collisions) {
                 if (item.slug === finalSlug) continue; // Base slug is effectively suffix 0
@@ -179,8 +259,8 @@ export async function POST(request: Request) {
             metaDescription,
             focusKeyword,
             schemaType: schemaType || "ARTICLE",
-            estimatedTime: estimatedTime ? parseInt(estimatedTime) : null,
-            publishedAt: publishedAt ? new Date(publishedAt) : null,
+            estimatedTime: parsedEstimatedTime,
+            publishedAt: parsedPublishedAt,
             authorId: user.id,
             // AI Content Pipeline metadata
             tone: body.tone || null,

@@ -30,6 +30,10 @@ export default async function UserAcademyDashboard() {
 
     const userId = user.id;
 
+    // The AcademyTree dev-test panel (fast-forward progress) is a dev/staging
+    // tool — never render it in production for real users.
+    const academyDevMode = process.env.NODE_ENV !== "production";
+
     // Parallel Fetching for Performance
     const [
         completedLessons,
@@ -65,6 +69,10 @@ export default async function UserAcademyDashboard() {
                             },
                         },
                         lessons: {
+                            // Draft lessons must never appear in a student's
+                            // tree — otherwise their full content is one
+                            // preview fetch away.
+                            where: { status: "published" },
                             orderBy: { order: "asc" },
                             select: {
                                 id: true,
@@ -303,7 +311,7 @@ export default async function UserAcademyDashboard() {
                             basePath="/dashboard/academy"
                             isGuest={false}
                             completedLessonIds={completedLessonIds}
-                            devMode
+                            devMode={academyDevMode}
                         />
                     </div>
                 </div>

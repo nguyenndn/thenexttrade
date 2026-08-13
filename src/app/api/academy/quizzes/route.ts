@@ -11,6 +11,11 @@ const quizSchema = z.object({
 
 // GET: List all quizzes
 export async function GET() {
+    // Admin-only tooling — enumerating quiz ids anonymously is how an attacker
+    // chains into the answer-key harvest on /api/academy/quizzes/[id].
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
+
     try {
         const quizzes = await prisma.quiz.findMany({
             orderBy: { createdAt: "desc" },

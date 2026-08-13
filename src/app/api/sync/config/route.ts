@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
+
+const limiter = rateLimit({
+    uniqueTokenPerInterval: 500,
+    interval: 60000,
+});
 
 /**
  * GET /api/sync/config
@@ -15,6 +21,16 @@ export async function GET(request: NextRequest) {
             return NextResponse.json(
                 { error: "Missing sync API key" },
                 { status: 401 }
+            );
+        }
+
+        // Rate limit by key (consistent with the other sync routes)
+        try {
+            await limiter.check(120, syncApiKey);
+        } catch {
+            return NextResponse.json(
+                { error: "Rate limit exceeded" },
+                { status: 429 }
             );
         }
 

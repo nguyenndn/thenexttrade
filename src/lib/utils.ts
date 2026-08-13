@@ -17,6 +17,17 @@ export function isValidTimeZone(timezone?: string | null): timezone is string {
     }
 }
 
+// Broker server offsets that aren't whole hours can't be expressed as
+// Etc/GMT±N. Map the common ones to IANA zones so half-hour markets
+// (India, Nepal, Australia) don't silently fall back to UTC.
+const NON_WHOLE_HOUR_TIMEZONES: Record<number, string> = {
+    19800: "Asia/Kolkata", // +5:30 India
+    20700: "Asia/Kathmandu", // +5:45 Nepal
+    31500: "Australia/Eucla", // +8:45
+    34200: "Australia/Adelaide", // +9:30 ACST
+    37800: "Australia/Lord_Howe", // +10:30 LHST
+};
+
 export function normalizeBrokerTimezone(
     timezone?: string | null,
     offsetSeconds?: number | string | null
@@ -28,6 +39,10 @@ export function normalizeBrokerTimezone(
             ? Number(offsetSeconds)
             : offsetSeconds;
     if (typeof numericOffset === "number" && Number.isFinite(numericOffset)) {
+        // Exact non-whole-hour offset → known IANA zone (e.g. India +5:30).
+        const named = NON_WHOLE_HOUR_TIMEZONES[Math.round(numericOffset)];
+        if (named && isValidTimeZone(named)) return named;
+
         const roundedHours = Math.round(numericOffset / 3600);
         const roundedSeconds = roundedHours * 3600;
         const isCloseToWholeHour =
@@ -42,6 +57,47 @@ export function normalizeBrokerTimezone(
     }
 
     return timezone ? "Etc/UTC" : undefined;
+}
+
+/**
+ * Parse a broker-provided numeric value, tolerating both US ("1,234.56")
+ * and European ("1.234,56") thousands/decimal conventions. Returns null for
+ * empty/invalid input so callers never persist NaN into numeric columns.
+ */
+export function parseBrokerNumber(value: unknown): number | null {
+    if (typeof value === "number") {
+        return Number.isFinite(value) ? value : null;
+    }
+    if (value === null || value === undefined || value === "") return null;
+    const str = String(value).trim();
+    if (!str) return null;
+
+    const hasComma = str.includes(",");
+    const hasDot = str.includes(".");
+    let normalized: string;
+
+    if (hasComma && hasDot) {
+        // Whichever separator appears last is the decimal one:
+        // "1,234.56" → US, "1.234,56" → EU.
+        normalized =
+            str.lastIndexOf(",") > str.lastIndexOf(".")
+                ? str.replace(/\./g, "").replace(",", ".")
+                : str.replace(/,/g, "");
+    } else if (hasComma) {
+        // Lone comma is a decimal separator only when it's the sole one and
+        // followed by 1–2 digits ("1234,56"); otherwise it's a thousands
+        // separator ("1,234").
+        const parts = str.split(",");
+        normalized =
+            parts.length === 2 && /^\d{1,2}$/.test(parts[1])
+                ? str.replace(",", ".")
+                : str.replace(/,/g, "");
+    } else {
+        normalized = str;
+    }
+
+    const n = Number(normalized);
+    return Number.isFinite(n) ? n : null;
 }
 
 /**

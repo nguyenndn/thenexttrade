@@ -96,6 +96,14 @@ export async function updateStrategy(
     if (!validation.success) return { error: "Invalid data" };
 
     try {
+        // Fetch the current row so a rename can cascade to journal entries.
+        const existing = await prisma.strategy.findUnique({
+            where: { id },
+            select: { name: true, userId: true },
+        });
+        if (!existing || existing.userId !== user.id)
+            return { error: "Strategy not found or unauthorized" };
+
         const result = await prisma.strategy.updateMany({
             where: { id, userId: user.id },
             data: validation.data,
@@ -103,6 +111,15 @@ export async function updateStrategy(
 
         if (result.count === 0)
             return { error: "Strategy not found or unauthorized" };
+
+        // Journal entries store the strategy name as a plain string; rename
+        // them so historical trades stay grouped under the strategy.
+        if (validation.data.name && validation.data.name !== existing.name) {
+            await prisma.journalEntry.updateMany({
+                where: { userId: user.id, strategy: existing.name },
+                data: { strategy: validation.data.name },
+            });
+        }
 
         revalidatePath("/dashboard/strategies");
         return { success: true };
@@ -116,12 +133,27 @@ export async function deleteStrategy(id: string) {
     if (!user) return { error: "Unauthorized" };
 
     try {
+        // Fetch the name first so journal references can be cleared.
+        const existing = await prisma.strategy.findUnique({
+            where: { id },
+            select: { name: true, userId: true },
+        });
+        if (!existing || existing.userId !== user.id)
+            return { error: "Strategy not found or unauthorized" };
+
         const result = await prisma.strategy.deleteMany({
             where: { id, userId: user.id },
         });
 
         if (result.count === 0)
             return { error: "Strategy not found or unauthorized" };
+
+        // Journal entries store the strategy name as a plain string; clear
+        // it so a deleted strategy doesn't linger as a stale tag.
+        await prisma.journalEntry.updateMany({
+            where: { userId: user.id, strategy: existing.name },
+            data: { strategy: null },
+        });
 
         revalidatePath("/dashboard/strategies");
         return { success: true };
@@ -199,7 +231,7 @@ export async function getStrategyPerformance() {
                     stat.grossLoss > 0
                         ? stat.grossProfit / stat.grossLoss
                         : stat.grossProfit > 0
-                          ? Infinity
+                          ? 99
                           : 0,
                 color: "#9CA3AF", // Default color, will be overridden by strategy definition in UI or separate query if needed
             }))

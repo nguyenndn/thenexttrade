@@ -13,7 +13,13 @@ const createBroadcastSchema = z.object({
     message: z.string().min(1, "Message is required").max(1000),
     type: z.nativeEnum(NotificationType),
     priority: z.nativeEnum(NotificationPriority),
-    link: z.string().optional(),
+    link: z
+        .string()
+        .regex(
+            /^(\/|https?:\/\/)/,
+            "Link must start with / or http(s)://"
+        )
+        .optional(),
     targetUserIds: z.array(z.string()).optional(), // Optional list of user IDs for targeted messages
     sendAt: z.date().optional(), // Scheduling
 });
@@ -90,17 +96,23 @@ export async function createBroadcast(data: CreateBroadcastInput) {
             });
 
             if (users.length > 0) {
-                await prisma.notification.createMany({
-                    data: users.map((u) => ({
-                        userId: u.id,
-                        type,
-                        title,
-                        message,
-                        priority,
-                        link: notificationLink,
-                        isRead: false,
-                    })),
-                });
+                // Chunk the inserts (same strategy as the scheduled-broadcast
+                // cron) so a large user base doesn't build one giant statement
+                // and block the request.
+                const CHUNK_SIZE = 1000;
+                for (let i = 0; i < users.length; i += CHUNK_SIZE) {
+                    await prisma.notification.createMany({
+                        data: users.slice(i, i + CHUNK_SIZE).map((u) => ({
+                            userId: u.id,
+                            type,
+                            title,
+                            message,
+                            priority,
+                            link: notificationLink,
+                            isRead: false,
+                        })),
+                    });
+                }
             }
         }
 

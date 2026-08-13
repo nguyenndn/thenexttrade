@@ -53,7 +53,7 @@ export function VipTabSummary({ vipRequest }: VipTabSummaryProps) {
                     </div>
                 </div>
                 <Link
-                    href="/dashboard/account-hub"
+                    href="/dashboard/accounts"
                     className={cn(
                         buttonVariants({ variant: "primary", size: "smd" }),
                         "bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 border-none shadow-lg shadow-gold/20 hover:scale-105 transition-all duration-300 w-full sm:w-auto"

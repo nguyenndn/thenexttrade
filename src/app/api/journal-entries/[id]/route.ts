@@ -16,13 +16,15 @@ const journalEntryUpdateSchema = z.object({
         .string()
         .or(z.date())
         .transform((val) => new Date(val))
+        .refine((d) => !isNaN(d.getTime()), "Invalid entry date")
         .optional(),
     exitDate: z
         .string()
         .or(z.date())
         .optional()
         .nullable()
-        .transform((val) => (val ? new Date(val) : null)),
+        .transform((val) => (val ? new Date(val) : null))
+        .refine((d) => d === null || !isNaN(d.getTime()), "Invalid exit date"),
     status: z.enum(["OPEN", "CLOSED"]).optional(),
     result: z.enum(["WIN", "LOSS", "BREAK_EVEN"]).optional().nullable(),
     pnl: z.number().optional().nullable(),
@@ -118,6 +120,19 @@ export async function PUT(
         const body = await request.json();
         const validatedData = journalEntryUpdateSchema.parse(body);
 
+        // accountId must stay within the user's own accounts
+        if ("accountId" in body && body.accountId) {
+            const acct = await prisma.tradingAccount.findFirst({
+                where: { id: body.accountId as string, userId: user.id },
+                select: { id: true },
+            });
+            if (!acct)
+                return NextResponse.json(
+                    { error: "Invalid account" },
+                    { status: 400 }
+                );
+        }
+
         // CRITICAL: Only update fields that were explicitly sent in the request body.
         // Zod transforms can convert undefined (absent field) to null,
         // which would unintentionally overwrite existing DB values (e.g. exitDate → null).
@@ -205,6 +220,13 @@ export async function DELETE(
             return NextResponse.json({ error: "Not found" }, { status: 404 });
         if (existing.userId !== user.id)
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+        // Detach any MATCHED trade plan first — the DB SetNull would leave
+        // it orphaned at status "MATCHED" pointing at a deleted entry.
+        await prisma.tradePlan.updateMany({
+            where: { journalEntryId: params.id, userId: user.id },
+            data: { journalEntryId: null, status: "PLANNED" },
+        });
 
         await prisma.journalEntry.delete({ where: { id: params.id } });
 

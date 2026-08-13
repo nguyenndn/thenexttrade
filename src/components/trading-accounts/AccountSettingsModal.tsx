@@ -7,6 +7,10 @@ import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Button } from "@/components/ui/Button";
 import { updateTradingAccount } from "@/actions/accounts";
 import { updateTradingRules } from "@/actions/trading-rules";
+import {
+    BROKER_INFO,
+    SUPPORTED_BROKERS,
+} from "@/lib/validations/vip-request";
 
 interface AccountSettingsModalProps {
     isOpen: boolean;
@@ -48,6 +52,11 @@ export function AccountSettingsModal({
 }: AccountSettingsModalProps) {
     const [name, setName] = useState(account.name);
     const [color, setColor] = useState(account.color || "hsl(var(--primary))");
+    // Free accounts are created without a broker, which leaves them stuck in
+    // MISSING_ACCOUNT_INFO for Pro eligibility. Let users set their broker here
+    // so they can apply for Partner Pro (upgradeToPartnerPro requires a
+    // supported broker).
+    const [broker, setBroker] = useState<string>(account.broker || "");
 
     const [isSaving, setIsSaving] = useState(false);
 
@@ -73,6 +82,7 @@ export function AccountSettingsModal({
             const result = await updateTradingAccount(account.id, {
                 name,
                 color,
+                broker: broker || undefined,
                 balance: account.balance,
                 currency: account.currency,
             });
@@ -149,6 +159,30 @@ export function AccountSettingsModal({
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
+
+                        <div>
+                            <label className="block text-[11px] font-black text-gray-500 uppercase tracking-widest mb-2">
+                                Broker
+                            </label>
+                            <select
+                                value={broker}
+                                onChange={(e) => setBroker(e.target.value)}
+                                className="w-full rounded-xl border border-dashboard bg-white dark:bg-[#151925] px-3 py-2.5 text-sm text-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/40"
+                            >
+                                <option value="">
+                                    Select your broker...
+                                </option>
+                                {SUPPORTED_BROKERS.map((b) => (
+                                    <option key={b} value={b}>
+                                        {BROKER_INFO[b].name}
+                                    </option>
+                                ))}
+                            </select>
+                            <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">
+                                Used for Pro/VIP eligibility. Choose the broker
+                                your trading account belongs to.
+                            </p>
+                        </div>
 
                         <div className="pt-2">
                             <label className="block text-[11px] font-black text-gray-500 uppercase tracking-widest mb-2">

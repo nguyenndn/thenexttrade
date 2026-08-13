@@ -1,6 +1,5 @@
 import { ParsedTrade, ParseResult, TradeParser, ParseError } from "./types";
 import { parse as parseHTML } from "node-html-parser";
-import { classifyTradeResult } from "../utils/trade-classification";
 
 export class MT5Parser implements TradeParser {
     name = "MetaTrader 5";
@@ -17,6 +16,20 @@ export class MT5Parser implements TradeParser {
     async parse(content: string): Promise<ParseResult> {
         const trades: ParsedTrade[] = [];
         const errors: ParseError[] = [];
+
+        // Guard: MT5's native CSV / plain-text history export contains no HTML
+        // table. Return a clear message instead of a silent "0 trades".
+        if (
+            !/<table[\s>]/i.test(content) &&
+            !/<tr[\s>]/i.test(content)
+        ) {
+            errors.push({
+                row: 0,
+                message:
+                    "This file looks like a CSV/plain-text export. Please export your MT5 History as HTML (History tab → Report → Open as HTML / Save as Report).",
+            });
+            return { trades, errors, metadata: { source: "MT5" } };
+        }
 
         try {
             const root = parseHTML(content);
@@ -103,38 +116,52 @@ export class MT5Parser implements TradeParser {
         values: string[],
         rowIndex: number
     ): ParsedTrade | null {
-        const getCol = (name: string): string => {
-            // Prioritize exact match, then loose match
-            let idx = headers.indexOf(name);
-            if (idx === -1) {
-                idx = headers.findIndex((h) => h.includes(name));
-            }
-            return idx >= 0 ? values[idx] : "";
+        // Resolve all matching column indices, prioritizing exact header match
+        // and falling back to a loose "includes" match (e.g. "Open Time").
+        const colIndices = (name: string): number[] => {
+            const exact: number[] = [];
+            const fuzzy: number[] = [];
+            headers.forEach((h, i) => {
+                if (h === name) exact.push(i);
+                else if (h.includes(name)) fuzzy.push(i);
+            });
+            return exact.length ? exact : fuzzy;
+        };
+        const pick = (name: string, nth = 0): string => {
+            const idxs = colIndices(name);
+            return idxs.length > nth ? values[idxs[nth]] ?? "" : "";
         };
 
-        const ticket = getCol("ticket");
-        const symbol = getCol("symbol");
-        const type = getCol("type");
-        const volume = parseFloat(getCol("volume") || getCol("lot") || "0");
-        const openTime = getCol("time") || getCol("open time");
-        const openPrice = parseFloat(
-            getCol("price") || getCol("open price") || "0"
-        );
+        const ticket = pick("ticket");
+        const symbol = pick("symbol");
+        const type = pick("type");
+        const volume = parseFloat(pick("volume") || pick("lot") || "0");
 
-        // Check if it has close data (History vs Open Positions)
-        // MT5 history usually has Time, Symbol, Type, Volume, Price, S/L, T/P, Time, Price, Commission, Swap, Profit
-        // The second time/price is close info.
+        // Entry time/price come from the first matching column.
+        const openTime = pick("open time") || pick("time");
+        const openPrice = parseFloat(pick("open price") || pick("price") || "0");
 
-        // This simple parser assumes standard column layout if headers are ambiguous
-        // Real logic handles variation. For now we try standard mapping.
+        // Exit time/price come from an explicit "Close Time"/"Close Price"
+        // header, OR the SECOND duplicated "Time"/"Price" column that MT5
+        // history reports use (Ticket, Time, …, Price, …, Time, Price, …).
+        const timeIdxs = colIndices("time");
+        const priceIdxs = colIndices("price");
+        const exitTime = pick("close time") || (timeIdxs.length > 1 ? values[timeIdxs[1]] ?? "" : "");
+        const exitPrice =
+            pick("close price") !== ""
+                ? parseFloat(pick("close price"))
+                : priceIdxs.length > 1
+                  ? parseFloat(values[priceIdxs[1]] ?? "")
+                  : undefined;
 
-        const profitStr = values[values.length - 1]; // Usually last column
+        // Profit is usually the last column of a deals row.
+        const profitStr = values[values.length - 1];
         const profit = parseFloat(
             profitStr.replace(/ /g, "").replace(/,/g, "") || "0"
         );
 
-        const swap = parseFloat(getCol("swap") || "0");
-        const commission = parseFloat(getCol("commission") || "0");
+        const swap = parseFloat(pick("swap") || "0");
+        const commission = parseFloat(pick("commission") || "0");
 
         // Skip if not a trade (e.g. Balance/Credit)
         const upperType = type.toUpperCase();
@@ -146,14 +173,14 @@ export class MT5Parser implements TradeParser {
 
         const entryDate = this.parseDate(openTime);
 
-        // If profit is present, it's likely closed
-        const isClosed = !isNaN(profit) && profit !== 0;
+        // A trade is closed only when a real exit time was present in the
+        // report (history = closed deals; positions = open). A break-even
+        // closed trade (profit === 0) is still CLOSED.
+        const exitDate = exitTime ? this.parseDate(exitTime) : new Date(NaN);
+        const isClosed = !isNaN(exitDate.getTime());
 
-        // Attempt to find close time
-        // MT5 History often has 2 Time columns. HTML parser might flatten them.
-        // We'll approximate exit date if closed.
-        const exitDate = isClosed ? entryDate : undefined; // Fallback if no exit time found
-
+        // Net PnL — the importer persists this single value (commission/swap
+        // are not stored separately), so keep the net here.
         const pnl = profit + commission + swap;
         let result: "WIN" | "LOSS" | "BREAK_EVEN" | "BE_PLUS" | undefined;
 
@@ -168,8 +195,8 @@ export class MT5Parser implements TradeParser {
             type: tradeType,
             entryDate,
             entryPrice: openPrice,
-            exitDate,
-            exitPrice: isClosed ? openPrice : undefined, // Placeholder if no close price
+            exitDate: isClosed ? exitDate : undefined,
+            exitPrice: isClosed ? exitPrice : undefined,
             size: volume,
             pnl: isClosed ? pnl : undefined,
             commission,
@@ -181,16 +208,23 @@ export class MT5Parser implements TradeParser {
     }
 
     private parseDate(dateStr: string): Date {
-        // MT5 formats: "2024.01.15 10:30:00" or "2024-01-15 10:30"
-        if (!dateStr) return new Date();
-        const normalized = dateStr.replace(/\./g, "-");
-        const date = new Date(normalized);
+        if (!dateStr) return new Date(NaN);
 
-        if (isNaN(date.getTime())) {
-            // Try parsing typical "2023.10.12 14:00" manual
-            return new Date();
+        // MT5 formats: "2024.01.15 10:30:00", "2024-01-15 10:30:00", "2024-01-15".
+        const normalized = dateStr.replace(/\./g, "-").trim();
+
+        // Date-only → UTC midnight (ES spec treats ISO date-only as UTC).
+        if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) {
+            return new Date(normalized);
         }
 
-        return date;
+        // Datetime with a space separator: broker server time has no timezone,
+        // so force UTC to keep day boundaries stable regardless of host TZ.
+        const withT = normalized.replace(" ", "T");
+        const asUTC = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(withT)
+            ? `${withT}Z`
+            : withT;
+        const parsed = new Date(asUTC);
+        return isNaN(parsed.getTime()) ? new Date(NaN) : parsed;
     }
 }

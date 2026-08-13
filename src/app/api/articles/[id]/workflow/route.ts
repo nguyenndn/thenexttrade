@@ -55,7 +55,18 @@ export async function POST(
 
         // Action Logic
         if (action === "submit") {
-            // Editor or User submits draft
+            // Only the article's author (or an admin) may move an article into
+            // the review queue — otherwise any logged-in user could flip
+            // someone else's draft/archived post to PENDING (IDOR).
+            const isOwner = article.authorId === user.id;
+            const isAdmin = currentUserProfile.role === "ADMIN";
+            if (!isOwner && !isAdmin) {
+                return NextResponse.json(
+                    { error: "Permission denied" },
+                    { status: 403 }
+                );
+            }
+
             // Article must be DRAFT or ARCHIVED (?) to be pending
             if (article.status === "PUBLISHED") {
                 return NextResponse.json(

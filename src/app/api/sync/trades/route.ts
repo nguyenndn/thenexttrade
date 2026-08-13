@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
 import { generateTradeHash } from "@/lib/importers";
-import { normalizeBrokerTimezone } from "@/lib/utils";
+import { normalizeBrokerTimezone, parseBrokerNumber } from "@/lib/utils";
 
 const limiter = rateLimit({
     uniqueTokenPerInterval: 500,
@@ -159,18 +159,31 @@ export async function POST(request: NextRequest) {
             let skipped = 0;
             const errors: string[] = [];
 
-            // Update account info
+            // Update account info — only clear a pending resync / freshen
+            // lastSync when trades were actually delivered, so a transient
+            // empty batch can't silently discard a resync request.
+            const hasTrades = Array.isArray(trades) && trades.length > 0;
             const accountUpdate: Record<string, any> = {
-                lastSync: new Date(),
                 syncSource: "APP",
                 appLastHeartbeat: new Date(),
-                // Clear resync request after processing
-                resyncRequest: null,
             };
-            if (balance !== undefined)
-                accountUpdate.balance = parseFloat(String(balance));
-            if (equity !== undefined)
-                accountUpdate.equity = parseFloat(String(equity));
+            if (hasTrades) {
+                accountUpdate.lastSync = new Date();
+                accountUpdate.resyncRequest = null;
+            }
+
+            // Locale-tolerant numeric parsing (US "1,234.56" or EU "1.234,56",
+            // never NaN).
+            if (balance !== undefined) {
+                const parsedBalance = parseBrokerNumber(balance);
+                if (parsedBalance !== null)
+                    accountUpdate.balance = parsedBalance;
+            }
+            if (equity !== undefined) {
+                const parsedEquity = parseBrokerNumber(equity);
+                if (parsedEquity !== null)
+                    accountUpdate.equity = parsedEquity;
+            }
             if (broker) accountUpdate.broker = broker;
             if (server) accountUpdate.server = server;
             if (currency) accountUpdate.currency = currency;
@@ -179,7 +192,18 @@ export async function POST(request: NextRequest) {
                 brokerTimezone,
                 brokerTimezoneOffset
             );
-            if (normalizedTimezone) accountUpdate.timezone = normalizedTimezone;
+            if (normalizedTimezone) {
+                // Only auto-set the timezone when none is stored yet — the
+                // offset heuristic is crude and flips across DST, so it must
+                // not overwrite a user-set value on every trade sync (same
+                // guard the EA heartbeat uses).
+                const current = await prisma.tradingAccount.findUnique({
+                    where: { id: dbAccount.id },
+                    select: { timezone: true },
+                });
+                if (!current?.timezone)
+                    accountUpdate.timezone = normalizedTimezone;
+            }
 
             await prisma.tradingAccount.update({
                 where: { id: dbAccount.id },

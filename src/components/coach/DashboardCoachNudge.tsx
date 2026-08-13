@@ -65,7 +65,7 @@ export function DashboardCoachNudge({
 
     // Get compact indicator icon
     const getCompactIcon = () => {
-        if (nextBestAction.id === "maintenance") {
+        if (nextBestAction.id === "maintenance_review") {
             return (
                 <TrendingUp className="text-emerald-500 shrink-0" size={16} />
             );
@@ -88,7 +88,7 @@ export function DashboardCoachNudge({
 
     // Get dialog priority icon
     const getDialogIcon = () => {
-        if (nextBestAction.id === "maintenance")
+        if (nextBestAction.id === "maintenance_review")
             return <TrendingUp className="text-emerald-500" size={24} />;
         if (isWeakness)
             return (

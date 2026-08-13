@@ -20,10 +20,19 @@ export const JsonLd: React.FC<JsonLdProps> = ({ type, data }) => {
         ...data,
     };
 
+    // JSON.stringify does not escape "<" / ">" / "&", so a user-controlled
+    // string (e.g. an article title or a profile display name) containing
+    // "</script>" would terminate the tag and execute attacker HTML. Escape
+    // before injecting into the script element.
+    const escapedJson = JSON.stringify(schema)
+        .replace(/</g, "\\u003c")
+        .replace(/>/g, "\\u003e")
+        .replace(/&/g, "\\u0026");
+
     return (
         <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+            dangerouslySetInnerHTML={{ __html: escapedJson }}
         />
     );
 };

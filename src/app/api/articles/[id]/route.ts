@@ -35,6 +35,13 @@ export async function GET(
             );
         }
 
+        // Draft/PENDING/ARCHIVED content is admin-only tooling — never leak it
+        // (or its existence) to public callers.
+        if (article.status !== "PUBLISHED") {
+            const auth = await requireAdmin();
+            if (auth instanceof NextResponse) return auth;
+        }
+
         return NextResponse.json(article);
     } catch (error) {
         return NextResponse.json(

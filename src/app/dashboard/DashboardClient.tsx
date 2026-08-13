@@ -229,12 +229,10 @@ export default function DashboardClient(data: DashboardPageData) {
     // Detect "brand new user" — no trades at all globally in database
     const hasNoData = !hasGlobalTrades;
 
-    const shouldSuppressCoachNudge =
-        hasNoData ||
-        (actualNextBestAction?.id === "NO_ACCOUNT" &&
-            firstSessionState &&
-            !firstSessionState.isCompleted &&
-            firstSessionState.accountCount === 0);
+    // The old `NO_ACCOUNT` branch was dead: getNextBestAction returns id
+    // "connect_account" for that stage, and hasNoData already suppresses the
+    // nudge for any user with no trades at all.
+    const shouldSuppressCoachNudge = hasNoData;
 
     const shouldHideActivationChecklistForPrimaryReview =
         weeklyReviewEligibility?.ready &&
@@ -250,8 +248,6 @@ export default function DashboardClient(data: DashboardPageData) {
         setShowSyncSuccess(false);
         await markFirstInsightViewedAction();
     };
-
-    const [isCoachNudgeOpen, setIsCoachNudgeOpen] = useState(false);
 
     return (
         <div className="w-full relative min-h-screen">
@@ -298,24 +294,11 @@ export default function DashboardClient(data: DashboardPageData) {
                     </div>
                 )}
 
-                {/* Mobile Pro Status Banner — suppress for brand-new users */}
-                {!hasNoData && <MobileProStatusBanner />}
-
-                {/* Headless Coach Nudge Dialog state provider */}
-                {actualNextBestAction &&
-                    !shouldSuppressCoachNudge &&
-                    !suppress?.coachNudge && (
-                        <DashboardCoachNudge
-                            nextBestAction={actualNextBestAction}
-                            coachPlan={coachPlan}
-                            learningRecommendations={
-                                learningRecommendations || []
-                            }
-                            open={isCoachNudgeOpen}
-                            onOpenChange={setIsCoachNudgeOpen}
-                            hideTrigger={true}
-                        />
-                    )}
+                {/* Mobile Pro Status Banner — hide only the Free-Plan nudge for brand-new
+                    users (no trade data). Real Pro statuses (ACTIVE/GRACE/REVOKED/EXPIRED)
+                    still render so a freshly approved user sees their status on mobile,
+                    where the sidebar widget is hidden. */}
+                <MobileProStatusBanner hideFreeNudge={hasNoData} />
 
                 {/* Nudge Space - Only visible if action exists */}
                 {!suppress?.coachNudge &&

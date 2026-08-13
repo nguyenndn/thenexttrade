@@ -30,6 +30,20 @@ const journalSchema = z.object({
     postTradeLesson: z.string().optional().nullable(),
 });
 
+// Partial update schema for updateJournalEntry. journalSchema.partial()
+// covers the base trade fields; the extend block covers the fields the
+// journal UI's quick-edit actually sends (tags/emotion/mistakes/strategy)
+// and makes strategy nullable so the "clear strategy" action works.
+const updateEntrySchema = journalSchema.partial().extend({
+    strategy: z.string().nullable().optional(),
+    tags: z.array(z.string()).optional(),
+    emotionBefore: z.string().nullable().optional(),
+    emotionAfter: z.string().nullable().optional(),
+    confidenceLevel: z.number().int().min(1).max(5).nullable().optional(),
+    followedPlan: z.boolean().nullable().optional(),
+    notesPsychology: z.string().nullable().optional(),
+});
+
 export async function getJournalEntries(
     page = 1,
     limit = 20,
@@ -149,11 +163,17 @@ export async function getJournalEntries(
 
     let winCount = 0;
     let lossCount = 0;
+    let breakEvenCount = 0;
     resultsGrouped.forEach((g) => {
         if (g.result === "WIN") winCount += g._count;
         if (g.result === "LOSS") lossCount += g._count;
+        if (g.result === "BREAK_EVEN") breakEvenCount += g._count;
     });
-    const winRate = total > 0 ? (winCount / total) * 100 : 0;
+    // Win rate is computed against decided (closed) trades only — OPEN
+    // positions have result null and are not in the groups, so dividing by
+    // `total` would understate the rate.
+    const decided = winCount + lossCount + breakEvenCount;
+    const winRate = decided > 0 ? (winCount / decided) * 100 : 0;
 
     const stats = {
         totalPnL:
@@ -265,11 +285,38 @@ export async function updateJournalEntry(
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
 
+    // Whitelist + validate: rejects unknown columns and strips anything the
+    // caller has no business writing (externalTicket, syncSource, userId…).
+    let parsed: z.infer<typeof updateEntrySchema>;
     try {
-        // Handle date conversion if strings are passed
-        const updateData: any = { ...data };
-        if (data.entryDate) updateData.entryDate = new Date(data.entryDate);
-        if (data.exitDate) updateData.exitDate = new Date(data.exitDate);
+        parsed = updateEntrySchema.parse(data);
+    } catch {
+        return { error: "Invalid update data" };
+    }
+
+    try {
+        // accountId must stay within the user's own accounts
+        if (parsed.accountId) {
+            const acct = await prisma.tradingAccount.findFirst({
+                where: { id: parsed.accountId, userId: user.id },
+                select: { id: true },
+            });
+            if (!acct) return { error: "Invalid account" };
+        }
+
+        // Handle date conversion if strings are passed, reject invalid dates
+        const updateData: any = { ...parsed };
+        if (parsed.entryDate !== undefined) {
+            const d = new Date(parsed.entryDate);
+            if (isNaN(d.getTime())) return { error: "Invalid entry date" };
+            updateData.entryDate = d;
+        }
+        if (parsed.exitDate !== undefined) {
+            const d = parsed.exitDate ? new Date(parsed.exitDate) : null;
+            if (d && isNaN(d.getTime()))
+                return { error: "Invalid exit date" };
+            updateData.exitDate = d;
+        }
 
         const updated = await prisma.journalEntry.update({
             where: { id, userId: user.id },
@@ -294,6 +341,13 @@ export async function deleteJournalEntry(id: string) {
     if (!user) return { error: "Unauthorized" };
 
     try {
+        // Detach any MATCHED trade plan first — the DB SetNull would leave
+        // it orphaned at status "MATCHED" pointing at a deleted entry.
+        await prisma.tradePlan.updateMany({
+            where: { journalEntryId: id, userId: user.id },
+            data: { journalEntryId: null, status: "PLANNED" },
+        });
+
         await prisma.journalEntry.delete({
             where: { id, userId: user.id },
         });
@@ -535,6 +589,7 @@ export async function getDayDetails(date: string, accountId?: string) {
         let grossLoss = 0;
         let winCount = 0;
         let lossCount = 0;
+        let breakEvenCount = 0;
 
         // Cần giả lập equity curve trong ngày để tìm Max Drawdown
         // Sắp xếp trades theo thời gian đóng lệnh sớm nhất trước (ASC) để vẽ lại Curve
@@ -569,6 +624,8 @@ export async function getDayDetails(date: string, accountId?: string) {
             } else if (netPnl < 0) {
                 grossLoss += Math.abs(netPnl);
                 lossCount++;
+            } else {
+                breakEvenCount++;
             }
 
             return {
@@ -605,12 +662,14 @@ export async function getDayDetails(date: string, accountId?: string) {
                     : 0,
                 maxDrawdown,
                 commissionsAndFees: totalCommissions,
-                winrate: trades.length ? (winCount / trades.length) * 100 : 0,
+                winrate: winCount + lossCount + breakEvenCount > 0
+                    ? (winCount / (winCount + lossCount + breakEvenCount)) * 100
+                    : 0,
                 profitFactor:
                     grossLoss > 0
                         ? grossProfit / grossLoss
                         : grossProfit > 0
-                          ? Infinity
+                          ? 99
                           : 0,
                 expectancy: trades.length
                     ? (grossProfit - grossLoss) / trades.length

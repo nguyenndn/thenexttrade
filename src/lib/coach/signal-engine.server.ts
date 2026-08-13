@@ -354,7 +354,9 @@ export async function computeTraderSignals(
         // 12. WEAK_SYMBOL
         const symbolStats: Record<string, { pnl: number; count: number }> = {};
         for (const t of trades) {
-            if (t.pnl) {
+            // Include breakeven (pnl === 0) trades — they are still symbol
+            // exposure. Only skip trades with no recorded P/L at all.
+            if (t.pnl != null) {
                 symbolStats[t.symbol] = symbolStats[t.symbol] || {
                     pnl: 0,
                     count: 0,

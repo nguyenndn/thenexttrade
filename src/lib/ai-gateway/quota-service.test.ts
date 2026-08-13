@@ -1,11 +1,19 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { checkUserQuota, reserveAiRequest } from "./quota-service";
+import {
+    checkUserQuota,
+    reserveAiRequest,
+    sweepStaleAiRequests,
+    STALE_REQUEST_THRESHOLD_MS,
+} from "./quota-service";
 import { prisma } from "@/lib/prisma";
 import { getUserProAccess } from "@/lib/pro-access";
 
 vi.mock("@/lib/prisma", () => ({
     prisma: {
-        aiRequest: { count: vi.fn() },
+        aiRequest: {
+            count: vi.fn(),
+            updateMany: vi.fn().mockResolvedValue({ count: 0 }),
+        },
         $transaction: vi.fn(),
     },
 }));
@@ -92,6 +100,7 @@ describe("Quota Service", () => {
             $executeRaw: vi.fn().mockResolvedValue(1),
             aiRequest: {
                 findUnique: vi.fn().mockResolvedValue(null),
+                updateMany: vi.fn().mockResolvedValue({ count: 0 }),
                 count: vi.fn().mockResolvedValue(9),
                 create: vi.fn().mockResolvedValue({ id: "db-request-1" }),
             },
@@ -124,12 +133,88 @@ describe("Quota Service", () => {
         });
     });
 
+    it("self-heals stale ROUTING requests before counting quota", async () => {
+        (getUserProAccess as any).mockResolvedValue({ isPro: false });
+        const tx = {
+            $executeRaw: vi.fn().mockResolvedValue(1),
+            aiRequest: {
+                findUnique: vi.fn().mockResolvedValue(null),
+                updateMany: vi.fn().mockResolvedValue({ count: 3 }),
+                count: vi.fn().mockResolvedValue(2),
+                create: vi.fn().mockResolvedValue({ id: "db-request-heal" }),
+            },
+        };
+        (prisma.$transaction as any).mockImplementation(async (callback: any) =>
+            callback(tx)
+        );
+
+        const result = await reserveAiRequest({
+            requestId: "request-heal",
+            userId: "user-heal",
+            symbol: "XAUUSD",
+            timeframe: "M15",
+            analysisMode: "SCALPING",
+            promptVersion: "1.0",
+        });
+
+        // Stale ROUTING/CALLING_PROVIDER rows for THIS user, older than the
+        // threshold, are marked FAILED before the count that consumes quota.
+        expect(tx.aiRequest.updateMany).toHaveBeenCalledWith({
+            where: expect.objectContaining({
+                userId: "user-heal",
+                status: { in: ["ROUTING", "CALLING_PROVIDER"] },
+                createdAt: { lt: expect.any(Date) },
+            }),
+            data: expect.objectContaining({
+                status: "FAILED",
+                errorCode: "STALE_ORPHANED_REQUEST",
+            }),
+        });
+        // The count runs AFTER the sweep and sees the freed slot.
+        expect(tx.aiRequest.count).toHaveBeenCalledOnce();
+        expect(result).toMatchObject({
+            status: "RESERVED",
+            quota: { usedToday: 3, remainingToday: 7 },
+        });
+    });
+
+    it("sweepStaleAiRequests marks stale in-flight rows globally as FAILED", async () => {
+        (prisma.aiRequest.updateMany as any).mockResolvedValueOnce({
+            count: 5,
+        });
+
+        const cleared = await sweepStaleAiRequests();
+
+        expect(cleared).toBe(5);
+        expect(prisma.aiRequest.updateMany).toHaveBeenCalledWith({
+            where: expect.objectContaining({
+                status: { in: ["ROUTING", "CALLING_PROVIDER"] },
+                createdAt: { lt: expect.any(Date) },
+            }),
+            data: expect.objectContaining({
+                status: "FAILED",
+                errorCode: "STALE_ORPHANED_REQUEST",
+            }),
+        });
+        // A user-scoped sweep passes the userId through.
+        (prisma.aiRequest.updateMany as any).mockResolvedValueOnce({
+            count: 1,
+        });
+        await sweepStaleAiRequests("user-scoped");
+        expect(prisma.aiRequest.updateMany).toHaveBeenLastCalledWith({
+            where: expect.objectContaining({ userId: "user-scoped" }),
+            data: expect.objectContaining({ status: "FAILED" }),
+        });
+        expect(STALE_REQUEST_THRESHOLD_MS).toBe(15 * 60 * 1000);
+    });
+
     it("returns QUOTA_EXCEEDED when daily limit is reached", async () => {
         (getUserProAccess as any).mockResolvedValue({ isPro: false });
         const tx = {
             $executeRaw: vi.fn().mockResolvedValue(1),
             aiRequest: {
                 findUnique: vi.fn().mockResolvedValue(null),
+                updateMany: vi.fn().mockResolvedValue({ count: 0 }),
                 count: vi.fn().mockResolvedValue(10),
                 create: vi.fn(),
             },

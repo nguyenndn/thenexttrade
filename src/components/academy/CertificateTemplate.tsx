@@ -52,7 +52,6 @@ export function CertificateTemplate({
             }}
         >
             {/* Candlestick chart pattern — full background */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
                 src="/images/candlestick-chart-bg.png"
                 alt=""
@@ -434,21 +433,6 @@ export function CertificateTemplate({
                 )}
             </div>
 
-            {/* Logo — top left */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-                src="/images/thenexttrade-avatar.png"
-                alt=""
-                style={{
-                    position: "absolute",
-                    top: 24,
-                    left: 30,
-                    width: 120,
-                    height: 120,
-                    borderRadius: 20,
-                    opacity: 0.2,
-                }}
-            />
         </div>
     );
 }

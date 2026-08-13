@@ -18,9 +18,23 @@ export async function saveAdminNotes(userId: string, notes: string) {
     if (profile?.role !== "ADMIN")
         return { success: false, error: "Unauthorized" };
 
+    // user.settings is the shared store for onboarding state, milestones,
+    // activation-reminder logs and notification preferences. Writing only
+    // { adminNotes } here would REPLACE the whole column and silently wipe all
+    // of that state — merge into the existing object instead.
+    const existing = (await prisma.user.findUnique({
+        where: { id: userId },
+        select: { settings: true },
+    }))?.settings as Record<string, unknown> | null;
+
     await prisma.user.update({
         where: { id: userId },
-        data: { settings: { adminNotes: notes } },
+        data: {
+            settings: {
+                ...(existing ?? {}),
+                adminNotes: notes,
+            },
+        },
     });
 
     revalidatePath(`/admin/users/${userId}`);

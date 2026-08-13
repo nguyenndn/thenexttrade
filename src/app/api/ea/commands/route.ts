@@ -140,7 +140,11 @@ export async function GET(request: NextRequest) {
 
         const { searchParams } = new URL(request.url);
         const tradingAccountId = searchParams.get("tradingAccountId");
-        const limit = parseInt(searchParams.get("limit") || "10");
+        const rawLimit = parseInt(searchParams.get("limit") || "10");
+        // Clamp so NaN/garbage and unbounded values can't reach Prisma
+        const limit = Number.isFinite(rawLimit)
+            ? Math.min(Math.max(rawLimit, 1), 100)
+            : 10;
 
         const commands = await prisma.eaCommand.findMany({
             where: {

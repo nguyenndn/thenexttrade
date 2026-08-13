@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import type { ActivationReminderSend } from "./activation-reminder-state";
+import { canSendEmailCategory } from "@/lib/email/preferences";
 
 export interface ReminderCandidate {
     userId: string;
@@ -90,10 +91,12 @@ export async function getActivationReminderCandidates(): Promise<
             );
         });
 
-        const isEmailPrefsEnabled =
-            !settings.emailPreferences ||
-            (settings.emailPreferences.marketing !== false &&
-                settings.emailPreferences.activation !== false);
+        // Activation emails are disabled when the user opted out of this
+        // category or hit the master unsubscribe switch (see docs/EMAIL.md).
+        const isEmailPrefsEnabled = canSendEmailCategory(
+            settings,
+            "activation"
+        );
 
         const canSendEmail =
             isEmailPrefsEnabled && emailsInLast7Days.length < 2;

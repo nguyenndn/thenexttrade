@@ -84,10 +84,18 @@ async function createAuthUser() {
   if (error || !data.user) throw new Error(`Failed to create user: ${error?.message || "missing user"}`);
 
   user.id = data.user.id;
+  // Mark onboarding as already completed so the dashboard layout does not
+  // redirect this fresh QA user to /onboarding (this spec tests the Account
+  // Hub flow, not onboarding).
   await prisma.user.upsert({
     where: { id: user.id },
     update: { email: user.email, name: user.name },
-    create: { id: user.id, email: user.email, name: user.name },
+    create: {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      settings: { onboarding: { completedAt: new Date().toISOString() } },
+    },
   });
   await prisma.profile.upsert({
     where: { userId: user.id },
@@ -211,7 +219,15 @@ test.afterAll(async () => {
 test("unified account hub flow matches product plan", async ({ page }) => {
   await login(page);
 
+  // Fresh QA users have no accounts/trades yet, so the dashboard layout
+  // redirects them to /onboarding — skip it so the Account Hub is reachable.
   await page.goto("/dashboard/accounts");
+  if (/\/onboarding/.test(page.url())) {
+    await page.getByRole("button", { name: "Skip", exact: true }).waitFor({ timeout: 20000 });
+    await page.getByRole("button", { name: "Skip", exact: true }).click();
+    await page.waitForURL(/\/dashboard/, { timeout: 20000 });
+    await page.goto("/dashboard/accounts");
+  }
   await expect(page.getByRole("heading", { name: "Account Hub", exact: true })).toBeVisible();
   const accountHubCopy = await page.locator("main").innerText();
   if (!/Partner Pro|EA access|auto-sync/i.test(accountHubCopy)) {
@@ -235,10 +251,17 @@ test("unified account hub flow matches product plan", async ({ page }) => {
   await expect(page.getByText("Free Account Details")).toBeVisible();
   const freeName = `${prefix} Free Account`;
   await page.getByPlaceholder(/My MT5 Growth/i).fill(freeName);
+  // Give the account a supported broker + MT5 account number at creation so it
+  // is immediately Pro-eligible (ELIGIBLE requires both). This exercises the
+  // upgrade flow's real happy path — upgradeToPartnerPro rejects broker-less
+  // accounts, since a broker-less VipRequest is a dead end the IB pipeline can
+  // never verify.
+  await page.getByPlaceholder("e.g. 2001140658").fill("9001234567");
+  await page.getByRole("combobox").selectOption("VANTAGE");
   await page.getByRole("button", { name: /Create Account/i }).click();
-  await expect(page.getByText("Setup Instructions")).toBeVisible({ timeout: 20000 });
+  await expect(page.getByText(/Setup Steps|Setup Instructions/)).toBeVisible({ timeout: 20000 });
   await shot(page, "free-account-created");
-  await page.getByRole("button", { name: "Done" }).click();
+  await page.getByRole("button", { name: "Skip for now" }).click();
   await expect(page.getByText(freeName)).toBeVisible({ timeout: 20000 });
 
   const freeAccount = await prisma.tradingAccount.findFirst({ where: { userId: user.id, name: freeName } });
@@ -290,7 +313,9 @@ test("unified account hub flow matches product plan", async ({ page }) => {
   }
 
   await page.goto("/dashboard/trading-systems");
-  await expect(page.getByRole("heading", { name: "Trading System" })).toBeVisible();
+  // exact:true — without it, the "No Trading Systems Found" empty-state <h3>
+  // also matches "Trading System" (substring), causing a strict-mode violation
+  await expect(page.getByRole("heading", { name: "Trading System", exact: true })).toBeVisible();
   if (await isVisible(page, "My Accounts", 1500)) {
     recordFinding({
       severity: "HIGH",

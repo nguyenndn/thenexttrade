@@ -174,8 +174,17 @@ export async function grantUserProductAccess(params: {
     const { adminUserId, targetUserId, productSlug, tradingAccountId, source, expiresAt } =
         params;
 
-    const prod = CANONICAL_PRODUCTS.find((p) => p.slug === productSlug);
-    const productId = prod ? prod.id : productSlug;
+    // Resolve the real EAProduct row by slug — productId must be a real FK, never the slug
+    // string. Skip gracefully when the product isn't seeded yet so the caller (e.g. the
+    // approveVipRequest tx) is never aborted by an FK violation.
+    const product = await prisma.eAProduct.findUnique({ where: { slug: productSlug } });
+    if (!product) {
+        console.warn(
+            `[grantUserProductAccess] Skipping grant for unknown EAProduct slug "${productSlug}" (target user ${targetUserId})`
+        );
+        return;
+    }
+    const productId = product.id;
 
     const scopeKey = tradingAccountId
         ? `${targetUserId}:${productId}:ACCOUNT:${tradingAccountId}`
@@ -218,8 +227,14 @@ export async function revokeUserProductAccess(params: {
 }): Promise<void> {
     const { adminUserId, targetUserId, productSlug, tradingAccountId } = params;
 
-    const prod = CANONICAL_PRODUCTS.find((p) => p.slug === productSlug);
-    const productId = prod ? prod.id : productSlug;
+    const product = await prisma.eAProduct.findUnique({ where: { slug: productSlug } });
+    if (!product) {
+        console.warn(
+            `[revokeUserProductAccess] Skipping revoke for unknown EAProduct slug "${productSlug}" (target user ${targetUserId})`
+        );
+        return;
+    }
+    const productId = product.id;
 
     const scopeKey = tradingAccountId
         ? `${targetUserId}:${productId}:ACCOUNT:${tradingAccountId}`

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useEffect } from "react";
+import { useState, useTransition, useEffect, useRef } from "react";
 import {
     Plus,
     RefreshCw,
@@ -142,6 +142,11 @@ export function AccountListClient({
         SyncMethod | undefined
     >(preferredSyncMethod);
     const [wasInSyncSetup, setWasInSyncSetup] = useState(false);
+    // Consumes each query-param trigger exactly once. history.replaceState does
+    // NOT refresh useSearchParams in the App Router, so without this guard the
+    // stale ?setup=sync/?action=add param would re-fire this effect on every
+    // activeModal change and re-open the modal the instant the user closes it.
+    const handledParamsRef = useRef<string | null>(null);
 
     // Handle incoming query params (e.g. ?action=add&intent=unlock-pro or ?setup=sync&method=tnt)
     useEffect(() => {
@@ -155,7 +160,20 @@ export function AccountListClient({
         const isSyncSetup = setup === "sync";
         const isSyncHealth = health === "sync";
 
+        // No trigger params left in the URL → reset so a future navigation to
+        // the same ?setup=sync&method=ea URL can open the modal again.
+        const hasTrigger =
+            isSyncHealth || isSyncSetup || isAddAction || isProIntent;
+        if (!hasTrigger) {
+            handledParamsRef.current = null;
+            return;
+        }
+
+        const paramsKey = searchParams.toString();
+        if (handledParamsRef.current === paramsKey) return;
+
         if (isSyncHealth && activeModal.type === "NONE") {
+            handledParamsRef.current = paramsKey;
             if (isSyncHealthCenterEnabled()) {
                 setActiveModal({ type: "SYNC_HEALTH" });
             }
@@ -166,11 +184,12 @@ export function AccountListClient({
             const newUrl = newParams.toString()
                 ? `?${newParams.toString()}`
                 : window.location.pathname;
-            window.history.replaceState({}, "", newUrl);
+            router.replace(newUrl, { scroll: false });
             return;
         }
 
         if (isSyncSetup && activeModal.type === "NONE") {
+            handledParamsRef.current = paramsKey;
             // Auto-open sync wizard with method from query, then saved onboarding preference.
             const syncMethod = getSyncMethodFromQuery(
                 method,
@@ -186,11 +205,12 @@ export function AccountListClient({
             const newUrl = newParams.toString()
                 ? `?${newParams.toString()}`
                 : window.location.pathname;
-            window.history.replaceState({}, "", newUrl);
+            router.replace(newUrl, { scroll: false });
             return;
         }
 
         if ((isAddAction || isProIntent) && activeModal.type === "NONE") {
+            handledParamsRef.current = paramsKey;
             const sourceAccountId = searchParams.get("sourceAccountId");
             let initialMode: "chooser" | "pro" | "upgrade-pro" = isProIntent
                 ? "pro"
@@ -201,17 +221,18 @@ export function AccountListClient({
                 sourceAccount = initialAccounts.find(
                     (a) => a.id === sourceAccountId
                 );
-                if (sourceAccount) {
-                    initialMode = "upgrade-pro";
-                }
-            } else if (isProIntent && initialAccounts.length > 0) {
-                // Always respect user's main account selection if available
+            }
+            // Fall back to the main account when the source account isn't on
+            // this page (e.g. navigated from another page, or paginated
+            // off-page). Without this the user dead-ends in the generic pro
+            // flow instead of the prefilled upgrade form.
+            if (!sourceAccount && isProIntent && initialAccounts.length > 0) {
                 sourceAccount =
                     initialAccounts.find((a) => a.id === mainAccountId) ||
                     initialAccounts[0];
-                if (sourceAccount) {
-                    initialMode = "upgrade-pro";
-                }
+            }
+            if (sourceAccount) {
+                initialMode = "upgrade-pro";
             }
 
             setActiveModal({ type: "ADD", initialMode, sourceAccount });
@@ -224,7 +245,7 @@ export function AccountListClient({
             const newUrl = newParams.toString()
                 ? `?${newParams.toString()}`
                 : window.location.pathname;
-            window.history.replaceState({}, "", newUrl);
+            router.replace(newUrl, { scroll: false });
         }
     }, [
         searchParams,
@@ -232,6 +253,7 @@ export function AccountListClient({
         mainAccountId,
         initialAccounts,
         preferredSyncMethod,
+        router,
     ]);
 
     // Calculate summary stats
@@ -777,11 +799,35 @@ export function AccountListClient({
                     setWasInSyncSetup(false);
                 }}
                 onSuccess={(_account) => {
+                    // Free accounts carry a "platform" field (pro accounts do
+                    // not), letting us tell the two flows apart.
+                    const isFreeAccount =
+                        !!_account && "platform" in _account;
+                    // upgradeToPartnerPro always returns isNewAccount:false —
+                    // the account already existed, so this was a Pro upgrade
+                    // request, not a new account. "Account added" would be
+                    // misleading there.
+                    const isProUpgrade =
+                        !!_account && _account.isNewAccount === false;
                     if (wasInSyncSetup) {
                         setWasInSyncSetup(false);
                         setActiveModal({ type: "SYNC_SETUP" });
                         toast.success(
                             "Account added successfully! Returning to Sync Wizard..."
+                        );
+                    } else if (isFreeAccount && defaultSyncMethod !== "MANUAL") {
+                        // Free account added from the chooser with an
+                        // EA/Trade Manager method: the "Continue to Trade
+                        // Manager Setup" CTA promises to continue, so open the
+                        // sync wizard instead of dead-ending.
+                        setActiveModal({ type: "SYNC_SETUP" });
+                        toast.success(
+                            "Account added successfully! Continue with Trade Manager setup..."
+                        );
+                    } else if (isProUpgrade) {
+                        setActiveModal({ type: "NONE" });
+                        toast.success(
+                            "Pro upgrade request submitted! Our team will review your application."
                         );
                     } else {
                         setActiveModal({ type: "NONE" });

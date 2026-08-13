@@ -11,11 +11,29 @@ import {
     ShieldCheck,
     Sparkles,
     Check,
+    Mail,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Switch } from "@/components/ui/switch";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+
+interface EmailPreferences {
+    reports: boolean;
+    activation: boolean;
+    marketing: boolean;
+    welcome: boolean;
+    unsubscribedAll: boolean;
+}
+
+const DEFAULT_EMAIL_PREFS: EmailPreferences = {
+    reports: true,
+    activation: true,
+    marketing: true,
+    welcome: true,
+    unsubscribedAll: false,
+};
 
 const TRADING_GOALS = [
     {
@@ -48,6 +66,10 @@ export default function SettingsClient() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const [isSavingEmail, setIsSavingEmail] = useState(false);
+    const [emailPrefs, setEmailPrefs] = useState<EmailPreferences>({
+        ...DEFAULT_EMAIL_PREFS,
+    });
 
     const [formData, setFormData] = useState({
         name: "",
@@ -78,10 +100,42 @@ export default function SettingsClient() {
                     tradingGoal: data.tradingGoal || "",
                 });
             }
+
+            // Load email preferences from the settings endpoint (kept separate
+            // from /api/profile so profile saves never clobber them).
+            const prefsRes = await fetch("/api/profile/settings");
+            if (prefsRes.ok) {
+                const prefsData = await prefsRes.json();
+                if (prefsData.emailPreferences) {
+                    setEmailPrefs({
+                        ...DEFAULT_EMAIL_PREFS,
+                        ...prefsData.emailPreferences,
+                    });
+                }
+            }
         } catch {
             /* Failed to fetch */
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleEmailPrefsSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSavingEmail(true);
+        try {
+            const res = await fetch("/api/profile/settings", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ emailPreferences: emailPrefs }),
+            });
+            if (!res.ok) throw new Error("Failed to save");
+            toast.success("Email preferences updated");
+            router.refresh();
+        } catch {
+            toast.error("Failed to save email preferences.");
+        } finally {
+            setIsSavingEmail(false);
         }
     };
 
@@ -124,8 +178,9 @@ export default function SettingsClient() {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="w-full space-y-5">
+        <div className="w-full space-y-5">
             {/* ── Unified Profile Card ── */}
+            <form onSubmit={handleSubmit} className="space-y-5">
             <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard overflow-hidden shadow-sm">
                 {/* Gradient Banner + Avatar */}
                 <div className="h-28 bg-gradient-to-r from-primary/20 via-primary/10 to-transparent dark:from-primary/30 dark:via-primary/15 dark:to-transparent relative">
@@ -354,6 +409,122 @@ export default function SettingsClient() {
                     </Button>
                 </div>
             </div>
-        </form>
+            </form>
+
+            {/* ── Email Preferences Card ── */}
+            <form
+                onSubmit={handleEmailPrefsSubmit}
+                className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm overflow-hidden"
+            >
+                <div className="px-6 py-5 space-y-4">
+                    <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+                            <Mail size={14} className="text-primary" />
+                        </div>
+                        <div>
+                            <h2 className="text-sm font-bold text-gray-700 dark:text-white">
+                                Email Preferences
+                            </h2>
+                            <p className="text-xs text-gray-400 mt-0.5">
+                                Choose which emails you want to receive. Security
+                                and account emails are always sent.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="space-y-3 pt-2">
+                        {(
+                            [
+                                {
+                                    key: "reports",
+                                    title: "Trading Reports",
+                                    desc: "Weekly & monthly performance reports and no-trade nudges",
+                                },
+                                {
+                                    key: "activation",
+                                    title: "Activation Reminders",
+                                    desc: "Helpful setup reminders when you haven't reached your first value",
+                                },
+                                {
+                                    key: "marketing",
+                                    title: "Product & Feature Updates",
+                                    desc: "Announcements about new features and content",
+                                },
+                                {
+                                    key: "welcome",
+                                    title: "Welcome Emails",
+                                    desc: "Your onboarding welcome sequence",
+                                },
+                            ] as const
+                        ).map((row) => {
+                            const on =
+                                emailPrefs[row.key] && !emailPrefs.unsubscribedAll;
+                            return (
+                                <div
+                                    key={row.key}
+                                    className="flex items-center justify-between gap-4 py-2.5 border-b border-dashboard/50 last:border-0"
+                                >
+                                    <div className="min-w-0">
+                                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+                                            {row.title}
+                                        </p>
+                                        <p className="text-xs text-gray-400 mt-0.5">
+                                            {row.desc}
+                                        </p>
+                                    </div>
+                                    <Switch
+                                        checked={on}
+                                        disabled={emailPrefs.unsubscribedAll}
+                                        onCheckedChange={(v) =>
+                                            setEmailPrefs((prev) => ({
+                                                ...prev,
+                                                [row.key]: v,
+                                            }))
+                                        }
+                                    />
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    <div className="rounded-xl bg-rose-50 dark:bg-rose-500/5 border border-rose-200/60 dark:border-rose-500/20 px-4 py-3 flex items-center justify-between gap-4">
+                        <div className="min-w-0">
+                            <p className="text-sm font-bold text-rose-600 dark:text-rose-400">
+                                Unsubscribe from all emails
+                            </p>
+                            <p className="text-xs text-rose-500/80 mt-0.5">
+                                Stops every product email above. Account & security
+                                emails will still arrive.
+                            </p>
+                        </div>
+                        <Switch
+                            checked={emailPrefs.unsubscribedAll}
+                            onCheckedChange={(v) =>
+                                setEmailPrefs((prev) => ({
+                                    ...prev,
+                                    unsubscribedAll: v,
+                                }))
+                            }
+                        />
+                    </div>
+                </div>
+
+                <div className="px-6 py-4 border-t border-dashboard flex justify-end">
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        size="smd"
+                        disabled={isSavingEmail}
+                    >
+                        {isSavingEmail ? (
+                            <Loader2 className="animate-spin" size={16} />
+                        ) : (
+                            <Save size={16} />
+                        )}
+                        Save Email Preferences
+                    </Button>
+                </div>
+            </form>
+        </div>
     );
 }

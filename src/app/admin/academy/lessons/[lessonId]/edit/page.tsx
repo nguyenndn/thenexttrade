@@ -55,6 +55,7 @@ export default async function LessonEditPage({
                 tone: lesson.tone || "",
                 sourceUrls: lesson.sourceUrls || [],
                 metaDescription: lesson.metaDescription || "",
+                status: lesson.status,
             }}
             modules={levels.flatMap((l) =>
                 l.modules.map((m) => ({

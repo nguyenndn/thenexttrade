@@ -17,8 +17,10 @@ export function AiGatewayOverview({ stats }: { stats: any }) {
     const successCount =
         stats.requestsByStatus.find((s: any) => s.status === "COMPLETED")
             ?._count || 0;
+    // The failure status written by the gateway is "FAILED" (there is no "ERROR"
+    // status in the system) — count it so the error number is not always 0.
     const errorCount =
-        stats.requestsByStatus.find((s: any) => s.status === "ERROR")?._count ||
+        stats.requestsByStatus.find((s: any) => s.status === "FAILED")?._count ||
         0;
 
     const successRate =

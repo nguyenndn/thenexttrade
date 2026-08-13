@@ -53,22 +53,32 @@ export async function GET(
         if (product.isFree) {
             hasAccess = true;
         } else {
-            // 2. Check Pro Entitlement
+            // 2. Check Pro Entitlement — ACTIVE or valid GRACE, honoring expiry.
+        //    GRACE users are told "EA Included" in the UI, so blocking them here
+        //    contradicts the account card. An expired GRACE is not Pro.
             const proEntitlement = await prisma.proEntitlement.findFirst({
                 where: {
                     userId: user.id,
-                    status: "ACTIVE",
+                    status: { in: ["ACTIVE", "GRACE"] },
+                    OR: [{ expiresAt: null }, { expiresAt: { gte: new Date() } }],
                 },
             });
 
             if (proEntitlement) {
                 hasAccess = true;
             } else {
-                // 3. Check EA License
+                // 3. Check EA License — must also be unexpired. The daily
+                //    expire-licenses cron only flips APPROVED→EXPIRED on its next
+                //    tick, so a license that lapsed hours ago would otherwise
+                //    still authorize a paid download.
                 const eaLicense = await prisma.eALicense.findFirst({
                     where: {
                         userId: user.id,
                         status: AccountStatus.APPROVED,
+                        OR: [
+                            { expiryDate: null },
+                            { expiryDate: { gte: new Date() } },
+                        ],
                     },
                 });
 

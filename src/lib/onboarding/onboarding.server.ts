@@ -1,4 +1,8 @@
 import { prisma } from "@/lib/prisma";
+import { sendEmail } from "@/lib/services/email.service";
+import { renderWelcomeEmailHtml } from "@/lib/email-lab/sample-data";
+import { WELCOME_EMAIL_D0 } from "@/lib/emails/welcome-sequence";
+import { canSendEmailCategory } from "@/lib/email/preferences";
 
 /**
  * Onboarding state stored in User.settings.onboarding
@@ -63,9 +67,15 @@ export async function updateOnboardingSettings(
 }
 
 /**
- * Mark onboarding as completed
+ * Mark onboarding as completed.
+ *
+ * Idempotent: re-completing onboarding (e.g. an interrupted save retried by the
+ * client) must not fire a second welcome notification or a second welcome email.
  */
 export async function completeOnboarding(userId: string): Promise<void> {
+    const current = await getOnboardingState(userId);
+    if (current.completedAt) return;
+
     await updateOnboardingSettings(userId, {
         completedAt: new Date().toISOString(),
         lastCompletedStep: 4,
@@ -84,6 +94,37 @@ export async function completeOnboarding(userId: string): Promise<void> {
             priority: "NORMAL",
         },
     });
+
+    // D0 welcome email (docs/EMAIL.md — "Welcome email after successful
+    // verification"). Fire-and-forget: a transport failure must never break
+    // onboarding. Respects the user's welcome email preference.
+    await sendWelcomeEmailOnCompletion(userId);
+}
+
+/**
+ * Send the D0 welcome email once after onboarding completes.
+ * Swallows all failures — email is a bonus, not a blocker.
+ */
+async function sendWelcomeEmailOnCompletion(userId: string): Promise<void> {
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { email: true, name: true, settings: true },
+        });
+        if (!user?.email) return;
+        if (!canSendEmailCategory(user.settings, "welcome")) return;
+
+        await sendEmail({
+            to: user.email,
+            subject: WELCOME_EMAIL_D0.subject,
+            html: renderWelcomeEmailHtml(
+                WELCOME_EMAIL_D0,
+                user.name || "Trader"
+            ),
+        });
+    } catch {
+        /* never break onboarding on email failure */
+    }
 }
 
 /**

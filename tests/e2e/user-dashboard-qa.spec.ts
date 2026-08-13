@@ -7,8 +7,8 @@ import path from "node:path";
 
 const prisma = new PrismaClient();
 
-const userEmail = process.env.USER_QA_EMAIL;
-const userPassword = process.env.USER_QA_PASSWORD;
+const userEmail = process.env.USER_QA_EMAIL || "keezimin@gmail.com";
+const userPassword = process.env.USER_QA_PASSWORD || "Password123!";
 const runId = Date.now();
 const prefix = `QA-USER-${runId}`;
 const reportPath = path.join(process.cwd(), "docs", "USER_DASHBOARD_QA_2026-05-09.md");
@@ -154,7 +154,7 @@ async function recordStep(viewport: ViewportName, area: string, action: string, 
 }
 
 async function expectHealthyScreen(page: Page, route: string) {
-    await expect(page.locator("body")).not.toContainText(/Application error|Unhandled Runtime Error|Page Not Found|404/i, { timeout: 2_000 });
+    await expect(page.locator("body")).not.toContainText(/Application error|Unhandled Runtime Error|Page Not Found|\b404\b/i, { timeout: 2_000 });
     const overflow = await page.evaluate(() => {
         const width = Math.max(document.documentElement.scrollWidth, document.body.scrollWidth);
         return width - window.innerWidth;

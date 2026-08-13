@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { detectBroker } from "@/lib/ea/broker-detection";
 import { resolveSyncAuth } from "@/lib/sync-auth";
+import { parseBrokerNumber } from "@/lib/utils";
 
 /**
  * Maps a GMT hour offset from the EA to the most appropriate IANA timezone.
@@ -127,6 +128,23 @@ export async function POST(request: NextRequest) {
             detectedTimezone = mapGmtOffsetToTimezone(offsetHours);
         }
 
+        // Only auto-set the timezone on first connect — the heuristic offset
+        // map is crude and flips across DST, so it must not overwrite a
+        // user-set or previously stored value on every beat.
+        let hasStoredTimezone: string | null = null;
+        if (detectedTimezone) {
+            const current = await prisma.tradingAccount.findUnique({
+                where: { id: account.id },
+                select: { timezone: true },
+            });
+            hasStoredTimezone = current?.timezone ?? null;
+        }
+
+        // Locale-tolerant numeric parsing (US "1,234.56" or EU "1.234,56",
+        // never NaN).
+        const safeBalance = parseBrokerNumber(balance) ?? undefined;
+        const safeEquity = parseBrokerNumber(equity) ?? undefined;
+
         // Update heartbeat, status, and EA-collected info
         await prisma.tradingAccount.update({
             where: { id: account.id },
@@ -140,10 +158,12 @@ export async function POST(request: NextRequest) {
                 accountNumber: account.accountNumber || String(accountNumber),
 
                 // Update stats if provided
-                ...(balance !== undefined
-                    ? { balance: parseFloat(balance) }
+                ...(safeBalance !== undefined && Number.isFinite(safeBalance)
+                    ? { balance: safeBalance }
                     : {}),
-                ...(equity !== undefined ? { equity: parseFloat(equity) } : {}),
+                ...(safeEquity !== undefined && Number.isFinite(safeEquity)
+                    ? { equity: safeEquity }
+                    : {}),
 
                 // Auto-collect info (Spec 1.1)
                 ...(broker ? { broker: detectedBroker || broker } : {}),
@@ -151,8 +171,10 @@ export async function POST(request: NextRequest) {
                 ...(currency ? { currency } : {}),
                 ...(leverage ? { leverage: String(leverage) } : {}),
 
-                // Auto-detect timezone from EA
-                ...(detectedTimezone ? { timezone: detectedTimezone } : {}),
+                // Auto-detect timezone from EA — only when none is stored yet
+                ...(detectedTimezone && !hasStoredTimezone
+                    ? { timezone: detectedTimezone }
+                    : {}),
             },
         });
 

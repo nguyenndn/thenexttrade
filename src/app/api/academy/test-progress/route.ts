@@ -25,6 +25,17 @@ export async function POST(req: NextRequest) {
     if (!user)
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+    // This panel can reset/rewrite progress for the whole academy tree — it
+    // must be restricted to admins on any non-prod deployment, not any
+    // authenticated user. (A staging/preview env sharing a DB with production
+    // would otherwise let a regular user wipe their own progress.)
+    const profile = await prisma.profile.findUnique({
+        where: { userId: user.id },
+        select: { role: true },
+    });
+    if (profile?.role !== "ADMIN")
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
     const body = await req.json();
     const parsed = ActionSchema.safeParse(body);
     if (!parsed.success) {

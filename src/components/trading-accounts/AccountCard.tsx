@@ -171,6 +171,49 @@ export function AccountCard({
     const hasTradeData = (account.totalTrades ?? 0) > 0;
     const shouldShowFirstSyncCta = !hasTradeData && !!onOpenSyncSetup;
 
+    // Pro upgrade CTA — rendered in BOTH the first-sync branch (a zero-trade
+    // eligible account can still request Partner Pro; hiding it forces users
+    // to sync trades before they can convert) and the normal branch.
+    function renderUnlockProButton() {
+        const elig = account.eligibility;
+        if (!elig) {
+            if (
+                (!account.proStatus || account.proStatus === "NONE") &&
+                account.vipStatus !== "PENDING" &&
+                onUnlockPro
+            ) {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => onUnlockPro(account)}
+                        className="flex h-8 min-w-[92px] items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 text-[11px] font-black text-white shadow-sm shadow-amber-500/20 transition-all hover:from-amber-600 hover:to-orange-600 hover:text-white"
+                        title="Apply for Pro"
+                        aria-label="Unlock Pro access"
+                    >
+                        <Crown size={11} />
+                        <span>Unlock Pro</span>
+                    </Button>
+                );
+            }
+            return null;
+        }
+        if (elig.canRequest && onUnlockPro) {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => onUnlockPro(account)}
+                    className="flex h-8 min-w-[92px] items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 text-[11px] font-black text-white shadow-sm shadow-amber-500/20 transition-all hover:from-amber-600 hover:to-orange-600 hover:text-white"
+                    title={elig.status === "REJECTED" ? "Re-apply for Pro" : "Apply for Pro"}
+                    aria-label={elig.status === "REJECTED" ? "Re-apply for Pro access" : "Unlock Pro access"}
+                >
+                    <Crown size={11} />
+                    <span>{elig.status === "REJECTED" ? "Re-apply" : "Unlock Pro"}</span>
+                </Button>
+            );
+        }
+        return null;
+    }
+
     return (
         <div className="group relative flex flex-col rounded-2xl transition-all duration-500 hover:shadow-lg bg-white dark:bg-[#151925] border border-dashboard/80 dark:border-white/[0.08] hover:border-gray-300 dark:hover:border-white/15">
             {/* Left accent border */}
@@ -257,7 +300,7 @@ export function AccountCard({
                                 <Settings size={15} className="text-gray-500" />
                                 <span>Account Settings</span>
                             </DropdownMenuItem>
-                            {onSetMain && hasSynced && (
+                            {onSetMain && (
                                 <DropdownMenuItem
                                     onClick={() => onSetMain(account.id)}
                                     disabled={isMain}
@@ -472,6 +515,7 @@ export function AccountCard({
                         {shouldShowFirstSyncCta ? (
                             /* Zero-trade: show prominent first-sync CTA */
                             <>
+                                {renderUnlockProButton()}
                                 {preferredSyncMethod === "MANUAL" ? (
                                     <Link
                                         href={`/dashboard/journal?action=log-trade&accountId=${account.id}&source=account-card`}
@@ -542,58 +586,7 @@ export function AccountCard({
                         ) : (
                             /* Normal: existing action buttons */
                             <>
-                                {(() => {
-                                    const elig = account.eligibility;
-                                    if (!elig) {
-                                        if (
-                                            (!account.proStatus ||
-                                                account.proStatus === "NONE") &&
-                                            account.vipStatus !== "PENDING" &&
-                                            onUnlockPro
-                                        ) {
-                                            return (
-                                                <Button
-                                                    variant="ghost"
-                                                    onClick={() =>
-                                                        onUnlockPro(account)
-                                                    }
-                                                    className="flex h-8 min-w-[92px] items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 text-[11px] font-black text-white shadow-sm shadow-amber-500/20 transition-all hover:from-amber-600 hover:to-orange-600 hover:text-white"
-                                                    title="Apply for Pro"
-                                                    aria-label="Apply for Pro access"
-                                                >
-                                                    <Crown size={11} />
-                                                    <span>Unlock Pro</span>
-                                                </Button>
-                                            );
-                                        }
-                                        return null;
-                                    }
-                                    if (elig.canRequest && onUnlockPro) {
-                                        return (
-                                            <Button
-                                                variant="ghost"
-                                                onClick={() =>
-                                                    onUnlockPro(account)
-                                                }
-                                                className="flex h-8 min-w-[92px] items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 text-[11px] font-black text-white shadow-sm shadow-amber-500/20 transition-all hover:from-amber-600 hover:to-orange-600 hover:text-white"
-                                                title={
-                                                    elig.status === "REJECTED"
-                                                        ? "Re-apply for Pro"
-                                                        : "Apply for Pro"
-                                                }
-                                                aria-label="Apply for Pro access"
-                                            >
-                                                <Crown size={11} />
-                                                <span>
-                                                    {elig.status === "REJECTED"
-                                                        ? "Re-apply"
-                                                        : "Unlock Pro"}
-                                                </span>
-                                            </Button>
-                                        );
-                                    }
-                                    return null;
-                                })()}
+                                {renderUnlockProButton()}
 
                                 <Link
                                     href={`/dashboard?accountId=${account.id}`}

@@ -19,6 +19,10 @@ export async function GET(
     req: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
+    // Admin-only — includes Option.isCorrect (the answer key).
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
+
     try {
         const { id } = await params;
         const questions = await prisma.question.findMany({

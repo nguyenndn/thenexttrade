@@ -29,7 +29,7 @@ export async function generateWeeklyAIReview(metrics: {
 ## Weekly Metrics:
 - Total Trades: ${metrics.totalTrades}
 - Net P/L: $${metrics.netPnL.toFixed(2)}
-- Win Rate: ${(metrics.winRate * 100).toFixed(1)}%
+- Win Rate: ${metrics.winRate.toFixed(1)}%
 - Profit Factor: ${metrics.profitFactor.toFixed(2)}
 - Rule Compliance Rate: ${metrics.complianceRate !== null ? metrics.complianceRate + "%" : "N/A"}
 - Most Broken Rule: ${metrics.mostBrokenRule ? `"${metrics.mostBrokenRule.title}" (${metrics.mostBrokenRule.count} times)` : "None"}

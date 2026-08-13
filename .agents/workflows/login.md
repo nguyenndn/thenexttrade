@@ -15,7 +15,7 @@ description: Login to the app via browser for testing. Auto-login before any bro
 
 1. Navigate to `http://localhost:3000/auth/login`
 2. Find the email input and type `keezimin@gmail.com`
-3. Find the password input and type `loveyou25`
+3. Find the password input and type `Password123!`
 4. Click the login/submit button
 5. Wait for redirect to `/dashboard`
 

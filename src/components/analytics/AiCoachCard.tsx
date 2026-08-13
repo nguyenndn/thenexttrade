@@ -176,6 +176,7 @@ export function AiCoachCard({
                             <Button
                                 variant="outline"
                                 size="sm"
+                                disabled={isLoading}
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     handleGenerate(true);

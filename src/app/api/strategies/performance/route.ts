@@ -117,7 +117,7 @@ export async function GET(request: NextRequest) {
                         data.grossLoss > 0
                             ? data.grossProfit / data.grossLoss
                             : data.grossProfit > 0
-                              ? Infinity
+                              ? 99
                               : 0,
                 };
             })

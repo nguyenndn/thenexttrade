@@ -90,7 +90,7 @@ export async function GET(request: NextRequest) {
             grossLoss > 0
                 ? grossProfit / grossLoss
                 : grossProfit > 0
-                  ? Infinity
+                  ? 99
                   : 0;
 
         const avgWin = winCount > 0 ? grossProfit / winCount : 0;

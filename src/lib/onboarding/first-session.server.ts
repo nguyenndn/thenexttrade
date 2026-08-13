@@ -139,8 +139,11 @@ export async function getFirstSessionState(
         currentStep = "REVIEW_DASHBOARD";
     }
 
-    // Determine completed
-    const isCompleted = tradeCount > 0 || !!firstSession.completedAt;
+    // Determine completed. A user who skipped onboarding explicitly opted out of
+    // the guided wizard — treat that as completed so it does not auto-open again
+    // right after the skip (skipOnboarding only writes skippedAt).
+    const isCompleted =
+        tradeCount > 0 || !!firstSession.completedAt || !!onboarding.skippedAt;
     const isLegacyUser = userCreatedAt
         ? userCreatedAt < FIRST_SESSION_ROLLOUT_AT
         : true;

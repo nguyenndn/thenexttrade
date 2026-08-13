@@ -8,6 +8,7 @@ import {
 import { prisma } from "@/lib/prisma";
 import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 import { requireCronSecret } from "@/lib/api-auth";
+import { canSendEmailCategory } from "@/lib/email/preferences";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300; // 5 minutes max for batch processing
@@ -67,14 +68,40 @@ export async function GET(request: Request) {
 
         // 4. Send notifications + emails for generated reports
         for (const r of results) {
-            // Fetch user email for email sending
+            // Fetch user email + notification preferences for email sending
             const user = await prisma.user.findUnique({
                 where: { id: r.userId },
-                select: { email: true, name: true },
+                select: {
+                    email: true,
+                    name: true,
+                    settings: true,
+                },
             });
 
             if (r.result.skipped && r.result.empty) {
-                // No trades → send nudge notification + email
+                // No trades → send nudge notification + email.
+                // Dedup: the empty branch never persists a record, so a cron
+                // re-run for the same period (platform retry, manual ?type=
+                // trigger) used to duplicate the NO_TRADES_NUDGE notification
+                // AND re-send the nudge email every run. Skip when the user was
+                // already nudged within the report window (6 days weekly / 30
+                // days monthly — next period is unaffected).
+                const nudgeWindowDays = type === "WEEKLY" ? 6 : 30;
+                const existingNudge = await prisma.notification.findFirst({
+                    where: {
+                        userId: r.userId,
+                        type: "NO_TRADES_NUDGE",
+                        createdAt: {
+                            gte: new Date(
+                                Date.now() -
+                                    nudgeWindowDays * 24 * 60 * 60 * 1000
+                            ),
+                        },
+                    },
+                    select: { id: true },
+                });
+                if (existingNudge) continue;
+
                 await prisma.notification.create({
                     data: {
                         userId: r.userId,
@@ -93,8 +120,11 @@ export async function GET(request: Request) {
                 });
                 notificationsSent++;
 
-                // Send nudge email
-                if (user?.email) {
+                // Send nudge email (respect email preferences — see docs/EMAIL.md)
+                if (
+                    user?.email &&
+                    canSendEmailCategory(user.settings, "reports")
+                ) {
                     const nudgeHtml = buildNudgeEmailHtml(
                         user.name || "Trader",
                         type
@@ -136,8 +166,12 @@ export async function GET(request: Request) {
                 });
                 notificationsSent++;
 
-                // Send report email
-                if (user?.email && report) {
+                // Send report email (respect email preferences)
+                if (
+                    user?.email &&
+                    report &&
+                    canSendEmailCategory(user.settings, "reports")
+                ) {
                     const baseUrl =
                         process.env.NEXT_PUBLIC_APP_URL ||
                         "https://thenexttrade.com";

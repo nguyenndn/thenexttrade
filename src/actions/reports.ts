@@ -36,9 +36,27 @@ export async function getReports(type: ReportType, page = 1, limit = 10) {
     const planMap = new Map(plans.map((p) => [p.id, p]));
     const reportsWithPlans = [];
 
-    for (const r of reports) {
+    // Only Pro users get the auto-generated weekly plan. The AI Coach action
+    // itself is Pro-gated, but this GET path would otherwise deliver the same
+    // content (and burn the user's shared AI quota) to free users just by opening
+    // the reports page.
+    const { getUserProAccess } = await import("@/lib/pro-access");
+    const pro = await getUserProAccess(user.id);
+    const autoGenerateEnabled = pro.isPro;
+
+    for (const [index, r] of reports.entries()) {
         let coachPlan = planMap.get(`plan-${r.id}`) || null;
-        if (!coachPlan && type === "WEEKLY") {
+        // Auto-generate the coach plan only for the single newest report on the
+        // first page. Generating inside a list render for every plan-less report
+        // burns N sequential LLM calls (each running the full signal engine) and
+        // can exhaust a user's daily AI quota on a plain GET of this page.
+        if (
+            autoGenerateEnabled &&
+            !coachPlan &&
+            type === "WEEKLY" &&
+            page === 1 &&
+            index === 0
+        ) {
             try {
                 coachPlan = await generateWeeklyActionPlan(user.id, r.id);
             } catch (err) {

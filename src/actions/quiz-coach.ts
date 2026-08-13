@@ -94,8 +94,10 @@ export async function checkQuestionAnswer(
                 where: { questionId, isCorrect: true },
                 select: { id: true, text: true },
             }),
-            prisma.option.findUnique({
-                where: { id: optionId },
+            prisma.option.findFirst({
+                // Scope the option lookup to the question so an optionId from a
+                // different question is rejected instead of grading a mismatched pair.
+                where: { id: optionId, questionId },
                 select: { text: true },
             }),
         ]);

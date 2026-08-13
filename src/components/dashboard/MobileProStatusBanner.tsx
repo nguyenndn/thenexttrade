@@ -11,8 +11,13 @@ import { useEffect, useState, useCallback } from "react";
  * Visible immediately on mobile (390px+) without requiring the drawer to open.
  * Only renders for non-NONE states (ACTIVE, GRACE, REVOKED, EXPIRED) or NONE with upgrade CTA.
  * Hidden on desktop (lg:hidden) since the sidebar widget handles desktop.
+ *
+ * @param hideFreeNudge When true, suppress only the FREE-PLAN upgrade nudge (used for
+ *   brand-new / no-data users so onboarding isn't drowned in CTAs). Real Pro statuses
+ *   (ACTIVE / GRACE / REVOKED / EXPIRED) always render — a freshly approved user with no
+ *   trades yet must still see their Pro status on mobile, where the sidebar widget is hidden.
  */
-export function MobileProStatusBanner() {
+export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge?: boolean }) {
     const proAccess = useProAccess();
     const searchParams = useSearchParams();
     const currentAccountId = searchParams?.get("accountId") ?? undefined;
@@ -73,6 +78,11 @@ export function MobileProStatusBanner() {
         : proAccess.expiresAt;
 
     const currentStatus = status || "NONE";
+
+    // Brand-new / no-data users: hide only the "Free Plan" upgrade nudge.
+    // Real Pro statuses (ACTIVE/GRACE/REVOKED/EXPIRED) always render so the user's
+    // Pro status stays visible on mobile even before they have trade data.
+    if (hideFreeNudge && currentStatus === "NONE") return null;
 
     if (currentStatus === "ACTIVE") {
         return (

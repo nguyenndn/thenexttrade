@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
-import { startOfMonth, endOfMonth, parseISO } from "date-fns";
+import { startOfMonth, endOfMonth, parseISO, endOfDay } from "date-fns";
 
 interface SessionStats {
     session: string;
@@ -63,7 +63,11 @@ export async function GET(request: NextRequest) {
         const startDate = startDateParam
             ? parseISO(startDateParam)
             : startOfMonth(now);
-        const endDate = endDateParam ? parseISO(endDateParam) : endOfMonth(now);
+        // A date-only endDate param (e.g. "2026-08-13") parses to midnight;
+        // extend it to end of day so trades on the final day aren't dropped.
+        const endDate = endDateParam
+            ? endOfDay(parseISO(endDateParam))
+            : endOfMonth(now);
 
         const whereClause: any = {
             userId: user.id,
@@ -149,7 +153,7 @@ export async function GET(request: NextRequest) {
                         data.grossLoss > 0
                             ? data.grossProfit / data.grossLoss
                             : data.grossProfit > 0
-                              ? Infinity
+                              ? 99
                               : 0,
                 };
             })

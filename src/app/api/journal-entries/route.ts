@@ -15,13 +15,15 @@ const journalEntrySchema = z.object({
     entryDate: z
         .string()
         .or(z.date())
-        .transform((val) => new Date(val)),
+        .transform((val) => new Date(val))
+        .refine((d) => !isNaN(d.getTime()), "Invalid entry date"),
     exitDate: z
         .string()
         .or(z.date())
         .optional()
         .nullable()
-        .transform((val) => (val ? new Date(val) : null)),
+        .transform((val) => (val ? new Date(val) : null))
+        .refine((d) => d === null || !isNaN(d.getTime()), "Invalid exit date"),
     status: z.enum(["OPEN", "CLOSED"]).default("OPEN"),
     result: z.enum(["WIN", "LOSS", "BREAK_EVEN"]).optional().nullable(),
     pnl: z.number().optional().nullable(),
@@ -63,6 +65,19 @@ export async function POST(request: Request) {
         const body = await request.json();
         const validatedData = journalEntrySchema.parse(body);
         const { ruleChecks, tradePlanId, ...rest } = validatedData as any;
+
+        // accountId must stay within the user's own accounts
+        if (rest.accountId) {
+            const acct = await prisma.tradingAccount.findFirst({
+                where: { id: rest.accountId, userId: user.id },
+                select: { id: true },
+            });
+            if (!acct)
+                return NextResponse.json(
+                    { error: "Invalid account" },
+                    { status: 400 }
+                );
+        }
 
         const entry = await prisma.journalEntry.create({
             data: {
@@ -150,14 +165,31 @@ export async function GET(request: Request) {
     }
 
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "20");
+    const rawPage = parseInt(searchParams.get("page") || "1", 10);
+    const rawLimit = parseInt(searchParams.get("limit") || "20", 10);
+    // Clamp so malformed/negative/huge values can't produce NaN skips or an
+    // unbounded query.
+    const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
+    const limit =
+        Number.isFinite(rawLimit) && rawLimit > 0
+            ? Math.min(rawLimit, 100)
+            : 20;
     const symbol = searchParams.get("symbol");
     const startDate = searchParams.get("startDate");
     const endDate = searchParams.get("endDate");
     const status = searchParams.get("status");
     const accountId = searchParams.get("accountId");
+    // Allowlist sortable columns — arbitrary input would make Prisma throw.
+    const sortable = [
+        "entryDate",
+        "exitDate",
+        "symbol",
+        "pnl",
+        "createdAt",
+        "updatedAt",
+    ];
     const sortBy = searchParams.get("sortBy") || "entryDate";
+    const orderBy = sortable.includes(sortBy) ? sortBy : "entryDate";
     const sortOrder = searchParams.get("sortOrder") === "asc" ? "asc" : "desc";
 
     const type = searchParams.get("type");
@@ -192,19 +224,12 @@ export async function GET(request: Request) {
         };
     }
 
-    // DEBUG LOGGING
-    console.log("Journal API Request:", {
-        url: request.url,
-        params: Object.fromEntries(searchParams.entries()),
-        generatedWhere: JSON.stringify(where, null, 2),
-    });
-
     try {
         const [entries, total, pnlStat, winCount, lossCount, breakEvenCount] =
             await Promise.all([
                 prisma.journalEntry.findMany({
                     where,
-                    orderBy: { [sortBy]: sortOrder },
+                    orderBy: { [orderBy]: sortOrder },
                     skip,
                     take: limit,
                     include: {

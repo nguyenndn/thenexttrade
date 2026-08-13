@@ -46,8 +46,11 @@ export async function generateActivitySnapshots() {
     periodStart.setDate(periodStart.getDate() - 30);
     periodStart.setHours(0, 0, 0, 0);
 
-    // Fetch all users with Pro entitlements
-    const proUsers = await prisma.proEntitlement.findMany({
+    // Fetch all users with Pro entitlements. A user can hold MULTIPLE
+    // entitlements (legacy user-level + per-account), so dedupe by userId —
+    // otherwise the same user's snapshot gets computed and upserted twice and
+    // the second write clobbers the first (and the return counts double).
+    const proEntitlements = await prisma.proEntitlement.findMany({
         where: { status: { in: ["ACTIVE", "GRACE"] } },
         select: {
             userId: true,
@@ -56,6 +59,23 @@ export async function generateActivitySnapshots() {
             tradingAccountId: true,
         },
     });
+
+    const proUsers = Array.from(
+        proEntitlements
+            .reduce((map, pe) => {
+                const existing = map.get(pe.userId);
+                // Prefer the account-scoped entitlement — it carries the
+                // broker + masked account number for the specific account.
+                if (
+                    !existing ||
+                    (pe.tradingAccountId && !existing.tradingAccountId)
+                ) {
+                    map.set(pe.userId, pe);
+                }
+                return map;
+            }, new Map<string, (typeof proEntitlements)[number]>())
+            .values()
+    );
 
     const results: Array<{
         userId: string;

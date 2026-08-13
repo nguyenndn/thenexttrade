@@ -35,31 +35,47 @@ export interface AdminActivationSignalItem {
 
 // 1. Helper function to check if the current user is an authorized admin
 async function checkAdminAuth() {
-    const supabase = await createClient();
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+    // Wrap so a thrown auth/session error degrades to null instead of an
+    // unhandled server-action rejection (callers rely on the null → Unauthorized path).
+    try {
+        const supabase = await createClient();
+        const {
+            data: { user },
+        } = await supabase.auth.getUser();
 
-    if (!user) return null;
+        if (!user) return null;
 
-    const { data: aal, error: aalError } =
-        await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-    if (
-        aalError ||
-        (aal && aal.currentLevel === "aal1" && aal.nextLevel === "aal2")
-    ) {
+        const { data: aal, error: aalError } =
+            await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+        if (
+            aalError ||
+            (aal && aal.currentLevel === "aal1" && aal.nextLevel === "aal2")
+        ) {
+            return null;
+        }
+
+        const profile = await prisma.profile.findUnique({
+            where: { userId: user.id },
+            select: { role: true },
+        });
+
+        if (profile?.role !== "ADMIN") return null;
+
+        return user;
+    } catch (error) {
+        console.error("Admin auth check failed:", error);
         return null;
     }
-
-    const profile = await prisma.profile.findUnique({
-        where: { userId: user.id },
-        select: { role: true },
-    });
-
-    if (profile?.role !== "ADMIN") return null;
-
-    return user;
 }
+
+// severity is a plain VARCHAR — Prisma cannot order by it meaningfully
+// (alphabetical), so rank HIGH → LOW in JS with recency as the tiebreak.
+const SEVERITY_RANK: Record<string, number> = {
+    HIGH: 3,
+    MEDIUM: 2,
+    LOW: 1,
+    INFO: 0,
+};
 
 // 2. Fetch all active activation signals for stuck traders, filtering out dismissed items
 export async function getAdminActivationSignals(): Promise<{
@@ -104,6 +120,7 @@ export async function getAdminActivationSignals(): Promise<{
             orderBy: {
                 lastSeenAt: "desc",
             },
+            take: 200,
         });
 
         // Parse and filter out dismissed signals
@@ -141,7 +158,13 @@ export async function getAdminActivationSignals(): Promise<{
                     }
                 }
                 return true;
-            });
+            })
+            .sort(
+                (a, b) =>
+                    (SEVERITY_RANK[b.severity] ?? 0) -
+                        (SEVERITY_RANK[a.severity] ?? 0) ||
+                    b.lastSeenAt.getTime() - a.lastSeenAt.getTime()
+            );
 
         return { success: true, data: filteredSignals };
     } catch (error) {
@@ -204,8 +227,12 @@ export async function dismissUserSignal(
         if (!signal) return { success: false, error: "Signal not found" };
 
         const metadata = (signal.metadata as Record<string, any>) || {};
+        // Clamp to a sane [1, 365]-day window so a bad/negative/huge (or NaN)
+        // value can neither expire the dismissal instantly nor hide a signal
+        // from the inbox forever.
+        const safeDays = Math.min(365, Math.max(1, Math.round(days) || 1));
         const dismissDate = new Date();
-        dismissDate.setDate(dismissDate.getDate() + days);
+        dismissDate.setDate(dismissDate.getDate() + safeDays);
 
         const updatedMetadata = {
             ...metadata,

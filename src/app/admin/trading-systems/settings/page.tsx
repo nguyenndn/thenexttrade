@@ -72,7 +72,7 @@ export default function EASettingsPage() {
     useEffect(() => {
         async function fetchSettings() {
             try {
-                const { data } = await axios.get("/api/admin/trading-systems/settings");
+                const { data } = await axios.get("/api/admin/ea/settings");
                 reset(data);
             } catch (error) {
                 toast.error("Failed to load settings");
@@ -87,7 +87,7 @@ export default function EASettingsPage() {
     const onSubmit = async (data: EASettingsForm) => {
         setIsSaving(true);
         try {
-            await axios.put("/api/admin/trading-systems/settings", data);
+            await axios.put("/api/admin/ea/settings", data);
             toast.success("Settings saved successfully!");
         } catch (error) {
             toast.error("Failed to save settings");

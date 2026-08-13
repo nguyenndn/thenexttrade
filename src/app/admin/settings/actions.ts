@@ -21,7 +21,32 @@ export async function updateProfile(formData: FormData) {
         let imageUrl = undefined;
 
         if (imageFile && imageFile.size > 0) {
-            const fileName = `${user.id}-${Date.now()}-${imageFile.name}`;
+            // Server-side validation — the client-side checks are not a trust
+            // boundary. Reject oversized uploads and any type we can't serve
+            // safely (SVG is excluded: it can carry scripts when opened
+            // directly from the public bucket).
+            const MAX_SIZE = 2 * 1024 * 1024; // 2 MB
+            if (imageFile.size > MAX_SIZE) {
+                return { error: "Image too large (max 2 MB)" };
+            }
+
+            const allowedTypes: Record<string, string> = {
+                "image/jpeg": "jpg",
+                "image/png": "png",
+                "image/webp": "webp",
+                "image/gif": "gif",
+            };
+            const ext = allowedTypes[imageFile.type];
+            if (!ext) {
+                return {
+                    error: "Unsupported file type (use JPG, PNG, WebP or GIF)",
+                };
+            }
+
+            // Never trust the client filename — derive a clean key from the
+            // verified MIME type so traversal characters or weird names can't
+            // leak into the storage path.
+            const fileName = `${user.id}-${Date.now()}.${ext}`;
             const { data, error } = await supabase.storage
                 .from("avatars")
                 .upload(fileName, imageFile, {

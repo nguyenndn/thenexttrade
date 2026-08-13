@@ -684,9 +684,18 @@ export async function getFullDashboardData(
     const showReturningWeeklyReview =
         weeklyReviewEligibility.ready &&
         !weeklyReviewEligibility.isFirstWeeklyReview;
-    const criticalSyncIssue =
-        nextBestAction?.id === "SYNC_STALE" ||
-        nextBestAction?.id === "ACCOUNT_NEVER_SYNCED";
+    // Derive from the actual computed signals (already in scope above), not
+    // from nextBestAction.id. getNextBestAction only promotes severity ===
+    // "HIGH" signals, and SYNC_STALE is "MEDIUM" while ACCOUNT_NEVER_SYNCED
+    // fires in no-data states already intercepted by earlier maturity
+    // priorities (connect_account / sync_first_trades) — so the old
+    // nextAction-based check could never fire, leaving stale-sync users with a
+    // report nudge and positive-insight banner over outdated data.
+    const criticalSyncIssue = signals.some(
+        (s) =>
+            s.signalType === "SYNC_STALE" ||
+            s.signalType === "ACCOUNT_NEVER_SYNCED"
+    );
 
     const suppress = {
         activationChecklist: false,
