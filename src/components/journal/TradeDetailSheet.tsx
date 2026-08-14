@@ -22,6 +22,7 @@ import {
     ShieldAlert,
     Scale,
     Calendar,
+    Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -64,6 +65,7 @@ interface JournalEntry {
     images?: string[];
     tradePlan?: any;
     ruleChecks?: any[];
+    autopilotStatus?: string;
 }
 
 interface TradeDetailSheetProps {
@@ -171,6 +173,12 @@ export function TradeDetailSheet({
                             <h2 className="text-lg font-bold text-gray-700 dark:text-white">
                                 Trade Details
                             </h2>
+                            {entry.autopilotStatus === "PROCESSED" && (
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-violet-500/10 text-violet-500 border border-violet-500/20 text-[10px] font-black uppercase tracking-wider">
+                                    <Sparkles size={12} />
+                                    AI Autopilot
+                                </span>
+                            )}
                         </div>
                         <div className="flex items-center gap-2">
                             <Button

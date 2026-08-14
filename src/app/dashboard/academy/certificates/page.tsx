@@ -18,6 +18,8 @@ export default async function CertificatesPage() {
     if (!user) redirect("/auth/login");
 
     const userId = user.id;
+    const baseUrl =
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com";
 
     const [levels, certificates, userName] = await Promise.all([
         prisma.level.findMany({
@@ -117,6 +119,7 @@ export default async function CertificatesPage() {
                             totalQuizzes={totalLevels}
                             userName={displayName}
                             variant="master"
+                            shareUrl={`${baseUrl}/certificate/master/${userId}`}
                         />
                     </div>
                 </div>
@@ -169,6 +172,11 @@ export default async function CertificatesPage() {
                             passedQuizzes={passedQuizzes}
                             totalQuizzes={totalQuizzes}
                             userName={displayName}
+                            shareUrl={
+                                cert
+                                    ? `${baseUrl}/certificate/${cert.id}`
+                                    : undefined
+                            }
                         />
                     );
                 })}

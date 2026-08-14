@@ -853,14 +853,18 @@ export function DashboardManager({
                             }}
                         />
                     </div>
-                    <DialogFooter>
+                    <DialogFooter className="gap-2 sm:gap-2">
                         <Button
                             variant="outline"
+                            size="smd"
+                            className="h-10 px-3.5 text-[13px] font-medium"
                             onClick={() => setIsCreateModalOpen(false)}
                         >
                             Cancel
                         </Button>
                         <Button
+                            size="smd"
+                            className="h-10 px-4 text-[13px] font-medium"
                             onClick={submitCreateDashboard}
                             disabled={isPending || !newDashboardName.trim()}
                         >
@@ -885,15 +889,19 @@ export function DashboardManager({
                             undone.
                         </p>
                     </div>
-                    <DialogFooter>
+                    <DialogFooter className="gap-2 sm:gap-2">
                         <Button
                             variant="outline"
+                            size="smd"
+                            className="h-10 px-3.5 text-[13px] font-medium"
                             onClick={() => setIsDeleteModalOpen(false)}
                         >
                             Cancel
                         </Button>
                         <Button
                             variant="destructive"
+                            size="smd"
+                            className="h-10 px-4 text-[13px] font-medium"
                             onClick={confirmDeleteDashboard}
                             disabled={isPending}
                         >
@@ -942,14 +950,17 @@ export function DashboardManager({
                             </div>
                         </div>
                     </div>
-                    <DialogFooter>
+                    <DialogFooter className="gap-2 sm:gap-2">
                         <Button
                             variant="outline"
+                            size="smd"
+                            className="h-10 px-3.5 text-[13px] font-medium"
                             onClick={() => setIsCustomGridOpen(false)}
                         >
                             Cancel
                         </Button>
                         <Button
+                            size="smd"
                             onClick={() => {
                                 const cols = parseInt(customCols, 10);
                                 const rows = parseInt(customRows, 10);
@@ -966,7 +977,7 @@ export function DashboardManager({
                                 setIsCustomGridOpen(false);
                             }}
                             disabled={isPending}
-                            className="bg-amber-500 hover:bg-amber-600 text-white"
+                            className="h-10 px-4 text-[13px] font-medium bg-amber-500 hover:bg-amber-600 text-white"
                         >
                             Apply Grid
                         </Button>

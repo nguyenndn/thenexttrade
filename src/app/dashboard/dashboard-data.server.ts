@@ -36,6 +36,7 @@ import { getWeeklyReviewEligibility } from "@/lib/reports/weekly-review-eligibil
 import type { WeeklyReviewEligibility } from "@/lib/reports/weekly-review-eligibility";
 import { getTraderGrowthViewModel } from "@/lib/trader-growth/orchestrator.server";
 import type { TraderGrowthViewModel } from "@/lib/trader-growth/types";
+import { triggerCoachNotifications } from "@/lib/coach/coach-notifications.server";
 
 // ─── Types ──────────────────────────────────────────────────────────────
 
@@ -346,6 +347,11 @@ export async function getEmptyDashboardData(
     const tradingGoal = (settings.onboarding as any)?.tradingGoal || null;
 
     const growthViewModel = await getTraderGrowthViewModel(userId, accountId);
+
+    // Fire-and-forget coach notification trigger
+    triggerCoachNotifications(userId).catch(() => {
+        /* silent */
+    });
 
     return {
         userName: userData?.name || "Trader",
@@ -669,6 +675,11 @@ export async function getFullDashboardData(
         tradeCount: recentTrades.length > 0 ? globalTradeCount : 0,
         accountCount: accounts.length,
     }).catch(() => {
+        /* silent */
+    });
+
+    // Fire-and-forget coach notification trigger
+    triggerCoachNotifications(userId).catch(() => {
         /* silent */
     });
 

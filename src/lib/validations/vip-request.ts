@@ -104,7 +104,7 @@ export const BROKER_INFO: Record<
         name: "Ultima Markets",
         logo: "/images/brokers/ultima.png",
         affiliateUrl:
-            "https://www.ultimamarkets.trade/forex-trading/forex-trading-account/?affid=NzIzNDkwMw==",
+            "https://www.ultimamarkets.com/accounts/open-trading-account/?affid=NzIzNDkwMw==",
         ibCode: "NzIzNDkwMw==",
         color: "#7C3AED",
         minDeposit: 200,
@@ -119,8 +119,8 @@ export const BROKER_INFO: Record<
             ],
             emails: {
                 to: "info@ultimamarkets.com",
-                subject: "Account Reassign - Client Email",
-                body: "Hi, Kindly assist to reassign my account under IB Number (NzIzNDkwMw==) as I want to trade with him. Thanks.",
+                subject: "Please help me transfer my Account to Affiliate - 7234903",
+                body: "Hi, Kindly assist to reassign my account under IB Number (7234903) as I want to trade with him. Thanks.",
             },
         },
     },

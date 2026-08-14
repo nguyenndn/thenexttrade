@@ -4,7 +4,7 @@ import { TabBar } from "@/components/ui/TabBar";
 import { FileText, Clock } from "lucide-react";
 
 import { useState, useEffect, useMemo } from "react";
-import { Edit2, ArrowUpDown, Activity, Zap } from "lucide-react";
+import { Edit2, ArrowUpDown, Activity, Zap, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { utcTime, cn } from "@/lib/utils";
@@ -839,10 +839,24 @@ export default function JournalList({
                                                                             )}
                                                                         {col.id ===
                                                                             "symbol" && (
-                                                                            <span className="font-bold text-gray-700 dark:text-white">
-                                                                                {
-                                                                                    entry.symbol
-                                                                                }
+                                                                            <span className="flex flex-col items-start gap-1">
+                                                                                <span className="font-bold text-gray-700 dark:text-white">
+                                                                                    {
+                                                                                        entry.symbol
+                                                                                    }
+                                                                                </span>
+                                                                                {entry.autopilotStatus ===
+                                                                                    "PROCESSED" && (
+                                                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-500 border border-violet-500/20 text-[9px] font-black uppercase tracking-wider">
+                                                                                        <Sparkles
+                                                                                            size={
+                                                                                                10
+                                                                                            }
+                                                                                        />
+                                                                                        AI
+                                                                                        Autopilot
+                                                                                    </span>
+                                                                                )}
                                                                             </span>
                                                                         )}
                                                                         {col.id ===
@@ -1011,6 +1025,15 @@ export default function JournalList({
                                                     <StatusBadge
                                                         status={entry.status}
                                                     />
+                                                    {entry.autopilotStatus ===
+                                                        "PROCESSED" && (
+                                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-500 border border-violet-500/20 text-[9px] font-black uppercase tracking-wider">
+                                                            <Sparkles
+                                                                size={10}
+                                                            />
+                                                            AI Autopilot
+                                                        </span>
+                                                    )}
                                                 </div>
                                                 <TooltipProvider
                                                     delayDuration={200}

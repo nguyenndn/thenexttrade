@@ -3,12 +3,15 @@
 import React from "react";
 import { Brain, Flame, Clock, TrendingUp, AlertTriangle, ShieldCheck, Target } from "lucide-react";
 import { PsychologyDiagnosticReport } from "@/lib/analytics/psychology-engine.server";
+import { DataConfidenceBadge } from "@/components/insights/DataConfidenceBadge";
+import { DataConfidenceView } from "@/lib/trader-growth/types";
 
 interface TradingPsychologyPanelProps {
     data: PsychologyDiagnosticReport;
+    confidence?: DataConfidenceView;
 }
 
-export function TradingPsychologyPanel({ data }: TradingPsychologyPanelProps) {
+export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPanelProps) {
     const { disposition, tilt, rrOptimizer } = data;
 
     const isHighDisposition = disposition.severity === "HIGH";
@@ -18,7 +21,7 @@ export function TradingPsychologyPanel({ data }: TradingPsychologyPanelProps) {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5">
                     <div className="p-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400">
                         <Brain className="w-5 h-5" />
@@ -28,6 +31,11 @@ export function TradingPsychologyPanel({ data }: TradingPsychologyPanelProps) {
                         <p className="text-xs text-slate-500 dark:text-slate-400">Behavioral pattern analysis & risk-reward optimization</p>
                     </div>
                 </div>
+                {confidence && (
+                    <div className="shrink-0 self-start sm:self-auto">
+                        <DataConfidenceBadge confidence={confidence} />
+                    </div>
+                )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

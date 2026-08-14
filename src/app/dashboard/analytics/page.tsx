@@ -169,7 +169,7 @@ async function AnalyticsDataWrapper({
         getCurrentStreak(user.id, accountId),
         prisma.tradingAccount.findMany({
             where: { userId: user.id, ...(accountId ? { id: accountId } : {}) },
-            select: { balance: true },
+            select: { balance: true, lastSync: true },
         }),
         prisma.journalEntry.findMany({
             where: {
@@ -246,6 +246,23 @@ async function AnalyticsDataWrapper({
 
     // 4. Calculate Psychology Diagnostic & Intraday Heatmap
     const { calculatePsychologyDiagnostic } = await import("@/lib/analytics/psychology-engine.server");
+    const { computeDataConfidence } = await import("@/lib/insights/data-confidence");
+
+    const latestSyncAt = accounts.reduce((latest: Date | null, acc: any) => {
+        if (!acc.lastSync) return latest;
+        if (!latest) return acc.lastSync;
+        return new Date(acc.lastSync) > new Date(latest) ? acc.lastSync : latest;
+    }, null);
+
+    const confidence = computeDataConfidence({
+        usableClosedTradeCount: stats.totalTrades,
+        sampleSize: stats.totalTrades,
+        periodStart: startDate,
+        periodEnd: endDate,
+        latestSyncAt,
+        accountScope: accountId ? [accountId] : [],
+    });
+
     const psychologyData = await calculatePsychologyDiagnostic(user.id, accountId);
 
     // 5. Construct Final Data Object
@@ -284,7 +301,7 @@ async function AnalyticsDataWrapper({
                 accountId={accountId}
                 dateRange={{ start: startDate, end: endDate }}
             />
-            <TradingPsychologyPanel data={psychologyData} />
+            <TradingPsychologyPanel data={psychologyData} confidence={confidence} />
             <IntradayHeatmapChart data={psychologyData.heatmap} />
         </div>
     );

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useTransition } from "react";
 import {
     Activity,
     ArrowRight,
@@ -15,11 +16,21 @@ import {
     Zap,
     AlertTriangle,
     ShieldCheck,
+    CheckCircle2,
+    XCircle,
+    ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { formatDistanceToNow } from "date-fns";
+import { enUS } from "date-fns/locale";
 import { AnimatedStatCard } from "@/components/admin/dashboard/AnimatedStatCard";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
+import { Button } from "@/components/ui/Button";
 import { CANONICAL_PRODUCTS } from "@/lib/admin/ib/ib-monitor.constants";
+import { approveVipRequest, rejectVipRequest } from "@/actions/vip-request";
+import { toast } from "sonner";
+import type { IbPipelineItem } from "@/lib/admin/ib/ib-monitor.types";
 
 interface OverviewStats {
     totalLeads: number;
@@ -62,6 +73,7 @@ interface Props {
     overview: OverviewStats | null;
     leadStats: LeadStats | null;
     vipStats: VipStats | null;
+    pendingRequests?: IbPipelineItem[];
 }
 
 const rangeOptions = [
@@ -75,7 +87,13 @@ export function IbOverviewClient({
     overview,
     leadStats,
     vipStats,
+    pendingRequests = [],
 }: Props) {
+    const router = useRouter();
+    const [isPending, startTransition] = useTransition();
+    const [rejectModalId, setRejectModalId] = useState<string | null>(null);
+    const [rejectReason, setRejectReason] = useState("");
+
     if (!overview || !leadStats || !vipStats) {
         return (
             <div className="text-center py-16 text-gray-500 dark:text-gray-400">
@@ -101,6 +119,36 @@ export function IbOverviewClient({
         value === null || value === undefined
             ? "Mixed"
             : `$${value.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
+
+    const handleApprove = (requestId: string) => {
+        startTransition(async () => {
+            const result = await approveVipRequest(requestId);
+            if (result.success) {
+                toast.success("VIP request approved & Pro access granted");
+                router.refresh();
+            } else {
+                toast.error(result.error || "Failed to approve request");
+            }
+        });
+    };
+
+    const handleReject = (requestId: string) => {
+        if (!rejectReason.trim()) {
+            toast.error("Please provide a rejection reason");
+            return;
+        }
+        startTransition(async () => {
+            const result = await rejectVipRequest(requestId, rejectReason);
+            if (result.success) {
+                toast.success("Request rejected");
+                setRejectModalId(null);
+                setRejectReason("");
+                router.refresh();
+            } else {
+                toast.error(result.error || "Failed to reject request");
+            }
+        });
+    };
 
     const nextActions = [
         {
@@ -137,7 +185,10 @@ export function IbOverviewClient({
             {/* Header Controls */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs font-bold text-gray-400">
-                    <Clock size={13} /> Updated as of <span className="font-mono text-gray-700 dark:text-gray-300">{asOfTimestamp}</span>
+                    <Clock size={13} /> Updated as of{" "}
+                    <span className="font-mono text-gray-700 dark:text-gray-300">
+                        {asOfTimestamp}
+                    </span>
                 </div>
                 <div className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-1 shadow-sm">
                     {rangeOptions.map((option) => (
@@ -205,31 +256,47 @@ export function IbOverviewClient({
                     <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-amber-700 dark:text-amber-300">
                         <DollarSign size={15} /> Reported Capital
                     </div>
-                    <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">{formatUsd(overview.reportedCapitalUSD)}</p>
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Equity {formatUsd(overview.reportedEquityUSD)}</p>
+                    <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">
+                        {formatUsd(overview.reportedCapitalUSD)}
+                    </p>
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        Equity {formatUsd(overview.reportedEquityUSD)}
+                    </p>
                 </div>
                 <div className="rounded-xl border border-emerald-200/70 bg-emerald-50/60 p-4 dark:border-emerald-500/20 dark:bg-emerald-500/10">
                     <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">
                         <ShieldCheck size={15} /> Fresh Capital
                     </div>
-                    <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">{formatUsd(overview.freshCapitalUSD)}</p>
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Accounts updated within 24h</p>
+                    <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">
+                        {formatUsd(overview.freshCapitalUSD)}
+                    </p>
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        Accounts updated within 24h
+                    </p>
                 </div>
                 <div className="rounded-xl border border-orange-200/70 bg-orange-50/60 p-4 dark:border-orange-500/20 dark:bg-orange-500/10">
                     <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-orange-700 dark:text-orange-300">
                         <AlertTriangle size={15} /> Data Quality
                     </div>
-                    <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">{overview.staleAccounts || 0} sync overdue</p>
+                    <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">
+                        {overview.staleAccounts || 0} sync overdue
+                    </p>
                     <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        {overview.disconnectedAccounts || 0} disconnected · {overview.duplicateAccountWarnings || 0} duplicate warning{overview.duplicateAccountWarnings === 1 ? "" : "s"}
+                        {overview.disconnectedAccounts || 0} disconnected ·{" "}
+                        {overview.duplicateAccountWarnings || 0} duplicate
+                        warning{overview.duplicateAccountWarnings === 1 ? "" : "s"}
                     </p>
                 </div>
                 <div className="rounded-xl border border-cyan-200/70 bg-cyan-50/60 p-4 dark:border-cyan-500/20 dark:bg-cyan-500/10">
                     <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-cyan-700 dark:text-cyan-300">
                         <Zap size={15} /> Tool Activity
                     </div>
-                    <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">{overview.activeToolUsers || 0}</p>
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">users with product activity in 24h</p>
+                    <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">
+                        {overview.activeToolUsers || 0}
+                    </p>
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        users with product activity in 24h
+                    </p>
                 </div>
             </div>
 
@@ -239,13 +306,21 @@ export function IbOverviewClient({
                     className="flex items-center justify-between gap-4 rounded-xl border border-amber-200 bg-amber-50/70 px-4 py-3 text-sm transition-colors hover:bg-amber-100 dark:border-amber-500/20 dark:bg-amber-500/10 dark:hover:bg-amber-500/15"
                 >
                     <span className="font-bold text-amber-800 dark:text-amber-200">
-                        {overview.vipUsersWithoutFirstSync} active VIP user{overview.vipUsersWithoutFirstSync === 1 ? "" : "s"} have not completed a first sync.
+                        {overview.vipUsersWithoutFirstSync} active VIP user
+                        {overview.vipUsersWithoutFirstSync === 1 ? "" : "s"} have
+                        not completed a first sync.
                     </span>
-                    <span className="text-xs font-black text-amber-700 dark:text-amber-300">Review traders →</span>
+                    <span className="text-xs font-black text-amber-700 dark:text-amber-300">
+                        Review traders →
+                    </span>
                 </Link>
             )}
 
-            <Tabs defaultValue="overview" className="mt-2" tabsId="ib-overview-tabs">
+            <Tabs
+                defaultValue="overview"
+                className="mt-2"
+                tabsId="ib-overview-tabs"
+            >
                 <div className="overflow-x-auto scrollbar-hide pb-2 flex">
                     <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1 gap-1 shrink-0">
                         {[
@@ -287,7 +362,9 @@ export function IbOverviewClient({
                                     </p>
                                 </div>
                                 <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-300">
-                                    Use this page as the command center: review pending requests, monitor Pro activation, and spot funnel drops before revenue leaks.
+                                    Use this page as the command center: review
+                                    pending requests, monitor Pro activation,
+                                    and spot funnel drops before revenue leaks.
                                 </p>
                             </div>
                             <div className="grid flex-1 gap-3 sm:grid-cols-3">
@@ -328,6 +405,166 @@ export function IbOverviewClient({
                         </div>
                     </div>
 
+                    {/* Pending VIP Requests — Direct Quick Action Section */}
+                    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-sm space-y-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                                    <Crown size={20} />
+                                </div>
+                                <div>
+                                    <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                        Pending VIP Requests
+                                        {pendingRequests.length > 0 && (
+                                            <span className="px-2 py-0.5 rounded-full text-xs font-black bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300">
+                                                {pendingRequests.length} Pending
+                                            </span>
+                                        )}
+                                    </h3>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                                        Review and approve trader Partner Pro
+                                        eligibility directly
+                                    </p>
+                                </div>
+                            </div>
+                            <Link
+                                href="/admin/ib/pipeline?status=PENDING"
+                                className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline"
+                            >
+                                Open Full Pipeline
+                                <ArrowRight size={14} />
+                            </Link>
+                        </div>
+
+                        {pendingRequests.length === 0 ? (
+                            <div className="py-8 flex flex-col items-center justify-center text-center text-gray-500 dark:text-gray-400 border border-dashed border-gray-200 dark:border-white/10 rounded-xl">
+                                <CheckCircle2 className="w-8 h-8 text-emerald-500 mb-2 opacity-60" />
+                                <p className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                                    All caught up!
+                                </p>
+                                <p className="text-xs mt-0.5">
+                                    No pending VIP verification requests at the
+                                    moment.
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left text-sm">
+                                    <thead className="bg-gray-50 dark:bg-white/5 text-[11px] uppercase text-gray-500 font-bold tracking-wider rounded-lg">
+                                        <tr>
+                                            <th className="px-4 py-3 rounded-l-lg">
+                                                Trader
+                                            </th>
+                                            <th className="px-4 py-3">
+                                                Broker & Account
+                                            </th>
+                                            <th className="px-4 py-3">
+                                                Balance
+                                            </th>
+                                            <th className="px-4 py-3">
+                                                Submitted
+                                            </th>
+                                            <th className="px-4 py-3 text-right rounded-r-lg">
+                                                Actions
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                                        {pendingRequests.map((req) => (
+                                            <tr
+                                                key={req.requestId}
+                                                className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                                            >
+                                                <td className="px-4 py-3.5">
+                                                    <div className="font-bold text-gray-900 dark:text-white text-xs">
+                                                        {req.userName}
+                                                    </div>
+                                                    <div className="text-[11px] text-gray-500 truncate max-w-[180px]">
+                                                        {req.userEmail}
+                                                    </div>
+                                                    {req.telegramId && (
+                                                        <div className="text-[10px] text-primary">
+                                                            @{req.telegramId}
+                                                        </div>
+                                                    )}
+                                                </td>
+                                                <td className="px-4 py-3.5">
+                                                    <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-gray-200">
+                                                        {req.broker}
+                                                    </span>
+                                                    <div className="font-mono text-xs font-bold text-gray-700 dark:text-gray-300 mt-1">
+                                                        {req.rawAccountNumber ||
+                                                            req.accountNumber}
+                                                    </div>
+                                                </td>
+                                                <td className="px-4 py-3.5">
+                                                    <span className="font-mono font-bold text-xs text-gray-900 dark:text-white">
+                                                        {req.submittedBalance
+                                                            ? `$${Number(req.submittedBalance).toLocaleString()}`
+                                                            : "N/A"}
+                                                    </span>
+                                                    {req.liveBalance !==
+                                                        null && (
+                                                        <div className="text-[10px] text-gray-400">
+                                                            Live: $
+                                                            {req.liveBalance.toLocaleString()}
+                                                        </div>
+                                                    )}
+                                                </td>
+                                                <td className="px-4 py-3.5 text-xs text-gray-400 whitespace-nowrap">
+                                                    {formatDistanceToNow(
+                                                        new Date(req.createdAt),
+                                                        {
+                                                            addSuffix: true,
+                                                            locale: enUS,
+                                                        }
+                                                    )}
+                                                </td>
+                                                <td className="px-4 py-3.5 text-right">
+                                                    <div className="flex items-center justify-end gap-2">
+                                                        <Button
+                                                            size="sm"
+                                                            variant="primary"
+                                                            disabled={isPending}
+                                                            onClick={() =>
+                                                                handleApprove(
+                                                                    req.requestId
+                                                                )
+                                                            }
+                                                        >
+                                                            Approve
+                                                        </Button>
+                                                        <Button
+                                                            size="sm"
+                                                            variant="destructive"
+                                                            disabled={isPending}
+                                                            onClick={() =>
+                                                                setRejectModalId(
+                                                                    req.requestId
+                                                                )
+                                                            }
+                                                        >
+                                                            Reject
+                                                        </Button>
+                                                        <Link
+                                                            href={`/admin/ib/pipeline?q=${req.rawAccountNumber || req.accountNumber}`}
+                                                            className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"
+                                                            title="View in Pipeline"
+                                                        >
+                                                            <ExternalLink
+                                                                size={15}
+                                                            />
+                                                        </Link>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
+
                     {/* Operational Action Cards */}
                     <div className="grid gap-4 lg:grid-cols-3">
                         {nextActions.map((action) => {
@@ -346,7 +583,9 @@ export function IbOverviewClient({
                                     className="group rounded-xl border border-gray-200 dark:border-white/10 bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:bg-[#1E2028]"
                                 >
                                     <div className="flex items-start justify-between gap-4">
-                                        <div className={`rounded-xl p-3 ring-1 ${toneClass}`}>
+                                        <div
+                                            className={`rounded-xl p-3 ring-1 ${toneClass}`}
+                                        >
                                             <Icon size={20} strokeWidth={2.5} />
                                         </div>
                                         <span className="text-3xl font-black tracking-tight text-gray-900 dark:text-white">
@@ -412,7 +651,10 @@ export function IbOverviewClient({
                         </h3>
                         <div className="space-y-3">
                             {leadStats.leadsByBroker.map((item) => (
-                                <div key={item.broker} className="flex items-center justify-between text-sm">
+                                <div
+                                    key={item.broker}
+                                    className="flex items-center justify-between text-sm"
+                                >
                                     <span className="font-bold text-gray-800 dark:text-gray-200">
                                         {item.broker}
                                     </span>
@@ -425,6 +667,46 @@ export function IbOverviewClient({
                     </div>
                 </TabsContent>
             </Tabs>
+
+            {/* Reject Modal */}
+            {rejectModalId && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+                    <div className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4">
+                        <h3 className="text-base font-bold text-gray-900 dark:text-white">
+                            Reject VIP Request
+                        </h3>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                            Please specify why this request is being rejected.
+                            The user will be notified.
+                        </p>
+                        <textarea
+                            value={rejectReason}
+                            onChange={(e) => setRejectReason(e.target.value)}
+                            placeholder="e.g. Account not under our IB tag, deposit below minimum..."
+                            className="w-full h-24 p-3 text-xs rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
+                        />
+                        <div className="flex items-center justify-end gap-2 pt-2">
+                            <Button
+                                variant="outline"
+                                onClick={() => {
+                                    setRejectModalId(null);
+                                    setRejectReason("");
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                variant="primary"
+                                disabled={isPending || !rejectReason.trim()}
+                                onClick={() => handleReject(rejectModalId)}
+                                className="bg-red-600 hover:bg-red-500 text-white"
+                            >
+                                Confirm Rejection
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

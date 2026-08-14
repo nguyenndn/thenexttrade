@@ -36,7 +36,7 @@ export async function getTraderGrowthViewModel(
                 level: "LOW",
                 score: 0,
                 sampleSize: 0,
-                reasons: ["Orchestrator feature flag disabled"],
+                reasons: ["Accumulating initial trading sample"],
                 warnings: [],
                 lastSyncAt: null,
                 periodStart: null,

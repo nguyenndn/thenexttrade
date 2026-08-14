@@ -11,9 +11,9 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 const PERIODS = [
-    { value: "7d", label: "7 Days" },
-    { value: "30d", label: "30 Days" },
-    { value: "90d", label: "90 Days" },
+    { value: "7d", label: "7D" },
+    { value: "30d", label: "30D" },
+    { value: "90d", label: "90D" },
 ] as const;
 
 interface Props {
@@ -41,15 +41,15 @@ export default async function AdminReportsPage({ searchParams }: Props) {
                 description="System-wide reports for user quality, activation, revenue opportunities, content ROI, and operational health."
             >
                 {/* Period switcher */}
-                <div className="flex bg-gray-100 dark:bg-white/5 rounded-xl p-1 border border-gray-200 dark:border-white/10">
+                <div className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-1 shadow-sm">
                     {PERIODS.map((p) => (
                         <Link
                             key={p.value}
                             href={`/admin/reports?period=${p.value}`}
-                            className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                            className={`rounded-lg px-4 py-2 text-xs font-black transition-colors ${
                                 period === p.value
-                                    ? "bg-white dark:bg-primary/20 text-primary shadow-sm"
-                                    : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
+                                    ? "bg-primary text-white shadow-sm"
+                                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
                             }`}
                         >
                             {p.label}

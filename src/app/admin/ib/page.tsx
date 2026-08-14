@@ -4,6 +4,7 @@ import {
     type IbStatsRange,
 } from "@/actions/ib-lead";
 import { getVipRequestStats } from "@/actions/vip-request";
+import { getPipelineQueueV2 } from "@/lib/admin/ib/pipeline.server-v2";
 import { IbOverviewClient } from "./client";
 import { Metadata } from "next";
 
@@ -26,10 +27,11 @@ export default async function IbOverviewPage({ searchParams }: PageProps) {
     const params = await searchParams;
     const range = normalizeRange(params?.range);
 
-    const [overview, leadStats, vipStats] = await Promise.all([
+    const [overview, leadStats, vipStats, pendingQueue] = await Promise.all([
         getIbOverviewStats(range),
         getIbLeadStats(range),
         getVipRequestStats(range),
+        getPipelineQueueV2({ status: "PENDING", pageSize: 10 }),
     ]);
 
     return (
@@ -38,6 +40,7 @@ export default async function IbOverviewPage({ searchParams }: PageProps) {
             overview={overview}
             leadStats={leadStats}
             vipStats={vipStats}
+            pendingRequests={pendingQueue.items}
         />
     );
 }

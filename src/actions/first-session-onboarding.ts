@@ -151,24 +151,6 @@ export async function celebrateFirstSyncAction() {
 }
 
 /**
- * Dismiss the 24h first-data reminder for another 24 hours.
- */
-export async function dismissFirstDataReminderAction() {
-    const user = await getAuthUser();
-    if (!user) return { error: "Unauthorized" };
-
-    const dismissedUntil = new Date(
-        Date.now() + 24 * 60 * 60 * 1000
-    ).toISOString();
-    await updateFirstSessionSettings(user.id, {
-        firstDataReminderDismissedUntil: dismissedUntil,
-    });
-
-    revalidatePath("/dashboard");
-    return { success: true };
-}
-
-/**
  * Mark the first insight as permanently viewed.
  * Persists both firstInsightViewedAt AND completedAt.
  */

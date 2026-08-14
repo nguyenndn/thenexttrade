@@ -9,6 +9,8 @@ export const NOTIFICATION_ROUTES = {
     MY_ACCOUNTS: "/dashboard/trading-systems", // Legacy alias kept safe for old notification callers.
     FEEDBACK_ADMIN: "/admin/feedback",
     EA_PENDING_ADMIN: "/admin/trading-systems/accounts/pending",
+    VIP_PIPELINE_ADMIN: "/admin/ib/pipeline",
+    IB_ADMIN: "/admin/ib",
 } as const;
 
 export type NotificationRoute =

@@ -4,6 +4,12 @@ import React, { useEffect, useState } from "react";
 import { getAdminActivationImprovementFunnel, AdminActivationFunnelReport } from "@/lib/admin/reports/activation-improvement.server";
 import { Filter, Users, ShieldAlert, TrendingDown } from "lucide-react";
 
+const PERIODS = [
+    { value: 7, label: "7D" },
+    { value: 30, label: "30D" },
+    { value: 90, label: "90D" },
+] as const;
+
 export function ActivationImprovementFunnelPanel() {
     const [report, setReport] = useState<AdminActivationFunnelReport | null>(null);
     const [days, setDays] = useState(30);
@@ -40,16 +46,18 @@ export function ActivationImprovementFunnelPanel() {
                     </p>
                 </div>
 
-                <div className="flex gap-1 bg-gray-100 dark:bg-white/5 p-1 rounded-lg border border-gray-200 dark:border-white/10 text-xs">
-                    {[7, 30, 90].map((d) => (
+                <div className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-1 shadow-sm">
+                    {PERIODS.map((p) => (
                         <button
-                            key={d}
-                            onClick={() => setDays(d)}
-                            className={`px-2.5 py-1 font-bold rounded-md transition-colors ${
-                                days === d ? "bg-emerald-500 text-slate-950 shadow-sm" : "text-gray-400 hover:text-white"
+                            key={p.value}
+                            onClick={() => setDays(p.value)}
+                            className={`rounded-lg px-4 py-2 text-xs font-black transition-colors ${
+                                days === p.value
+                                    ? "bg-primary text-white shadow-sm"
+                                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
                             }`}
                         >
-                            {d}d
+                            {p.label}
                         </button>
                     ))}
                 </div>

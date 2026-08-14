@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo } from "react";
 import {
     Bell,
     Trophy,
@@ -8,8 +8,6 @@ import {
     PieChart,
     Check,
     Inbox,
-    ChevronLeft,
-    ChevronRight,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
@@ -75,26 +73,6 @@ export function NotificationBell() {
     const { notifications, unreadCount, markAsRead, isLoading } =
         useNotifications();
 
-    const scrollRef = useRef<HTMLDivElement>(null);
-    const [showLeftArrow, setShowLeftArrow] = useState(false);
-    const [showRightArrow, setShowRightArrow] = useState(false);
-
-    const handleScroll = () => {
-        if (!scrollRef.current) return;
-        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-        setShowLeftArrow(scrollLeft > 5);
-        setShowRightArrow(scrollLeft + clientWidth < scrollWidth - 5);
-    };
-
-    const scroll = (direction: "left" | "right") => {
-        if (!scrollRef.current) return;
-        const scrollAmount = 120;
-        scrollRef.current.scrollBy({
-            left: direction === "left" ? -scrollAmount : scrollAmount,
-            behavior: "smooth",
-        });
-    };
-
     // Normalize notifications on client-side to dynamically resolve their UI categories
     const normalizedNotifications = useMemo(() => {
         return notifications.map((n) => {
@@ -108,7 +86,9 @@ export function NotificationBell() {
                 "Strategy Created!",
             ];
 
+            const meta = (n.metadata as Record<string, any>) || {};
             let normalizedType = n.type;
+
             if (
                 n.type === "FEATURE_UPDATE" &&
                 milestoneTitles.some((title) => n.title.includes(title))
@@ -129,6 +109,18 @@ export function NotificationBell() {
                 ].includes(n.type)
             ) {
                 normalizedType = "SYSTEM";
+            } else if (
+                n.type === "FEATURE_UPDATE" &&
+                (meta.actionType === "OPEN_COACH_PLAN" ||
+                    meta.signalType ||
+                    meta.insightId ||
+                    n.title.startsWith("Coach") ||
+                    n.title.includes("Pattern") ||
+                    n.title.includes("Leak Alert") ||
+                    n.title.includes("Loss Streak") ||
+                    n.title.includes("Experiment"))
+            ) {
+                normalizedType = "COACH_NUDGE";
             }
 
             return {
@@ -191,22 +183,6 @@ export function NotificationBell() {
         });
     }, [normalizedNotifications, activeTab]);
 
-    // Run handleScroll initially and whenever notifications or isOpen changes
-    useEffect(() => {
-        if (isOpen) {
-            const timer = setTimeout(() => {
-                handleScroll();
-            }, 100);
-            return () => clearTimeout(timer);
-        }
-    }, [isOpen, normalizedNotifications]);
-
-    // Handle window resizing
-    useEffect(() => {
-        window.addEventListener("resize", handleScroll);
-        return () => window.removeEventListener("resize", handleScroll);
-    }, []);
-
     return (
         <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>
@@ -225,7 +201,7 @@ export function NotificationBell() {
             </PopoverTrigger>
 
             <PopoverContent
-                className="w-[calc(100vw-2rem)] sm:w-[420px] p-0 rounded-2xl bg-white dark:bg-[#1E2028] border-dashboard shadow-2xl"
+                className="w-[calc(100vw-2rem)] sm:w-[480px] p-0 rounded-2xl bg-white dark:bg-[#1E2028] border-dashboard shadow-2xl"
                 align="end"
                 sideOffset={8}
             >
@@ -244,27 +220,9 @@ export function NotificationBell() {
                     )}
                 </div>
 
-                {/* Tabs with Horizontal Scroll Controls */}
-                <div className="relative px-5 border-b border-dashboard">
-                    {/* Left Scroll Arrow */}
-                    {showLeftArrow && (
-                        <div className="absolute left-0 top-0 bottom-0 flex items-center pl-4 bg-gradient-to-r from-white dark:from-[#1E2028] via-white/80 dark:via-[#1E2028]/80 to-transparent w-12 z-10 pointer-events-none">
-                            <button
-                                onClick={() => scroll("left")}
-                                className="w-6 h-6 rounded-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-500 hover:text-gray-900 dark:hover:text-white shadow-sm pointer-events-auto transition-colors"
-                                aria-label="Scroll left"
-                            >
-                                <ChevronLeft size={14} />
-                            </button>
-                        </div>
-                    )}
-
-                    {/* Scrollable Tabs Wrapper */}
-                    <div
-                        ref={scrollRef}
-                        onScroll={handleScroll}
-                        className="flex items-center gap-6 overflow-x-auto overflow-y-hidden no-scrollbar [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] py-0.5"
-                    >
+                {/* Tabs */}
+                <div className="px-3 border-b border-dashboard">
+                    <div className="grid grid-cols-4 py-0.5">
                         {(Object.keys(TAB_CONFIG) as TabType[]).map(
                             (tabKey) => {
                                 const tab = TAB_CONFIG[tabKey];
@@ -276,7 +234,7 @@ export function NotificationBell() {
                                         key={tabKey}
                                         onClick={() => setActiveTab(tabKey)}
                                         className={cn(
-                                            "relative py-3 flex items-center gap-1.5 text-sm font-semibold transition-colors whitespace-nowrap nav-menu-text",
+                                            "relative py-3 flex items-center justify-center gap-1.5 text-sm font-semibold transition-colors whitespace-nowrap nav-menu-text",
                                             isActive
                                                 ? "text-primary shadow-sm"
                                                 : "text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white"
@@ -300,19 +258,6 @@ export function NotificationBell() {
                             }
                         )}
                     </div>
-
-                    {/* Right Scroll Arrow */}
-                    {showRightArrow && (
-                        <div className="absolute right-0 top-0 bottom-0 flex items-center justify-end pr-4 bg-gradient-to-l from-white dark:from-[#1E2028] via-white/80 dark:via-[#1E2028]/80 to-transparent w-12 z-10 pointer-events-none">
-                            <button
-                                onClick={() => scroll("right")}
-                                className="w-6 h-6 rounded-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-500 hover:text-gray-900 dark:hover:text-white shadow-sm pointer-events-auto transition-colors"
-                                aria-label="Scroll right"
-                            >
-                                <ChevronRight size={14} />
-                            </button>
-                        </div>
-                    )}
                 </div>
 
                 {/* Notifications List */}
@@ -350,7 +295,21 @@ export function NotificationBell() {
                                         onClick={() => {
                                             if (!n.isRead) markAsRead(n.id);
                                             setIsOpen(false);
-                                            if (n.onClick) {
+                                            const meta = (n.metadata as Record<string, any>) || {};
+                                            if (
+                                                meta.actionType === "OPEN_COACH_PLAN" ||
+                                                n.link === "#coach-plan" ||
+                                                n.link?.includes("action=coach-plan")
+                                            ) {
+                                                window.dispatchEvent(
+                                                    new CustomEvent("open-coach-action-plan", {
+                                                        detail: { notificationId: n.id, metadata: meta },
+                                                    })
+                                                );
+                                                if (typeof window !== "undefined" && !window.location.pathname.startsWith("/dashboard")) {
+                                                    router.push("/dashboard?action=coach-plan");
+                                                }
+                                            } else if (n.onClick) {
                                                 n.onClick();
                                             } else if (
                                                 n.link &&

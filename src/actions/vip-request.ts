@@ -8,6 +8,7 @@ import { verifyTurnstile } from "@/lib/turnstile";
 import { NotificationType, NotificationPriority } from "@prisma/client";
 import { maskAccountNumber, findOrMatchTradingAccount } from "@/lib/pro-access";
 import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
+import { notifyAdminsOfVipRequest } from "@/lib/admin/admin-notification.server";
 import type { IbStatsRange } from "@/actions/ib-lead";
 
 // ============================================================================
@@ -72,7 +73,7 @@ export async function submitVipRequest(formData: FormData) {
     }
 
     // Create request
-    await prisma.vipRequest.create({
+    const vipRequest = await prisma.vipRequest.create({
         data: {
             userId: user.id,
             tradingAccountId,
@@ -87,7 +88,21 @@ export async function submitVipRequest(formData: FormData) {
         },
     });
 
+    // Notify Admins (fire-and-forget)
+    notifyAdminsOfVipRequest({
+        vipRequestId: vipRequest.id,
+        userId: user.id,
+        broker: parsed.data.broker,
+        accountNumber: parsed.data.accountNumber,
+        balance: parsed.data.balance,
+        userEmail: parsed.data.email,
+        userName: parsed.data.fullName || null,
+    }).catch(() => {});
+
     revalidatePath("/dashboard");
+    revalidatePath("/admin/ib");
+    revalidatePath("/admin/ib/pipeline");
+    revalidatePath("/admin");
     return { success: true };
 }
 

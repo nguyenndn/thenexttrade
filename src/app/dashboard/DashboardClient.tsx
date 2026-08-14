@@ -17,7 +17,6 @@ import dynamic from "next/dynamic";
 import { JournalEntryModal } from "@/components/journal/JournalEntryModal";
 import { GreetingHeader } from "@/components/dashboard/GreetingHeader";
 import { DashboardManager } from "@/components/dashboard/grid/DashboardManager";
-import { InsightBanner } from "@/components/dashboard/InsightBanner";
 import { MobileProStatusBanner } from "@/components/dashboard/MobileProStatusBanner";
 import { ActivationChecklist } from "@/components/dashboard/ActivationChecklist";
 import { WelcomeHero } from "@/components/dashboard/WelcomeHero";
@@ -25,7 +24,6 @@ import { DashboardCoachNudge } from "@/components/coach/DashboardCoachNudge";
 import { FirstSessionWizard } from "@/components/onboarding/FirstSessionWizard";
 import { FirstSessionLauncher } from "@/components/onboarding/FirstSessionLauncher";
 import { FirstSyncSuccessModal } from "@/components/onboarding/FirstSyncSuccessModal";
-import { FirstDataReminderBanner } from "@/components/onboarding/FirstDataReminderBanner";
 import { ExperimentResult } from "@/components/experiments/ExperimentResult";
 import { ExperimentProgress } from "@/components/experiments/ExperimentProgress";
 import {
@@ -38,10 +36,10 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 // Static imports for above-fold charts (always visible — no skeleton needed)
 import { BalanceGrowthChart } from "@/components/dashboard/BalanceGrowthChart";
 import { DailyWinRateChart } from "@/components/dashboard/DailyWinRateChart";
-import { DataConfidenceBadge } from "@/components/insights/DataConfidenceBadge";
 
 // Lazy load below-fold chart components — only loaded when user scrolls to them
 const ChartSkeleton = () => (
@@ -272,11 +270,6 @@ export default function DashboardClient(data: DashboardPageData) {
                     currentAccountId={currentAccountId}
                     hideFilters={hasNoData}
                 />
-                {data.growthViewModel?.dataConfidence && !hasNoData && (
-                    <div className="shrink-0 self-start sm:self-auto">
-                        <DataConfidenceBadge confidence={data.growthViewModel.dataConfidence} />
-                    </div>
-                )}
             </div>
 
             <div className="mt-4 space-y-4 lg:mt-5 lg:space-y-5">
@@ -300,20 +293,17 @@ export default function DashboardClient(data: DashboardPageData) {
                     where the sidebar widget is hidden. */}
                 <MobileProStatusBanner hideFreeNudge={hasNoData} />
 
-                {/* Nudge Space - Only visible if action exists */}
-                {!suppress?.coachNudge &&
-                    !shouldSuppressCoachNudge &&
-                    actualNextBestAction && (
-                        <div className="mb-8">
-                            <DashboardCoachNudge
-                                nextBestAction={actualNextBestAction}
-                                learningRecommendations={
-                                    learningRecommendations || []
-                                }
-                                coachPlan={coachPlan}
-                            />
-                        </div>
-                    )}
+                {/* Coach Plan Modal (Trigger bar hidden from dashboard UI, accessible via Notification Bell) */}
+                {actualNextBestAction && (
+                    <DashboardCoachNudge
+                        nextBestAction={actualNextBestAction}
+                        learningRecommendations={
+                            learningRecommendations || []
+                        }
+                        coachPlan={coachPlan}
+                        hideTrigger={true}
+                    />
+                )}
 
                 {/* First Session Onboarding Wizard & Launcher */}
                 {firstSessionState && !firstSessionState.isCompleted && (
@@ -328,18 +318,6 @@ export default function DashboardClient(data: DashboardPageData) {
                             onOpenChange={setShowFirstSession}
                         />
                     </>
-                )}
-
-                {/* 24h Reminder: account connected but no trade data */}
-                {firstSessionState?.showFirstDataReminder && (
-                    <FirstDataReminderBanner
-                        preferredSyncMethod={
-                            firstSessionState.preferredSyncMethod
-                        }
-                        firstAccountCreatedAt={
-                            firstSessionState.firstAccountCreatedAt
-                        }
-                    />
                 )}
 
                 {/* Welcome Hero — replaces empty charts for new users */}
@@ -358,14 +336,6 @@ export default function DashboardClient(data: DashboardPageData) {
                             !shouldHideActivationChecklistForPrimaryReview && (
                                 <ActivationChecklist state={activationState} />
                             )}
-
-                        {/* AI Insight Banner */}
-                        {insight && !suppress?.positiveInsight && (
-                            <InsightBanner
-                                insight={insight}
-                                score={intelligenceScore}
-                            />
-                        )}
 
                         <DashboardManager
                             initialDashboards={initialDashboards}

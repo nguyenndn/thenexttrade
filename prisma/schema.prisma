@@ -323,6 +323,7 @@ model JournalEntry {
   swap                Float?               @default(0)
   syncSource          String               @default("MANUAL") @map("sync_source") @db.VarChar(20)
   syncedAt            DateTime?            @map("synced_at")
+  autopilotStatus     String?              @map("autopilot_status") @db.VarChar(20)
   magicNumber         Int?                 @map("magic_number")
   shareDescription    String?              @map("share_description")
   shareMode           String?              @default("full") @map("share_mode")

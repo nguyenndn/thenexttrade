@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Sparkles,
     ArrowRight,
@@ -51,6 +51,28 @@ export function DashboardCoachNudge({
     const isOpen = open !== undefined ? open : internalIsOpen;
     const setIsOpen =
         onOpenChange !== undefined ? onOpenChange : setInternalIsOpen;
+
+    useEffect(() => {
+        const handleOpen = () => {
+            setIsOpen(true);
+        };
+        window.addEventListener("open-coach-action-plan", handleOpen);
+
+        // Check if URL has ?action=coach-plan
+        if (typeof window !== "undefined") {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get("action") === "coach-plan") {
+                setIsOpen(true);
+                const newUrl = new URL(window.location.href);
+                newUrl.searchParams.delete("action");
+                window.history.replaceState({}, "", newUrl.toString());
+            }
+        }
+
+        return () => {
+            window.removeEventListener("open-coach-action-plan", handleOpen);
+        };
+    }, [setIsOpen]);
 
     const isWeakness = [
         "LOSS_STREAK",

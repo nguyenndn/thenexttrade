@@ -333,6 +333,7 @@ model JournalEntry {
   swap              Float?            @default(0)
   sync_source       String            @default("MANUAL") @db.VarChar(20)
   synced_at         DateTime?
+  autopilot_status  String?           @db.VarChar(20)
   magic_number      Int?
   tags              String[]          @default([])
   trading_session   String?           @db.VarChar(20)

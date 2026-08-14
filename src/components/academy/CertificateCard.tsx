@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Download, Lock, Share2, Award, Crown, Eye, X } from "lucide-react";
 import { toast } from "sonner";
 import { CertificateTemplate } from "./CertificateTemplate";
+import { CertificateShareModal } from "./CertificateShareModal";
 import { cn } from "@/lib/utils";
 
 interface CertificateCardProps {
@@ -17,6 +18,7 @@ interface CertificateCardProps {
     totalQuizzes: number;
     userName: string;
     variant?: "level" | "master";
+    shareUrl?: string;
 }
 
 const LEVEL_GRADIENT = { from: "#00C888", to: "#0d9488" };
@@ -33,10 +35,12 @@ export function CertificateCard({
     totalQuizzes,
     userName,
     variant = "level",
+    shareUrl,
 }: CertificateCardProps) {
     const isMaster = variant === "master";
     const gradient = isMaster ? MASTER_GRADIENT : LEVEL_GRADIENT;
     const [showPreview, setShowPreview] = useState(false);
+    const [showShare, setShowShare] = useState(false);
     const templateRef = useRef<HTMLDivElement>(null);
     const [downloading, setDownloading] = useState(false);
 
@@ -97,21 +101,20 @@ export function CertificateCard({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [downloading, showPreview]);
 
-    const handleShare = async () => {
+    const handleShare = () => {
+        // When a public share URL exists, open the share modal (copy-link + QR).
+        if (shareUrl) {
+            setShowShare(true);
+            return;
+        }
+        // Fallback: no share URL — copy the legacy share text.
         const text = isMaster
             ? `🏆 I just completed the entire TheNextTrade Academy program with a ${score}% average score! Master Trader Certified! #ForexTrading #TheNextTrade`
             : `🎓 I just earned my Level ${levelOrder}: ${levelTitle} certificate on TheNextTrade Academy with a ${score}% score! #ForexTrading #TheNextTrade`;
         if (navigator.share) {
-            try {
-                await navigator.share({
-                    text,
-                    url: "https://thenexttrade.com/academy",
-                });
-            } catch {
-                /* user cancelled */
-            }
+            navigator.share({ text }).catch(() => {});
         } else {
-            await navigator.clipboard.writeText(text);
+            navigator.clipboard.writeText(text);
             toast.success("Share text copied to clipboard!");
         }
     };
@@ -339,6 +342,25 @@ export function CertificateCard({
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* Share Modal */}
+            {shareUrl && (
+                <CertificateShareModal
+                    open={showShare}
+                    onClose={() => setShowShare(false)}
+                    shareUrl={shareUrl}
+                    title={
+                        isMaster
+                            ? "Master Trader Certificate"
+                            : `Level ${levelOrder}: ${levelTitle} Certificate`
+                    }
+                    subtitle={
+                        isMaster
+                            ? `I just completed all ${totalQuizzes} levels of the TheNextTrade Academy with a ${score}% average score!`
+                            : `I just earned my Level ${levelOrder}: ${levelTitle} certificate on TheNextTrade Academy with a ${score}% score!`
+                    }
+                />
             )}
         </>
     );

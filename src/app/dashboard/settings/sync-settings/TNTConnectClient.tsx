@@ -14,6 +14,8 @@ import {
     Zap,
     Shield,
     AlertCircle,
+    Sparkles,
+    CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -38,6 +40,38 @@ export default function TNTConnectClient() {
     // Show full key only once after generation
     const [showFullKey, setShowFullKey] = useState(false);
     const [generatedKey, setGeneratedKey] = useState<string | null>(null);
+
+    // Interactive Onboarding Steps State
+    const [manualCompletedSteps, setManualCompletedSteps] = useState<
+        Record<string, boolean>
+    >({});
+    const [copiedUrl, setCopiedUrl] = useState(false);
+
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem("tnt_sync_quickstart_steps");
+            if (saved) {
+                setManualCompletedSteps(JSON.parse(saved));
+            }
+        } catch {
+            /* ignore */
+        }
+    }, []);
+
+    const toggleStep = (stepId: string) => {
+        setManualCompletedSteps((prev) => {
+            const next = { ...prev, [stepId]: !prev[stepId] };
+            try {
+                localStorage.setItem(
+                    "tnt_sync_quickstart_steps",
+                    JSON.stringify(next)
+                );
+            } catch {
+                /* ignore */
+            }
+            return next;
+        });
+    };
 
     useEffect(() => {
         fetchKey();
@@ -148,28 +182,57 @@ export default function TNTConnectClient() {
         },
     ];
 
+    const syncApiUrl =
+        typeof window !== "undefined"
+            ? window.location.origin
+            : "https://thenexttrade.com";
+
     const STEPS = [
         {
+            id: "step-1",
             step: "1",
-            text: "Generate your Sync API Key above",
-            done: keyData.hasKey,
+            title: "Generate your Sync API Key",
+            description:
+                "Create your unique 64-character EA synchronization key using the panel above.",
+            done: keyData.hasKey || Boolean(manualCompletedSteps["step-1"]),
         },
         {
+            id: "step-2",
             step: "2",
-            text: "Configure WebRequest in MetaTrader 5 (Tools > Options > Expert Advisors)",
-            done: false,
+            title: "Configure WebRequest in MetaTrader 5",
+            description:
+                "In MT5 (Tools > Options > Expert Advisors), enable 'Allow WebRequest for listed URL' and add our URL.",
+            done: Boolean(manualCompletedSteps["step-2"]),
+            action: {
+                label: copiedUrl ? "Copied!" : "Copy WebRequest URL",
+                onClick: () => {
+                    navigator.clipboard.writeText(syncApiUrl);
+                    setCopiedUrl(true);
+                    toast.success(`Copied ${syncApiUrl} to clipboard`);
+                    setTimeout(() => setCopiedUrl(false), 2000);
+                },
+            },
         },
         {
+            id: "step-3",
             step: "3",
-            text: "Drag Trade Manager EA onto your chart (e.g. XAUUSD)",
-            done: false,
+            title: "Drag Trade Manager EA onto your chart",
+            description:
+                "Attach Trade Manager EA onto any active MT5 chart (e.g. XAUUSD) with Algo Trading enabled.",
+            done: Boolean(manualCompletedSteps["step-3"]),
         },
         {
+            id: "step-4",
             step: "4",
-            text: "Open the SYNC tab on the EA panel, paste your key, and click Connect",
-            done: false,
+            title: "Open SYNC tab on EA panel & click Connect",
+            description:
+                "Paste your Sync API key into the EA panel inside MT5 and click Connect to start real-time trade syncing.",
+            done: Boolean(manualCompletedSteps["step-4"]),
         },
     ];
+
+    const completedCount = STEPS.filter((s) => s.done).length;
+    const progressPercent = Math.round((completedCount / STEPS.length) * 100);
 
     return (
         <div className="w-full space-y-5">
@@ -402,48 +465,138 @@ export default function TNTConnectClient() {
             </div>
 
             {/* ═══════════════════════════════════════════════════════════════════
- QUICK START
+ QUICK START (INTERACTIVE ONBOARDING CHECKLIST)
  ═══════════════════════════════════════════════════════════════════ */}
             <div className="rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] overflow-hidden shadow-sm">
                 <div className="px-6 py-5">
-                    <div className="flex items-center gap-2.5 mb-5">
-                        <div className="w-8 h-8 rounded-lg bg-blue-500/10 dark:bg-blue-500/15 flex items-center justify-center ring-1 ring-blue-200/50 dark:ring-blue-500/20">
-                            <Download size={15} className="text-blue-500" />
+                    {/* Header with Progress Indicator */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+                        <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-lg bg-blue-500/10 dark:bg-blue-500/15 flex items-center justify-center ring-1 ring-blue-200/50 dark:ring-blue-500/20">
+                                <Download size={15} className="text-blue-500" />
+                            </div>
+                            <div>
+                                <h2 className="text-sm font-black tracking-tight text-gray-800 dark:text-white">
+                                    Quick Start Setup Guide
+                                </h2>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                    Click any step to mark it as completed as you install
+                                </p>
+                            </div>
                         </div>
-                        <h2 className="text-sm font-black tracking-tight text-gray-700 dark:text-white">
-                            Quick Start
-                        </h2>
+
+                        {/* Progress Bar & Counter */}
+                        <div className="flex items-center gap-3 self-start sm:self-auto">
+                            <div className="flex items-center gap-2.5">
+                                <div className="w-24 bg-gray-100 dark:bg-white/10 rounded-full h-2 overflow-hidden">
+                                    <div
+                                        className={cn(
+                                            "h-full rounded-full transition-all duration-500",
+                                            completedCount === STEPS.length
+                                                ? "bg-emerald-500"
+                                                : "bg-primary"
+                                        )}
+                                        style={{ width: `${progressPercent}%` }}
+                                    />
+                                </div>
+                                <span className="text-xs font-bold text-gray-700 dark:text-gray-300 tabular-nums">
+                                    {completedCount}/{STEPS.length} ({progressPercent}%)
+                                </span>
+                            </div>
+                            {completedCount === STEPS.length && (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                                    <Sparkles size={11} /> All Done!
+                                </span>
+                            )}
+                        </div>
                     </div>
 
-                    <ol className="space-y-3">
-                        {STEPS.map(({ step, text, done }) => (
-                            <li
-                                key={step}
-                                className="flex items-center gap-3.5"
-                            >
+                    {/* Interactive Step Items */}
+                    <div className="space-y-2.5">
+                        {STEPS.map((stepItem) => {
+                            const isDone = stepItem.done;
+                            return (
                                 <div
+                                    key={stepItem.id}
+                                    onClick={() => toggleStep(stepItem.id)}
                                     className={cn(
-                                        "w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black shrink-0 transition-colors",
-                                        done
-                                            ? "bg-emerald-500 text-white shadow-sm shadow-emerald-500/20"
-                                            : "bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500 ring-1 ring-gray-200/80 dark:ring-white/10"
+                                        "group relative flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border transition-all duration-200 cursor-pointer select-none",
+                                        isDone
+                                            ? "bg-emerald-500/[0.03] border-emerald-500/30 dark:bg-emerald-500/[0.05] dark:border-emerald-500/20 shadow-xs"
+                                            : "bg-gray-50/60 dark:bg-white/[0.02] border-gray-200/80 dark:border-white/5 hover:border-primary/40 dark:hover:border-primary/40 hover:bg-gray-50 dark:hover:bg-white/[0.04]"
                                     )}
                                 >
-                                    {done ? <Check size={13} /> : step}
+                                    <div className="flex items-start sm:items-center gap-3.5 min-w-0">
+                                        <button
+                                            type="button"
+                                            aria-label={`Mark step ${stepItem.step} as ${isDone ? "incomplete" : "complete"}`}
+                                            className={cn(
+                                                "w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black shrink-0 transition-all duration-200 mt-0.5 sm:mt-0",
+                                                isDone
+                                                    ? "bg-emerald-500 text-white shadow-sm shadow-emerald-500/25 ring-2 ring-emerald-500/20"
+                                                    : "bg-white dark:bg-[#1E2028] text-gray-400 dark:text-gray-500 ring-1 ring-gray-200 dark:ring-white/10 group-hover:ring-primary/40 group-hover:text-primary"
+                                            )}
+                                        >
+                                            {isDone ? (
+                                                <Check
+                                                    size={14}
+                                                    strokeWidth={3}
+                                                />
+                                            ) : (
+                                                stepItem.step
+                                            )}
+                                        </button>
+                                        <div className="min-w-0">
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                <span
+                                                    className={cn(
+                                                        "text-sm font-bold transition-colors",
+                                                        isDone
+                                                            ? "text-gray-900 dark:text-white"
+                                                            : "text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white"
+                                                    )}
+                                                >
+                                                    {stepItem.title}
+                                                </span>
+                                                {isDone && (
+                                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                                                        <Check
+                                                            size={9}
+                                                            strokeWidth={3}
+                                                        />{" "}
+                                                        Done
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">
+                                                {stepItem.description}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Action button inside step (e.g. Copy WebRequest URL) */}
+                                    {stepItem.action && (
+                                        <div
+                                            className="sm:shrink-0 pl-10 sm:pl-0"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                onClick={
+                                                    stepItem.action.onClick
+                                                }
+                                                className="h-8 px-3 text-xs font-semibold gap-1.5"
+                                            >
+                                                <Copy size={12} />
+                                                {stepItem.action.label}
+                                            </Button>
+                                        </div>
+                                    )}
                                 </div>
-                                <span
-                                    className={cn(
-                                        "text-sm",
-                                        done
-                                            ? "text-gray-400 dark:text-gray-500 line-through"
-                                            : "text-gray-700 dark:text-gray-300"
-                                    )}
-                                >
-                                    {text}
-                                </span>
-                            </li>
-                        ))}
-                    </ol>
+                            );
+                        })}
+                    </div>
 
                     {/* Download button */}
                     <div className="mt-6 pt-4 border-t border-dashboard space-y-3">

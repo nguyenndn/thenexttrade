@@ -139,5 +139,37 @@ export async function TradingAlertBanner() {
 
     if (alerts.length === 0) return null;
 
-    return <TradingAlertBannerClient alerts={alerts} />;
+    // Dispatch risk alerts directly into the Notification table (Bell)
+    for (const alert of alerts) {
+        const dedupeKey = `TRADING_ALERT:${accountId}:${todayStr}:${alert.id}`;
+        try {
+            await prisma.notification.upsert({
+                where: {
+                    userId_dedupeKey: {
+                        userId: user.id,
+                        dedupeKey,
+                    },
+                },
+                create: {
+                    userId: user.id,
+                    type: "FEATURE_UPDATE",
+                    title: `Risk Alert: ${alert.title}`,
+                    message: alert.description,
+                    link: "/dashboard/rules",
+                    icon: "AlertTriangle",
+                    priority: alert.level === "danger" ? "URGENT" : "HIGH",
+                    dedupeKey,
+                    metadata: {
+                        alertId: alert.id,
+                        actionType: "NAVIGATE",
+                    },
+                },
+                update: {},
+            });
+        } catch {
+            /* Duplicate write blocked atomically */
+        }
+    }
+
+    return null;
 }

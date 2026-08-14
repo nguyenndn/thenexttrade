@@ -26,7 +26,6 @@ export type FirstSessionWizardState = {
     firstSyncCelebratedAt?: string;
     firstInsightViewedAt?: string;
     helpViewedAt?: string;
-    firstDataReminderDismissedUntil?: string;
 };
 
 export type FirstSessionComputedState = {
@@ -42,8 +41,6 @@ export type FirstSessionComputedState = {
     nextLabel: string;
     showFirstSyncSuccess: boolean;
     hasReports: boolean;
-    showFirstDataReminder: boolean;
-    firstAccountCreatedAt?: string;
     firstInsight?: {
         shouldShow: boolean;
         facts: string[];
@@ -196,23 +193,6 @@ export async function getFirstSessionState(
         preferredSyncMethod
     );
 
-    // 24h reminder: account exists > 24h, no trades, not completed, not dismissed
-    const oldestAccount = accounts[0]; // ordered by createdAt asc
-    const firstAccountCreatedAt = oldestAccount?.createdAt?.toISOString();
-    const isReminderDismissed =
-        firstSession.firstDataReminderDismissedUntil &&
-        new Date(firstSession.firstDataReminderDismissedUntil) > new Date();
-    const accountOlderThan24h = oldestAccount?.createdAt
-        ? new Date(oldestAccount.createdAt).getTime() <=
-          Date.now() - 24 * 60 * 60 * 1000
-        : false;
-    const showFirstDataReminder =
-        accountCount > 0 &&
-        tradeCount === 0 &&
-        accountOlderThan24h &&
-        !firstSession.completedAt &&
-        !isReminderDismissed;
-
     return {
         shouldAutoOpen,
         isCompleted,
@@ -226,8 +206,6 @@ export async function getFirstSessionState(
         nextLabel,
         showFirstSyncSuccess,
         hasReports: reportCount > 0,
-        showFirstDataReminder,
-        firstAccountCreatedAt,
         firstInsight,
     };
 }

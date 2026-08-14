@@ -8,6 +8,7 @@ import { z } from "zod";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { generateApiKey } from "@/lib/utils/api-key";
 import { linkIbLeadToVipRequest } from "@/actions/ib-lead";
+import { notifyAdminsOfVipRequest } from "@/lib/admin/admin-notification.server";
 
 // ============================================================================
 // CREATE PARTNER PRO ACCOUNT — Unified flow for Account Hub
@@ -135,7 +136,7 @@ export async function createPartnerProAccount(
         }
 
         // Create VipRequest linked to TradingAccount
-        await prisma.vipRequest.create({
+        const vipRequest = await prisma.vipRequest.create({
             data: {
                 userId: user.id,
                 tradingAccountId,
@@ -152,9 +153,22 @@ export async function createPartnerProAccount(
         // Link latest IbLead (fire-and-forget)
         linkIbLeadToVipRequest(broker).catch(() => {});
 
+        // Notify Admins (fire-and-forget)
+        notifyAdminsOfVipRequest({
+            vipRequestId: vipRequest.id,
+            userId: user.id,
+            broker,
+            accountNumber,
+            balance,
+            userEmail: email,
+            userName: fullName || null,
+        }).catch(() => {});
+
         revalidatePath("/dashboard/accounts");
         revalidatePath("/dashboard/trading-systems");
+        revalidatePath("/admin/ib");
         revalidatePath("/admin/ib/pipeline");
+        revalidatePath("/admin");
 
         return {
             success: true,
@@ -297,7 +311,7 @@ export async function upgradeToPartnerPro(
         }
 
         // 5. Create VipRequest linked to the EXISTING TradingAccount
-        await prisma.vipRequest.create({
+        const vipRequest = await prisma.vipRequest.create({
             data: {
                 userId: user.id,
                 tradingAccountId: account.id,
@@ -316,9 +330,22 @@ export async function upgradeToPartnerPro(
             () => {}
         );
 
+        // 7. Notify Admins (fire-and-forget)
+        notifyAdminsOfVipRequest({
+            vipRequestId: vipRequest.id,
+            userId: user.id,
+            broker: normalizedBroker || account.broker || "",
+            accountNumber,
+            balance: balanceStr,
+            userEmail: email,
+            userName: fullName || null,
+        }).catch(() => {});
+
         revalidatePath("/dashboard/accounts");
         revalidatePath("/dashboard/trading-systems");
+        revalidatePath("/admin/ib");
         revalidatePath("/admin/ib/pipeline");
+        revalidatePath("/admin");
 
         return {
             success: true,

@@ -83,10 +83,10 @@ export function AddAccountModal({
         initialMode === "free"
             ? "free-create"
             : initialMode === "pro"
-              ? "pro-broker"
-              : initialMode === "upgrade-pro"
-                ? "upgrade-pro"
-                : "chooser"
+                ? "pro-broker"
+                : initialMode === "upgrade-pro"
+                    ? "upgrade-pro"
+                    : "chooser"
     );
     const [isPending, startTransition] = useTransition();
 
@@ -97,10 +97,10 @@ export function AddAccountModal({
                 initialMode === "free"
                     ? "free-create"
                     : initialMode === "pro"
-                      ? "pro-broker"
-                      : initialMode === "upgrade-pro"
-                        ? "upgrade-pro"
-                        : "chooser"
+                        ? "pro-broker"
+                        : initialMode === "upgrade-pro"
+                            ? "upgrade-pro"
+                            : "chooser"
             );
             // Reset state
             setName("");
@@ -151,7 +151,6 @@ export function AddAccountModal({
     const [country, setCountry] = useState(userCountry);
     const [screenshotUrl, setScreenshotUrl] = useState("");
     const [error, setError] = useState<string | null>(null);
-    const [showConfirm, setShowConfirm] = useState(false);
     const [turnstileToken, setTurnstileToken] = useState("");
 
     const sessionIdRef = useRef<string>("");
@@ -258,7 +257,6 @@ export function AddAccountModal({
             const result = await createPartnerProAccount(formData);
             if (result.error) {
                 setError(result.error);
-                setShowConfirm(false);
             } else {
                 trackEvent("signup_complete", { broker: selectedBroker });
                 setCreatedAccount({
@@ -267,7 +265,6 @@ export function AddAccountModal({
                     isNewAccount: result.isNewAccount,
                 });
                 setStep("pro-success");
-                setShowConfirm(false);
                 toast.success("Partner Pro Account created successfully!");
             }
         });
@@ -367,7 +364,6 @@ export function AddAccountModal({
             );
             if (result.error) {
                 setError(result.error);
-                setShowConfirm(false);
             } else {
                 setCreatedAccount({
                     id: result.accountId,
@@ -375,7 +371,6 @@ export function AddAccountModal({
                     isNewAccount: result.isNewAccount,
                 });
                 setStep("pro-success");
-                setShowConfirm(false);
                 toast.success("Upgrade request submitted!");
             }
         });
@@ -497,7 +492,7 @@ export function AddAccountModal({
                                         !telegramId ||
                                         !turnstileToken
                                     }
-                                    className="bg-amber-500 hover:bg-amber-600 border-none gap-2 px-6 font-bold"
+                                    className="bg-amber-500 hover:bg-amber-600 border-none gap-2 px-6 min-w-[180px] font-bold shadow-lg shadow-amber-500/20"
                                 >
                                     {isPending ? (
                                         <>
@@ -662,11 +657,10 @@ export function AddAccountModal({
                                             key={c}
                                             onClick={() => setColor(c)}
                                             aria-label={`Select color ${c}`}
-                                            className={`w-9 h-9 p-0 rounded-full transition-all flex items-center justify-center ${
-                                                color === c
+                                            className={`w-9 h-9 p-0 rounded-full transition-all flex items-center justify-center ${color === c
                                                     ? "ring-2 ring-offset-2 ring-offset-white dark:ring-offset-[#1E2028] scale-110 hover:bg-transparent hover:text-white"
                                                     : "hover:scale-105 hover:bg-transparent"
-                                            }`}
+                                                }`}
                                             style={{
                                                 backgroundColor: c,
                                                 boxShadow:
@@ -855,7 +849,7 @@ export function AddAccountModal({
                             "Step 1 of 4: Choose your broker"
                         )}
                         <div className="p-6 space-y-4">
-                            <div className="p-3 mb-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-xs text-amber-700 dark:border-amber-500/20 text-amber-700 dark:text-amber-400 flex gap-2">
+                            <div className="p-3 mb-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-xs text-amber-700 dark:text-amber-400 flex gap-2">
                                 <AlertCircle
                                     size={14}
                                     className="shrink-0 mt-0.5"
@@ -867,7 +861,7 @@ export function AddAccountModal({
                                     rejected after review.
                                 </p>
                             </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {SUPPORTED_BROKERS.map((broker) => {
                                     const info = BROKER_INFO[broker];
                                     return (
@@ -876,15 +870,17 @@ export function AddAccountModal({
                                             onClick={() =>
                                                 handleSelectBroker(broker)
                                             }
-                                            className="group flex flex-col items-center gap-3 p-6 rounded-xl border border-dashboard hover:border-amber-400 dark:hover:border-amber-500/50 bg-white dark:bg-[#151925] hover:shadow-lg transition-all text-center"
+                                            className="group flex flex-col items-center justify-center gap-3 p-6 rounded-xl border border-dashboard hover:border-amber-400 dark:hover:border-amber-500/50 bg-white dark:bg-[#151925] hover:shadow-lg transition-all text-center"
                                         >
-                                            <Image
-                                                src={info.logo}
-                                                alt={info.name}
-                                                width={80}
-                                                height={80}
-                                                className="rounded-xl object-contain dark:brightness-0 dark:invert"
-                                            />
+                                            <div className="h-16 flex items-center justify-center">
+                                                <Image
+                                                    src={info.logo}
+                                                    alt={info.name}
+                                                    width={90}
+                                                    height={60}
+                                                    className="rounded-xl object-contain max-h-14 w-auto dark:brightness-0 dark:invert"
+                                                />
+                                            </div>
                                             <div>
                                                 <p className="font-bold text-gray-800 dark:text-white text-base">
                                                     {info.name}
@@ -925,11 +921,10 @@ export function AddAccountModal({
                                             "_blank"
                                         );
                                     }}
-                                    className={`flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all text-center ${
-                                        accountStatus === "new"
+                                    className={`flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all text-center ${accountStatus === "new"
                                             ? "border-amber-400 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-500/5"
                                             : "border-dashboard hover:border-amber-300 dark:hover:border-amber-500/20 bg-white dark:bg-[#151925]"
-                                    }`}
+                                        }`}
                                 >
                                     <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-500/15 flex items-center justify-center">
                                         <UserPlus
@@ -948,11 +943,10 @@ export function AddAccountModal({
                                 </button>
                                 <button
                                     onClick={() => setAccountStatus("existing")}
-                                    className={`flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all text-center ${
-                                        accountStatus === "existing"
+                                    className={`flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all text-center ${accountStatus === "existing"
                                             ? "border-blue-400 dark:border-blue-500/40 bg-blue-50 dark:bg-blue-500/5"
                                             : "border-dashboard hover:border-blue-300 dark:hover:border-blue-500/20 bg-white dark:bg-[#151925]"
-                                    }`}
+                                        }`}
                                 >
                                     <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-500/15 flex items-center justify-center">
                                         <RefreshCw
@@ -996,15 +990,15 @@ export function AddAccountModal({
                                                 </p>
                                                 {brokerInfo.ibTransferGuide
                                                     .emails.cc && (
-                                                    <p>
-                                                        <strong>CC:</strong>{" "}
-                                                        {
-                                                            brokerInfo
-                                                                .ibTransferGuide
-                                                                .emails.cc
-                                                        }
-                                                    </p>
-                                                )}
+                                                        <p>
+                                                            <strong>CC:</strong>{" "}
+                                                            {
+                                                                brokerInfo
+                                                                    .ibTransferGuide
+                                                                    .emails.cc
+                                                            }
+                                                        </p>
+                                                    )}
                                                 <p>
                                                     <strong>Subject:</strong>{" "}
                                                     {
@@ -1053,7 +1047,7 @@ export function AddAccountModal({
                                         variant="primary"
                                         size="smd"
                                         onClick={() => setStep("pro-details")}
-                                        className="gap-2 font-bold"
+                                        className="gap-2 font-bold px-6 min-w-[160px] shadow-lg shadow-primary/20"
                                     >
                                         Continue <ArrowRight size={16} />
                                     </Button>
@@ -1162,7 +1156,7 @@ export function AddAccountModal({
                                         setError(null);
                                         setStep("pro-review");
                                     }}
-                                    className="gap-2 font-bold"
+                                    className="gap-2 font-bold px-6 min-w-[160px] shadow-lg shadow-primary/20"
                                 >
                                     Review <ArrowRight size={16} />
                                 </Button>
@@ -1240,6 +1234,19 @@ export function AddAccountModal({
                                             </p>
                                         </div>
                                     )}
+                                    {userEmail && (
+                                        <div className="text-center px-2">
+                                            <p className="text-[10px] text-gray-500 uppercase mb-1">
+                                                Email
+                                            </p>
+                                            <p
+                                                className="font-bold text-gray-800 dark:text-white break-words text-xs truncate"
+                                                title={userEmail}
+                                            >
+                                                {userEmail}
+                                            </p>
+                                        </div>
+                                    )}
                                     {screenshotUrl && (
                                         <div className="col-span-2 text-center px-2 mt-2">
                                             <p className="text-[10px] text-gray-500 uppercase mb-1">
@@ -1267,68 +1274,25 @@ export function AddAccountModal({
                                 <Button
                                     variant="primary"
                                     size="smd"
-                                    onClick={() => setShowConfirm(true)}
+                                    onClick={handleProSubmit}
                                     disabled={isPending || !turnstileToken}
-                                    className="bg-amber-500 hover:bg-amber-600 text-white gap-2 font-bold"
+                                    className="bg-amber-500 hover:bg-amber-600 text-white gap-2 font-bold px-6 min-w-[180px] shadow-lg shadow-amber-500/20"
                                 >
-                                    <Check size={16} /> Submit Request
+                                    {isPending ? (
+                                        <>
+                                            <Loader2
+                                                size={16}
+                                                className="animate-spin"
+                                            />{" "}
+                                            Submitting...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Check size={16} /> Submit Request
+                                        </>
+                                    )}
                                 </Button>
                             </div>
-
-                            {/* Confirm Sub-Modal */}
-                            {showConfirm && (
-                                <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-                                    <div
-                                        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
-                                        onClick={() =>
-                                            !isPending && setShowConfirm(false)
-                                        }
-                                    />
-                                    <div className="relative z-10 w-full max-w-sm bg-white dark:bg-[#1E2028] rounded-2xl border border-dashboard p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
-                                        <h3 className="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                                            <AlertCircle className="text-amber-500" />{" "}
-                                            Confirm Submission
-                                        </h3>
-                                        <p className="text-sm text-gray-600 dark:text-gray-300">
-                                            I confirm that this account is
-                                            registered under the correct IB and
-                                            all information is accurate.
-                                        </p>
-                                        <div className="flex justify-end gap-2 pt-2">
-                                            <Button
-                                                variant="outline"
-                                                size="smd"
-                                                onClick={() =>
-                                                    setShowConfirm(false)
-                                                }
-                                                disabled={isPending}
-                                                className="font-bold"
-                                            >
-                                                Cancel
-                                            </Button>
-                                            <Button
-                                                variant="primary"
-                                                size="smd"
-                                                onClick={handleProSubmit}
-                                                disabled={isPending}
-                                                className="bg-amber-500 hover:bg-amber-600 border-none text-white gap-2 font-bold"
-                                            >
-                                                {isPending ? (
-                                                    <>
-                                                        <Loader2
-                                                            size={16}
-                                                            className="animate-spin"
-                                                        />{" "}
-                                                        Submitting...
-                                                    </>
-                                                ) : (
-                                                    "Confirm"
-                                                )}
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
                         </div>
                     </>
                 )}

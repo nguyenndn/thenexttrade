@@ -10,6 +10,9 @@ export interface Notification {
     createdAt: string;
     link?: string;
     onClick?: () => void;
+    metadata?: Record<string, any> | null;
+    priority?: string;
+    dedupeKey?: string | null;
 }
 
 interface NotificationsResponse {
