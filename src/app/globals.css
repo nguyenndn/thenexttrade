@@ -665,25 +665,3 @@ textarea,
 .react-grid-item.react-draggable-dragging {
     touch-action: none !important;
 }
-
-/* ===== Lenis Smooth Momentum Scroll ===== */
-html.lenis,
-html.lenis body {
-    height: auto;
-}
-
-.lenis.lenis-smooth {
-    scroll-behavior: auto !important;
-}
-
-.lenis.lenis-smooth [data-lenis-prevent] {
-    overscroll-behavior: contain;
-}
-
-.lenis.lenis-stopped {
-    overflow: hidden;
-}
-
-.lenis.lenis-scrolling iframe {
-    pointer-events: none;
-}

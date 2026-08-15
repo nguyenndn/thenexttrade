@@ -184,7 +184,7 @@ export function TradeJournalPreviewSection({
                             </div>
 
                             {/* Metrics Row */}
-                            <div className="grid grid-cols-3 gap-3 mb-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
                                 <div className="p-3.5 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/10 shadow-sm flex flex-col justify-between">
                                     <span className="text-[9px] text-gray-500 font-black uppercase tracking-wider">
                                         Net P/L

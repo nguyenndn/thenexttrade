@@ -126,7 +126,7 @@ export function BrokerRankingsSection() {
                     tabsId="platforms-tabs"
                     className="w-full"
                 >
-                    <div className="mb-8 overflow-x-auto scrollbar-hide flex justify-center">
+                    <div className="mb-8 overflow-x-auto scrollbar-hide flex justify-start sm:justify-center">
                         <TabsList className="bg-gray-50 dark:bg-white/5 border border-dashboard rounded-xl p-1.5 gap-1 shrink-0">
                             <TabsTrigger
                                 value="brokers"

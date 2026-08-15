@@ -327,16 +327,16 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                                                 <div className="h-8 w-8 rounded-lg bg-gold/10 text-gold flex items-center justify-center border border-gold/15 group-hover/item:scale-105 transition-transform shrink-0">
                                                     <ToolIcon size={15} />
                                                 </div>
-                                                <div>
-                                                    <h4 className="text-xs font-black text-gray-800 dark:text-gray-200">
+                                                <div className="min-w-0">
+                                                    <h4 className="text-xs font-black text-gray-800 dark:text-gray-200 truncate">
                                                         {tool.title}
                                                     </h4>
-                                                    <p className="text-[10px] text-gray-500 dark:text-gray-500 font-semibold mt-0.5">
+                                                    <p className="text-[10px] text-gray-500 dark:text-gray-500 font-semibold mt-0.5 truncate">
                                                         {tool.desc}
                                                     </p>
                                                 </div>
                                             </div>
-                                            <span className="text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500">
+                                            <span className="shrink-0 text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500">
                                                 {tool.tag}
                                             </span>
                                         </div>

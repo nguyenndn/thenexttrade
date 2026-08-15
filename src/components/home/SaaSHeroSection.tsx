@@ -86,20 +86,22 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
 
             <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center">
                 {/* Grand Headline with Dynamic Typewriter Console */}
-                <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[76px] font-black text-gray-900 dark:text-white tracking-tight leading-[1.08] mb-6 sm:mb-8 max-w-5xl">
-                    Turn Your Trade History <br className="hidden sm:inline" />{" "}
-                    Into{" "}
-                    <span
-                        className={`inline-block text-transparent bg-clip-text bg-gradient-to-r ${currentPhrase.gradient} drop-shadow-sm min-h-[1.1em]`}
-                    >
-                        {displayedText || "\u00A0"}
+                <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[76px] font-black text-gray-900 dark:text-white tracking-tight leading-[1.08] mb-6 sm:mb-8 max-w-5xl">
+                    Turn Your Trade History <br className="hidden sm:inline" />
+                    <span className="block min-h-[2.4em]">
+                        Into{" "}
+                        <span
+                            className={`inline-block text-transparent bg-clip-text bg-gradient-to-r ${currentPhrase.gradient} drop-shadow-sm`}
+                        >
+                            {displayedText || "\u00A0"}
+                        </span>
+                        <span
+                            className={`inline-block w-2 sm:w-3 h-7 sm:h-11 md:h-12 lg:h-14 ml-1.5 align-middle rounded-full ${currentPhrase.cursor}`}
+                            style={{
+                                animation: "terminalBlink 1s infinite",
+                            }}
+                        />
                     </span>
-                    <span
-                        className={`inline-block w-2 sm:w-3 h-7 sm:h-11 md:h-12 lg:h-14 ml-1.5 align-middle rounded-full ${currentPhrase.cursor}`}
-                        style={{
-                            animation: "terminalBlink 1s infinite",
-                        }}
-                    />
                 </h1>
 
                 {/* Supporting Copy */}
@@ -117,7 +119,7 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                         }
                         className="w-full sm:w-auto group"
                     >
-                        <Button className="w-full sm:w-auto min-h-14 px-8 sm:px-10 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-base shadow-[0_10px_30px_rgba(245,158,11,0.28)] hover:shadow-[0_14px_40px_rgba(245,158,11,0.38)] transition-all duration-300 flex items-center justify-center gap-2.5 whitespace-nowrap animate-btn-shine">
+                        <Button className="w-full sm:w-auto min-h-14 px-5 sm:px-10 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-sm sm:text-base shadow-[0_10px_30px_rgba(245,158,11,0.28)] hover:shadow-[0_14px_40px_rgba(245,158,11,0.38)] transition-all duration-300 flex items-center justify-center gap-2.5 whitespace-nowrap animate-btn-shine">
                             <span>
                                 {isLoggedIn
                                     ? "Open Journal"
@@ -140,7 +142,7 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                     >
                         <Button
                             variant="outline"
-                            className="w-full sm:w-auto min-h-14 px-8 sm:px-10 rounded-xl border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm text-slate-700 dark:text-slate-200 hover:border-gold hover:text-amber-600 dark:hover:text-gold font-bold text-base shadow-sm transition-all duration-300 flex items-center justify-center gap-2.5 whitespace-nowrap"
+                            className="w-full sm:w-auto min-h-14 px-5 sm:px-10 rounded-xl border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm text-slate-700 dark:text-slate-200 hover:border-gold hover:text-amber-600 dark:hover:text-gold font-bold text-sm sm:text-base shadow-sm transition-all duration-300 flex items-center justify-center gap-2.5 whitespace-nowrap"
                         >
                             <GraduationCap size={20} className="text-amber-500 dark:text-gold shrink-0" />
                             <span>Explore Academy Roadmap</span>

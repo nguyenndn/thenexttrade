@@ -108,7 +108,7 @@ export function LearningPathTimeline() {
             </div>
 
             {/* Mobile Animated Vertical Line */}
-            <div className="lg:hidden absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[3px] z-0">
+            <div className="md:hidden absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[3px] z-0">
                 <div className="absolute inset-0 bg-gray-200 dark:bg-white/10 rounded-full" />
                 <motion.div
                     className="absolute inset-x-0 top-0 bottom-0 rounded-full"

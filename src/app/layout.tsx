@@ -3,7 +3,6 @@ import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
 
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Lexend, Source_Sans_3 } from "next/font/google";
 import { Toaster } from "sonner";
@@ -212,9 +211,7 @@ navigator.serviceWorker.register('/sw.js');
                         }}
                     />
                     <SystemAnnouncementBanner />
-                    <SmoothScrollProvider>
-                        {children}
-                    </SmoothScrollProvider>
+                    {children}
                     <Toaster richColors position="top-right" closeButton />
                 </ThemeProvider>
                 <GoogleAnalytics measurementId={gaMeasurementId} />
