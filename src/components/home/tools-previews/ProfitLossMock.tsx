@@ -29,7 +29,7 @@ export function ProfitLossMock() {
             <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                 <span>Profit/Loss Projection</span>
                 <span
-                    className={`px-2 py-0.5 rounded text-[8px] font-black tracking-wider ${isLong ? "bg-emerald-50 text-emerald-600 border border-emerald-200/50" : "bg-rose-50 text-rose-600 border border-rose-200/50"}`}
+                    className={`px-2 py-0.5 rounded-lg text-[8px] font-black tracking-wider ${isLong ? "bg-emerald-50 text-emerald-600 border border-emerald-200/50" : "bg-rose-50 text-rose-600 border border-rose-200/50"}`}
                 >
                     {isLong ? "LONG / BUY" : "SHORT / SELL"}
                 </span>
@@ -54,7 +54,7 @@ export function ProfitLossMock() {
 
             {/* Trade Parameters List */}
             <div className="grid grid-cols-3 gap-1 z-10 border-t border-slate-100 pt-3 text-center text-[7px] font-bold text-slate-500 font-mono">
-                <div className="bg-slate-100/80 border border-slate-200/40 rounded p-1">
+                <div className="bg-slate-100/80 border border-slate-200/40 rounded-lg p-1">
                     <span className="block text-slate-400 uppercase text-[6px]">
                         Entry
                     </span>
@@ -62,7 +62,7 @@ export function ProfitLossMock() {
                         1.1000
                     </span>
                 </div>
-                <div className="bg-slate-100/80 border border-slate-200/40 rounded p-1">
+                <div className="bg-slate-100/80 border border-slate-200/40 rounded-lg p-1">
                     <span className="block text-slate-400 uppercase text-[6px]">
                         Exit Target
                     </span>
@@ -70,7 +70,7 @@ export function ProfitLossMock() {
                         {isLong ? "1.1080" : "1.0960"}
                     </span>
                 </div>
-                <div className="bg-slate-100/80 border border-slate-200/40 rounded p-1">
+                <div className="bg-slate-100/80 border border-slate-200/40 rounded-lg p-1">
                     <span className="block text-slate-400 uppercase text-[6px]">
                         Volume
                     </span>

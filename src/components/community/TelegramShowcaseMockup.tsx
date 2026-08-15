@@ -147,7 +147,7 @@ export function TelegramShowcaseMockup({ telegramUrl }: TelegramShowcaseMockupPr
                             type="button"
                             onClick={handleCopyLink}
                             title="Copy Telegram Channel Link"
-                            className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-200/80 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold hover:bg-slate-300 dark:hover:bg-white/20 transition-all active:scale-95"
+                            className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-200/80 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold hover:bg-slate-300 dark:hover:bg-white/[0.02]0 transition-all active:scale-95"
                         >
                             {copied ? <Check size={12} className="text-emerald-500" /> : <Copy size={12} />}
                             <span className="hidden sm:inline">Copy Link</span>
@@ -201,7 +201,7 @@ export function TelegramShowcaseMockup({ telegramUrl }: TelegramShowcaseMockupPr
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -8 }}
                                 transition={{ duration: 0.25, ease: "easeOut" }}
-                                className="bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-amber-500/10 dark:from-amber-500/15 dark:to-amber-500/5 border border-amber-200 dark:border-amber-500/20 rounded-2xl p-4 sm:p-4.5 shadow-xs space-y-3 flex flex-col justify-between"
+                                className="bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-amber-500/10 dark:from-amber-500/15 dark:to-amber-500/5 border border-amber-200 dark:border-amber-500/20 rounded-2xl p-4 sm:p-4.5 shadow-sm space-y-3 flex flex-col justify-between"
                             >
                                 <div className="flex items-center justify-between text-[11px] font-bold text-amber-700 dark:text-amber-300">
                                     <span className="flex items-center gap-1.5">
@@ -231,7 +231,7 @@ export function TelegramShowcaseMockup({ telegramUrl }: TelegramShowcaseMockupPr
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -8 }}
                                 transition={{ duration: 0.25, ease: "easeOut" }}
-                                className="bg-gradient-to-br from-sky-500/10 via-blue-500/5 to-sky-500/10 dark:from-sky-500/15 dark:to-sky-500/5 border border-sky-200 dark:border-sky-500/20 rounded-2xl p-4 sm:p-4.5 shadow-xs space-y-3 flex flex-col justify-between"
+                                className="bg-gradient-to-br from-sky-500/10 via-blue-500/5 to-sky-500/10 dark:from-sky-500/15 dark:to-sky-500/5 border border-sky-200 dark:border-sky-500/20 rounded-2xl p-4 sm:p-4.5 shadow-sm space-y-3 flex flex-col justify-between"
                             >
                                 <div className="flex items-center justify-between text-[11px] font-bold text-sky-700 dark:text-sky-300">
                                     <span className="flex items-center gap-1.5">
@@ -259,7 +259,7 @@ export function TelegramShowcaseMockup({ telegramUrl }: TelegramShowcaseMockupPr
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -8 }}
                                 transition={{ duration: 0.25, ease: "easeOut" }}
-                                className="bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-emerald-500/10 dark:from-emerald-500/15 dark:to-emerald-500/5 border border-emerald-200 dark:border-emerald-500/20 rounded-2xl p-4 sm:p-4.5 shadow-xs space-y-3 flex flex-col justify-between"
+                                className="bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-emerald-500/10 dark:from-emerald-500/15 dark:to-emerald-500/5 border border-emerald-200 dark:border-emerald-500/20 rounded-2xl p-4 sm:p-4.5 shadow-sm space-y-3 flex flex-col justify-between"
                             >
                                 <div className="flex items-center justify-between text-[11px] font-bold text-emerald-700 dark:text-emerald-400">
                                     <span className="flex items-center gap-1.5">
@@ -330,7 +330,7 @@ export function TelegramShowcaseMockup({ telegramUrl }: TelegramShowcaseMockupPr
                             href={telegramUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white text-[#1E88E5] font-black text-xs shadow-xs hover:bg-sky-50 transition-all shrink-0 active:scale-95"
+                            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white text-[#1E88E5] font-black text-xs shadow-sm hover:bg-sky-50 transition-all shrink-0 active:scale-95"
                         >
                             <Send size={14} /> Join Free
                         </a>

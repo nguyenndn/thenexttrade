@@ -69,7 +69,7 @@ export function TrustedPartners() {
                                         ? "noopener noreferrer"
                                         : undefined
                                 }
-                                className="flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-white/[0.02] border border-gray-200/80 dark:border-white/5 hover:border-emerald-500/40 dark:hover:border-emerald-500/30 hover:shadow-lg transition-all duration-300 group cursor-pointer h-full"
+                                className="flex flex-col justify-between p-5 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200/80 dark:border-white/5 hover:border-emerald-500/40 dark:hover:border-emerald-500/30 hover:shadow-lg transition-all duration-300 group cursor-pointer h-full"
                             >
                                 <div>
                                     {/* Top line with Logo & Badge */}
@@ -91,7 +91,7 @@ export function TrustedPartners() {
                                         </div>
                                         {item.badge && (
                                             <span
-                                                className={`text-[9px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md ${BADGE_STYLES[item.badgeType || "green"]}`}
+                                                className={`text-[9px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-lg ${BADGE_STYLES[item.badgeType || "green"]}`}
                                             >
                                                 {item.badge}
                                             </span>

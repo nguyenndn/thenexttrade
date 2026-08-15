@@ -167,7 +167,7 @@ export function MT5ExecutionToolkitSection({
                                         <Link
                                             key={product.title}
                                             href={`/trading-systems/${product.slug}`}
-                                            className="group flex gap-4 rounded-2xl border border-gray-200 bg-white/90 p-4 shadow-sm transition-all duration-300 hover:border-gold/35 hover:bg-gold/[0.03] hover:shadow-md dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-gold/25 dark:hover:bg-gold/[0.04] cursor-pointer"
+                                            className="group flex gap-4 rounded-xl border border-gray-200 bg-white/90 p-4 shadow-sm transition-all duration-300 hover:border-gold/35 hover:bg-gold/[0.03] hover:shadow-md dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-gold/25 dark:hover:bg-gold/[0.04] cursor-pointer"
                                         >
                                             <div
                                                 className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-gold shadow-sm ring-1 ${product.accentRing} transition-transform duration-300 group-hover:scale-105 dark:bg-white/[0.06]`}

@@ -208,7 +208,7 @@ function TimelineNode({
                 }}
             >
                 <div
-                    className={`bg-white dark:bg-[#1E2028] border ${item.borderColor} rounded-2xl p-6 md:p-8 shadow-sm hover:shadow-lg transition-all duration-300 group`}
+                    className={`bg-white dark:bg-[#1E2028] border ${item.borderColor} rounded-xl p-6 md:p-8 shadow-sm hover:shadow-lg transition-all duration-300 group`}
                 >
                     <div className="flex items-center gap-3 mb-4">
                         <span

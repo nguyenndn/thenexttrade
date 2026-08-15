@@ -117,7 +117,7 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
                     size={12}
                     className="text-gray-400 dark:text-gray-600 shrink-0"
                 />
-                <span className="text-gray-850 dark:text-gray-200 font-bold truncate">
+                <span className="text-gray-900 dark:text-gray-200 font-bold truncate">
                     {tool.title}
                 </span>
             </div>
@@ -215,7 +215,7 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
             {/* Task 7: CTA Strip */}
             <div className="mb-16 bg-white/85 dark:bg-[#151925]/90 border border-gold/20 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_18px_54px_-42px_rgba(146,64,14,0.8)] backdrop-blur-md">
                 <div className="text-center md:text-left space-y-1">
-                    <h3 className="text-lg font-bold text-gray-850 dark:text-white">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                         Use this result in your trading workflow
                     </h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400 font-semibold">
@@ -239,7 +239,7 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
                 <div className="bg-gradient-to-br from-gold/5 to-amber-500/5 dark:from-gold/[0.03] dark:to-amber-500/[0.03] border border-gold/15 rounded-2xl p-6 md:p-8">
                     <div className="flex items-center gap-3 mb-6">
                         <HelpCircle size={22} className="text-gold" />
-                        <h2 className="text-xl font-bold text-gray-850 dark:text-white">
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                             How to Use This Calculator
                         </h2>
                     </div>

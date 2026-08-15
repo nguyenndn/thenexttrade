@@ -71,7 +71,7 @@ export function GeoPanel({ countries }: Props) {
                     return (
                         <div
                             key={c.country}
-                            className="group flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/3 transition-colors"
+                            className="group flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors"
                         >
                             <span className="text-xs w-5 text-center shrink-0 text-gray-400 font-mono">
                                 {i + 1}

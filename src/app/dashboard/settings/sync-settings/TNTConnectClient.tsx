@@ -241,8 +241,8 @@ export default function TNTConnectClient() {
  ═══════════════════════════════════════════════════════════════════ */}
             <div className="relative overflow-hidden rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] shadow-sm">
                 {/* Ambient Glow */}
-                <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-500/8 dark:bg-emerald-500/15 rounded-full blur-[80px] pointer-events-none" />
-                <div className="absolute -bottom-20 -left-20 w-48 h-48 bg-cyan-500/6 dark:bg-cyan-500/10 rounded-full blur-[60px] pointer-events-none" />
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-500/10 dark:bg-emerald-500/15 rounded-full blur-[80px] pointer-events-none" />
+                <div className="absolute -bottom-20 -left-20 w-48 h-48 bg-cyan-500/5 dark:bg-cyan-500/10 rounded-full blur-[60px] pointer-events-none" />
 
                 <div className="relative px-6 py-6">
                     <div className="flex items-start gap-4">
@@ -522,7 +522,7 @@ export default function TNTConnectClient() {
                                     className={cn(
                                         "group relative flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border transition-all duration-200 cursor-pointer select-none",
                                         isDone
-                                            ? "bg-emerald-500/[0.03] border-emerald-500/30 dark:bg-emerald-500/[0.05] dark:border-emerald-500/20 shadow-xs"
+                                            ? "bg-emerald-500/[0.03] border-emerald-500/30 dark:bg-emerald-500/[0.05] dark:border-emerald-500/20 shadow-sm"
                                             : "bg-gray-50/60 dark:bg-white/[0.02] border-gray-200/80 dark:border-white/5 hover:border-primary/40 dark:hover:border-primary/40 hover:bg-gray-50 dark:hover:bg-white/[0.04]"
                                     )}
                                 >

@@ -117,7 +117,7 @@ export default async function Home() {
     const isLoggedIn = !!user;
 
     return (
-        <main className="min-h-screen bg-white dark:bg-transparent overflow-hidden">
+        <main className="min-h-screen bg-white dark:bg-transparent overflow-x-clip">
             <PublicHeader user={user} />
             <Suspense fallback={<HomeFeedSkeleton />}>
                 <HomeFeed isLoggedIn={isLoggedIn} />
@@ -217,7 +217,7 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                     <FadeIn delay={0.3} direction="up">
                         <div className="flex justify-center mt-6">
                             <Link href="/academy">
-                                <Button className="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary to-emerald-600 text-white font-extrabold shadow-[0_4px_12px_rgba(0,200,136,0.2)] dark:shadow-[0_4px_12px_rgba(0,200,136,0.1)] hover:shadow-[0_4px_20px_rgba(0,200,136,0.35)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 min-h-11 px-8 py-3 text-sm group animate-btn-shine">
+                                <Button className="relative overflow-hidden rounded-xl bg-gold text-white font-extrabold shadow-[0_4px_12px_rgba(245,158,11,0.25)] hover:bg-amber-600 hover:shadow-[0_4px_20px_rgba(245,158,11,0.35)] transition-all duration-300 min-h-11 px-8 py-3 text-sm group animate-btn-shine">
                                     <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                                     <span className="flex items-center gap-2 relative z-10">
                                         Explore Academy{" "}

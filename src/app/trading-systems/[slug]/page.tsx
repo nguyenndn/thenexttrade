@@ -152,7 +152,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                     {heroHighlights.map((item) => (
                         <div
                             key={item.title}
-                            className="rounded-2xl border border-gray-200/40 bg-white/30 dark:border-white/5 dark:bg-[#151822]/22 p-4 space-y-2.5 hover:border-gold/30 transition-all duration-300"
+                            className="rounded-2xl border border-gray-200/40 bg-white/30 dark:border-white/5 dark:bg-[#151822]/20 p-4 space-y-2.5 hover:border-gold/30 transition-all duration-300"
                         >
                             <div className="flex items-center gap-2 text-emerald-500">
                                 <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/20">
@@ -207,7 +207,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                     Recommended VPS
                                 </h3>
                             </div>
-                            <p className="text-xs text-gray-650 dark:text-gray-400 leading-relaxed font-semibold mt-4">
+                            <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed font-semibold mt-4">
                                 To ensure your EA runs smoothly 24/7, we
                                 recommend using a VPS. It provides a stable
                                 connection, faster execution, and keeps your
@@ -268,7 +268,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                     Unlock License
                                 </h3>
                             </div>
-                            <p className="text-xs text-gray-650 dark:text-gray-400 leading-relaxed font-semibold">
+                            <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed font-semibold">
                                 This system is fully compiled and ready to
                                 download. You can unlock your MT5 account
                                 license key by opening and maintaining an

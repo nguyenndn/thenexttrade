@@ -173,7 +173,7 @@ export function TradingSystemsTabbedGuide({ primaryCtaUrl }: TabbedGuideProps) {
                                 </span>
                             </div>
                             <div className="relative z-10">
-                                <h3 className="text-xs font-black text-gray-850 dark:text-white uppercase tracking-wider leading-tight">
+                                <h3 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider leading-tight">
                                     {item.title}
                                 </h3>
                                 <p className="mt-2 text-[11px] font-semibold leading-relaxed text-gray-505 dark:text-gray-400">

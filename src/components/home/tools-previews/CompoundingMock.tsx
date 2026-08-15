@@ -79,7 +79,7 @@ export function CompoundingMock() {
                             className="flex-1 flex flex-col justify-end h-full"
                         >
                             <div
-                                className="w-full bg-amber-500/85 hover:bg-amber-600 rounded-t-sm transition-all duration-500 ease-out"
+                                className="w-full bg-amber-500/85 hover:bg-amber-600 rounded-t-lg transition-all duration-500 ease-out"
                                 style={{ height: `${h}%` }}
                             />
                         </div>

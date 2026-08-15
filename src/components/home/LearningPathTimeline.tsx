@@ -44,7 +44,7 @@ const steps = [
     {
         icon: Crown,
         title: "5. The Master",
-        desc: "Gold & Pro Trading (Lvl 11-12)",
+        desc: "Global View & Live Trading (Lvl 11-12)",
         color: "text-orange-500",
         bg: "bg-orange-500/10",
         gradient: "from-orange-500 to-red-500",

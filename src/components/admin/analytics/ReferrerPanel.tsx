@@ -208,7 +208,7 @@ export function ReferrerPanel({ referrers }: Props) {
                                     className="relative group"
                                 >
                                     <div
-                                        className="absolute inset-0 bg-gray-50 dark:bg-white/3 rounded-md"
+                                        className="absolute inset-0 bg-gray-50 dark:bg-white/[0.03] rounded-md"
                                         style={{ width: `${pct}%` }}
                                     />
                                     <div className="relative flex items-center justify-between py-2 px-3">

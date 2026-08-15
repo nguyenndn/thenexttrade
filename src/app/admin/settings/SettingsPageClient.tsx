@@ -208,7 +208,7 @@ function ProfileSettings({ user }: { user: any }) {
 
             {/* ── Personal Info Card ── */}
             <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10 dark:border-white/8 flex items-center gap-2.5">
+                <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10 flex items-center gap-2.5">
                     <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
                         <User size={14} className="text-primary" />
                     </div>
@@ -232,7 +232,7 @@ function ProfileSettings({ user }: { user: any }) {
                 </div>
 
                 {/* Save Button */}
-                <div className="px-6 py-4 border-t border-gray-200 dark:border-white/10 dark:border-white/8 flex justify-end">
+                <div className="px-6 py-4 border-t border-gray-200 dark:border-white/10 flex justify-end">
                     <Button
                         disabled={isPending}
                         isLoading={isPending}
@@ -252,7 +252,7 @@ function ProfileSettings({ user }: { user: any }) {
 function SecuritySettings() {
     return (
         <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10 dark:border-white/8 flex items-center gap-2.5">
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10 flex items-center gap-2.5">
                 <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
                     <Lock size={14} className="text-primary" />
                 </div>
@@ -317,7 +317,7 @@ const SectionCard = ({
     <div
         className={`bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden flex flex-col ${className || ""}`}
     >
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10 dark:border-white/8 flex items-center gap-2.5">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10 flex items-center gap-2.5">
             <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
                 <Icon size={14} className="text-primary" />
             </div>

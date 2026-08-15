@@ -75,7 +75,7 @@ export function LiveMarketRatesMock() {
                 <div className="flex items-center justify-between border-b border-slate-100 pb-1">
                     <span className="text-slate-600">EUR/USD</span>
                     <span
-                        className={`px-1.5 py-0.5 rounded transition-colors duration-200 ${eurusdDirection === "up" ? "bg-emerald-100 text-emerald-700" : eurusdDirection === "down" ? "bg-rose-100 text-rose-700" : "text-slate-800"}`}
+                        className={`px-1.5 py-0.5 rounded-lg transition-colors duration-200 ${eurusdDirection === "up" ? "bg-emerald-100 text-emerald-700" : eurusdDirection === "down" ? "bg-rose-100 text-rose-700" : "text-slate-800"}`}
                     >
                         {eurusd.toFixed(4)}
                     </span>
@@ -85,7 +85,7 @@ export function LiveMarketRatesMock() {
                 <div className="flex items-center justify-between border-b border-slate-100 pb-1">
                     <span className="text-slate-600">XAU/USD</span>
                     <span
-                        className={`px-1.5 py-0.5 rounded transition-colors duration-200 ${xauusdDirection === "up" ? "bg-emerald-100 text-emerald-700" : xauusdDirection === "down" ? "bg-rose-100 text-rose-700" : "text-slate-800"}`}
+                        className={`px-1.5 py-0.5 rounded-lg transition-colors duration-200 ${xauusdDirection === "up" ? "bg-emerald-100 text-emerald-700" : xauusdDirection === "down" ? "bg-rose-100 text-rose-700" : "text-slate-800"}`}
                     >
                         ${xauusd.toFixed(2)}
                     </span>

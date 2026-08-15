@@ -106,7 +106,7 @@ export function MarketHoursMock() {
                         style={{ left: `${nowPercent}%` }}
                     >
                         <div className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_6px_#ef4444]" />
-                        <span className="absolute top-[-10px] text-[7px] font-black text-red-500 bg-white px-1.5 rounded border border-red-200 shadow-sm leading-none py-0.5 select-none whitespace-nowrap">
+                        <span className="absolute top-[-10px] text-[7px] font-black text-red-500 bg-white px-1.5 rounded-lg border border-red-200 shadow-sm leading-none py-0.5 select-none whitespace-nowrap">
                             NOW
                         </span>
                     </div>

@@ -47,7 +47,7 @@ export function TradeJournalPreviewSection({
                         {/* Steps */}
                         <div className="space-y-3 mb-6 w-full mx-auto lg:mx-0">
                             {/* Step 1: Connect - Calm */}
-                            <div className="group flex gap-4 rounded-2xl border border-gray-200 bg-white/90 p-4 shadow-sm transition-all duration-300 hover:border-gold/35 hover:bg-gold/[0.035] dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-gold/25 dark:hover:bg-gold/[0.04] text-left">
+                            <div className="group flex gap-4 rounded-xl border border-gray-200 bg-white/90 p-4 shadow-sm transition-all duration-300 hover:border-gold/35 hover:bg-gold/[0.035] dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-gold/25 dark:hover:bg-gold/[0.04] text-left">
                                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-gold shadow-sm ring-1 ring-gray-100 transition-transform duration-300 group-hover:scale-105 dark:bg-white/[0.06] dark:ring-white/10">
                                     <PlugZap size={17} strokeWidth={2.2} />
                                 </div>
@@ -68,7 +68,7 @@ export function TradeJournalPreviewSection({
                             </div>
 
                             {/* Step 2: Analyze - Calm */}
-                            <div className="group flex gap-4 rounded-2xl border border-gray-200 bg-white/90 p-4 shadow-sm transition-all duration-300 hover:border-gold/35 hover:bg-gold/[0.035] dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-gold/25 dark:hover:bg-gold/[0.04] text-left">
+                            <div className="group flex gap-4 rounded-xl border border-gray-200 bg-white/90 p-4 shadow-sm transition-all duration-300 hover:border-gold/35 hover:bg-gold/[0.035] dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-gold/25 dark:hover:bg-gold/[0.04] text-left">
                                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-gold shadow-sm ring-1 ring-gray-100 transition-transform duration-300 group-hover:scale-105 dark:bg-white/[0.06] dark:ring-white/10">
                                     <BarChart3 size={17} strokeWidth={2.2} />
                                 </div>
@@ -89,7 +89,7 @@ export function TradeJournalPreviewSection({
                             </div>
 
                             {/* Step 3: Improve - ACTIVE/HIGHLIGHTED */}
-                            <div className="group flex gap-4 rounded-2xl border border-gold/40 bg-gold/[0.07] p-4 shadow-[0_12px_28px_rgba(245,158,11,0.12)] transition-all duration-300 hover:border-gold/60 hover:bg-gold/[0.1] dark:border-gold/25 dark:bg-gold/[0.05] text-left">
+                            <div className="group flex gap-4 rounded-xl border border-gold/40 bg-gold/[0.07] p-4 shadow-[0_12px_28px_rgba(245,158,11,0.12)] transition-all duration-300 hover:border-gold/60 hover:bg-gold/[0.1] dark:border-gold/25 dark:bg-gold/[0.05] text-left">
                                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-gold shadow-sm ring-1 ring-gold/15 transition-transform duration-300 group-hover:scale-105 dark:bg-white/[0.06] dark:ring-gold/20">
                                     <Target size={17} strokeWidth={2.2} />
                                 </div>
@@ -166,7 +166,7 @@ export function TradeJournalPreviewSection({
                             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
 
                             {/* Fake App Window Bar */}
-                            <div className="flex items-center justify-between px-3 py-2 border-b border-gray-200 dark:border-white/5 mb-4">
+                            <div className="flex items-center justify-between px-3 py-2 border-b border-gray-200 dark:border-white/10 mb-4">
                                 <div className="flex items-center gap-1.5">
                                     <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
                                     <div className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
@@ -185,7 +185,7 @@ export function TradeJournalPreviewSection({
 
                             {/* Metrics Row */}
                             <div className="grid grid-cols-3 gap-3 mb-3">
-                                <div className="p-3.5 rounded-2xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/5 shadow-sm flex flex-col justify-between">
+                                <div className="p-3.5 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/10 shadow-sm flex flex-col justify-between">
                                     <span className="text-[9px] text-gray-500 font-black uppercase tracking-wider">
                                         Net P/L
                                     </span>
@@ -193,7 +193,7 @@ export function TradeJournalPreviewSection({
                                         +$12,450.80 <TrendingUp size={12} />
                                     </span>
                                 </div>
-                                <div className="p-3.5 rounded-2xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/5 shadow-sm flex flex-col justify-between">
+                                <div className="p-3.5 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/10 shadow-sm flex flex-col justify-between">
                                     <span className="text-[9px] text-gray-500 font-black uppercase tracking-wider">
                                         Win Rate
                                     </span>
@@ -201,7 +201,7 @@ export function TradeJournalPreviewSection({
                                         64.2%
                                     </span>
                                 </div>
-                                <div className="p-3.5 rounded-2xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/5 shadow-sm flex flex-col justify-between">
+                                <div className="p-3.5 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/10 shadow-sm flex flex-col justify-between">
                                     <span className="text-[9px] text-gray-500 font-black uppercase tracking-wider">
                                         Profit Factor
                                     </span>
@@ -214,7 +214,7 @@ export function TradeJournalPreviewSection({
                             {/* Chart + Weekly Coach */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                                 {/* Chart Mockup */}
-                                <div className="p-4 rounded-2xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/5 shadow-sm">
+                                <div className="p-4 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/10 shadow-sm">
                                     <div className="flex items-center justify-between mb-2">
                                         <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider">
                                             Equity Growth
@@ -271,7 +271,7 @@ export function TradeJournalPreviewSection({
                                 </div>
 
                                 {/* Weekly Coach Action Card - FOCAL POINT */}
-                                <div className="p-4 rounded-2xl bg-gold/[0.08] dark:bg-gold/[0.04] border border-gold/30 dark:border-gold/20 shadow-[0_14px_34px_rgba(245,158,11,0.12)]">
+                                <div className="p-4 rounded-xl bg-gold/[0.08] dark:bg-gold/[0.04] border border-gold/30 dark:border-gold/20 shadow-[0_14px_34px_rgba(245,158,11,0.12)]">
                                     <div className="flex items-center gap-1.5 mb-3">
                                         <Bot size={12} className="text-gold" />
                                         <span className="text-[9px] text-gold font-black uppercase tracking-wider">
@@ -284,7 +284,7 @@ export function TradeJournalPreviewSection({
                                         </span>
                                     </div>
                                     <div className="space-y-2 mt-2">
-                                        <div className="p-2.5 rounded-xl bg-white/80 dark:bg-white/[0.03] border border-gold/15 dark:border-white/5">
+                                        <div className="p-2.5 rounded-xl bg-white/80 dark:bg-white/[0.03] border border-gold/15 dark:border-white/10">
                                             <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider block mb-1">
                                                 This Week&apos;s Action
                                             </span>
@@ -293,7 +293,7 @@ export function TradeJournalPreviewSection({
                                                 2 consecutive losses&quot;
                                             </p>
                                         </div>
-                                        <div className="p-2 rounded-xl bg-white/60 dark:bg-white/[0.02] border border-gray-200/50 dark:border-white/5">
+                                        <div className="p-2 rounded-xl bg-white/60 dark:bg-white/[0.02] border border-gray-200/50 dark:border-white/10">
                                             <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider block mb-1">
                                                 Recommended
                                             </span>
@@ -312,7 +312,7 @@ export function TradeJournalPreviewSection({
                             </div>
 
                             {/* Recent Trades */}
-                            <div className="p-3.5 rounded-2xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/5 shadow-sm">
+                            <div className="p-3.5 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/10 shadow-sm">
                                 <div className="flex items-center justify-between mb-2">
                                     <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider">
                                         Recent Executions
@@ -324,7 +324,7 @@ export function TradeJournalPreviewSection({
                                 <div className="space-y-1.5">
                                     <div className="flex items-center justify-between text-xs p-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
                                         <div className="flex items-center gap-2">
-                                            <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                                            <span className="px-1.5 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                                                 BUY
                                             </span>
                                             <span className="font-bold text-gray-800 dark:text-white">
@@ -337,7 +337,7 @@ export function TradeJournalPreviewSection({
                                     </div>
                                     <div className="flex items-center justify-between text-xs p-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
                                         <div className="flex items-center gap-2">
-                                            <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400">
+                                            <span className="px-1.5 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400">
                                                 SELL
                                             </span>
                                             <span className="font-bold text-gray-800 dark:text-white">

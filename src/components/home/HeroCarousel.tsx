@@ -79,7 +79,7 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
     if (!articles.length) return null;
 
     return (
-        <div className="relative group rounded-2xl overflow-hidden shadow-2xl h-full min-h-[380px] md:min-h-0 md:aspect-[16/9]">
+        <div className="relative group rounded-3xl overflow-hidden shadow-2xl h-full min-h-[380px] md:min-h-0 md:aspect-[16/9]">
             {/* Slides */}
             {articles.map((article, idx) => {
                 const isActive = idx === current;

@@ -87,7 +87,7 @@ export function CorrelationMock() {
                                 return (
                                     <div
                                         key={cIdx}
-                                        className={`text-[8.5px] p-1 border rounded text-center transition-all duration-200 ${cellBg} ${
+                                        className={`text-[8.5px] p-1 border rounded-lg text-center transition-all duration-200 ${cellBg} ${
                                             isActive
                                                 ? "scale-105 border-cyan-500/50 shadow-sm bg-white"
                                                 : ""

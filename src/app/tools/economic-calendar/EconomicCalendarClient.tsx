@@ -201,7 +201,7 @@ export function EconomicCalendarClient() {
                     size={12}
                     className="text-gray-400 dark:text-gray-600 shrink-0"
                 />
-                <span className="text-gray-850 dark:text-gray-200 font-bold truncate">
+                <span className="text-gray-900 dark:text-gray-200 font-bold truncate">
                     Economic Calendar
                 </span>
             </div>

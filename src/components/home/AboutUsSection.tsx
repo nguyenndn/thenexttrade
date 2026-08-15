@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Quote, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 export function AboutUsSection() {
     return (
@@ -11,7 +12,7 @@ export function AboutUsSection() {
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-400/70 to-transparent" />
 
             <section className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-                <div className="relative overflow-hidden rounded-[28px] border border-amber-300/70 bg-white/90 p-6 sm:p-8 lg:p-10 shadow-[0_26px_70px_rgba(120,72,0,0.12)]">
+                <div className="relative overflow-hidden rounded-3xl border border-amber-300/70 bg-white/90 p-6 sm:p-8 lg:p-10 shadow-[0_26px_70px_rgba(120,72,0,0.12)]">
                     {/* Top highlight bar */}
                     <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-500 via-yellow-300 to-emerald-400" />
 
@@ -34,7 +35,7 @@ export function AboutUsSection() {
                                 </span>
                             </h2>
 
-                            <p className="mt-6 text-sm sm:text-base leading-7 text-gray-650 max-w-xl">
+                            <p className="mt-6 text-sm sm:text-base leading-7 text-gray-600 max-w-xl">
                                 After years of losses, scattered learning, and
                                 chasing shortcuts, I built TheNextTrade as a
                                 practical trading workspace: sync your trades,
@@ -46,7 +47,7 @@ export function AboutUsSection() {
                         {/* Right Column: Quote panel and CTA Buttons */}
                         <div className="flex-shrink-0 flex flex-col gap-5 w-full lg:w-[480px]">
                             {/* Quote block */}
-                            <div className="relative rounded-2xl border border-amber-200 bg-amber-50/70 p-5">
+                            <div className="relative rounded-xl border border-amber-200 bg-amber-50/70 p-5">
                                 <Quote
                                     size={18}
                                     className="absolute -top-2 left-4 text-amber-500"
@@ -63,7 +64,7 @@ export function AboutUsSection() {
                                     href="/about"
                                     className="flex-1 lg:w-full"
                                 >
-                                    <Button className="w-full min-h-11 rounded-xl bg-amber-500 px-5 text-sm font-black text-white hover:bg-amber-600 shadow-[0_14px_30px_rgba(245,158,11,0.22)] flex items-center justify-center animate-btn-shine">
+                                    <Button className="w-full min-h-11 rounded-xl bg-gold px-5 text-sm font-black text-white hover:bg-amber-600 shadow-[0_14px_30px_rgba(245,158,11,0.22)] flex items-center justify-center animate-btn-shine">
                                         Read My Story{" "}
                                         <ArrowRight
                                             size={16}
@@ -73,7 +74,11 @@ export function AboutUsSection() {
                                 </Link>
                                 <Link
                                     href="/auth/signup?source=about-brand-story"
-                                    className="flex-1 lg:w-full inline-flex min-h-11 items-center justify-center rounded-xl border border-amber-200 bg-white px-5 text-sm font-extrabold text-gray-800 transition-colors hover:border-amber-400 hover:text-amber-600 text-center"
+                                    className={buttonVariants({
+                                        variant: "outline",
+                                        className:
+                                            "w-full min-h-11 rounded-xl px-5 text-sm font-extrabold text-gray-800 hover:text-amber-600 hover:border-amber-400 text-center",
+                                    })}
                                 >
                                     Start Free Journal
                                 </Link>

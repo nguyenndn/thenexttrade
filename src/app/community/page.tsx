@@ -244,8 +244,8 @@ export default async function CommunityPage() {
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-transparent text-gray-700 dark:text-white overflow-hidden relative">
             {/* Background Glows */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[#2AABEE]/5 dark:bg-[#2AABEE]/8 rounded-full blur-[120px] pointer-events-none" />
-            <div className="absolute top-1/3 right-0 w-[500px] h-[500px] bg-primary/5 dark:bg-primary/8 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[#2AABEE]/5 dark:bg-[#2AABEE]/10 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute top-1/3 right-0 w-[500px] h-[500px] bg-primary/5 dark:bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
 
             <PublicHeader user={user} />
 
@@ -258,7 +258,7 @@ export default async function CommunityPage() {
                             {/* Left Column: Brand Story & High Impact Headline */}
                             <div className="lg:col-span-6 text-left space-y-6 md:space-y-8">
                                 {/* Official Brand Badge */}
-                                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#2AABEE]/10 border border-[#2AABEE]/30 dark:border-[#2AABEE]/40 ring-4 ring-[#2AABEE]/5 shadow-xs">
+                                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#2AABEE]/10 border border-[#2AABEE]/30 dark:border-[#2AABEE]/40 ring-4 ring-[#2AABEE]/5 shadow-sm">
                                     <div className="w-6 h-6 rounded-full overflow-hidden shrink-0 ring-2 ring-[#2AABEE]">
                                         <Image
                                             src="/images/logo_ninja.png"
@@ -280,7 +280,7 @@ export default async function CommunityPage() {
                                 {/* Headline */}
                                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-gray-900 dark:text-white leading-[1.08]">
                                     GoldScalperNinja <br />
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 dark:from-amber-400 dark:via-orange-400 dark:to-amber-300 drop-shadow-xs">
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 dark:from-amber-400 dark:via-orange-400 dark:to-amber-300 drop-shadow-sm">
                                         Official Community
                                     </span>
                                 </h1>
@@ -390,7 +390,7 @@ export default async function CommunityPage() {
                                                 idx !== 0 ? "pt-3.5 sm:pt-3.5" : ""
                                             }`}
                                         >
-                                            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${stat.color} shadow-xs group-hover/item:scale-110 transition-transform duration-300`}>
+                                            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${stat.color} shadow-sm group-hover/item:scale-110 transition-transform duration-300`}>
                                                 <stat.icon size={20} strokeWidth={2.2} />
                                             </div>
                                             <div className="min-w-0">
@@ -464,15 +464,15 @@ export default async function CommunityPage() {
                                                         <span className="text-amber-600 dark:text-gold font-bold">XAUUSD</span>
                                                     </div>
                                                     <div className="grid grid-cols-3 gap-2 text-center">
-                                                        <div className="rounded-lg bg-white/90 p-2 shadow-xs border border-slate-100 dark:border-white/[0.06] dark:bg-white/[0.06]">
+                                                        <div className="rounded-lg bg-white/90 p-2 shadow-sm border border-slate-100 dark:border-white/[0.06] dark:bg-white/[0.06]">
                                                             <span className="block text-[9px] text-gray-400 uppercase font-semibold">Bias</span>
                                                             <span className="mt-0.5 block text-xs font-black text-gray-900 dark:text-white">Bullish</span>
                                                         </div>
-                                                        <div className="rounded-lg bg-white/90 p-2 shadow-xs border border-slate-100 dark:border-white/[0.06] dark:bg-white/[0.06]">
+                                                        <div className="rounded-lg bg-white/90 p-2 shadow-sm border border-slate-100 dark:border-white/[0.06] dark:bg-white/[0.06]">
                                                             <span className="block text-[9px] text-gray-400 uppercase font-semibold">Zones</span>
                                                             <span className="mt-0.5 block text-xs font-black text-gray-900 dark:text-white">Entry / TP</span>
                                                         </div>
-                                                        <div className="rounded-lg bg-white/90 p-2 shadow-xs border border-slate-100 dark:border-white/[0.06] dark:bg-white/[0.06]">
+                                                        <div className="rounded-lg bg-white/90 p-2 shadow-sm border border-slate-100 dark:border-white/[0.06] dark:bg-white/[0.06]">
                                                             <span className="block text-[9px] text-gray-400 uppercase font-semibold">Context</span>
                                                             <span className="mt-0.5 block text-xs font-black text-gray-900 dark:text-white">Levels</span>
                                                         </div>

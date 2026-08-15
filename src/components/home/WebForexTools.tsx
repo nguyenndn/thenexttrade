@@ -53,7 +53,7 @@ export function WebForexTools() {
                                 <Link
                                     key={tool.slug}
                                     href={`/tools/${tool.slug}`}
-                                    className="group relative flex flex-col p-2.5 rounded-2xl bg-white dark:bg-card shadow-sm hover:shadow-lg hover:border-cyan-500/30 transition-all duration-300 border border-gray-200/80 dark:border-white/5 overflow-hidden h-full justify-between"
+                                    className="group relative flex flex-col p-2.5 rounded-xl bg-white dark:bg-card shadow-sm hover:shadow-lg hover:border-cyan-500/30 transition-all duration-300 border border-gray-200/80 dark:border-white/10 overflow-hidden h-full justify-between"
                                 >
                                     <div>
                                         {/* Visual Preview Half */}
@@ -65,7 +65,7 @@ export function WebForexTools() {
                                         <div className="px-2 pb-1">
                                             <div className="flex items-center gap-2 mb-2">
                                                 <div
-                                                    className={`w-6 h-6 rounded-md ${fullTool.iconBg} flex items-center justify-center shrink-0`}
+                                                    className={`w-6 h-6 rounded-lg ${fullTool.iconBg} flex items-center justify-center shrink-0`}
                                                 >
                                                     <fullTool.icon
                                                         size={13}

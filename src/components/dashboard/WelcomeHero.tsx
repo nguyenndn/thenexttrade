@@ -286,7 +286,7 @@ export function WelcomeHero({
                                 width="20"
                                 height={[15, 25, 20, 30, 18, 28][i]}
                                 rx="3"
-                                className="fill-primary/10 dark:fill-primary/8"
+                                className="fill-primary/10 dark:fill-primary/10"
                             />
                         ))}
                     </svg>

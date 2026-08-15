@@ -144,7 +144,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                             </div>
 
                             {/* Trust Bullets */}
-                            <div className="space-y-2.5 border-t border-dashed border-gray-200 dark:border-white/5 pt-5">
+                            <div className="space-y-2.5 border-t border-dashed border-gray-200 dark:border-white/10 pt-5">
                                 {[
                                     "Free to unlock with an eligible partner account",
                                     "Your funds stay with your broker",
@@ -205,12 +205,12 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                         </div>
 
                         {/* Right Column: High-Fidelity Mock MT5 Terminal Visual */}
-                        <div className="relative w-full max-w-[420px] mx-auto lg:max-w-none rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50/90 dark:bg-[#151925]/90 p-4 sm:p-5 shadow-inner overflow-hidden group/mockup">
+                        <div className="relative w-full max-w-[420px] mx-auto lg:max-w-none rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/90 dark:bg-[#151925]/90 p-4 sm:p-5 shadow-inner overflow-hidden group/mockup">
                             {/* Blueprint Grid lines overlay */}
                             <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(156,163,175,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(156,163,175,0.05)_1px,transparent_1px)] bg-[size:15px_15px] pointer-events-none" />
 
                             {/* Terminal Header Bar */}
-                            <div className="flex items-center justify-between mb-4 border-b border-gray-200 dark:border-white/5 pb-3 relative z-10">
+                            <div className="flex items-center justify-between mb-4 border-b border-gray-200 dark:border-white/10 pb-3 relative z-10">
                                 <div className="flex items-center gap-2">
                                     <div className="flex gap-1.5">
                                         <span className="w-2.5 h-2.5 rounded-full bg-red-500/40" />
@@ -230,7 +230,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                             </div>
 
                             {/* Mini SVG Glowing Trend Chart */}
-                            <div className="relative h-12 w-full mb-4 bg-white/40 dark:bg-[#0B0E14]/40 rounded-xl border border-gray-200/50 dark:border-white/5 overflow-hidden">
+                            <div className="relative h-12 w-full mb-4 bg-white/40 dark:bg-[#0B0E14]/40 rounded-xl border border-gray-200/50 dark:border-white/10 overflow-hidden">
                                 <svg
                                     viewBox="0 0 300 40"
                                     className="w-full h-full"
@@ -321,7 +321,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                                     return (
                                         <div
                                             key={idx}
-                                            className="flex items-center justify-between p-2.5 rounded-xl border border-gray-100 dark:border-white/5 bg-white/60 dark:bg-[#1E2028]/35 shadow-sm hover:border-gold/25 hover:shadow-md transition-all duration-300 group/item"
+                                            className="flex items-center justify-between p-2.5 rounded-xl border border-gray-100 dark:border-white/10 bg-white/60 dark:bg-[#1E2028]/35 shadow-sm hover:border-gold/25 hover:shadow-md transition-all duration-300 group/item"
                                         >
                                             <div className="flex items-center gap-3">
                                                 <div className="h-8 w-8 rounded-lg bg-gold/10 text-gold flex items-center justify-center border border-gold/15 group-hover/item:scale-105 transition-transform shrink-0">
@@ -336,7 +336,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                                                     </p>
                                                 </div>
                                             </div>
-                                            <span className="text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500">
+                                            <span className="text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500">
                                                 {tool.tag}
                                             </span>
                                         </div>

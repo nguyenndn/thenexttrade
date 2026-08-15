@@ -23,7 +23,7 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
             href: "/academy",
             icon: <BookOpen size={20} />,
             color: "text-primary",
-            chipBg: "bg-primary/8",
+            chipBg: "bg-primary/10",
             ctaText: "Start Learning",
             animClass: "group-hover:scale-110 group-hover:-rotate-6",
             bgClass:
@@ -38,7 +38,7 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
                 : "/auth/signup?source=home_goal&intent=track",
             icon: <LineChart size={20} />,
             color: "text-gold",
-            chipBg: "bg-gold/8",
+            chipBg: "bg-gold/10",
             ctaText: "Setup Journal",
             animClass: "group-hover:scale-110 group-hover:translate-x-0.5",
             bgClass:
@@ -52,7 +52,7 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
             href: "/tools",
             icon: <Calculator size={20} />,
             color: "text-blue-500",
-            chipBg: "bg-blue-500/8",
+            chipBg: "bg-blue-500/10",
             ctaText: "Open Calculators",
             animClass: "group-hover:scale-110 group-hover:rotate-6",
             bgClass:
@@ -65,7 +65,7 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
             href: "/brokers",
             icon: <Building size={20} />,
             color: "text-emerald-500",
-            chipBg: "bg-emerald-500/8",
+            chipBg: "bg-emerald-500/10",
             ctaText: "Compare Now",
             animClass: "group-hover:scale-110",
             bgClass:
@@ -95,7 +95,7 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
                         <Link
                             key={idx}
                             href={card.href}
-                            className={`group relative flex min-h-[118px] flex-col justify-between rounded-2xl border border-t-[3px] border-t-gold dark:border-t-gold/90 p-4 text-left transition-all duration-300 sm:min-h-[150px] sm:p-5 ${card.bgClass}`}
+                            className={`group relative flex min-h-[118px] flex-col justify-between rounded-xl border border-t-[3px] border-t-gold dark:border-t-gold/90 p-4 text-left transition-all duration-300 sm:min-h-[150px] sm:p-5 ${card.bgClass}`}
                         >
                             {/* Recommended badge */}
                             {"isRecommended" in card && card.isRecommended && (
@@ -105,7 +105,7 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
                             )}
 
                             {/* Subtle inner gradient - matches TrustMetrics style */}
-                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-transparent via-transparent to-gray-50/50 dark:to-white/[0.01] pointer-events-none" />
+                            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-transparent via-transparent to-gray-50/50 dark:to-white/[0.01] pointer-events-none" />
 
                             <div className="relative z-10 w-full">
                                 {/* Icon and Title Inline */}

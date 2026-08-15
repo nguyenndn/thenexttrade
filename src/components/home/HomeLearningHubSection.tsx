@@ -100,7 +100,7 @@ export function HomeLearningHubSection({
                             <span className="text-xs font-bold text-gray-800 dark:text-gray-100 group-hover:text-gold transition-colors">
                                 # {cat.name}
                             </span>
-                            <span className="text-[9px] font-bold text-gray-650 dark:text-gray-300 bg-gray-100 dark:bg-white/10 group-hover:bg-gold/15 group-hover:text-gold px-1.5 py-0.5 rounded transition-all">
+                            <span className="text-[9px] font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/10 group-hover:bg-gold/15 group-hover:text-gold px-1.5 py-0.5 rounded-lg transition-all">
                                 {cat._count.articles}
                             </span>
                         </Link>
@@ -125,7 +125,7 @@ export function HomeLearningHubSection({
                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
                                     />
                                 ) : (
-                                    <div className="w-full h-full bg-gray-250 dark:bg-gray-850" />
+                                    <div className="w-full h-full bg-gray-200 dark:bg-gray-800" />
                                 )}
                                 {/* Ranking Badge */}
                                 <div
@@ -140,7 +140,7 @@ export function HomeLearningHubSection({
                                     #{idx + 1} Trending
                                 </div>
                                 {article.estimatedTime && (
-                                    <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-md text-[10px] font-bold text-white flex items-center gap-1">
+                                    <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-lg text-[10px] font-bold text-white flex items-center gap-1">
                                         <Clock size={10} />
                                         {article.estimatedTime} min
                                     </div>
@@ -148,7 +148,7 @@ export function HomeLearningHubSection({
                             </div>
                             <div className="px-2 pt-3 pb-1 flex flex-col flex-1">
                                 {/* Category Pill */}
-                                <span className="text-[10px] font-bold text-primary bg-primary/8 px-2 py-0.5 rounded-full uppercase tracking-wider w-fit mb-2">
+                                <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full uppercase tracking-wider w-fit mb-2">
                                     {article.category.name}
                                 </span>
                                 <h3 className="mb-3 text-base font-extrabold text-gray-700 dark:text-white leading-snug group-hover:text-primary transition-colors line-clamp-2">
@@ -158,7 +158,7 @@ export function HomeLearningHubSection({
                                 <div className="mt-auto pt-4 pb-1 flex items-center justify-between border-t border-dashboard">
                                     {/* Author */}
                                     <div className="flex items-center gap-2.5 min-w-0">
-                                        <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-250 dark:bg-white/10 flex-shrink-0">
+                                        <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-200 dark:bg-white/10 flex-shrink-0">
                                             {article.author.image ? (
                                                 <Image
                                                     src={article.author.image}
@@ -171,7 +171,7 @@ export function HomeLearningHubSection({
                                                     className="object-cover w-full h-full"
                                                 />
                                             ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-xs font-bold text-gray-650">
+                                                <div className="w-full h-full flex items-center justify-center text-xs font-bold text-gray-600">
                                                     {article.author.name?.charAt(
                                                         0
                                                     ) || "?"}
@@ -183,7 +183,7 @@ export function HomeLearningHubSection({
                                         </span>
                                     </div>
                                     {/* Stats */}
-                                    <div className="flex items-center gap-3 text-sm font-semibold text-gray-755 dark:text-gray-350 flex-shrink-0">
+                                    <div className="flex items-center gap-3 text-sm font-semibold text-gray-600 dark:text-gray-400 flex-shrink-0">
                                         <span className="flex items-center gap-1">
                                             <Flame
                                                 size={15}
@@ -225,7 +225,7 @@ export function HomeLearningHubSection({
 
                 {/* Compact Latest Updates Text-Only Row */}
                 {latestArticles && latestArticles.length > 0 && (
-                    <div className="mt-12 pt-8 border-t border-dashboard/60 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="mt-12 pt-8 border-t border-dashboard/60 dark:border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
                         <div className="flex items-center gap-2 shrink-0">
                             <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
                             <span className="text-xs font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">
@@ -237,9 +237,9 @@ export function HomeLearningHubSection({
                                 <Link
                                     key={article.id}
                                     href={`/articles/${article.slug}`}
-                                    className="flex items-center gap-1.5 text-gray-650 dark:text-gray-300 hover:text-gold dark:hover:text-gold transition-colors font-semibold truncate max-w-xs md:max-w-md group"
+                                    className="flex items-center gap-1.5 text-gray-600 dark:text-gray-300 hover:text-gold dark:hover:text-gold transition-colors font-semibold truncate max-w-xs md:max-w-md group"
                                 >
-                                    <span className="text-[10px] font-bold text-primary dark:text-primary/95 bg-primary/10 px-1.5 py-0.5 rounded uppercase tracking-wider scale-90">
+                                    <span className="text-[10px] font-bold text-primary dark:text-primary/95 bg-primary/10 px-1.5 py-0.5 rounded-lg uppercase tracking-wider scale-90">
                                         {article.category.name}
                                     </span>
                                     <span className="truncate group-hover:underline text-gray-700 dark:text-gray-300 group-hover:text-gold dark:group-hover:text-gold transition-colors">

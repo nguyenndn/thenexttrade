@@ -91,8 +91,8 @@ const statusConfig: Record<string, StatusStyle> = {
         description: "Apply as a VIP trader to unlock Pro for free.",
         icon: Crown,
         cardBg: "bg-white dark:bg-white/[0.03]",
-        cardBorder: "border-dashboard dark:border-white/8",
-        iconBg: "bg-gray-100 dark:bg-white/8",
+        cardBorder: "border-dashboard dark:border-white/10",
+        iconBg: "bg-gray-100 dark:bg-white/10",
         iconColor: "text-gray-400 dark:text-gray-500",
         labelColor: "text-gray-700 dark:text-gray-300",
         badgeClass: "",
@@ -105,7 +105,7 @@ const accountStatusBadge: Record<string, string> = {
     EXPIRED:
         "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400",
     REVOKED: "bg-red-100 dark:bg-red-500/15 text-red-700 dark:text-red-400",
-    NONE: "bg-gray-100 dark:bg-white/8 text-gray-500 dark:text-gray-400",
+    NONE: "bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400",
 };
 
 export function VipStatusWidget() {
@@ -168,7 +168,7 @@ export function VipStatusWidget() {
 
     if (proAccess.loading) {
         return (
-            <div className="rounded-2xl border border-dashboard dark:border-white/8 bg-white dark:bg-white/[0.03] p-4">
+            <div className="rounded-2xl border border-dashboard dark:border-white/10 bg-white dark:bg-white/[0.03] p-4">
                 <div className="flex items-center gap-2.5 text-gray-400 dark:text-gray-500">
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
                     <span className="text-xs font-medium">
@@ -223,7 +223,7 @@ export function VipStatusWidget() {
                     </div>
 
                     {/* Ambient Glow */}
-                    <div className="absolute -top-10 -right-10 w-28 h-28 bg-amber-500/8 dark:bg-amber-500/15 rounded-full blur-[35px] pointer-events-none" />
+                    <div className="absolute -top-10 -right-10 w-28 h-28 bg-amber-500/10 dark:bg-amber-500/15 rounded-full blur-[35px] pointer-events-none" />
 
                     {/* Inner Card */}
                     <div className="relative m-px rounded-2xl bg-white dark:bg-[#141721] overflow-hidden">
@@ -309,7 +309,7 @@ export function VipStatusWidget() {
         return (
             <>
                 <div
-                    className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#141721] cursor-pointer group transition-all duration-500 hover:shadow-xl hover:shadow-emerald-500/8 dark:hover:shadow-emerald-500/15"
+                    className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#141721] cursor-pointer group transition-all duration-500 hover:shadow-xl hover:shadow-emerald-500/10 dark:hover:shadow-emerald-500/15"
                     onClick={() => setShowBenefits(true)}
                 >
                     {/* Animated Gradient Border */}
@@ -319,7 +319,7 @@ export function VipStatusWidget() {
 
                     {/* Ambient Glow */}
                     <div className="absolute -top-12 -right-12 w-32 h-32 bg-emerald-500/10 dark:bg-emerald-500/20 rounded-full blur-[40px] pointer-events-none group-hover:scale-125 transition-transform duration-700" />
-                    <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-teal-500/8 dark:bg-teal-400/15 rounded-full blur-[35px] pointer-events-none" />
+                    <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-teal-500/10 dark:bg-teal-400/15 rounded-full blur-[35px] pointer-events-none" />
 
                     {/* Inner Card */}
                     <div className="relative m-px rounded-2xl bg-white dark:bg-[#141721] overflow-hidden">

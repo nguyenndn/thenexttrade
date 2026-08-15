@@ -250,7 +250,7 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
                                             className={cn(
                                                 "px-3 pb-1.5",
                                                 index > 0 &&
-                                                    "mt-4 pt-3 border-t border-dashboard dark:border-white/8"
+                                                    "mt-4 pt-3 border-t border-dashboard dark:border-white/10"
                                             )}
                                         >
                                             <span className="text-[10px] font-black text-gray-600 dark:text-gray-300 tracking-widest uppercase">

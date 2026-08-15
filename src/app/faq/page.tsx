@@ -192,7 +192,7 @@ export default function FAQPage() {
                             Frequently Asked{" "}
                             <span className="text-gold">Questions</span>
                         </h1>
-                        <p className="text-base sm:text-lg text-gray-650 dark:text-gray-300 max-w-2xl mx-auto font-medium">
+                        <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-medium">
                             Everything you need to know about TheNextTrade
                             platform, trade journal sync, academy, and
                             calculators.
@@ -231,7 +231,7 @@ export default function FAQPage() {
                         <h3 className="text-lg font-black text-gray-800 dark:text-white">
                             Still have questions?
                         </h3>
-                        <p className="mt-1 text-sm text-gray-650 dark:text-gray-400 font-medium">
+                        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400 font-medium">
                             Join our Telegram channel or get in touch with
                             support.
                         </p>

@@ -125,7 +125,7 @@ export function ProBenefitsModal({
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="sticky top-0 z-10 flex items-start justify-between gap-3 bg-white dark:bg-[#13151f] border-b border-dashboard dark:border-white/8 px-5 pt-5 pb-4">
+                <div className="sticky top-0 z-10 flex items-start justify-between gap-3 bg-white dark:bg-[#13151f] border-b border-dashboard dark:border-white/10 px-5 pt-5 pb-4">
                     <div className="flex items-center gap-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400/20 to-orange-400/15 ring-1 ring-amber-300/30 dark:ring-amber-500/20">
                             <Crown className="h-5 w-5 text-amber-500 dark:text-amber-400" />
@@ -146,7 +146,7 @@ export function ProBenefitsModal({
                     <button
                         onClick={onClose}
                         aria-label="Close modal"
-                        className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/8 transition-colors"
+                        className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                     >
                         <X className="h-4 w-4" />
                     </button>
@@ -165,15 +165,15 @@ export function ProBenefitsModal({
                                         key={item.title}
                                         className={`flex gap-3 rounded-xl p-3 transition-colors ${
                                             item.highlight
-                                                ? "bg-gradient-to-r from-amber-50 to-orange-50/50 dark:from-amber-500/8 dark:to-orange-500/5 ring-1 ring-amber-200/60 dark:ring-amber-500/15"
-                                                : "bg-gray-50 dark:bg-white/[0.03] ring-1 ring-gray-100 dark:ring-white/6"
+                                                ? "bg-gradient-to-r from-amber-50 to-orange-50/50 dark:from-amber-500/10 dark:to-orange-500/5 ring-1 ring-amber-200/60 dark:ring-amber-500/15"
+                                                : "bg-gray-50 dark:bg-white/[0.03] ring-1 ring-gray-100 dark:ring-white/5"
                                         }`}
                                     >
                                         <div
                                             className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${
                                                 item.highlight
                                                     ? "bg-amber-100 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400"
-                                                    : "bg-gray-100 dark:bg-white/8 text-gray-500 dark:text-gray-400"
+                                                    : "bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400"
                                             }`}
                                         >
                                             <item.icon className="h-3.5 w-3.5" />
@@ -200,7 +200,7 @@ export function ProBenefitsModal({
 
                 {/* Footer CTA - only for Free Plan */}
                 {!isPro && (
-                    <div className="sticky bottom-0 border-t border-dashboard dark:border-white/8 bg-white dark:bg-[#13151f] px-5 py-4">
+                    <div className="sticky bottom-0 border-t border-dashboard dark:border-white/10 bg-white dark:bg-[#13151f] px-5 py-4">
                         <Link
                             href="/dashboard/accounts?action=add&intent=unlock-pro"
                             onClick={onClose}

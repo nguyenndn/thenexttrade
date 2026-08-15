@@ -3,6 +3,7 @@ import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
 
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Lexend, Source_Sans_3 } from "next/font/google";
 import { Toaster } from "sonner";
@@ -152,17 +153,19 @@ export default function RootLayout({
  `,
                     }}
                 />
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `
- if ('serviceWorker' in navigator) {
- (window.requestIdleCallback || function(cb){setTimeout(cb,1)})(function() {
- navigator.serviceWorker.register('/sw.js');
- });
- }
- `,
-                    }}
-                />
+                {process.env.NODE_ENV === "production" && (
+                    <script
+                        dangerouslySetInnerHTML={{
+                            __html: `
+if ('serviceWorker' in navigator && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+(window.requestIdleCallback || function(cb){setTimeout(cb,1)})(function() {
+navigator.serviceWorker.register('/sw.js');
+});
+}
+`,
+                        }}
+                    />
+                )}
             </head>
             <body
                 className={`${sourceSans.variable} ${lexend.variable} font-sans bg-white dark:bg-transparent`}
@@ -209,7 +212,9 @@ export default function RootLayout({
                         }}
                     />
                     <SystemAnnouncementBanner />
-                    {children}
+                    <SmoothScrollProvider>
+                        {children}
+                    </SmoothScrollProvider>
                     <Toaster richColors position="top-right" closeButton />
                 </ThemeProvider>
                 <GoogleAnalytics measurementId={gaMeasurementId} />

@@ -38,7 +38,7 @@ export function TechPanel({ devices, browsers }: Props) {
                         return (
                             <div
                                 key={d.device}
-                                className="text-center p-3 rounded-xl bg-gray-50 dark:bg-white/3 border border-gray-200 dark:border-white/10"
+                                className="text-center p-3 rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10"
                             >
                                 <Icon
                                     className="w-5 h-5 mx-auto mb-1.5"

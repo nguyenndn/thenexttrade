@@ -105,7 +105,7 @@ export function RecentVisitorsPanel() {
                             {visitors.map((v, i) => (
                                 <tr
                                     key={`${v.sessionId}-${i}`}
-                                    className="border-b border-gray-50 dark:border-white/3 last:border-0 hover:bg-gray-50 dark:hover:bg-white/2 transition-colors"
+                                    className="border-b border-gray-50 dark:border-white/[0.03] last:border-0 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
                                 >
                                     <td className="py-2.5">
                                         {v.isOnline ? (

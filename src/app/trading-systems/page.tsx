@@ -61,7 +61,7 @@ const TOOL_CARDS = [
         ],
         ctaLabel: "Unlock Trade Manager",
         accentClass:
-            "from-blue-500/8 via-cyan-500/4 to-transparent border-blue-500/20 hover:border-blue-500/40",
+            "from-blue-500/10 via-cyan-500/5 to-transparent border-blue-500/20 hover:border-blue-500/40",
         colorRgb: "59, 130, 246",
         icon: SlidersHorizontal,
     },
@@ -79,7 +79,7 @@ const TOOL_CARDS = [
         ],
         ctaLabel: "Unlock Phoenix Grid",
         accentClass:
-            "from-emerald-500/8 via-teal-500/4 to-transparent border-emerald-500/20 hover:border-emerald-500/40",
+            "from-emerald-500/10 via-teal-500/5 to-transparent border-emerald-500/20 hover:border-emerald-500/40",
         colorRgb: "16, 185, 129",
         icon: Bot,
     },
@@ -208,7 +208,7 @@ export default async function TradingSystemsIndexPage() {
                         <div className="flex items-center justify-between border-b border-dashed border-gray-200 pb-3.5 dark:border-white/5">
                             <div className="flex items-center gap-2">
                                 <span className="h-2.5 w-2.5 rounded-full bg-red-400/85" />
-                                <span className="h-2.5 w-2.5 rounded-full bg-yellow-450/85" />
+                                <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/85" />
                                 <span className="h-2.5 w-2.5 rounded-full bg-emerald-450/85" />
                             </div>
                             <span className="rounded-full border border-gold/20 bg-gold/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-gold">
@@ -269,7 +269,7 @@ export default async function TradingSystemsIndexPage() {
                                         key={step.label}
                                         className="flex items-center justify-between text-[11px]"
                                     >
-                                        <span className="font-semibold text-gray-655 dark:text-gray-400">
+                                        <span className="font-semibold text-gray-600 dark:text-gray-400">
                                             {step.label}
                                         </span>
                                         <span className="font-black text-emerald-500 dark:text-emerald-400 flex items-center gap-1">
@@ -453,7 +453,7 @@ export default async function TradingSystemsIndexPage() {
                             className={buttonVariants({
                                 variant: "outline",
                                 className:
-                                    "min-h-12 rounded-xl border-gray-350 dark:border-white/15 bg-white/40 dark:bg-transparent px-8 text-xs font-black uppercase tracking-wider text-gray-800 dark:text-white hover:border-gold/30 hover:bg-gold/5 dark:hover:border-white/30 dark:hover:bg-white/[0.05] transition-all active:scale-[0.98]",
+                                    "min-h-12 rounded-xl border-gray-400 dark:border-white/15 bg-white/40 dark:bg-transparent px-8 text-xs font-black uppercase tracking-wider text-gray-800 dark:text-white hover:border-gold/30 hover:bg-gold/5 dark:hover:border-white/30 dark:hover:bg-white/[0.05] transition-all active:scale-[0.98]",
                             })}
                         >
                             View Supported Brokers
@@ -462,7 +462,7 @@ export default async function TradingSystemsIndexPage() {
                     </div>
 
                     <div className="border-t border-dashed border-gray-200 dark:border-white/5 pt-5 max-w-xl mx-auto">
-                        <p className="text-xs font-medium leading-relaxed text-gray-450 dark:text-gray-500">
+                        <p className="text-xs font-medium leading-relaxed text-gray-500 dark:text-gray-500">
                             MT5 Expert Advisors support execution and workflow.
                             They do not guarantee profit, and your funds stay
                             with your broker.

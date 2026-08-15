@@ -112,7 +112,7 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                                     <span
                                         suppressHydrationWarning
                                         key={s.name}
-                                        className={`flex items-center gap-1.5 px-2 py-1 rounded border border-dashboard bg-gray-50 dark:bg-white/5 ${s.status === "Open" ? "border-green-500/20 bg-green-500/5" : "opacity-60"}`}
+                                        className={`flex items-center gap-1.5 px-2 py-1 rounded-lg border border-dashboard bg-gray-50 dark:bg-white/5 ${s.status === "Open" ? "border-green-500/20 bg-green-500/5" : "opacity-60"}`}
                                     >
                                         <span
                                             suppressHydrationWarning
@@ -155,7 +155,7 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                                 <h3 className="text-lg font-bold text-gray-700 dark:text-white group-hover:text-gold dark:group-hover:text-gold transition-colors">
                                     Economic Calendar
                                 </h3>
-                                <div className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 dark:bg-white/10 text-gray-600">
+                                <div className="text-[10px] font-bold px-1.5 py-0.5 rounded-lg bg-gray-100 dark:bg-white/10 text-gray-600">
                                     TODAY
                                 </div>
                             </div>

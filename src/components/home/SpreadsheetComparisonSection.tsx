@@ -95,7 +95,7 @@ export function SpreadsheetComparisonSection({
                             return (
                                 <div
                                     key={card.label}
-                                    className="rounded-2xl border border-gold/20 bg-white/80 dark:bg-white/[0.02] p-4 shadow-sm flex flex-col items-center text-center sm:items-start sm:text-left"
+                                    className="rounded-xl border border-gold/20 bg-white/80 dark:bg-white/[0.02] p-4 shadow-sm flex flex-col items-center text-center sm:items-start sm:text-left"
                                 >
                                     <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-gold/10 text-gold">
                                         <Icon size={18} />
@@ -141,7 +141,7 @@ export function SpreadsheetComparisonSection({
                                 key={idx}
                                 className="grid grid-cols-1 md:grid-cols-2 gap-3"
                             >
-                                <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-gray-50/50 dark:bg-white/[0.01] border border-dashboard/30 dark:border-white/5">
+                                <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-gray-50/50 dark:bg-white/[0.01] border border-dashboard/30 dark:border-white/10">
                                     <X
                                         size={14}
                                         className="text-red-400 flex-shrink-0 mt-0.5"
@@ -172,7 +172,7 @@ export function SpreadsheetComparisonSection({
                                     : "/auth/signup?source=spreadsheet_comparison"
                             }
                         >
-                            <Button className="min-h-11 px-8 rounded-xl bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-black text-xs sm:text-sm shadow-[0_4px_12px_rgba(245,158,11,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                            <Button className="min-h-11 px-8 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-xs sm:text-sm shadow-[0_4px_12px_rgba(245,158,11,0.25)] transition-all flex items-center justify-center gap-2">
                                 {isLoggedIn
                                     ? "Open My Journal"
                                     : "Start Free Journal"}{" "}

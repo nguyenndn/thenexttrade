@@ -103,7 +103,7 @@ export function CampaignPanel({ campaigns, totalViews, loading }: Props) {
                             return (
                                 <tr
                                     key={`${c.campaign}-${c.source}-${idx}`}
-                                    className="border-b border-gray-50 dark:border-white/3 last:border-0 hover:bg-gray-50 dark:hover:bg-white/2 transition-colors"
+                                    className="border-b border-gray-50 dark:border-white/[0.03] last:border-0 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
                                 >
                                     <td className="py-2.5">
                                         <div className="flex items-center gap-1.5">

@@ -246,7 +246,7 @@ export function AccountCard({
                         </span>
                     )}
                     {account.accountNumber && (
-                        <span className="text-[9px] font-mono font-bold text-gray-600 dark:text-gray-300 tracking-wider whitespace-nowrap bg-gray-100 dark:bg-white/8 border border-gray-300 dark:border-white/15 px-2 py-[3px] rounded-md">
+                        <span className="text-[9px] font-mono font-bold text-gray-600 dark:text-gray-300 tracking-wider whitespace-nowrap bg-gray-100 dark:bg-white/10 border border-gray-300 dark:border-white/15 px-2 py-[3px] rounded-md">
                             #{account.accountNumber}
                         </span>
                     )}

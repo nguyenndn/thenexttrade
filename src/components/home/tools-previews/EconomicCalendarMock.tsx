@@ -54,7 +54,7 @@ export function EconomicCalendarMock() {
                 {/* News Item 1 */}
                 <div className="flex items-center justify-between text-[9px] font-bold border-b border-slate-100 pb-1.5">
                     <div className="flex items-center gap-1.5">
-                        <span className="bg-red-500 text-white text-[7px] font-black px-1 rounded">
+                        <span className="bg-red-500 text-white text-[7px] font-black px-1 rounded-lg">
                             USD
                         </span>
                         <span className="text-slate-700">
@@ -63,7 +63,7 @@ export function EconomicCalendarMock() {
                     </div>
                     <div>
                         {released ? (
-                            <span className="text-emerald-600 font-extrabold bg-emerald-50 px-1 rounded border border-emerald-200">
+                            <span className="text-emerald-600 font-extrabold bg-emerald-50 px-1 rounded-lg border border-emerald-200">
                                 5.25% (Actual)
                             </span>
                         ) : hovered ? (
@@ -81,7 +81,7 @@ export function EconomicCalendarMock() {
                 {/* News Item 2 */}
                 <div className="flex items-center justify-between text-[9px] font-bold">
                     <div className="flex items-center gap-1.5">
-                        <span className="bg-amber-500 text-white text-[7px] font-black px-1 rounded">
+                        <span className="bg-amber-500 text-white text-[7px] font-black px-1 rounded-lg">
                             EUR
                         </span>
                         <span className="text-slate-700">

@@ -46,7 +46,7 @@ export function PipValueMock() {
             <div className="flex-1 flex flex-col justify-center gap-2 z-10 my-1">
                 <div className="flex justify-between items-center text-[10px] font-bold text-slate-500">
                     <span>Live Mid Rate</span>
-                    <span className="font-mono text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                    <span className="font-mono text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded-lg border border-slate-200">
                         {rate.toFixed(4)}
                     </span>
                 </div>

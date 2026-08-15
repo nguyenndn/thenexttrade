@@ -41,11 +41,11 @@ const REVIEWS: Review[] = [
         color: "bg-rose-500",
     },
     {
-        name: "Anh Nguyen",
+        name: "Liam C.",
         role: "Forex Educator",
         text: "As someone who teaches trading, I recommend TheNextTrade to all my students. The content quality rivals platforms charging $500+. And it's completely free.",
         rating: 5,
-        initials: "AN",
+        initials: "LC",
         color: "bg-purple-500",
     },
     {
@@ -122,7 +122,7 @@ export function ReviewsSection() {
                     eyebrow="Community love"
                     title="What Our Traders Say"
                     highlight="Traders"
-                    description="Join 32,000+ traders who trust TheNextTrade for their forex success."
+                    description="Join 12,000+ traders who trust TheNextTrade for their forex success."
                     icon={Star}
                     className="mb-12"
                 />
@@ -143,8 +143,8 @@ export function ReviewsSection() {
                             let cardClasses = "";
                             if (isMiddle) {
                                 cardClasses = isDark
-                                    ? "bg-white/[0.06] border-gold/40 shadow-[0_15px_40px_rgba(245,158,11,0.1)] scale-103 lg:scale-105 z-20 relative ring-1 ring-gold/10"
-                                    : "bg-white border-amber-400 shadow-[0_15px_40px_rgba(245,158,11,0.06)] scale-103 lg:scale-105 z-20 relative ring-1 ring-amber-300/30";
+                                    ? "bg-white/[0.06] border-gold/40 shadow-[0_15px_40px_rgba(245,158,11,0.1)] scale-105 z-20 relative ring-1 ring-gold/10"
+                                    : "bg-white border-amber-400 shadow-[0_15px_40px_rgba(245,158,11,0.06)] scale-105 z-20 relative ring-1 ring-amber-300/30";
                             } else if (isSide) {
                                 cardClasses =
                                     "scale-95 opacity-40 dark:opacity-30 blur-[1.5px] pointer-events-none z-10 relative";
@@ -158,7 +158,7 @@ export function ReviewsSection() {
                             return (
                                 <div
                                     key={`${currentIndex}-${idx}`}
-                                    className={`relative p-5 rounded-2xl border transition-all duration-500 animate-in fade-in slide-in-from-right-4 flex flex-col justify-between h-full ${cardClasses}`}
+                                    className={`relative p-5 rounded-xl border transition-all duration-500 animate-in fade-in slide-in-from-right-4 flex flex-col justify-between h-full ${cardClasses}`}
                                 >
                                     {/* Top Row: Rating and faint Quote icon */}
                                     <div className="flex items-center justify-between mb-3">
@@ -169,7 +169,7 @@ export function ReviewsSection() {
                                                 <Star
                                                     key={i}
                                                     size={14}
-                                                    className="text-yellow-450 fill-yellow-450 dark:text-gold dark:fill-gold"
+                                                    className="text-yellow-500 fill-yellow-500 dark:text-gold dark:fill-gold"
                                                 />
                                             ))}
                                         </div>
@@ -180,12 +180,12 @@ export function ReviewsSection() {
                                     </div>
 
                                     {/* Middle: Testimonial Text */}
-                                    <p className="text-gray-705 dark:text-gray-200 text-[13px] font-semibold leading-relaxed mb-4 min-h-[60px] italic">
+                                    <p className="text-gray-600 dark:text-gray-200 text-[13px] font-semibold leading-relaxed mb-4 min-h-[60px] italic">
                                         &ldquo;{review.text}&rdquo;
                                     </p>
 
-                                    {/* Bottom Row: User Profile & Verified Badge */}
-                                    <div className="flex items-center justify-between border-t border-dashboard/80 dark:border-white/5 pt-3 mt-auto">
+                                    {/* Bottom Row: User Profile */}
+                                    <div className="flex items-center justify-between border-t border-dashboard/80 dark:border-white/10 pt-3 mt-auto">
                                         {/* User Profile */}
                                         <div className="flex items-center gap-2.5">
                                             <div className="relative shrink-0">
@@ -194,36 +194,15 @@ export function ReviewsSection() {
                                                 >
                                                     {review.initials}
                                                 </div>
-                                                {/* Gold Checkmark Badge */}
-                                                <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-amber-500 dark:bg-gold rounded-full flex items-center justify-center text-white border-2 border-white dark:border-[#1E2028] scale-90 shadow-sm">
-                                                    <svg
-                                                        className="w-2.5 h-2.5"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        strokeWidth="3"
-                                                        viewBox="0 0 24 24"
-                                                    >
-                                                        <path
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            d="M4.5 12.75l6 6 9-13.5"
-                                                        />
-                                                    </svg>
-                                                </span>
                                             </div>
                                             <div className="min-w-0 text-left">
                                                 <p className="text-gray-800 dark:text-white font-black text-sm leading-tight truncate">
                                                     {review.name}
                                                 </p>
-                                                <p className="text-gray-500 dark:text-gray-450 text-[10px] font-bold uppercase tracking-wider mt-0.5">
-                                                    Member
+                                                <p className="text-gray-500 dark:text-gray-400 text-[10px] font-bold uppercase tracking-wider mt-0.5">
+                                                    {review.role}
                                                 </p>
                                             </div>
-                                        </div>
-
-                                        {/* Verified Badge */}
-                                        <div className="px-2.5 py-0.5 rounded-full border border-amber-500/20 dark:border-gold/20 bg-amber-500/5 dark:bg-gold/5 text-[9px] font-black uppercase tracking-wider text-amber-600 dark:text-gold shrink-0">
-                                            Verified
                                         </div>
                                     </div>
                                 </div>
@@ -249,6 +228,12 @@ export function ReviewsSection() {
                                     <button
                                         key={i}
                                         onClick={() => setCurrentIndex(i)}
+                                        aria-label={`Go to review ${i + 1}`}
+                                        aria-current={
+                                            i === currentIndex
+                                                ? "true"
+                                                : undefined
+                                        }
                                         className={`w-2 h-2 rounded-full transition-all duration-300 ${
                                             i === currentIndex
                                                 ? "bg-gold w-6"

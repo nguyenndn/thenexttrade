@@ -115,7 +115,7 @@ export function ChartImageUploader({
             className={`group relative flex flex-col items-center justify-center gap-2.5 rounded-2xl border-2 border-dashed p-5 transition-all cursor-pointer ${
                 isDragging
                     ? "border-gold bg-gold/5 scale-[1.01]"
-                    : "border-gray-250 dark:border-white/10 hover:border-gold/50 hover:bg-gold/[0.02]"
+                    : "border-gray-200 dark:border-white/10 hover:border-gold/50 hover:bg-gold/[0.02]"
             } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
             onClick={() => !disabled && inputRef.current?.click()}
         >

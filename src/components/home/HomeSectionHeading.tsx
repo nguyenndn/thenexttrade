@@ -86,7 +86,7 @@ export function HomeSectionHeading({
                     <div>
                         <h2
                             className={[
-                                "font-heading text-3xl font-black tracking-tight text-gray-850 dark:text-white sm:text-4xl",
+                                "font-heading text-3xl font-black tracking-tight text-gray-900 dark:text-white sm:text-4xl",
                                 isCenter ? "leading-[1.08]" : "leading-tight",
                                 titleClassName,
                             ].join(" ")}

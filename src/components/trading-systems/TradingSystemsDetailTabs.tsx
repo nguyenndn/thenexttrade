@@ -85,7 +85,7 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                                 <Sparkles className="h-3 w-3" />
                                 Expert Advisor Technicals
                             </div>
-                            <h3 className="text-base font-black text-gray-850 dark:text-white uppercase tracking-wider flex items-center gap-2 mt-1">
+                            <h3 className="text-base font-black text-gray-900 dark:text-white uppercase tracking-wider flex items-center gap-2 mt-1">
                                 {activeTab === "overview" &&
                                     "Key Features & Functions"}
                                 {activeTab === "specs" && "Core Specifications"}
@@ -123,7 +123,7 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                                     <div
                                         key={idx}
                                         className={cn(
-                                            "rounded-2xl border border-gray-200/50 dark:border-white/5 bg-white/40 dark:bg-[#151822]/44 p-5 space-y-3 transition-all duration-300 relative overflow-hidden group",
+                                            "rounded-2xl border border-gray-200/50 dark:border-white/5 bg-white/40 dark:bg-[#151822]/45 p-5 space-y-3 transition-all duration-300 relative overflow-hidden group",
                                             colorTheme === "gold" &&
                                                 "hover:border-gold/30 hover:shadow-md",
                                             colorTheme === "blue" &&
@@ -146,7 +146,7 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                                         >
                                             <TabIcon size={18} />
                                         </div>
-                                        <h4 className="text-xs font-black text-gray-850 dark:text-white uppercase tracking-wider relative z-10">
+                                        <h4 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider relative z-10">
                                             {item.title}
                                         </h4>
                                         <p className="text-xs font-semibold leading-relaxed text-gray-500 dark:text-gray-400 relative z-10">

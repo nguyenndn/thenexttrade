@@ -107,7 +107,7 @@ export function EventsPanel({ events, recentEvents }: Props) {
                     {recentEvents?.map((e) => (
                         <div
                             key={e.id}
-                            className="flex items-center gap-3 py-2.5 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/3 transition-colors"
+                            className="flex items-center gap-3 py-2.5 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors"
                         >
                             <span className="text-base shrink-0">
                                 {COUNTRY_FLAGS[e.country ?? ""] || "🌍"}

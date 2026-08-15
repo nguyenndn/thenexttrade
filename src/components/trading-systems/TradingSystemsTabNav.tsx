@@ -35,7 +35,7 @@ export function TradingSystemsTabNav({
     return (
         <div>
             {/* Tab Navigation */}
-            <div className="mb-8 flex items-center gap-1 rounded-2xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#111318]/80 p-1.5 backdrop-blur-md w-fit shadow-xs">
+            <div className="mb-8 flex items-center gap-1 rounded-2xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#111318]/80 p-1.5 backdrop-blur-md w-fit shadow-sm">
                 {TABS.map((tab) => {
                     const Icon = tab.icon;
                     const isActive = activeTab === tab.id;
