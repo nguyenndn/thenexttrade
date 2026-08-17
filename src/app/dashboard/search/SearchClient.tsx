@@ -74,7 +74,7 @@ export default function SearchClient() {
                     part.toLowerCase() === highlight.toLowerCase() ? (
                         <span
                             key={i}
-                            className="bg-yellow-200 dark:bg-yellow-500/30 text-gray-900 dark:text-yellow-100 px-1 rounded-sm font-medium"
+                            className="bg-yellow-200 dark:bg-yellow-500/30 text-gray-900 dark:text-yellow-100 px-1 rounded-lg font-medium"
                         >
                             {part}
                         </span>

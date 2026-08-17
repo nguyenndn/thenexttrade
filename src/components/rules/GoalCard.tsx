@@ -55,19 +55,19 @@ export function GoalCard({ goal, onUpdate }: GoalCardProps) {
         switch (status) {
             case "COMPLETED":
                 return (
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/20">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/20">
                         Completed
                     </span>
                 );
             case "CANCELLED":
                 return (
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-red-50 text-red-500 border border-red-200 dark:bg-red-500/15 dark:text-red-400 dark:border-red-500/20">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-lg bg-red-50 text-red-500 border border-red-200 dark:bg-red-500/15 dark:text-red-400 dark:border-red-500/20">
                         Cancelled
                     </span>
                 );
             default:
                 return (
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-500/15 dark:text-blue-400 dark:border-blue-500/20">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-500/15 dark:text-blue-400 dark:border-blue-500/20">
                         Active
                     </span>
                 );

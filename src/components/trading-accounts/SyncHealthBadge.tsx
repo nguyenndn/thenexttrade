@@ -175,7 +175,7 @@ export function SyncHealthBadge({
                     <span className={cn("text-xs font-bold", config.color)}>
                         {health.label}
                     </span>
-                    <span className="text-[10px] text-gray-500 font-medium px-1.5 py-0.5 bg-gray-100 dark:bg-white/5 rounded">
+                    <span className="text-[10px] text-gray-500 font-medium px-1.5 py-0.5 bg-gray-100 dark:bg-white/5 rounded-lg">
                         {SOURCE_LABELS[health.source]}
                     </span>
                 </div>

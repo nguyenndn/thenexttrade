@@ -156,7 +156,7 @@ export function ProfitLossCalc() {
                     </p>
                     <p
                         className={cn(
-                            "text-5xl font-black mb-2",
+                            "text-4xl sm:text-5xl font-black mb-2",
                             isProfit
                                 ? "text-green-600 dark:text-green-400"
                                 : "text-red-600 dark:text-red-400"

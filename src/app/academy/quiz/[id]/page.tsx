@@ -14,6 +14,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 export default function QuizRunnerPage() {
     const router = useRouter();
@@ -147,7 +148,11 @@ export default function QuizRunnerPage() {
                     <div className="flex gap-4">
                         <Link
                             href="/academy"
-                            className="flex-1 py-3 rounded-xl border border-dashboard font-bold hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                            className={buttonVariants({
+                                variant: "outline",
+                                className:
+                                    "flex-1 py-2.5 rounded-xl border border-dashboard font-bold hover:bg-gray-100 dark:hover:bg-white/5",
+                            })}
                         >
                             Back to Course
                         </Link>

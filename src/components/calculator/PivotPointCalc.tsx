@@ -138,7 +138,7 @@ export function PivotPointCalc() {
         <div className="grid lg:grid-cols-2 gap-8">
             <div className="space-y-6">
                 {/* Method Toggle */}
-                <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-xl gap-1">
+                <div className="flex flex-wrap bg-gray-100 dark:bg-white/5 p-1 rounded-xl gap-1">
                     {METHODS.map((m) => (
                         <button
                             key={m.id}
@@ -146,7 +146,7 @@ export function PivotPointCalc() {
                                 setInputs({ ...inputs, method: m.id })
                             }
                             className={cn(
-                                "relative flex-1 py-2.5 rounded-lg font-bold text-xs transition-colors z-10",
+                                "relative flex-1 min-w-[38%] py-2.5 rounded-lg font-bold text-xs transition-colors z-10",
                                 inputs.method === m.id
                                     ? "text-white"
                                     : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white"
@@ -217,7 +217,7 @@ export function PivotPointCalc() {
                             <div className="flex items-center gap-3">
                                 <div
                                     className={cn(
-                                        "w-10 h-6 rounded text-center text-xs font-black flex items-center justify-center",
+                                        "w-10 h-6 rounded-lg text-center text-xs font-black flex items-center justify-center",
                                         level.label.startsWith("R")
                                             ? "bg-red-500/10 text-red-500"
                                             : level.label === "PP"

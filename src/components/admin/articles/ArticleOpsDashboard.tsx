@@ -295,7 +295,7 @@ export function ArticleOpsDashboard({
                         )}
                         <button
                             onClick={() => setSelectedIds(new Set())}
-                            className="ml-auto p-1 rounded hover:bg-gray-200 dark:hover:bg-white/10"
+                            className="ml-auto p-1 rounded-lg hover:bg-gray-200 dark:hover:bg-white/10"
                         >
                             <X size={14} className="text-gray-500" />
                         </button>
@@ -330,7 +330,7 @@ export function ArticleOpsDashboard({
                                                         )
                                                     );
                                             }}
-                                            className="rounded border-gray-300 text-primary focus:ring-primary"
+                                            className="rounded-lg border-gray-300 text-primary focus:ring-primary"
                                         />
                                     </th>
                                     <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -416,7 +416,7 @@ export function ArticleOpsDashboard({
                                                             }
                                                         );
                                                     }}
-                                                    className="rounded border-gray-300 text-primary focus:ring-primary"
+                                                    className="rounded-lg border-gray-300 text-primary focus:ring-primary"
                                                 />
                                             </td>
                                             <td className="px-4 py-3">
@@ -455,7 +455,7 @@ export function ArticleOpsDashboard({
                                                         .map((issue) => (
                                                             <span
                                                                 key={issue}
-                                                                className="text-[10px] text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-500/10 px-1.5 py-0.5 rounded"
+                                                                className="text-[10px] text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-500/10 px-1.5 py-0.5 rounded-lg"
                                                             >
                                                                 {getIssueLabel(
                                                                     issue

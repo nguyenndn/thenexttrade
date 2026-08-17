@@ -157,7 +157,7 @@ export function AdminNotificationBell() {
                     </h3>
                     {(stats.pendingVipRequests > 0 ||
                         stats.pendingLicenses > 0) && (
-                        <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[11px] font-bold px-2 py-0.5 rounded-md">
+                        <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[11px] font-bold px-2 py-0.5 rounded-lg">
                             {stats.pendingVipRequests + stats.pendingLicenses}{" "}
                             Action Required
                         </span>

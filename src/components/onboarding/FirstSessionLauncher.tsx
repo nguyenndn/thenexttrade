@@ -87,7 +87,7 @@ export function FirstSessionLauncher({
                 <div className="flex items-center gap-2 min-w-0">
                     {config.icon}
                     <span
-                        className={`text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0 ${
+                        className={`text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-lg shrink-0 ${
                             isGold
                                 ? "text-amber-600 dark:text-amber-400 bg-amber-500/15 dark:bg-amber-500/20"
                                 : "text-primary bg-primary/10"

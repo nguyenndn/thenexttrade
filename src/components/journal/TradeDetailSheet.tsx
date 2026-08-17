@@ -16,6 +16,7 @@ import {
     Brain,
     BarChart3,
     MessageSquare,
+    Check,
     X,
     Medal,
     Target,
@@ -232,7 +233,7 @@ export function TradeDetailSheet({
                                     <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300 font-mono text-sm md:text-base font-bold">
                                         <span>{entry.entryPrice}</span>
                                         <span className="text-gray-300 dark:text-white/20">
-                                            ➜
+                                            <ArrowRight size={16} />
                                         </span>
                                         <span
                                             className={
@@ -290,17 +291,21 @@ export function TradeDetailSheet({
                     </div>
 
                     <Tabs defaultValue="metrics" className="w-full">
-                        <TabsList className="bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-xl border border-dashboard w-auto inline-flex h-auto mb-5">
+                        <div className="overflow-x-auto scrollbar-hide flex"><TabsList className="w-auto inline-flex h-auto mb-5 shrink-0">
                             <TabsTrigger
                                 value="metrics"
-                                className="rounded-lg px-4 py-1.5 text-sm font-bold transition-all duration-300 flex items-center gap-2 border whitespace-nowrap data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-700 dark:data-[state=active]:text-white data-[state=active]:shadow-sm data-[state=active]:border-dashboard dark:data-[state=active]:border-white/10 text-gray-600 dark:text-gray-300 border-transparent"
+                                className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                                activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                activeTextClassName="!text-white"
                             >
                                 <BarChart3 size={16} />
                                 Trade Metrics
                             </TabsTrigger>
                             <TabsTrigger
                                 value="tags"
-                                className="rounded-lg px-4 py-1.5 text-sm font-bold transition-all duration-300 flex items-center gap-2 border whitespace-nowrap data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-700 dark:data-[state=active]:text-white data-[state=active]:shadow-sm data-[state=active]:border-dashboard dark:data-[state=active]:border-white/10 text-gray-600 dark:text-gray-300 border-transparent"
+                                className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                                activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                activeTextClassName="!text-white"
                             >
                                 <Tag size={16} />
                                 Trade Context
@@ -308,7 +313,9 @@ export function TradeDetailSheet({
                             {entry.tradePlan && (
                                 <TabsTrigger
                                     value="comparison"
-                                    className="rounded-lg px-4 py-1.5 text-sm font-bold transition-all duration-300 flex items-center gap-2 border whitespace-nowrap data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-700 dark:data-[state=active]:text-white data-[state=active]:shadow-sm data-[state=active]:border-dashboard dark:data-[state=active]:border-white/10 text-gray-600 dark:text-gray-300 border-transparent"
+                                    className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                                    activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                    activeTextClassName="!text-white"
                                 >
                                     <Scale size={16} />
                                     Plan vs Actual
@@ -316,12 +323,15 @@ export function TradeDetailSheet({
                             )}
                             <TabsTrigger
                                 value="ai-insights"
-                                className="rounded-lg px-4 py-1.5 text-sm font-bold transition-all duration-300 flex items-center gap-2 border whitespace-nowrap data-[state=active]:bg-white dark:data-[state=active]:bg-[#262A36] data-[state=active]:text-gray-700 dark:data-[state=active]:text-white data-[state=active]:shadow-sm data-[state=active]:border-dashboard dark:data-[state=active]:border-white/10 text-gray-600 dark:text-gray-300 border-transparent"
+                                className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                                activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                activeTextClassName="!text-white"
                             >
                                 <Brain size={16} />
                                 AI Insights
                             </TabsTrigger>
                         </TabsList>
+                        </div>
 
                         <TabsContent
                             value="ai-insights"
@@ -512,13 +522,13 @@ export function TradeDetailSheet({
                                                         <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1 flex items-center justify-between">
                                                             Exit Price
                                                             {isTPHit && (
-                                                                <span className="text-[9px] bg-green-500 text-white px-1.5 py-0.5 rounded-sm animate-pulse tracking-widest font-black shadow-sm shadow-green-500/20">
-                                                                    🎯 TP HIT
+                                                                <span className="text-[9px] bg-green-500 text-white px-1.5 py-0.5 rounded-lg animate-pulse tracking-widest font-black shadow-sm shadow-green-500/20">
+                                                                    <Target size={10} className="inline-block mr-1 align-[-1px]" /> TP HIT
                                                                 </span>
                                                             )}
                                                             {isSLHit && (
-                                                                <span className="text-[9px] bg-red-500 text-white px-1.5 py-0.5 rounded-sm animate-pulse tracking-widest font-black shadow-sm shadow-red-500/20">
-                                                                    🛡️ SL HIT
+                                                                <span className="text-[9px] bg-red-500 text-white px-1.5 py-0.5 rounded-lg animate-pulse tracking-widest font-black shadow-sm shadow-red-500/20">
+                                                                    <ShieldAlert size={10} className="inline-block mr-1 align-[-1px]" /> SL HIT
                                                                 </span>
                                                             )}
                                                         </span>
@@ -677,7 +687,7 @@ export function TradeDetailSheet({
                                                     <div key={ev.id} className="flex items-center justify-between bg-white dark:bg-[#151925] p-2.5 rounded-lg border border-dashboard text-xs">
                                                         <div className="flex items-center gap-2">
                                                             <span className={cn(
-                                                                "px-1.5 py-0.5 rounded text-[10px] font-bold uppercase",
+                                                                "px-1.5 py-0.5 rounded-lg text-[10px] font-bold uppercase",
                                                                 ev.impact === "HIGH" ? "bg-red-500/20 text-red-500" : "bg-amber-500/20 text-amber-500"
                                                             )}>
                                                                 {ev.currency} • {ev.impact}
@@ -841,8 +851,8 @@ export function TradeDetailSheet({
                                                                         entry as any
                                                                     )
                                                                         .followedPlan
-                                                                        ? "✓ Followed Plan"
-                                                                        : "✗ Deviated"}
+                                                                        ? (<><Check size={12} className="inline-block mr-1 align-[-1px]" /> Followed Plan</>)
+                                                                        : (<><X size={12} className="inline-block mr-1 align-[-1px]" /> Deviated</>)}
                                                                 </span>
                                                             )}
                                                     </div>

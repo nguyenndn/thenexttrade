@@ -171,7 +171,7 @@ export function DraggablePreviewTable({
                                             variant="ghost"
                                             size="icon"
                                             onClick={() => removeColumn(index)}
-                                            className="h-7 w-7 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 dark:hover:bg-red-500/10 rounded-md shrink-0"
+                                            className="h-7 w-7 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg shrink-0"
                                             title="Remove Column"
                                         >
                                             <Trash2 size={14} />

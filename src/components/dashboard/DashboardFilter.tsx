@@ -313,7 +313,7 @@ export function DashboardFilter({
                                                     setDirection(val)
                                                 }
                                                 className={cn(
-                                                    "py-1 text-xs font-bold rounded-md transition-all outline-none",
+                                                    "py-1 text-xs font-bold rounded-lg transition-all outline-none",
                                                     direction === val
                                                         ? "bg-white dark:bg-[#1E2028] text-amber-500 shadow-sm"
                                                         : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
@@ -347,7 +347,7 @@ export function DashboardFilter({
                                                     setResult(item.value)
                                                 }
                                                 className={cn(
-                                                    "py-1 text-xs font-bold rounded-md transition-all outline-none",
+                                                    "py-1 text-xs font-bold rounded-lg transition-all outline-none",
                                                     result === item.value
                                                         ? "bg-white dark:bg-[#1E2028] text-amber-500 shadow-sm"
                                                         : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
@@ -371,7 +371,7 @@ export function DashboardFilter({
                                                 type="button"
                                                 onClick={() => setSource(val)}
                                                 className={cn(
-                                                    "py-1 text-xs font-bold rounded-md transition-all outline-none",
+                                                    "py-1 text-xs font-bold rounded-lg transition-all outline-none",
                                                     source === val
                                                         ? "bg-white dark:bg-[#1E2028] text-amber-500 shadow-sm"
                                                         : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"

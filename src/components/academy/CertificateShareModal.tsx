@@ -11,6 +11,7 @@ import {
     X,
 } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 interface CertificateShareModalProps {
@@ -161,13 +162,14 @@ export function CertificateShareModal({
 
                     {/* Native share CTA */}
                     {"share" in navigator && (
-                        <button
+                        <Button
+                            variant="primary"
                             onClick={nativeShare}
-                            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white text-sm font-bold transition-colors"
+                            className="w-full py-3"
                         >
                             <Share2 size={15} />
                             Share via…
-                        </button>
+                        </Button>
                     )}
 
                     <p className="text-center text-[10px] text-gray-400">

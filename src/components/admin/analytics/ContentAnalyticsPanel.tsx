@@ -50,12 +50,12 @@ export function ContentAnalyticsPanel({
                         key={i}
                         className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 animate-pulse"
                     >
-                        <div className="h-4 bg-gray-200 dark:bg-white/5 rounded w-1/4 mb-4" />
+                        <div className="h-4 bg-gray-200 dark:bg-white/5 rounded-lg w-1/4 mb-4" />
                         <div className="space-y-3">
                             {[1, 2, 3].map((j) => (
                                 <div
                                     key={j}
-                                    className="h-8 bg-gray-200 dark:bg-white/5 rounded"
+                                    className="h-8 bg-gray-200 dark:bg-white/5 rounded-lg"
                                 />
                             ))}
                         </div>
@@ -107,7 +107,7 @@ export function ContentAnalyticsPanel({
                         return (
                             <div key={item.pathname} className="relative group">
                                 <div
-                                    className="absolute inset-0 bg-indigo-50 dark:bg-indigo-500/5 rounded-md transition-all"
+                                    className="absolute inset-0 bg-indigo-50 dark:bg-indigo-500/5 rounded-lg transition-all"
                                     style={{ width: `${pct}%` }}
                                 />
                                 <div className="relative flex items-center justify-between py-2.5 px-3">
@@ -171,7 +171,7 @@ export function ContentAnalyticsPanel({
                             return (
                                 <div key={a.name} className="relative">
                                     <div
-                                        className="absolute inset-0 bg-cyan-50 dark:bg-cyan-500/5 rounded-md"
+                                        className="absolute inset-0 bg-cyan-50 dark:bg-cyan-500/5 rounded-lg"
                                         style={{ width: `${pct}%` }}
                                     />
                                     <div className="relative flex items-center justify-between py-2.5 px-3">
@@ -209,7 +209,7 @@ export function ContentAnalyticsPanel({
                             return (
                                 <div key={c.name} className="relative">
                                     <div
-                                        className="absolute inset-0 bg-amber-50 dark:bg-amber-500/5 rounded-md"
+                                        className="absolute inset-0 bg-amber-50 dark:bg-amber-500/5 rounded-lg"
                                         style={{ width: `${pct}%` }}
                                     />
                                     <div className="relative flex items-center justify-between py-2.5 px-3">

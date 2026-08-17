@@ -54,7 +54,7 @@ export function StatCard({
                         </p>
                         {change && (
                             <span
-                                className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+                                className={`text-[10px] font-bold px-1.5 py-0.5 rounded-lg ${
                                     trend === "up"
                                         ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400"
                                         : trend === "down"

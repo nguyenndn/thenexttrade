@@ -84,7 +84,7 @@ export function CountrySelect({
                         <img
                             src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/${selectedCountry.code.toLowerCase()}.svg`}
                             alt={selectedCountry.name}
-                            className="w-6 h-4 rounded-sm object-cover shadow-sm shrink-0"
+                            className="w-6 h-4 rounded-lg object-cover shadow-sm shrink-0"
                         />
                         <span className="text-gray-700 dark:text-white text-base truncate pr-2">
                             {selectedCountry.name}
@@ -158,7 +158,7 @@ export function CountrySelect({
                                         <img
                                             src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/${country.code.toLowerCase()}.svg`}
                                             alt={country.name}
-                                            className="w-6 h-4 rounded-sm object-cover shadow-sm shrink-0"
+                                            className="w-6 h-4 rounded-lg object-cover shadow-sm shrink-0"
                                         />
                                         <span className="text-sm font-medium truncate">
                                             {country.name}

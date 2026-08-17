@@ -4,6 +4,7 @@ import { BarChart3, Cpu, Route, Activity, History, Plus, Box } from "lucide-reac
 import { TabBar } from "@/components/ui/TabBar";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { usePathname, useRouter } from "next/navigation";
+import { Button } from "@/components/ui/Button";
 
 const tabs = [
     { label: "Overview", href: "/admin/ai", icon: BarChart3 },
@@ -29,12 +30,15 @@ export default function AiGatewayLayout({
                 description="Configure models, rotate API keys, design routing rules, and monitor requests."
             >
                 {pathname === "/admin/ai/routes" && (
-                    <button
+                    <Button
+                        type="button"
+                        variant="primary"
                         onClick={() => router.push("/admin/ai/routes?add=true")}
-                        className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-xl flex items-center text-sm font-semibold transition-colors shadow-sm"
+                        className="h-auto px-4 py-2 font-semibold"
                     >
-                        <Plus className="w-4 h-4 mr-2" /> Create Policy
-                    </button>
+                        <Plus className="w-4 h-4" />
+                        Create Policy
+                    </Button>
                 )}
             </AdminPageHeader>
 

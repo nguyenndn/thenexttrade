@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useCallback, useTransition, useRef, useEffect } from "react";
-import { Sparkles, Loader2, Upload, X, RefreshCw } from "lucide-react";
+import { useState, useCallback, useTransition, useEffect } from "react";
+import { Sparkles, Loader2, X, RefreshCw } from "lucide-react";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { TradingViewChart } from "./TradingViewChart";
 import { AiResultPanel } from "./AiResultPanel";
 import { analyzeChartImage, type ChartAnalysisResult } from "@/actions/chart-analysis";
+import { Button } from "@/components/ui/Button";
 
 const MAX_SIZE = 4 * 1024 * 1024; // 4MB
 const ACCEPTED = ["image/jpeg", "image/png", "image/webp"];
@@ -13,7 +14,6 @@ const ACCEPTED = ["image/jpeg", "image/png", "image/webp"];
 export function AiChartAnalysisLab() {
     const { theme } = useTheme();
     const chartTheme = theme === "light" ? "light" : "dark";
-    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -57,20 +57,6 @@ export function AiChartAnalysisLab() {
         });
     };
 
-    // Manual Upload Handler
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        if (!ACCEPTED.includes(file.type) || file.size > MAX_SIZE) return;
-
-        setUploadedFile(file);
-        const reader = new FileReader();
-        reader.onload = (ev) => setImagePreview(ev.target?.result as string);
-        reader.readAsDataURL(file);
-
-        if (fileInputRef.current) fileInputRef.current.value = "";
-    };
-
     // Global Paste (Ctrl+V) Handler
     useEffect(() => {
         const handlePaste = (e: globalThis.ClipboardEvent) => {
@@ -99,23 +85,14 @@ export function AiChartAnalysisLab() {
     return (
         <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
             {/* Chart Area */}
-            <div className="rounded-2xl border border-gray-200 dark:border-white/5 bg-white/70 dark:bg-[#111318]/60 overflow-hidden backdrop-blur-sm">
+            <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white/70 dark:bg-[#111318]/60 overflow-hidden backdrop-blur-sm">
                 <div className="h-[715px] lg:h-[975px]">
                     <TradingViewChart theme={chartTheme} />
                 </div>
             </div>
 
-            {/* Hidden file input */}
-            <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                onChange={handleFileChange}
-                className="hidden"
-            />
-
             {/* AI Analysis Panel */}
-            <div className="rounded-2xl border border-gray-200 dark:border-white/5 bg-white/70 dark:bg-[#111318]/60 backdrop-blur-sm flex flex-col max-h-[975px]">
+            <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white/70 dark:bg-[#111318]/60 backdrop-blur-sm flex flex-col max-h-[975px]">
                 {/* Panel Header */}
                 <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/5 px-6 py-4">
                     <div>
@@ -151,7 +128,7 @@ export function AiChartAnalysisLab() {
                             >
                                 <X size={12} />
                             </button>
-                            <div className="absolute bottom-1.5 left-2 px-2 py-0.5 rounded bg-black/70 backdrop-blur text-[9px] font-medium text-gray-200">
+                            <div className="absolute bottom-1.5 left-2 px-2 py-0.5 rounded-lg bg-black/70 backdrop-blur text-[9px] font-medium text-gray-200">
                                 {uploadedFile ? "Custom Screenshot" : "Auto Snapshot"}
                             </div>
                         </div>
@@ -174,10 +151,11 @@ export function AiChartAnalysisLab() {
 
                     {/* Primary 1-Click Action Button */}
                     <div className="space-y-2">
-                        <button
+                        <Button
+                            variant="primary"
                             onClick={handleAnalyze}
                             disabled={isPending}
-                            className="w-full flex items-center justify-center gap-2 rounded-xl bg-gold px-4 py-3.5 text-xs sm:text-sm font-black uppercase tracking-wider text-white whitespace-nowrap overflow-hidden shadow-lg shadow-gold/20 transition-all hover:bg-amber-600 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gold"
+                            className="w-full rounded-xl bg-gold px-4 py-3.5 text-xs sm:text-sm font-black uppercase tracking-wider text-white whitespace-nowrap overflow-hidden shadow-lg shadow-gold/20 hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gold"
                         >
                             {isPending ? (
                                 <>
@@ -190,20 +168,8 @@ export function AiChartAnalysisLab() {
                                     <span>Analyze Chart</span>
                                 </>
                             )}
-                        </button>
+                        </Button>
 
-                        {/* Secondary Option: Upload custom image */}
-                        {!uploadedFile && (
-                            <button
-                                type="button"
-                                onClick={() => fileInputRef.current?.click()}
-                                disabled={isPending}
-                                className="w-full flex items-center justify-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.03] px-4 py-2.5 text-xs font-bold text-gray-500 dark:text-gray-400 transition-all hover:border-gold/50 hover:text-gold active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                <Upload size={14} />
-                                Upload Custom Image
-                            </button>
-                        )}
                         {uploadedFile && (
                             <button
                                 type="button"

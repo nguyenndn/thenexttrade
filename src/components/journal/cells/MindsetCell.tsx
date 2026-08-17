@@ -40,7 +40,7 @@ export function MindsetCell({ entry, onUpdate }: MindsetCellProps) {
                 ev.stopPropagation();
                 handleSelect(e.label);
             }}
-            className="w-full flex items-center justify-start px-2 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-white/10 rounded-sm cursor-pointer transition-colors text-left font-normal"
+            className="w-full flex items-center justify-start px-2 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg cursor-pointer transition-colors text-left font-normal"
         >
             <span className="mr-2 text-lg">{e.icon}</span>
             <span className="text-gray-700 dark:text-gray-200">{e.label}</span>

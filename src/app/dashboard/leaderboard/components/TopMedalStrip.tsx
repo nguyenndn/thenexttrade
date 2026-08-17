@@ -372,7 +372,7 @@ export function TopMedalStrip({
                                             {entry.name}
                                         </p>
                                         {isCurrentUser && (
-                                            <span className="text-[9px] font-extrabold uppercase tracking-wide bg-primary/10 text-primary px-1 py-0.2 rounded shrink-0">
+                                            <span className="text-[9px] font-extrabold uppercase tracking-wide bg-primary/10 text-primary px-1 py-0.2 rounded-lg shrink-0">
                                                 You
                                             </span>
                                         )}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Loader2, Save, BookOpen, Clock, Eye, EyeOff } from "lucide-react";
+import { Loader2, Save, BookOpen, Clock, Eye, EyeOff, Search } from "lucide-react";
 
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { RichTextEditor } from "@/components/admin/articles/RichTextEditor";
@@ -200,7 +200,7 @@ function LessonForm() {
                         {formData.metaDescription && (
                             <div>
                                 <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1">
-                                    🔍 Meta Description{" "}
+                                    <Search size={12} className="inline-block mr-1 align-[-1px]" /> Meta Description{" "}
                                     <span className="font-normal text-gray-500">
                                         ({formData.metaDescription.length}/160)
                                     </span>

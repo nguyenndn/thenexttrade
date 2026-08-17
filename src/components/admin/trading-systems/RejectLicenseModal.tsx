@@ -95,7 +95,7 @@ export function RejectLicenseModal({
                             {predefinedReasons.map((r) => (
                                 <label
                                     key={r}
-                                    className="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-gray-50 dark:hover:bg-[#151925] transition-colors"
+                                    className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-[#151925] transition-colors"
                                 >
                                     <input
                                         type="radio"
@@ -109,7 +109,7 @@ export function RejectLicenseModal({
                                     </span>
                                 </label>
                             ))}
-                            <label className="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-gray-50 dark:hover:bg-[#151925] transition-colors">
+                            <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-[#151925] transition-colors">
                                 <input
                                     type="radio"
                                     name="reason"

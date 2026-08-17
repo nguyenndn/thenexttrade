@@ -92,7 +92,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
             </div>
 
             {/* Header Panel */}
-            <div className="relative rounded-3xl border border-gray-200 dark:border-white/5 bg-white/80 dark:bg-[#111318]/50 p-6 md:p-8 shadow-sm mb-8 overflow-hidden">
+            <div className="relative rounded-3xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#111318]/50 p-6 md:p-8 shadow-sm mb-8 overflow-hidden">
                 {/* Ambient background glow inside header */}
                 <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-72 h-72 bg-gold/5 dark:bg-gold/[0.03] rounded-full blur-3xl pointer-events-none" />
 
@@ -152,7 +152,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                     {heroHighlights.map((item) => (
                         <div
                             key={item.title}
-                            className="rounded-2xl border border-gray-200/40 bg-white/30 dark:border-white/5 dark:bg-[#151822]/20 p-4 space-y-2.5 hover:border-gold/30 transition-all duration-300"
+                            className="rounded-2xl border border-gray-200/40 bg-white/30 dark:border-white/10 dark:bg-[#151822]/20 p-4 space-y-2.5 hover:border-gold/30 transition-all duration-300"
                         >
                             <div className="flex items-center gap-2 text-emerald-500">
                                 <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/20">
@@ -361,7 +361,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                 </div>
 
                 {/* FAQ */}
-                <div className="rounded-3xl border border-gray-200 dark:border-white/5 bg-white/60 dark:bg-[#111318]/30 p-6 shadow-sm">
+                <div className="rounded-3xl border border-gray-200 dark:border-white/10 bg-white/60 dark:bg-[#111318]/30 p-6 shadow-sm">
                     <h3 className="text-base font-black text-gray-800 dark:text-white mb-4 uppercase tracking-wider flex items-center gap-2">
                         <HelpCircle size={16} className="text-gold" />
                         Frequently Asked Questions

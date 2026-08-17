@@ -132,7 +132,7 @@ export function PublicSearchTrigger({ className }: { className?: string }) {
         >
             <Search size={16} />
             <span className="hidden sm:inline">Search...</span>
-            <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 px-1.5 font-mono text-[10px] font-medium text-gray-600 dark:text-gray-300">
+            <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 px-1.5 font-mono text-[10px] font-medium text-gray-600 dark:text-gray-300">
                 <span className="text-[10px] text-primary">Ctrl + K </span>
             </kbd>
         </button>

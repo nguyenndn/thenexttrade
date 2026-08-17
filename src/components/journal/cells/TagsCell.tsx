@@ -74,7 +74,7 @@ export function TagsCell({ entry, onUpdate }: TagsCellProps) {
                             value={newTag}
                             onChange={(e) => setNewTag(e.target.value)}
                             placeholder="Add tag..."
-                            className="flex-1 px-2 py-1 text-sm bg-gray-50 dark:bg-white/5 border border-dashboard rounded-md focus:outline-none focus:border-blue-500"
+                            className="flex-1 px-2 py-1 text-sm bg-gray-50 dark:bg-white/5 border border-dashboard rounded-lg focus:outline-none focus:border-blue-500"
                             autoFocus
                         />
                         <Button
@@ -82,7 +82,7 @@ export function TagsCell({ entry, onUpdate }: TagsCellProps) {
                             variant="primary"
                             size="icon"
                             onClick={() => handleAddTag()}
-                            className="w-8 h-8 rounded-md"
+                            className="w-8 h-8 rounded-lg"
                             disabled={!newTag.trim()}
                         >
                             <Plus size={16} />
@@ -94,7 +94,7 @@ export function TagsCell({ entry, onUpdate }: TagsCellProps) {
                             {tags.map((tag: string) => (
                                 <span
                                     key={tag}
-                                    className="flex items-center gap-1 px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 text-xs"
+                                    className="flex items-center gap-1 px-2 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs"
                                 >
                                     {tag}
                                     <Button

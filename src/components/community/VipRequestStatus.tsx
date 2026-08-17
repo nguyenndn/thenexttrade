@@ -8,6 +8,8 @@ import {
     RefreshCw,
 } from "lucide-react";
 import type { VipRequest } from "@prisma/client";
+import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 interface VipRequestStatusProps {
     request: VipRequest;
@@ -88,7 +90,11 @@ export function VipRequestStatus({
                         href="https://t.me/ZantTrader"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 font-bold text-xs rounded-xl text-white bg-[#2AABEE] hover:bg-[#2AABEE]/90 transition-all hover:-translate-y-0.5 shadow-lg shadow-[#2AABEE]/25 whitespace-nowrap shrink-0"
+                        className={buttonVariants({
+                            variant: "secondary",
+                            className:
+                                "px-5 py-2.5 font-bold text-xs rounded-xl text-white bg-[#2AABEE] hover:bg-[#2AABEE]/90 hover:shadow-md hover:shadow-[#2AABEE]/25 shadow-lg shadow-[#2AABEE]/25 whitespace-nowrap shrink-0",
+                        })}
                     >
                         <Send size={14} /> Message Admin
                     </a>
@@ -155,12 +161,14 @@ export function VipRequestStatus({
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                     {onReset && (
-                        <button
+                        <Button
+                            variant="primary"
+                            size="sm"
                             onClick={onReset}
-                            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl transition-all hover:opacity-90 text-white bg-primary shadow-lg shadow-primary/25"
+                            className="items-center gap-1.5 px-4 py-2 text-xs rounded-xl hover:opacity-90 shadow-lg shadow-primary/25"
                         >
                             <RefreshCw size={12} /> Resubmit
-                        </button>
+                        </Button>
                     )}
                     <a
                         href="https://t.me/ZantTrader"

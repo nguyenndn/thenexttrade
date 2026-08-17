@@ -46,7 +46,7 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                             <Clock className="w-4 h-4 text-cyan-500" />
                             Holding Time Ratio
                         </span>
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                        <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase ${
                             isHighDisposition
                                 ? "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"
                                 : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
@@ -84,7 +84,7 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                             <Flame className="w-4 h-4 text-amber-500" />
                             Tilt & Revenge Index
                         </span>
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                        <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase ${
                             isHighTilt
                                 ? "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"
                                 : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
@@ -126,7 +126,7 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                             <Target className="w-4 h-4 text-emerald-500" />
                             Optimal R:R Simulator
                         </span>
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                             Recommended: 1:{optimalRR?.targetRR || 1.5}
                         </span>
                     </div>

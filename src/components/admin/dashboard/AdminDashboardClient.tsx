@@ -57,7 +57,7 @@ export function AdminDashboardClient(props: Props) {
                     <div className="flex items-center gap-3">
                         <div className="w-1.5 h-8 bg-primary rounded-full" />
                         <h1 className="text-xl font-black text-gray-700 dark:text-white tracking-tighter">
-                            {greeting} 👋
+                            {greeting}
                         </h1>
                     </div>
                     <p className="text-base text-gray-600 dark:text-gray-300 font-medium pl-4.5">

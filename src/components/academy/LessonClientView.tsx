@@ -315,7 +315,7 @@ export default function LessonClientView({
                             <h3 className="font-bold text-sm text-gray-700 dark:text-white">
                                 Lessons in Module
                             </h3>
-                            <span className="text-[10px] font-bold text-gray-500 bg-gray-50 dark:bg-white/5 px-2 py-0.5 rounded">
+                            <span className="text-[10px] font-bold text-gray-500 bg-gray-50 dark:bg-white/5 px-2 py-0.5 rounded-lg">
                                 {courseLessons.length} lessons
                             </span>
                         </div>

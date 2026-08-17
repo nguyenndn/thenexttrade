@@ -23,7 +23,7 @@ export default function MistakeAnalysisPage() {
                 description="Identify leaks and correct your behavior."
             />
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
-                <TabBar tabs={analyticsTabs} equalWidth />
+                <TabBar tabs={analyticsTabs} />
             </div>
 
             <MistakeDashboard />

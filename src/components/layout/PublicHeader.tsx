@@ -117,7 +117,7 @@ export function PublicHeader({
                 ].join(" ")}
             >
                 {/* Content constrained to 1440px */}
-                <div className="flex w-full max-w-[1440px] mx-auto items-center justify-between gap-2 sm:gap-4 md:gap-6 px-3 sm:px-4 md:px-6 h-full">
+                <div className="flex w-full max-w-[1440px] mx-auto items-center justify-between gap-2 sm:gap-4 md:gap-6 px-2 sm:px-4 md:px-6 h-full">
                     {/* Logo */}
                     <div className="flex-shrink-0">
                         <Logo />

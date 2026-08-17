@@ -124,7 +124,7 @@ export function TagInput({ value, onChange }: TagInputProps) {
                 {selectedTags.map((tag) => (
                     <div
                         key={tag.id}
-                        className="flex items-center gap-1 bg-gray-100 dark:bg-white/10 px-2 py-1 rounded-md text-sm"
+                        className="flex items-center gap-1 bg-gray-100 dark:bg-white/10 px-2 py-1 rounded-lg text-sm"
                     >
                         <span>{tag.name}</span>
                         <Button

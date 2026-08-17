@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button-variants";
 import {
     ArrowLeft,
     BarChart3,
@@ -86,7 +87,11 @@ export default function AuthLayout({
                     <div className="flex flex-row items-center justify-between gap-4 py-4">
                         <Link
                             href="/"
-                            className="group inline-flex items-center gap-2 rounded-full border border-amber-900/10 bg-white/60 px-4 py-2 text-sm font-semibold text-slate-600 shadow-sm shadow-amber-900/5 backdrop-blur hover:border-amber-500/35 hover:text-slate-950 dark:bg-white/[0.06] dark:text-slate-300 dark:hover:border-amber-300/35 dark:hover:text-white transition-colors"
+                            className={buttonVariants({
+                                variant: "outline",
+                                className:
+                                    "group rounded-full border-amber-900/10 bg-white/60 px-4 py-2 text-sm font-semibold text-slate-600 shadow-sm shadow-amber-900/5 backdrop-blur hover:border-amber-500/35 hover:text-slate-950 dark:bg-white/[0.06] dark:text-slate-300 dark:hover:border-amber-300/35 dark:hover:text-white",
+                            })}
                         >
                             <ArrowLeft
                                 size={16}

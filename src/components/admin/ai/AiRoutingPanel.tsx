@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Route, Power } from "lucide-react";
+import { Route, Power, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuCheckboxItem,
+} from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
 import { createAiRoutingPolicy } from "@/actions/admin/ai-gateway";
 import { AI_TASK_KEYS } from "@/lib/ai-gateway/task-keys";
@@ -38,13 +46,22 @@ export function AiRoutingPanel({
         maxAttempts: 3,
     });
 
-    // Handle multiple select for fallbacks
-    const handleFallbackChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selected = Array.from(
-            e.target.selectedOptions,
-            (option) => option.value
-        );
-        setForm({ ...form, fallbackConfigJson: selected });
+    // Lookups for dropdown display values
+    const selectedTask = AI_TASK_KEYS.find(
+        (t) => t.key === form.scopeValue
+    );
+    const selectedModel = models.find(
+        (m) => m.id === form.primaryModelId
+    );
+
+    // Toggle a fallback model for AUTO_FAILOVER multi-select
+    const toggleFallback = (modelId: string, checked: boolean) => {
+        setForm({
+            ...form,
+            fallbackConfigJson: checked
+                ? [...form.fallbackConfigJson, modelId]
+                : form.fallbackConfigJson.filter((id) => id !== modelId),
+        });
     };
 
     const handleCreate = async () => {
@@ -83,79 +100,204 @@ export function AiRoutingPanel({
                             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                                 Scope Type
                             </label>
-                            <select
-                                className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
-                                value={form.scopeType}
-                                onChange={(e) =>
-                                    setForm({ ...form, scopeType: e.target.value })
-                                }
-                            >
-                                <option value="GLOBAL">Global (Default for all tasks)</option>
-                                <option value="TASK">Task Specific</option>
-                            </select>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="w-full justify-between h-auto bg-gray-50 dark:bg-[#151925] border-gray-200 dark:border-white/10 px-3 py-2 text-sm font-normal text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20"
+                                    >
+                                        {form.scopeType === "GLOBAL"
+                                            ? "Global (Default for all tasks)"
+                                            : "Task Specific"}
+                                        <ChevronDown
+                                            size={16}
+                                            className="shrink-0 opacity-60"
+                                        />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start">
+                                    <DropdownMenuItem
+                                        onClick={() =>
+                                            setForm({
+                                                ...form,
+                                                scopeType: "GLOBAL",
+                                            })
+                                        }
+                                    >
+                                        Global (Default for all tasks)
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onClick={() =>
+                                            setForm({
+                                                ...form,
+                                                scopeType: "TASK",
+                                            })
+                                        }
+                                    >
+                                        Task Specific
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                         {form.scopeType === "TASK" && (
                             <div>
                                 <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                                     Task Key
                                 </label>
-                                <select
-                                    className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
-                                    value={form.scopeValue}
-                                    onChange={(e) =>
-                                        setForm({ ...form, scopeValue: e.target.value })
-                                    }
-                                >
-                                    <option value="">Select Task Key...</option>
-                                    {AI_TASK_KEYS.map((task) => (
-                                        <option key={task.key} value={task.key}>
-                                            {task.key} ({task.label})
-                                        </option>
-                                    ))}
-                                </select>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className="w-full justify-between h-auto bg-gray-50 dark:bg-[#151925] border-gray-200 dark:border-white/10 px-3 py-2 text-sm font-normal text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20"
+                                        >
+                                            {selectedTask ? (
+                                                <span className="truncate">
+                                                    {selectedTask.key} (
+                                                    {selectedTask.label})
+                                                </span>
+                                            ) : (
+                                                <span className="text-gray-400 dark:text-gray-500">
+                                                    Select Task Key...
+                                                </span>
+                                            )}
+                                            <ChevronDown
+                                                size={16}
+                                                className="shrink-0 opacity-60"
+                                            />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent
+                                        align="start"
+                                        className="max-h-[250px] overflow-y-auto"
+                                    >
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                setForm({
+                                                    ...form,
+                                                    scopeValue: "",
+                                                })
+                                            }
+                                        >
+                                            Select Task Key...
+                                        </DropdownMenuItem>
+                                        {AI_TASK_KEYS.map((task) => (
+                                            <DropdownMenuItem
+                                                key={task.key}
+                                                onClick={() =>
+                                                    setForm({
+                                                        ...form,
+                                                        scopeValue: task.key,
+                                                    })
+                                                }
+                                            >
+                                                {task.key} ({task.label})
+                                            </DropdownMenuItem>
+                                        ))}
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             </div>
                         )}
                         <div>
                             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                                 Routing Mode
                             </label>
-                            <select
-                                className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
-                                value={form.mode}
-                                onChange={(e) =>
-                                    setForm({ ...form, mode: e.target.value })
-                                }
-                            >
-                                <option value="FIXED">
-                                    Fixed (Single Model)
-                                </option>
-                                <option value="AUTO_FAILOVER">
-                                    Auto Failover
-                                </option>
-                            </select>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="w-full justify-between h-auto bg-gray-50 dark:bg-[#151925] border-gray-200 dark:border-white/10 px-3 py-2 text-sm font-normal text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20"
+                                    >
+                                        {form.mode === "FIXED"
+                                            ? "Fixed (Single Model)"
+                                            : "Auto Failover"}
+                                        <ChevronDown
+                                            size={16}
+                                            className="shrink-0 opacity-60"
+                                        />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start">
+                                    <DropdownMenuItem
+                                        onClick={() =>
+                                            setForm({ ...form, mode: "FIXED" })
+                                        }
+                                    >
+                                        Fixed (Single Model)
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onClick={() =>
+                                            setForm({
+                                                ...form,
+                                                mode: "AUTO_FAILOVER",
+                                            })
+                                        }
+                                    >
+                                        Auto Failover
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                         <div>
                             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                                 Primary Model
                             </label>
-                            <select
-                                className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
-                                value={form.primaryModelId}
-                                onChange={(e) =>
-                                    setForm({
-                                        ...form,
-                                        primaryModelId: e.target.value,
-                                    })
-                                }
-                            >
-                                <option value="">Select a Model</option>
-                                {models.map((m) => (
-                                    <option key={m.id} value={m.id}>
-                                        {m.provider.displayName} -{" "}
-                                        {m.displayName}
-                                    </option>
-                                ))}
-                            </select>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="w-full justify-between h-auto bg-gray-50 dark:bg-[#151925] border-gray-200 dark:border-white/10 px-3 py-2 text-sm font-normal text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20"
+                                    >
+                                        {selectedModel ? (
+                                            <span className="truncate">
+                                                {selectedModel.provider
+                                                    .displayName}{" "}
+                                                - {selectedModel.displayName}
+                                            </span>
+                                        ) : (
+                                            <span className="text-gray-400 dark:text-gray-500">
+                                                Select a Model
+                                            </span>
+                                        )}
+                                        <ChevronDown
+                                            size={16}
+                                            className="shrink-0 opacity-60"
+                                        />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                    align="start"
+                                    className="max-h-[250px] overflow-y-auto"
+                                >
+                                    <DropdownMenuItem
+                                        onClick={() =>
+                                            setForm({
+                                                ...form,
+                                                primaryModelId: "",
+                                            })
+                                        }
+                                    >
+                                        Select a Model
+                                    </DropdownMenuItem>
+                                    {models.map((m) => (
+                                        <DropdownMenuItem
+                                            key={m.id}
+                                            onClick={() =>
+                                                setForm({
+                                                    ...form,
+                                                    primaryModelId: m.id,
+                                                })
+                                            }
+                                        >
+                                            {m.provider.displayName} -{" "}
+                                            {m.displayName}
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                         <div>
                             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
@@ -179,24 +321,69 @@ export function AiRoutingPanel({
                                     <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                                         Fallback Models
                                     </label>
-                                    <select
-                                        multiple
-                                        className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary min-h-[100px]"
-                                        value={form.fallbackConfigJson}
-                                        onChange={handleFallbackChange}
-                                    >
-                                        {models
-                                            .filter(
-                                                (m) =>
-                                                    m.id !== form.primaryModelId
-                                            )
-                                            .map((m) => (
-                                                <option key={m.id} value={m.id}>
-                                                    {m.provider.displayName} -{" "}
-                                                    {m.displayName}
-                                                </option>
-                                            ))}
-                                    </select>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                className="w-full justify-between h-auto bg-gray-50 dark:bg-[#151925] border-gray-200 dark:border-white/10 px-3 py-2 text-sm font-normal text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20"
+                                            >
+                                                {form.fallbackConfigJson.length >
+                                                0 ? (
+                                                    <span className="truncate">
+                                                        {
+                                                            form
+                                                                .fallbackConfigJson
+                                                                .length
+                                                        }{" "}
+                                                        model
+                                                        {form
+                                                            .fallbackConfigJson
+                                                            .length > 1
+                                                            ? "s"
+                                                            : ""}{" "}
+                                                        selected
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-gray-400 dark:text-gray-500">
+                                                        Select fallback models...
+                                                    </span>
+                                                )}
+                                                <ChevronDown
+                                                    size={16}
+                                                    className="shrink-0 opacity-60"
+                                                />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent
+                                            align="start"
+                                            className="max-h-[250px] overflow-y-auto"
+                                        >
+                                            {models
+                                                .filter(
+                                                    (m) =>
+                                                        m.id !==
+                                                        form.primaryModelId
+                                                )
+                                                .map((m) => (
+                                                    <DropdownMenuCheckboxItem
+                                                        key={m.id}
+                                                        checked={form.fallbackConfigJson.includes(
+                                                            m.id
+                                                        )}
+                                                        onCheckedChange={(checked) =>
+                                                            toggleFallback(
+                                                                m.id,
+                                                                checked
+                                                            )
+                                                        }
+                                                    >
+                                                        {m.provider.displayName}{" "}
+                                                        - {m.displayName}
+                                                    </DropdownMenuCheckboxItem>
+                                                ))}
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
                                 </div>
                                 <div>
                                     <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
@@ -220,18 +407,21 @@ export function AiRoutingPanel({
                         )}
                     </div>
                     <div className="flex justify-end gap-2">
-                        <button
+                        <Button
+                            type="button"
+                            variant="ghost"
                             onClick={() => setIsAdding(false)}
-                            className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                            className="h-auto px-4 py-2 text-sm font-semibold"
                         >
                             Cancel
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="primary"
                             onClick={handleCreate}
-                            className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors shadow-sm"
                         >
                             Save Policy
-                        </button>
+                        </Button>
                     </div>
                 </div>
             )}
@@ -280,7 +470,7 @@ export function AiRoutingPanel({
                                     Models
                                 </p>
                                 <div className="text-sm text-gray-900 dark:text-white flex flex-wrap gap-1">
-                                    <span className="bg-primary/10 text-primary px-2 py-0.5 rounded border border-primary/20">
+                                    <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-lg border border-primary/20">
                                         {models.find(
                                             (m) =>
                                                 m.id === policy.primaryModelId
@@ -299,7 +489,7 @@ export function AiRoutingPanel({
                                                 return (
                                                     <span
                                                         key={idx}
-                                                        className="bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded text-gray-600 dark:text-gray-300"
+                                                        className="bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-lg text-gray-600 dark:text-gray-300"
                                                     >
                                                         {fallbackModel
                                                             ? fallbackModel.displayName

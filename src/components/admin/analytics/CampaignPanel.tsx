@@ -20,12 +20,12 @@ export function CampaignPanel({ campaigns, totalViews, loading }: Props) {
     if (loading) {
         return (
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 animate-pulse">
-                <div className="h-4 bg-gray-200 dark:bg-white/5 rounded w-1/4 mb-4" />
+                <div className="h-4 bg-gray-200 dark:bg-white/5 rounded-lg w-1/4 mb-4" />
                 <div className="space-y-3">
                     {[1, 2, 3].map((i) => (
                         <div
                             key={i}
-                            className="h-10 bg-gray-200 dark:bg-white/5 rounded"
+                            className="h-10 bg-gray-200 dark:bg-white/5 rounded-lg"
                         />
                     ))}
                 </div>
@@ -49,7 +49,7 @@ export function CampaignPanel({ campaigns, totalViews, loading }: Props) {
                     </p>
                     <p className="text-xs text-gray-400">
                         Add{" "}
-                        <code className="px-1.5 py-0.5 bg-gray-100 dark:bg-white/5 rounded text-[10px]">
+                        <code className="px-1.5 py-0.5 bg-gray-100 dark:bg-white/5 rounded-lg text-[10px]">
                             ?utm_source=...&utm_campaign=...
                         </code>{" "}
                         to your URLs
@@ -125,7 +125,7 @@ export function CampaignPanel({ campaigns, totalViews, loading }: Props) {
                                         </span>
                                     </td>
                                     <td className="py-2.5">
-                                        <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-gray-100 dark:bg-white/5 text-gray-500">
+                                        <span className="px-1.5 py-0.5 text-[10px] font-medium rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500">
                                             {c.medium}
                                         </span>
                                     </td>

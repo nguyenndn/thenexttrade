@@ -25,13 +25,13 @@ export default function Loading() {
                             <div className="h-8 w-8 rounded-lg bg-gray-100 dark:bg-white/5" />
                         </div>
                         <div className="space-y-3 mb-6">
-                            <div className="h-6 w-3/4 bg-gray-200 dark:bg-white/10 rounded" />
-                            <div className="h-4 w-full bg-gray-100 dark:bg-white/5 rounded" />
-                            <div className="h-4 w-2/3 bg-gray-100 dark:bg-white/5 rounded" />
+                            <div className="h-6 w-3/4 bg-gray-200 dark:bg-white/10 rounded-lg" />
+                            <div className="h-4 w-full bg-gray-100 dark:bg-white/5 rounded-lg" />
+                            <div className="h-4 w-2/3 bg-gray-100 dark:bg-white/5 rounded-lg" />
                         </div>
                         <div className="pt-4 border-t border-gray-200 dark:border-white/10 flex justify-between items-center">
-                            <div className="h-4 w-20 bg-gray-100 dark:bg-white/5 rounded" />
-                            <div className="h-4 w-24 bg-gray-100 dark:bg-white/5 rounded" />
+                            <div className="h-4 w-20 bg-gray-100 dark:bg-white/5 rounded-lg" />
+                            <div className="h-4 w-24 bg-gray-100 dark:bg-white/5 rounded-lg" />
                         </div>
                     </div>
                 ))}

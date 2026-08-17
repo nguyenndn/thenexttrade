@@ -7,8 +7,15 @@ import {
     AlertTriangle,
     WandSparkles,
     Loader2,
+    ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import type {
     ArticleSeoFixPayload,
     ArticleSeoFixSuggestion,
@@ -22,6 +29,15 @@ interface ArticleSeoFixModalProps {
     onRegenerate: () => void;
     onClose: () => void;
 }
+
+const SCHEMA_TYPE_LABELS: Record<string, string> = {
+    ARTICLE: "Article",
+    HOWTO: "How-To",
+    FAQ: "FAQ",
+    COURSE: "Course",
+    TOOL: "Tool",
+    REVIEW: "Review",
+};
 
 export function ArticleSeoFixModal({
     suggestion,
@@ -119,7 +135,7 @@ export function ArticleSeoFixModal({
                                 {suggestion.issues.map((issue) => (
                                     <div
                                         key={issue}
-                                        className="flex items-center gap-1.5 px-2.5 py-1 rounded border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-[11px] font-medium"
+                                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-[11px] font-medium"
                                     >
                                         <AlertTriangle size={12} />
                                         {getIssueLabel(issue)}
@@ -215,23 +231,43 @@ export function ArticleSeoFixModal({
                                 <label className="text-sm font-semibold text-gray-800 dark:text-gray-200 block">
                                     Schema Type
                                 </label>
-                                <select
-                                    value={formData.schemaType}
-                                    onChange={(e) =>
-                                        setFormData({
-                                            ...formData,
-                                            schemaType: e.target.value as any,
-                                        })
-                                    }
-                                    className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all appearance-none"
-                                >
-                                    <option value="ARTICLE">Article</option>
-                                    <option value="HOWTO">How-To</option>
-                                    <option value="FAQ">FAQ</option>
-                                    <option value="COURSE">Course</option>
-                                    <option value="TOOL">Tool</option>
-                                    <option value="REVIEW">Review</option>
-                                </select>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className="w-full justify-between h-auto bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10 px-4 py-2.5 text-sm font-normal text-gray-800 dark:text-white hover:bg-white dark:hover:bg-[#1E2028] hover:border-gray-300 dark:hover:border-white/20"
+                                        >
+                                            <span className="truncate">
+                                                {SCHEMA_TYPE_LABELS[
+                                                    formData.schemaType
+                                                ] ?? formData.schemaType}
+                                            </span>
+                                            <ChevronDown
+                                                size={16}
+                                                className="shrink-0 opacity-60"
+                                            />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="start">
+                                        {Object.entries(
+                                            SCHEMA_TYPE_LABELS
+                                        ).map(([value, label]) => (
+                                            <DropdownMenuItem
+                                                key={value}
+                                                onClick={() =>
+                                                    setFormData({
+                                                        ...formData,
+                                                        schemaType:
+                                                            value as any,
+                                                    })
+                                                }
+                                            >
+                                                {label}
+                                            </DropdownMenuItem>
+                                        ))}
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             </div>
                         </div>
 

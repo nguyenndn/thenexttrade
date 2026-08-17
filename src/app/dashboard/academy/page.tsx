@@ -8,6 +8,8 @@ import {
     BookOpen,
     Award,
     Clock,
+    Check,
+    AlertTriangle,
 } from "lucide-react";
 import Link from "next/link";
 import { AcademyTree } from "@/components/academy/AcademyTree";
@@ -246,9 +248,7 @@ export default async function UserAcademyDashboard() {
 
                                 {idleDays >= 7 && (
                                     <p className="text-xs font-bold text-amber-600 dark:text-amber-400/90 mt-1 flex items-start gap-1.5 leading-relaxed max-w-2xl">
-                                        <span className="text-sm select-none shrink-0">
-                                            ⚠️
-                                        </span>
+                                        <AlertTriangle size={15} className="shrink-0 mt-0.5" />
                                         <span>
                                             You paused your learning path for{" "}
                                             {idleDays} days. Let&apos;s resume
@@ -450,7 +450,7 @@ export default async function UserAcademyDashboard() {
                                                 </div>
                                                 {hasPassed ? (
                                                     <span className="flex-shrink-0 text-[10px] font-black px-2.5 py-1 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20">
-                                                        ✓ {bestAttempt.score}%
+                                                        <Check size={12} className="inline-block mr-1 align-[-1px]" /> {bestAttempt.score}%
                                                     </span>
                                                 ) : bestAttempt ? (
                                                     <span className="flex-shrink-0 text-[10px] font-black px-2.5 py-1 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">

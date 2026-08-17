@@ -4,7 +4,7 @@ This document is the **single source of truth** for the "Breek Premium" aestheti
 
 **Core Philosophy:**
 - **Premium Fintech:** Clean, modern, trustworthy.
-- **Glass & Depth:** Use subtle borders (`white/5`), soft shadows, and large border radius (`rounded-xl/3xl`).
+- **Glass & Depth:** Use subtle borders (`dark:border-white/10`), soft shadows, and large border radius (`rounded-xl/3xl`). (`white/5` borders are reserved for dividers/table rows/hover only — see §2.2.)
 - **Vibrant Accents:** Use specific shades of Green `#00C888` and Cyan for highlights, against deep dark backgrounds.
 
 ---
@@ -16,19 +16,23 @@ We do not use standard `gray-900`. Use these specific hex codes:
 
 | Surface | Class | Hex | Usage |
 |:---|:---|:---|:---|
-| **Main Background** | `dark:bg-[#0F1117]` | `#0F1117` | Page body background |
+| **Main Background** | `dark:bg-[#0F1117]` | `#0F1117` | Page body background (note: globals.css remaps this to `transparent` so the body gradient shows through) |
 | **Secondary Background** | `dark:bg-[#0B0E14]` | `#0B0E14` | Alternative section background |
 | **Card Surface** | `dark:bg-[#1E2028]` | `#1E2028` | Floating cards, panels |
 | **Input Surface** | `dark:bg-[#151925]` | `#151925` | Form inputs, select boxes |
 | **Table Header/Hover** | `dark:bg-white/5` | `rgba(255,255,255,0.05)` | Table rows, inactive states |
 
+> **Runtime overrides (globals.css, `.dark` blocks):** `bg-[#0F1117]` → `transparent`; `bg-[#1E2028]` / `bg-[#1A1D27]` → `hsl(var(--card) / 0.75)` + `backdrop-blur`; `bg-[#151925]` → `hsl(var(--card) / 0.95)`; `bg-[#0B0E14]` → `hsl(var(--background) / 0.5)`; standard `bg-gray-900/800/slate-900/800` → semi-transparent card/background. **Homepage family** (also valid on public pages): `dark:bg-card` (#12172a), `dark:bg-[#111318]`, `dark:bg-white/[0.02]`.
+>
+> **Dark body background:** In dark mode `body` uses a fixed gradient `linear-gradient(135deg, #2b2344 0%, #193451 50%, #06454f 100%)` (`globals.css`) — because `bg-[#0F1117]` is remapped to transparent, the actual visible page background is this purple→navy→teal gradient, not a flat dark hex. Avoid stacking opaque dark wrappers on top of it unless the section needs a solid card surface.
+
 ### 1.2 Brand Colors
 | Color | Class | Hex | Usage |
 |:---|:---|:---|:---|
 | **Primary Green** | `bg-primary` | Varies (Theme) | Call-to-Action buttons, Success states |
-| **Primary Hover** | `hover:bg-primary/90` | Varies (Theme) | Hover state for Primary Green |
+| **Primary Hover** | `hover:bg-[#00B078]` | `#00B078` | Hover state for Primary Green (in `buttonVariants`) |
 | **Gold** | `bg-gold` / `text-gold` | `#F59E0B` | Pro/Premium accents, upgrade CTAs, badges |
-| **Gold Gradient** | `from-amber-500 to-orange-500` | `#F59E0B → #F97316` | Premium CTA buttons, Pro plan highlights |
+| **Gold Gradient** | `from-amber-500 to-orange-500` (community/VIP) hoặc `from-gold to-amber-600` (homepage/tools) | `#F59E0B → #F97316` | Premium CTA buttons, Pro plan highlights |
 | **Info/Accent** | `text-cyan-500` | `#06B6D4` | Icons, Highlights, Links |
 | **Blue Action** | `bg-[#2F80ED]` | `#2F80ED` | Secondary actions, Save buttons |
 | **Danger** | `text-red-500` | `#EF4444` | Errors, negative PnL |
@@ -47,7 +51,7 @@ The **Gold** color is reserved for **premium/upgrade** contexts:
 </Button>
 
 // Gold Badge
-<span className="bg-gold/10 text-gold ring-1 ring-gold/30 dark:bg-amber-500/15 dark:text-amber-400 dark:ring-amber-500/20 rounded-md px-2 py-0.5 text-xs font-bold">
+<span className="bg-gold/10 text-gold ring-1 ring-gold/30 dark:bg-amber-500/15 dark:text-amber-400 dark:ring-amber-500/20 rounded-lg px-2 py-0.5 text-xs font-bold">
   PRO
 </span>
 ```
@@ -100,11 +104,13 @@ Used for simple icon-only triggers or "Remove" actions.
 ```tsx
 <Button
   variant="ghost"
-  className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg text-gray-500 transition-colors h-auto w-auto"
+  size="icon"
+  className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 transition-colors"
 >
   <Icon size={20} />
 </Button>
 ```
+*Note: Standard icon size = `size="icon"` → `h-10 w-10 p-0`. Only override with `h-9 w-9` or `w-auto h-auto p-0` for tight table rows / inline compact contexts.*
 
 **Cancel / Neutral (Ghost)**
 Used for "Cancel" or "Go Back" actions in modals.
@@ -123,6 +129,7 @@ We use large border radius for a "friendly but premium" feel, along with strict 
 **Border Standard (CRITICAL):**
 - **Light Mode:** ALWAYS use `border-gray-200` to ensure crisp separation between sections. Do NOT use `border-gray-100` as it is too washed out.
 - **Dark Mode:** ALWAYS use `dark:border-white/10` to provide a subtle, elegant separator on dark backgrounds. Do NOT use `dark:border-white/5` as it is too dim.
+- **Exception (dividers & hover ONLY):** `border-gray-100` / `dark:border-white/5` are allowed **only** for table row separators (`divide-*`, `<th>` bottom borders), inactive hover states, and table header fills — never on card/section/panel borders.
 
 **Standard Card (White/Dark)**
 ```tsx
@@ -130,7 +137,7 @@ We use large border radius for a "friendly but premium" feel, along with strict 
   {/* Content */}
 </div>
 ```
-*Note: Use `rounded-xl` for main feature cards, `rounded-xl` or `rounded-xl` for smaller widgets.*
+*Note: Use `rounded-xl` for main feature cards, `rounded-lg` for smaller widgets.*
 
 **Glass Panel (Results/Highlights)**
 ```tsx
@@ -163,12 +170,12 @@ For high-impact areas requiring extra visual weight.
 ### 2.4 Badges / Status Chips
 ```tsx
 // Success (Green)
-<span className="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-2 py-1 rounded text-xs font-bold">
+<span className="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-2 py-1 rounded-lg text-xs font-bold">
   Active
 </span>
 
 // Primary (Blue)
-<span className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-2 py-1 rounded text-xs font-bold">
+<span className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-2 py-1 rounded-lg text-xs font-bold">
   Buy
 </span>
 ```
@@ -189,12 +196,12 @@ Tránh dùng `<input type="checkbox">` native làm vỡ UI trên các trình duy
     {checked ? <CheckSquare size={20} aria-hidden="true" /> : <Square size={20} aria-hidden="true" />}
 </Button>
 ```
-*Note for Tables:* Cột checkbox ở Header và Row phải đồng nhất class (Ví dụ: `w-14 pl-6 pr-4 py-5`) để đảm bảo các ô tự do thẳng hàng.
+*Note for Tables:* Cột checkbox ở Header và Row phải đồng nhất class (Ví dụ: `w-14 pl-6 pr-4 py-5`) để đảm bảo các ô tự do thẳng hàng. Trong bảng dày đặc, giữ `size="icon"` rồi override `w-auto h-auto p-0` để thu gọn — đúng chuẩn icon-size nêu ở §2.1.
 
 ---
 
 ## 3. Typography
-**Font Family:** Inter (Default)
+**Font Family:** Source Sans 3 (body — `font-sans`) + Lexend (headings — `font-heading`). Set in `layout.tsx` via `Source_Sans_3` / `Lexend`; headings h1–h6 are Lexend by default (`globals.css`). Do NOT use `font-outfit` — no such token exists.
 
 **Headings:**
 - **Page Title (Admin/Dashboard):** `text-xl font-black text-gray-700 dark:text-white tracking-tighter`
@@ -226,7 +233,7 @@ Tránh dùng `<input type="checkbox">` native làm vỡ UI trên các trình duy
 
 ### 4.2 Page Spacing & Section Gaps
 - **Top Padding**: Do NOT add `pt-` or `py-` to your page wrapper. The main layout already handles the top offset from the navbar.
-- **Section Gaps (CRITICAL)**: Always use `16px` (`gap-4` or `space-y-4`) as the standard spacing between major sections, grids, and widgets. Do NOT use `gap-6` or `space-y-6` unless separating the root list wrappers.
+- **Section Gaps**: Use `16px` (`gap-4` / `space-y-4`) inside a tight widget group, and `24px` (`gap-6` / `space-y-6`) between major sections — `space-y-10`/`space-y-14` only for root-level page blocks. Do NOT mix `gap-4` and `gap-6` in the same vertical stack; keep one consistent rhythm per card/panel.
 
 ### 4.3 Decorative Icons
 Used in headers or empty states.
@@ -245,7 +252,7 @@ Used in headers or empty states.
 
 ---
 
-> **Rule of Thumb:** If it looks like a default Tailwind component, it's wrong. Add `rounded-xl`, add `dark:border-white/5`, and increase padding. Make it feel "Premium".
+> **Rule of Thumb:** If it looks like a default Tailwind component, it's wrong. Add `rounded-xl`, add `dark:border-white/10`, and increase padding. Make it feel "Premium".
 
 ---
 
@@ -259,7 +266,7 @@ Used for dashboard widgets, academy levels, and any clickable card.
 - **Transition:** BẮT BUỘC `transition-shadow` (không dùng transition-all trừ khi đổi màu nền)
 
 ```tsx
-<div className="bg-white dark:bg-[#1E2028] border border-gray-100 dark:border-white/5 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
+<div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
     {/* Content */}
 </div>
 ```
@@ -310,7 +317,7 @@ Accepts `label`, `icon`, `error`, and maps `htmlFor` automatically.
 ```
 
 **Button:**
-Supports variants (`primary`, `secondary`, `ghost`, `outline`) and `isLoading` state. Auto-handles `flex` gap.
+Supports variants (`primary`, `secondary`, `accent`, `ghost`, `link`, `outline`, `destructive`), sizes (`sm`, `smd`, `md`, `lg`, `icon`), and `isLoading` state. Auto-handles `flex` gap.
 ```tsx
 <Button variant="primary" isLoading={isPending}>
     Save Changes
@@ -427,7 +434,7 @@ Dành cho các trang quản trị có nút hành động lớn ở phải. **Kh�
     </div>
     <div className="flex items-center gap-3">
         {/* Nút hành động chính */}
-        <Link href="..." className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-[#00C888] text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0">
+        <Link href="..." className={buttonVariants({ variant: 'primary' })}>
             <Plus size={18} strokeWidth={2.5} /> Add New
         </Link>
     </div>
@@ -613,15 +620,15 @@ export default function Loading() {
             {/* Admin Header Skeleton */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                <div className="space-y-2">
-                   <div className="h-8 w-64 bg-gray-200 dark:bg-white/5 rounded animate-pulse" />
-                   <div className="h-4 w-48 bg-gray-200 dark:bg-white/5 rounded animate-pulse" />
+                   <div className="h-8 w-64 bg-gray-200 dark:bg-white/5 rounded-lg animate-pulse" />
+                   <div className="h-4 w-48 bg-gray-200 dark:bg-white/5 rounded-lg animate-pulse" />
                </div>
             </div>
             
             {/* Content Cards Skeleton */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-40 bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/5 animate-pulse" />
+                    <div key={i} className="h-40 bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 animate-pulse" />
                 ))}
             </div>
         </div>

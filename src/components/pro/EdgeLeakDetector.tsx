@@ -5,6 +5,7 @@ import {
     AlertTriangle,
     TrendingDown,
     BarChart3,
+    Circle,
     Clock,
     Shield,
     Frown,
@@ -131,7 +132,7 @@ function EdgeLeakDetectorContent({
             {issues.length > 0 ? (
                 <div className="space-y-3">
                     <h4 className="text-xs font-bold text-red-500 dark:text-red-400 uppercase tracking-wider">
-                        🔴 Edge Leaks ({issues.length})
+                        <Circle size={10} className="inline-block fill-current mr-1" /> Edge Leaks ({issues.length})
                     </h4>
                     {issues.map((i) => (
                         <InsightCard key={i.id} insight={i} type="issue" />
@@ -150,7 +151,7 @@ function EdgeLeakDetectorContent({
             {strengths.length > 0 && (
                 <div className="space-y-3">
                     <h4 className="text-xs font-bold text-emerald-500 dark:text-emerald-400 uppercase tracking-wider">
-                        🟢 Strengths ({strengths.length})
+                        <Circle size={10} className="inline-block fill-current mr-1" /> Strengths ({strengths.length})
                     </h4>
                     {strengths.map((s) => (
                         <InsightCard key={s.id} insight={s} type="strength" />

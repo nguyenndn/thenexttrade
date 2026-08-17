@@ -46,7 +46,7 @@ export function StatsWidget({
                         {trend && (
                             <span
                                 className={cn(
-                                    "text-[10px] font-bold px-1.5 py-0.5 rounded-md",
+                                    "text-[10px] font-bold px-1.5 py-0.5 rounded-lg",
                                     trend.isPositive
                                         ? "text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400"
                                         : "text-red-600 bg-red-50 dark:bg-red-500/10 dark:text-red-400"

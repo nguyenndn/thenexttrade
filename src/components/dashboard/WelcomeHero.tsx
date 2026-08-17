@@ -192,7 +192,7 @@ export function WelcomeHero({
                             }
                             className="group block"
                         >
-                            <div className="relative rounded-xl border border-dashboard bg-white dark:bg-[#0B0E14] p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/30">
+                            <div className="relative rounded-xl border border-dashboard bg-white dark:bg-[#0B0E14] p-5 transition-all duration-300 hover:shadow-lg hover:border-primary/30">
                                 <div className="flex items-start gap-3">
                                     <div className="p-2.5 rounded-xl bg-gray-100 dark:bg-white/5 shrink-0">
                                         {step.id === "START_ACADEMY" ? (

@@ -196,13 +196,15 @@ export function MilestoneCelebrationModal() {
                 }`}
             >
                 {/* Close */}
-                <button
+                <Button
                     onClick={() => handleCelebrate(false)}
-                    className="absolute top-4 right-4 z-20 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-white/10 transition-colors"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-4 right-4 z-20 h-8 w-8 p-0 text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-white/10"
                     aria-label="Close"
                 >
                     <X size={18} />
-                </button>
+                </Button>
 
                 {/* Header with glow */}
                 <div className="relative px-6 pt-8 pb-6 text-center overflow-hidden">

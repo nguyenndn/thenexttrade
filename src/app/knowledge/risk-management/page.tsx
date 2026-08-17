@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button-variants";
 import {
     Shield,
     Calculator,
@@ -382,7 +383,11 @@ export default async function RiskManagementPage() {
                         </p>
                         <Link
                             href="/academy"
-                            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-bold shadow-lg shadow-amber-500/20 hover:shadow-amber-600/30 hover:scale-[1.02] transition-all duration-300"
+                            className={buttonVariants({
+                                variant: "primary",
+                                className:
+                                    "items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-bold shadow-lg shadow-amber-500/20 hover:shadow-amber-600/30 hover:scale-[1.02]",
+                            })}
                         >
                             <BookOpen size={18} className="stroke-[2.5]" />
                             Explore the Academy

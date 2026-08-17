@@ -53,7 +53,7 @@ export function SearchBar({
                     )}
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none hidden sm:block">
-                    <kbd className="inline-flex h-6 items-center gap-1 rounded-md border border-dashboard bg-white dark:bg-black/20 px-2 font-mono text-[10px] font-medium text-gray-600 dark:text-gray-300 shadow-sm">
+                    <kbd className="inline-flex h-6 items-center gap-1 rounded-lg border border-dashboard bg-white dark:bg-black/20 px-2 font-mono text-[10px] font-medium text-gray-600 dark:text-gray-300 shadow-sm">
                         <span className="text-xs text-primary">Ctrl + K </span>
                     </kbd>
                 </div>

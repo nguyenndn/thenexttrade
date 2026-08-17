@@ -77,7 +77,7 @@ export function SortableModule({
                             size="icon"
                             {...attributes}
                             {...listeners}
-                            className="h-auto w-auto cursor-move text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 p-1.5 rounded bg-transparent hover:bg-transparent"
+                            className="h-auto w-auto cursor-move text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 p-1.5 rounded-lg bg-transparent hover:bg-transparent"
                         >
                             <GripVertical size={20} />
                         </Button>
@@ -86,7 +86,7 @@ export function SortableModule({
                             variant="ghost"
                             size="icon"
                             onClick={() => setIsExpanded(!isExpanded)}
-                            className="h-auto w-auto text-gray-600 hover:bg-gray-200 dark:hover:bg-white/10 rounded p-1.5"
+                            className="h-auto w-auto text-gray-600 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg p-1.5"
                         >
                             {isExpanded ? (
                                 <ChevronDown size={18} />

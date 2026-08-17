@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { TrendingUp, Landmark, ArrowRight, Star, Check } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 // CACHED DATA FETCHERS
 const getRecentPosts = unstable_cache(
@@ -185,7 +186,12 @@ function TopBrokersWidget() {
                     </h3>
                     <Link
                         href="/brokers"
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-white text-[11px] font-bold hover:bg-primary/90 transition-colors shrink-0 whitespace-nowrap shadow-sm shadow-primary/20"
+                        className={buttonVariants({
+                            variant: "primary",
+                            size: "sm",
+                            className:
+                                "items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-bold shrink-0 whitespace-nowrap shadow-sm shadow-primary/20",
+                        })}
                     >
                         Compare All <ArrowRight size={12} />
                     </Link>
@@ -314,7 +320,12 @@ function TopBrokersWidget() {
                                         href={broker.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-gradient-to-r from-primary to-teal-500 text-white font-bold text-[11px] hover:opacity-90 transition-all shadow-sm shadow-primary/20 hover:shadow-primary/30"
+                                        className={buttonVariants({
+                                            variant: "primary",
+                                            size: "sm",
+                                            className:
+                                                "flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-gradient-to-r from-primary to-teal-500 text-[11px] hover:opacity-90 shadow-sm shadow-primary/20 hover:shadow-primary/30",
+                                        })}
                                     >
                                         Open Account
                                         <ArrowRight size={11} />

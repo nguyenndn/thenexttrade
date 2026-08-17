@@ -542,7 +542,7 @@ export const ArticleList = memo(function ArticleList({
                                                         Title
                                                     </label>
                                                     <input
-                                                        className="w-full p-2 rounded border"
+                                                        className="w-full p-2 rounded-lg border"
                                                         value={
                                                             quickEditData?.title
                                                         }
@@ -563,7 +563,7 @@ export const ArticleList = memo(function ArticleList({
                                                         Slug
                                                     </label>
                                                     <input
-                                                        className="w-full p-2 rounded border"
+                                                        className="w-full p-2 rounded-lg border"
                                                         value={
                                                             quickEditData?.slug
                                                         }
@@ -589,7 +589,7 @@ export const ArticleList = memo(function ArticleList({
                                                         >
                                                             <Button
                                                                 variant="outline"
-                                                                className="w-full h-[38px] p-2 rounded justify-between font-normal bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white"
+                                                                className="w-full h-[38px] p-2 rounded-lg justify-between font-normal bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white"
                                                             >
                                                                 {quickEditData?.status ===
                                                                 "DRAFT"

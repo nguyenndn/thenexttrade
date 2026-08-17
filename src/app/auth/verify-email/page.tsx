@@ -129,7 +129,7 @@ function VerifyEmailForm() {
                             setOtp(e.target.value.replace(/[^0-9]/g, ""))
                         } // Only allow numbers
                         placeholder="••••••••"
-                        className="w-full text-center tracking-[1em] font-mono text-3xl h-16 bg-gray-50 dark:bg-[#0B0E14] border-dashboard text-gray-700 dark:text-white focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary focus:ring-1 focus:ring-primary rounded-xl transition-all"
+                        className="w-full text-center tracking-[0.5em] sm:tracking-[1em] font-mono text-2xl sm:text-3xl h-16 bg-gray-50 dark:bg-[#0B0E14] border-dashboard text-gray-700 dark:text-white focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary focus:ring-1 focus:ring-primary rounded-xl transition-all"
                         required
                         autoComplete="one-time-code"
                     />
@@ -146,7 +146,7 @@ function VerifyEmailForm() {
             </form>
 
             <div className="mt-8 text-center space-y-4">
-                <div className="flex items-center justify-center text-sm">
+                <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm">
                     <span className="text-gray-600 dark:text-gray-300 mr-2">
                         Didn't receive the code?
                     </span>

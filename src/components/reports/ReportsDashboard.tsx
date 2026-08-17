@@ -334,7 +334,7 @@ export function ReportsDashboard() {
                                 </div>
                                 <span
                                     className={`
-                      text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded border
+                      text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-lg border
                       ${
                           report.format === "pdf"
                               ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"

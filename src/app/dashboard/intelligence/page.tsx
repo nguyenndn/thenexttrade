@@ -108,7 +108,7 @@ export default async function IntelligencePage({
                 )}
             </PageHeader>
             <div className="mb-4">
-                <TabBar tabs={analyticsTabs} equalWidth />
+                <TabBar tabs={analyticsTabs} />
             </div>
             <Suspense
                 key={JSON.stringify(resolvedParams)}

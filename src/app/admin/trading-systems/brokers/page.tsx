@@ -91,7 +91,7 @@ export default async function EABrokersPage() {
                                     </div>
                                 </td>
                                 <td className="p-4">
-                                    <code className="text-xs bg-gray-100 dark:bg-white/5 px-2 py-1 rounded font-mono text-gray-600 dark:text-gray-300">
+                                    <code className="text-xs bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-lg font-mono text-gray-600 dark:text-gray-300">
                                         {broker.slug}
                                     </code>
                                 </td>

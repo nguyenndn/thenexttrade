@@ -169,7 +169,7 @@ export function LeaderboardSidebar({ initialData }: LeaderboardSidebarProps) {
                                                 togglingAccount === account.id
                                             }
                                             className={cn(
-                                                "p-1.5 rounded-md transition-all duration-200 flex items-center justify-center",
+                                                "p-1.5 rounded-lg transition-all duration-200 flex items-center justify-center",
                                                 account.useForLeaderboard
                                                     ? "bg-white dark:bg-white/10 text-emerald-600 dark:text-emerald-400 shadow-sm"
                                                     : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
@@ -193,7 +193,7 @@ export function LeaderboardSidebar({ initialData }: LeaderboardSidebarProps) {
                                                 togglingAccount === account.id
                                             }
                                             className={cn(
-                                                "p-1.5 rounded-md transition-all duration-200 flex items-center justify-center",
+                                                "p-1.5 rounded-lg transition-all duration-200 flex items-center justify-center",
                                                 !account.useForLeaderboard
                                                     ? "bg-white dark:bg-white/10 text-gray-700 dark:text-gray-300 shadow-sm"
                                                     : "text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"

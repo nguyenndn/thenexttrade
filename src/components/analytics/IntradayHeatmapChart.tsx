@@ -74,7 +74,7 @@ export function IntradayHeatmapChart({ data }: IntradayHeatmapChartProps) {
                                                 ? `${day.name} ${hour}:00 - ${cell.tradeCount} trades (${cell.winRate}% Win Rate, $${cell.pnl})`
                                                 : `${day.name} ${hour}:00 - No trades`
                                         }
-                                        className={`h-7 rounded-md border flex items-center justify-center text-[10px] transition-all hover:scale-105 cursor-pointer ${getCellColor(
+                                        className={`h-7 rounded-lg border flex items-center justify-center text-[10px] transition-all hover:scale-105 cursor-pointer ${getCellColor(
                                             cell
                                         )}`}
                                     >

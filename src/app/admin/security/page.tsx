@@ -344,7 +344,7 @@ export default function SecurityDashboard() {
                                     key={i}
                                     className="flex-1 flex flex-col items-center gap-1 group relative"
                                 >
-                                    <div className="absolute -top-6 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
+                                    <div className="absolute -top-6 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] px-1.5 py-0.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
                                         {t.date}: {t.count}
                                     </div>
                                     <div

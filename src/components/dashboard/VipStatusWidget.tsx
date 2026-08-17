@@ -242,7 +242,7 @@ export function VipStatusWidget() {
                                         <span className="text-[13px] font-black tracking-tight text-gray-900 dark:text-white whitespace-nowrap">
                                             Free Plan
                                         </span>
-                                        <span className="rounded-md bg-amber-50 dark:bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
+                                        <span className="rounded-lg bg-amber-50 dark:bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
                                             Current
                                         </span>
                                     </div>
@@ -282,7 +282,7 @@ export function VipStatusWidget() {
 
                                     <Link
                                         href={ctaHref}
-                                        className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25 hover:-translate-y-px active:translate-y-0"
+                                        className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25"
                                     >
                                         <span className="truncate">
                                             Check Pro Eligibility
@@ -345,7 +345,7 @@ export function VipStatusWidget() {
                                     <span className="text-[13px] font-black tracking-tight text-gray-900 dark:text-white whitespace-nowrap">
                                         Pro Active
                                     </span>
-                                    <span className="rounded-md bg-emerald-500/10 dark:bg-emerald-500/15 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/20 dark:ring-emerald-500/25">
+                                    <span className="rounded-lg bg-emerald-500/10 dark:bg-emerald-500/15 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/20 dark:ring-emerald-500/25">
                                         PRO
                                     </span>
                                 </div>
@@ -424,7 +424,7 @@ export function VipStatusWidget() {
                                 </span>
                                 {isPro && (
                                     <span
-                                        className={`rounded-md px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] ring-1 ring-current/15 ${cfg.badgeClass}`}
+                                        className={`rounded-lg px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] ring-1 ring-current/15 ${cfg.badgeClass}`}
                                     >
                                         Pro
                                     </span>
@@ -459,7 +459,7 @@ export function VipStatusWidget() {
                         (status === "EXPIRED" || status === "REVOKED") && (
                             <Link
                                 href="/dashboard/accounts?action=add&intent=unlock-pro"
-                                className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25 hover:-translate-y-px active:translate-y-0"
+                                className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25"
                             >
                                 <span className="truncate">
                                     Re-apply for Pro
@@ -471,7 +471,7 @@ export function VipStatusWidget() {
                     {status === "GRACE" && (
                         <Link
                             href="/dashboard/accounts?action=add&intent=unlock-pro"
-                            className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-violet-500 to-purple-500 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-violet-500/20 transition-all duration-300 hover:from-violet-600 hover:to-purple-600 hover:shadow-md hover:shadow-violet-500/25 hover:-translate-y-px active:translate-y-0"
+                            className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-violet-500 to-purple-500 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-violet-500/20 transition-all duration-300 hover:from-violet-600 hover:to-purple-600 hover:shadow-md hover:shadow-violet-500/25"
                         >
                             <span className="truncate">
                                 Complete Verification

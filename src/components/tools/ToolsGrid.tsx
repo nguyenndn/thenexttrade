@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button-variants";
 import {
     ArrowRight,
     Flame,
@@ -83,11 +84,11 @@ function ToolCard({ tool }: { tool: ToolData }) {
     return (
         <Link
             href={`/tools/${tool.slug}`}
-            className="group relative flex flex-col p-2.5 rounded-2xl bg-white/80 dark:bg-[#151925]/80 shadow-sm hover:shadow-md hover:border-gold/35 hover:-translate-y-1 transition-all duration-300 border border-gray-200/60 dark:border-white/5 overflow-hidden h-full backdrop-blur-sm"
+            className="group relative flex flex-col p-2.5 rounded-2xl bg-white/80 dark:bg-[#151925]/80 shadow-sm hover:shadow-md hover:border-gold/35 transition-all duration-300 border border-gray-200/60 dark:border-white/10 overflow-hidden h-full backdrop-blur-sm"
         >
             {/* Visual Preview Half - Warmer surface */}
             {Mock && (
-                <div className="rounded-xl overflow-hidden bg-gradient-to-br from-white to-gold/[0.035] dark:from-white/[0.01] dark:to-gold/[0.015] border border-gray-100 dark:border-white/[0.02] mb-3">
+                <div className="rounded-xl overflow-hidden bg-gradient-to-br from-white to-gold/[0.035] dark:from-white/[0.01] dark:to-gold/[0.015] border border-gray-200 dark:border-white/10 mb-3">
                     <Mock />
                 </div>
             )}
@@ -97,7 +98,7 @@ function ToolCard({ tool }: { tool: ToolData }) {
                 <div>
                     <div className="flex items-center gap-2 mb-1.5">
                         <div
-                            className={`w-6 h-6 rounded-md ${tool.iconBg} flex items-center justify-center shrink-0`}
+                            className={`w-6 h-6 rounded-lg ${tool.iconBg} flex items-center justify-center shrink-0`}
                         >
                             <tool.icon size={13} strokeWidth={2} />
                         </div>
@@ -311,7 +312,11 @@ export function ToolsGrid() {
                                     { scroll: false }
                                 );
                             }}
-                            className="px-5 py-2.5 bg-gold hover:bg-gold/95 text-white font-bold text-xs rounded-xl shadow-md transition-all duration-300"
+                            className={buttonVariants({
+                                variant: "primary",
+                                className:
+                                    "px-5 py-2.5 bg-gold hover:bg-gold/95 text-white font-bold text-xs rounded-xl shadow-md transition-all duration-300",
+                            })}
                         >
                             Clear Search
                         </button>

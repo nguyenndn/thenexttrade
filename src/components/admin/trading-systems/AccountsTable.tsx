@@ -219,7 +219,7 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="p-1.5 bg-white dark:bg-white/5 rounded border border-gray-200 dark:border-white/10">
+                                            <div className="p-1.5 bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10">
                                                 <BrokerLogo
                                                     broker={license.broker}
                                                     size={24}

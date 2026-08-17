@@ -18,7 +18,7 @@ export default function AdminReportsLoading() {
                     key={i}
                     className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-6 animate-pulse"
                 >
-                    <div className="h-4 w-32 bg-gray-200 dark:bg-white/10 rounded mb-4" />
+                    <div className="h-4 w-32 bg-gray-200 dark:bg-white/10 rounded-lg mb-4" />
                     <div className="grid grid-cols-4 gap-3">
                         {[1, 2, 3, 4].map((j) => (
                             <div

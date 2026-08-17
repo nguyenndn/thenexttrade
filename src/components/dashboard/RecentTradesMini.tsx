@@ -96,7 +96,7 @@ export function RecentTradesMini({ trades }: RecentTradesMiniProps) {
                                 </div>
                                 <div className="col-span-2 text-center">
                                     <span
-                                        className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                                        className={`inline-block px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase ${
                                             trade.type?.toLowerCase() === "buy"
                                                 ? "bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400"
                                                 : "bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400"

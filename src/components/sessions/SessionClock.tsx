@@ -115,7 +115,7 @@ export function SessionClock({ data }: SessionClockProps) {
                                         {session.label}
                                     </span>
                                     {isActive && (
-                                        <span className="text-[10px] font-bold px-1.5 py-0.5 bg-primary/10 text-primary rounded">
+                                        <span className="text-[10px] font-bold px-1.5 py-0.5 bg-primary/10 text-primary rounded-lg">
                                             LIVE
                                         </span>
                                     )}

@@ -6,6 +6,7 @@ import Image from "next/image";
 import {
     Camera,
     Loader2,
+    Mail,
     Upload,
     ArrowRight,
     ArrowLeft,
@@ -600,7 +601,7 @@ export default function OnboardingClient({
                                             : "border-amber-900/10 hover:border-amber-500/35 dark:hover:border-amber-500/25 bg-white/30 dark:bg-white/[0.01]"
                                     )}
                                 >
-                                    <span className="absolute -top-2 left-3 px-2 py-0.5 bg-amber-500 text-white text-[8px] font-black uppercase tracking-widest rounded-md">
+                                    <span className="absolute -top-2 left-3 px-2 py-0.5 bg-amber-500 text-white text-[8px] font-black uppercase tracking-widest rounded-lg">
                                         Recommended
                                     </span>
                                     <div className="flex items-center gap-3">
@@ -652,7 +653,10 @@ export default function OnboardingClient({
                             {isMobile && syncMethod === "EA_SYNC" && (
                                 <div className="mb-6 p-4 rounded-xl border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 space-y-3 animate-in slide-in-from-top duration-300">
                                     <div className="flex gap-2.5 items-start">
-                                        <span className="text-lg">💻</span>
+                                        <Monitor
+                                            size={18}
+                                            className="shrink-0 text-amber-500 dark:text-amber-400 mt-0.5"
+                                        />
                                         <div>
                                             <p className="text-xs font-black text-slate-800 dark:text-amber-300 uppercase tracking-wider">
                                                 Desktop/VPS Required for
@@ -702,8 +706,8 @@ export default function OnboardingClient({
                                             className="w-full text-xs font-extrabold h-9 border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 shrink-0"
                                         >
                                             {linkSent
-                                                ? "📩 Setup Link Sent!"
-                                                : "📩 Send Setup Link to Desktop Email"}
+                                                ? (<><Mail size={14} className="shrink-0" /> Setup Link Sent!</>)
+                                                : (<><Mail size={14} className="shrink-0" /> Send Setup Link to Desktop Email</>)}
                                         </Button>
                                         <Button
                                             variant="ghost"
@@ -714,7 +718,7 @@ export default function OnboardingClient({
                                             }
                                             className="w-full text-xs font-bold h-9 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 shrink-0"
                                         >
-                                            ✍️ Log Manually for Now
+                                            <PenLine size={14} className="shrink-0" /> Log Manually for Now
                                         </Button>
                                     </div>
                                 </div>

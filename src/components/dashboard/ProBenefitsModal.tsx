@@ -204,7 +204,7 @@ export function ProBenefitsModal({
                         <Link
                             href="/dashboard/accounts?action=add&intent=unlock-pro"
                             onClick={onClose}
-                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5 text-[13px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all hover:from-amber-600 hover:to-orange-600 hover:-translate-y-px active:translate-y-0"
+                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5 text-[13px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25"
                         >
                             Unlock Pro Free
                             <ArrowRight className="h-3.5 w-3.5" />

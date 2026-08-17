@@ -92,7 +92,7 @@ export function WeeklyCoachPlan({ plan }: WeeklyCoachPlanProps) {
                             className="text-amber-500 dark:text-gold"
                             size={18}
                         />
-                        <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-600 dark:text-gold bg-amber-500/10 dark:bg-gold/10 px-2.5 py-0.5 rounded-md">
+                        <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-600 dark:text-gold bg-amber-500/10 dark:bg-gold/10 px-2.5 py-0.5 rounded-lg">
                             Weekly Coach Action Plan
                         </span>
                     </div>

@@ -423,7 +423,7 @@ export default function JournalList({
                 id="onborda-journal-filters"
                 className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4"
             >
-                <TabBar tabs={journalTabs} equalWidth />
+                <TabBar tabs={journalTabs} />
                 <DashboardFilter
                     currentAccountId={accountId || undefined}
                     equalWidth
@@ -549,7 +549,7 @@ export default function JournalList({
                                         strokeWidth={1.5}
                                     />
                                     {/* Sliding paper sheet */}
-                                    <div className="absolute w-5 h-6 bg-primary/20 dark:bg-primary/10 rounded border border-primary/30 top-4 left-7 animate-[journal-paper_3s_ease-in-out_infinite]" />
+                                    <div className="absolute w-5 h-6 bg-primary/20 dark:bg-primary/10 rounded-lg border border-primary/30 top-4 left-7 animate-[journal-paper_3s_ease-in-out_infinite]" />
                                     {/* Sparkle dots */}
                                     <div className="absolute -top-2 left-3 w-1.5 h-1.5 rounded-full bg-primary/40 animate-[journal-sparkle_2.5s_ease-in-out_infinite_1.2s]" />
                                     <div className="absolute -bottom-1 -right-1 w-1 h-1 rounded-full bg-primary/30 animate-[journal-sparkle_3s_ease-in-out_infinite_0.8s]" />
@@ -1117,7 +1117,7 @@ export default function JournalList({
                                             {/* Tags & Mistakes Summary (Simulated simple view) */}
                                             <div className="flex flex-wrap gap-1 mb-3">
                                                 {entry.strategy && (
-                                                    <span className="px-2 py-0.5 text-[10px] font-medium bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 rounded-md border border-blue-100 dark:border-blue-500/20">
+                                                    <span className="px-2 py-0.5 text-[10px] font-medium bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 rounded-lg border border-blue-100 dark:border-blue-500/20">
                                                         {entry.strategy}
                                                     </span>
                                                 )}

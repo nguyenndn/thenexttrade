@@ -41,7 +41,7 @@ function HighlightMatch({ text, query }: { text: string; query: string }) {
                 return isMatch ? (
                     <span
                         key={i}
-                        className="bg-brand-500/20 text-brand-700 dark:text-brand-400 font-semibold px-0.5 rounded-sm"
+                        className="bg-brand-500/20 text-brand-700 dark:text-brand-400 font-semibold px-0.5 rounded-lg"
                     >
                         {part}
                     </span>
@@ -303,7 +303,7 @@ export function CommandPalette({
                                                     />
                                                 </p>
                                             </div>
-                                            <span className="text-[10px] font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded">
+                                            <span className="text-[10px] font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-lg">
                                                 Pages
                                             </span>
                                         </CommandItem>
@@ -317,19 +317,19 @@ export function CommandPalette({
                     <div className="flex items-center justify-between px-4 py-2.5 border-t border-dashboard dark:border-gray-800 bg-gray-50/50 dark:bg-white/[0.02] text-xs text-gray-500">
                         <div className="flex items-center gap-4">
                             <span className="flex items-center gap-1">
-                                <kbd className="px-1.5 py-0.5 rounded bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300 font-mono text-[10px]">
+                                <kbd className="px-1.5 py-0.5 rounded-lg bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300 font-mono text-[10px]">
                                     ↑↓
                                 </kbd>
                                 to navigate
                             </span>
                             <span className="flex items-center gap-1">
-                                <kbd className="px-1.5 py-0.5 rounded bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300 font-mono text-[10px]">
+                                <kbd className="px-1.5 py-0.5 rounded-lg bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300 font-mono text-[10px]">
                                     ↵
                                 </kbd>
                                 to select
                             </span>
                             <span className="flex items-center gap-1">
-                                <kbd className="px-1.5 py-0.5 rounded bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300 font-mono text-[10px]">
+                                <kbd className="px-1.5 py-0.5 rounded-lg bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300 font-mono text-[10px]">
                                     Esc
                                 </kbd>
                                 to close
@@ -366,7 +366,7 @@ export function CommandPaletteTrigger({ className }: { className?: string }) {
         >
             <Search size={16} />
             <span className="hidden sm:inline">Search...</span>
-            <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border border-dashboard bg-white dark:bg-black/20 px-1.5 font-mono text-[10px] font-medium text-gray-600 dark:text-gray-300">
+            <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded-lg border border-dashboard bg-white dark:bg-black/20 px-1.5 font-mono text-[10px] font-medium text-gray-600 dark:text-gray-300">
                 <span className="text-[10px]">Ctrl</span>K
             </kbd>
         </Button>

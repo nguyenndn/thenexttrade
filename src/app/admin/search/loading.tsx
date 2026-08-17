@@ -15,10 +15,10 @@ export default function Loading() {
                     >
                         <div className="flex items-center gap-4 mb-4">
                             <div className="h-10 w-10 bg-gray-100 dark:bg-white/5 rounded-xl" />
-                            <div className="h-4 w-24 bg-gray-200 dark:bg-white/10 rounded" />
+                            <div className="h-4 w-24 bg-gray-200 dark:bg-white/10 rounded-lg" />
                         </div>
-                        <div className="h-4 w-3/4 bg-gray-100 dark:bg-white/5 rounded mb-2" />
-                        <div className="h-3 w-1/2 bg-gray-50 dark:bg-white/5 rounded" />
+                        <div className="h-4 w-3/4 bg-gray-100 dark:bg-white/5 rounded-lg mb-2" />
+                        <div className="h-3 w-1/2 bg-gray-50 dark:bg-white/5 rounded-lg" />
                     </div>
                 ))}
             </div>

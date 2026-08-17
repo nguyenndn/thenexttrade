@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { WifiOff, RefreshCw } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 
@@ -29,7 +30,11 @@ export default function OfflinePage() {
                 <div className="flex gap-4">
                     <Link
                         href="/"
-                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105 transition-all"
+                        className={buttonVariants({
+                            variant: "primary",
+                            className:
+                                "px-6 py-3 rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105",
+                        })}
                     >
                         <RefreshCw size={16} />
                         Try Again

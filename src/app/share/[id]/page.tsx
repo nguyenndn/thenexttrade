@@ -263,7 +263,7 @@ export default async function SharePage({ params }: SharePageProps) {
                             </Link>
 
                             {/* Social proof */}
-                            <div className="flex items-center gap-6 text-xs text-gray-400 pt-2">
+                            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs text-gray-400 pt-2">
                                 <span className="flex items-center gap-1.5">
                                     <CheckCircle2
                                         size={13}

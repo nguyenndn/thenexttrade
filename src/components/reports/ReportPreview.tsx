@@ -188,7 +188,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                                             <td className="px-4 py-3 text-right whitespace-nowrap">
                                                 <span
                                                     className={`
- px-2 py-1 rounded text-xs font-bold
+ px-2 py-1 rounded-lg text-xs font-bold
  ${
      trade.result === "WIN"
          ? "bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400"

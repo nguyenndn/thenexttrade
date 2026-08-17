@@ -391,7 +391,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                                                     "Email copied!"
                                                                 );
                                                             }}
-                                                            className="p-1 rounded hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors ml-auto"
+                                                            className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors ml-auto"
                                                             aria-label="Copy email"
                                                         >
                                                             <Copy size={12} />
@@ -418,7 +418,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                                                         "CC email copied!"
                                                                     );
                                                                 }}
-                                                                className="p-1 rounded hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors ml-auto"
+                                                                className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors ml-auto"
                                                                 aria-label="Copy CC email"
                                                             >
                                                                 <Copy
@@ -930,14 +930,14 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                     error={errors.accountNumber?.message}
                                 />
                                 <p className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1 mt-1 whitespace-nowrap">
-                                    <span>⚠️</span>
+                                    <AlertTriangle size={13} className="shrink-0" />
                                     <span>
                                         Account must be under our IB code for
                                         approval
                                     </span>
                                 </p>
                                 <p className="text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1 mt-0.5">
-                                    <span>💡</span>
+                                    <Lightbulb size={13} className="shrink-0" />
                                     <span>
                                         Recommend{" "}
                                         <span className="font-bold">

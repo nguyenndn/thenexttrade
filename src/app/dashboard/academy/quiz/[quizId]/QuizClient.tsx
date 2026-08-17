@@ -337,7 +337,7 @@ export function QuizClient({
                         <h3 className="font-bold text-sm text-gray-700 dark:text-white">
                             Lessons in Module
                         </h3>
-                        <span className="text-[10px] font-bold text-gray-500 bg-gray-50 dark:bg-white/5 px-2 py-0.5 rounded">
+                        <span className="text-[10px] font-bold text-gray-500 bg-gray-50 dark:bg-white/5 px-2 py-0.5 rounded-lg">
                             {moduleLessons.length} lessons
                         </span>
                     </div>
@@ -599,7 +599,7 @@ export function QuizClient({
                                         </div>
                                         <div className="flex-1">
                                             <p className="font-bold text-amber-600 dark:text-amber-400 text-sm">
-                                                🎓 Level Certificate Earned!
+                                                Level Certificate Earned!
                                             </p>
                                             <p className="text-xs text-amber-600/70 dark:text-amber-400/70">
                                                 You&apos;ve passed all quizzes
@@ -946,13 +946,15 @@ export function QuizClient({
             )}
 
             {/* Mobile Menu FAB */}
-            <button
+            <Button
                 onClick={() => setMobileMenuOpen(true)}
-                className="lg:hidden fixed bottom-20 right-4 z-50 w-12 h-12 rounded-full bg-primary text-white shadow-lg shadow-primary/30 flex items-center justify-center hover:bg-[#00B078] transition-colors"
+                variant="primary"
+                size="icon"
+                className="lg:hidden fixed bottom-20 right-4 z-50 w-12 h-12 rounded-full bg-primary text-white shadow-lg shadow-primary/30 hover:bg-[#00B078]"
                 aria-label="Open quiz menu"
             >
                 <Menu size={20} />
-            </button>
+            </Button>
         </div>
     );
 }

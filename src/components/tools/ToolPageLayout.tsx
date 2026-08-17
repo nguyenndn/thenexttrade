@@ -95,7 +95,7 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
             />
 
             {/* ── Breadcrumb ── */}
-            <div className="flex items-center gap-2.5 text-xs font-semibold bg-white/80 dark:bg-white/[0.035] border border-gold/20 rounded-xl px-4 py-2.5 mb-8 w-fit shadow-[0_10px_30px_-24px_rgba(146,64,14,0.7)] relative z-10 backdrop-blur-md">
+            <div className="flex items-center gap-2.5 text-xs font-semibold bg-white/80 dark:bg-white/[0.035] border border-gold/20 rounded-xl px-4 py-2.5 mb-8 w-fit max-w-full shadow-[0_10px_30px_-24px_rgba(146,64,14,0.7)] relative z-10 backdrop-blur-md">
                 <Link
                     href="/"
                     className="text-gray-500 dark:text-gray-400 hover:text-gold dark:hover:text-gold transition-colors shrink-0 flex items-center gap-1.5"
@@ -117,7 +117,7 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
                     size={12}
                     className="text-gray-400 dark:text-gray-600 shrink-0"
                 />
-                <span className="text-gray-900 dark:text-gray-200 font-bold truncate">
+                <span className="text-gray-900 dark:text-gray-200 font-bold truncate min-w-0 max-w-[130px]">
                     {tool.title}
                 </span>
             </div>
@@ -288,7 +288,11 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
                     <div className="mb-6">
                         <Link
                             href="/knowledge/risk-management"
-                            className="flex items-center gap-3 px-5 py-3 rounded-xl bg-gold/5 dark:bg-gold/10 border border-gold/15 hover:border-gold/30 transition-all group"
+                            className={buttonVariants({
+                                variant: "ghost",
+                                className:
+                                    "flex items-center gap-3 px-5 py-3 rounded-xl bg-gold/5 dark:bg-gold/10 border border-gold/15 hover:border-gold/30 hover:bg-gold/5 dark:hover:bg-gold/10 group",
+                            })}
                         >
                             <BookOpen
                                 size={16}

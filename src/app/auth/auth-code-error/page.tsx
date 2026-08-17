@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AlertTriangle } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { Logo } from "@/components/ui/Logo";
 
 export default function AuthCodeErrorPage() {
@@ -26,13 +27,21 @@ export default function AuthCodeErrorPage() {
                 <div className="flex flex-col gap-3">
                     <Link
                         href="/auth/forgot-password"
-                        className="w-full bg-primary hover:opacity-90 text-white font-bold py-3.5 rounded-xl transition-all text-center text-sm"
+                        className={buttonVariants({
+                            variant: "primary",
+                            className:
+                                "w-full bg-primary hover:opacity-90 text-white font-bold py-3.5 rounded-xl text-center text-sm",
+                        })}
                     >
                         Try Resetting Password Again
                     </Link>
                     <Link
                         href="/auth/login"
-                        className="w-full bg-gray-100 dark:bg-[#0B0E14] border border-dashboard hover:bg-gray-200 dark:hover:bg-[#151925] text-gray-700 dark:text-white font-bold py-3.5 rounded-xl transition-all text-center text-sm"
+                        className={buttonVariants({
+                            variant: "outline",
+                            className:
+                                "w-full bg-gray-100 dark:bg-[#0B0E14] border border-dashboard hover:bg-gray-200 dark:hover:bg-[#151925] text-gray-700 dark:text-white font-bold py-3.5 rounded-xl text-center text-sm",
+                        })}
                     >
                         Back to Login
                     </Link>

@@ -73,14 +73,16 @@ export function ShortcutsMenuModal({
                         </h2>
                     </div>
                     <div className="flex items-center gap-2">
-                        <button
+                        <Button
+                            type="button"
+                            variant="ghost"
                             onClick={fetchShortcuts}
-                            className="text-sm font-medium text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200 flex items-center gap-1 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 px-3 py-1.5 rounded-lg transition-colors"
+                            className="h-auto px-3 py-1.5 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10"
                             title="Reload shortcuts"
                             aria-label="Reload shortcuts"
                         >
                             <RefreshCw size={14} />
-                        </button>
+                        </Button>
                         <Link
                             href="/admin/articles/shortcuts"
                             target="_blank"
@@ -153,7 +155,7 @@ export function ShortcutsMenuModal({
                                         {shortcut.description ||
                                             "No description provided."}
                                     </p>
-                                    <div className="mt-3 text-xs bg-gray-100 dark:bg-white/5 px-2 py-1 rounded text-gray-500 w-full truncate">
+                                    <div className="mt-3 text-xs bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-lg text-gray-500 w-full truncate">
                                         HTML Supported
                                     </div>
                                 </div>

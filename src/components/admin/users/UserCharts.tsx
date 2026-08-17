@@ -78,7 +78,7 @@ export function UserCharts({
                             Based on account profile.
                         </p>
                     </div>
-                    <span className="text-[10px] font-bold text-gray-500 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded">
+                    <span className="text-[10px] font-bold text-gray-500 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-lg">
                         {knownCountryUsers} known
                     </span>
                 </div>

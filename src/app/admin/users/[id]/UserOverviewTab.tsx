@@ -230,7 +230,7 @@ export function UserOverviewTab({ user }: UserOverviewTabProps) {
                                 className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 p-3 text-center dark:bg-white/5"
                             >
                                 <div
-                                    className={`p-1 ${stat.bg} ${stat.color} rounded-md w-max mx-auto mb-1.5`}
+                                    className={`p-1 ${stat.bg} ${stat.color} rounded-lg w-max mx-auto mb-1.5`}
                                 >
                                     <stat.icon size={14} />
                                 </div>
@@ -259,7 +259,7 @@ export function UserOverviewTab({ user }: UserOverviewTabProps) {
                                 <Trophy size={16} className="text-amber-500" />{" "}
                                 Achievements
                             </h3>
-                            <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">
+                            <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-lg">
                                 {user._count.badges}
                             </span>
                         </div>
@@ -271,7 +271,7 @@ export function UserOverviewTab({ user }: UserOverviewTabProps) {
                                         className="flex flex-col items-center gap-1 p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-primary/30 transition-colors group"
                                         title={ub.badge.description || ""}
                                     >
-                                        <div className="p-1.5 bg-amber-50 dark:bg-amber-500/10 text-amber-500 rounded-md group-hover:scale-110 transition-transform">
+                                        <div className="p-1.5 bg-amber-50 dark:bg-amber-500/10 text-amber-500 rounded-lg group-hover:scale-110 transition-transform">
                                             <Trophy size={14} />
                                         </div>
                                         <p className="text-[9px] font-bold text-gray-700 dark:text-gray-300 text-center leading-tight truncate w-full">
@@ -353,7 +353,7 @@ export function UserOverviewTab({ user }: UserOverviewTabProps) {
                                 <Monitor size={16} className="text-gray-500" />{" "}
                                 Recent Sessions
                             </h3>
-                            <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">
+                            <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-lg">
                                 {user._count.sessions}
                             </span>
                         </div>

@@ -273,7 +273,7 @@ export function FilterModal({
                                             )}
                                         </div>
                                         <span
-                                            className={`px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase ${
+                                            className={`px-2 py-0.5 rounded-lg text-[10px] font-bold text-white uppercase ${
                                                 isChecked
                                                     ? IMPACT_COLORS[imp.value]
                                                     : "bg-gray-300 dark:bg-slate-700"

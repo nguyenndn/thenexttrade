@@ -39,7 +39,7 @@ export const Logo = memo(function Logo({
                 />
             </div>
             <span
-                className={`text-xl font-black tracking-tight ${textClassName || "text-gray-900 dark:text-white"}`}
+                className={`text-lg sm:text-xl font-black tracking-tight ${textClassName || "text-gray-900 dark:text-white"}`}
             >
                 TheNext<span className="text-emerald-500 font-black">Trade</span>
             </span>

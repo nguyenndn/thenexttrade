@@ -267,7 +267,7 @@ export default function TNTConnectClient() {
                             ({ icon: Icon, label, desc, color, bg }) => (
                                 <div
                                     key={label}
-                                    className="group flex items-center gap-3.5 px-4 py-3.5 rounded-xl bg-white dark:bg-[#252731] border border-gray-100 dark:border-white/5 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_20px_-8px_rgba(0,0,0,0.1)] dark:shadow-none transition-all duration-300 hover:-translate-y-0.5 hover:border-gray-200 dark:hover:border-white/10"
+                                    className="group flex items-center gap-3.5 px-4 py-3.5 rounded-xl bg-white dark:bg-[#252731] border border-gray-200 dark:border-white/10 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_20px_-8px_rgba(0,0,0,0.1)] dark:shadow-none transition-all duration-300 hover:border-gray-200 dark:hover:border-white/10"
                                 >
                                     <div
                                         className={cn(
@@ -559,7 +559,7 @@ export default function TNTConnectClient() {
                                                     {stepItem.title}
                                                 </span>
                                                 {isDone && (
-                                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                                                         <Check
                                                             size={9}
                                                             strokeWidth={3}

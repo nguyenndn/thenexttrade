@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 interface StepItem {
     step: string;
@@ -82,7 +83,7 @@ export function TradingSystemsTabbedGuide({ primaryCtaUrl }: TabbedGuideProps) {
     const steps = activeTab === "access" ? ACCESS_STEPS : INSTALLATION_STEPS;
 
     return (
-        <section className="mb-12 rounded-[2.5rem] border border-gold/15 bg-white/80 p-6 shadow-lg shadow-gold/[0.02] dark:border-white/5 dark:bg-[#111318]/45 sm:p-10 relative overflow-hidden">
+        <section className="mb-12 rounded-[2.5rem] border border-gold/15 bg-white/80 p-6 shadow-lg shadow-gold/[0.02] dark:border-white/10 dark:bg-[#111318]/45 sm:p-10 relative overflow-hidden">
             <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-gold/5 rounded-full blur-[100px] pointer-events-none" />
             <div className="absolute -top-20 -right-20 w-80 h-80 bg-gold/5 rounded-full blur-[100px] pointer-events-none" />
 
@@ -111,7 +112,7 @@ export function TradingSystemsTabbedGuide({ primaryCtaUrl }: TabbedGuideProps) {
                         tabsId="trading-systems-guide-tabs"
                         className="w-full sm:w-auto"
                     >
-                        <TabsList className="bg-gray-50/75 dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 rounded-xl p-1 gap-1 w-full sm:w-auto">
+                        <TabsList className="bg-gray-50/75 dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 rounded-xl p-1 gap-1 w-full flex-col sm:flex-row sm:w-auto">
                             {[
                                 {
                                     id: "access",
@@ -129,7 +130,7 @@ export function TradingSystemsTabbedGuide({ primaryCtaUrl }: TabbedGuideProps) {
                                     <TabsTrigger
                                         key={tab.id}
                                         value={tab.id}
-                                        className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border border-transparent hover:border-gray-200/50 dark:hover:border-white/10 shrink-0 flex-1 sm:flex-initial"
+                                        className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border border-transparent hover:border-gray-200/50 dark:hover:border-white/10 w-full sm:w-auto justify-center"
                                         activeIndicatorClassName="!bg-gold shadow-md border-0"
                                         activeTextClassName="!text-white"
                                     >
@@ -150,7 +151,7 @@ export function TradingSystemsTabbedGuide({ primaryCtaUrl }: TabbedGuideProps) {
                     return (
                         <div
                             key={item.step}
-                            className="rounded-2xl border border-gray-200/60 bg-white/70 p-5 dark:border-white/5 dark:bg-white/[0.01] flex flex-col justify-between min-h-[160px] shadow-sm hover:border-gold/30 hover:shadow-md transition-all duration-300 relative overflow-hidden group"
+                            className="rounded-2xl border border-gray-200/60 bg-white/70 p-5 dark:border-white/10 dark:bg-white/[0.01] flex flex-col justify-between min-h-[160px] shadow-sm hover:border-gold/30 hover:shadow-md transition-all duration-300 relative overflow-hidden group"
                         >
                             {/* Visual glow on card hover */}
                             <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
@@ -164,7 +165,7 @@ export function TradingSystemsTabbedGuide({ primaryCtaUrl }: TabbedGuideProps) {
                                         />
                                     </div>
                                 ) : (
-                                    <span className="text-[10px] font-black px-2.5 py-0.5 rounded bg-gold/10 text-gold border border-gold/20">
+                                    <span className="text-[10px] font-black px-2.5 py-0.5 rounded-lg bg-gold/10 text-gold border border-gold/20">
                                         Step {item.step}
                                     </span>
                                 )}
@@ -189,7 +190,11 @@ export function TradingSystemsTabbedGuide({ primaryCtaUrl }: TabbedGuideProps) {
                 <div className="mt-8 flex justify-center relative z-10">
                     <Link
                         href={primaryCtaUrl}
-                        className="inline-flex items-center gap-2 rounded-xl bg-gold hover:bg-amber-600 px-6 py-3 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-gold/20 hover:shadow-gold/30 transition-all duration-200 active:scale-[0.98] group"
+                        className={buttonVariants({
+                            variant: "primary",
+                            className:
+                                "rounded-xl bg-gold hover:bg-amber-600 px-6 py-3 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-gold/20 hover:shadow-gold/30 active:scale-[0.98] group",
+                        })}
                     >
                         Start Eligibility Check
                         <ArrowRight

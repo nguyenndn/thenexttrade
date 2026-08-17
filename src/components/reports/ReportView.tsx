@@ -191,7 +191,7 @@ function BreakdownTable({
                         className="grid grid-cols-12 gap-2 items-center px-5 h-[52px] hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors border-b border-gray-50 last:border-0"
                     >
                         <div className="col-span-5 flex items-center gap-2 min-w-0">
-                            <span className="text-xs font-mono bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded shrink-0">
+                            <span className="text-xs font-mono bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-lg shrink-0">
                                 {i + 1}
                             </span>
                             <span className="text-sm font-bold text-gray-800 dark:text-gray-200 truncate">
@@ -328,7 +328,7 @@ function PsychologySection({
                                     <span className="text-sm text-gray-600 dark:text-gray-300">
                                         {m.name}
                                     </span>
-                                    <span className="text-xs font-bold bg-red-50 dark:bg-red-500/10 text-red-500 px-2 py-0.5 rounded">
+                                    <span className="text-xs font-bold bg-red-50 dark:bg-red-500/10 text-red-500 px-2 py-0.5 rounded-lg">
                                         {m.count}×
                                     </span>
                                 </div>

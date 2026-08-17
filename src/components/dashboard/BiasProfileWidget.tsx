@@ -446,7 +446,7 @@ export function BiasProfileWidget() {
                             Mindset Action Plan:
                         </p>
                         <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed font-bold mt-0.5">
-                            👉 {profile.actionPlan}
+                            {profile.actionPlan}
                         </p>
                     </div>
                 </div>

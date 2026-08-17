@@ -17,6 +17,7 @@ import {
     Compass,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { AuthUser } from "@/lib/auth-types";
 import { signout } from "@/app/auth/actions";
 
@@ -193,7 +194,10 @@ export function MobileNavigation({
                             <Link
                                 href="/get-started"
                                 onClick={onClose}
-                                className={`flex min-h-11 items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-bold transition-colors ${isDark ? "border-orange-400/20 bg-orange-400/10 text-orange-300 hover:bg-orange-400/15" : "border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100"}`}
+                                className={buttonVariants({
+                                    variant: "outline",
+                                    className: `flex min-h-11 items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-bold transition-colors ${isDark ? "border-orange-400/20 bg-orange-400/10 text-orange-300 hover:bg-orange-400/15" : "border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100"}`,
+                                })}
                             >
                                 <Compass size={16} />
                                 Start Here
@@ -202,7 +206,10 @@ export function MobileNavigation({
                                 <Link
                                     href="/auth/login"
                                     onClick={onClose}
-                                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${isDark ? "border-slate-600 text-white hover:bg-slate-800" : "border-dashboard text-gray-800 hover:bg-gray-50"}`}
+                                    className={buttonVariants({
+                                        variant: "outline",
+                                        className: `flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${isDark ? "border-slate-600 text-white hover:bg-slate-800" : "border-dashboard text-gray-800 hover:bg-gray-50"}`,
+                                    })}
                                 >
                                     <LogIn size={16} />
                                     Login
@@ -210,7 +217,11 @@ export function MobileNavigation({
                                 <Link
                                     href="/auth/signup"
                                     onClick={onClose}
-                                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-amber-500 text-white hover:bg-amber-600 transition-colors shadow-sm shadow-amber-500/20"
+                                    className={buttonVariants({
+                                        variant: "primary",
+                                        className:
+                                            "flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-amber-500 hover:bg-amber-600 shadow-sm shadow-amber-500/20",
+                                    })}
                                 >
                                     <UserPlus size={16} />
                                     Sign Up

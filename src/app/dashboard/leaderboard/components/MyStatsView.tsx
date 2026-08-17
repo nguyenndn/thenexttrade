@@ -255,7 +255,7 @@ export function MyStatsView({
                     <div className="px-6 py-5 border-t border-dashboard">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">
-                                🏅 Badges & Achievements
+                                <Award size={12} className="inline-block mr-1 align-[-1px]" /> Badges & Achievements
                             </h3>
                             <span className="text-xs font-bold text-primary tabular-nums">
                                 {earnedCount}/{badges.length}

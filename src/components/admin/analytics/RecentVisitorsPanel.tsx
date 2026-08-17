@@ -72,8 +72,8 @@ export function RecentVisitorsPanel() {
                         <div key={i} className="flex gap-3 animate-pulse">
                             <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-white/5" />
                             <div className="flex-1 space-y-2">
-                                <div className="h-3 bg-gray-200 dark:bg-white/5 rounded w-1/3" />
-                                <div className="h-2 bg-gray-200 dark:bg-white/5 rounded w-2/3" />
+                                <div className="h-3 bg-gray-200 dark:bg-white/5 rounded-lg w-1/3" />
+                                <div className="h-2 bg-gray-200 dark:bg-white/5 rounded-lg w-2/3" />
                             </div>
                         </div>
                     ))}
@@ -145,7 +145,7 @@ export function RecentVisitorsPanel() {
                                     </td>
                                     <td className="py-2.5">
                                         {v.utmSource ? (
-                                            <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                                            <span className="px-1.5 py-0.5 text-[10px] font-medium rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400">
                                                 {v.utmSource}
                                             </span>
                                         ) : (

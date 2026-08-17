@@ -145,17 +145,17 @@ export function TradingRuleCard({
                 {/* Scopes */}
                 <div className="flex flex-wrap items-center gap-2 mt-4 text-[10px] font-semibold text-gray-400 dark:text-gray-500">
                     {rule.account && (
-                        <span className="bg-primary/5 border border-primary/15 text-primary px-2 py-0.5 rounded-md">
+                        <span className="bg-primary/5 border border-primary/15 text-primary px-2 py-0.5 rounded-lg">
                             Account: {rule.account.name}
                         </span>
                     )}
                     {rule.strategy && (
-                        <span className="bg-indigo-500/5 border border-indigo-500/15 text-indigo-500 px-2 py-0.5 rounded-md">
+                        <span className="bg-indigo-500/5 border border-indigo-500/15 text-indigo-500 px-2 py-0.5 rounded-lg">
                             Strategy: {rule.strategy.name}
                         </span>
                     )}
                     {!rule.account && !rule.strategy && (
-                        <span className="bg-slate-500/5 border border-slate-500/15 text-slate-500 px-2 py-0.5 rounded-md">
+                        <span className="bg-slate-500/5 border border-slate-500/15 text-slate-500 px-2 py-0.5 rounded-lg">
                             Global Rule
                         </span>
                     )}

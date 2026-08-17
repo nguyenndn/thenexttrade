@@ -17,7 +17,7 @@ export function BusinessHealthPanel({ data }: Props) {
     };
 
     return (
-        <div className="bg-white/50 dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 dark:border-white/5 rounded-xl p-6 backdrop-blur-sm">
+        <div className="bg-white/50 dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 backdrop-blur-sm">
             <h3 className="text-lg font-black text-slate-800 dark:text-white flex items-center gap-2">
                 <DollarSign className="w-5 h-5 text-emerald-500" />
                 Trading Business Health

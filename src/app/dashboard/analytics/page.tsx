@@ -121,7 +121,7 @@ export default async function AnalyticsPage({
                 )}
             </PageHeader>
             <div id="onborda-analytics-tabs" className="mb-4">
-                <TabBar tabs={analyticsTabs} equalWidth />
+                <TabBar tabs={analyticsTabs} />
             </div>
             <Suspense
                 key={JSON.stringify(resolvedParams)}

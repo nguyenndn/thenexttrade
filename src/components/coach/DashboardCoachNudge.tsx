@@ -136,7 +136,7 @@ export function DashboardCoachNudge({
                         <div className="flex items-center gap-3 min-w-0">
                             {getCompactIcon()}
                             <div className="flex items-baseline gap-2 min-w-0">
-                                <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 dark:text-gold bg-amber-500/10 dark:bg-gold/10 px-1.5 py-0.5 rounded shrink-0">
+                                <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 dark:text-gold bg-amber-500/10 dark:bg-gold/10 px-1.5 py-0.5 rounded-lg shrink-0">
                                     Coach Plan
                                 </span>
                                 <p className="text-xs font-bold text-gray-700 dark:text-gray-200 truncate leading-none">
@@ -203,7 +203,7 @@ export function DashboardCoachNudge({
                                     wordBreak: "break-word",
                                 }}
                             >
-                                <span className="text-[9px] font-black uppercase tracking-wider text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-md">
+                                <span className="text-[9px] font-black uppercase tracking-wider text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-lg">
                                     Primary Action
                                 </span>
                                 <h4
@@ -409,7 +409,7 @@ export function DashboardCoachNudge({
                                                     <div className="flex items-center gap-2">
                                                         <span
                                                             className={cn(
-                                                                "text-[9px] font-black uppercase tracking-wide px-1.5 py-0.5 rounded border shrink-0",
+                                                                "text-[9px] font-black uppercase tracking-wide px-1.5 py-0.5 rounded-lg border shrink-0",
                                                                 isLesson
                                                                     ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
                                                                     : "bg-amber-500/10 text-amber-600 dark:text-gold border-amber-500/20"

@@ -290,17 +290,19 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                         </td>
                                         <td className="p-4">
                                             {req.screenshotUrl ? (
-                                                <button
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
                                                     onClick={() =>
                                                         setScreenshotModal(
                                                             req.screenshotUrl
                                                         )
                                                     }
-                                                    className="flex items-center gap-1.5 text-xs text-primary hover:underline font-bold bg-primary/5 hover:bg-primary/10 px-2.5 py-1.5 rounded-lg border border-primary/20 transition-all"
+                                                    className="h-auto px-2.5 py-1.5 bg-primary/5 hover:bg-primary/10 text-primary border border-primary/20"
                                                 >
                                                     <ImageIcon size={14} /> View
                                                     Screenshot
-                                                </button>
+                                                </Button>
                                             ) : (
                                                 <span className="text-xs text-gray-600 flex items-center gap-1">
                                                     <AlertCircle
@@ -375,7 +377,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                                                 }
                                                                 placeholder="Reject reason..."
                                                                 rows={2}
-                                                                className="w-full text-xs p-1.5 rounded border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] text-gray-700 dark:text-white focus:outline-none focus:border-red-500"
+                                                                className="w-full text-xs p-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] text-gray-700 dark:text-white focus:outline-none focus:border-red-500"
                                                             />
                                                             <div className="flex justify-end gap-1.5">
                                                                 <Button
@@ -389,7 +391,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                                                             ""
                                                                         );
                                                                     }}
-                                                                    className="h-7 text-[10px] px-2 py-0.5 rounded"
+                                                                    className="h-7 text-[10px] px-2 py-0.5 rounded-lg"
                                                                 >
                                                                     Cancel
                                                                 </Button>
@@ -405,7 +407,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                                                         loading ===
                                                                         `vip-reject-${req.id}`
                                                                     }
-                                                                    className="h-7 text-[10px] px-2 py-0.5 bg-red-600 hover:bg-red-700 text-white rounded"
+                                                                    className="h-7 text-[10px] px-2 py-0.5 bg-red-600 hover:bg-red-700 text-white rounded-lg"
                                                                 >
                                                                     {loading ===
                                                                     `vip-reject-${req.id}` ? (

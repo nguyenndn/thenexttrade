@@ -166,7 +166,7 @@ export function MistakeSelector({
                                                 </div>
                                                 <span
                                                     className={`
- text-[9px] font-bold uppercase px-1.5 py-0.5 rounded border shrink-0
+ text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-lg border shrink-0
  ${getMistakeSeverityColor(mistake.severity)}
  `}
                                                 >

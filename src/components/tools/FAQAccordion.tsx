@@ -23,7 +23,7 @@ export function FAQAccordion({ items, hoverClassName }: FAQAccordionProps) {
                 <div
                     key={idx}
                     className={cn(
-                        "rounded-xl border border-dashboard/80 bg-white/80 dark:bg-white/[0.02] hover:-translate-y-0.5 transition-all duration-300 overflow-hidden",
+                        "rounded-xl border border-dashboard/80 bg-white/80 dark:bg-white/[0.02] transition-all duration-300 overflow-hidden",
                         hoverClassName ||
                             "hover:border-emerald-500/30 dark:hover:border-emerald-500/20 hover:shadow-md hover:shadow-emerald-500/[0.03] dark:hover:shadow-emerald-500/[0.02]"
                     )}

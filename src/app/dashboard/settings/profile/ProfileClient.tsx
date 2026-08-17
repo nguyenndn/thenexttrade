@@ -19,6 +19,7 @@ import {
     Type,
     DollarSign,
     Building2,
+    Lightbulb,
     Hash,
     UserCircle,
     Percent,
@@ -592,7 +593,7 @@ export default function ProfileClient({
 
                     <div className="px-5 py-3 border-t border-dashboard">
                         <p className="text-[11px] text-gray-400 leading-relaxed">
-                            💡 Tip: Most pro traders keep dollar amounts hidden
+                            <Lightbulb size={12} className="inline-block mr-1 align-[-1px]" /> Tip: Most pro traders keep dollar amounts hidden
                             and only share percentage-based metrics.
                         </p>
                     </div>

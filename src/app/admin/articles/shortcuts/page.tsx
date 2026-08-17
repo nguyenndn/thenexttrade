@@ -201,15 +201,15 @@ export default function ShortcutsManagerPage() {
                                 >
                                     <div className="flex items-center gap-3 mb-4">
                                         <div className="w-5 h-5 rounded-full bg-gray-200 dark:bg-white/10" />
-                                        <div className="h-5 bg-gray-200 dark:bg-white/10 rounded-md w-1/2" />
+                                        <div className="h-5 bg-gray-200 dark:bg-white/10 rounded-lg w-1/2" />
                                     </div>
                                     <div className="space-y-2 mb-4">
-                                        <div className="h-3 bg-gray-100 dark:bg-white/5 rounded-md w-full" />
-                                        <div className="h-3 bg-gray-100 dark:bg-white/5 rounded-md w-3/4" />
+                                        <div className="h-3 bg-gray-100 dark:bg-white/5 rounded-lg w-full" />
+                                        <div className="h-3 bg-gray-100 dark:bg-white/5 rounded-lg w-3/4" />
                                     </div>
                                     <div className="mt-auto pt-4 border-t border-gray-200 dark:border-white/10 flex justify-between">
-                                        <div className="h-3 bg-gray-100 dark:bg-white/5 rounded-md w-24" />
-                                        <div className="h-3 bg-gray-100 dark:bg-white/5 rounded-md w-16" />
+                                        <div className="h-3 bg-gray-100 dark:bg-white/5 rounded-lg w-24" />
+                                        <div className="h-3 bg-gray-100 dark:bg-white/5 rounded-lg w-16" />
                                     </div>
                                 </div>
                             ))}

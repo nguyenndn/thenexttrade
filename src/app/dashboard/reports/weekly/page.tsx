@@ -33,7 +33,7 @@ export default async function WeeklyReviewPage() {
                 description="Your automated weekly trading report — track progress and improve consistency."
             />
             <div className="mb-4">
-                <TabBar tabs={analyticsTabs} equalWidth />
+                <TabBar tabs={analyticsTabs} />
             </div>
 
             <ReportView reports={reports as any} total={total} type="weekly" />

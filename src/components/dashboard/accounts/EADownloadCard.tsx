@@ -73,7 +73,7 @@ export function EADownloadCard({ product }: EADownloadCardProps) {
                         <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-1">
                             {product.name}
                         </h3>
-                        <span className="bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 px-2 py-1 rounded text-xs font-bold font-mono">
+                        <span className="bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-lg text-xs font-bold font-mono">
                             v{product.version}
                         </span>
                     </div>

@@ -489,7 +489,7 @@ export function IbOverviewClient({
                                                     )}
                                                 </td>
                                                 <td className="px-4 py-3.5">
-                                                    <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-gray-200">
+                                                    <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-gray-200">
                                                         {req.broker}
                                                     </span>
                                                     <div className="font-mono text-xs font-bold text-gray-700 dark:text-gray-300 mt-1">

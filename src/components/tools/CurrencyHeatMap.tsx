@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 const CURRENCIES = ["USD", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "NZD"];
 
@@ -136,7 +137,11 @@ export function CurrencyHeatMap() {
                 <button
                     onClick={fetchStrength}
                     disabled={loading}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/5 border border-dashboard text-sm font-bold text-gray-600 dark:text-gray-300 hover:border-primary/50 transition-all"
+                    className={buttonVariants({
+                        variant: "outline",
+                        className:
+                            "px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-sm font-bold text-gray-600 dark:text-gray-300 hover:border-primary/50",
+                    })}
                 >
                     <RefreshCw
                         size={14}
@@ -150,7 +155,7 @@ export function CurrencyHeatMap() {
                 {data.map((item, idx) => (
                     <div
                         key={item.currency}
-                        className="flex items-center gap-4"
+                        className="flex items-center gap-2 sm:gap-4"
                     >
                         <div className="w-16 flex items-center gap-2">
                             <span className="text-lg">
@@ -165,7 +170,7 @@ export function CurrencyHeatMap() {
                             <div className="absolute top-0 bottom-0 left-1/2 w-px bg-gray-300 dark:bg-white/20 z-10" />
                             <div
                                 className={cn(
-                                    "absolute top-0.5 bottom-0.5 rounded-md transition-all z-20",
+                                    "absolute top-0.5 bottom-0.5 rounded-lg transition-all z-20",
                                     item.strength >= 0
                                         ? "bg-green-500"
                                         : "bg-red-500"
@@ -192,7 +197,7 @@ export function CurrencyHeatMap() {
                             {item.strength > 0 ? "+" : ""}
                             {item.strength.toFixed(3)}%
                         </div>
-                        <div className="w-8 text-center text-xs font-bold text-gray-500">
+                        <div className="hidden sm:block w-8 text-center text-xs font-bold text-gray-500">
                             #{idx + 1}
                         </div>
                     </div>

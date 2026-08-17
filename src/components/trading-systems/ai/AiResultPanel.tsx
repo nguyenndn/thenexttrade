@@ -203,7 +203,7 @@ export function AiResultPanel({
                         <p className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">
                             Market Analysis
                         </p>
-                        <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/[0.02] p-3 rounded-xl border border-gray-200/60 dark:border-white/5">
+                        <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/[0.02] p-3 rounded-xl border border-gray-200/60 dark:border-white/10">
                             {d.market_analysis}
                         </p>
                     </div>
@@ -214,7 +214,7 @@ export function AiResultPanel({
                         <p className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">
                             Trade Rationale
                         </p>
-                        <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/[0.02] p-3 rounded-xl border border-gray-200/60 dark:border-white/5">
+                        <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/[0.02] p-3 rounded-xl border border-gray-200/60 dark:border-white/10">
                             {d.reason}
                         </p>
                     </div>
@@ -225,7 +225,7 @@ export function AiResultPanel({
                         <p className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">
                             Risk Advisory
                         </p>
-                        <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/[0.02] p-3 rounded-xl border border-gray-200/60 dark:border-white/5">
+                        <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/[0.02] p-3 rounded-xl border border-gray-200/60 dark:border-white/10">
                             {d.risk_note}
                         </p>
                     </div>

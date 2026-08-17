@@ -25,6 +25,15 @@ import {
     SearchCode,
     ExternalLink,
     Youtube,
+    MessageSquare,
+    Compass,
+    BookOpen,
+    Briefcase,
+    BarChart3,
+    Flame,
+    Target,
+    Lightbulb,
+    Palette,
 } from "lucide-react";
 import DOMPurify from "isomorphic-dompurify";
 import { Button } from "@/components/ui/Button";
@@ -63,46 +72,61 @@ export interface AIRewriteDialogRef {
 // TONE DATA
 // ============================================================================
 
-const TONES = [
+const TONES: Array<{
+    id: string;
+    label: string;
+    icon: React.ReactNode;
+    desc: string;
+}> = [
     {
         id: "conversational",
         label: "Conversational",
-        icon: "💬",
+        icon: <MessageSquare size={14} />,
         desc: "Friendly, casual",
     },
-    { id: "mentor", label: "Mentor", icon: "🧭", desc: "Experience-based" },
+    {
+        id: "mentor",
+        label: "Mentor",
+        icon: <Compass size={14} />,
+        desc: "Experience-based",
+    },
     {
         id: "storytelling",
         label: "Storytelling",
-        icon: "📖",
+        icon: <BookOpen size={14} />,
         desc: "Narrative style",
     },
     {
         id: "edutainment",
         label: "Edutainment",
-        icon: "🎪",
+        icon: <Sparkles size={14} />,
         desc: "Humor + learning",
     },
     {
         id: "professional",
         label: "Professional",
-        icon: "👔",
+        icon: <Briefcase size={14} />,
         desc: "Formal, data",
     },
     {
         id: "analytical",
         label: "Analytical",
-        icon: "📊",
+        icon: <BarChart3 size={14} />,
         desc: "Compare, analyze",
     },
     {
         id: "motivational",
         label: "Motivational",
-        icon: "🔥",
+        icon: <Flame size={14} />,
         desc: "Inspiring energy",
     },
-    { id: "tactical", label: "Tactical", icon: "🎯", desc: "Step-by-step" },
-] as const;
+    {
+        id: "tactical",
+        label: "Tactical",
+        icon: <Target size={14} />,
+        desc: "Step-by-step",
+    },
+];
 
 const SOURCE_ICONS: Record<string, React.ReactNode> = {
     google: <Globe size={13} className="text-blue-500" />,
@@ -454,7 +478,7 @@ export const AIRewriteDialog = forwardRef<
                                     type="button"
                                     onClick={() => setInputMode("url")}
                                     className={cn(
-                                        "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium transition-all",
+                                        "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all",
                                         inputMode === "url"
                                             ? "bg-white dark:bg-white/10 text-gray-700 dark:text-white shadow-sm"
                                             : "text-gray-600 hover:text-gray-700 dark:hover:text-gray-300"
@@ -466,7 +490,7 @@ export const AIRewriteDialog = forwardRef<
                                     type="button"
                                     onClick={() => setInputMode("paste")}
                                     className={cn(
-                                        "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium transition-all",
+                                        "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all",
                                         inputMode === "paste"
                                             ? "bg-white dark:bg-white/10 text-gray-700 dark:text-white shadow-sm"
                                             : "text-gray-600 hover:text-gray-700 dark:hover:text-gray-300"
@@ -478,7 +502,7 @@ export const AIRewriteDialog = forwardRef<
                                     type="button"
                                     onClick={() => setInputMode("search")}
                                     className={cn(
-                                        "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium transition-all",
+                                        "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all",
                                         inputMode === "search"
                                             ? "bg-white dark:bg-white/10 text-gray-700 dark:text-white shadow-sm"
                                             : "text-gray-600 hover:text-gray-700 dark:hover:text-gray-300"
@@ -586,7 +610,7 @@ export const AIRewriteDialog = forwardRef<
                                                         >
                                                             <div
                                                                 className={cn(
-                                                                    "w-4 h-4 rounded border-2 mt-0.5 shrink-0 flex items-center justify-center transition-all",
+                                                                    "w-4 h-4 rounded-lg border-2 mt-0.5 shrink-0 flex items-center justify-center transition-all",
                                                                     selectedUrls.has(
                                                                         r.url
                                                                     )
@@ -630,7 +654,7 @@ export const AIRewriteDialog = forwardRef<
                                                                 onClick={(e) =>
                                                                     e.stopPropagation()
                                                                 }
-                                                                className="shrink-0 p-1 rounded hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                                                                className="shrink-0 p-1 rounded-lg hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
                                                                 title="Preview in new tab"
                                                             >
                                                                 <ExternalLink
@@ -734,11 +758,14 @@ export const AIRewriteDialog = forwardRef<
                                                 Search
                                             </Button>
                                         </div>
-                                        <p className="text-[10px] text-gray-500 mt-1.5">
-                                            💡 Tip: Use forex-specific keywords
-                                            for better results. Select 2-4
-                                            sources for best copyright
-                                            protection.
+                                        <p className="text-[10px] text-gray-500 mt-1.5 flex items-start gap-1">
+                                            <Lightbulb size={12} className="shrink-0 mt-0.5" />
+                                            <span>
+                                                Tip: Use forex-specific keywords
+                                                for better results. Select 2-4
+                                                sources for best copyright
+                                                protection.
+                                            </span>
                                         </p>
                                     </div>
 
@@ -790,7 +817,7 @@ export const AIRewriteDialog = forwardRef<
                                                         >
                                                             <div
                                                                 className={cn(
-                                                                    "w-4 h-4 rounded border-2 mt-0.5 shrink-0 flex items-center justify-center transition-all",
+                                                                    "w-4 h-4 rounded-lg border-2 mt-0.5 shrink-0 flex items-center justify-center transition-all",
                                                                     selectedUrls.has(
                                                                         r.url
                                                                     )
@@ -841,7 +868,7 @@ export const AIRewriteDialog = forwardRef<
                                                                 onClick={(e) =>
                                                                     e.stopPropagation()
                                                                 }
-                                                                className="shrink-0 p-1 rounded hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                                                                className="shrink-0 p-1 rounded-lg hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
                                                                 title="Preview in new tab"
                                                             >
                                                                 <ExternalLink
@@ -867,8 +894,9 @@ export const AIRewriteDialog = forwardRef<
 
                             {/* Tone Selector */}
                             <div>
-                                <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
-                                    🎨 Tone
+                                <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider flex items-center gap-1.5">
+                                    <Palette size={13} />
+                                    Tone
                                 </label>
                                 <div className="grid grid-cols-4 gap-1.5">
                                     {TONES.map((t) => (
@@ -945,9 +973,9 @@ export const AIRewriteDialog = forwardRef<
                                     layers
                                 </span>
                                 {totalSources >= 2 && (
-                                    <span className="text-emerald-500">
+                                    <span className="text-emerald-500 flex items-center gap-1">
                                         • {totalSources} sources → merge enabled
-                                        ✅
+                                        <Check size={12} className="inline-block" />
                                     </span>
                                 )}
                                 {totalSources < 2 && inputMode === "url" && (
@@ -1032,8 +1060,9 @@ export const AIRewriteDialog = forwardRef<
 
                                     {result.metaDescription && (
                                         <div className="p-3 bg-blue-50 dark:bg-blue-500/5 rounded-xl border border-blue-100 dark:border-blue-900/30">
-                                            <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest">
-                                                🔍 Meta Description (
+                                            <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest flex items-center gap-1">
+                                                <Search size={12} />
+                                                Meta Description (
                                                 {result.metaDescription.length}{" "}
                                                 chars)
                                             </span>
@@ -1065,9 +1094,9 @@ export const AIRewriteDialog = forwardRef<
 
                         {/* Footer */}
                         <div className="flex items-center justify-between p-5 border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] shrink-0">
-                            <p className="text-[11px] text-gray-500">
+                            <p className="text-[11px] text-gray-500 flex items-center gap-1">
                                 DeepSeek + FireCrawl + Serper ·{" "}
-                                {TONES.find((t) => t.id === tone)?.icon}{" "}
+                                {TONES.find((t) => t.id === tone)?.icon}
                                 {TONES.find((t) => t.id === tone)?.label}
                             </p>
                             <div className="flex gap-2">

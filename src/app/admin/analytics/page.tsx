@@ -295,8 +295,8 @@ function LoadingSkeleton() {
                         <div className="flex items-center gap-3">
                             <div className="w-9 h-9 shrink-0 rounded-xl bg-gray-200 dark:bg-white/5" />
                             <div className="flex-1">
-                                <div className="h-4 bg-gray-200 dark:bg-white/5 rounded w-1/2 mb-2" />
-                                <div className="h-2 bg-gray-200 dark:bg-white/5 rounded w-1/3" />
+                                <div className="h-4 bg-gray-200 dark:bg-white/5 rounded-lg w-1/2 mb-2" />
+                                <div className="h-2 bg-gray-200 dark:bg-white/5 rounded-lg w-1/3" />
                             </div>
                         </div>
                     </div>

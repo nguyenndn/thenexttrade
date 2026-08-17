@@ -236,7 +236,7 @@ export function AccountCard({
                 <div className="flex items-center gap-1.5 mb-3 flex-wrap">
                     {accountType && (
                         <span
-                            className={`text-[9px] font-black px-2 py-[3px] rounded-md uppercase tracking-[0.1em] border whitespace-nowrap ${
+                            className={`text-[9px] font-black px-2 py-[3px] rounded-lg uppercase tracking-[0.1em] border whitespace-nowrap ${
                                 isReal
                                     ? "bg-emerald-100 text-emerald-700 border-emerald-300 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/30"
                                     : "bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-500/15 dark:text-blue-400 dark:border-blue-500/30"
@@ -246,13 +246,13 @@ export function AccountCard({
                         </span>
                     )}
                     {account.accountNumber && (
-                        <span className="text-[9px] font-mono font-bold text-gray-600 dark:text-gray-300 tracking-wider whitespace-nowrap bg-gray-100 dark:bg-white/10 border border-gray-300 dark:border-white/15 px-2 py-[3px] rounded-md">
+                        <span className="text-[9px] font-mono font-bold text-gray-600 dark:text-gray-300 tracking-wider whitespace-nowrap bg-gray-100 dark:bg-white/10 border border-gray-300 dark:border-white/15 px-2 py-[3px] rounded-lg">
                             #{account.accountNumber}
                         </span>
                     )}
                     {account.useForLeaderboard && (
                         <span
-                            className="w-5 h-5 rounded-md inline-flex items-center justify-center bg-yellow-100 border border-yellow-300 dark:bg-yellow-500/15 dark:border-yellow-500/30"
+                            className="w-5 h-5 rounded-lg inline-flex items-center justify-center bg-yellow-100 border border-yellow-300 dark:bg-yellow-500/15 dark:border-yellow-500/30"
                             title="Leaderboard Account"
                         >
                             <Trophy
@@ -263,7 +263,7 @@ export function AccountCard({
                     )}
                     {isMain && (
                         <span
-                            className="inline-flex items-center gap-1 px-1.5 py-[3px] rounded-md text-[9px] font-black uppercase tracking-[0.1em] bg-gradient-to-r from-yellow-500/20 via-amber-500/25 to-yellow-500/20 text-yellow-600 dark:text-amber-400 border border-amber-500/40 shadow-sm shadow-amber-500/5"
+                            className="inline-flex items-center gap-1 px-1.5 py-[3px] rounded-lg text-[9px] font-black uppercase tracking-[0.1em] bg-gradient-to-r from-yellow-500/20 via-amber-500/25 to-yellow-500/20 text-yellow-600 dark:text-amber-400 border border-amber-500/40 shadow-sm shadow-amber-500/5"
                             title="Main Account"
                         >
                             <Star

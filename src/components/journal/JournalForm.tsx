@@ -647,7 +647,7 @@ export default function JournalForm({
                                                     value={p.id}
                                                 >
                                                     {confidence === "HIGH" &&
-                                                        "⭐ [Recommended] "}
+                                                        "[Recommended] "}
                                                     {confidence === "MEDIUM" &&
                                                         "[Suggested] "}
                                                     {p.setupName || "Setup"} (
@@ -1131,7 +1131,7 @@ export default function JournalForm({
                                                         <div className="min-w-0 flex-1">
                                                             <div className="flex items-center gap-2">
                                                                 <span
-                                                                    className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-black uppercase border ${
+                                                                    className={`inline-flex items-center px-1.5 py-0.5 rounded-lg text-[9px] font-black uppercase border ${
                                                                         rule.severity ===
                                                                         "HIGH"
                                                                             ? "bg-red-50 text-red-500 border-red-100 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20"

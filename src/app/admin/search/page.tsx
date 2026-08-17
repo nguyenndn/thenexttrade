@@ -77,7 +77,7 @@ function AdminSearchContent() {
                     regex.test(part) ? (
                         <span
                             key={i}
-                            className="bg-yellow-300 dark:bg-yellow-600/50 text-gray-700 dark:text-white px-0.5 rounded"
+                            className="bg-yellow-300 dark:bg-yellow-600/50 text-gray-700 dark:text-white px-0.5 rounded-lg"
                         >
                             {part}
                         </span>
@@ -137,7 +137,7 @@ function AdminSearchContent() {
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <span
-                                                    className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${
+                                                    className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-lg ${
                                                         result.type ===
                                                         "article"
                                                             ? "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300"
@@ -148,7 +148,7 @@ function AdminSearchContent() {
                                                 </span>
                                                 {result.meta?.status && (
                                                     <span
-                                                        className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${
+                                                        className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-lg ${
                                                             result.meta
                                                                 .status ===
                                                             "PUBLISHED"

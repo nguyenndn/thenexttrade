@@ -35,7 +35,7 @@ function TrendBadge({ value }: { value: number | undefined }) {
 
     return (
         <span
-            className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[10px] font-bold ${color}`}
+            className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-lg text-[10px] font-bold ${color}`}
         >
             <Icon size={10} />
             {Math.abs(value)}%

@@ -115,7 +115,7 @@ export function SystemDetailCard({
                             <h3 className="text-base font-extrabold uppercase tracking-tight leading-tight text-gray-700 dark:text-white group-hover:text-primary transition-colors duration-300 line-clamp-1">
                                 {product.name}
                             </h3>
-                            <span className="flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 bg-black/5 dark:bg-white/5 text-gray-600 dark:text-gray-300 text-[10px] font-bold rounded-md">
+                            <span className="flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 bg-black/5 dark:bg-white/5 text-gray-600 dark:text-gray-300 text-[10px] font-bold rounded-lg">
                                 {product.version}
                             </span>
                         </div>
@@ -123,11 +123,11 @@ export function SystemDetailCard({
                         {/* Badge */}
                         <div className="flex flex-wrap gap-1.5 mb-2">
                             {(product as any).isFree ? (
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/10 text-primary rounded-md text-[10px] font-bold border border-primary/20">
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/10 text-primary rounded-lg text-[10px] font-bold border border-primary/20">
                                     FREE
                                 </span>
                             ) : (
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/10 text-primary rounded-md text-[10px] font-bold border border-primary/20">
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/10 text-primary rounded-lg text-[10px] font-bold border border-primary/20">
                                     <Shield size={9} />
                                     MT5 VERIFIED
                                 </span>

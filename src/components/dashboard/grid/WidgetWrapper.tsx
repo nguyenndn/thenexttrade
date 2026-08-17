@@ -2,6 +2,7 @@
 
 import React from "react";
 import { GripHorizontal, X } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 interface WidgetWrapperProps {
@@ -36,12 +37,15 @@ export function WidgetWrapper({
                         </span>
                     </div>
 
-                    <button
+                    <Button
                         onClick={() => onRemove?.(id)}
-                        className="p-1 rounded-md text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 p-0 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
+                        aria-label="Remove widget"
                     >
                         <X className="w-3.5 h-3.5" />
-                    </button>
+                    </Button>
                 </div>
             )}
 

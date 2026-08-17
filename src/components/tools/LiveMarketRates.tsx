@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 interface RateData {
     symbol: string;
@@ -231,7 +232,11 @@ export function LiveMarketRates() {
                         <button
                             onClick={fetchRates}
                             disabled={loading}
-                            className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-white dark:bg-white/5 border border-dashboard text-sm font-bold text-gray-600 dark:text-gray-300 hover:border-primary/50 transition-all"
+                            className={buttonVariants({
+                                variant: "outline",
+                                className:
+                                    "px-3 py-2.5 rounded-xl bg-white dark:bg-white/5 text-sm font-bold text-gray-600 dark:text-gray-300 hover:border-primary/50",
+                            })}
                         >
                             <RefreshCw
                                 size={14}
@@ -273,7 +278,7 @@ export function LiveMarketRates() {
             </div>
 
             {/* ── Rate Cards Grid ── */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {filteredPairs.map((pair) => {
                     const rate = rates[pair.symbol];
                     const decimals = getDecimals(pair.symbol);

@@ -232,13 +232,16 @@ export function CurrencyConverter() {
 
                 {/* Swap Button */}
                 <div className="flex justify-center">
-                    <button
+                    <Button
                         type="button"
+                        variant="primary"
+                        size="icon"
                         onClick={swap}
-                        className="p-3 rounded-full bg-primary text-white hover:bg-primary/80 transition-all shadow-lg shadow-primary/25"
+                        className="h-11 w-11 rounded-full bg-primary text-white hover:bg-primary/80 shadow-lg shadow-primary/25"
+                        aria-label="Swap currencies"
                     >
                         <ArrowUpDown size={20} />
-                    </button>
+                    </Button>
                 </div>
 
                 {/* To Currency */}
@@ -272,7 +275,7 @@ export function CurrencyConverter() {
                         />
                     ) : result ? (
                         <>
-                            <p className="text-5xl md:text-6xl font-black text-white tracking-tight font-mono">
+                            <p className="text-3xl sm:text-5xl font-black text-white tracking-tight font-mono">
                                 {toSymbol}
                                 {result.converted.toLocaleString("en-US", {
                                     minimumFractionDigits: 2,

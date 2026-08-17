@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { RefreshCw, Info } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 
 const PAIRS = [
     "EUR/USD",
@@ -123,17 +124,19 @@ export function CorrelationMatrix() {
                         </button>
                     ))}
                 </div>
-                <button
+                <Button
+                    variant="primary"
+                    size="sm"
                     onClick={fetchCorrelation}
                     disabled={loading}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all shadow-sm shadow-primary/20"
+                    className="px-4 py-2 rounded-lg shadow-sm shadow-primary/20"
                 >
                     <RefreshCw
                         size={14}
                         className={loading ? "animate-spin" : ""}
                     />
                     {loading ? "Calculating..." : "Calculate"}
-                </button>
+                </Button>
             </div>
 
             {/* ── Empty State ── */}
@@ -230,25 +233,25 @@ export function CorrelationMatrix() {
             {/* ── Legend + Note ── */}
             {matrix && (
                 <div className="space-y-4">
-                    <div className="flex items-center justify-center gap-5 text-xs text-gray-600 dark:text-gray-300">
+                    <div className="flex flex-wrap items-center justify-center gap-5 text-xs text-gray-600 dark:text-gray-300">
                         <div className="flex items-center gap-1.5">
-                            <div className="w-4 h-4 rounded bg-green-600 dark:bg-teal-600" />
+                            <div className="w-4 h-4 rounded-fullbg-green-600 dark:bg-teal-600" />
                             <span>Strong +</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <div className="w-4 h-4 rounded bg-green-100 dark:bg-teal-700/70 border border-green-200 dark:border-transparent" />
+                            <div className="w-4 h-4 rounded-fullbg-green-100 dark:bg-teal-700/70 border border-green-200 dark:border-transparent" />
                             <span>Weak +</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <div className="w-4 h-4 rounded bg-slate-200 dark:bg-slate-700/50 border border-slate-300" />
+                            <div className="w-4 h-4 rounded-fullbg-slate-200 dark:bg-slate-700/50 border border-slate-300" />
                             <span>None</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <div className="w-4 h-4 rounded bg-red-100 dark:bg-red-800/70 border border-red-200 dark:border-transparent" />
+                            <div className="w-4 h-4 rounded-fullbg-red-100 dark:bg-red-800/70 border border-red-200 dark:border-transparent" />
                             <span>Weak −</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <div className="w-4 h-4 rounded bg-red-600 dark:bg-red-700" />
+                            <div className="w-4 h-4 rounded-fullbg-red-600 dark:bg-red-700" />
                             <span>Strong −</span>
                         </div>
                     </div>

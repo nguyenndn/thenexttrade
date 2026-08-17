@@ -149,7 +149,7 @@ function CommentItem({
                         {comment.user.name || "Anonymous User"}
                     </span>
                     {comment.user.id === currentUser?.id && (
-                        <span className="inline-flex items-center px-1.5 py-0.2 bg-primary/10 text-primary text-[8px] uppercase font-black rounded tracking-wider border border-primary/15">
+                        <span className="inline-flex items-center px-1.5 py-0.2 bg-primary/10 text-primary text-[8px] uppercase font-black rounded-lg tracking-wider border border-primary/15">
                             You
                         </span>
                     )}

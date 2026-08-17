@@ -485,28 +485,28 @@ export function SeoAnalysisPanel({
                     <Button
                         variant="ghost"
                         onClick={() => setActiveTab("seo")}
-                        className={`px-3.5 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === "seo" ? "bg-white text-primary shadow-sm hover:bg-white hover:text-primary" : "text-gray-600 hover:bg-gray-200"}`}
+                        className={`px-3.5 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${activeTab === "seo" ? "bg-white text-primary shadow-sm hover:bg-white hover:text-primary" : "text-gray-600 hover:bg-gray-200"}`}
                     >
                         SEO
                     </Button>
                     <Button
                         variant="ghost"
                         onClick={() => setActiveTab("readability")}
-                        className={`px-3.5 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === "readability" ? "bg-white text-primary shadow-sm hover:bg-white hover:text-primary" : "text-gray-600 hover:bg-gray-200"}`}
+                        className={`px-3.5 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${activeTab === "readability" ? "bg-white text-primary shadow-sm hover:bg-white hover:text-primary" : "text-gray-600 hover:bg-gray-200"}`}
                     >
                         Readability
                     </Button>
                     <Button
                         variant="ghost"
                         onClick={() => setActiveTab("aiSeo")}
-                        className={`px-3.5 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === "aiSeo" ? "bg-white text-primary shadow-sm hover:bg-white hover:text-primary" : "text-gray-600 hover:bg-gray-200"}`}
+                        className={`px-3.5 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${activeTab === "aiSeo" ? "bg-white text-primary shadow-sm hover:bg-white hover:text-primary" : "text-gray-600 hover:bg-gray-200"}`}
                     >
                         AI-SEO
                     </Button>
                     <Button
                         variant="ghost"
                         onClick={() => setActiveTab("social")}
-                        className={`px-3.5 py-1.5 h-auto rounded-md text-xs font-bold transition-all ${activeTab === "social" ? "bg-white text-primary shadow-sm hover:bg-white hover:text-primary" : "text-gray-600 hover:bg-gray-200"}`}
+                        className={`px-3.5 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${activeTab === "social" ? "bg-white text-primary shadow-sm hover:bg-white hover:text-primary" : "text-gray-600 hover:bg-gray-200"}`}
                     >
                         Social
                     </Button>
@@ -584,7 +584,7 @@ export function SeoAnalysisPanel({
                                     variant="ghost"
                                     size="icon"
                                     onClick={() => setPreviewMode("mobile")}
-                                    className={`p-1.5 h-auto w-auto rounded ${previewMode === "mobile" ? "bg-indigo-50 text-indigo-500 hover:bg-indigo-50" : "text-gray-500 hover:bg-gray-100"}`}
+                                    className={`p-1.5 h-auto w-auto rounded-lg ${previewMode === "mobile" ? "bg-indigo-50 text-indigo-500 hover:bg-indigo-50" : "text-gray-500 hover:bg-gray-100"}`}
                                 >
                                     <Smartphone size={14} />
                                 </Button>
@@ -592,7 +592,7 @@ export function SeoAnalysisPanel({
                                     variant="ghost"
                                     size="icon"
                                     onClick={() => setPreviewMode("desktop")}
-                                    className={`p-1.5 h-auto w-auto rounded ${previewMode === "desktop" ? "bg-indigo-50 text-indigo-500 hover:bg-indigo-50" : "text-gray-500 hover:bg-gray-100"}`}
+                                    className={`p-1.5 h-auto w-auto rounded-lg ${previewMode === "desktop" ? "bg-indigo-50 text-indigo-500 hover:bg-indigo-50" : "text-gray-500 hover:bg-gray-100"}`}
                                 >
                                     <Monitor size={14} />
                                 </Button>

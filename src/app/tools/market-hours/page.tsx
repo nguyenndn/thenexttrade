@@ -9,7 +9,7 @@ export default function MarketHoursPage() {
     return (
         <ToolsPageShell maxWidth="max-w-7xl">
             {/* Breadcrumb */}
-            <div className="flex items-center gap-2.5 text-xs font-semibold bg-white/60 dark:bg-white/[0.02] border border-gold/15 rounded-xl px-4 py-2.5 mb-8 w-fit shadow-sm relative z-10 backdrop-blur-sm">
+            <div className="flex items-center gap-2.5 text-xs font-semibold bg-white/60 dark:bg-white/[0.02] border border-gold/15 rounded-xl px-4 py-2.5 mb-8 w-fit max-w-full shadow-sm relative z-10 backdrop-blur-sm">
                 <Link
                     href="/"
                     className="text-gray-500 dark:text-gray-400 hover:text-gold dark:hover:text-gold transition-colors shrink-0 flex items-center gap-1.5"
@@ -31,7 +31,7 @@ export default function MarketHoursPage() {
                     size={12}
                     className="text-gray-400 dark:text-gray-600 shrink-0"
                 />
-                <span className="text-gray-900 dark:text-gray-200 font-bold truncate">
+                <span className="text-gray-900 dark:text-gray-200 font-bold truncate min-w-0 max-w-[130px]">
                     Forex Market Hours
                 </span>
             </div>

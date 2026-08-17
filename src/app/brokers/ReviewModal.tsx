@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
+import { buttonVariants } from "@/components/ui/button-variants";
 import {
     X,
     Star,
@@ -12,6 +13,8 @@ import {
     Target,
     Award,
     ExternalLink,
+    Check,
+    PenLine,
 } from "lucide-react";
 
 interface ReviewData {
@@ -66,7 +69,8 @@ export function ReviewBadge({ item }: { item: ReviewItem }) {
                 onClick={() => setOpen(true)}
                 className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-primary/10 hover:text-primary dark:hover:bg-primary/20 dark:hover:text-primary transition-all duration-200 cursor-pointer border border-transparent hover:border-primary/20"
             >
-                📝 Our Review
+                <PenLine size={12} className="shrink-0" />
+                Our Review
             </button>
 
             {open &&
@@ -173,7 +177,7 @@ function ReviewModal({
                                     className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300"
                                 >
                                     <span className="text-emerald-500 mt-0.5 shrink-0">
-                                        ✓
+                                        <Check size={14} />
                                     </span>
                                     {pro}
                                 </li>
@@ -196,7 +200,7 @@ function ReviewModal({
                                     className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300"
                                 >
                                     <span className="text-red-500 mt-0.5 shrink-0">
-                                        ✗
+                                        <X size={14} />
                                     </span>
                                     {con}
                                 </li>
@@ -236,7 +240,11 @@ function ReviewModal({
                             href={item.url!}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gradient-to-r from-primary to-teal-500 text-white font-bold text-sm hover:opacity-90 transition-all duration-200 shadow-lg shadow-primary/20"
+                            className={buttonVariants({
+                                variant: "primary",
+                                className:
+                                    "flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gradient-to-r from-primary to-teal-500 text-white font-bold text-sm hover:opacity-90 shadow-lg shadow-primary/20",
+                            })}
                         >
                             Open Account
                             <ExternalLink size={14} />

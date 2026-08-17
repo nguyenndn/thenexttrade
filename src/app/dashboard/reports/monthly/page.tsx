@@ -34,7 +34,7 @@ export default async function MonthlyReviewPage() {
                 description="Your automated monthly trading report — big picture performance trends."
             />
             <div className="mb-4">
-                <TabBar tabs={analyticsTabs} equalWidth />
+                <TabBar tabs={analyticsTabs} />
             </div>
 
             <ReportView reports={reports as any} total={total} type="monthly" />

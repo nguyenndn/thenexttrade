@@ -75,7 +75,7 @@ export function TradeShareCard({
                 >
                     <div>
                         {/* Header: Logo & Badge */}
-                        <div className="flex items-center justify-between mb-6 md:mb-8">
+                        <div className="flex flex-wrap items-center justify-between gap-2 mb-6 md:mb-8">
                             <div className="flex items-center gap-1.5">
                                 <span className="font-black text-2xl tracking-tighter">
                                     <span className="text-gray-700 dark:text-white">
@@ -110,7 +110,7 @@ export function TradeShareCard({
                         <div className="flex items-center gap-2 text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider flex-wrap">
                             <span
                                 className={cn(
-                                    "px-2 py-0.5 rounded text-white",
+                                    "px-2 py-0.5 rounded-lg text-white",
                                     badgeBg
                                 )}
                             >
@@ -159,12 +159,12 @@ export function TradeShareCard({
                             </span>
                             <div className="flex items-center gap-2">
                                 {isTPHit && (
-                                    <span className="px-1.5 py-0.5 bg-green-500 text-white text-[9px] font-black uppercase rounded shadow-sm">
+                                    <span className="px-1.5 py-0.5 bg-green-500 text-white text-[9px] font-black uppercase rounded-lg shadow-sm">
                                         🎯 TP HIT
                                     </span>
                                 )}
                                 {isSLHit && (
-                                    <span className="px-1.5 py-0.5 bg-red-500 text-white text-[9px] font-black uppercase rounded shadow-sm">
+                                    <span className="px-1.5 py-0.5 bg-red-500 text-white text-[9px] font-black uppercase rounded-lg shadow-sm">
                                         🛡️ SL HIT
                                     </span>
                                 )}

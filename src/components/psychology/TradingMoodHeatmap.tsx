@@ -104,15 +104,15 @@ export function TradingMoodHeatmap({ data }: TradingMoodHeatmapProps) {
                     {/* Legend */}
                     <div className="flex items-center gap-3 text-[10px] font-bold text-gray-400 ml-0 sm:ml-auto">
                         <span className="flex items-center gap-1">
-                            <span className="w-2.5 h-2.5 rounded bg-emerald-200 dark:bg-emerald-500/30" />{" "}
+                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-200 dark:bg-emerald-500/30" />{" "}
                             Positive
                         </span>
                         <span className="flex items-center gap-1">
-                            <span className="w-2.5 h-2.5 rounded bg-gray-200 dark:bg-white/10" />{" "}
+                            <span className="w-2.5 h-2.5 rounded-full bg-gray-200 dark:bg-white/10" />{" "}
                             Neutral
                         </span>
                         <span className="flex items-center gap-1">
-                            <span className="w-2.5 h-2.5 rounded bg-red-200 dark:bg-red-500/30" />{" "}
+                            <span className="w-2.5 h-2.5 rounded-full bg-red-200 dark:bg-red-500/30" />{" "}
                             Negative
                         </span>
                     </div>

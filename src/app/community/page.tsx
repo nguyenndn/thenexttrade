@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { FAQAccordion } from "@/components/tools/FAQAccordion";
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { FeedbackCarousel } from "@/components/community/FeedbackCarousel";
 import { TelegramShowcaseMockup } from "@/components/community/TelegramShowcaseMockup";
 import {
@@ -258,7 +259,7 @@ export default async function CommunityPage() {
                             {/* Left Column: Brand Story & High Impact Headline */}
                             <div className="lg:col-span-6 text-left space-y-6 md:space-y-8">
                                 {/* Official Brand Badge */}
-                                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#2AABEE]/10 border border-[#2AABEE]/30 dark:border-[#2AABEE]/40 ring-4 ring-[#2AABEE]/5 shadow-sm">
+                                <div className="inline-flex max-w-full flex-wrap items-center gap-x-2.5 gap-y-1 px-4 py-2 rounded-full bg-[#2AABEE]/10 border border-[#2AABEE]/30 dark:border-[#2AABEE]/40 ring-4 ring-[#2AABEE]/5 shadow-sm">
                                     <div className="w-6 h-6 rounded-full overflow-hidden shrink-0 ring-2 ring-[#2AABEE]">
                                         <Image
                                             src="/images/logo_ninja.png"
@@ -268,7 +269,7 @@ export default async function CommunityPage() {
                                             className="w-full h-full object-cover"
                                         />
                                     </div>
-                                    <span className="text-xs font-black text-[#2AABEE] dark:text-[#38BDF8] uppercase tracking-wider">
+                                    <span className="text-[10px] sm:text-xs font-black text-[#2AABEE] dark:text-[#38BDF8] uppercase tracking-normal sm:tracking-wider">
                                         Official Telegram: @GoldScalperNinja
                                     </span>
                                     <span className="flex h-2 w-2 relative">
@@ -290,14 +291,14 @@ export default async function CommunityPage() {
                                 </p>
 
                                 {/* Live Metrics Ticker Pill */}
-                                <div className="grid grid-cols-3 gap-2.5 sm:gap-3 p-3.5 rounded-2xl bg-white/90 dark:bg-white/[0.04] border border-amber-200/80 dark:border-white/[0.08] shadow-sm backdrop-blur-md">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 p-3.5 rounded-2xl bg-white/90 dark:bg-white/[0.04] border border-amber-200/80 dark:border-white/[0.08] shadow-sm backdrop-blur-md">
                                     <div className="text-left px-2">
                                         <span className="block text-[10px] font-black uppercase tracking-wider text-gray-400">Win Rate</span>
                                         <span className="text-sm sm:text-base font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                                             <TrendingUp size={14} /> 87.4%
                                         </span>
                                     </div>
-                                    <div className="text-left px-2 border-x border-slate-200 dark:border-white/10">
+                                    <div className="text-left px-2 sm:border-x sm:border-slate-200 dark:border-white/10">
                                         <span className="block text-[10px] font-black uppercase tracking-wider text-gray-400">Daily Updates</span>
                                         <span className="text-sm sm:text-base font-black text-amber-600 dark:text-gold flex items-center gap-1">
                                             <Zap size={14} /> Real Insights
@@ -317,14 +318,22 @@ export default async function CommunityPage() {
                                         href={TELEGRAM_URL}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 font-black text-xs sm:text-sm rounded-xl shadow-md shadow-[#2AABEE]/20 hover:shadow-lg hover:shadow-[#2AABEE]/30 bg-[#2AABEE] hover:bg-[#2299d6] active:scale-[0.98] hover:scale-[1.01] transition-all duration-300 text-white whitespace-nowrap"
+                                        className={buttonVariants({
+                                            variant: "secondary",
+                                            className:
+                                                "w-full px-4 py-3 font-black text-xs sm:text-sm rounded-xl shadow-md shadow-[#2AABEE]/20 hover:shadow-lg hover:shadow-[#2AABEE]/30 bg-[#2AABEE] hover:bg-[#2299d6] active:scale-[0.98] hover:scale-[1.01] text-white whitespace-nowrap",
+                                        })}
                                     >
                                         <Send size={16} className="shrink-0" />
                                         <span>Join Telegram Channel Free</span>
                                     </a>
                                     <a
                                         href="#vip-access"
-                                        className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 font-black text-xs sm:text-sm rounded-xl shadow-md shadow-amber-500/15 hover:shadow-lg hover:shadow-amber-500/25 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-[0.98] hover:scale-[1.01] transition-all duration-300 text-white whitespace-nowrap"
+                                        className={buttonVariants({
+                                            variant: "primary",
+                                            className:
+                                                "w-full px-4 py-3 font-black text-xs sm:text-sm rounded-xl shadow-md shadow-amber-500/15 hover:shadow-lg hover:shadow-amber-500/25 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-[0.98] hover:scale-[1.01] text-white whitespace-nowrap",
+                                        })}
                                     >
                                         <Crown size={16} className="shrink-0" />
                                         <span>Unlock VIP Access</span>
@@ -353,7 +362,7 @@ export default async function CommunityPage() {
                             <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-sky-500/20 rounded-2xl blur-md opacity-50 group-hover:opacity-100 transition duration-500" />
 
                             <div className="relative rounded-2xl border border-gray-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0D111D]/80 p-2 sm:p-3 shadow-xl backdrop-blur-xl">
-                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 divide-y lg:divide-y-0 lg:divide-x divide-gray-100 dark:divide-white/[0.06]">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 divide-y lg:divide-y-0 lg:divide-x divide-gray-100 dark:divide-white/[0.06]">
                                     {[
                                         {
                                             value: "12,000+",
@@ -428,7 +437,7 @@ export default async function CommunityPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
                         {freeFeatures.map((feature, i) => (
                             <ScrollReveal key={feature.title} delay={0.08 * i} direction="up" className="h-full">
-                                <div className="group flex h-full flex-col justify-between rounded-2xl border border-slate-200/90 bg-white/90 p-6 sm:p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-amber-300 hover:shadow-[0_14px_35px_rgba(15,23,42,0.07)] dark:border-white/[0.06] dark:bg-[#131622]/85 dark:hover:border-gold/35">
+                                <div className="group flex h-full flex-col justify-between rounded-2xl border border-slate-200/90 bg-white/90 p-6 sm:p-7 shadow-sm transition-all duration-300 hover:border-amber-300 hover:shadow-[0_14px_35px_rgba(15,23,42,0.07)] dark:border-white/[0.06] dark:bg-[#131622]/85 dark:hover:border-gold/35">
                                     <div>
                                         <div className="flex items-start justify-between gap-3">
                                             <div className="flex items-start gap-3.5">
@@ -573,7 +582,11 @@ export default async function CommunityPage() {
                                         href={BROKER_REGISTER_URL}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all hover:scale-[1.02] shrink-0"
+                                        className={buttonVariants({
+                                            variant: "primary",
+                                            className:
+                                                "px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-xs uppercase tracking-wider shadow-md hover:shadow-lg hover:scale-[1.02] shrink-0",
+                                        })}
                                     >
                                         <Crown size={15} /> Unlock VIP Access
                                     </a>
@@ -608,7 +621,7 @@ export default async function CommunityPage() {
 
                                 {/* 3-Step VIP Activation Flow */}
                                 <div className="mt-8 border-t border-amber-500/15 pt-6 dark:border-white/[0.08]">
-                                    <div className="mb-4 flex items-center justify-between gap-3">
+                                    <div className="mb-4 flex flex-wrap items-center justify-between gap-2 sm:gap-3">
                                         <h3 className="text-sm font-black uppercase tracking-[0.16em] text-amber-700 dark:text-gold">
                                             3-Step VIP Activation Path
                                         </h3>
@@ -688,7 +701,11 @@ export default async function CommunityPage() {
                                         <p className="text-xs leading-5 text-gray-600 dark:text-gray-400">
                                             Need assistance? Contact our Telegram support team anytime.
                                         </p>
-                                        <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-5 py-3 text-sm font-black text-white shadow-lg shadow-amber-500/20 transition-all hover:-translate-y-0.5 hover:from-amber-600 hover:to-orange-600">
+                                        <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className={buttonVariants({
+                                            variant: "primary",
+                                            className:
+                                                "min-h-11 shrink-0 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-5 py-3 text-sm font-black text-white shadow-lg shadow-amber-500/20 hover:shadow-md hover:shadow-amber-500/25 hover:from-amber-600 hover:to-orange-600",
+                                        })}>
                                             Request VIP Access <Send size={15} />
                                         </a>
                                     </div>
@@ -725,7 +742,7 @@ export default async function CommunityPage() {
                             >
                                 <Link
                                     href={p.href}
-                                    className="bg-white/80 dark:bg-[#131622]/60 rounded-2xl border border-amber-500/15 dark:border-white/[0.06] p-4 sm:p-5 hover:border-amber-500/35 dark:hover:border-gold/30 hover:shadow-[0_12px_30px_rgba(245,158,11,0.03)] hover:-translate-y-0.5 transition-all duration-300 group flex flex-col h-full backdrop-blur-md"
+                                    className="bg-white/80 dark:bg-[#131622]/60 rounded-2xl border border-amber-500/15 dark:border-white/[0.06] p-4 sm:p-5 hover:border-amber-500/35 dark:hover:border-gold/30 hover:shadow-[0_12px_30px_rgba(245,158,11,0.03)] transition-all duration-300 group flex flex-col h-full backdrop-blur-md"
                                 >
                                     <div className="flex items-center gap-3 mb-3">
                                         <div
@@ -837,11 +854,11 @@ export default async function CommunityPage() {
                                         href={TELEGRAM_URL}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        style={{
-                                            backgroundColor: "#2AABEE",
-                                            color: "#ffffff",
-                                        }}
-                                        className="inline-flex items-center justify-center gap-2 px-6 py-3 font-bold text-sm rounded-xl shadow-lg shadow-sky-500/10 hover:shadow-sky-500/20 active:scale-95 hover:scale-[1.03] transition-all duration-300 hover:opacity-95"
+                                        className={buttonVariants({
+                                            variant: "secondary",
+                                            className:
+                                                "px-6 py-3 font-bold text-sm rounded-xl shadow-lg shadow-sky-500/10 hover:shadow-sky-500/20 active:scale-95 hover:scale-[1.03] hover:opacity-95 bg-[#2AABEE] hover:bg-[#2299d6]",
+                                        })}
                                     >
                                         <Send size={16} /> Join Telegram Free
                                     </a>
@@ -849,7 +866,11 @@ export default async function CommunityPage() {
                                         href={BROKER_REGISTER_URL}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="inline-flex items-center justify-center gap-2 px-6 py-3 font-bold text-sm rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-300 hover:scale-[1.03] active:scale-95 hover:from-amber-600 hover:to-orange-600 text-white"
+                                        className={buttonVariants({
+                                            variant: "primary",
+                                            className:
+                                                "px-6 py-3 font-bold text-sm rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 hover:scale-[1.03] active:scale-95 hover:from-amber-600 hover:to-orange-600 text-white",
+                                        })}
                                     >
                                         <Crown size={16} /> Unlock VIP Access{" "}
                                         <ArrowRight size={14} />

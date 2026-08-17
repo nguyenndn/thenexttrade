@@ -267,7 +267,7 @@ export function ShareTradeModal({
                                     ></textarea>
                                     <div className="absolute bottom-6 right-6 pointer-events-none">
                                         {isSaving ? (
-                                            <span className="text-xs text-gray-600 font-medium px-2 py-1 rounded-md bg-white/80 dark:bg-[#1E2028]/90 backdrop-blur-sm shadow-sm flex items-center gap-1 animate-pulse border border-dashboard">
+                                            <span className="text-xs text-gray-600 font-medium px-2 py-1 rounded-lg bg-white/80 dark:bg-[#1E2028]/90 backdrop-blur-sm shadow-sm flex items-center gap-1 animate-pulse border border-dashboard">
                                                 Saving...
                                             </span>
                                         ) : lastSaved ? (

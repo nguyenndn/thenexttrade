@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 
 interface TurnstileWidgetProps {
     onVerify: (token: string) => void;
@@ -51,6 +51,24 @@ export function TurnstileWidget({
     const renderedRef = useRef(false);
     const isDev = process.env.NODE_ENV === "development";
 
+    // Turnstile's normal-size iframe is fixed at 300px wide → scale it down
+    // on narrow viewports so it doesn't overflow the auth card (~224px content).
+    const [isCompactViewport, setIsCompactViewport] = useState(() =>
+        typeof window !== "undefined"
+            ? window.matchMedia("(max-width: 480px)").matches
+            : false
+    );
+
+    useEffect(() => {
+        const mq = window.matchMedia("(max-width: 480px)");
+        const update = () => setIsCompactViewport(mq.matches);
+        update();
+        mq.addEventListener("change", update);
+        return () => mq.removeEventListener("change", update);
+    }, []);
+
+    const effectiveSize = isCompactViewport ? "compact" : size;
+
     const renderWidget = useCallback(() => {
         if (
             !window.turnstile ||
@@ -65,7 +83,7 @@ export function TurnstileWidget({
         widgetIdRef.current = window.turnstile.render(containerRef.current, {
             sitekey: SITE_KEY,
             theme,
-            size,
+            size: effectiveSize,
             callback: (token: string) => onVerify(token),
             "expired-callback": () => {
                 onExpire?.();
@@ -76,7 +94,7 @@ export function TurnstileWidget({
                 onVerify("");
             },
         });
-    }, [onVerify, onExpire, onError, theme, size]);
+    }, [onVerify, onExpire, onError, theme, effectiveSize]);
 
     useEffect(() => {
         // Skip in dev mode, if no site key, or if Turnstile is explicitly disabled — auto-bypass so forms still work
@@ -121,5 +139,13 @@ export function TurnstileWidget({
     // Don't render widget in dev mode, if no site key, or if Turnstile is explicitly disabled
     if (isDev || !SITE_KEY || DISABLE_TURNSTILE) return null;
 
-    return <div ref={containerRef} className={className} />;
+    return (
+        <div
+            className={`flex justify-center ${
+                isCompactViewport ? "scale-[0.72] -my-[9px]" : ""
+            } ${className ?? ""}`}
+        >
+            <div ref={containerRef} />
+        </div>
+    );
 }

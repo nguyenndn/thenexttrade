@@ -200,10 +200,10 @@ export default async function TradingSystemsIndexPage() {
                 </div>
 
                 {/* Hero Right Column: MT5 Toolkit Preview Console */}
-                <div className="rounded-[2.5rem] border border-gold/15 bg-white/60 p-5 shadow-xl shadow-gold/[0.03] dark:border-white/5 dark:bg-[#111318]/45 relative">
+                <div className="rounded-[2.5rem] border border-gold/15 bg-white/60 p-5 shadow-xl shadow-gold/[0.03] dark:border-white/10 dark:bg-[#111318]/45 relative">
                     <div className="absolute -top-10 -right-10 w-40 h-40 bg-gold/5 rounded-full blur-[50px] pointer-events-none"></div>
 
-                    <div className="rounded-[2rem] border border-gray-200/60 bg-gray-50/70 p-5 dark:border-white/5 dark:bg-[#151822]/80 space-y-5 backdrop-blur-md relative z-10">
+                    <div className="rounded-[2rem] border border-gray-200/60 bg-gray-50/70 p-5 dark:border-white/10 dark:bg-[#151822]/80 space-y-5 backdrop-blur-md relative z-10">
                         {/* Header of Console */}
                         <div className="flex items-center justify-between border-b border-dashed border-gray-200 pb-3.5 dark:border-white/5">
                             <div className="flex items-center gap-2">
@@ -225,7 +225,7 @@ export default async function TradingSystemsIndexPage() {
                                     return (
                                         <div
                                             key={tool.title}
-                                            className="p-3 bg-white dark:bg-card rounded-xl border border-gray-200/60 dark:border-white/5 flex items-center justify-between shadow-sm"
+                                            className="p-3 bg-white dark:bg-card rounded-xl border border-gray-200/60 dark:border-white/10 flex items-center justify-between shadow-sm"
                                         >
                                             <div className="flex items-center gap-2.5 min-w-0">
                                                 <span className="text-[10px] font-mono font-bold text-gold shrink-0">
@@ -337,7 +337,7 @@ export default async function TradingSystemsIndexPage() {
                                           } as React.CSSProperties)
                                         : undefined
                                 }
-                                className={`flex h-full flex-col rounded-[2rem] border bg-gradient-to-br p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 ${
+                                className={`flex h-full flex-col rounded-[2rem] border bg-gradient-to-br p-6 shadow-sm transition-all duration-300 hover:shadow-md ${
                                     system.accentClass
                                 } hover:shadow-[0_15px_40px_rgba(var(--glow-color,197,160,89),0.08)] dark:bg-[#111318]/45 relative overflow-hidden`}
                             >
@@ -397,7 +397,11 @@ export default async function TradingSystemsIndexPage() {
 
                                         <Link
                                             href={`/trading-systems/${system.slug}`}
-                                            className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider text-gold hover:text-amber-600 hover:bg-gold/5 transition-all duration-200"
+                                            className={buttonVariants({
+                                                variant: "link",
+                                                className:
+                                                    "min-h-9 items-center justify-center gap-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider text-gold hover:text-amber-600 hover:bg-gold/5 hover:no-underline",
+                                            })}
                                         >
                                             View Details
                                             <ArrowRight size={13} />

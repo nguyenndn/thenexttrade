@@ -10,6 +10,7 @@ import {
     Clock,
     Eye,
     EyeOff,
+    Search,
 } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { RichTextEditor } from "@/components/admin/articles/RichTextEditor";
@@ -225,7 +226,7 @@ export function LessonEditForm({
                         {formData.metaDescription && (
                             <div>
                                 <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1">
-                                    🔍 Meta Description{" "}
+                                    <Search size={12} className="inline-block mr-1 align-[-1px]" /> Meta Description{" "}
                                     <span className="font-normal text-gray-500">
                                         ({formData.metaDescription.length}/160)
                                     </span>

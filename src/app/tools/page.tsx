@@ -50,7 +50,7 @@ export default function ToolsPage() {
                     ].map((text, idx) => (
                         <span
                             key={idx}
-                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/60 dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 text-xs font-bold text-gray-600 dark:text-gray-400 shadow-sm"
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/60 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 text-xs font-bold text-gray-600 dark:text-gray-400 shadow-sm"
                         >
                             <CheckCircle2
                                 size={12}
@@ -100,7 +100,11 @@ export default function ToolsPage() {
                     </div>
                     <Link
                         href="/auth/signup?source=tools_hub&intent=track"
-                        className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-black px-6 py-2.5 shadow-[0_4px_12px_rgba(245,158,11,0.25)] dark:shadow-[0_4px_12px_rgba(245,158,11,0.15)] hover:shadow-[0_4px_20px_rgba(245,158,11,0.4)] dark:hover:shadow-[0_4px_20px_rgba(245,158,11,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group/btn text-sm"
+                        className={buttonVariants({
+                            variant: "primary",
+                            className:
+                                "min-h-11 shrink-0 rounded-xl bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-black px-6 py-2.5 shadow-[0_4px_12px_rgba(245,158,11,0.25)] dark:shadow-[0_4px_12px_rgba(245,158,11,0.15)] hover:shadow-[0_4px_20px_rgba(245,158,11,0.4)] dark:hover:shadow-[0_4px_20px_rgba(245,158,11,0.25)] hover:scale-[1.02] active:scale-[0.98] group/btn text-sm",
+                        })}
                     >
                         <span>Start Free Journal</span>
                         <ArrowRight

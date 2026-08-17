@@ -23,6 +23,7 @@ import {
     AlertCircle,
     Info,
     PenLine,
+    Mail,
     Loader2,
     XCircle,
     HelpCircle,
@@ -313,7 +314,7 @@ export function TradeSyncWizard({
                                             : "border-dashboard bg-transparent hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.01]"
                                     )}
                                 >
-                                    <span className="absolute -top-2.5 left-4 px-2.5 py-0.5 bg-amber-500 text-white text-[9px] font-black uppercase tracking-widest rounded-md">
+                                    <span className="absolute -top-2.5 left-4 px-2.5 py-0.5 bg-amber-500 text-white text-[9px] font-black uppercase tracking-widest rounded-lg">
                                         Recommended
                                     </span>
                                     <div>
@@ -413,7 +414,7 @@ export function TradeSyncWizard({
                             {isMobile && syncMethod === "EA_SYNC" && (
                                 <div className="p-4 rounded-xl border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 space-y-3">
                                     <div className="flex gap-2.5 items-start">
-                                        <span className="text-lg">💻</span>
+                                        <Monitor size={18} className="mt-0.5 shrink-0 text-amber-500" />
                                         <div>
                                             <p className="text-xs font-black text-slate-800 dark:text-amber-300 uppercase tracking-wider">
                                                 Desktop Required for Auto-Sync
@@ -465,9 +466,10 @@ export function TradeSyncWizard({
                                             disabled={linkSent}
                                             className="w-full text-xs font-extrabold h-9 border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 shrink-0"
                                         >
+                                            <Mail size={14} className="shrink-0" />
                                             {linkSent
-                                                ? "📩 Setup Link Sent!"
-                                                : "📩 Email Desktop Setup Link"}
+                                                ? "Setup Link Sent!"
+                                                : "Email Desktop Setup Link"}
                                         </Button>
                                         <Link
                                             href="/dashboard/journal?action=log-trade&source=mobile-fallback"
@@ -489,7 +491,7 @@ export function TradeSyncWizard({
                                                 }}
                                                 className="w-full text-xs font-bold h-9 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 shrink-0"
                                             >
-                                                ✍️ Log Manually instead
+                                                <PenLine size={14} className="shrink-0" /> Log Manually instead
                                             </Button>
                                         </Link>
                                     </div>
@@ -640,7 +642,7 @@ export function TradeSyncWizard({
                                                         {acc.name}
                                                     </span>
                                                 </div>
-                                                <span className="text-xs font-mono font-bold text-primary bg-primary/10 dark:bg-primary/20 px-2 py-0.5 rounded border border-primary/20">
+                                                <span className="text-xs font-mono font-bold text-primary bg-primary/10 dark:bg-primary/20 px-2 py-0.5 rounded-lg border border-primary/20">
                                                     {acc.accountNumber}
                                                 </span>
                                             </div>
@@ -659,7 +661,7 @@ export function TradeSyncWizard({
                             {isMobile && syncMethod === "EA_SYNC" && (
                                 <div className="p-4 rounded-xl border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 space-y-3">
                                     <div className="flex gap-2.5 items-start">
-                                        <span className="text-lg">💻</span>
+                                        <Monitor size={18} className="mt-0.5 shrink-0 text-amber-500" />
                                         <div>
                                             <p className="text-xs font-black text-slate-800 dark:text-amber-300 uppercase tracking-wider">
                                                 Desktop Required for Auto-Sync
@@ -711,9 +713,10 @@ export function TradeSyncWizard({
                                             disabled={linkSent}
                                             className="w-full text-xs font-extrabold h-9 border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 shrink-0"
                                         >
+                                            <Mail size={14} className="shrink-0" />
                                             {linkSent
-                                                ? "📩 Setup Link Sent!"
-                                                : "📩 Email Desktop Setup Link"}
+                                                ? "Setup Link Sent!"
+                                                : "Email Desktop Setup Link"}
                                         </Button>
                                         <Link
                                             href="/dashboard/journal?action=log-trade&source=mobile-fallback"
@@ -735,7 +738,7 @@ export function TradeSyncWizard({
                                                 }}
                                                 className="w-full text-xs font-bold h-9 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 shrink-0"
                                             >
-                                                ✍️ Log Manually instead
+                                                <PenLine size={14} className="shrink-0" /> Log Manually instead
                                             </Button>
                                         </Link>
                                     </div>
@@ -766,14 +769,14 @@ export function TradeSyncWizard({
                                         1. Check the box:
                                     </p>
                                     <p className="text-gray-700 dark:text-gray-300">
-                                        ☑ Allow WebRequest for listed URL:
+                                        Allow WebRequest for listed URL:
                                     </p>
 
                                     <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide mt-3">
                                         2. Add this URL:
                                     </p>
                                     <div className="flex gap-2 items-center">
-                                        <code className="flex-1 bg-white dark:bg-black/40 p-2 rounded border border-dashboard font-mono text-[11px] text-primary break-all">
+                                        <code className="flex-1 bg-white dark:bg-black/40 p-2 rounded-lg border border-dashboard font-mono text-[11px] text-primary break-all">
                                             {syncServerUrl ||
                                                 "https://thenexttrade.com"}
                                         </code>
@@ -789,7 +792,7 @@ export function TradeSyncWizard({
                                     onChange={(e) =>
                                         setIsConfirmed(e.target.checked)
                                     }
-                                    className="w-4 h-4 mt-0.5 rounded border-gray-300 text-primary focus:ring-primary shrink-0"
+                                    className="w-4 h-4 mt-0.5 rounded-lg border-gray-300 text-primary focus:ring-primary shrink-0"
                                 />
                                 <div>
                                     <p className="text-xs font-bold text-gray-800 dark:text-white">

@@ -465,7 +465,7 @@ export function TradePlanModal({
                                     }`}
                                 >
                                     <div
-                                        className={`w-4 h-4 rounded-md border flex items-center justify-center flex-shrink-0 transition-colors ${
+                                        className={`w-4 h-4 rounded-lg border flex items-center justify-center flex-shrink-0 transition-colors ${
                                             isChecked
                                                 ? "bg-primary border-primary text-white"
                                                 : "border-gray-300 dark:border-white/10"
@@ -502,7 +502,7 @@ export function TradePlanModal({
                             type="checkbox"
                             checked={skipChecklist}
                             onChange={(e) => setSkipChecklist(e.target.checked)}
-                            className="w-3.5 h-3.5 rounded border-gray-300 text-primary focus:ring-primary dark:border-white/10 dark:bg-black/20"
+                            className="w-3.5 h-3.5 rounded-lg border-gray-300 text-primary focus:ring-primary dark:border-white/10 dark:bg-black/20"
                         />
                         <span className="text-[10px] font-bold text-gray-400">
                             Skip Checklist
@@ -557,7 +557,7 @@ export function TradePlanModal({
                                 }`}
                             >
                                 <div
-                                    className={`w-3.5 h-3.5 rounded-md border flex items-center justify-center flex-shrink-0 transition-colors ${
+                                    className={`w-3.5 h-3.5 rounded-lg border flex items-center justify-center flex-shrink-0 transition-colors ${
                                         preTradeChecks[
                                             check.id as keyof typeof preTradeChecks
                                         ]

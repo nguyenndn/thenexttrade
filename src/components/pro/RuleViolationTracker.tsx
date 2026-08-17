@@ -158,7 +158,7 @@ function RuleViolationContent({ accountId }: { accountId?: string }) {
                                             {v.dates.slice(0, 5).map((d) => (
                                                 <span
                                                     key={d}
-                                                    className="rounded bg-gray-100 dark:bg-white/5 px-2 py-0.5 text-[10px] font-mono text-gray-500 dark:text-gray-400"
+                                                    className="rounded-lg bg-gray-100 dark:bg-white/5 px-2 py-0.5 text-[10px] font-mono text-gray-500 dark:text-gray-400"
                                                 >
                                                     {d}
                                                 </span>

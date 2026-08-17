@@ -90,13 +90,15 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
                         </p>
                     </div>
                 </div>
-                <button
+                <Button
                     onClick={onClose}
-                    className="p-1.5 rounded-lg text-gray-500 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 p-0 text-gray-500 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10"
                     aria-label="Close panel"
                 >
                     <X size={18} />
-                </button>
+                </Button>
             </div>
 
             {/* Success State */}

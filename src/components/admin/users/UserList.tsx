@@ -109,7 +109,7 @@ function CountryDisplay({ country }: { country?: string | null }) {
             <img
                 src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/${code.toLowerCase()}.svg`}
                 alt={getCountryName(code)}
-                className="h-4 w-6 shrink-0 rounded-sm object-cover shadow-sm"
+                className="h-4 w-6 shrink-0 rounded-lg object-cover shadow-sm"
             />
             <span className="truncate text-sm font-bold text-gray-700 dark:text-white">
                 {getCountryName(code)}
@@ -333,7 +333,7 @@ export function UserList({
                                     <img
                                         src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/${opt.value.toLowerCase()}.svg`}
                                         alt={opt.label}
-                                        className="mr-2 h-4 w-6 shrink-0 rounded-sm object-cover shadow-sm"
+                                        className="mr-2 h-4 w-6 shrink-0 rounded-lg object-cover shadow-sm"
                                     />
                                     {opt.label}
                                 </DropdownMenuItem>

@@ -47,21 +47,21 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
         <>
             <div
                 onClick={() => setIsDetailOpen(true)}
-                className="grid grid-cols-12 gap-2 md:gap-4 py-3 border-b border-dashboard hover:bg-gray-50 dark:hover:bg-white/5 transition-colors items-center px-4 group cursor-pointer"
+                className="grid grid-cols-12 gap-1 md:gap-2 py-3 border-b border-dashboard hover:bg-gray-50 dark:hover:bg-white/5 transition-colors items-center px-4 group cursor-pointer"
             >
                 <div className="col-span-2 md:col-span-1 text-sm font-bold text-gray-600 dark:text-gray-300 flex items-center gap-1">
                     <span>{formatTime(event.date)}</span>
                 </div>
 
                 <div className="col-span-2 md:col-span-1 flex justify-center">
-                    <span className="font-bold text-gray-700 dark:text-white px-2 py-1 bg-gray-100 dark:bg-white/10 rounded-md text-xs w-12 text-center">
+                    <span className="font-bold text-gray-700 dark:text-white px-2 py-1 bg-gray-100 dark:bg-white/10 rounded-lg text-xs w-12 text-center">
                         {event.currency}
                     </span>
                 </div>
 
                 <div className="col-span-2 md:col-span-1 flex justify-center">
                     <span
-                        className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wide w-16 text-center ${impactColors[event.impact]}`}
+                        className={`px-2 py-0.5 rounded-lg text-[10px] uppercase font-bold tracking-wide w-16 text-center ${impactColors[event.impact]}`}
                     >
                         {roundedImpact[event.impact]}
                     </span>
@@ -161,7 +161,7 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
                                 <div className="pt-2 flex items-center gap-1.5 flex-wrap">
                                     <span className="font-bold text-gray-400 text-[10px] uppercase">Primary Affected Assets:</span>
                                     {explanation.affectedAssets.map((asset) => (
-                                        <span key={asset} className="px-2 py-0.5 bg-white dark:bg-[#1E2028] border border-gold/20 rounded font-mono font-bold text-[11px] text-gray-800 dark:text-gray-200">
+                                        <span key={asset} className="px-2 py-0.5 bg-white dark:bg-[#1E2028] border border-gold/20 rounded-lg font-mono font-bold text-[11px] text-gray-800 dark:text-gray-200">
                                             {asset}
                                         </span>
                                     ))}

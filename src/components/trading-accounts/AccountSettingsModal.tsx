@@ -1,15 +1,29 @@
 "use client";
 
 import { useState } from "react";
-import { X, Check, RefreshCw, Trash2, Shield } from "lucide-react";
+import {
+    X,
+    Check,
+    ChevronDown,
+    RefreshCw,
+    Trash2,
+    Shield,
+} from "lucide-react";
 import { toast } from "sonner";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Button } from "@/components/ui/Button";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { updateTradingAccount } from "@/actions/accounts";
 import { updateTradingRules } from "@/actions/trading-rules";
 import {
     BROKER_INFO,
     SUPPORTED_BROKERS,
+    SupportedBroker,
 } from "@/lib/validations/vip-request";
 
 interface AccountSettingsModalProps {
@@ -164,20 +178,49 @@ export function AccountSettingsModal({
                             <label className="block text-[11px] font-black text-gray-500 uppercase tracking-widest mb-2">
                                 Broker
                             </label>
-                            <select
-                                value={broker}
-                                onChange={(e) => setBroker(e.target.value)}
-                                className="w-full rounded-xl border border-dashboard bg-white dark:bg-[#151925] px-3 py-2.5 text-sm text-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/40"
-                            >
-                                <option value="">
-                                    Select your broker...
-                                </option>
-                                {SUPPORTED_BROKERS.map((b) => (
-                                    <option key={b} value={b}>
-                                        {BROKER_INFO[b].name}
-                                    </option>
-                                ))}
-                            </select>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="w-full justify-between bg-white dark:bg-[#151925] px-3 py-2.5 text-sm font-medium text-gray-700 dark:text-white hover:bg-white dark:hover:bg-[#151925]"
+                                    >
+                                        {broker ? (
+                                            <span className="truncate">
+                                                {BROKER_INFO[
+                                                    broker as SupportedBroker
+                                                ]?.name ?? broker}
+                                            </span>
+                                        ) : (
+                                            <span className="text-gray-400 dark:text-gray-500">
+                                                Select your broker...
+                                            </span>
+                                        )}
+                                        <ChevronDown
+                                            size={16}
+                                            className="shrink-0 opacity-60"
+                                        />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                    align="start"
+                                    className="max-h-[250px] overflow-y-auto"
+                                >
+                                    <DropdownMenuItem
+                                        onClick={() => setBroker("")}
+                                    >
+                                        Select your broker...
+                                    </DropdownMenuItem>
+                                    {SUPPORTED_BROKERS.map((b) => (
+                                        <DropdownMenuItem
+                                            key={b}
+                                            onClick={() => setBroker(b)}
+                                        >
+                                            {BROKER_INFO[b].name}
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                             <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">
                                 Used for Pro/VIP eligibility. Choose the broker
                                 your trading account belongs to.
@@ -224,7 +267,7 @@ export function AccountSettingsModal({
                         <h3 className="text-[11px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
                             <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
                             Trading Protection Rules
-                            <span className="text-[9px] font-black bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-md tracking-wider uppercase ml-1">
+                            <span className="text-[9px] font-black bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-lg tracking-wider uppercase ml-1">
                                 Optional
                             </span>
                         </h3>

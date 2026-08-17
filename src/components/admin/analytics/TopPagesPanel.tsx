@@ -31,7 +31,7 @@ export function TopPagesPanel({ pages }: Props) {
                         <div key={p.pathname} className="relative group">
                             {/* Background bar */}
                             <div
-                                className="absolute inset-0 bg-indigo-50 dark:bg-indigo-500/5 rounded-md transition-all"
+                                className="absolute inset-0 bg-indigo-50 dark:bg-indigo-500/5 rounded-lg transition-all"
                                 style={{ width: `${pct}%` }}
                             />
                             <div className="relative flex items-center justify-between py-2.5 px-3">

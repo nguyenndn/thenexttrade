@@ -16,12 +16,14 @@ import {
     ExternalLink,
     Loader2,
     AlertCircle,
+    AlertTriangle,
     Mail,
     Copy,
     UserPlus,
     RefreshCw,
 } from "lucide-react";
 import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
+import { Button } from "@/components/ui/Button";
 
 interface VipRequestFormProps {
     userEmail: string;
@@ -384,7 +386,11 @@ export function VipRequestForm({ userEmail, userName }: VipRequestFormProps) {
 
                             {brokerInfo.ibTransferGuide.note && (
                                 <p className="text-xs text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/15 rounded-lg p-2.5">
-                                    ⚠️ {brokerInfo.ibTransferGuide.note}
+                                    <AlertTriangle
+                                        size={13}
+                                        className="inline-block mr-1 align-[-1px] shrink-0"
+                                    />
+                                    {brokerInfo.ibTransferGuide.note}
                                 </p>
                             )}
                         </div>
@@ -392,27 +398,31 @@ export function VipRequestForm({ userEmail, userName }: VipRequestFormProps) {
 
                     {/* Navigation */}
                     <div className="flex items-center justify-end gap-2 pt-2">
-                        <button
+                        <Button
+                            type="button"
+                            variant="outline"
                             onClick={() => {
                                 setStep("broker");
                                 setSelectedBroker(null);
                                 setAccountStatus(null);
                                 setError(null);
                             }}
-                            className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors rounded-xl border border-dashboard hover:border-gray-300 dark:hover:border-white/20"
+                            className="gap-1.5 px-4 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white hover:bg-transparent"
                         >
                             <ArrowLeft size={14} /> Back
-                        </button>
+                        </Button>
                         {accountStatus && (
-                            <button
+                            <Button
+                                type="button"
+                                variant="primary"
                                 onClick={() => {
                                     setError(null);
                                     setStep("details");
                                 }}
-                                className="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-bold text-white bg-primary rounded-xl transition-all hover:opacity-90"
+                                className="gap-1.5 px-5 text-sm"
                             >
                                 Continue <ArrowRight size={14} />
-                            </button>
+                            </Button>
                         )}
                     </div>
                 </div>

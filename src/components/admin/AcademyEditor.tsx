@@ -192,7 +192,7 @@ export function AcademyEditor({ initialLevels }: AcademyEditorProps) {
                                                 </div>
                                                 <NextLink
                                                     href={`/admin/academy/lessons/create?moduleId=${module.id}`}
-                                                    className="text-xs px-2 py-1 bg-gray-100 dark:bg-white/10 rounded hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
+                                                    className="text-xs px-2 py-1 bg-gray-100 dark:bg-white/10 rounded-lg hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
                                                 >
                                                     + Add Lesson
                                                 </NextLink>
@@ -241,7 +241,7 @@ export function AcademyEditor({ initialLevels }: AcademyEditorProps) {
                                                                 >
                                                                     <div className="flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg group transition-colors border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/5">
                                                                         <div className="flex items-center gap-3">
-                                                                            <div className="p-1.5 bg-gray-100 dark:bg-white/10 rounded text-gray-600">
+                                                                            <div className="p-1.5 bg-gray-100 dark:bg-white/10 rounded-lg text-gray-600">
                                                                                 {lesson.videoUrl ? (
                                                                                     <Video
                                                                                         size={

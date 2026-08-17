@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button-variants";
 import {
     ChevronLeft,
     ChevronRight,
@@ -100,7 +101,7 @@ export function PublicLessonView({
             <main className="pt-28 pb-20">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Breadcrumb */}
-                    <nav className="flex items-center gap-2 text-sm font-medium bg-[#00C888]/80 dark:bg-[#00C888]/15 rounded-xl px-5 py-3 mb-8 shadow-sm border border-[#00C888]/20 overflow-x-auto whitespace-nowrap hide-scrollbar">
+                    <nav className="flex items-center gap-2 text-sm font-medium bg-[#00C888]/80 dark:bg-[#00C888]/15 rounded-xl px-5 py-3 mb-8 shadow-sm border border-[#00C888]/20 overflow-x-auto whitespace-nowrap scrollbar-hide">
                         <BookOpen
                             size={14}
                             className="text-white/70 dark:text-gray-500 shrink-0"
@@ -122,12 +123,12 @@ export function PublicLessonView({
                             size={14}
                             className="text-white/40 shrink-0"
                         />
-                        <span className="text-white font-semibold truncate">
+                        <span className="text-white font-semibold min-w-0 truncate">
                             {lesson.title}
                         </span>
 
                         {isPremiumLocked && (
-                            <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-yellow-400 dark:bg-yellow-400/20 text-white dark:text-yellow-400 border border-yellow-300 dark:border-yellow-400/30 ml-auto shrink-0 shadow-sm">
+                            <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-lg bg-yellow-400 dark:bg-yellow-400/20 text-white dark:text-yellow-400 border border-yellow-300 dark:border-yellow-400/30 ml-auto shrink-0 shadow-sm">
                                 <Lock size={10} />
                                 Premium
                             </span>
@@ -164,7 +165,7 @@ export function PublicLessonView({
                         className={`relative ${isPremiumLocked ? "max-h-[36rem] overflow-hidden mb-0" : ""}`}
                     >
                         <article
-                            className="p-6 lg:p-8 prose prose-base dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-h2:text-xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-dashboard dark:prose-h2:border-white/5 prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3 prose-p:leading-relaxed prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-semibold prose-img:rounded-xl prose-img:shadow-md prose-img:mx-auto prose-blockquote:border-l-primary prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-white/5 prose-blockquote:rounded-r-xl prose-blockquote:py-1 prose-blockquote:px-2 prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-strong:text-gray-700 dark:prose-strong:text-white prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:rounded-xl prose-pre:p-5 prose-pre:text-sm prose-pre:leading-relaxed prose-pre:overflow-x-auto prose-code:bg-gray-100 dark:prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm prose-code:font-semibold prose-code:text-gray-800 dark:prose-code:text-gray-200 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-gray-100 [&_pre_code]:font-mono [&_table]:w-full [&_table]:border-collapse [&_th]:bg-gray-50 dark:[&_th]:bg-white/5 [&_th]:px-4 [&_th]:py-2 [&_th]:text-left [&_th]:font-bold [&_th]:border [&_th]:border-dashboard dark:[&_th]:border-white/10 [&_td]:px-4 [&_td]:py-2 [&_td]:border [&_td]:border-dashboard dark:[&_td]:border-white/10 [&_figure]:text-center [&_figure]:my-8 [&_figcaption]:text-center [&_figcaption]:italic [&_figcaption]:text-sm [&_figcaption]:text-gray-500 dark:[&_figcaption]:text-gray-400 [&_figcaption]:mt-3"
+                            className="p-6 lg:p-8 prose prose-base dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-h2:text-xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-dashboard dark:prose-h2:border-white/5 prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3 prose-p:leading-relaxed prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-semibold prose-img:rounded-xl prose-img:shadow-md prose-img:mx-auto prose-blockquote:border-l-primary prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-white/5 prose-blockquote:rounded-r-xl prose-blockquote:py-1 prose-blockquote:px-2 prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-strong:text-gray-700 dark:prose-strong:text-white prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:rounded-xl prose-pre:p-5 prose-pre:text-sm prose-pre:leading-relaxed prose-pre:overflow-x-auto prose-code:bg-gray-100 dark:prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm prose-code:font-semibold prose-code:text-gray-800 dark:prose-code:text-gray-200 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-gray-100 [&_pre_code]:font-mono [&_table]:block [&_table]:w-max [&_table]:max-w-full [&_table]:overflow-x-auto [&_table]:whitespace-nowrap [&_table]:border-collapse [&_th]:bg-gray-50 dark:[&_th]:bg-white/5 [&_th]:px-4 [&_th]:py-2 [&_th]:text-left [&_th]:font-bold [&_th]:border [&_th]:border-dashboard dark:[&_th]:border-white/10 [&_td]:px-4 [&_td]:py-2 [&_td]:border [&_td]:border-dashboard dark:[&_td]:border-white/10 [&_figure]:text-center [&_figure]:my-8 [&_figcaption]:text-center [&_figcaption]:italic [&_figcaption]:text-sm [&_figcaption]:text-gray-500 dark:[&_figcaption]:text-gray-400 [&_figcaption]:mt-3"
                             dangerouslySetInnerHTML={{
                                 __html: DOMPurify.sanitize(lesson.content),
                             }}
@@ -234,7 +235,11 @@ export function PublicLessonView({
                             </p>
                             <Link
                                 href="/auth/signup"
-                                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white font-bold text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105 transition-all duration-300"
+                                className={buttonVariants({
+                                    variant: "primary",
+                                    className:
+                                        "px-8 py-3.5 rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white font-bold text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105",
+                                })}
                             >
                                 <Sparkles size={18} />
                                 <span>Sign Up Free to Unlock</span>
@@ -266,7 +271,11 @@ export function PublicLessonView({
                             </p>
                             <Link
                                 href="/auth/signup"
-                                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105 transition-all duration-300"
+                                className={buttonVariants({
+                                    variant: "primary",
+                                    className:
+                                        "px-6 py-3 rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105",
+                                })}
                             >
                                 Create Free Account
                             </Link>
@@ -279,7 +288,11 @@ export function PublicLessonView({
                             {prevLesson ? (
                                 <Link
                                     href={`/academy/lesson/${prevLesson.slug}`}
-                                    className="group flex items-center gap-3 px-5 py-3 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors max-w-[45%]"
+                                    className={buttonVariants({
+                                        variant: "ghost",
+                                        className:
+                                            "group flex items-center gap-3 px-5 py-3 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 max-w-[45%]",
+                                    })}
                                 >
                                     <ChevronLeft
                                         size={18}
@@ -300,7 +313,11 @@ export function PublicLessonView({
                             {nextLesson ? (
                                 <Link
                                     href={`/academy/lesson/${nextLesson.slug}`}
-                                    className="group flex items-center gap-3 px-5 py-3 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors max-w-[45%]"
+                                    className={buttonVariants({
+                                        variant: "ghost",
+                                        className:
+                                            "group flex items-center gap-3 px-5 py-3 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 max-w-[45%]",
+                                    })}
                                 >
                                     <div className="text-right min-w-0">
                                         <div className="text-xs text-gray-500 uppercase tracking-wider">
@@ -318,7 +335,11 @@ export function PublicLessonView({
                             ) : (
                                 <Link
                                     href="/auth/signup"
-                                    className="flex items-center gap-2 px-5 py-3 rounded-xl bg-primary/10 text-primary font-bold hover:bg-primary/20 transition-colors"
+                                    className={buttonVariants({
+                                        variant: "ghost",
+                                        className:
+                                            "flex items-center gap-2 px-5 py-3 rounded-xl bg-primary/10 text-primary font-bold hover:bg-primary/20",
+                                    })}
                                 >
                                     <span>Sign up to continue</span>
                                     <ChevronRight size={18} />

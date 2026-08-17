@@ -168,7 +168,7 @@ export function ReferrerPanel({ referrers }: Props) {
                                 className="flex items-center gap-2"
                             >
                                 <div
-                                    className={`p-1 rounded ${config.bgColor}`}
+                                    className={`p-1 rounded-lg ${config.bgColor}`}
                                 >
                                     <Icon
                                         size={12}
@@ -208,7 +208,7 @@ export function ReferrerPanel({ referrers }: Props) {
                                     className="relative group"
                                 >
                                     <div
-                                        className="absolute inset-0 bg-gray-50 dark:bg-white/[0.03] rounded-md"
+                                        className="absolute inset-0 bg-gray-50 dark:bg-white/[0.03] rounded-lg"
                                         style={{ width: `${pct}%` }}
                                     />
                                     <div className="relative flex items-center justify-between py-2 px-3">

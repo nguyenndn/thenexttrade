@@ -1,7 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Cpu, Power, RefreshCw, Plus, Search } from "lucide-react";
+import { Cpu, Power, RefreshCw, Plus, Search, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { toggleAiModel, createCustomAiModel, syncOpenRouterModels } from "@/actions/admin/ai-gateway";
 import { toast } from "sonner";
 
@@ -21,6 +28,9 @@ export function AiModelsPanel({
         displayName: "",
         contextLimit: 64000,
     });
+    const selectedProvider = providers.find(
+        (p) => p.id === customForm.providerId
+    );
 
     const handleToggle = async (id: string, currentEnabled: boolean) => {
         try {
@@ -81,21 +91,25 @@ export function AiModelsPanel({
                     />
                 </div>
                 <div className="flex items-center gap-2">
-                    <button
+                    <Button
+                        type="button"
+                        variant="ghost"
                         onClick={handleSync}
                         disabled={isSyncing}
-                        className="px-3.5 py-2 bg-primary/10 hover:bg-primary/20 text-primary font-semibold text-xs rounded-xl flex items-center transition-colors disabled:opacity-50"
+                        className="h-auto px-3.5 py-2 bg-primary/10 hover:bg-primary/20 text-primary font-semibold"
                     >
-                        <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${isSyncing ? "animate-spin" : ""}`} />
+                        <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? "animate-spin" : ""}`} />
                         {isSyncing ? "Syncing..." : "Sync OpenRouter Catalog"}
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        type="button"
+                        variant="primary"
                         onClick={() => setIsAddingCustom(!isAddingCustom)}
-                        className="px-3.5 py-2 bg-primary hover:bg-primary/90 text-white font-semibold text-xs rounded-xl flex items-center transition-colors shadow-sm"
+                        className="h-auto px-3.5 py-2 font-semibold"
                     >
-                        <Plus className="w-3.5 h-3.5 mr-1.5" />
+                        <Plus className="w-3.5 h-3.5" />
                         Add Custom Model
-                    </button>
+                    </Button>
                 </div>
             </div>
 
@@ -110,17 +124,48 @@ export function AiModelsPanel({
                             <label className="block text-xs text-gray-500 font-medium mb-1">
                                 Provider
                             </label>
-                            <select
-                                className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-primary"
-                                value={customForm.providerId}
-                                onChange={(e) => setCustomForm({ ...customForm, providerId: e.target.value })}
-                            >
-                                {providers.map((p) => (
-                                    <option key={p.id} value={p.id}>
-                                        {p.displayName} ({p.providerCode})
-                                    </option>
-                                ))}
-                            </select>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="w-full justify-between h-auto bg-gray-50 dark:bg-[#151925] border-gray-200 dark:border-white/10 px-3 py-2 text-sm font-normal text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20"
+                                    >
+                                        {selectedProvider ? (
+                                            <span className="truncate">
+                                                {selectedProvider.displayName}{" "}
+                                                ({selectedProvider.providerCode})
+                                            </span>
+                                        ) : (
+                                            <span className="text-gray-400 dark:text-gray-500">
+                                                Select provider...
+                                            </span>
+                                        )}
+                                        <ChevronDown
+                                            size={16}
+                                            className="shrink-0 opacity-60"
+                                        />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                    align="start"
+                                    className="max-h-[250px] overflow-y-auto"
+                                >
+                                    {providers.map((p) => (
+                                        <DropdownMenuItem
+                                            key={p.id}
+                                            onClick={() =>
+                                                setCustomForm({
+                                                    ...customForm,
+                                                    providerId: p.id,
+                                                })
+                                            }
+                                        >
+                                            {p.displayName} ({p.providerCode})
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                         <div>
                             <label className="block text-xs text-gray-500 font-medium mb-1">
@@ -157,18 +202,21 @@ export function AiModelsPanel({
                         </div>
                     </div>
                     <div className="flex justify-end gap-2">
-                        <button
+                        <Button
+                            type="button"
+                            variant="ghost"
                             onClick={() => setIsAddingCustom(false)}
-                            className="px-4 py-2 text-xs font-medium text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                            className="h-auto px-4 py-2 font-semibold"
                         >
                             Cancel
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="primary"
                             onClick={handleAddCustom}
-                            className="px-4 py-2 bg-primary hover:bg-primary/90 text-white font-bold text-xs rounded-xl shadow-sm"
                         >
                             Save Model
-                        </button>
+                        </Button>
                     </div>
                 </div>
             )}

@@ -81,7 +81,7 @@ export function ActivationImprovementFunnelPanel() {
             {/* Stages List — 12 stages */}
             <div className="space-y-2.5">
                 {report.stages.map((stg) => (
-                    <div key={stg.stage} className="p-3 rounded-lg bg-gray-50 dark:bg-slate-900/60 border border-gray-100 dark:border-slate-800 flex items-center justify-between text-xs">
+                    <div key={stg.stage} className="p-3 rounded-lg bg-gray-50 dark:bg-slate-900/60 border border-gray-200 dark:border-slate-800 flex items-center justify-between text-xs">
                         <div className="space-y-1 w-2/5">
                             <span className="font-bold text-slate-800 dark:text-slate-200 block">{stg.label}</span>
                             <span className="text-gray-400 text-[11px]">{stg.count} users ({stg.conversionPct}%)</span>

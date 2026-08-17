@@ -181,15 +181,15 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
             {/* Color Legend */}
             <div className="flex items-center justify-end gap-4 mt-6 text-xs text-gray-600">
                 <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded bg-red-400"></div>
+                    <div className="w-3 h-3 rounded-full bg-red-400"></div>
                     <span>High Loss</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded bg-gray-100 dark:bg-gray-800"></div>
+                    <div className="w-3 h-3 rounded-full bg-gray-100 dark:bg-gray-800"></div>
                     <span>No Activity</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded bg-primary"></div>
+                    <div className="w-3 h-3 rounded-full bg-primary"></div>
                     <span>High Profit</span>
                 </div>
             </div>

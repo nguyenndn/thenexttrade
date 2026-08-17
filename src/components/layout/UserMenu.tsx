@@ -18,6 +18,7 @@ import {
 import { signout } from "@/app/auth/actions";
 import { AuthUser } from "@/lib/auth-types";
 import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
 import { NotificationBell } from "@/components/layout/NotificationBell";
 import { CommandPaletteTrigger } from "@/components/search/CommandPalette";
@@ -96,13 +97,21 @@ export function UserMenu({
             <div className="flex items-center gap-3">
                 <Link
                     href="/auth/login"
-                    className="text-sm font-semibold whitespace-nowrap px-4 py-2 rounded-xl text-gray-800 hover:text-amber-600 dark:text-gray-300 dark:hover:text-amber-300 transition-colors"
+                    className={buttonVariants({
+                        variant: "ghost",
+                        className:
+                            "px-4 py-2 text-sm font-semibold whitespace-nowrap rounded-xl text-gray-800 hover:text-amber-600 hover:bg-transparent dark:text-gray-300 dark:hover:text-amber-300 dark:hover:bg-transparent",
+                    })}
                 >
                     Login
                 </Link>
                 <Link
                     href="/auth/signup"
-                    className="text-sm font-bold whitespace-nowrap px-6 py-2 rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition-colors shadow-sm shadow-amber-500/20"
+                    className={buttonVariants({
+                        variant: "primary",
+                        className:
+                            "px-6 py-2 text-sm font-bold whitespace-nowrap rounded-xl bg-amber-500 text-white shadow-sm shadow-amber-500/20 hover:bg-amber-600 hover:shadow-amber-500/20",
+                    })}
                 >
                     Sign Up Free
                 </Link>

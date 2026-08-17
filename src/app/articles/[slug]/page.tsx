@@ -331,7 +331,7 @@ export default async function ArticlePage({
                             />
                             <Link
                                 href="/knowledge"
-                                className="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors shrink-0"
+                                className="hidden sm:inline text-gray-500 dark:text-gray-400 hover:text-primary transition-colors shrink-0"
                             >
                                 Knowledge
                             </Link>
@@ -339,7 +339,7 @@ export default async function ArticlePage({
                                 size={12}
                                 className="text-gray-300 dark:text-gray-600 shrink-0"
                             />
-                            <span className="text-primary font-bold truncate max-w-[200px] sm:max-w-[400px]">
+                            <span className="text-primary font-bold min-w-0 truncate max-w-[100px] sm:max-w-[240px] lg:max-w-[400px]">
                                 {article.title}
                             </span>
                         </nav>
@@ -603,7 +603,7 @@ export default async function ArticlePage({
                                                 >
                                                     <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-white/5 animate-pulse" />
                                                     <div className="flex-1 space-y-2">
-                                                        <div className="h-4 w-32 bg-gray-200 dark:bg-white/5 rounded animate-pulse" />
+                                                        <div className="h-4 w-32 bg-gray-200 dark:bg-white/5 rounded-lg animate-pulse" />
                                                         <div className="h-20 w-full bg-gray-200 dark:bg-white/5 rounded-xl animate-pulse" />
                                                     </div>
                                                 </div>

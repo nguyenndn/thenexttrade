@@ -23,7 +23,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
     return (
         <Link
             href={`/articles/${article.slug}`}
-            className="group relative bg-white/80 dark:bg-[#131622]/60 border border-amber-500/15 dark:border-white/[0.06] hover:border-amber-500/35 dark:hover:border-gold/30 rounded-2xl p-2 shadow-sm hover:shadow-[0_12px_30px_rgba(245,158,11,0.03)] dark:hover:shadow-[0_12px_30px_rgba(245,158,11,0.01)] hover:-translate-y-0.5 transition-all duration-300 flex flex-col backdrop-blur-md"
+            className="group relative bg-white/80 dark:bg-[#131622]/60 border border-amber-500/15 dark:border-white/[0.06] hover:border-amber-500/35 dark:hover:border-gold/30 rounded-2xl p-2 shadow-sm hover:shadow-[0_12px_30px_rgba(245,158,11,0.03)] dark:hover:shadow-[0_12px_30px_rgba(245,158,11,0.01)] transition-all duration-300 flex flex-col backdrop-blur-md"
         >
             {/* Thumbnail */}
             <div className="relative aspect-[16/9] rounded-xl overflow-hidden bg-gray-900">
@@ -45,7 +45,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
                 </div>
                 {/* Read Time Badge */}
                 {article.estimatedTime && (
-                    <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-md text-[10px] font-bold text-white flex items-center gap-1">
+                    <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-lg text-[10px] font-bold text-white flex items-center gap-1">
                         <Clock size={10} />
                         {article.estimatedTime} min
                     </div>

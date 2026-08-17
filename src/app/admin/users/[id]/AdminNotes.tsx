@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { StickyNote, Save, Loader2, Check } from "lucide-react";
 import { saveAdminNotes } from "./notes-action";
+import { Button } from "@/components/ui/Button";
 
 interface AdminNotesProps {
     userId: string;
@@ -37,16 +38,12 @@ export function AdminNotes({ userId, initialNotes }: AdminNotesProps) {
                     <StickyNote size={16} className="text-gray-500" /> Admin
                     Notes
                 </h3>
-                <button
+                <Button
+                    type="button"
+                    variant="ghost"
                     onClick={handleSave}
                     disabled={saving || !dirty}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
-                        saved
-                            ? "bg-green-50 text-green-600 dark:bg-green-500/10 dark:text-green-400"
-                            : dirty
-                              ? "bg-primary/10 text-primary hover:bg-primary/20"
-                              : "bg-gray-100 text-gray-500 dark:bg-white/5 cursor-not-allowed"
-                    }`}
+                    className={`h-auto px-3 py-1.5 ${saved ? "bg-green-50 text-green-600 dark:bg-green-500/10 dark:text-green-400" : dirty ? "bg-primary/10 text-primary hover:bg-primary/20" : "bg-gray-100 text-gray-500 dark:bg-white/5"}`}
                 >
                     {saving ? (
                         <>
@@ -62,7 +59,7 @@ export function AdminNotes({ userId, initialNotes }: AdminNotesProps) {
                             <Save size={13} /> Save
                         </>
                     )}
-                </button>
+                </Button>
             </div>
             <div className="p-4 sm:p-6">
                 <textarea

@@ -204,7 +204,7 @@ export default function FAQPage() {
                         {FAQ_GROUPS.map((group) => (
                             <div
                                 key={group.id}
-                                className="relative p-6 rounded-2xl border border-gray-200/60 dark:border-white/5 bg-white/50 dark:bg-[#12172a]/30 backdrop-blur-md"
+                                className="relative p-6 rounded-2xl border border-gray-200/60 dark:border-white/10 bg-white/50 dark:bg-[#12172a]/30 backdrop-blur-md"
                             >
                                 <div className="flex items-center gap-3 mb-6">
                                     <div

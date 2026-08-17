@@ -58,7 +58,7 @@ function PromptBlock({
                 {prompt}
             </p>
             <div className="flex items-center gap-2 text-[11px] text-gray-400 dark:text-gray-500">
-                <span className="font-mono bg-gray-50 dark:bg-white/5 px-2 py-0.5 rounded">
+                <span className="font-mono bg-gray-50 dark:bg-white/5 px-2 py-0.5 rounded-lg">
                     {path}
                 </span>
             </div>

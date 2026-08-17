@@ -129,7 +129,7 @@ export function TradingCalendar({ data, selectedDates }: TradingCalendarProps) {
                                     <div
                                         className={`flex flex-col p-1 rounded-lg border min-h-[35px] justify-between transition-all select-none ${
                                             isCurrentMonth
-                                                ? "bg-white dark:bg-[#1E2028]/20 border-gray-100 dark:border-white/[0.03] hover:shadow-md"
+                                                ? "bg-white dark:bg-[#1E2028]/20 border-gray-200 dark:border-white/10 hover:shadow-md"
                                                 : "bg-gray-50/50 dark:bg-gray-900/10 border-gray-50 dark:border-transparent opacity-40"
                                         } ${
                                             isToday
@@ -142,7 +142,7 @@ export function TradingCalendar({ data, selectedDates }: TradingCalendarProps) {
                                             <span
                                                 className={`text-[10px] font-black ${
                                                     isToday
-                                                        ? "text-primary bg-primary/10 px-1 rounded-md"
+                                                        ? "text-primary bg-primary/10 px-1 rounded-lg"
                                                         : "text-gray-400 dark:text-gray-500"
                                                 }`}
                                             >

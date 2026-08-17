@@ -810,7 +810,7 @@ export function RichTextEditor({
                                     {s.keys.map((key) => (
                                         <kbd
                                             key={key}
-                                            className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 rounded border border-gray-200 dark:border-white/10"
+                                            className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 rounded-lg border border-gray-200 dark:border-white/10"
                                         >
                                             {key}
                                         </kbd>
@@ -959,7 +959,7 @@ export function RichTextEditor({
             {isFullscreen && (
                 <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-black/80 text-white text-xs px-4 py-2 rounded-full backdrop-blur-sm pointer-events-none opacity-60">
                     Press{" "}
-                    <kbd className="px-1.5 py-0.5 font-mono bg-white/20 rounded mx-1">
+                    <kbd className="px-1.5 py-0.5 font-mono bg-white/20 rounded-lg mx-1">
                         ESC
                     </kbd>{" "}
                     or click <Minimize size={12} className="inline" /> to exit

@@ -66,7 +66,7 @@ export default async function MasterCertificatePage({
             </div>
 
             {/* Brand header */}
-            <header className="relative z-10 container mx-auto px-4 py-5 flex items-center justify-between">
+            <header className="relative z-10 container mx-auto px-4 py-5 flex flex-wrap items-center justify-between gap-2">
                 <Link
                     href="/"
                     className="text-xl font-black tracking-tight text-gray-800 dark:text-white"

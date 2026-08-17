@@ -404,7 +404,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                     ].map((button) => (
                                         <div
                                             key={button.label}
-                                            className={`${button.className} flex min-h-7 items-center justify-center px-2 py-1 text-center text-[9px] font-black uppercase text-white sm:text-[10px] whitespace-nowrap transition-colors cursor-pointer select-none rounded-sm`}
+                                            className={`${button.className} flex min-h-7 items-center justify-center px-2 py-1 text-center text-[9px] font-black uppercase text-white sm:text-[10px] whitespace-nowrap transition-colors cursor-pointer select-none rounded-lg`}
                                         >
                                             {button.label}
                                         </div>
@@ -447,16 +447,16 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                     <span className="text-white">50</span>
                                 </div>
                                 <div className="grid grid-cols-4 gap-1 w-full pl-2">
-                                    <div className="bg-emerald-600 hover:bg-emerald-700 cursor-pointer py-1.5 text-center text-[9.5px] font-black text-white select-none transition-colors rounded-sm">
+                                    <div className="bg-emerald-600 hover:bg-emerald-700 cursor-pointer py-1.5 text-center text-[9.5px] font-black text-white select-none transition-colors rounded-lg">
                                         TP BUY
                                     </div>
-                                    <div className="bg-red-600 hover:bg-red-700 cursor-pointer py-1.5 text-center text-[9.5px] font-black text-white select-none transition-colors rounded-sm">
+                                    <div className="bg-red-600 hover:bg-red-700 cursor-pointer py-1.5 text-center text-[9.5px] font-black text-white select-none transition-colors rounded-lg">
                                         TP SELL
                                     </div>
-                                    <div className="bg-amber-500 hover:bg-amber-600 cursor-pointer py-1.5 text-center text-[9.5px] font-black text-white select-none transition-colors rounded-sm">
+                                    <div className="bg-amber-500 hover:bg-amber-600 cursor-pointer py-1.5 text-center text-[9.5px] font-black text-white select-none transition-colors rounded-lg">
                                         SL -&gt; BE
                                     </div>
-                                    <div className="bg-rose-500 hover:bg-rose-600 cursor-pointer py-1.5 text-center text-[9.5px] font-black text-white select-none transition-colors rounded-sm">
+                                    <div className="bg-rose-500 hover:bg-rose-600 cursor-pointer py-1.5 text-center text-[9.5px] font-black text-white select-none transition-colors rounded-lg">
                                         CLOSE ALL
                                     </div>
                                 </div>
@@ -567,7 +567,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                     >
                                         <div className="flex justify-center">
                                             <div
-                                                className={`w-[68px] border text-center text-[10.5px] font-black py-0.5 rounded-sm ${row.typeColor}`}
+                                                className={`w-[68px] border text-center text-[10.5px] font-black py-0.5 rounded-lg ${row.typeColor}`}
                                             >
                                                 {row.type}
                                             </div>
@@ -577,7 +577,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                         </div>
                                         <div className="flex justify-center">
                                             <div
-                                                className={`w-[88px] border text-center text-[9.5px] font-black py-0.5 rounded-sm uppercase ${row.statusColor}`}
+                                                className={`w-[88px] border text-center text-[9.5px] font-black py-0.5 rounded-lg uppercase ${row.statusColor}`}
                                             >
                                                 {row.status}
                                             </div>
@@ -628,7 +628,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                     >
                                         <div className="flex justify-center">
                                             <div
-                                                className={`w-[68px] border text-center text-[10.5px] font-black py-0.5 rounded-sm ${row.typeColor}`}
+                                                className={`w-[68px] border text-center text-[10.5px] font-black py-0.5 rounded-lg ${row.typeColor}`}
                                             >
                                                 {row.type}
                                             </div>
@@ -638,7 +638,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                         </div>
                                         <div className="flex justify-center">
                                             <div
-                                                className={`w-[88px] border text-center text-[9.5px] font-black py-0.5 rounded-sm uppercase ${row.statusColor}`}
+                                                className={`w-[88px] border text-center text-[9.5px] font-black py-0.5 rounded-lg uppercase ${row.statusColor}`}
                                             >
                                                 {row.status}
                                             </div>
@@ -661,8 +661,8 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                             <span className="font-black text-slate-400 text-[10.5px] uppercase whitespace-nowrap font-mono">
                                                 IND {num}:
                                             </span>
-                                            <span className="w-16 h-5 bg-slate-950 border border-slate-800 rounded-sm" />
-                                            <span className="px-1.5 h-5 flex items-center justify-center cursor-pointer border border-slate-700 bg-slate-800 hover:bg-slate-700 text-[10px] font-black text-slate-300 rounded-sm select-none">
+                                            <span className="w-16 h-5 bg-slate-950 border border-slate-800 rounded-lg" />
+                                            <span className="px-1.5 h-5 flex items-center justify-center cursor-pointer border border-slate-700 bg-slate-800 hover:bg-slate-700 text-[10px] font-black text-slate-300 rounded-lg select-none">
                                                 OFF
                                             </span>
                                         </div>
@@ -714,38 +714,38 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                     <span>D1</span>
                                 </div>
                                 <div className="grid grid-cols-7 gap-1 h-1.5 w-full">
-                                    <div className="h-full bg-blue-500 rounded-sm" />{" "}
+                                    <div className="h-full bg-blue-500 rounded-full" />{" "}
                                     {/* M1 */}
-                                    <div className="h-full bg-blue-500 rounded-sm" />{" "}
+                                    <div className="h-full bg-blue-500 rounded-full" />{" "}
                                     {/* M5 */}
-                                    <div className="h-full bg-rose-500 rounded-sm" />{" "}
+                                    <div className="h-full bg-rose-500 rounded-full" />{" "}
                                     {/* M15 */}
-                                    <div className="h-full bg-blue-500 rounded-sm" />{" "}
+                                    <div className="h-full bg-blue-500 rounded-full" />{" "}
                                     {/* M30 */}
-                                    <div className="h-full bg-blue-500 rounded-sm" />{" "}
+                                    <div className="h-full bg-blue-500 rounded-full" />{" "}
                                     {/* H1 */}
-                                    <div className="h-full bg-rose-500 rounded-sm" />{" "}
+                                    <div className="h-full bg-rose-500 rounded-full" />{" "}
                                     {/* H4 */}
-                                    <div className="h-full bg-rose-500 rounded-sm" />{" "}
+                                    <div className="h-full bg-rose-500 rounded-full" />{" "}
                                     {/* D1 */}
                                 </div>
                             </div>
 
                             {/* Action Power Buttons */}
                             <div className="grid grid-cols-3 gap-2 text-center text-[10px] font-black select-none">
-                                <div className="border border-slate-750 py-1 text-slate-300 bg-slate-900/60 uppercase rounded-sm">
+                                <div className="border border-slate-750 py-1 text-slate-300 bg-slate-900/60 uppercase rounded-lg">
                                     CHART: WAIT
                                 </div>
-                                <div className="border border-emerald-500 py-1 text-emerald-450 bg-[#072212]/30 uppercase rounded-sm">
+                                <div className="border border-emerald-500 py-1 text-emerald-450 bg-[#072212]/30 uppercase rounded-lg">
                                     BUY PWR: 0%
                                 </div>
-                                <div className="border border-rose-500 py-1 text-rose-500 bg-[#260a0c]/30 uppercase rounded-sm">
+                                <div className="border border-rose-500 py-1 text-rose-500 bg-[#260a0c]/30 uppercase rounded-lg">
                                     SELL PWR: 100%
                                 </div>
                             </div>
 
                             {/* Confluence Matrix Table */}
-                            <div className="border border-slate-800 rounded-sm overflow-hidden">
+                            <div className="border border-slate-800 rounded-lg overflow-hidden">
                                 {/* Table Header */}
                                 <div className="grid grid-cols-8 bg-[#0b111d] text-center font-black text-white text-[9.5px] border-b border-slate-800 py-1">
                                     <span>TF</span>
@@ -853,7 +853,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                                     className="px-0.5"
                                                 >
                                                     <span
-                                                        className={`block py-0.5 text-[9.5px] font-black rounded-sm ${cellStyles}`}
+                                                        className={`block py-0.5 text-[9.5px] font-black rounded-lg ${cellStyles}`}
                                                     >
                                                         {cell}
                                                     </span>
@@ -908,12 +908,12 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                 ].map((setting) => (
                                     <div
                                         key={setting.label}
-                                        className="bg-[#0d1420]/30 px-2 py-1.5 flex items-center justify-between rounded-sm"
+                                        className="bg-[#0d1420]/30 px-2 py-1.5 flex items-center justify-between rounded-lg"
                                     >
                                         <span className="font-bold text-white text-[11px]">
                                             {setting.label}
                                         </span>
-                                        <div className="border border-slate-700 bg-slate-950/50 w-24 py-1 text-center font-black text-[11.5px] rounded-sm">
+                                        <div className="border border-slate-700 bg-slate-950/50 w-24 py-1 text-center font-black text-[11.5px] rounded-lg">
                                             <span className={setting.color}>
                                                 {setting.val}
                                             </span>
@@ -978,7 +978,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                         </span>
                                         {row.isButton ? (
                                             <div
-                                                className={`border text-center text-[10px] font-black py-1 rounded-sm uppercase cursor-pointer hover:brightness-110 select-none ${row.btnStyle}`}
+                                                className={`border text-center text-[10px] font-black py-1 rounded-lg uppercase cursor-pointer hover:brightness-110 select-none ${row.btnStyle}`}
                                             >
                                                 {row.val}
                                             </div>
@@ -994,13 +994,13 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
 
                                 {/* Action Buttons */}
                                 <div className="grid grid-cols-2 gap-1 pt-1">
-                                    <div className="bg-blue-600 hover:bg-blue-700 text-center py-1.5 text-[11px] font-black text-white uppercase cursor-pointer select-none rounded-sm">
+                                    <div className="bg-blue-600 hover:bg-blue-700 text-center py-1.5 text-[11px] font-black text-white uppercase cursor-pointer select-none rounded-lg">
                                         DCA BUY ↑
                                     </div>
-                                    <div className="bg-rose-600 hover:bg-rose-700 text-center py-1.5 text-[11px] font-black text-white uppercase cursor-pointer select-none rounded-sm">
+                                    <div className="bg-rose-600 hover:bg-rose-700 text-center py-1.5 text-[11px] font-black text-white uppercase cursor-pointer select-none rounded-lg">
                                         DCA SELL ↓
                                     </div>
-                                    <div className="col-span-2 bg-orange-600 hover:bg-orange-750 text-center py-2 text-[11px] font-black text-white uppercase cursor-pointer select-none rounded-sm">
+                                    <div className="col-span-2 bg-orange-600 hover:bg-orange-750 text-center py-2 text-[11px] font-black text-white uppercase cursor-pointer select-none rounded-lg">
                                         CLOSE ALL DCA
                                     </div>
                                 </div>
@@ -1021,7 +1021,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                     <div className="font-black text-white text-[11px] uppercase">
                                         API Key
                                     </div>
-                                    <div className="border border-slate-700 bg-slate-900 h-8 w-full rounded-sm flex items-center px-2">
+                                    <div className="border border-slate-700 bg-slate-900 h-8 w-full rounded-lg flex items-center px-2">
                                         <span className="text-slate-500 font-bold text-[11.5px] tracking-widest">
                                             ************************
                                         </span>
@@ -1037,7 +1037,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                         <span className="font-black text-rose-500 text-[11px]">
                                             DISCONNECTED
                                         </span>
-                                        <div className="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[10px] px-2 py-1 rounded-sm uppercase cursor-pointer select-none">
+                                        <div className="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[10px] px-2 py-1 rounded-lg uppercase cursor-pointer select-none">
                                             CONNECT
                                         </div>
                                     </div>
@@ -1091,7 +1091,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                     ].map((item) => (
                                         <div
                                             key={item.label}
-                                            className={`border text-center text-[10.5px] font-black py-1 cursor-pointer select-none rounded-sm transition-colors ${
+                                            className={`border text-center text-[10.5px] font-black py-1 cursor-pointer select-none rounded-lg transition-colors ${
                                                 item.isRed
                                                     ? "border-red-900 bg-red-950/20 text-rose-400 hover:bg-red-900/30"
                                                     : "border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700"
@@ -1108,19 +1108,19 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                         Custom Range
                                     </div>
                                     <div className="flex items-center gap-1 text-[11px] font-black">
-                                        <div className="border border-slate-700 bg-slate-900 text-center py-1 rounded-sm flex-1 text-white">
+                                        <div className="border border-slate-700 bg-slate-900 text-center py-1 rounded-lg flex-1 text-white">
                                             2026.06.24
                                         </div>
                                         <span className="text-slate-500 uppercase font-bold text-[9.5px]">
                                             To
                                         </span>
-                                        <div className="border border-slate-700 bg-slate-900 text-center py-1 rounded-sm flex-1 text-white">
+                                        <div className="border border-slate-700 bg-slate-900 text-center py-1 rounded-lg flex-1 text-white">
                                             2026.07.01
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="bg-emerald-600 hover:bg-emerald-700 text-center py-2 text-[11px] font-black text-white uppercase cursor-pointer select-none rounded-sm transition-colors">
+                                <div className="bg-emerald-600 hover:bg-emerald-700 text-center py-2 text-[11px] font-black text-white uppercase cursor-pointer select-none rounded-lg transition-colors">
                                     Sync Selected Range
                                 </div>
                             </div>
@@ -1200,7 +1200,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                             <div
                                 key={label}
                                 onClick={() => setActiveStrategy(label)}
-                                className={`min-h-7 px-1.5 py-1 flex items-center justify-center text-center text-[10.5px] font-black uppercase cursor-pointer select-none transition-colors rounded-sm ${
+                                className={`min-h-7 px-1.5 py-1 flex items-center justify-center text-center text-[10.5px] font-black uppercase cursor-pointer select-none transition-colors rounded-lg ${
                                     isActive
                                         ? "bg-[#ffde17] text-[#111827] font-extrabold"
                                         : "bg-[#151b24] text-white hover:bg-[#1a202b]"
@@ -1230,7 +1230,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                     <span className="text-[10px] font-black text-white">
                                         {label}
                                     </span>
-                                    <span className="rounded-sm border border-slate-600 bg-[#202833] px-1.5 py-0.5 text-right font-black text-[10px] text-white">
+                                    <span className="rounded-lg border border-slate-600 bg-[#202833] px-1.5 py-0.5 text-right font-black text-[10px] text-white">
                                         {value}
                                     </span>
                                 </div>
@@ -1255,7 +1255,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                     <span className="text-[10px] font-black text-white">
                                         {label}
                                     </span>
-                                    <span className="rounded-sm border border-slate-600 bg-[#202833] px-1.5 py-0.5 text-right font-black text-[10px] text-white">
+                                    <span className="rounded-lg border border-slate-600 bg-[#202833] px-1.5 py-0.5 text-right font-black text-[10px] text-white">
                                         {value}
                                     </span>
                                 </div>
@@ -1290,12 +1290,12 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                 </div>
 
                 <div className="grid grid-cols-2 gap-1 bg-[#10141b] p-1">
-                    <div className="flex min-h-7 items-center justify-center bg-orange-500 hover:bg-orange-650 px-1.5 text-center text-[10px] font-black uppercase text-black cursor-pointer select-none transition-colors rounded-sm">
+                    <div className="flex min-h-7 items-center justify-center bg-orange-500 hover:bg-orange-650 px-1.5 text-center text-[10px] font-black uppercase text-black cursor-pointer select-none transition-colors rounded-lg">
                         Apply Settings
                     </div>
                     <div
                         onClick={() => setEaOn(!eaOn)}
-                        className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-sm ${
+                        className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-lg ${
                             eaOn
                                 ? "bg-emerald-500 text-white hover:bg-emerald-600"
                                 : "bg-slate-800 text-slate-500 border border-slate-700"
@@ -1306,7 +1306,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                     <div className="col-span-2 grid grid-cols-3 gap-1">
                         <div
                             onClick={() => setBuyOn(!buyOn)}
-                            className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-sm ${
+                            className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-lg ${
                                 buyOn
                                     ? "bg-emerald-500 text-white hover:bg-emerald-600"
                                     : "bg-slate-800 text-slate-500 border border-slate-700"
@@ -1316,7 +1316,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                         </div>
                         <div
                             onClick={() => setSellOn(!sellOn)}
-                            className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-sm ${
+                            className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-lg ${
                                 sellOn
                                     ? "bg-red-500 text-white hover:bg-red-650"
                                     : "bg-slate-800 text-slate-500 border border-slate-700"
@@ -1326,7 +1326,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                         </div>
                         <div
                             onClick={() => setHedgeOn(!hedgeOn)}
-                            className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-sm ${
+                            className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-lg ${
                                 hedgeOn
                                     ? "bg-cyan-600 text-white hover:bg-cyan-700"
                                     : "bg-slate-800 text-slate-500 border border-slate-700"
@@ -1335,12 +1335,12 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                             HEDGE: {hedgeOn ? "ON" : "OFF"}
                         </div>
                     </div>
-                    <div className="flex min-h-7 items-center justify-center bg-red-500 hover:bg-red-650 px-1.5 text-center text-[10px] font-black uppercase text-white cursor-pointer select-none transition-colors rounded-sm">
+                    <div className="flex min-h-7 items-center justify-center bg-red-500 hover:bg-red-650 px-1.5 text-center text-[10px] font-black uppercase text-white cursor-pointer select-none transition-colors rounded-lg">
                         Close All
                     </div>
                     <div
                         onClick={() => setLastRoundOn(!lastRoundOn)}
-                        className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-sm ${
+                        className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-lg ${
                             lastRoundOn
                                 ? "bg-[#ffde17] text-[#111827]"
                                 : "bg-slate-600 text-white hover:bg-slate-700"

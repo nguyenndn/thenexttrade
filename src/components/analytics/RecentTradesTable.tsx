@@ -90,7 +90,7 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
                                     </td>
                                     <td className="px-4 py-3.5 whitespace-nowrap">
                                         <span
-                                            className={`text-[11px] font-bold px-2 py-1 rounded inline-block ${
+                                            className={`text-[11px] font-bold px-2 py-1 rounded-lg inline-block ${
                                                 trade.type === "BUY"
                                                     ? "bg-emerald-50 text-emerald-600 dark:bg-[#00C888]/10 dark:text-[#00C888]"
                                                     : "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400"
@@ -101,7 +101,7 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
                                     </td>
                                     <td className="px-4 py-3.5 whitespace-nowrap">
                                         <span
-                                            className={`inline-flex items-center gap-1.5 text-[11px] font-bold px-2 py-1 rounded ${trade.result === "WIN" ? "bg-emerald-50 dark:bg-[#00C888]/10 text-emerald-600 dark:text-[#00C888]" : trade.result === "LOSS" ? "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400" : "bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300"}`}
+                                            className={`inline-flex items-center gap-1.5 text-[11px] font-bold px-2 py-1 rounded-lg ${trade.result === "WIN" ? "bg-emerald-50 dark:bg-[#00C888]/10 text-emerald-600 dark:text-[#00C888]" : trade.result === "LOSS" ? "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400" : "bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300"}`}
                                         >
                                             {getResultIcon(trade.result)}
                                             {trade.result}

@@ -199,7 +199,9 @@ export function MarketHoursMonitor() {
                             key={h}
                             className="relative w-0 flex justify-center"
                         >
-                            <span className="absolute font-bold">{h}</span>
+                            <span className={`absolute font-bold ${h % 2 === 0 ? "" : "hidden sm:block"}`}>
+                                {h}
+                            </span>
                         </div>
                     ))}
                 </div>

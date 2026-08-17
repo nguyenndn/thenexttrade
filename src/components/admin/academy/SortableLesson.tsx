@@ -52,7 +52,7 @@ export function SortableLesson({ lesson, onEdit, onDelete }: LessonProps) {
 
                 <div
                     className={clsx(
-                        "p-1.5 rounded-md",
+                        "p-1.5 rounded-lg",
                         lesson.videoUrl
                             ? "bg-red-50 text-red-500"
                             : "bg-blue-50 text-blue-500"
@@ -80,7 +80,7 @@ export function SortableLesson({ lesson, onEdit, onDelete }: LessonProps) {
                     variant="ghost"
                     size="icon"
                     onClick={() => onEdit(lesson)}
-                    className="p-1.5 h-auto w-auto text-gray-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded transition-colors"
+                    className="p-1.5 h-auto w-auto text-gray-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors"
                 >
                     <Edit size={14} />
                 </Button>
@@ -88,7 +88,7 @@ export function SortableLesson({ lesson, onEdit, onDelete }: LessonProps) {
                     variant="ghost"
                     size="icon"
                     onClick={() => onDelete(lesson.id)}
-                    className="p-1.5 h-auto w-auto text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded transition-colors"
+                    className="p-1.5 h-auto w-auto text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
                 >
                     <Trash size={14} />
                 </Button>

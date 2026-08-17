@@ -2,7 +2,22 @@
 
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Power, Cpu, Settings, RefreshCw, Eye, EyeOff } from "lucide-react";
+import {
+    Power,
+    Cpu,
+    Settings,
+    RefreshCw,
+    Eye,
+    EyeOff,
+    ChevronDown,
+} from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import {
     createAiProvider,
     toggleAiProvider,
@@ -15,6 +30,36 @@ import {
 } from "@/actions/admin/ai-gateway";
 import { toast } from "sonner";
 import { format } from "date-fns";
+
+const FALLBACK_MODELS = [
+    {
+        value: "deepseek/deepseek-chat",
+        label: "DeepSeek Chat (deepseek/deepseek-chat)",
+    },
+    {
+        value: "deepseek/deepseek-r1",
+        label: "DeepSeek R1 (deepseek/deepseek-r1)",
+    },
+    {
+        value: "google/gemini-2.5-flash",
+        label: "Google Gemini 2.5 Flash (google/gemini-2.5-flash)",
+    },
+    {
+        value: "anthropic/claude-3.5-sonnet",
+        label: "Claude 3.5 Sonnet (anthropic/claude-3.5-sonnet)",
+    },
+    {
+        value: "openai/gpt-4o-mini",
+        label: "GPT-4o Mini (openai/gpt-4o-mini)",
+    },
+    { value: "x-ai/grok-2", label: "Grok 2 (x-ai/grok-2)" },
+];
+
+function defaultModelLabel(provider: any, id: string) {
+    if (!id) return "-- Select Default Model --";
+    const m = provider.models?.find((mm: any) => mm.modelCode === id);
+    return m ? `${m.displayName} (${m.modelCode})` : `Current: ${id}`;
+}
 
 function sortProviders(list: any[]) {
     return [...list].sort((a, b) => {
@@ -213,36 +258,42 @@ export function AiProvidersPanel({
                                 </div>
                                 <div className="flex items-center gap-2">
                                     {provider.providerCode === "openrouter" && (
-                                        <button
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
                                             onClick={handleSyncCatalog}
                                             disabled={isSyncingModels}
-                                            className="px-3 py-1.5 rounded-lg flex items-center text-xs font-semibold bg-primary/10 text-primary hover:bg-primary/20 transition-all disabled:opacity-50"
+                                            className="h-auto px-3 py-1.5 bg-primary/10 text-primary hover:bg-primary/20"
                                         >
-                                            <RefreshCw className={`w-3.5 h-3.5 mr-1 ${isSyncingModels ? "animate-spin" : ""}`} />
+                                            <RefreshCw className={`w-3.5 h-3.5 ${isSyncingModels ? "animate-spin" : ""}`} />
                                             {isSyncingModels ? "Syncing..." : "Sync Catalog"}
-                                        </button>
+                                        </Button>
                                     )}
-                                    <button
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
                                         onClick={() => handleOpenConfig(provider)}
-                                        className={`px-3 py-1.5 rounded-lg flex items-center text-xs font-semibold transition-all ${editingProviderId === provider.id ? "bg-primary text-white shadow-sm shadow-primary/20" : "bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10"}`}
+                                        className={`h-auto px-3 py-1.5 ${editingProviderId === provider.id ? "bg-primary text-white shadow-sm shadow-primary/20" : "bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10"}`}
                                     >
-                                        <Settings className="w-3.5 h-3.5 mr-1" />
+                                        <Settings className="w-3.5 h-3.5" />
                                         Config
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
                                         onClick={() =>
                                             handleToggle(
                                                 provider.id,
                                                 provider.enabled
                                             )
                                         }
-                                        className={`px-3 py-1.5 rounded-lg flex items-center text-xs font-semibold transition-all ${provider.enabled ? "bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-500/20" : "bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400"}`}
+                                        className={`h-auto px-3 py-1.5 ${provider.enabled ? "bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-500/20" : "bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400"}`}
                                     >
-                                        <Power className="w-3.5 h-3.5 mr-1" />
+                                        <Power className="w-3.5 h-3.5" />
                                         {provider.enabled
                                             ? "Enabled"
                                             : "Disabled"}
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
 
@@ -279,39 +330,125 @@ export function AiProvidersPanel({
                                                 <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1">
                                                     Default Model ID
                                                 </label>
-                                                <select
-                                                    className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary font-mono"
-                                                    value={editProviderForm.defaultModelId}
-                                                    onChange={(e) =>
-                                                        setEditProviderForm({
-                                                            ...editProviderForm,
-                                                            defaultModelId: e.target.value,
-                                                        })
-                                                    }
-                                                >
-                                                    <option value="">-- Select Default Model --</option>
-                                                    {editProviderForm.defaultModelId && provider.models && !provider.models.some((m: any) => m.modelCode === editProviderForm.defaultModelId) && (
-                                                        <option value={editProviderForm.defaultModelId}>
-                                                            Current: {editProviderForm.defaultModelId}
-                                                        </option>
-                                                    )}
-                                                    {provider.models && provider.models.length > 0 ? (
-                                                        provider.models.map((m: any) => (
-                                                            <option key={m.id} value={m.modelCode}>
-                                                                {m.displayName} ({m.modelCode})
-                                                            </option>
-                                                        ))
-                                                    ) : (
-                                                        <>
-                                                            <option value="deepseek/deepseek-chat">DeepSeek Chat (deepseek/deepseek-chat)</option>
-                                                            <option value="deepseek/deepseek-r1">DeepSeek R1 (deepseek/deepseek-r1)</option>
-                                                            <option value="google/gemini-2.5-flash">Google Gemini 2.5 Flash (google/gemini-2.5-flash)</option>
-                                                            <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet (anthropic/claude-3.5-sonnet)</option>
-                                                            <option value="openai/gpt-4o-mini">GPT-4o Mini (openai/gpt-4o-mini)</option>
-                                                            <option value="x-ai/grok-2">Grok 2 (x-ai/grok-2)</option>
-                                                        </>
-                                                    )}
-                                                </select>
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button
+                                                            type="button"
+                                                            variant="outline"
+                                                            className="w-full justify-between h-auto bg-white dark:bg-[#151925] border-gray-200 dark:border-white/10 px-3 py-2 text-sm font-normal font-mono text-gray-900 dark:text-white hover:bg-white dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20"
+                                                        >
+                                                            <span className="truncate">
+                                                                {defaultModelLabel(
+                                                                    provider,
+                                                                    editProviderForm.defaultModelId
+                                                                )}
+                                                            </span>
+                                                            <ChevronDown
+                                                                size={16}
+                                                                className="shrink-0 opacity-60"
+                                                            />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent
+                                                        align="start"
+                                                        className="max-h-[250px] overflow-y-auto"
+                                                    >
+                                                        <DropdownMenuItem
+                                                            onClick={() =>
+                                                                setEditProviderForm(
+                                                                    {
+                                                                        ...editProviderForm,
+                                                                        defaultModelId:
+                                                                            "",
+                                                                    }
+                                                                )
+                                                            }
+                                                        >
+                                                            -- Select Default
+                                                            Model --
+                                                        </DropdownMenuItem>
+                                                        {editProviderForm.defaultModelId &&
+                                                            provider.models &&
+                                                            !provider.models.some(
+                                                                (m: any) =>
+                                                                    m.modelCode ===
+                                                                    editProviderForm.defaultModelId
+                                                            ) && (
+                                                                <DropdownMenuItem
+                                                                    onClick={() =>
+                                                                        setEditProviderForm(
+                                                                            {
+                                                                                ...editProviderForm,
+                                                                                defaultModelId:
+                                                                                    editProviderForm.defaultModelId,
+                                                                            }
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    Current:{" "}
+                                                                    {
+                                                                        editProviderForm.defaultModelId
+                                                                    }
+                                                                </DropdownMenuItem>
+                                                            )}
+                                                        {provider.models &&
+                                                        provider.models.length >
+                                                            0 ? (
+                                                            provider.models.map(
+                                                                (m: any) => (
+                                                                    <DropdownMenuItem
+                                                                        key={
+                                                                            m.id
+                                                                        }
+                                                                        onClick={() =>
+                                                                            setEditProviderForm(
+                                                                                {
+                                                                                    ...editProviderForm,
+                                                                                    defaultModelId:
+                                                                                        m.modelCode,
+                                                                                }
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            m.displayName
+                                                                        }{" "}
+                                                                        (
+                                                                        {
+                                                                            m.modelCode
+                                                                        }
+                                                                        )
+                                                                    </DropdownMenuItem>
+                                                                )
+                                                            )
+                                                        ) : (
+                                                            <>
+                                                                {FALLBACK_MODELS.map(
+                                                                    (fm) => (
+                                                                        <DropdownMenuItem
+                                                                            key={
+                                                                                fm.value
+                                                                            }
+                                                                            onClick={() =>
+                                                                                setEditProviderForm(
+                                                                                    {
+                                                                                        ...editProviderForm,
+                                                                                        defaultModelId:
+                                                                                            fm.value,
+                                                                                    }
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            {
+                                                                                fm.label
+                                                                            }
+                                                                        </DropdownMenuItem>
+                                                                    )
+                                                                )}
+                                                            </>
+                                                        )}
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
                                             </div>
                                             <div>
                                                 <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1">
@@ -369,24 +506,27 @@ export function AiProvidersPanel({
                                             </div>
                                         </div>
                                         <div className="flex justify-end gap-2">
-                                            <button
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
                                                 onClick={() =>
                                                     setEditingProviderId(null)
                                                 }
-                                                className="px-4 py-2 rounded-xl text-xs text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors font-medium"
+                                                className="h-auto px-4 py-2 font-semibold"
                                             >
                                                 Cancel
-                                            </button>
-                                            <button
+                                            </Button>
+                                            <Button
+                                                type="button"
+                                                variant="primary"
                                                 onClick={() =>
                                                     handleUpdateProvider(
                                                         provider.id
                                                     )
                                                 }
-                                                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors"
                                             >
                                                 Save Config
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                 ) : (
@@ -458,7 +598,7 @@ export function AiProvidersPanel({
                                                                 provider.credentials[0].id
                                                             )
                                                         }
-                                                        className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded hover:bg-primary/20 font-bold transition-colors"
+                                                        className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-lg hover:bg-primary/20 font-bold transition-colors"
                                                     >
                                                         Test & Activate
                                                     </button>

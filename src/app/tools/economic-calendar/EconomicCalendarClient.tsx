@@ -179,7 +179,7 @@ export function EconomicCalendarClient() {
             />
 
             {/* Breadcrumb */}
-            <div className="flex items-center gap-2.5 text-xs font-semibold bg-white/60 dark:bg-white/[0.02] border border-gold/15 rounded-xl px-4 py-2.5 mb-8 w-fit shadow-sm relative z-10 backdrop-blur-sm">
+            <div className="flex items-center gap-2.5 text-xs font-semibold bg-white/60 dark:bg-white/[0.02] border border-gold/15 rounded-xl px-4 py-2.5 mb-8 w-fit max-w-full shadow-sm relative z-10 backdrop-blur-sm">
                 <Link
                     href="/"
                     className="text-gray-500 dark:text-gray-400 hover:text-gold dark:hover:text-gold transition-colors shrink-0 flex items-center gap-1.5"
@@ -201,7 +201,7 @@ export function EconomicCalendarClient() {
                     size={12}
                     className="text-gray-400 dark:text-gray-600 shrink-0"
                 />
-                <span className="text-gray-900 dark:text-gray-200 font-bold truncate">
+                <span className="text-gray-900 dark:text-gray-200 font-bold truncate min-w-0 max-w-[130px]">
                     Economic Calendar
                 </span>
             </div>
@@ -283,7 +283,7 @@ export function EconomicCalendarClient() {
 
             {/* Controls Toolbar */}
             <div className="flex justify-end mb-6">
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center justify-end gap-2">
                     <TimezoneSelector
                         value={selectedTimezone}
                         onChange={handleTimezoneChange}
@@ -435,7 +435,7 @@ export function EconomicCalendarClient() {
 
             {/* Calendar Table */}
             <div
-                className={`rounded-xl border overflow-hidden shadow-sm ${isDark ? "bg-[#151925]/90 border-gold/15 shadow-md" : "bg-white border-gold/15 shadow-sm"}`}
+                className={`rounded-xl border overflow-x-auto shadow-sm ${isDark ? "bg-[#151925]/90 border-gold/15 shadow-md" : "bg-white border-gold/15 shadow-sm"}`}
             >
                 {/* Card Header with Full Date */}
                 <div
@@ -460,7 +460,7 @@ export function EconomicCalendarClient() {
 
                 {/* Table Header */}
                 <div
-                    className={`grid grid-cols-12 gap-2 md:gap-4 px-4 py-3 border-b text-xs font-bold uppercase tracking-wider ${isDark ? "bg-slate-900/50 border-gold/10 text-gray-500" : "bg-gray-50 border-gold/10 text-gray-600"}`}
+                    className={`grid grid-cols-12 gap-1 md:gap-2 min-w-[560px] px-4 py-3 border-b text-xs font-bold uppercase tracking-wider ${isDark ? "bg-slate-900/50 border-gold/10 text-gray-500" : "bg-gray-50 border-gold/10 text-gray-600"}`}
                 >
                     <div className="col-span-2 md:col-span-1">Time</div>
                     <div className="col-span-2 md:col-span-1 text-center">
@@ -485,7 +485,7 @@ export function EconomicCalendarClient() {
                         Loading events...
                     </div>
                 ) : groupedEvents.length > 0 ? (
-                    <div className="divide-y divide-dashboard dark:divide-slate-700">
+                    <div className="divide-y divide-dashboard dark:divide-slate-700 min-w-[560px]">
                         {groupedEvents.map((event) => (
                             <EventRow
                                 key={event.id}

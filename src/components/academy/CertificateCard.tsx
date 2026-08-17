@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Download, Lock, Share2, Award, Crown, Eye, X } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/Button";
 import { CertificateTemplate } from "./CertificateTemplate";
 import { CertificateShareModal } from "./CertificateShareModal";
 import { cn } from "@/lib/utils";
@@ -264,24 +265,27 @@ export function CertificateCard({
                     </div>
 
                     <div className="flex items-center gap-2 mt-1">
-                        <button
+                        <Button
+                            variant="ghost"
                             onClick={() => setShowPreview(true)}
-                            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-white/20 hover:bg-white/30 backdrop-blur-sm font-bold text-sm transition-colors border-0"
+                            className="flex-1 py-2.5 rounded-lg bg-white/20 hover:bg-white/30 backdrop-blur-sm text-sm"
                         >
                             <Eye size={14} /> Preview
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                            variant="ghost"
                             onClick={handleDownload}
-                            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-white/20 hover:bg-white/30 backdrop-blur-sm font-bold text-sm transition-colors border-0"
+                            className="flex-1 py-2.5 rounded-lg bg-white/20 hover:bg-white/30 backdrop-blur-sm text-sm"
                         >
                             <Download size={14} /> Download
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                            variant="ghost"
                             onClick={handleShare}
-                            className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur-sm font-bold text-sm transition-colors self-stretch border-0"
+                            className="py-2.5 px-4 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur-sm text-sm self-stretch"
                         >
                             <Share2 size={14} />
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>

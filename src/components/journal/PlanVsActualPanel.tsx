@@ -106,7 +106,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                             </span>
                             <span
                                 className={cn(
-                                    "font-black uppercase px-2 py-0.5 rounded text-[10px]",
+                                    "font-black uppercase px-2 py-0.5 rounded-lg text-[10px]",
                                     plan.type === "BUY"
                                         ? "bg-blue-500/10 text-blue-500"
                                         : "bg-red-500/10 text-red-500"
@@ -184,7 +184,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                             </span>
                             <span
                                 className={cn(
-                                    "font-black uppercase px-2 py-0.5 rounded text-[10px]",
+                                    "font-black uppercase px-2 py-0.5 rounded-lg text-[10px]",
                                     entry.type.toUpperCase() === "BUY"
                                         ? "bg-blue-500/10 text-blue-500"
                                         : "bg-red-500/10 text-red-500"
@@ -329,7 +329,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                                     "bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
                                 BROKEN: "bg-red-50 text-red-600 border border-red-100 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20",
                                 SKIPPED:
-                                    "bg-gray-50 text-gray-600 border border-gray-100 dark:bg-white/5 dark:text-gray-400 dark:border-white/10",
+                                    "bg-gray-50 text-gray-600 border border-gray-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10",
                             };
 
                             return (
@@ -347,7 +347,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                                     </div>
                                     <span
                                         className={cn(
-                                            "text-[8px] font-black uppercase px-1.5 py-0.5 rounded",
+                                            "text-[8px] font-black uppercase px-1.5 py-0.5 rounded-lg",
                                             statusColors[
                                                 check.status as keyof typeof statusColors
                                             ]
@@ -379,7 +379,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                         </h4>
                         <span
                             className={cn(
-                                "text-[9px] font-black uppercase px-2 py-0.5 rounded",
+                                "text-[9px] font-black uppercase px-2 py-0.5 rounded-lg",
                                 plan.tradeCheckSnapshot.snapshotData?.skipped
                                     ? "bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-gray-400"
                                     : plan.tradeCheckSnapshot.passed
@@ -434,7 +434,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                                         >
                                             <div
                                                 className={cn(
-                                                    "w-3 h-3 rounded-sm flex items-center justify-center",
+                                                    "w-3 h-3 rounded-lg flex items-center justify-center",
                                                     isChecked
                                                         ? "bg-emerald-500 text-white"
                                                         : "bg-gray-200 dark:bg-white/10 text-transparent"

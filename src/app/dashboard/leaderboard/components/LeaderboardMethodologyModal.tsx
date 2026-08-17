@@ -69,7 +69,7 @@ export function LeaderboardMethodologyModal({
                     </div>
 
                     {/* Calculation Formulas */}
-                    <div className="bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl p-4 space-y-3">
+                    <div className="bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 rounded-xl p-4 space-y-3">
                         <h3 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
                             <Info size={14} className="text-primary" />
                             Calculation Formulas
@@ -101,7 +101,7 @@ export function LeaderboardMethodologyModal({
                     </div>
 
                     {/* Privacy Guarantee */}
-                    <div className="bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl p-4">
+                    <div className="bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 rounded-xl p-4">
                         <h3 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-2 flex items-center gap-1.5">
                             <Lock size={14} className="text-green-500" />
                             Privacy & Security Guarantee

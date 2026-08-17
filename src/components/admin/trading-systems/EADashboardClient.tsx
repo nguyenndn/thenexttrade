@@ -208,7 +208,7 @@ export function EADashboardClient({
                                             <Link
                                                 key={action.href}
                                                 href={action.href}
-                                                className={`group p-4 rounded-xl bg-gray-50/70 dark:bg-white/[0.03] border border-gray-200/60 dark:border-white/5 ${action.borderColor} hover:bg-white dark:hover:bg-white/[0.06] hover:shadow-md transition-all flex items-start gap-3.5`}
+                                                className={`group p-4 rounded-xl bg-gray-50/70 dark:bg-white/[0.03] border border-gray-200/60 dark:border-white/10 ${action.borderColor} hover:bg-white dark:hover:bg-white/[0.06] hover:shadow-md transition-all flex items-start gap-3.5`}
                                             >
                                                 <div
                                                     className={`p-3 rounded-xl ${action.bgColor} ${action.textColor} group-hover:scale-110 transition-transform shrink-0`}
@@ -270,10 +270,10 @@ export function EADashboardClient({
                                             {recentPending.slice(0, 4).map((license) => (
                                                 <div
                                                     key={license.id}
-                                                    className="flex items-center justify-between p-3.5 rounded-xl bg-gray-50/80 dark:bg-white/[0.03] border border-gray-200/60 dark:border-white/5 hover:border-amber-500/30 transition-all"
+                                                    className="flex items-center justify-between p-3.5 rounded-xl bg-gray-50/80 dark:bg-white/[0.03] border border-gray-200/60 dark:border-white/10 hover:border-amber-500/30 transition-all"
                                                 >
                                                     <div className="flex items-center gap-3.5">
-                                                        <div className="p-2 bg-white dark:bg-[#151925] rounded-xl shadow-sm border border-gray-200/50 dark:border-white/5 shrink-0">
+                                                        <div className="p-2 bg-white dark:bg-[#151925] rounded-xl shadow-sm border border-gray-200/50 dark:border-white/10 shrink-0">
                                                             <BrokerLogo broker={license.broker} size={32} />
                                                         </div>
                                                         <div className="min-w-0">
@@ -380,7 +380,7 @@ export function EADashboardClient({
                                             {recentActivity.slice(0, 5).map((item) => (
                                                 <div
                                                     key={item.id}
-                                                    className="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50/50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5"
+                                                    className="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50/50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10"
                                                 >
                                                     <div
                                                         className={`p-1.5 rounded-lg shrink-0 ${
@@ -404,7 +404,7 @@ export function EADashboardClient({
                                                         </p>
                                                     </div>
                                                     <span
-                                                        className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase ${
+                                                        className={`text-[10px] font-bold px-2 py-0.5 rounded-lg uppercase ${
                                                             item.action === "APPROVED"
                                                                 ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                                                                 : "bg-red-500/10 text-red-600 dark:text-red-400"
@@ -465,10 +465,10 @@ export function EADashboardClient({
                                     recentPending.map((license) => (
                                         <div
                                             key={license.id}
-                                            className="flex items-center justify-between p-4 rounded-xl bg-gray-50/80 dark:bg-white/[0.03] border border-gray-200/60 dark:border-white/5 hover:border-amber-500/30 transition-all"
+                                            className="flex items-center justify-between p-4 rounded-xl bg-gray-50/80 dark:bg-white/[0.03] border border-gray-200/60 dark:border-white/10 hover:border-amber-500/30 transition-all"
                                         >
                                             <div className="flex items-center gap-4">
-                                                <div className="p-2.5 bg-white dark:bg-[#151925] rounded-xl shadow-sm border border-gray-200/50 dark:border-white/5">
+                                                <div className="p-2.5 bg-white dark:bg-[#151925] rounded-xl shadow-sm border border-gray-200/50 dark:border-white/10">
                                                     <BrokerLogo
                                                         broker={license.broker}
                                                         size={36}
@@ -531,7 +531,7 @@ export function EADashboardClient({
                                             >
                                                 <div className="flex justify-between items-center text-sm">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="p-1.5 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200/60 dark:border-white/5">
+                                                        <div className="p-1.5 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200/60 dark:border-white/10">
                                                             <BrokerLogo
                                                                 broker={stat.broker}
                                                                 size={28}

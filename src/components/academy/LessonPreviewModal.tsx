@@ -5,6 +5,7 @@ import { X, Lock, PlayCircle, BookOpen, Clock, Loader2 } from "lucide-react";
 import DOMPurify from "isomorphic-dompurify";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 interface LessonPreviewModalProps {
     isOpen: boolean;
@@ -177,7 +178,11 @@ export function LessonPreviewModal({
 
                                 <Link
                                     href="/auth/signup"
-                                    className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] transition-all"
+                                    className={buttonVariants({
+                                        variant: "primary",
+                                        className:
+                                            "flex items-center justify-center gap-2 w-full px-6 py-3 rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02]",
+                                    })}
                                 >
                                     <PlayCircle size={18} />
                                     Sign Up to Continue

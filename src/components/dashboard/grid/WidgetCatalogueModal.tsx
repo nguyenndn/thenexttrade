@@ -11,6 +11,7 @@ import {
     DialogDescription,
 } from "@/components/ui/Dialog";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 
 interface WidgetCatalogueModalProps {
     isOpen: boolean;
@@ -83,26 +84,29 @@ export function WidgetCatalogueModal({
                                             Default
                                         </div>
                                         {isAdded ? (
-                                            <button
+                                            <Button
                                                 type="button"
+                                                size="sm"
                                                 disabled
-                                                className="flex items-center gap-1 text-xs font-bold text-emerald-500 bg-emerald-500/10 px-3 py-1.5 rounded-xl cursor-not-allowed opacity-90 border border-emerald-500/20"
+                                                className="gap-1 text-emerald-500 dark:text-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20 border-emerald-500/20 disabled:opacity-90 cursor-not-allowed"
                                             >
                                                 <Check size={14} />
                                                 Added
-                                            </button>
+                                            </Button>
                                         ) : (
-                                            <button
+                                            <Button
                                                 type="button"
+                                                variant="ghost"
+                                                size="sm"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     onAddWidget(widget);
                                                 }}
-                                                className="flex items-center gap-1 text-xs font-bold text-amber-500 bg-amber-500/10 group-hover:bg-amber-500/20 px-3 py-1.5 rounded-xl transition-colors"
+                                                className="gap-1 text-amber-500 dark:text-amber-500 bg-amber-500/10 group-hover:bg-amber-500/20 hover:bg-transparent border-transparent"
                                             >
                                                 <Plus size={14} />
                                                 Add
-                                            </button>
+                                            </Button>
                                         )}
                                     </div>
                                 </div>

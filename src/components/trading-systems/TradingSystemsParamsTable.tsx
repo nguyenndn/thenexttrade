@@ -100,7 +100,7 @@ export function TradingSystemsParamsTable({
                                             {/* Copy Indicator overlay */}
                                             <span className="opacity-0 group-hover/row:opacity-100 transition-opacity text-[10px] text-gray-400 flex items-center shrink-0">
                                                 {isCopied ? (
-                                                    <span className="text-emerald-500 font-black text-[9px] bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20 animate-in zoom-in-95">
+                                                    <span className="text-emerald-500 font-black text-[9px] bg-emerald-500/10 px-1.5 py-0.5 rounded-lg border border-emerald-500/20 animate-in zoom-in-95">
                                                         Copied
                                                     </span>
                                                 ) : (

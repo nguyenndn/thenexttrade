@@ -21,6 +21,11 @@ import {
     RefreshCw,
     Send,
     Filter,
+    TrendingUp,
+    BarChart3,
+    AlertTriangle,
+    Check,
+    X,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
@@ -248,20 +253,21 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                     <Filter size={12} /> Quick Presets:
                 </span>
                 {[
-                    { key: "ALL", label: "All Traders" },
-                    { key: "HIGHEST_CAPITAL", label: "💰 Highest Capital" },
-                    { key: "HIGHEST_EQUITY", label: "📈 Highest Equity" },
-                    { key: "MOST_ACCOUNTS", label: "📊 Most Accounts" },
-                    { key: "LAST_ACTIVITY", label: "🕒 Last Activity" },
-                    { key: "VIP_WITHOUT_SYNC", label: "⚠️ VIP Without Sync" },
-                    { key: "STALE_VIP", label: "VIP Sync Overdue" },
-                    { key: "EXPIRING_SOON", label: "Temporary VIP Expiring Soon" },
+                    { key: "ALL", label: "All Traders", icon: null },
+                    { key: "HIGHEST_CAPITAL", label: "Highest Capital", icon: <DollarSign size={12} /> },
+                    { key: "HIGHEST_EQUITY", label: "Highest Equity", icon: <TrendingUp size={12} /> },
+                    { key: "MOST_ACCOUNTS", label: "Most Accounts", icon: <BarChart3 size={12} /> },
+                    { key: "LAST_ACTIVITY", label: "Last Activity", icon: <Clock size={12} /> },
+                    { key: "VIP_WITHOUT_SYNC", label: "VIP Without Sync", icon: <AlertTriangle size={12} className="text-amber-500" /> },
+                    { key: "STALE_VIP", label: "VIP Sync Overdue", icon: <AlertTriangle size={12} className="text-red-400" /> },
+                    { key: "EXPIRING_SOON", label: "Temporary VIP Expiring Soon", icon: <Clock size={12} /> },
                 ].map((preset) => (
                     <button
                         key={preset.key}
                         onClick={() => applyQuickView(preset.key)}
-                        className="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] text-gray-700 dark:text-gray-300 hover:border-primary transition-colors shadow-sm"
+                        className="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] text-gray-700 dark:text-gray-300 hover:border-primary transition-colors shadow-sm flex items-center gap-1.5"
                     >
+                        {preset.icon}
                         {preset.label}
                     </button>
                 ))}
@@ -639,7 +645,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                     <div className="flex items-center gap-3">
                                                         <button
                                                             onClick={() => toggleExpand(trader.userId)}
-                                                            className="p-1 rounded-md text-gray-400 hover:text-gray-700 dark:hover:text-white"
+                                                            className="p-1 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-white"
                                                         >
                                                             {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                                                         </button>
@@ -681,7 +687,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                         {trader.products.map((p) => (
                                                             <span
                                                                 key={p.productId}
-                                                                className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider border ${
+                                                                className={`px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider border ${
                                                                     p.usageState === "ACTIVE"
                                                                         ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20"
                                                                         : p.usageState === "RECENTLY_USED"
@@ -784,7 +790,15 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                                             </div>
                                                                             <div className="text-[11px] text-gray-400 flex items-center justify-between pt-1 border-t border-gray-100 dark:border-white/5">
                                                                                 <span>Trades: {acc.totalTrades}</span>
-                                                                                <span>Fresh: {acc.isFresh ? "✅ Yes" : "❌ No"}</span>
+                                                                                <span className="flex items-center gap-1">
+                                                                                    Fresh:{" "}
+                                                                                    {acc.isFresh ? (
+                                                                                        <Check size={12} className="text-emerald-500" />
+                                                                                    ) : (
+                                                                                        <X size={12} className="text-red-400" />
+                                                                                    )}
+                                                                                    {acc.isFresh ? "Yes" : "No"}
+                                                                                </span>
                                                                             </div>
                                                                         </div>
                                                                     ))}

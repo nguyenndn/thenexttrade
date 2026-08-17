@@ -148,7 +148,7 @@ export function CommentForm({
                 />
 
                 {/* Character count floating tag */}
-                <div className="absolute bottom-4 right-4 text-[10px] font-mono text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-[#161822] px-2 py-1 rounded-md border border-dashboard">
+                <div className="absolute bottom-4 right-4 text-[10px] font-mono text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-[#161822] px-2 py-1 rounded-lg border border-dashboard">
                     {contentVal.length} / 2000
                 </div>
             </div>

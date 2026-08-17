@@ -356,7 +356,7 @@ export default async function UserDetailPage({
                                         <img
                                             src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/${countryCode.toLowerCase()}.svg`}
                                             alt={getCountryName(countryCode)}
-                                            className="h-4 w-6 shrink-0 rounded-sm object-cover shadow-sm"
+                                            className="h-4 w-6 shrink-0 rounded-lg object-cover shadow-sm"
                                         />
                                         <span>
                                             {getCountryName(countryCode)}
@@ -467,11 +467,11 @@ export default async function UserDetailPage({
                                                     acc.server
                                                         ?.toLowerCase()
                                                         .includes("demo") ? (
-                                                        <span className="shrink-0 text-[11px] font-bold bg-yellow-100 dark:bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 px-1.5 py-0.5 rounded uppercase tracking-widest">
+                                                        <span className="shrink-0 text-[11px] font-bold bg-yellow-100 dark:bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 px-1.5 py-0.5 rounded-lg uppercase tracking-widest">
                                                             Demo
                                                         </span>
                                                     ) : (
-                                                        <span className="shrink-0 text-[11px] font-bold bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400 px-1.5 py-0.5 rounded uppercase tracking-widest">
+                                                        <span className="shrink-0 text-[11px] font-bold bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400 px-1.5 py-0.5 rounded-lg uppercase tracking-widest">
                                                             Real
                                                         </span>
                                                     )}

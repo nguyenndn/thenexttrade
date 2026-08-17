@@ -223,7 +223,7 @@ export function BulkSeoFixModal({
                                             selected.size === suggestions.length
                                         }
                                         onChange={toggleAll}
-                                        className="rounded border-gray-300 text-primary focus:ring-primary"
+                                        className="rounded-lg border-gray-300 text-primary focus:ring-primary"
                                     />
                                     Select All ({selected.size}/
                                     {suggestions.length})
@@ -255,7 +255,7 @@ export function BulkSeoFixModal({
                                             onChange={() =>
                                                 toggleSelect(s.articleId)
                                             }
-                                            className="mt-1 rounded border-gray-300 text-primary focus:ring-primary"
+                                            className="mt-1 rounded-lg border-gray-300 text-primary focus:ring-primary"
                                         />
                                         <div className="flex-1 min-w-0 space-y-1.5">
                                             <p className="text-sm font-bold text-gray-800 dark:text-white truncate">
@@ -301,7 +301,7 @@ export function BulkSeoFixModal({
                                                     {s.notes.map((n, i) => (
                                                         <span
                                                             key={i}
-                                                            className="text-[10px] bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded"
+                                                            className="text-[10px] bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded-lg"
                                                         >
                                                             {n}
                                                         </span>

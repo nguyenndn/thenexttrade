@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Search, Filter, ChevronDown, ChevronUp, RotateCw } from "lucide-react";
 import { format } from "date-fns";
 import { getAiRequests } from "@/actions/admin/ai-gateway";
+import { Button } from "@/components/ui/Button";
 
 function formatRequestId(requestId: string): string {
     if (!requestId) return "-";
@@ -56,18 +57,24 @@ export function AiRequestsExplorer({ requests: initialRequests }: { requests: an
                     <span className="text-xs text-gray-500 font-medium">
                         Updated {format(lastUpdated, "HH:mm:ss")}
                     </span>
-                    <button
+                    <Button
+                        type="button"
+                        variant="outline"
                         onClick={handleRefresh}
                         disabled={isRefreshing}
-                        className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300 px-3.5 py-2 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-sm text-sm font-medium h-[38px] disabled:opacity-50"
+                        className="h-auto px-3.5 py-2 text-sm font-medium"
                     >
                         <RotateCw className={`w-4 h-4 ${isRefreshing ? "animate-spin text-primary" : ""}`} />
                         <span>Refresh</span>
-                    </button>
-                    <button className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-sm text-sm font-medium h-[38px]">
+                    </Button>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="h-auto px-4 py-2 text-sm font-medium"
+                    >
                         <Filter className="w-4 h-4" />
                         <span>Filters</span>
-                    </button>
+                    </Button>
                 </div>
             </div>
 

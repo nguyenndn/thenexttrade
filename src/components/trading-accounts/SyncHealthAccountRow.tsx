@@ -98,11 +98,11 @@ export function SyncHealthAccountRow({
                                 {account.name}
                             </h4>
                             {account.accountNumber && (
-                                <span className="text-[10px] font-mono bg-white/50 dark:bg-black/20 border border-dashboard px-1.5 py-0.5 rounded text-gray-600 dark:text-gray-300">
+                                <span className="text-[10px] font-mono bg-white/50 dark:bg-black/20 border border-dashboard px-1.5 py-0.5 rounded-lg text-gray-600 dark:text-gray-300">
                                     #{account.accountNumber}
                                 </span>
                             )}
-                            <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider bg-white/40 dark:bg-black/10 px-1.5 py-0.5 rounded text-gray-500 dark:text-gray-400">
+                            <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider bg-white/40 dark:bg-black/10 px-1.5 py-0.5 rounded-lg text-gray-500 dark:text-gray-400">
                                 {account.source === "TNT_CONNECT" ? (
                                     <Monitor size={9} />
                                 ) : (

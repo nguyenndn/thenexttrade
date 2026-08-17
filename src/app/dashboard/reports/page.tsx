@@ -23,7 +23,7 @@ export default function ReportsPage() {
                 description="Download reports and trade data."
             />
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
-                <TabBar tabs={analyticsTabs} equalWidth />
+                <TabBar tabs={analyticsTabs} />
             </div>
 
             <ReportsDashboard />

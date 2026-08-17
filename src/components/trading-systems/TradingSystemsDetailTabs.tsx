@@ -71,7 +71,7 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
     return (
         <section
             id="system-technicals"
-            className="relative mx-auto w-full max-w-7xl overflow-hidden rounded-3xl border border-gray-200 dark:border-white/5 bg-white/60 dark:bg-[#111318]/30 p-6 md:p-8 shadow-sm backdrop-blur"
+            className="relative mx-auto w-full max-w-7xl overflow-hidden rounded-3xl border border-gray-200 dark:border-white/10 bg-white/60 dark:bg-[#111318]/30 p-6 md:p-8 shadow-sm backdrop-blur"
         >
             <div className="relative z-10">
                 <Tabs
@@ -95,14 +95,14 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                             </h3>
                         </div>
 
-                        <TabsList className="bg-gray-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0 flex flex-col w-full sm:flex-row sm:w-fit">
+                        <TabsList className="bg-gray-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0 flex flex-col w-full sm:flex-row sm:w-full sm:overflow-x-auto">
                             {tabs.map((tab) => {
                                 const Icon = tab.icon;
                                 return (
                                     <TabsTrigger
                                         key={tab.id}
                                         value={tab.id}
-                                        className="px-4 py-2.5 rounded-lg text-xs font-black uppercase tracking-wider whitespace-nowrap border border-transparent hover:border-slate-200 dark:hover:border-white/10 w-full sm:w-auto justify-center"
+                                        className="px-4 py-2.5 rounded-lg text-xs font-black uppercase tracking-wider whitespace-nowrap border border-transparent hover:border-slate-200 dark:hover:border-white/10 w-full sm:w-auto shrink-0 justify-center"
                                         activeIndicatorClassName={
                                             gradientActive
                                         }
@@ -123,7 +123,7 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                                     <div
                                         key={idx}
                                         className={cn(
-                                            "rounded-2xl border border-gray-200/50 dark:border-white/5 bg-white/40 dark:bg-[#151822]/45 p-5 space-y-3 transition-all duration-300 relative overflow-hidden group",
+                                            "rounded-2xl border border-gray-200/50 dark:border-white/10 bg-white/40 dark:bg-[#151822]/45 p-5 space-y-3 transition-all duration-300 relative overflow-hidden group",
                                             colorTheme === "gold" &&
                                                 "hover:border-gold/30 hover:shadow-md",
                                             colorTheme === "blue" &&
@@ -162,7 +162,7 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                                 {specItems.map((item) => (
                                     <div
                                         key={item.label}
-                                        className="rounded-2xl border border-slate-200 dark:border-white/5 bg-white/90 dark:bg-slate-900/40 p-5 shadow-[0_12px_30px_rgba(15,23,42,0.05)]"
+                                        className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/90 dark:bg-slate-900/40 p-5 shadow-[0_12px_30px_rgba(15,23,42,0.05)]"
                                     >
                                         <p className="mb-4 text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
                                             {item.label}

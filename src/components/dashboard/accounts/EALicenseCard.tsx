@@ -48,7 +48,7 @@ export function EALicenseCard({
                     <span className="text-base font-black text-gray-700 dark:text-white truncate">
                         {brokerName}
                     </span>
-                    <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-1.5 py-0.5 rounded-md border border-emerald-100 dark:border-emerald-500/20 flex-shrink-0">
+                    <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-1.5 py-0.5 rounded-lg border border-emerald-100 dark:border-emerald-500/20 flex-shrink-0">
                         #{license.accountNumber}
                     </span>
                 </div>

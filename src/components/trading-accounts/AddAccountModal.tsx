@@ -5,6 +5,7 @@ import {
     X,
     Copy,
     Check,
+    ChevronDown,
     Loader2,
     Wallet,
     UserPlus,
@@ -12,6 +13,7 @@ import {
     ArrowLeft,
     RefreshCw,
     AlertCircle,
+    AlertTriangle,
     ExternalLink,
     Mail,
 } from "lucide-react";
@@ -19,6 +21,12 @@ import { toast } from "sonner";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { CountrySelect } from "@/components/ui/CountrySelect";
 import { Button } from "@/components/ui/Button";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { createTradingAccount } from "@/actions/accounts";
 import {
     createPartnerProAccount,
@@ -175,7 +183,7 @@ export function AddAccountModal({
             </>,
             <>
                 In MT5, open the Data Folder, navigate to{" "}
-                <code className="px-1.5 py-0.5 bg-gray-100 dark:bg-white/10 rounded text-gray-800 dark:text-gray-200 font-mono text-xs">
+                <code className="px-1.5 py-0.5 bg-gray-100 dark:bg-white/10 rounded-lg text-gray-800 dark:text-gray-200 font-mono text-xs">
                     MQL5/Experts
                 </code>
                 , and drop the file there.
@@ -597,26 +605,56 @@ export function AddAccountModal({
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
                                     Broker{" "}
-                                    <span className="text-[10px] font-black bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-md tracking-wider uppercase ml-1">
+                                    <span className="text-[10px] font-black bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-lg tracking-wider uppercase ml-1">
                                         Optional
                                     </span>
                                 </label>
-                                <select
-                                    value={freeBroker}
-                                    onChange={(e) =>
-                                        setFreeBroker(e.target.value)
-                                    }
-                                    className="w-full rounded-xl border border-dashboard bg-white dark:bg-[#151925] px-3 py-2.5 text-sm text-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/40"
-                                >
-                                    <option value="">
-                                        Select your broker (if any)...
-                                    </option>
-                                    {SUPPORTED_BROKERS.map((b) => (
-                                        <option key={b} value={b}>
-                                            {BROKER_INFO[b].name}
-                                        </option>
-                                    ))}
-                                </select>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className="w-full justify-between bg-white dark:bg-[#151925] px-3 py-2.5 text-sm font-medium text-gray-700 dark:text-white hover:bg-white dark:hover:bg-[#151925]"
+                                        >
+                                            {freeBroker ? (
+                                                <span className="truncate">
+                                                    {BROKER_INFO[
+                                                        freeBroker as SupportedBroker
+                                                    ]?.name ?? freeBroker}
+                                                </span>
+                                            ) : (
+                                                <span className="text-gray-400 dark:text-gray-500">
+                                                    Select your broker (if
+                                                    any)...
+                                                </span>
+                                            )}
+                                            <ChevronDown
+                                                size={16}
+                                                className="shrink-0 opacity-60"
+                                            />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent
+                                        align="start"
+                                        className="max-h-[250px] overflow-y-auto"
+                                    >
+                                        <DropdownMenuItem
+                                            onClick={() => setFreeBroker("")}
+                                        >
+                                            Select your broker (if any)...
+                                        </DropdownMenuItem>
+                                        {SUPPORTED_BROKERS.map((b) => (
+                                            <DropdownMenuItem
+                                                key={b}
+                                                onClick={() =>
+                                                    setFreeBroker(b)
+                                                }
+                                            >
+                                                {BROKER_INFO[b].name}
+                                            </DropdownMenuItem>
+                                        ))}
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1.5">
                                     Required later to apply for free Partner Pro.
                                     You can also set it anytime in Account
@@ -1035,7 +1073,7 @@ export function AddAccountModal({
                                     )}
                                     {brokerInfo.ibTransferGuide.note && (
                                         <p className="text-xs text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/15 rounded-lg p-2.5">
-                                            ⚠️ {brokerInfo.ibTransferGuide.note}
+                                            <AlertTriangle size={13} className="inline-block mr-1 align-[-1px]" /> {brokerInfo.ibTransferGuide.note}
                                         </p>
                                     )}
                                 </div>

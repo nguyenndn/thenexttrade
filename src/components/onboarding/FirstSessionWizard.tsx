@@ -477,7 +477,7 @@ function StepChooseSyncMethod({
                                 {opt.label}
                             </span>
                             <span
-                                className={`text-[9px] font-black uppercase tracking-wide px-1.5 py-0.5 rounded border ${opt.badgeClass}`}
+                                className={`text-[9px] font-black uppercase tracking-wide px-1.5 py-0.5 rounded-lg border ${opt.badgeClass}`}
                             >
                                 {opt.badge}
                             </span>

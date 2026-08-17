@@ -238,7 +238,7 @@ export function AiCoachCard({
                         <div className="space-y-6">
                             {/* Executive summary */}
                             <div>
-                                <h4 className="inline-flex text-xs font-bold text-primary bg-primary/10 dark:bg-primary/20 px-2.5 py-1 rounded-md uppercase tracking-wider mb-3 items-center gap-1.5">
+                                <h4 className="inline-flex text-xs font-bold text-primary bg-primary/10 dark:bg-primary/20 px-2.5 py-1 rounded-lg uppercase tracking-wider mb-3 items-center gap-1.5">
                                     <Sparkles size={14} /> Executive Summary
                                 </h4>
                                 <p className="text-[15px] leading-relaxed text-gray-800 dark:text-gray-200 font-medium">
@@ -250,7 +250,7 @@ export function AiCoachCard({
 
                             {/* Evidence-backed focus */}
                             <div className="space-y-3">
-                                <h4 className="inline-flex text-xs font-bold text-orange-600 bg-orange-100 dark:text-orange-400 dark:bg-orange-500/10 px-2.5 py-1 rounded-md uppercase tracking-wider mb-3 items-center gap-1.5">
+                                <h4 className="inline-flex text-xs font-bold text-orange-600 bg-orange-100 dark:text-orange-400 dark:bg-orange-500/10 px-2.5 py-1 rounded-lg uppercase tracking-wider mb-3 items-center gap-1.5">
                                     <Target size={14} /> Primary Focus
                                 </h4>
                                 {insight.primaryIssue && (
@@ -267,7 +267,7 @@ export function AiCoachCard({
                                                     }
                                                 </p>
                                             </div>
-                                            <span className="shrink-0 rounded-md bg-white px-2 py-1 text-xs font-bold text-orange-700 dark:bg-white/10 dark:text-orange-300">
+                                            <span className="shrink-0 rounded-lg bg-white px-2 py-1 text-xs font-bold text-orange-700 dark:bg-white/10 dark:text-orange-300">
                                                 {insight.primaryIssue.value}
                                             </span>
                                         </div>
@@ -278,7 +278,7 @@ export function AiCoachCard({
                                         {insight.evidence.map((item) => (
                                             <div
                                                 key={item.id}
-                                                className="rounded-lg border border-gray-100 bg-gray-50/70 p-3 dark:border-white/5 dark:bg-white/[0.03]"
+                                                className="rounded-lg border border-gray-200 bg-gray-50/70 p-3 dark:border-white/10 dark:bg-white/[0.03]"
                                             >
                                                 <p className="text-xs font-bold text-gray-700 dark:text-gray-200">
                                                     {item.label}

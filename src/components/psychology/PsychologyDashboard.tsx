@@ -585,7 +585,7 @@ export function PsychologyDashboard({
 function PsychologyLoadingSkeleton() {
     return (
         <div className="space-y-4 animate-pulse">
-            <div className="h-8 bg-gray-200 dark:bg-white/5 rounded w-64 mb-8" />
+            <div className="h-8 bg-gray-200 dark:bg-white/5 rounded-lg w-64 mb-8" />
             <div className="h-24 bg-gray-200 dark:bg-white/5 rounded-xl border border-dashboard" />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="h-[400px] bg-gray-200 dark:bg-white/5 rounded-xl border border-dashboard" />

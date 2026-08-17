@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import {
     ChevronDown,
     ChevronUp,
@@ -9,17 +9,30 @@ import {
     Twitter,
     FileText,
     RefreshCw,
+    MessageSquare,
+    Compass,
+    BookOpen,
+    Sparkles,
+    Briefcase,
+    BarChart3,
+    Flame,
+    Target,
+    Bot,
 } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
-const TONE_LABELS: Record<string, { label: string; icon: string }> = {
-    conversational: { label: "Conversational", icon: "💬" },
-    mentor: { label: "Mentor", icon: "🧭" },
-    storytelling: { label: "Storytelling", icon: "📖" },
-    edutainment: { label: "Edutainment", icon: "🎪" },
-    professional: { label: "Professional", icon: "👔" },
-    analytical: { label: "Analytical", icon: "📊" },
-    motivational: { label: "Motivational", icon: "🔥" },
-    tactical: { label: "Tactical", icon: "🎯" },
+const TONE_LABELS: Record<
+    string,
+    { label: string; icon: React.ReactNode }
+> = {
+    conversational: { label: "Conversational", icon: <MessageSquare size={12} /> },
+    mentor: { label: "Mentor", icon: <Compass size={12} /> },
+    storytelling: { label: "Storytelling", icon: <BookOpen size={12} /> },
+    edutainment: { label: "Edutainment", icon: <Sparkles size={12} /> },
+    professional: { label: "Professional", icon: <Briefcase size={12} /> },
+    analytical: { label: "Analytical", icon: <BarChart3 size={12} /> },
+    motivational: { label: "Motivational", icon: <Flame size={12} /> },
+    tactical: { label: "Tactical", icon: <Target size={12} /> },
 };
 
 interface ContentSourceCardProps {
@@ -60,8 +73,9 @@ export function ContentSourceCard({
 
     return (
         <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-4 space-y-3">
-            <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider">
-                🤖 AI Source Info
+            <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider flex items-center gap-1.5">
+                <Bot size={13} />
+                AI Source Info
             </label>
 
             {/* Tone */}
@@ -123,14 +137,15 @@ export function ContentSourceCard({
 
             {/* Re-rewrite Button */}
             {rawContent && onRewrite && (
-                <button
+                <Button
                     type="button"
+                    variant="outline"
                     onClick={onRewrite}
-                    className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all border bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/30 text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-500/20"
+                    className="w-full h-auto px-3 py-2 bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/30 text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-500/20"
                 >
                     <RefreshCw size={12} />
                     Re-rewrite from raw content
-                </button>
+                </Button>
             )}
         </div>
     );

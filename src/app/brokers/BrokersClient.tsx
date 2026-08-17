@@ -12,6 +12,7 @@ import {
     Bitcoin,
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { ReviewBadge } from "./ReviewModal";
 import partnersData from "@/config/partners.json";
 
@@ -77,7 +78,7 @@ function PartnerCard({
     const hasUrl = item.url && item.url !== "#";
 
     return (
-        <div className="group bg-white/80 dark:bg-[#131622]/60 rounded-2xl border border-amber-500/15 dark:border-white/[0.06] hover:border-amber-500/35 dark:hover:border-gold/30 hover:shadow-[0_12px_30px_rgba(245,158,11,0.03)] dark:hover:shadow-[0_12px_30px_rgba(245,158,11,0.01)] hover:-translate-y-0.5 transition-all duration-300 overflow-hidden flex flex-col backdrop-blur-md relative h-full">
+        <div className="group bg-white/80 dark:bg-[#131622]/60 rounded-2xl border border-amber-500/15 dark:border-white/[0.06] hover:border-amber-500/35 dark:hover:border-gold/30 hover:shadow-[0_12px_30px_rgba(245,158,11,0.03)] dark:hover:shadow-[0_12px_30px_rgba(245,158,11,0.01)] transition-all duration-300 overflow-hidden flex flex-col backdrop-blur-md relative h-full">
             {/* Badge ribbon */}
             {item.badge && (
                 <div
@@ -141,7 +142,7 @@ function PartnerCard({
                             ? "grid-cols-1"
                             : specCount === 2
                               ? "grid-cols-2"
-                              : "grid-cols-3";
+                              : "grid-cols-1 sm:grid-cols-3";
                     return (
                         <div
                             className={`grid ${gridCols} gap-px bg-amber-500/10 dark:bg-white/5 border-y border-amber-500/10 dark:border-white/[0.06]`}
@@ -207,7 +208,11 @@ function PartnerCard({
                         href={item.url!}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-black text-sm transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-md shadow-emerald-500/10 hover:shadow-lg hover:shadow-emerald-500/20"
+                        className={buttonVariants({
+                            variant: "primary",
+                            className:
+                                "w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-black text-sm hover:scale-[1.02] active:scale-[0.98] shadow-md shadow-emerald-500/10 hover:shadow-lg hover:shadow-emerald-500/20",
+                        })}
                     >
                         {ctaLabel}
                         <ExternalLink size={14} />
@@ -215,7 +220,11 @@ function PartnerCard({
                 ) : (
                     <button
                         disabled
-                        className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 font-bold text-sm cursor-not-allowed border border-dashboard"
+                        className={buttonVariants({
+                            variant: "outline",
+                            className:
+                                "w-full py-3 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 font-bold text-sm cursor-not-allowed",
+                        })}
                     >
                         Coming Soon
                     </button>

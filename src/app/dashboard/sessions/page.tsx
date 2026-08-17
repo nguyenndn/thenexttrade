@@ -36,7 +36,7 @@ export default async function SessionAnalysisPage() {
                 description="Analyze your performance by market session."
             />
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
-                <TabBar tabs={journalTabs} equalWidth />
+                <TabBar tabs={journalTabs} />
                 {tradingDataState.hasTradeData && (
                     <DashboardFilter equalWidth />
                 )}

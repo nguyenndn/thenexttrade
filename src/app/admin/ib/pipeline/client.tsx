@@ -18,6 +18,12 @@ import {
     MoreHorizontal,
     ExternalLink,
     Filter,
+    Zap,
+    Unlock,
+    Check,
+    TrendingUp,
+    Link as LinkIcon,
+    AlertOctagon,
 } from "lucide-react";
 import {
     approveVipRequest,
@@ -190,44 +196,51 @@ export function VipPipelineClient({
         switch (stage) {
             case "TOOL_ACTIVE":
                 return (
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20">
-                        ⚡ Tool Active
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20 inline-flex items-center gap-1">
+                        <Zap size={10} />
+                        Tool Active
                     </span>
                 );
             case "TOOL_UNLOCKED":
                 return (
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-cyan-50 text-cyan-700 border border-cyan-200 dark:bg-cyan-500/10 dark:text-cyan-300 dark:border-cyan-500/20">
-                        🔓 Tool Unlocked
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-cyan-50 text-cyan-700 border border-cyan-200 dark:bg-cyan-500/10 dark:text-cyan-300 dark:border-cyan-500/20 inline-flex items-center gap-1">
+                        <Unlock size={10} />
+                        Tool Unlocked
                     </span>
                 );
             case "VIP_APPROVED":
                 return (
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-500/10 dark:text-blue-300 dark:border-blue-500/20">
-                        ✅ VIP Approved
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-500/10 dark:text-blue-300 dark:border-blue-500/20 inline-flex items-center gap-1">
+                        <Check size={10} />
+                        VIP Approved
                     </span>
                 );
             case "VIP_REQUESTED":
                 return (
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/20">
-                        ⏳ VIP Requested
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/20 inline-flex items-center gap-1">
+                        <Clock size={10} />
+                        VIP Requested
                     </span>
                 );
             case "FIRST_TRADE":
                 return (
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-500/10 dark:text-purple-300 dark:border-purple-500/20">
-                        📈 First Trade
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-500/10 dark:text-purple-300 dark:border-purple-500/20 inline-flex items-center gap-1">
+                        <TrendingUp size={10} />
+                        First Trade
                     </span>
                 );
             case "ACCOUNT_CONNECTED":
                 return (
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-500/10 dark:text-teal-300 dark:border-teal-500/20">
-                        🔗 Account Connected
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-500/10 dark:text-teal-300 dark:border-teal-500/20 inline-flex items-center gap-1">
+                        <LinkIcon size={10} />
+                        Account Connected
                     </span>
                 );
             case "AT_RISK":
                 return (
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-50 text-red-700 border border-red-200 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/20">
-                        🚨 At Risk
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-50 text-red-700 border border-red-200 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/20 inline-flex items-center gap-1">
+                        <AlertOctagon size={10} />
+                        At Risk
                     </span>
                 );
             default:

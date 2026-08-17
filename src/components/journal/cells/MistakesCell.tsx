@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, PenLine } from "lucide-react";
 import { MISTAKES, getMistakeSeverityColor } from "@/lib/mistakes";
 import { MistakeSelector } from "@/components/mistakes/MistakeSelector";
 import { Button } from "@/components/ui/Button";
@@ -48,7 +48,7 @@ export function MistakesCell({ entry, onUpdate }: MistakesCellProps) {
                                 key={idx}
                                 className="px-2 py-1 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 text-[10px] font-bold border border-dashboard whitespace-nowrap"
                             >
-                                📝 {mCode}
+                                <PenLine size={10} className="inline-block mr-1 align-[-1px]" /> {mCode}
                             </span>
                         );
                     }

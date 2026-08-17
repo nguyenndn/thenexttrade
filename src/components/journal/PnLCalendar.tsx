@@ -202,7 +202,7 @@ export function PnLCalendar({
                                     <div className="flex items-start justify-between mb-2">
                                         <span
                                             className={cn(
-                                                "text-[11px] font-bold w-5 h-5 flex items-center justify-center rounded-md",
+                                                "text-[11px] font-bold w-5 h-5 flex items-center justify-center rounded-lg",
                                                 isToday(date)
                                                     ? "bg-primary text-white"
                                                     : ""
@@ -253,7 +253,7 @@ export function PnLCalendar({
                                                 onClick={() =>
                                                     openNoteModal(date)
                                                 }
-                                                className="p-1 rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm text-gray-500 hover:text-primary"
+                                                className="p-1 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm text-gray-500 hover:text-primary"
                                                 title="Edit Note"
                                             >
                                                 <Edit2 className="w-3 h-3" />
@@ -274,7 +274,7 @@ export function PnLCalendar({
                                                             )
                                                         )
                                                     }
-                                                    className="p-1 rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm text-gray-500 hover:text-primary"
+                                                    className="p-1 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm text-gray-500 hover:text-primary"
                                                     title="View Week Trades"
                                                 >
                                                     <CalendarIcon className="w-3 h-3" />

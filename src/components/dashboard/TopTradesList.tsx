@@ -84,7 +84,7 @@ export function TopTradesList({ bestTrades, worstTrades }: TopTradesListProps) {
                                             </span>
                                         </div>
                                         <div className="col-span-2 text-center">
-                                            <span className="text-xs text-gray-500/80 dark:text-gray-400/80 font-medium bg-gray-100/50 dark:bg-white/5 px-2 py-0.5 rounded-md">
+                                            <span className="text-xs text-gray-500/80 dark:text-gray-400/80 font-medium bg-gray-100/50 dark:bg-white/5 px-2 py-0.5 rounded-lg">
                                                 {Number(trade.lotSize).toFixed(
                                                     2
                                                 )}
@@ -136,7 +136,7 @@ export function TopTradesList({ bestTrades, worstTrades }: TopTradesListProps) {
                                             </span>
                                         </div>
                                         <div className="col-span-2 text-center">
-                                            <span className="text-xs text-gray-500/80 dark:text-gray-400/80 font-medium bg-gray-100/50 dark:bg-white/5 px-2 py-0.5 rounded-md">
+                                            <span className="text-xs text-gray-500/80 dark:text-gray-400/80 font-medium bg-gray-100/50 dark:bg-white/5 px-2 py-0.5 rounded-lg">
                                                 {Number(trade.lotSize).toFixed(
                                                     2
                                                 )}
