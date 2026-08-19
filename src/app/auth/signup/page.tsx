@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/Input";
 import { CountrySelect } from "@/components/ui/CountrySelect";
 import { useEffect, useState } from "react";
 import { signup } from "@/app/auth/actions";
-import { Check, Eye, EyeOff, Lock, Mail, Sparkles, User } from "lucide-react";
+import { Check, Eye, EyeOff, Lock, Mail, TrendingUp, User } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
 import { trackEvent } from "@/lib/track";
@@ -182,7 +182,7 @@ export default function SignupPage() {
             </div>
             <div className="text-center mb-6">
                 <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1.5 text-xs font-extrabold uppercase text-amber-700 dark:text-amber-300">
-                    <Sparkles size={14} />
+                    <TrendingUp size={14} />
                     Start with your edge
                 </div>
                 <h1 className="text-3xl font-black text-slate-950 dark:text-white">

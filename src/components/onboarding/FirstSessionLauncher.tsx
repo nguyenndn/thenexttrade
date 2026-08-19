@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight, Sparkles, Cable, Zap, PenLine } from "lucide-react";
+import { ChevronRight, BarChart3, Cable, Zap, PenLine } from "lucide-react";
 import { trackEvent } from "@/lib/track";
 import { SetupProgressTrail } from "@/components/onboarding/SetupProgressTrail";
 import type { FirstSessionStep } from "@/lib/onboarding/first-session.server";
@@ -38,7 +38,7 @@ const STEP_CONFIG: Record<
     },
     REVIEW_DASHBOARD: {
         subtitle: "Your dashboard is ready",
-        icon: <Sparkles size={14} className="text-emerald-500" />,
+        icon: <BarChart3 size={14} className="text-emerald-500" />,
     },
 };
 

@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import {
     X,
     Check,
@@ -88,8 +90,6 @@ export function AccountSettingsModal({
         account.cooldownAfterLosses?.toString() || ""
     );
 
-    if (!isOpen) return null;
-
     async function handleSave() {
         setIsSaving(true);
         try {
@@ -131,13 +131,33 @@ export function AccountSettingsModal({
         }
     }
 
+    // Body scroll lock: parent remounts this on each open, so lock on mount
+    // and release on unmount (which happens after the exit animation completes).
+    useEffect(() => {
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
     return (
-        <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4 sm:p-6"
-            onClick={onClose}
-        >
-            <div
-                className="bg-white dark:bg-[#151925] rounded-xl w-full max-w-[520px] overflow-hidden border border-dashboard shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh] cursor-default"
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+            <motion.div
+                variants={backdropVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ type: "tween", duration: 0.2 }}
+                className="fixed inset-0 bg-black/60 backdrop-blur-md"
+                onClick={onClose}
+            />
+            <motion.div
+                variants={panelVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={SPRING_SOFT}
+                className="bg-white dark:bg-[#151925] rounded-xl w-full max-w-[520px] overflow-hidden border border-dashboard shadow-2xl flex flex-col max-h-[90vh] cursor-default"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
@@ -398,7 +418,7 @@ export function AccountSettingsModal({
                         </Button>
                     </div>
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 }

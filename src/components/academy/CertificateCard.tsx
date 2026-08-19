@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Download, Lock, Share2, Award, Crown, Eye, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { CertificateTemplate } from "./CertificateTemplate";
 import { CertificateShareModal } from "./CertificateShareModal";
 import { cn } from "@/lib/utils";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 
 interface CertificateCardProps {
     levelTitle: string;
@@ -44,6 +46,15 @@ export function CertificateCard({
     const [showShare, setShowShare] = useState(false);
     const templateRef = useRef<HTMLDivElement>(null);
     const [downloading, setDownloading] = useState(false);
+
+    // Body scroll lock while the certificate preview overlay is open.
+    useEffect(() => {
+        if (showPreview) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+    }, [showPreview]);
 
     const handleDownload = async () => {
         // Open preview if not already open so template is rendered
@@ -291,12 +302,23 @@ export function CertificateCard({
             </div>
 
             {/* Preview Modal */}
-            {showPreview && (
-                <div
+            <AnimatePresence>
+                {showPreview && (
+                <motion.div
+                    variants={backdropVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={{ type: "tween", duration: 0.2 }}
                     className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
                     onClick={() => setShowPreview(false)}
                 >
-                    <div
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
                         className="relative max-w-[95vw] max-h-[90vh] overflow-auto rounded-2xl shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     >
@@ -344,9 +366,10 @@ export function CertificateCard({
                                 variant={variant}
                             />
                         </div>
-                    </div>
-                </div>
-            )}
+                        </motion.div>
+                </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Share Modal */}
             {shareUrl && (

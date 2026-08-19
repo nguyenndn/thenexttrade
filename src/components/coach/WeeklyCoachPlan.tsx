@@ -4,7 +4,7 @@ import React, { useState, useTransition } from "react";
 import {
     Award,
     ShieldAlert,
-    Sparkles,
+    Brain,
     CheckSquare,
     Square,
     ExternalLink,
@@ -88,7 +88,7 @@ export function WeeklyCoachPlan({ plan }: WeeklyCoachPlanProps) {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                        <Sparkles
+                        <Brain
                             className="text-amber-500 dark:text-gold"
                             size={18}
                         />

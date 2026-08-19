@@ -21,6 +21,14 @@ export const BROKER_INFO: Record<
         leverage: string;
         requiresCountry: boolean;
         requiresFullName: boolean;
+        registerGuide: {
+            platform: string;
+            accountType: string;
+            leverage: string;
+            currency: string;
+            minDeposit: number;
+            steps: string[];
+        };
         ibTransferGuide: {
             steps: string[];
             note?: string;
@@ -31,7 +39,7 @@ export const BROKER_INFO: Record<
     EXNESS: {
         name: "Exness",
         logo: "/images/brokers/exness.png",
-        affiliateUrl: "https://one.exnesstrack.org/a/1ewjh1ww32",
+        affiliateUrl: "https://one.exnessonelink.com/a/1ewjh1ww32",
         ibCode: "1ewjh1ww32",
         color: "#FFC107",
         minDeposit: 200,
@@ -39,11 +47,26 @@ export const BROKER_INFO: Record<
         leverage: "1:2000",
         requiresCountry: true,
         requiresFullName: true,
+        registerGuide: {
+            platform: "MT4/MT5 real account",
+            accountType: "Standard",
+            leverage: "1:2000",
+            currency: "USD",
+            minDeposit: 200,
+            steps: [
+                "Open an MT4/MT5 real account platform",
+                "Choose the \"Standard\" type",
+                "Leverage: 1:2000",
+                "Select your currency (USD)",
+                "Fill account name, password for login on MT4/MT5",
+                "Minimum deposit of $200 USD",
+            ],
+        },
         ibTransferGuide: {
             steps: [
                 "Contact Exness Supporter on your Dashboard area",
                 "Request to change IB to our partner",
-                "Provide Partner IB link: https://one.exnesstrack.org/a/1ewjh1ww32",
+                "Provide Partner IB link: https://one.exnessonelink.com/a/1ewjh1ww32",
                 "Provide Partner IB code: 1ewjh1ww32",
                 "Wait for the confirmation email from Exness",
             ],
@@ -62,6 +85,21 @@ export const BROKER_INFO: Record<
         leverage: "1:500",
         requiresCountry: true,
         requiresFullName: true,
+        registerGuide: {
+            platform: "MT4/MT5 real account",
+            accountType: "Standard STP",
+            leverage: "1:500",
+            currency: "USD",
+            minDeposit: 200,
+            steps: [
+                "Open a VantageMarkets MT4/MT5 real account",
+                "Choose the \"Standard STP\" account type",
+                "Leverage: 1:500",
+                "Select your currency (USD)",
+                "Fill account name, password for login on MT4/MT5",
+                "Minimum deposit of $200 USD",
+            ],
+        },
         ibTransferGuide: {
             steps: [
                 "Send an email from your registered email with VantageMarkets",
@@ -88,6 +126,21 @@ export const BROKER_INFO: Record<
         leverage: "1:500",
         requiresCountry: true,
         requiresFullName: true,
+        registerGuide: {
+            platform: "MT4/MT5 real account",
+            accountType: "Standard STP",
+            leverage: "1:500",
+            currency: "USD",
+            minDeposit: 200,
+            steps: [
+                "Open a VTMarkets MT4/MT5 real account",
+                "Choose the \"Standard STP\" account type",
+                "Leverage: 1:500",
+                "Select your currency (USD)",
+                "Fill account name, password for login on MT4/MT5",
+                "Minimum deposit of $200 USD",
+            ],
+        },
         ibTransferGuide: {
             steps: [
                 "Send an email from your registered email with VTMarkets",
@@ -112,6 +165,21 @@ export const BROKER_INFO: Record<
         leverage: "1:500",
         requiresCountry: true,
         requiresFullName: true,
+        registerGuide: {
+            platform: "MT4/MT5 real account",
+            accountType: "Standard",
+            leverage: "1:500",
+            currency: "USD",
+            minDeposit: 200,
+            steps: [
+                "Open an Ultima Markets MT4/MT5 real account",
+                "Choose the \"Standard\" account type",
+                "Leverage: 1:500",
+                "Select your currency (USD)",
+                "Fill account name, password for login on MT4/MT5",
+                "Minimum deposit of $200 USD",
+            ],
+        },
         ibTransferGuide: {
             steps: [
                 "Send an email from your registered email with Ultima Markets",

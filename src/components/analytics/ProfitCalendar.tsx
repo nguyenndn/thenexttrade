@@ -15,6 +15,7 @@ import {
     Camera,
     Loader2,
 } from "lucide-react";
+import { AnimatePresence } from "framer-motion";
 import { DayTradeList } from "./DayTradeList";
 import { toast } from "sonner";
 import { getDayDetails } from "@/actions/journal";
@@ -456,16 +457,18 @@ export function ProfitCalendar({
             </div>
 
             {/* Detail Modal */}
-            {selectedDay && (
-                <DayTradeList
-                    date={selectedDay.date}
-                    trades={selectedDay.trades}
-                    stats={selectedDay.stats}
-                    startBalance={selectedDay.startBalance}
-                    endBalance={selectedDay.endBalance}
-                    onClose={() => setSelectedDay(null)}
-                />
-            )}
+            <AnimatePresence>
+                {selectedDay && (
+                    <DayTradeList
+                        date={selectedDay.date}
+                        trades={selectedDay.trades}
+                        stats={selectedDay.stats}
+                        startBalance={selectedDay.startBalance}
+                        endBalance={selectedDay.endBalance}
+                        onClose={() => setSelectedDay(null)}
+                    />
+                )}
+            </AnimatePresence>
         </div>
     );
 }

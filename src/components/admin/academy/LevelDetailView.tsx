@@ -242,7 +242,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
             </AdminPageHeader>
 
             {/* Stats Bar */}
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 p-4 flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-cyan-50 dark:bg-cyan-500/10 flex items-center justify-center text-cyan-500">
                         <Layers size={20} />

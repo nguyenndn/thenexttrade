@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Search, FileText, X, ArrowRight } from "lucide-react";
+import { SPRING_SOFT, backdropVariants } from "@/lib/animations";
 import {
     Command,
     CommandInput,
@@ -138,6 +140,21 @@ export function CommandPalette({
         [router]
     );
 
+    // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
+    useEffect(() => {
+        if (open) document.body.style.overflow = "hidden";
+    }, [open]);
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
+    const releaseLock = () => {
+        document.body.style.overflow = "unset";
+    };
+
     const handleSearch = useCallback(() => {
         if (searchQuery.trim()) {
             setOpen(false);
@@ -158,18 +175,31 @@ export function CommandPalette({
         return isMatch ? 1 : 0;
     }, []);
 
-    if (!open) return null;
-
     return (
-        <div className="fixed inset-0 z-[9999]">
+        <AnimatePresence onExitComplete={releaseLock}>
+            {open && (
+            <motion.div
+                variants={backdropVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ type: "tween", duration: 0.2 }}
+                className="fixed inset-0 z-[9999]"
+            >
             {/* Backdrop */}
             <div
                 className="absolute inset-0 bg-black/50 backdrop-blur-sm"
                 onClick={() => setOpen(false)}
             />
 
-            {/* Modal */}
-            <div className="absolute left-1/2 top-[30%] -translate-x-1/2 w-full max-w-[640px] px-4">
+            {/* Modal — x: "-50%" keeps horizontal centering; do NOT use Tailwind -translate-x-1/2 (transform conflict) */}
+            <motion.div
+                initial={{ x: "-50%", y: 16, scale: 0.96, opacity: 0 }}
+                animate={{ x: "-50%", y: 0, scale: 1, opacity: 1 }}
+                exit={{ x: "-50%", y: 16, scale: 0.96, opacity: 0 }}
+                transition={SPRING_SOFT}
+                className="absolute left-1/2 top-[30%] w-full max-w-[640px] px-4"
+            >
                 <Command
                     className="rounded-xl border border-dashboard dark:border-gray-800 bg-white dark:bg-[#1E2028] shadow-2xl overflow-hidden"
                     shouldFilter={true}
@@ -337,8 +367,10 @@ export function CommandPalette({
                         </div>
                     </div>
                 </Command>
-            </div>
-        </div>
+            </motion.div>
+            </motion.div>
+            )}
+        </AnimatePresence>
     );
 }
 

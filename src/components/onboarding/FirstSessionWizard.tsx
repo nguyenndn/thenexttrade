@@ -8,7 +8,6 @@ import {
     PenLine,
     ArrowRight,
     Clock,
-    Sparkles,
     BarChart3,
     Zap,
     HelpCircle,
@@ -594,7 +593,7 @@ function StepReviewDashboard({
         <div className="space-y-3">
             <div className="p-4 bg-gradient-to-br from-emerald-500/[0.05] to-primary/[0.03] border border-emerald-500/15 rounded-xl space-y-3 text-center">
                 <div className="w-10 h-10 mx-auto bg-emerald-500/10 rounded-full flex items-center justify-center">
-                    <Sparkles size={20} className="text-emerald-500" />
+                    <BarChart3 size={20} className="text-emerald-500" />
                 </div>
                 <div className="space-y-1">
                     <h3 className="text-base font-black text-gray-800 dark:text-white">

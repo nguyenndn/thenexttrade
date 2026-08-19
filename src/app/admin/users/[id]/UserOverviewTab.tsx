@@ -264,7 +264,7 @@ export function UserOverviewTab({ user }: UserOverviewTabProps) {
                             </span>
                         </div>
                         {user.badges.length > 0 ? (
-                            <div className="p-4 grid grid-cols-4 gap-2">
+                            <div className="p-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
                                 {user.badges.map((ub) => (
                                     <div
                                         key={ub.id}

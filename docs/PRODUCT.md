@@ -1,8 +1,10 @@
 # Product
 
-Last reviewed: 2026-08-11
+Last reviewed: 2026-08-18
 
 This file describes the current product behavior at a practical level. For detailed URL/query-param behavior and QA checklists, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
+
+For the scope decision behind each feature group, use [FEATURE_CATALOG.md](FEATURE_CATALOG.md). That file is the guardrail for deciding whether a feature should be central, supporting, retention-only, admin-only, legacy, or removed.
 
 ## Feature Inventory
 
@@ -22,6 +24,30 @@ The features are not all equal:
 - **Admin/ops loop**: Admin reports, AI Gateway, Email Lab, IB/VIP, user detail, content ops, and trading-system licensing.
 
 Product rule: do not show every feature at once. Dashboard and homepage should always promote the next most useful action, not the full feature catalog.
+
+Detailed keep/hide/remove decisions live in [FEATURE_CATALOG.md](FEATURE_CATALOG.md). If a new feature does not strengthen activation, trade review quality, retention, trust, or admin support, it should not be promoted in primary navigation.
+
+### Are The Recent Features Necessary?
+
+Short answer: yes for the core improvement loop, but not all of them should be visible with equal weight.
+
+The product becomes confusing when acquisition pages, community, brokers, tools, EAs, gamification, admin reporting, and AI all compete for the same attention. The fix is not to remove every supporting feature. The fix is to put each feature in the correct layer.
+
+| Decision | Feature group | Product rule |
+| --- | --- | --- |
+| Must stay central | Trade Manager EA/Manual Journal, Dashboard, Journal, Analytics, Reports, Rules, Academy, onboarding | These create the core user value: turn trade history into one next action. |
+| Keep as conversion/support | Homepage, Community, Trading Systems, Brokers, Tools, Public Trader Card, Free vs Pro | Useful for acquisition and trust, but should not clutter the logged-in dashboard. |
+| Keep as retention | Edge Missions, daily check-in, leaderboard, weekly experiments | Good after first value. Do not show them as the main task before a user has trade data. |
+| Keep as admin only | Admin Reports, AI Gateway, Email Lab, IB/VIP pipeline, content ops, security | Required for operation and support, but should not leak into user-facing complexity. |
+| Hide or remove | Prop firm direction, EA backtest/performance simulator claims, duplicate dashboard alerts, legacy TNT Connect onboarding | These create confusion or overclaim the product. |
+
+### Surface-Area Rules
+
+- Anonymous homepage: one primary action, a small number of supporting paths, and proof before dense feature blocks.
+- New user dashboard: show setup and first-data actions only. Hide filters and advanced reports until trade data exists.
+- Active trader dashboard: show trading state, current alerts, and one next action. Do not show onboarding banners.
+- Admin: show action queues, user/support context, and operational status. Avoid decorative metrics without a next action.
+- Community and Trading Systems: use GoldScalperNinja language, but keep the global platform brand as TheNextTrade.
 
 | Feature | User/Admin value | Current state | Primary routes |
 | --- | --- | --- | --- |

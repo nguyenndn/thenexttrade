@@ -830,7 +830,7 @@ function buildInsightData(
         };
     } else if (intelligenceData.strengths.length > 0) {
         return {
-            icon: "Sparkles",
+            icon: "Trophy",
             title: "No critical issues — keep it up!",
             description: intelligenceData.strengths[0].title,
         };

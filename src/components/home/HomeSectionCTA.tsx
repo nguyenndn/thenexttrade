@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 import {
     ArrowRight,
     MessageCircle,
     ShieldCheck,
-    Sparkles,
     Zap,
 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button-variants";
@@ -23,7 +23,7 @@ export function HomeSectionCTA({ isLoggedIn }: HomeSectionCTAProps) {
             <section className="relative z-10 mx-auto max-w-[1440px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
                 <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-gold/25 bg-gradient-to-br from-white via-gold/[0.04] to-amber-50/70 px-5 py-8 text-center shadow-[0_18px_55px_rgba(245,158,11,0.08)] dark:from-white/[0.04] dark:via-gold/[0.04] dark:to-white/[0.02] sm:px-8 sm:py-10">
                     <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-gold">
-                        <Sparkles size={12} strokeWidth={2.7} />
+                        <Zap size={12} strokeWidth={2.7} />
                         Ready when you are
                     </div>
 
@@ -53,8 +53,8 @@ export function HomeSectionCTA({ isLoggedIn }: HomeSectionCTAProps) {
                             <Zap size={15} className="text-yellow-200" />
                         </Link>
 
-                        <Link
-                            href="https://t.me/GoldScalperNinja"
+                        <a
+                            href={TELEGRAM_CHANNEL_URL}
                             target="_blank"
                             rel="noopener noreferrer"
                             className={buttonVariants({
@@ -65,7 +65,7 @@ export function HomeSectionCTA({ isLoggedIn }: HomeSectionCTAProps) {
                         >
                             <MessageCircle size={15} />
                             Join Telegram
-                        </Link>
+                        </a>
                     </div>
 
                     <div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-xs font-bold text-gray-500 dark:text-gray-400">

@@ -14,7 +14,6 @@ import {
     Zap,
     Shield,
     AlertCircle,
-    Sparkles,
     CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -505,7 +504,7 @@ export default function TNTConnectClient() {
                             </div>
                             {completedCount === STEPS.length && (
                                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                                    <Sparkles size={11} /> All Done!
+                                    <CheckCircle2 size={11} /> All Done!
                                 </span>
                             )}
                         </div>

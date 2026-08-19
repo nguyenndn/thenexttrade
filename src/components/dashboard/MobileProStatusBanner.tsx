@@ -89,10 +89,10 @@ export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge
             <div className="md:hidden mb-3 flex items-center gap-2 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-3 py-2">
                 <Crown className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
-                    Pro Active
+                    VIP Active
                 </span>
                 <span className="ml-auto rounded-full bg-emerald-100 dark:bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-600 dark:text-emerald-400">
-                    Pro
+                    VIP
                 </span>
             </div>
         );
@@ -131,7 +131,7 @@ export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge
             <div className="md:hidden mb-3 flex items-center gap-2 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 px-3 py-2">
                 <Shield className="h-4 w-4 text-red-600 dark:text-red-400 shrink-0" />
                 <span className="text-xs font-bold text-red-700 dark:text-red-400 flex-1">
-                    Pro Revoked
+                    VIP Revoked
                 </span>
                 <span className="text-[10px] text-red-500 dark:text-red-400/70">
                     Contact support
@@ -145,7 +145,7 @@ export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge
             <div className="md:hidden mb-3 flex items-center gap-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 px-3 py-2">
                 <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
                 <span className="text-xs font-bold text-amber-700 dark:text-amber-400 flex-1">
-                    Pro Expired
+                    VIP Expired
                 </span>
                 <Link
                     href="/dashboard/accounts?action=add&intent=unlock-pro"
@@ -169,7 +169,7 @@ export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge
                     href="/dashboard/accounts?action=add&intent=unlock-pro"
                     className="shrink-0 flex items-center gap-0.5 text-[10px] font-bold text-amber-600 dark:text-amber-400 hover:underline"
                 >
-                    Check Pro Eligibility <ArrowRight className="h-3 w-3" />
+                    Apply for VIP Access <ArrowRight className="h-3 w-3" />
                 </Link>
             </div>
         );

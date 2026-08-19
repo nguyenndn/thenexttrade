@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useTransition, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import {
     X,
     Copy,
@@ -134,6 +136,21 @@ export function AddAccountModal({
         }
     }, [isOpen, initialMode, userName, sourceAccount]);
 
+    // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
+    useEffect(() => {
+        if (isOpen) document.body.style.overflow = "hidden";
+    }, [isOpen]);
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
+    const releaseLock = () => {
+        document.body.style.overflow = "unset";
+    };
+
     // --- Free Account State ---
     const platform = "MT5";
     const [name, setName] = useState("");
@@ -199,8 +216,6 @@ export function AddAccountModal({
             </>,
         ],
     };
-
-    if (!isOpen) return null;
 
     function handleClose() {
         onClose();
@@ -385,12 +400,26 @@ export function AddAccountModal({
     }
 
     return (
+        <AnimatePresence onExitComplete={releaseLock}>
+            {isOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <div
-                className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+            <motion.div
+                variants={backdropVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ type: "tween", duration: 0.2 }}
+                className="fixed inset-0 bg-black/50 backdrop-blur-sm"
                 onClick={handleClose}
             />
-            <div className="relative z-10 bg-white dark:bg-[#1E2028] rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-dashboard shadow-2xl animate-in fade-in zoom-in-95 duration-200 cursor-default flex flex-col">
+            <motion.div
+                variants={panelVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={SPRING_SOFT}
+                className="relative z-10 bg-white dark:bg-[#1E2028] rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-dashboard shadow-2xl cursor-default flex flex-col"
+            >
                 {/* 0. UPGRADE-PRO STEP — prefilled from existing account */}
                 {step === "upgrade-pro" && sourceAccount && (
                     <>
@@ -439,6 +468,64 @@ export function AddAccountModal({
                                         </p>
                                     </div>
                                 </div>
+                            </div>
+
+                            {/* VIP requires the account to be registered under our IB */}
+                            <div className="rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 p-4 space-y-3">
+                                <p className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
+                                    <AlertTriangle size={14} /> VIP requires
+                                    registration under our IB
+                                </p>
+                                <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                                    To qualify for VIP access your trading
+                                    account must be registered under our IB
+                                    partner. If you opened it directly, transfer
+                                    your IB or register a new account via our
+                                    partner link — accounts not under our IB are
+                                    rejected during review.
+                                </p>
+                                {(() => {
+                                    const brokerKey = SUPPORTED_BROKERS.find(
+                                        (b) =>
+                                            BROKER_INFO[b].name.toLowerCase() ===
+                                            (sourceAccount.broker || "")
+                                                .trim()
+                                                .toLowerCase()
+                                    ) ||
+                                    SUPPORTED_BROKERS.find(
+                                        (b) =>
+                                            b ===
+                                            (sourceAccount.broker || "")
+                                                .trim()
+                                                .toUpperCase()
+                                    );
+                                    if (!brokerKey) return null;
+                                    const bInfo = BROKER_INFO[brokerKey];
+                                    return (
+                                        <div className="space-y-2 rounded-lg bg-white dark:bg-[#151925] border border-amber-200/60 dark:border-amber-500/15 p-3">
+                                            <p className="text-xs font-bold text-gray-800 dark:text-white">
+                                                {bInfo.name} setup under our IB
+                                            </p>
+                                            <ol className="text-[11px] text-gray-600 dark:text-gray-300 space-y-1 list-decimal list-inside">
+                                                {bInfo.registerGuide.steps.map(
+                                                    (s, i) => (
+                                                        <li key={i}>{s}</li>
+                                                    )
+                                                )}
+                                            </ol>
+                                            <a
+                                                href={bInfo.affiliateUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-600 hover:text-amber-700 dark:text-gold"
+                                            >
+                                                <UserPlus size={12} /> Register
+                                                new {bInfo.name} account
+                                                <ExternalLink size={11} />
+                                            </a>
+                                        </div>
+                                    );
+                                })()}
                             </div>
 
                             {/* Verification fields */}
@@ -1079,6 +1166,24 @@ export function AddAccountModal({
                                 </div>
                             )}
 
+                            {accountStatus === "new" && (
+                                <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/15 space-y-3">
+                                    <p className="text-sm font-bold text-amber-700 dark:text-amber-400">
+                                        How to set up your {brokerInfo.name} account
+                                    </p>
+                                    <ol className="text-sm text-amber-600 dark:text-amber-300 space-y-1.5 list-decimal list-inside">
+                                        {brokerInfo.registerGuide.steps.map(
+                                            (s, i) => (
+                                                <li key={i}>{s}</li>
+                                            )
+                                        )}
+                                    </ol>
+                                    <p className="text-xs text-amber-700 dark:text-amber-400 bg-white dark:bg-[#151925] border border-amber-200 dark:border-amber-500/15 rounded-lg p-2.5">
+                                        <UserPlus size={13} className="inline-block mr-1 align-[-1px]" /> Registration link opened in a new tab — once your account is funded and verified, click Continue below.
+                                    </p>
+                                </div>
+                            )}
+
                             {accountStatus && (
                                 <div className="flex justify-end pt-4">
                                     <Button
@@ -1378,7 +1483,9 @@ export function AddAccountModal({
                         </div>
                     </div>
                 )}
-            </div>
+            </motion.div>
         </div>
+            )}
+        </AnimatePresence>
     );
 }

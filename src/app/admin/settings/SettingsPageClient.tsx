@@ -11,6 +11,7 @@ import {
     Palette,
     Send,
     Megaphone,
+    BarChart3,
 } from "lucide-react";
 import { toast } from "sonner";
 import { updateProfile, updateSystemConfig } from "./actions";
@@ -35,6 +36,7 @@ interface SettingsPageClientProps {
         socialFacebook: string;
         socialYoutube: string;
         socialInstagram: string;
+        dailyAnalysisUrl: string;
         welcomeEmail: boolean;
         newArticleAlert: boolean;
         systemAnnouncement: string;
@@ -427,6 +429,33 @@ function SystemSettings({
                             placeholder="e.g. Scheduled maintenance tonight at 22:00 UTC"
                             rows={2}
                             className="w-full px-4 py-3 text-sm bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40 text-gray-700 dark:text-white placeholder-gray-400 resize-none"
+                        />
+                    </div>
+                </SectionCard>
+
+                {/* ── Daily Analysis Post (full width) ── */}
+                <SectionCard
+                    icon={BarChart3}
+                    title="Daily Analysis Post"
+                    className="lg:col-span-2"
+                >
+                    <div className="space-y-4">
+                        <p className="text-xs text-gray-600">
+                            The &quot;See Today&apos;s Analysis&quot; button
+                            and the Daily Analysis tab on the Community page
+                            open this exact post in Telegram. Leave empty to
+                            fall back to the channel invite link.
+                        </p>
+                        <PremiumInput
+                            label="Today's Analysis Post URL"
+                            value={config.dailyAnalysisUrl}
+                            onChange={(e) =>
+                                setConfig((prev) => ({
+                                    ...prev,
+                                    dailyAnalysisUrl: e.target.value,
+                                }))
+                            }
+                            placeholder="https://t.me/yourchannel/1234"
                         />
                     </div>
                 </SectionCard>

@@ -1,9 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { DataConfidenceView } from "@/lib/trader-growth/types";
 import { X, ShieldCheck, AlertTriangle, CheckCircle2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 
 interface DataEvidenceDrawerProps {
     isOpen: boolean;
@@ -16,11 +18,40 @@ export function DataEvidenceDrawer({
     onClose,
     confidence,
 }: DataEvidenceDrawerProps) {
-    if (!isOpen) return null;
+    // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
+    useEffect(() => {
+        if (isOpen) document.body.style.overflow = "hidden";
+    }, [isOpen]);
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
+    const releaseLock = () => {
+        document.body.style.overflow = "unset";
+    };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="relative w-full max-w-lg p-6 bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-slate-800 rounded-2xl shadow-2xl space-y-5 text-slate-900 dark:text-white">
+        <AnimatePresence onExitComplete={releaseLock}>
+            {isOpen && (
+            <motion.div
+                variants={backdropVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ type: "tween", duration: 0.2 }}
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/80 backdrop-blur-sm"
+            >
+            <motion.div
+                variants={panelVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={SPRING_SOFT}
+                className="relative w-full max-w-lg p-6 bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-slate-800 rounded-2xl shadow-2xl space-y-5 text-slate-900 dark:text-white"
+            >
                 <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800/80 pb-4">
                     <div className="flex items-center gap-2.5">
                         <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
@@ -106,7 +137,9 @@ export function DataEvidenceDrawer({
                         Close
                     </Button>
                 </div>
-            </div>
-        </div>
+            </motion.div>
+            </motion.div>
+            )}
+        </AnimatePresence>
     );
 }

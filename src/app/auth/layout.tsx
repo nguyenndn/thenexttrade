@@ -8,7 +8,7 @@ import {
     TrendingUp,
     BookOpen,
     Target,
-    Sparkles,
+    Trophy,
 } from "lucide-react";
 import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
 
@@ -71,7 +71,7 @@ export default function AuthLayout({
             color: "text-amber-600 dark:text-amber-400",
         },
         {
-            icon: Sparkles,
+            icon: Trophy,
             label: "Leaderboard & Badges",
             color: "text-violet-600 dark:text-violet-400",
         },
@@ -110,13 +110,13 @@ export default function AuthLayout({
                 <div className="hidden lg:flex flex-1 flex-col max-w-2xl">
                     {/* Hero copy */}
                     <div className="mb-10">
-                        <h2 className="whitespace-nowrap text-[40px] font-black leading-[1.1] tracking-tight text-slate-950 dark:text-white">
+                        <h2 className="text-[40px] font-black leading-[1.1] tracking-tight text-slate-950 dark:text-white">
                             Your Trading{" "}
                             <span className="bg-[linear-gradient(90deg,#B7791F,#F7C948,#10B981)] bg-clip-text text-transparent">
                                 Command Center
                             </span>
                         </h2>
-                        <p className="mt-4 whitespace-nowrap text-base leading-7 text-slate-500 dark:text-slate-400">
+                        <p className="mt-4 text-base leading-7 text-slate-500 dark:text-slate-400">
                             Journal, analyze, and improve — all in one
                             intelligent workspace designed for serious traders.
                         </p>

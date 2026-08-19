@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ShieldCheck, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { changeUserRole } from "@/app/admin/users/actions";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 
 const ROLES = [
     {
@@ -47,7 +49,20 @@ export function ChangeRoleModal({
     const [selectedRole, setSelectedRole] = useState(currentRole);
     const [isLoading, setIsLoading] = useState(false);
 
-    if (!isOpen) return null;
+    // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
+    useEffect(() => {
+        if (isOpen) document.body.style.overflow = "hidden";
+    }, [isOpen]);
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
+    const releaseLock = () => {
+        document.body.style.overflow = "unset";
+    };
 
     const handleSave = async () => {
         if (selectedRole === currentRole) {
@@ -69,12 +84,28 @@ export function ChangeRoleModal({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <div
-                className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-                onClick={onClose}
-            />
-            <div className="relative bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-2xl w-full max-w-md mx-4 p-6">
+        <AnimatePresence onExitComplete={releaseLock}>
+            {isOpen && (
+                <motion.div
+                    variants={backdropVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={{ type: "tween", duration: 0.2 }}
+                    className="fixed inset-0 z-50 flex items-center justify-center"
+                >
+                    <div
+                        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                        onClick={onClose}
+                    />
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
+                        className="relative bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-2xl w-full max-w-md mx-4 p-6"
+                    >
                 <div className="flex items-center gap-3 mb-6">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                         <ShieldCheck size={20} className="text-primary" />
@@ -153,7 +184,9 @@ export function ChangeRoleModal({
                         )}
                     </Button>
                 </div>
-            </div>
-        </div>
+                </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
     );
 }

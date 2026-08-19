@@ -14,6 +14,7 @@ import { FAQAccordion } from "@/components/tools/FAQAccordion";
 import { JsonLd } from "@/components/seo/JsonLd";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button-variants";
+import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 
 export const metadata: Metadata = {
     title: "Frequently Asked Questions | TheNextTrade",
@@ -247,7 +248,7 @@ export default function FAQPage() {
                                 Contact Support
                             </Link>
                             <a
-                                href="https://t.me/GoldScalperNinja"
+                                href={TELEGRAM_CHANNEL_URL}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className={buttonVariants({

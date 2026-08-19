@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
     format,
     addDays,
@@ -31,6 +32,7 @@ import "react-date-range/dist/theme/default.css";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import { SPRING_SOFT, backdropVariants } from "@/lib/animations";
 import {
     Popover,
     PopoverContent,
@@ -136,6 +138,15 @@ export function DateRangePicker({
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
+
+    // Body scroll lock while the mobile full-screen modal is open.
+    useEffect(() => {
+        if (isMobile && open) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+    }, [isMobile, open]);
 
     const handleSelect = (ranges: RangeKeyDict) => {
         const selection = ranges.selection;
@@ -291,15 +302,27 @@ export function DateRangePicker({
                 </Button>
 
                 {/* Mobile Compact Modal */}
-                {open && (
+                <AnimatePresence>
+                    {open && (
                     <>
                         {/* Backdrop */}
-                        <div
+                        <motion.div
+                            variants={backdropVariants}
+                            initial="initial"
+                            animate="animate"
+                            exit="exit"
+                            transition={{ type: "tween", duration: 0.2 }}
                             className="fixed inset-0 z-[199] bg-black/40"
                             onClick={handleCancel}
                         />
-                        {/* Modal */}
-                        <div className="fixed inset-x-3 top-1/2 -translate-y-1/2 z-[200] flex flex-col bg-white dark:bg-[#0B0E14] rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden">
+                        {/* Modal — y: "-50%" keeps vertical centering; do NOT use Tailwind -translate-y-1/2 (transform conflict) */}
+                        <motion.div
+                            initial={{ y: "-50%", scale: 0.95, opacity: 0 }}
+                            animate={{ y: "-50%", scale: 1, opacity: 1 }}
+                            exit={{ y: "-50%", scale: 0.95, opacity: 0 }}
+                            transition={SPRING_SOFT}
+                            className="fixed inset-x-3 top-1/2 z-[200] flex flex-col bg-white dark:bg-[#0B0E14] rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden"
+                        >
                             {/* Overlay Header */}
                             <div className="flex items-center justify-between px-4 py-3 border-b border-dashboard shrink-0">
                                 <h3 className="font-semibold text-gray-700 dark:text-white">
@@ -345,9 +368,10 @@ export function DateRangePicker({
                                     Apply
                                 </Button>
                             </div>
-                        </div>
+                        </motion.div>
                     </>
-                )}
+                    )}
+                </AnimatePresence>
             </div>
         );
     }

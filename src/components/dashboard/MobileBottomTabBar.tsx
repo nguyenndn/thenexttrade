@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useClaimableCount } from "@/hooks/useClaimableCount";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -8,6 +9,7 @@ import { X, Bug, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { dashboardMenuGroups, adminMenuGroups } from "@/config/navigation";
 import { useFeatureFlags } from "@/lib/dashboard-context";
+import { SPRING_SOFT, backdropVariants } from "@/lib/animations";
 
 export function MobileBottomTabBar() {
     const pathname = usePathname();
@@ -83,22 +85,26 @@ export function MobileBottomTabBar() {
 
     return (
         <>
-            {/* Bottom Sheet Overlay */}
-            {activeSheet && (
-                <div
-                    className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
-                    onClick={() => setOpenGroup(null)}
-                />
-            )}
-
-            {/* Bottom Sheet Panel */}
-            <div
-                className={cn(
-                    "fixed bottom-[64px] left-0 right-0 z-40 lg:hidden transition-transform duration-300 ease-tabbar",
-                    activeSheet ? "translate-y-0" : "translate-y-full"
-                )}
-            >
+            {/* Bottom Sheet Overlay + Panel */}
+            <AnimatePresence>
                 {activeSheet && (
+                <>
+                    <motion.div
+                        variants={backdropVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={{ type: "tween", duration: 0.2 }}
+                        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
+                        onClick={() => setOpenGroup(null)}
+                    />
+                    <motion.div
+                        initial={{ y: "100%" }}
+                        animate={{ y: 0 }}
+                        exit={{ y: "100%" }}
+                        transition={SPRING_SOFT}
+                        className="fixed bottom-[64px] left-0 right-0 z-40 lg:hidden"
+                    >
                     <div className="bg-white dark:bg-[#151925] rounded-t-2xl shadow-2xl shadow-black/20 border-t border-x border-dashboard overflow-hidden">
                         {/* Drag Handle */}
                         <div className="flex justify-center pt-3 pb-1">
@@ -195,8 +201,10 @@ export function MobileBottomTabBar() {
                             )}
                         </div>
                     </div>
+                    </motion.div>
+                </>
                 )}
-            </div>
+            </AnimatePresence>
 
             {/* Tab Bar */}
             <nav className="fixed bottom-0 inset-x-0 z-50 lg:hidden bg-white dark:bg-[#151925] border-t border-dashboard safe-area-bottom">

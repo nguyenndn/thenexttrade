@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import {
     ChevronLeft,
     ChevronRight,
@@ -10,6 +11,7 @@ import {
     CheckCircle2,
     X,
 } from "lucide-react";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 
 interface FeedbackItem {
     id: number;
@@ -139,11 +141,11 @@ export function FeedbackCarousel({ images = [] }: FeedbackCarouselProps) {
         <section className="px-4 sm:px-6 mb-16 md:mb-24 max-w-6xl mx-auto text-center overflow-hidden">
             <div className="text-center mb-10 space-y-3">
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-gray-800 dark:text-white">
-                    What Our VIP Members Say
+                    What Our Traders Say
                 </h2>
                 <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
-                    Real screenshots and feedback shared directly from our VIP
-                    Telegram channel and TraderRoom.
+                    Real screenshots and feedback shared by traders in the
+                    GoldScalperNinja Telegram community and VIP TraderRoom.
                 </p>
             </div>
 
@@ -318,7 +320,7 @@ export function FeedbackCarousel({ images = [] }: FeedbackCarouselProps) {
                                             </div>
                                         </div>
                                         <div className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-gold/20 text-[9px] font-bold text-gold uppercase tracking-wider">
-                                            ★ VIP Signal Result
+                                            ★ Signal Result
                                         </div>
                                     </div>
                                 </div>
@@ -355,14 +357,12 @@ export function FeedbackCarousel({ images = [] }: FeedbackCarouselProps) {
             )}
 
             {/* Feedback Lightbox Modal */}
-            {activeLightboxImage && (
-                <FeedbackLightboxModal
-                    isOpen={activeLightboxImage !== null}
-                    onClose={handleCloseLightbox}
-                    imageSrc={activeLightboxImage}
-                    title={activeLightboxTitle}
-                />
-            )}
+            <FeedbackLightboxModal
+                isOpen={activeLightboxImage !== null}
+                onClose={handleCloseLightbox}
+                imageSrc={activeLightboxImage}
+                title={activeLightboxTitle}
+            />
         </section>
     );
 }
@@ -370,7 +370,7 @@ export function FeedbackCarousel({ images = [] }: FeedbackCarouselProps) {
 interface FeedbackLightboxModalProps {
     isOpen: boolean;
     onClose: () => void;
-    imageSrc: string;
+    imageSrc: string | null;
     title: string;
 }
 
@@ -384,13 +384,24 @@ function FeedbackLightboxModal({
 
     useEffect(() => {
         setMounted(true);
+    }, []);
+
+    // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
+    useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = "hidden"; // Prevent background scrolling
         }
-        return () => {
-            document.body.style.overflow = "";
-        };
     }, [isOpen]);
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
+    const releaseLock = () => {
+        document.body.style.overflow = "unset";
+    };
 
     // Handle escape key to close
     useEffect(() => {
@@ -401,34 +412,50 @@ function FeedbackLightboxModal({
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [onClose]);
 
-    if (!mounted || !isOpen) return null;
+    if (!mounted) return null;
 
     return createPortal(
-        <div
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 sm:p-6 transition-opacity duration-300"
-            onClick={onClose}
-        >
-            {/* Modal Card Wrapper - Expanded Size (At least twice the card width) */}
-            <div
-                className="relative w-full max-w-[440px] sm:max-w-[520px] aspect-[1290/2796] rounded-3xl overflow-hidden bg-slate-950 border border-gold/30 shadow-[0_0_50px_rgba(245,158,11,0.2)] flex items-center justify-center transition-all duration-300"
-                onClick={(e) => e.stopPropagation()} // Prevent closing when clicking the card
-            >
-                {/* Close Button at top-right of the card */}
-                <button
+        <AnimatePresence onExitComplete={releaseLock}>
+            {isOpen && (
+                <motion.div
+                    variants={backdropVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={{ type: "tween", duration: 0.2 }}
+                    className="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto bg-black/75 backdrop-blur-sm p-4 sm:p-6"
                     onClick={onClose}
-                    className="absolute top-3 right-3 z-[10000] w-8 h-8 rounded-full bg-black/60 hover:bg-black/80 border border-white/10 flex items-center justify-center text-white hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-md"
-                    aria-label="Close preview"
                 >
-                    <X size={16} />
-                </button>
+                    {/* Modal Card Wrapper - Expanded Size (At least twice the card width) */}
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
+                        className="relative my-auto w-full max-w-[440px] sm:max-w-[520px] aspect-[1290/2796] rounded-3xl overflow-hidden bg-slate-950 border border-gold/30 shadow-[0_0_50px_rgba(245,158,11,0.2)] flex items-center justify-center"
+                        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking the card
+                    >
+                        {/* Close Button at top-right of the card */}
+                        <button
+                            onClick={onClose}
+                            className="absolute top-3 right-3 z-[10000] w-8 h-8 rounded-full bg-black/60 hover:bg-black/80 border border-white/10 flex items-center justify-center text-white hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-md"
+                            aria-label="Close preview"
+                        >
+                            <X size={16} />
+                        </button>
 
-                <img
-                    src={imageSrc}
-                    alt={title}
-                    className="w-full h-full object-contain bg-black"
-                />
-            </div>
-        </div>,
+                        {imageSrc && (
+                            <img
+                                src={imageSrc}
+                                alt={title}
+                                className="w-full h-full object-contain bg-black"
+                            />
+                        )}
+                    </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>,
         document.body
     );
 }

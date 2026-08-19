@@ -138,7 +138,7 @@ TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
 | Login (Password) | `src/app/auth/login/page.tsx` | Trước `signInWithPassword` |
 | Login (Magic Link) | `src/app/auth/login/page.tsx` | Trước `signInWithOtp` |
 | Register | `src/app/auth/signup/page.tsx` | Trước `signUp` |
-| VIP Request | `src/components/community/VipRequestForm.tsx` | Trước `submitVipRequest` |
+| VIP Request | `src/components/trading-accounts/AddAccountModal.tsx` | Trước `createPartnerProAccount` / `upgradeToPartnerPro` |
 
 **Flow:**
 1. Client render `<TurnstileWidget>` → user giải challenge (hoặc auto-pass)

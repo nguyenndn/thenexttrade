@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import {
+    ArrowRight,
     X,
     Check,
     FileSpreadsheet,
-    Sparkles,
     PlugZap,
     Brain,
     Target,
@@ -124,7 +124,7 @@ export function SpreadsheetComparisonSection({
                             </span>
                         </div>
                         <div className="flex items-center gap-2 p-3 rounded-xl bg-gold/5 border border-gold/20">
-                            <Sparkles
+                            <Brain
                                 size={16}
                                 className="text-gold flex-shrink-0"
                             />
@@ -176,7 +176,7 @@ export function SpreadsheetComparisonSection({
                                 {isLoggedIn
                                     ? "Open My Journal"
                                     : "Start Free Journal"}{" "}
-                                <Sparkles
+                                <ArrowRight
                                     size={14}
                                     className="text-yellow-300"
                                 />

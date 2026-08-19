@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-    Sparkles,
     ArrowRight,
     FileText,
     Sun,
@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { trackEvent } from "@/lib/track";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 
 interface FirstSyncSuccessModalProps {
     open: boolean;
@@ -30,24 +31,29 @@ export function FirstSyncSuccessModal({
     hasReports,
     firstInsight,
 }: FirstSyncSuccessModalProps) {
-    const [isVisible, setIsVisible] = useState(false);
     const hasTracked = useRef(false);
 
     useEffect(() => {
-        if (open) {
-            // Delay for smooth entrance
-            const timer = setTimeout(() => setIsVisible(true), 50);
-            if (!hasTracked.current) {
-                trackEvent("first_insight_viewed");
-                hasTracked.current = true;
-            }
-            return () => clearTimeout(timer);
-        } else {
-            setIsVisible(false);
+        if (open && !hasTracked.current) {
+            trackEvent("first_insight_viewed");
+            hasTracked.current = true;
         }
     }, [open]);
 
-    if (!open) return null;
+    // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
+    useEffect(() => {
+        if (open) document.body.style.overflow = "hidden";
+    }, [open]);
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
+    const releaseLock = () => {
+        document.body.style.overflow = "unset";
+    };
 
     const handlePrimary = () => {
         trackEvent("first_insight_cta_clicked", {
@@ -81,14 +87,28 @@ export function FirstSyncSuccessModal({
     ];
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <div
-                className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${isVisible ? "opacity-100" : "opacity-0"}`}
-                onClick={handleDismiss}
-            />
-            <div
-                className={`relative z-10 bg-white dark:bg-[#1E2028] rounded-2xl w-full max-w-md overflow-hidden border border-dashboard shadow-2xl transition-all duration-500 ${isVisible ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-4"}`}
+        <AnimatePresence onExitComplete={releaseLock}>
+            {open && (
+            <motion.div
+                variants={backdropVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ type: "tween", duration: 0.2 }}
+                className="fixed inset-0 z-[100] flex items-center justify-center p-4"
             >
+                <div
+                    className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+                    onClick={handleDismiss}
+                />
+                <motion.div
+                    variants={panelVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={SPRING_SOFT}
+                    className="relative z-10 bg-white dark:bg-[#1E2028] rounded-2xl w-full max-w-md overflow-hidden border border-dashboard shadow-2xl"
+                >
                 {/* Close button */}
                 <button
                     onClick={handleDismiss}
@@ -107,7 +127,7 @@ export function FirstSyncSuccessModal({
                     <div className="relative z-10">
                         {/* Success icon */}
                         <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-teal-400 flex items-center justify-center shadow-lg shadow-primary/30 mb-4">
-                            <Sparkles size={28} className="text-white" />
+                            <CheckCircle2 size={28} className="text-white" />
                         </div>
 
                         <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">
@@ -167,7 +187,9 @@ export function FirstSyncSuccessModal({
                         Continue to Dashboard
                     </Button>
                 </div>
-            </div>
-        </div>
+                </motion.div>
+            </motion.div>
+            )}
+        </AnimatePresence>
     );
 }

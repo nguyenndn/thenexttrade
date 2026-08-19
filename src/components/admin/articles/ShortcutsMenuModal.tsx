@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { X, Search, Zap, Plus, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { PremiumInput } from "@/components/ui/PremiumInput";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 
 interface Shortcut {
     id: string;
@@ -35,6 +37,21 @@ export function ShortcutsMenuModal({
         }
     }, [isOpen]);
 
+    // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
+    useEffect(() => {
+        if (isOpen) document.body.style.overflow = "hidden";
+    }, [isOpen]);
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
+    const releaseLock = () => {
+        document.body.style.overflow = "unset";
+    };
+
     const fetchShortcuts = async () => {
         setIsLoading(true);
         try {
@@ -50,8 +67,6 @@ export function ShortcutsMenuModal({
         }
     };
 
-    if (!isOpen) return null;
-
     const filteredShortcuts = shortcuts.filter(
         (s) =>
             s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -60,10 +75,26 @@ export function ShortcutsMenuModal({
     );
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4">
-            <div className="bg-white dark:bg-[#151925] w-full max-w-2xl rounded-xl shadow-xl flex flex-col border border-gray-200 dark:border-white/10 max-h-[85vh]">
+        <AnimatePresence onExitComplete={releaseLock}>
+            {isOpen && (
+                <motion.div
+                    variants={backdropVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={{ type: "tween", duration: 0.2 }}
+                    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4"
+                >
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
+                        className="bg-white dark:bg-[#151925] w-full max-w-2xl rounded-xl shadow-xl flex flex-col border border-gray-200 dark:border-white/10 max-h-[85vh]"
+                    >
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/10">
+                <div className="flex flex-wrap items-center justify-between gap-3 p-4 border-b border-gray-200 dark:border-white/10">
                     <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded-lg bg-yellow-100 dark:bg-yellow-500/20 flex items-center justify-center text-yellow-600 dark:text-yellow-400">
                             <Zap size={18} />
@@ -189,7 +220,9 @@ export function ShortcutsMenuModal({
                         </div>
                     )}
                 </div>
-            </div>
-        </div>
+                    </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
     );
 }

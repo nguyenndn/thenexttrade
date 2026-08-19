@@ -2,10 +2,13 @@
 
 import { X, TrendingUp, TrendingDown, BarChart3 } from "lucide-react";
 import { createPortal } from "react-dom";
+import { useEffect } from "react";
+import { motion } from "framer-motion";
 
 import { format } from "date-fns";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 
 interface DayTradeListProps {
     date: string;
@@ -39,20 +42,42 @@ export function DayTradeList({
     const dateObj = new Date(date);
     const displayDate = format(dateObj, "EEE, MMM d, yyyy");
 
-    if (typeof document === "undefined") return null;
-
     // Growth calculation
     const growth = startBalance ? (netPnl / startBalance) * 100 : 0;
 
     const deposit = 0; // Deposit data placeholder
 
+    // Body scroll lock: locked while mounted (open + exit), released on unmount.
+    useEffect(() => {
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
+    if (typeof document === "undefined") return null;
+
     return createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center animate-in fade-in duration-200 p-4">
+        <motion.div
+            variants={backdropVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ type: "tween", duration: 0.2 }}
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+        >
             <div
-                className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+                className="fixed inset-0 bg-black/50 backdrop-blur-sm"
                 onClick={onClose}
             />
-            <div className="relative z-10 bg-white dark:bg-[#1E2028] w-full max-w-md rounded-xl shadow-2xl border border-dashboard flex flex-col max-h-[95vh] overflow-hidden animate-in zoom-in-95 duration-200 cursor-default">
+            <motion.div
+                variants={panelVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={SPRING_SOFT}
+                className="relative z-10 bg-white dark:bg-[#1E2028] w-full max-w-md rounded-xl shadow-2xl border border-dashboard flex flex-col max-h-[95vh] overflow-hidden cursor-default"
+            >
                 {/* Close Button Header (No Border) */}
                 <div className="px-6 pt-6 pb-2 relative shrink-0">
                     <h2 className="text-lg font-bold text-gray-700 dark:text-white">
@@ -295,8 +320,8 @@ export function DayTradeList({
                         View In Journal
                     </Link>
                 </div>
-            </div>
-        </div>,
+            </motion.div>
+        </motion.div>,
         document.body
     );
 }

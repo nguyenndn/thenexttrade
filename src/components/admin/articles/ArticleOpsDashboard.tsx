@@ -3,6 +3,7 @@
 import { trackEvent } from "@/lib/track";
 
 import { useState, useTransition } from "react";
+import { AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import {
     FileText,
@@ -10,7 +11,7 @@ import {
     Search,
     AlertTriangle,
     CheckCircle2,
-    Sparkles,
+    Wand2,
     ExternalLink,
     Pencil,
     SearchCheck,
@@ -261,7 +262,7 @@ export function ArticleOpsDashboard({
 
                 {/* Bulk Toolbar */}
                 {selectedIds.size > 0 && (
-                    <div className="flex items-center gap-3 px-4 py-2.5 bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-xl">
+                    <div className="flex flex-wrap items-center gap-3 px-4 py-2.5 bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-xl">
                         <span className="text-sm font-bold text-gray-700 dark:text-gray-200">
                             {selectedIds.size} selected
                         </span>
@@ -548,7 +549,7 @@ export function ArticleOpsDashboard({
                                                         className="p-1.5 rounded-lg hover:bg-gold/10 transition-colors text-gray-400 hover:text-gold disabled:opacity-50"
                                                         aria-label="Generate image prompts"
                                                     >
-                                                        <Sparkles
+                                                        <Wand2
                                                             size={14}
                                                             className={
                                                                 loadingPromptId ===
@@ -595,47 +596,47 @@ export function ArticleOpsDashboard({
                 </div>
 
                 {/* Prompt Modal */}
-                {promptsData && (
-                    <ArticleImagePromptModal
-                        prompts={promptsData}
-                        onClose={() => setPromptsData(null)}
-                    />
-                )}
+                <AnimatePresence>
+                    {promptsData && (
+                        <ArticleImagePromptModal
+                            prompts={promptsData}
+                            onClose={() => setPromptsData(null)}
+                        />
+                    )}
+                </AnimatePresence>
 
                 {/* SEO Fix Modal */}
-                {seoSuggestion && (
-                    <ArticleSeoFixModal
-                        suggestion={seoSuggestion}
-                        isApplying={isApplyingSeo}
-                        onApply={handleApplySeoFix}
-                        onRegenerate={() =>
-                            handleOpenSeoFix(seoSuggestion.articleId)
-                        }
-                        onClose={() => setSeoSuggestion(null)}
-                    />
-                )}
+                <AnimatePresence>
+                    {seoSuggestion && (
+                        <ArticleSeoFixModal
+                            suggestion={seoSuggestion}
+                            isApplying={isApplyingSeo}
+                            onApply={handleApplySeoFix}
+                            onRegenerate={() =>
+                                handleOpenSeoFix(seoSuggestion.articleId)
+                            }
+                            onClose={() => setSeoSuggestion(null)}
+                        />
+                    )}
+                </AnimatePresence>
                 {/* Bulk SEO Fix Modal */}
-                {showBulkSeo && (
-                    <BulkSeoFixModal
-                        articleIds={[...selectedIds]}
-                        open={showBulkSeo}
-                        onClose={() => setShowBulkSeo(false)}
-                        onApplied={() => {
-                            setShowBulkSeo(false);
-                            setSelectedIds(new Set());
-                            handleFilterChange(activeFilter);
-                        }}
-                    />
-                )}
+                <BulkSeoFixModal
+                    articleIds={[...selectedIds]}
+                    open={showBulkSeo}
+                    onClose={() => setShowBulkSeo(false)}
+                    onApplied={() => {
+                        setShowBulkSeo(false);
+                        setSelectedIds(new Set());
+                        handleFilterChange(activeFilter);
+                    }}
+                />
 
                 {/* Bulk Image Prompt Modal */}
-                {showBulkImages && (
-                    <BulkImagePromptModal
-                        articleIds={[...selectedIds]}
-                        open={showBulkImages}
-                        onClose={() => setShowBulkImages(false)}
-                    />
-                )}
+                <BulkImagePromptModal
+                    articleIds={[...selectedIds]}
+                    open={showBulkImages}
+                    onClose={() => setShowBulkImages(false)}
+                />
             </div>
         </Tabs>
     );

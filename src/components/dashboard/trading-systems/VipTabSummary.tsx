@@ -6,6 +6,7 @@ import {
     CheckCircle2,
     Loader2,
     ExternalLink,
+    Send,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -15,6 +16,7 @@ import type { VipRequest } from "@prisma/client";
 
 interface VipTabSummaryProps {
     vipRequest?: VipRequest | null;
+    vipLink?: string | null;
 }
 
 const PRO_BENEFITS = [
@@ -22,10 +24,10 @@ const PRO_BENEFITS = [
     "Advanced Intelligence features & trade analysis",
     "VIP Telegram community access",
     "Priority support & VIP trading resources",
-    "Account-scoped entitlements - control per broker account",
+    "VIP access scoped to your verified broker account",
 ];
 
-export function VipTabSummary({ vipRequest }: VipTabSummaryProps) {
+export function VipTabSummary({ vipRequest, vipLink }: VipTabSummaryProps) {
     const { isPro, status, loading } = useProAccess();
 
     if (loading) {
@@ -44,24 +46,37 @@ export function VipTabSummary({ vipRequest }: VipTabSummaryProps) {
                     <Crown className="h-6 w-6 text-emerald-500 shrink-0" />
                     <div>
                         <p className="font-bold text-emerald-700 dark:text-emerald-400">
-                            Pro Active
+                            VIP Active
                         </p>
                         <p className="text-sm text-emerald-600/80 dark:text-emerald-400/70">
-                            You have full Pro access. Manage your accounts from
+                            You have full VIP access. Manage your accounts from
                             the Account Hub.
                         </p>
                     </div>
                 </div>
-                <Link
-                    href="/dashboard/accounts"
-                    className={cn(
-                        buttonVariants({ variant: "primary", size: "smd" }),
-                        "bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 border-none shadow-lg shadow-gold/20 hover:scale-105 transition-all duration-300 w-full sm:w-auto"
+                <div className="flex flex-col sm:flex-row gap-3">
+                    <Link
+                        href="/dashboard/accounts"
+                        className={cn(
+                            buttonVariants({ variant: "primary", size: "smd" }),
+                            "bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 border-none shadow-lg shadow-gold/20 hover:scale-105 transition-all duration-300 w-full sm:w-auto"
+                        )}
+                    >
+                        Go to Account Hub
+                        <ExternalLink size={16} className="ml-2" />
+                    </Link>
+                    {vipLink && (
+                        <a
+                            href={vipLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#2AABEE] text-white font-bold text-sm shadow-lg shadow-[#2AABEE]/20 hover:bg-[#2298d4] transition-all hover:scale-105"
+                        >
+                            <Send size={16} />
+                            Join VIP Telegram
+                        </a>
                     )}
-                >
-                    Go to Account Hub
-                    <ExternalLink size={16} className="ml-2" />
-                </Link>
+                </div>
             </div>
         );
     }
@@ -76,7 +91,7 @@ export function VipTabSummary({ vipRequest }: VipTabSummaryProps) {
                             Verification Under Review
                         </p>
                         <p className="text-sm text-amber-600/80 dark:text-amber-400/70">
-                            Your Partner Pro request is under review. We will
+                            Your VIP request is under review. We will
                             update your account once eligibility is verified.
                         </p>
                     </div>
@@ -98,9 +113,9 @@ export function VipTabSummary({ vipRequest }: VipTabSummaryProps) {
                     </h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                         Open a trading account under our IB to apply for free
-                        Pro access with EA downloads, VIP tools, and advanced
-                        trading intelligence. Partner Pro access depends on
-                        supported broker and account eligibility.
+                        VIP access with EA downloads, VIP tools, and advanced
+                        trading intelligence. VIP access depends on supported
+                        broker and account eligibility.
                     </p>
                 </div>
             </div>
@@ -127,7 +142,7 @@ export function VipTabSummary({ vipRequest }: VipTabSummaryProps) {
                     className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold text-sm hover:from-amber-600 hover:to-amber-700 transition-all shadow-lg shadow-amber-500/20"
                 >
                     <Crown size={16} />
-                    Get Pro Access Free
+                    Get VIP Access Free
                     <ArrowRight size={16} />
                 </Link>
                 <Link

@@ -4,7 +4,7 @@ import { TabBar } from "@/components/ui/TabBar";
 import { FileText, Clock } from "lucide-react";
 
 import { useState, useEffect, useMemo } from "react";
-import { Edit2, ArrowUpDown, Activity, Zap, Sparkles } from "lucide-react";
+import { Edit2, ArrowUpDown, Activity, Zap, Brain } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { utcTime, cn } from "@/lib/utils";
@@ -848,7 +848,7 @@ export default function JournalList({
                                                                                 {entry.autopilotStatus ===
                                                                                     "PROCESSED" && (
                                                                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-500 border border-violet-500/20 text-[9px] font-black uppercase tracking-wider">
-                                                                                        <Sparkles
+                                                                                        <Brain
                                                                                             size={
                                                                                                 10
                                                                                             }
@@ -1028,7 +1028,7 @@ export default function JournalList({
                                                     {entry.autopilotStatus ===
                                                         "PROCESSED" && (
                                                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-500 border border-violet-500/20 text-[9px] font-black uppercase tracking-wider">
-                                                            <Sparkles
+                                                            <Brain
                                                                 size={10}
                                                             />
                                                             AI Autopilot

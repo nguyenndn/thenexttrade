@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { Plus, Search, ArrowUpDown, ChevronDown, Check } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -367,7 +368,8 @@ export function StrategyManager({
             </div>
 
             {/* Modal */}
-            {showModal && (
+            <AnimatePresence>
+                {showModal && (
                 <StrategyModal
                     strategy={editingStrategy}
                     onClose={() => {
@@ -376,7 +378,8 @@ export function StrategyManager({
                     }}
                     onSave={handleSave}
                 />
-            )}
+                )}
+            </AnimatePresence>
 
             <ConfirmDialog
                 isOpen={isConfirmOpen}

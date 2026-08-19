@@ -29,7 +29,7 @@ export function OnboardingCard({
 
     return (
         <div
-            className="relative bg-white dark:bg-[#1A1D27] rounded-2xl border border-dashboard shadow-2xl w-[340px] overflow-hidden pointer-events-auto"
+            className="relative bg-white dark:bg-[#1A1D27] rounded-2xl border border-dashboard shadow-2xl w-[340px] max-w-[calc(100vw-2rem)] overflow-hidden pointer-events-auto"
             style={{ zIndex: 99999 }}
         >
             {/* Progress Bar */}

@@ -1,8 +1,18 @@
 # Design
 
-Last reviewed: 2026-05-26
+Last reviewed: 2026-08-18
 
 Design direction: premium, calm, operational, and fast to scan. Dashboard pages should feel like tools, not landing pages.
+
+## Feature Density
+
+The product now has many surfaces: journal, Academy, tools, brokers, community, trading systems, reports, AI, rules, missions, and admin ops. The design rule is to show the right surface at the right time, not every surface at once.
+
+- Public homepage: one primary CTA, proof, then clear paths. Do not stack several CTA blocks with the same purpose.
+- New user dashboard: setup and first-data actions only.
+- Active trader dashboard: current trading state and one next action.
+- Admin pages: action queues and support context before decorative charts.
+- Trading-system pages: product function, access path, setup guidance, and risk copy. Avoid backtest-style mockups unless validated.
 
 ## Layout
 
@@ -117,6 +127,12 @@ Subtle backgrounds are allowed:
 - Soft premium surface treatment.
 
 Avoid decorative blobs/orbs and one-note color palettes.
+
+## Brand Boundaries
+
+- TheNextTrade is the platform identity and should stay in global navigation/header.
+- GoldScalperNinja is the community and MT5-system ecosystem. Use it on `/community`, trading-system cards/details, and EA-specific copy.
+- Do not mix both brands in the same heading unless the copy explains the relationship, for example: `GoldScalperNinja ecosystem, powered by TheNextTrade`.
 
 ## Onboarding Wizard Pattern
 

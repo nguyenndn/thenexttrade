@@ -95,7 +95,7 @@ export async function processWelcomeNudges(): Promise<WelcomeNudgeResult> {
                     message:
                         "After just one trade, your dashboard unlocks: Performance Charts, AI Trade Score, Psychology Tracker, Session Analytics, and Weekly Reports.",
                     link: "/dashboard/accounts?setup=sync",
-                    icon: "Sparkles",
+                    icon: "Brain",
                     priority: "NORMAL",
                 },
             });

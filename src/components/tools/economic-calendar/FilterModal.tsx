@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { X, Filter, Check } from "lucide-react";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { Button } from "@/components/ui/Button";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 
 export type CalendarFilters = {
     currencies: string[]; // ['USD', 'EUR', ...]
@@ -62,7 +64,20 @@ export function FilterModal({
         }
     }, [isOpen, initialFilters]);
 
-    if (!isOpen) return null;
+    // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
+    useEffect(() => {
+        if (isOpen) document.body.style.overflow = "hidden";
+    }, [isOpen]);
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
+    const releaseLock = () => {
+        document.body.style.overflow = "unset";
+    };
 
     const toggleCurrency = (currency: string) => {
         setFilters((prev) => {
@@ -109,14 +124,28 @@ export function FilterModal({
     };
 
     return (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
-            <div
-                className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
-                onClick={onClose}
-            />
-            <div
-                className={`relative z-10 w-full max-w-md rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] cursor-default ${isDark ? "bg-slate-800 text-white" : "bg-white text-gray-700"}`}
+        <AnimatePresence onExitComplete={releaseLock}>
+            {isOpen && (
+            <motion.div
+                variants={backdropVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ type: "tween", duration: 0.2 }}
+                className="fixed inset-0 z-[70] flex items-center justify-center p-4"
             >
+                <div
+                    className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+                    onClick={onClose}
+                />
+                <motion.div
+                    variants={panelVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={SPRING_SOFT}
+                    className={`relative z-10 w-full max-w-md rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] cursor-default ${isDark ? "bg-slate-800 text-white" : "bg-white text-gray-700"}`}
+                >
                 {/* Header */}
                 <div
                     className={`px-6 py-4 flex items-center justify-between border-b ${isDark ? "border-slate-700 bg-slate-900" : "border-dashboard bg-gray-50"}`}
@@ -363,7 +392,9 @@ export function FilterModal({
                         Apply Filters
                     </Button>
                 </div>
-            </div>
-        </div>
+                </motion.div>
+            </motion.div>
+            )}
+        </AnimatePresence>
     );
 }

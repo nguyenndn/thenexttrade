@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { EconomicEvent, ImpactLevel } from "@prisma/client";
 import { format } from "date-fns";
-import { Info, X, ShieldAlert, Sparkles, Clock, Globe } from "lucide-react";
+import { Info, X, ShieldAlert, Lightbulb, Clock, Globe } from "lucide-react";
 import { getEventExplanation } from "@/lib/economic-event-explanations";
 import { Button } from "@/components/ui/Button";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 
 interface EventRowProps {
     event: EconomicEvent;
@@ -14,6 +16,15 @@ interface EventRowProps {
 
 export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
     const [isDetailOpen, setIsDetailOpen] = useState(false);
+
+    // Body scroll lock while the detail modal is open.
+    useEffect(() => {
+        if (isDetailOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+    }, [isDetailOpen]);
 
     const impactColors = {
         [ImpactLevel.HIGH]: "bg-red-500 text-white",
@@ -93,12 +104,23 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
             </div>
 
             {/* Event Educational Detail Modal */}
-            {isDetailOpen && (
-                <div
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
+            <AnimatePresence>
+                {isDetailOpen && (
+                <motion.div
+                    variants={backdropVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={{ type: "tween", duration: 0.2 }}
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
                     onClick={() => setIsDetailOpen(false)}
                 >
-                    <div
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
                         className="bg-white dark:bg-[#151925] border border-gold/20 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative overflow-hidden"
                         onClick={(e) => e.stopPropagation()}
                     >
@@ -146,7 +168,7 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
                         {explanation ? (
                             <div className="space-y-3 bg-gold/5 border border-gold/15 rounded-xl p-4 text-xs">
                                 <div className="flex items-center gap-1.5 font-bold text-gold uppercase tracking-wider text-[11px]">
-                                    <Sparkles size={14} />
+                                    <Lightbulb size={14} />
                                     <span>{explanation.category} Overview</span>
                                 </div>
                                 <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
@@ -183,9 +205,10 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
                                 Close
                             </Button>
                         </div>
-                    </div>
-                </div>
-            )}
+                    </motion.div>
+                </motion.div>
+                )}
+            </AnimatePresence>
         </>
     );
 }

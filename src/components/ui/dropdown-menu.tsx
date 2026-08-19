@@ -2,8 +2,11 @@
 
 import * as React from "react";
 import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import type { MotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import { SPRING_SOFT } from "@/lib/animations";
 
 interface DropdownMenuProps {
     children: React.ReactNode;
@@ -145,10 +148,15 @@ export function DropdownMenuTrigger({
     );
 }
 
-interface DropdownMenuContentProps extends React.HTMLAttributes<HTMLDivElement> {
+// Omit framer-motion's reserved props (onDrag/onAnimationStart/onTap/…): motion.div
+// redefines them with its own signatures, so a raw HTMLAttributes spread would collide.
+type DropdownMenuContentProps = Omit<
+    React.HTMLAttributes<HTMLDivElement>,
+    keyof MotionProps
+> & {
     children: React.ReactNode;
     align?: "start" | "end" | "center";
-}
+};
 
 export function DropdownMenuContent({
     children,
@@ -210,25 +218,34 @@ export function DropdownMenuContent({
         }
     }, [isOpen, triggerRef, align]);
 
-    if (!isOpen || !mounted) return null;
+    if (!mounted) return null;
 
     return createPortal(
-        <div
-            ref={contentRef}
-            className={cn(
-                "fixed z-[200] min-w-[8rem] overflow-hidden rounded-md border border-dashboard bg-white p-1 text-gray-950 shadow-md dark:bg-[#1E2028] dark:text-gray-50",
-                className
+        <AnimatePresence>
+            {isOpen && (
+                <motion.div
+                    ref={contentRef}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={SPRING_SOFT}
+                    className={cn(
+                        "fixed z-[200] min-w-[8rem] overflow-hidden rounded-md border border-dashboard bg-white p-1 text-gray-950 shadow-md dark:bg-[#1E2028] dark:text-gray-50",
+                        className
+                    )}
+                    {...props}
+                    style={{
+                        ...externalStyle,
+                        top: `${position.top}px`,
+                        left: `${position.left}px`,
+                        minWidth: `${position.width}px`,
+                        transformOrigin: "top",
+                    }}
+                >
+                    {children}
+                </motion.div>
             )}
-            {...props}
-            style={{
-                ...externalStyle,
-                top: `${position.top}px`,
-                left: `${position.left}px`,
-                minWidth: `${position.width}px`,
-            }}
-        >
-            {children}
-        </div>,
+        </AnimatePresence>,
         document.body
     );
 }

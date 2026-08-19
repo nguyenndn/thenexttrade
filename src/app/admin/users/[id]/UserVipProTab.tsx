@@ -1,6 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+    SPRING_SOFT,
+    backdropVariants,
+    panelVariants,
+} from "@/lib/animations";
 import { format } from "date-fns";
 import {
     KeyRound,
@@ -81,6 +87,20 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
     const [rejectingId, setRejectingId] = useState<string | null>(null);
     const [rejectReason, setRejectReason] = useState("");
     const [screenshotModal, setScreenshotModal] = useState<string | null>(null);
+
+    // Body scroll lock: lock while the lightbox is open, release after the
+    // exit animation completes (in onExitComplete) so the scrollbar doesn't flash.
+    useEffect(() => {
+        if (screenshotModal) {
+            document.body.style.overflow = "hidden";
+        }
+    }, [screenshotModal]);
+
+    const releaseLightboxLock = () => {
+        if (!screenshotModal) {
+            document.body.style.overflow = "unset";
+        }
+    };
 
     // Manual Grant Form State
     const [selectedAccountId, setSelectedAccountId] =
@@ -815,12 +835,24 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
             </div>
 
             {/* Screenshot Lightbox Modal */}
+            <AnimatePresence onExitComplete={releaseLightboxLock}>
             {screenshotModal && (
-                <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 cursor-pointer"
-                    onClick={() => setScreenshotModal(null)}
-                >
-                    <div
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 cursor-pointer">
+                    <motion.div
+                        variants={backdropVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={{ type: "tween", duration: 0.2 }}
+                        className="fixed inset-0 bg-black/80 backdrop-blur-sm"
+                        onClick={() => setScreenshotModal(null)}
+                    />
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
                         className="relative max-w-5xl max-h-[90vh] bg-white dark:bg-[#151925] rounded-xl overflow-hidden p-2 shadow-2xl cursor-default"
                         onClick={(e) => e.stopPropagation()}
                     >
@@ -842,9 +874,10 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                 Close View
                             </Button>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             )}
+            </AnimatePresence>
         </div>
     );
 }

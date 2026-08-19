@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
+import { SPRING_SOFT, backdropVariants } from "@/lib/animations";
 import {
     CheckCircle,
     XCircle,
@@ -920,12 +922,22 @@ export function QuizClient({
             </div>
 
             {/* Mobile Sidebar Drawer */}
-            {mobileMenuOpen && (
-                <div
+            <AnimatePresence>
+                {mobileMenuOpen && (
+                <motion.div
+                    variants={backdropVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={{ type: "tween", duration: 0.2 }}
                     className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm lg:hidden"
                     onClick={() => setMobileMenuOpen(false)}
                 >
-                    <div
+                    <motion.div
+                        initial={{ x: "100%" }}
+                        animate={{ x: 0 }}
+                        exit={{ x: "100%" }}
+                        transition={SPRING_SOFT}
                         className="absolute right-0 top-0 bottom-0 w-3/4 max-w-xs bg-white dark:bg-[#151925] shadow-2xl p-6 overflow-y-auto"
                         onClick={(e) => e.stopPropagation()}
                     >
@@ -941,9 +953,10 @@ export function QuizClient({
                             </Button>
                         </div>
                         <div className="space-y-4">{sidebarContent}</div>
-                    </div>
-                </div>
-            )}
+                    </motion.div>
+                </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Mobile Menu FAB */}
             <Button

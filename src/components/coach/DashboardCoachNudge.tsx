@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import {
-    Sparkles,
+    Brain,
     ArrowRight,
     TrendingUp,
     AlertTriangle,
@@ -101,7 +101,7 @@ export function DashboardCoachNudge({
             );
         }
         return (
-            <Sparkles
+            <Brain
                 className="text-amber-500 dark:text-gold shrink-0"
                 size={16}
             />
@@ -121,7 +121,7 @@ export function DashboardCoachNudge({
             );
         if (nextBestAction.id.includes("LESSON"))
             return <PlayCircle className="text-[#2F80ED]" size={24} />;
-        return <Sparkles className="text-amber-500 dark:text-gold" size={24} />;
+        return <Brain className="text-amber-500 dark:text-gold" size={24} />;
     };
 
     return (
@@ -280,7 +280,7 @@ export function DashboardCoachNudge({
                                     }
                                 }}
                             >
-                                <Sparkles size={14} />
+                                <Brain size={14} />
                                 <span>Try for Next 10 Trades</span>
                             </Button>
 

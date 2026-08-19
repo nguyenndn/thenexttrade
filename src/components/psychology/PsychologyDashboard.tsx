@@ -11,7 +11,7 @@ import {
     TrendingDown,
     Heart,
     Star,
-    Sparkles,
+    Trophy,
     ClipboardCheck,
 } from "lucide-react";
 
@@ -294,7 +294,7 @@ export function PsychologyDashboard({
                         color: "text-primary",
                         bg: "bg-primary/10",
                         border: "border-t-primary",
-                        icon: Sparkles,
+                        icon: Trophy,
                     },
                     {
                         label: "Plan Adherence",

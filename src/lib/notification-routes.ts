@@ -4,6 +4,7 @@ export const NOTIFICATION_ROUTES = {
     EA_DASHBOARD: "/dashboard/trading-systems",
     VIP_ACCOUNTS: "/dashboard/accounts",
     VIP_UNLOCK_PRO: "/dashboard/accounts?intent=unlock-pro",
+    VIP_COMMUNITY: "/dashboard/trading-systems?tab=VIP",
     JOURNAL: "/dashboard/journal",
     REPORTS: "/dashboard/reports",
     MY_ACCOUNTS: "/dashboard/trading-systems", // Legacy alias kept safe for old notification callers.

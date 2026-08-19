@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
     Cable,
-    Sparkles,
+    Rocket,
     FileText,
     Trophy,
     GraduationCap,
@@ -15,6 +16,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { trackEvent } from "@/lib/track";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 
 interface MilestoneData {
     id: string;
@@ -33,8 +35,8 @@ const ICON_MAP: Record<
         gradient: "from-primary to-teal-400",
         shadow: "shadow-primary/30",
     },
-    Sparkles: {
-        Icon: Sparkles,
+    Rocket: {
+        Icon: Rocket,
         gradient: "from-primary to-teal-400",
         shadow: "shadow-primary/30",
     },
@@ -68,7 +70,6 @@ const ICON_MAP: Record<
 export function MilestoneCelebrationModal() {
     const [queue, setQueue] = useState<MilestoneData[]>([]);
     const [current, setCurrent] = useState<MilestoneData | null>(null);
-    const [isVisible, setIsVisible] = useState(false);
     const fetched = useRef(false);
 
     // Fetch uncelebrated milestones on mount
@@ -96,12 +97,19 @@ export function MilestoneCelebrationModal() {
             const [next, ...rest] = queue;
             setCurrent(next);
             setQueue(rest);
-            // Animate in
-            setTimeout(() => setIsVisible(true), 50);
             // Fire confetti
             setTimeout(() => fireConfetti(), 200);
         }
     }, [current, queue]);
+
+    // Body scroll lock while a milestone card is on screen.
+    useEffect(() => {
+        if (current) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+    }, [current]);
 
     const fireConfetti = useCallback(async () => {
         const confetti = (await import("canvas-confetti")).default;
@@ -162,10 +170,7 @@ export function MilestoneCelebrationModal() {
             body: JSON.stringify({ milestoneIds: [current.id] }),
         }).catch(() => {});
 
-        // Animate out
-        setIsVisible(false);
-
-        // Navigate or show next
+        // Navigate or show next after the exit animation window
         setTimeout(() => {
             if (navigateToLink && current.link) {
                 window.location.href = current.link;
@@ -174,27 +179,37 @@ export function MilestoneCelebrationModal() {
         }, 300);
     };
 
-    if (!current) return null;
-
-    const iconConfig = ICON_MAP[current.icon] || ICON_MAP.Sparkles;
-    const { Icon, gradient, shadow } = iconConfig;
-
     return (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-            {/* Backdrop */}
-            <div
-                className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${isVisible ? "opacity-100" : "opacity-0"}`}
-                onClick={() => handleCelebrate(false)}
-            />
+        <AnimatePresence>
+            {current &&
+                (() => {
+                    const iconConfig =
+                        ICON_MAP[current.icon] || ICON_MAP.Trophy;
+                    const { Icon, gradient, shadow } = iconConfig;
+                    return (
+                        <motion.div
+                            variants={backdropVariants}
+                            initial="initial"
+                            animate="animate"
+                            exit="exit"
+                            transition={{ type: "tween", duration: 0.2 }}
+                            className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+                        >
+                            {/* Backdrop */}
+                            <div
+                                className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+                                onClick={() => handleCelebrate(false)}
+                            />
 
-            {/* Modal */}
-            <div
-                className={`relative z-10 bg-white dark:bg-[#1E2028] rounded-2xl w-full max-w-md overflow-hidden border border-dashboard shadow-2xl transition-all duration-500 ${
-                    isVisible
-                        ? "opacity-100 scale-100 translate-y-0"
-                        : "opacity-0 scale-95 translate-y-4"
-                }`}
-            >
+                            {/* Modal */}
+                            <motion.div
+                                variants={panelVariants}
+                                initial="initial"
+                                animate="animate"
+                                exit="exit"
+                                transition={SPRING_SOFT}
+                                className="relative z-10 bg-white dark:bg-[#1E2028] rounded-2xl w-full max-w-md overflow-hidden border border-dashboard shadow-2xl"
+                            >
                 {/* Close */}
                 <Button
                     onClick={() => handleCelebrate(false)}
@@ -223,7 +238,7 @@ export function MilestoneCelebrationModal() {
                         {/* Queue indicator */}
                         {queue.length > 0 && (
                             <div className="absolute top-2 left-6 flex items-center gap-1.5 text-xs font-bold text-gray-400 dark:text-gray-500">
-                                <Sparkles size={12} className="text-primary" />+
+                                <Trophy size={12} className="text-primary" />+
                                 {queue.length} more
                             </div>
                         )}
@@ -255,8 +270,11 @@ export function MilestoneCelebrationModal() {
                     >
                         Got it!
                     </Button>
-                </div>
-            </div>
-        </div>
+                            </div>
+                            </motion.div>
+                        </motion.div>
+                    );
+                })()}
+        </AnimatePresence>
     );
 }

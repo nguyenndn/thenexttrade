@@ -228,7 +228,7 @@ export function AiProvidersPanel({
                             key={provider.id}
                             className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl shadow-sm hover:shadow-md transition-shadow p-5 space-y-4"
                         >
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-wrap items-center justify-between gap-3">
                                 <div className="flex items-center gap-4">
                                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                                         <Cpu className="w-5 h-5" />

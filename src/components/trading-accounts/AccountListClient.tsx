@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition, useEffect, useRef } from "react";
+import { AnimatePresence } from "framer-motion";
 import {
     Plus,
     RefreshCw,
@@ -776,6 +777,7 @@ export function AccountListClient({
             )}
 
             {/* Settings Modal */}
+            <AnimatePresence>
             {activeModal.type === "SETTINGS" && (
                 <AccountSettingsModal
                     isOpen={true}
@@ -790,6 +792,7 @@ export function AccountListClient({
                     }}
                 />
             )}
+            </AnimatePresence>
 
             {/* Add Modal */}
             <AddAccountModal
@@ -1101,7 +1104,7 @@ export function AccountListClient({
                                     •
                                 </span>
                                 <a
-                                    href="https://one.exnesstrack.org/a/1ewjh1ww32"
+                                    href="https://one.exnessonelink.com/a/1ewjh1ww32"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-amber-500 hover:text-amber-600 dark:text-amber-400 dark:hover:text-amber-300 font-bold transition-colors"

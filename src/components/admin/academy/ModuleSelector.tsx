@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Check, Layers, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SPRING_SOFT } from "@/lib/animations";
 
 interface ModuleOption {
     id: string;
@@ -109,8 +111,16 @@ export function ModuleSelector({
             </button>
 
             {/* Dropdown */}
-            {isOpen && (
-                <div className="absolute z-50 mt-1 w-full bg-white dark:bg-[#1a1e2e] border border-gray-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden animate-in fade-in-0 zoom-in-95 duration-100">
+            <AnimatePresence>
+                {isOpen && (
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={SPRING_SOFT}
+                    style={{ transformOrigin: "top" }}
+                    className="absolute z-50 mt-1 w-full bg-white dark:bg-[#1a1e2e] border border-gray-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden"
+                >
                     {/* Search */}
                     <div className="p-2 border-b border-gray-200 dark:border-white/10">
                         <div className="relative">
@@ -175,8 +185,9 @@ export function ModuleSelector({
                             )
                         )}
                     </div>
-                </div>
-            )}
+                </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

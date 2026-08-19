@@ -148,7 +148,7 @@ export function AdminNotificationBell() {
             </PopoverTrigger>
 
             <PopoverContent
-                className="w-96 p-0 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-xl overflow-hidden"
+                className="w-[calc(100vw-2rem)] max-w-96 p-0 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-xl overflow-hidden"
                 align="end"
             >
                 <div className="p-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">

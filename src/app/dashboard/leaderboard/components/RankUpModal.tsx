@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { UserTierBadge } from "./UserTierBadge";
 import { Crown, ArrowUp, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { TIERS } from "@/lib/tier-utils";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import type { LeaderboardResponse } from "../actions";
 
 interface RankUpModalProps {
@@ -115,18 +117,47 @@ export function RankUpModal({ myRank }: RankUpModalProps) {
         }
     }, [myRank, fireConfetti]);
 
-    if (!showModal || !myRank) return null;
+    // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
+    useEffect(() => {
+        if (showModal) document.body.style.overflow = "hidden";
+    }, [showModal]);
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
+    const releaseLock = () => {
+        document.body.style.overflow = "unset";
+    };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            {/* Backdrop */}
-            <div
-                className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
-                onClick={() => setShowModal(false)}
-            />
+        <AnimatePresence onExitComplete={releaseLock}>
+            {showModal && myRank && (
+                <motion.div
+                    variants={backdropVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={{ type: "tween", duration: 0.2 }}
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                >
+                    {/* Backdrop */}
+                    <div
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+                        onClick={() => setShowModal(false)}
+                    />
 
-            {/* Modal */}
-            <div className="relative z-10 w-full max-w-sm bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-300 border border-dashboard">
+                    {/* Modal */}
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
+                        className="relative z-10 w-full max-w-sm bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl overflow-hidden border border-dashboard"
+                    >
                 {/* Glow */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/20 rounded-full blur-[80px] pointer-events-none" />
 
@@ -209,7 +240,9 @@ export function RankUpModal({ myRank }: RankUpModalProps) {
                         Keep Going
                     </Button>
                 </div>
-            </div>
-        </div>
+                </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
     );
 }

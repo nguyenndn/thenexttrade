@@ -8,7 +8,6 @@ import {
     ChevronLeft,
     ChevronRight,
     CheckCircle,
-    Sparkles,
     GraduationCap,
     ArrowLeft,
     Clock,
@@ -187,7 +186,7 @@ export default function LessonView({
                                         ? "Processing..."
                                         : "Complete Lesson"}
                                     {!completing && (
-                                        <Sparkles
+                                        <CheckCircle
                                             size={20}
                                             className="text-yellow-300"
                                         />

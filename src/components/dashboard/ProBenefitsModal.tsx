@@ -2,6 +2,8 @@
 
 import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { SPRING_SOFT, backdropVariants } from "@/lib/animations";
 import {
     X,
     Crown,
@@ -14,6 +16,7 @@ import {
     TrendingUp,
     CheckCircle2,
     ArrowRight,
+    Send,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -80,13 +83,13 @@ const BENEFITS: { category: string; items: Benefit[] }[] = [
                 icon: Headphones,
                 title: "Priority Support",
                 description:
-                    "Skip the queue - Pro members get responses within 4 hours via Telegram or email.",
+                    "Skip the queue - VIP members get responses within 4 hours via Telegram or email.",
             },
             {
                 icon: Crown,
                 title: "VIP Community Access",
                 description:
-                    "Exclusive Pro Telegram group with live trade ideas, market calls, and direct access to our analysts.",
+                    "Exclusive VIP Telegram group with live trade ideas, market calls, and direct access to our analysts.",
             },
         ],
     },
@@ -96,34 +99,62 @@ interface ProBenefitsModalProps {
     isOpen: boolean;
     onClose: () => void;
     isPro?: boolean;
+    vipLink?: string | null;
 }
 
 export function ProBenefitsModal({
     isOpen,
     onClose,
     isPro = false,
+    vipLink,
 }: ProBenefitsModalProps) {
     const [mounted, setMounted] = useState(false);
     useEffect(() => {
         setMounted(true);
     }, []);
 
-    if (!isOpen || !mounted) return null;
+    // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
+    useEffect(() => {
+        if (isOpen) document.body.style.overflow = "hidden";
+    }, [isOpen]);
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
+    const releaseLock = () => {
+        document.body.style.overflow = "unset";
+    };
+
+    if (!mounted) return null;
 
     return createPortal(
-        /* Backdrop */
-        <div
-            className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4"
-            onClick={onClose}
-        >
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+        <AnimatePresence onExitComplete={releaseLock}>
+            {isOpen && (
+                /* Backdrop */
+                <motion.div
+                    variants={backdropVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={{ type: "tween", duration: 0.2 }}
+                    className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4"
+                    onClick={onClose}
+                >
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
 
-            {/* Panel */}
-            <div
-                className="relative z-10 w-full sm:max-w-lg max-h-[92dvh] overflow-y-auto rounded-t-3xl sm:rounded-2xl bg-white dark:bg-[#13151f] shadow-2xl ring-1 ring-black/5 dark:ring-white/10 flex flex-col"
-                onClick={(e) => e.stopPropagation()}
-            >
+                    {/* Panel */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 32 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 32 }}
+                        transition={SPRING_SOFT}
+                        className="relative z-10 w-full sm:max-w-lg max-h-[92dvh] overflow-y-auto rounded-t-3xl sm:rounded-2xl bg-white dark:bg-[#13151f] shadow-2xl ring-1 ring-black/5 dark:ring-white/10 flex flex-col"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                 {/* Header */}
                 <div className="sticky top-0 z-10 flex items-start justify-between gap-3 bg-white dark:bg-[#13151f] border-b border-dashboard dark:border-white/10 px-5 pt-5 pb-4">
                     <div className="flex items-center gap-3">
@@ -133,8 +164,8 @@ export function ProBenefitsModal({
                         <div>
                             <h2 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
                                 {isPro
-                                    ? "Your Pro Benefits"
-                                    : "What You Get with Pro"}
+                                    ? "Your VIP Benefits"
+                                    : "What You Get with VIP"}
                             </h2>
                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                                 {isPro
@@ -198,6 +229,24 @@ export function ProBenefitsModal({
                     ))}
                 </div>
 
+                {/* Footer CTA - Join VIP Telegram for entitled members */}
+                {isPro && vipLink && (
+                    <div className="sticky bottom-0 border-t border-dashboard dark:border-white/10 bg-white dark:bg-[#13151f] px-5 py-4">
+                        <a
+                            href={vipLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#2AABEE] px-4 py-2.5 text-[13px] font-bold text-white shadow-sm shadow-[#2AABEE]/20 transition-all hover:bg-[#2298d4] hover:shadow-md hover:shadow-[#2AABEE]/25"
+                        >
+                            <Send className="h-3.5 w-3.5" />
+                            Join VIP Telegram
+                        </a>
+                        <p className="mt-2 text-center text-[11px] text-gray-400 dark:text-gray-500">
+                            Live trade ideas, market calls & direct access to our analysts
+                        </p>
+                    </div>
+                )}
+
                 {/* Footer CTA - only for Free Plan */}
                 {!isPro && (
                     <div className="sticky bottom-0 border-t border-dashboard dark:border-white/10 bg-white dark:bg-[#13151f] px-5 py-4">
@@ -206,7 +255,7 @@ export function ProBenefitsModal({
                             onClick={onClose}
                             className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5 text-[13px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25"
                         >
-                            Unlock Pro Free
+                            Unlock VIP Free
                             <ArrowRight className="h-3.5 w-3.5" />
                         </Link>
                         <p className="mt-2 text-center text-[11px] text-gray-400 dark:text-gray-500">
@@ -214,8 +263,10 @@ export function ProBenefitsModal({
                         </p>
                     </div>
                 )}
-            </div>
-        </div>,
+                </motion.div>
+            </motion.div>
+            )}
+        </AnimatePresence>,
         document.body
     );
 }

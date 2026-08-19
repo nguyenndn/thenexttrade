@@ -6,7 +6,6 @@ import {
     BarChart3,
     Bot,
     PlugZap,
-    Sparkles,
     TrendingUp,
     Zap,
     LayoutDashboard,
@@ -39,7 +38,6 @@ export function TradeJournalPreviewSection({
                             title="Three steps to your trading edge"
                             highlight="trading edge"
                             description="Sync your MT5 trades, spot the pattern, and get one clear action for your next session."
-                            icon={Sparkles}
                             titleClassName="lg:whitespace-nowrap"
                             className="mb-6 w-full"
                         />

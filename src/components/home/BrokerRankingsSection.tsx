@@ -7,7 +7,6 @@ import {
     Check,
     ExternalLink,
     Award,
-    Sparkles,
     Landmark,
     TrendingUp,
 } from "lucide-react";
@@ -115,7 +114,6 @@ export function BrokerRankingsSection() {
                     title="Compare Trading Platforms"
                     highlight="Platforms"
                     description="Broker and exchange options for traders who need a place to execute."
-                    icon={Sparkles}
                     className="mb-8"
                 />
 

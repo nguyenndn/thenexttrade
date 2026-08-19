@@ -73,7 +73,7 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 20, scale: 0.95 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-24 right-6 z-[9998] w-[380px] max-h-[calc(100vh-140px)] bg-white dark:bg-[#151925] rounded-2xl shadow-2xl shadow-black/20 border border-dashboard flex flex-col overflow-hidden"
+            className="fixed bottom-24 right-6 z-[9998] w-[calc(100vw-2rem)] sm:w-[380px] max-h-[calc(100vh-140px)] bg-white dark:bg-[#151925] rounded-2xl shadow-2xl shadow-black/20 border border-dashboard flex flex-col overflow-hidden"
         >
             {/* Header */}
             <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between bg-gradient-to-r from-primary/5 to-transparent">

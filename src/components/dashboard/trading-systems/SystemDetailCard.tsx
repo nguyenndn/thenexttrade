@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Lock, Download, Shield, Info, BarChart2, Bot, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import { trackEvent } from "@/lib/track";
 import { toast } from "sonner";
 import { EAProduct } from "@prisma/client";
@@ -194,26 +196,45 @@ export function SystemDetailCard({
                         </Button>
 
                         {/* Toast for Locked State */}
-                        {showLockedToast && (
-                            <div className="absolute bottom-[calc(100%+8px)] right-0 w-48 p-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-700 text-xs rounded-xl shadow-xl font-medium animate-in fade-in slide-in-from-bottom-2 z-20 text-center leading-relaxed">
-                                Please connect your TheNextTrade account to
-                                unlock downloads.
-                            </div>
-                        )}
+                        <AnimatePresence>
+                            {showLockedToast && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 4 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: 4 }}
+                                    transition={{ type: "tween", duration: 0.2 }}
+                                    className="absolute bottom-[calc(100%+8px)] right-0 w-48 p-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-700 text-xs rounded-xl shadow-xl font-medium z-20 text-center leading-relaxed"
+                                >
+                                    Please connect your TheNextTrade account
+                                    to unlock downloads.
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
                 </div>
             </div>
 
             {/* Guide Modal */}
-            {isGuideModalOpen && (
-                <div
-                    className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm overflow-auto flex items-center justify-center p-4 md:p-8"
-                    onClick={() => setIsGuideModalOpen(false)}
-                >
-                    <div
-                        className="bg-white dark:bg-[#0B0E14] w-full max-w-3xl rounded-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-dashboard relative"
-                        onClick={(e) => e.stopPropagation()}
+            <AnimatePresence>
+                {isGuideModalOpen && (
+                    <motion.div
+                        variants={backdropVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={{ type: "tween", duration: 0.2 }}
+                        className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm overflow-auto flex items-center justify-center p-4 md:p-8"
+                        onClick={() => setIsGuideModalOpen(false)}
                     >
+                        <motion.div
+                            variants={panelVariants}
+                            initial="initial"
+                            animate="animate"
+                            exit="exit"
+                            transition={SPRING_SOFT}
+                            className="bg-white dark:bg-[#0B0E14] w-full max-w-3xl rounded-xl shadow-2xl overflow-hidden border border-dashboard relative"
+                            onClick={(e) => e.stopPropagation()}
+                        >
                         <div className="flex items-center justify-between p-6 border-b border-dashboard">
                             <div>
                                 <h2 className="text-xl font-bold text-gray-700 dark:text-white">
@@ -235,13 +256,20 @@ export function SystemDetailCard({
                         <div className="p-6 md:p-8 max-h-[75vh] overflow-y-auto">
                             <InstallationWizard type={guideType} />
                         </div>
-                    </div>
-                </div>
-            )}
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Image Preview Modal */}
-            {isImagePreviewOpen && product.thumbnail && (
-                <div
+            <AnimatePresence>
+                {isImagePreviewOpen && product.thumbnail && (
+                <motion.div
+                    variants={backdropVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={{ type: "tween", duration: 0.2 }}
                     className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-md overflow-auto flex items-center justify-center p-4 md:p-8 !m-0"
                     onClick={() => {
                         setIsImagePreviewOpen(false);
@@ -313,8 +341,9 @@ export function SystemDetailCard({
                             cursor: zoomLevel > 100 ? "grab" : "default",
                         }}
                     />
-                </div>
-            )}
+                </motion.div>
+                )}
+            </AnimatePresence>
         </>
     );
 }

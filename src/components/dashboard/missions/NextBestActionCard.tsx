@@ -5,7 +5,6 @@ import Link from "next/link";
 import {
     ArrowRight,
     Trophy,
-    Sparkles,
     Target,
     Loader2,
     CheckCircle2,
@@ -116,7 +115,7 @@ export function NextBestActionCard({
             <div className="relative p-6 md:p-8 pl-7 md:pl-9 flex flex-col lg:flex-row lg:items-center justify-between gap-6 z-10">
                 <div className="flex-1 space-y-4">
                     <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 dark:bg-primary/5 text-primary border border-primary/20 dark:border-primary/10 shadow-[0_0_15px_rgba(16,185,129,0.05)]">
-                        <Sparkles
+                        <Target
                             size={12}
                             className="fill-current animate-pulse"
                         />

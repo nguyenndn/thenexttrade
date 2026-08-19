@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import { Trophy, Medal } from "lucide-react";
 import { TopMedalStrip } from "./TopMedalStrip";
 import { LeaderboardTable } from "./LeaderboardTable";
@@ -121,12 +122,14 @@ export function LeaderboardContent({
                 </div>
             </div>
 
-            {selectedUser && (
-                <UserProfileCard
-                    entry={selectedUser}
-                    onClose={() => setSelectedUser(null)}
-                />
-            )}
+            <AnimatePresence>
+                {selectedUser && (
+                    <UserProfileCard
+                        entry={selectedUser}
+                        onClose={() => setSelectedUser(null)}
+                    />
+                )}
+            </AnimatePresence>
 
             <LeaderboardMethodologyModal
                 isOpen={isMethodologyOpen}

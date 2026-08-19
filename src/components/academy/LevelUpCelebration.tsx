@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import {
     Trophy,
     Star,
-    Sparkles,
     BookOpen,
     Layers,
     BarChart3,
@@ -622,14 +621,14 @@ export function LevelUpCelebration({
                                         ease: "easeInOut",
                                     }}
                                 >
-                                    <Sparkles
+                                    <Star
                                         size={12}
                                         className="text-amber-600 dark:text-amber-400 fill-current animate-pulse"
                                     />
                                     <span className="text-[10px] font-black uppercase tracking-[0.25em] text-amber-700 dark:text-amber-400">
                                         Level Up!
                                     </span>
-                                    <Sparkles
+                                    <Star
                                         size={12}
                                         className="text-amber-600 dark:text-amber-400 fill-current animate-pulse"
                                     />

@@ -1,18 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
 import {
     Check,
     Copy,
     Link2,
     Share2,
-    Sparkles,
+    Award,
     X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 
 interface CertificateShareModalProps {
     open: boolean;
@@ -49,7 +51,20 @@ export function CertificateShareModal({
         return () => window.removeEventListener("keydown", onKey);
     }, [open, onClose]);
 
-    if (!open) return null;
+    // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
+    useEffect(() => {
+        if (open) document.body.style.overflow = "hidden";
+    }, [open]);
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
+    const releaseLock = () => {
+        document.body.style.overflow = "unset";
+    };
 
     const copyLink = async () => {
         try {
@@ -79,14 +94,26 @@ export function CertificateShareModal({
     };
 
     return (
-        <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
-            onClick={onClose}
-        >
-            <div
-                className="relative w-full max-w-sm rounded-2xl bg-white dark:bg-[#151925] border border-dashboard shadow-2xl animate-in zoom-in-95 fade-in duration-200"
-                onClick={(e) => e.stopPropagation()}
-            >
+        <AnimatePresence onExitComplete={releaseLock}>
+            {open && (
+                <motion.div
+                    variants={backdropVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={{ type: "tween", duration: 0.2 }}
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+                    onClick={onClose}
+                >
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
+                        className="relative w-full max-w-sm rounded-2xl bg-white dark:bg-[#151925] border border-dashboard shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 pt-6 pb-4">
                     <div className="flex items-center gap-2.5">
@@ -114,7 +141,7 @@ export function CertificateShareModal({
                 {/* Body */}
                 <div className="px-6 pb-6 space-y-4">
                     <div className="flex items-center gap-2 rounded-xl bg-primary/5 dark:bg-primary/10 border border-primary/20 px-3.5 py-2.5">
-                        <Sparkles size={14} className="text-primary shrink-0" />
+                        <Award size={14} className="text-primary shrink-0" />
                         <p className="text-[11px] font-semibold text-gray-600 dark:text-gray-300 leading-snug">
                             {subtitle}
                         </p>
@@ -176,7 +203,9 @@ export function CertificateShareModal({
                         Everyone who opens this link can view your certificate.
                     </p>
                 </div>
-            </div>
-        </div>
+                </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
     );
 }

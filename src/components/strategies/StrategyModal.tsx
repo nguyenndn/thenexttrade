@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { createStrategy, updateStrategy } from "@/actions/strategies";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 // import { Label } from "@/components/ui/label"; // Replaced with html label
 // import { Textarea } from "@/components/ui/textarea"; // Replaced with html textarea
 
@@ -59,6 +61,14 @@ export function StrategyModal({
         color: strategy?.color || COLORS[0],
     });
 
+    // Body scroll lock while the modal is mounted (parent controls mount via AnimatePresence).
+    useEffect(() => {
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
@@ -111,12 +121,26 @@ export function StrategyModal({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <motion.div
+            variants={backdropVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ type: "tween", duration: 0.2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        >
             <div
-                className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+                className="fixed inset-0 bg-black/50 backdrop-blur-sm"
                 onClick={onClose}
             />
-            <div className="relative z-10 bg-white dark:bg-[#1E2028] w-full max-w-lg rounded-xl shadow-xl overflow-hidden border border-dashboard animate-in fade-in zoom-in-95 duration-200 cursor-default">
+            <motion.div
+                variants={panelVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={SPRING_SOFT}
+                className="relative z-10 bg-white dark:bg-[#1E2028] w-full max-w-lg rounded-xl shadow-xl overflow-hidden border border-dashboard cursor-default"
+            >
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-dashboard">
                     <h2 className="text-xl font-bold text-gray-700 dark:text-white">
@@ -263,7 +287,7 @@ export function StrategyModal({
                         </Button>
                     </div>
                 </form>
-            </div>
-        </div>
+                </motion.div>
+        </motion.div>
     );
 }

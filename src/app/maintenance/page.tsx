@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Cog, Sparkles } from "lucide-react";
+import { Cog, Star } from "lucide-react";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 
@@ -62,7 +62,7 @@ export default async function MaintenancePage() {
                                 strokeWidth={2}
                             />
                             <div className="absolute bottom-2 right-2 bg-white rounded-full p-1 border border-dashboard shadow-md">
-                                <Sparkles
+                                <Star
                                     size={16}
                                     className="text-amber-400 animate-pulse"
                                     strokeWidth={2.5}

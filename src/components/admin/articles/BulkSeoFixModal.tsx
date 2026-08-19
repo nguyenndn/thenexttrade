@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { X, Loader2, CheckCircle2, AlertCircle, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 import { trackEvent } from "@/lib/track";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import {
     generateBulkArticleSeoFixSuggestions,
     applyBulkArticleSeoFixes,
@@ -77,6 +79,21 @@ export function BulkSeoFixModal({
     );
     const [applyResult, setApplyResult] = useState<ApplyResult | null>(null);
     const [undoResult, setUndoResult] = useState<UndoResult | null>(null);
+
+    // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
+    useEffect(() => {
+        if (open) document.body.style.overflow = "hidden";
+    }, [open]);
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
+    const releaseLock = () => {
+        document.body.style.overflow = "unset";
+    };
 
     const loadSuggestions = async () => {
         setLoading(true);
@@ -169,11 +186,25 @@ export function BulkSeoFixModal({
         }
     };
 
-    if (!open) return null;
-
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 w-full max-w-4xl max-h-[85vh] flex flex-col shadow-xl">
+        <AnimatePresence onExitComplete={releaseLock}>
+            {open && (
+        <motion.div
+            variants={backdropVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ type: "tween", duration: 0.2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm"
+        >
+            <motion.div
+                variants={panelVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={SPRING_SOFT}
+                className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 w-full max-w-4xl max-h-[85vh] flex flex-col shadow-xl"
+            >
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10">
                     <h2 className="text-lg font-bold text-gray-800 dark:text-white">
@@ -430,7 +461,9 @@ export function BulkSeoFixModal({
                             : "Cancel"}
                     </Button>
                 </div>
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
+            )}
+        </AnimatePresence>
     );
 }

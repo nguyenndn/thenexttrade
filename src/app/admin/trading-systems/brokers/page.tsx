@@ -27,7 +27,7 @@ export default async function EABrokersPage() {
             </AdminPageHeader>
 
             {/* Table */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden overflow-x-auto shadow-sm hover:shadow-md transition-shadow">
                 <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-white/5 text-left">
                         <tr>

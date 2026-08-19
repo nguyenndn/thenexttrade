@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { Megaphone, X } from "lucide-react";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import { Button } from "@/components/ui/Button";
 
 // Only show on public pages + user dashboard, NOT on admin
@@ -47,11 +49,37 @@ export function SystemAnnouncementBanner() {
         }
     };
 
-    if (!visible || !announcement || isHiddenRoute) return null;
+    // Body scroll lock while the announcement banner is visible.
+    useEffect(() => {
+        if (visible) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+    }, [visible]);
+
+    if (!announcement || isHiddenRoute) return null;
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="relative w-full max-w-md bg-white dark:bg-[#151925] border border-dashboard rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+        <AnimatePresence>
+            {visible && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div
+                variants={backdropVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ type: "tween", duration: 0.2 }}
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div
+                variants={panelVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={SPRING_SOFT}
+                className="relative w-full max-w-md bg-white dark:bg-[#151925] border border-dashboard rounded-2xl shadow-2xl overflow-hidden"
+            >
                 {/* Decorative header */}
                 <div className="h-2 bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400" />
 
@@ -86,7 +114,9 @@ export function SystemAnnouncementBanner() {
                         Got it, thanks!
                     </Button>
                 </div>
-            </div>
+            </motion.div>
         </div>
+            )}
+        </AnimatePresence>
     );
 }

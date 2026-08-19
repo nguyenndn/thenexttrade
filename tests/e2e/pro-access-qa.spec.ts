@@ -547,12 +547,12 @@ test("visual deep QA for IB-powered Pro Access", async ({ browser, request }) =>
   }
 
   await traderPage.goto("/dashboard");
-  const proActiveVisible = await hasVisibleText(traderPage, "Pro Active", 12000);
+  const proActiveVisible = await hasVisibleText(traderPage, "VIP Active", 12000);
   if (!proActiveVisible) {
     recordFinding({
       severity: "HIGH",
       area: "Pro Status UI",
-      evidence: "After admin approval created ACTIVE `ProEntitlement`, the user dashboard still displayed `Free Plan` instead of `Pro Active`.",
+      evidence: "After admin approval created ACTIVE `ProEntitlement`, the user dashboard still displayed `Free Plan` instead of `VIP Active`.",
       recommendation: "Check `/api/pro-status` rate limits/cache and make the ProProvider refetch after entitlement changes. The sidebar should reflect ACTIVE entitlement after refresh.",
     });
   }

@@ -8,7 +8,6 @@ import {
     Star,
     ChevronRight,
     ExternalLink,
-    Sparkles,
     Bitcoin,
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
@@ -247,7 +246,7 @@ export default function BrokersClient() {
             {/* Hero */}
             <div className="text-center mb-6 sm:mb-10">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-bold text-xs uppercase tracking-wider mb-6 border border-primary/20">
-                    <Sparkles size={14} />
+                    <Star size={14} />
                     <span>Curated by TheNextTrade</span>
                 </div>
                 <h1 className="text-4xl md:text-6xl font-black text-gray-700 dark:text-white mb-6 leading-tight tracking-tight">

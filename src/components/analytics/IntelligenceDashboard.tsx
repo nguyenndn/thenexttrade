@@ -4,7 +4,6 @@ import {
     TrendingUp,
     Brain,
     ChevronRight,
-    Sparkles,
     Crosshair,
     Gauge,
     ArrowUpRight,
@@ -829,7 +828,7 @@ export function IntelligenceDashboard({
             {/* Insights Grid — Issues + Strengths removed to avoid duplication with EdgeLeakDetector */}
             {data.issues.length === 0 && data.strengths.length === 0 && (
                 <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-dashboard shadow-sm text-center">
-                    <Sparkles size={24} className="text-primary mx-auto mb-3" />
+                    <Activity size={24} className="text-primary mx-auto mb-3" />
                     <p className="text-gray-600 dark:text-gray-300">
                         No significant patterns detected yet.
                     </p>

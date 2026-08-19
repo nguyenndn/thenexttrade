@@ -8,7 +8,6 @@ import {
     GraduationCap,
     UserPlus,
     Lock,
-    Sparkles,
 } from "lucide-react";
 import DOMPurify from "isomorphic-dompurify";
 import { PublicHeader } from "@/components/layout/PublicHeader";
@@ -241,7 +240,7 @@ export function PublicLessonView({
                                         "px-8 py-3.5 rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white font-bold text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105",
                                 })}
                             >
-                                <Sparkles size={18} />
+                                <GraduationCap size={18} />
                                 <span>Sign Up Free to Unlock</span>
                             </Link>
                             <p className="text-sm mt-5 text-gray-500">

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { X, Sparkles } from "lucide-react";
+import { X, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // ============================
@@ -199,7 +199,7 @@ export function PageWelcomeGuide() {
                                 key={i}
                                 className="flex items-start gap-2.5 text-sm text-gray-600 dark:text-gray-300"
                             >
-                                <Sparkles
+                                <Lightbulb
                                     size={14}
                                     className="text-primary mt-0.5 shrink-0"
                                 />

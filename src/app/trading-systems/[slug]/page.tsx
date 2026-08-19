@@ -15,7 +15,6 @@ import {
     Lock,
     UserPlus,
     KeyRound,
-    Sparkles,
     Server,
     ChevronDown,
 } from "lucide-react";
@@ -145,7 +144,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
             <div className="mb-8 rounded-3xl border border-gold/15 bg-gold/[0.02] p-6 shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
                 <h3 className="text-xs font-black text-gold mb-5 uppercase tracking-[0.18em] flex items-center gap-2 relative z-10">
-                    <Sparkles size={14} className="stroke-[2.5]" />
+                    <Server size={14} className="stroke-[2.5]" />
                     Built for real MT5 workflow
                 </h3>
                 <div className="grid gap-6 md:grid-cols-3 relative z-10">

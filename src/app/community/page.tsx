@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getAuthUser } from "@/lib/auth-cache";
+import { prisma } from "@/lib/prisma";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -9,6 +10,8 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { FeedbackCarousel } from "@/components/community/FeedbackCarousel";
 import { TelegramShowcaseMockup } from "@/components/community/TelegramShowcaseMockup";
+import { BrokerSetupGuide } from "@/components/community/BrokerSetupGuide";
+import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 import {
     Send,
     BarChart3,
@@ -26,12 +29,9 @@ import {
     Headphones,
     Bot,
     Cpu,
-    Sparkles,
     HelpCircle,
     ExternalLink,
-    Flame,
     Zap,
-    Pin,
 } from "lucide-react";
 import fs from "fs";
 import path from "path";
@@ -39,7 +39,7 @@ import path from "path";
 export const metadata: Metadata = {
     title: "GoldScalperNinja Official Community — Free XAUUSD Signals & Gold Analysis",
     description:
-        "Join 12,000+ traders in the official GoldScalperNinja Telegram community (@GoldScalperNinja). Free daily XAUUSD analysis, high-win signals, Price Action education, and MT5 EAs powered by TheNextTrade.",
+        "Join 12,000+ traders in the official GoldScalperNinja Telegram community. Free daily XAUUSD analysis, high-win signals, Price Action education, and MT5 EAs powered by TheNextTrade.",
     openGraph: {
         title: "GoldScalperNinja Telegram Community — Free Gold Signals & Analysis",
         description:
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     keywords: [
         "GoldScalperNinja",
         "GoldScalperNinja Telegram",
-        "t.me/GoldScalperNinja",
+        "GoldScalperNinja Telegram invite",
         "gold trading signals",
         "XAUUSD analysis",
         "free forex signals",
@@ -60,7 +60,8 @@ export const metadata: Metadata = {
     ],
 };
 
-const TELEGRAM_URL = process.env.NEXT_PUBLIC_TELEGRAM_URL || "https://t.me/GoldScalperNinja";
+const TELEGRAM_URL =
+    process.env.NEXT_PUBLIC_TELEGRAM_URL || TELEGRAM_CHANNEL_URL;
 const BROKER_REGISTER_URL = process.env.NEXT_PUBLIC_BROKER_REGISTER_URL || TELEGRAM_URL;
 
 // ═══════ DATA ═══════
@@ -204,7 +205,7 @@ const COMMUNITY_FAQ = [
 const VIP_FAQ = [
     {
         question: "Is VIP really free?",
-        answer: "VIP access is free after partner-account verification. Follow the 3-step path: open a partner account, send your account ID to admin, and receive instant access. No subscription fee required.",
+        answer: "VIP access is free after partner-account verification. Follow the 3-step path: open a partner account, register it in your dashboard, and receive access once verified. No subscription fee required.",
     },
     {
         question: "Which broker do I need to use?",
@@ -216,12 +217,27 @@ const VIP_FAQ = [
     },
     {
         question: "How quickly will I get VIP access?",
-        answer: "Usually within a few hours after you send your account ID to our admin on Telegram. Sometimes even faster!",
+        answer: "Most requests are reviewed within a few hours after you submit them in your dashboard. Sometimes even faster!",
     },
 ];
 
 export default async function CommunityPage() {
     const user = await getAuthUser();
+
+    // Owner can paste today's pinned daily-analysis post URL in
+    // /admin/settings → System Config → Daily Analysis Post. When set, the
+    // "See Today's Analysis" button and the "Daily Market Analysis" card
+    // deep-link to that exact post; otherwise they fall back to the channel
+    // invite link.
+    const siteConfigRecord = await prisma.systemSetting.findUnique({
+        where: { key: "site_config" },
+    });
+    const savedSiteConfig = (siteConfigRecord?.value as any) || {};
+    const configuredAnalysisUrl =
+        typeof savedSiteConfig.dailyAnalysisUrl === "string"
+            ? savedSiteConfig.dailyAnalysisUrl.trim()
+            : "";
+    const analysisUrl = configuredAnalysisUrl || TELEGRAM_URL;
 
     // Dynamically read all feedback images in public/images/feedbacks
     let feedbackImages: string[] = [];
@@ -254,7 +270,7 @@ export default async function CommunityPage() {
                 {/* ═══════ 1. HERO (GOLDSCALPERNINJA COMMUNITY SHOWCASE) ═══════ */}
                 <section className="px-4 sm:px-6 mb-16 lg:mb-24 max-w-7xl mx-auto">
                     <ScrollReveal>
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-stretch">
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-center">
 
                             {/* Left Column: Brand Story & High Impact Headline */}
                             <div className="lg:col-span-6 text-left space-y-6 md:space-y-8">
@@ -270,7 +286,7 @@ export default async function CommunityPage() {
                                         />
                                     </div>
                                     <span className="text-[10px] sm:text-xs font-black text-[#2AABEE] dark:text-[#38BDF8] uppercase tracking-normal sm:tracking-wider">
-                                        Official Telegram: @GoldScalperNinja
+                                        Official Telegram Community
                                     </span>
                                     <span className="flex h-2 w-2 relative">
                                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -279,23 +295,29 @@ export default async function CommunityPage() {
                                 </div>
 
                                 {/* Headline */}
-                                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-gray-900 dark:text-white leading-[1.08]">
-                                    GoldScalperNinja <br />
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 dark:from-amber-400 dark:via-orange-400 dark:to-amber-300 drop-shadow-sm">
-                                        Official Community
+                                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-gray-900 dark:text-white leading-[1.08]">
+                                    Free Daily Gold Signals
+                                    <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 dark:from-amber-400 dark:via-orange-400 dark:to-amber-300 drop-shadow-sm">
+                                        That Actually Work
                                     </span>
                                 </h1>
 
                                 <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-xl">
-                                    The official trading community & product ecosystem (<a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="text-[#2AABEE] hover:underline font-bold">t.me/GoldScalperNinja</a>) powered by <strong className="text-gray-900 dark:text-white font-black">TheNextTrade</strong>. Daily XAUUSD market context, Price Action insights, AI Chart Analysis & automated MT5 EA systems.
+                                    Join the official <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="text-[#2AABEE] hover:underline font-bold">Public Telegram channel</a> community — 12,000+ traders sharing daily XAUUSD analysis, clear signals &amp; real trading experience. Powered by <strong className="text-gray-900 dark:text-white font-black">TheNextTrade</strong>, with Price Action insights, AI Chart Analysis &amp; automated MT5 EA systems.
                                 </p>
 
                                 {/* Live Metrics Ticker Pill */}
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 p-3.5 rounded-2xl bg-white/90 dark:bg-white/[0.04] border border-amber-200/80 dark:border-white/[0.08] shadow-sm backdrop-blur-md">
                                     <div className="text-left px-2">
                                         <span className="block text-[10px] font-black uppercase tracking-wider text-gray-400">Win Rate</span>
-                                        <span className="text-sm sm:text-base font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                                        <a
+                                            href="/auth/login?next=/dashboard/leaderboard"
+                                            className="text-sm sm:text-base font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-1 hover:underline"
+                                        >
                                             <TrendingUp size={14} /> 87.4%
+                                        </a>
+                                        <span className="mt-0.5 block text-[9px] font-semibold text-gray-400 uppercase tracking-wider">
+                                            Verified live results
                                         </span>
                                     </div>
                                     <div className="text-left px-2 sm:border-x sm:border-slate-200 dark:border-white/10">
@@ -303,11 +325,17 @@ export default async function CommunityPage() {
                                         <span className="text-sm sm:text-base font-black text-amber-600 dark:text-gold flex items-center gap-1">
                                             <Zap size={14} /> Real Insights
                                         </span>
+                                        <span className="mt-0.5 block text-[9px] font-semibold text-gray-400 uppercase tracking-wider">
+                                            Mon–Fri · 1:00 PM (GMT+7)
+                                        </span>
                                     </div>
                                     <div className="text-left px-2">
                                         <span className="block text-[10px] font-black uppercase tracking-wider text-gray-400">Channel Fee</span>
                                         <span className="text-sm sm:text-base font-black text-[#2AABEE] flex items-center gap-1">
                                             <CheckCircle2 size={14} /> 100% Free
+                                        </span>
+                                        <span className="mt-0.5 block text-[9px] font-semibold text-gray-400 uppercase tracking-wider">
+                                            No paywall · lifetime access
                                         </span>
                                     </div>
                                 </div>
@@ -328,15 +356,17 @@ export default async function CommunityPage() {
                                         <span>Join Telegram Channel Free</span>
                                     </a>
                                     <a
-                                        href="#vip-access"
+                                        href={analysisUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
                                         className={buttonVariants({
                                             variant: "primary",
                                             className:
                                                 "w-full px-4 py-3 font-black text-xs sm:text-sm rounded-xl shadow-md shadow-amber-500/15 hover:shadow-lg hover:shadow-amber-500/25 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-[0.98] hover:scale-[1.01] text-white whitespace-nowrap",
                                         })}
                                     >
-                                        <Crown size={16} className="shrink-0" />
-                                        <span>Unlock VIP Access</span>
+                                        <BarChart3 size={16} className="shrink-0" />
+                                        <span>See Today&apos;s Analysis</span>
                                         <ArrowRight size={14} className="shrink-0" />
                                     </a>
                                 </div>
@@ -389,7 +419,7 @@ export default async function CommunityPage() {
                                             value: "100% Free",
                                             label: "Official Channel",
                                             sub: "Verified Access",
-                                            icon: Sparkles,
+                                            icon: Shield,
                                             color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
                                         },
                                     ].map((stat, idx) => (
@@ -521,7 +551,12 @@ export default async function CommunityPage() {
                                     {/* Action Button */}
                                     {feature.external ? (
                                         <a
-                                            href={feature.href}
+                                            href={
+                                                feature.title ===
+                                                "Daily Market Analysis"
+                                                    ? analysisUrl
+                                                    : feature.href
+                                            }
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="mt-4 inline-flex items-center gap-1 text-xs font-black uppercase tracking-wider text-amber-600 transition-colors hover:text-amber-700 dark:text-gold dark:hover:text-amber-300"
@@ -542,7 +577,58 @@ export default async function CommunityPage() {
                     </div>
                 </section>
 
-                {/* ═══════ 3. VIP ACCESS SECTION & 3-STEP FLOW ═══════ */}
+                {/* ═══════ 3. VIP FEEDBACK SCREENSHOT CAROUSEL ═══════ */}
+                <ScrollReveal>
+                    <FeedbackCarousel images={feedbackImages} />
+                </ScrollReveal>
+
+                {/* ═══════ 4. TRADER PRINCIPLES & TRUST ═══════ */}
+                <ScrollReveal>
+                    <section className="px-4 sm:px-6 mb-10 sm:mb-16 max-w-6xl mx-auto">
+                        <div className="rounded-2xl sm:rounded-3xl border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#131622]/85 p-5 sm:p-7 md:p-9 relative overflow-hidden backdrop-blur-md shadow-sm">
+                            <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-500/[0.06] dark:bg-primary/[0.08] rounded-full blur-[80px] pointer-events-none" />
+                            <div className="relative z-10 grid grid-cols-1 md:grid-cols-[auto_1fr] gap-5 md:gap-8 items-start">
+                                <div className="flex items-center gap-4 md:flex-col md:items-start">
+                                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/15 to-emerald-500/15 border border-amber-500/25 flex items-center justify-center text-amber-600 dark:text-gold shadow-sm shrink-0">
+                                        <GraduationCap size={28} />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs font-black uppercase tracking-[0.18em] text-amber-600 dark:text-gold">Built on Principles</p>
+                                        <h2 className="text-lg sm:text-2xl font-black tracking-tight text-gray-900 dark:text-white mt-1">
+                                            The Trader Behind the Signals
+                                        </h2>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p className="text-xs sm:text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+                                        GoldScalperNinja is run by a Price Action &amp; Momentum Trader who believes trading education should be accessible — not locked behind expensive courses. Every signal follows the same disciplined plan: a pre-defined stop-loss, a max 1-2% risk per trade, and no over-leveraging.
+                                    </p>
+                                    <div className="mt-4 flex flex-wrap gap-2">
+                                        {[
+                                            { icon: Shield, text: "Every signal has a defined SL" },
+                                            { icon: TrendingUp, text: "Max 1-2% risk per trade" },
+                                            { icon: CheckCircle2, text: "Verified results on the leaderboard" },
+                                            { icon: Bot, text: "Built on TheNextTrade &amp; MT5 EAs" },
+                                        ].map((chip) => (
+                                            <span key={chip.text} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 dark:bg-primary/10 border border-emerald-500/20 dark:border-primary/20 text-[11px] font-bold text-emerald-700 dark:text-primary">
+                                                <chip.icon size={12} className="shrink-0" /> {chip.text}
+                                            </span>
+                                        ))}
+                                    </div>
+                                    <p className="mt-4 text-[11px] text-gray-500 dark:text-gray-400">
+                                        Questions? Message the admin directly on{" "}
+                                        <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="font-bold text-[#2AABEE] hover:underline">
+                                            Telegram
+                                        </a>{" "}
+                                        — every message is answered.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </ScrollReveal>
+
+                {/* ═══════ 5. VIP ACCESS SECTION & 3-STEP FLOW ═══════ */}
                 <section
                     id="vip-access"
                     className="px-4 sm:px-6 mb-10 sm:mb-16 max-w-6xl mx-auto scroll-mt-16 md:scroll-mt-24"
@@ -662,20 +748,20 @@ export default async function CommunityPage() {
                                                     </span>
                                                     <span className="text-[10px] uppercase font-bold text-amber-600 dark:text-gold">Step 2</span>
                                                 </div>
-                                                <p className="text-sm font-bold text-gray-900 dark:text-white">Send account ID</p>
+                                                <p className="text-sm font-bold text-gray-900 dark:text-white">Register & verify</p>
                                                 <p className="mt-1 text-xs leading-5 text-gray-600 dark:text-gray-400">
-                                                    Send your newly registered account number to our Telegram admin for instant verification.
+                                                    Add your newly opened account in your dashboard to submit a verification request — our team reviews it right away.
                                                 </p>
                                             </div>
-                                            <a
-                                                href={TELEGRAM_URL}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
+                                            <Link
+                                                href={user
+                                                    ? "/dashboard/accounts?action=add&intent=unlock-pro"
+                                                    : "/auth/login?next=%2Fdashboard%2Faccounts%3Faction%3Dadd%26intent%3Dunlock-pro"}
                                                 className="mt-3 inline-flex items-center justify-center gap-1.5 text-xs font-bold text-sky-600 hover:text-sky-700 dark:text-sky-400"
                                             >
-                                                <span>Send ID to Admin</span>
-                                                <Send size={12} />
-                                            </a>
+                                                <span>Register & Verify</span>
+                                                <ArrowRight size={12} />
+                                            </Link>
                                         </div>
 
                                         <div className="flex flex-col justify-between rounded-xl border border-amber-500/20 bg-white/80 p-4 dark:border-white/[0.08] dark:bg-white/[0.04]">
@@ -697,6 +783,12 @@ export default async function CommunityPage() {
                                             </span>
                                         </div>
                                     </div>
+
+                                    {/* Broker setup guide — register under our IB with the exact config */}
+                                    <div className="mt-6">
+                                        <BrokerSetupGuide />
+                                    </div>
+
                                     <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                         <p className="text-xs leading-5 text-gray-600 dark:text-gray-400">
                                             Need assistance? Contact our Telegram support team anytime.
@@ -715,12 +807,7 @@ export default async function CommunityPage() {
                     </ScrollReveal>
                 </section>
 
-                {/* ═══════ 4. VIP FEEDBACK SCREENSHOT CAROUSEL ═══════ */}
-                <ScrollReveal>
-                    <FeedbackCarousel images={feedbackImages} />
-                </ScrollReveal>
-
-                {/* ═══════ 5. PLATFORM LINKS ═══════ */}
+                {/* ═══════ 6. PLATFORM LINKS ═══════ */}
                 <section className="px-4 sm:px-6 mb-10 sm:mb-16 max-w-6xl mx-auto">
                     <ScrollReveal>
                         <div className="text-center mb-12 space-y-4">
@@ -732,6 +819,31 @@ export default async function CommunityPage() {
                             </p>
                         </div>
                     </ScrollReveal>
+
+                    <div className="mb-10 rounded-2xl border border-amber-500/20 dark:border-white/[0.06] bg-white/80 dark:bg-[#131622]/60 p-4 sm:p-6 backdrop-blur-md">
+                        <p className="text-center text-xs font-black uppercase tracking-[0.16em] text-amber-600 dark:text-gold mb-5">
+                            Your Trading Journey
+                        </p>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            {[
+                                { step: "01", title: "Join Free", desc: "Daily analysis &amp; signals in Telegram", icon: Send },
+                                { step: "02", title: "Learn", desc: "Price Action &amp; SMC in the Academy", icon: GraduationCap },
+                                { step: "03", title: "Automate", desc: "Run MT5 EAs &amp; Trading Systems", icon: Bot },
+                                { step: "04", title: "Level Up", desc: "Unlock VIP signals &amp; 1:1 support", icon: Crown },
+                            ].map((s) => (
+                                <div key={s.step} className="rounded-xl border border-slate-200/80 dark:border-white/[0.06] bg-white dark:bg-[#151925]/60 p-3.5 flex flex-col gap-1.5">
+                                    <div className="flex items-center justify-between">
+                                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/15 text-[10px] font-black text-amber-700 dark:text-gold">
+                                            {s.step}
+                                        </span>
+                                        <s.icon size={15} className="text-amber-600 dark:text-gold" />
+                                    </div>
+                                    <span className="text-sm font-bold text-gray-900 dark:text-white">{s.title}</span>
+                                    <span className="text-[11px] leading-snug text-gray-500 dark:text-gray-400">{s.desc}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                         {platformLinks.map((p, i) => (
@@ -777,7 +889,7 @@ export default async function CommunityPage() {
                     </div>
                 </section>
 
-                {/* ═══════ 6. FAQ ═══════ */}
+                {/* ═══════ 7. FAQ ═══════ */}
                 <section className="px-4 sm:px-6 mb-10 sm:mb-16 max-w-6xl mx-auto">
                     <ScrollReveal>
                         <div className="text-center mb-12">
@@ -829,7 +941,7 @@ export default async function CommunityPage() {
                     </ScrollReveal>
                 </section>
 
-                {/* ═══════ 7. BOTTOM CTA ═══════ */}
+                {/* ═══════ 8. BOTTOM CTA ═══════ */}
                 <section className="px-4 sm:px-6 mb-6 sm:mb-10 max-w-4xl mx-auto">
                     <ScrollReveal>
                         <div className="rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-16 text-center border border-amber-500/35 dark:border-amber-500/30 bg-gradient-to-br from-amber-500/[0.08] via-amber-50/70 to-orange-500/[0.08] dark:from-transparent dark:to-transparent dark:bg-white/[0.04] shadow-[0_20px_50px_rgba(245,158,11,0.08)] dark:shadow-[0_0_60px_rgba(245,158,11,0.06)] relative overflow-hidden backdrop-blur-md">

@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { Check, ChevronDown, Search } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { SPRING_SOFT } from "@/lib/animations";
 import { countries as countryData } from "@/lib/data/countries";
 import { Button } from "@/components/ui/Button";
 
@@ -113,8 +115,16 @@ export function CountrySelect({
             />
 
             {/* Dropdown Menu */}
+            <AnimatePresence>
             {isOpen && (
-                <div className="absolute z-50 w-full mt-2 bg-white dark:bg-[#1C1F2E] border border-dashboard rounded-xl shadow-2xl max-h-80 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.97, y: -4 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.97, y: -4 }}
+                    transition={SPRING_SOFT}
+                    style={{ transformOrigin: "top" }}
+                    className="absolute z-50 w-full mt-2 bg-white dark:bg-[#1C1F2E] border border-dashboard rounded-xl shadow-2xl max-h-80 overflow-hidden flex flex-col"
+                >
                     {/* Search Bar */}
                     <div className="p-3 border-b border-dashboard sticky top-0 bg-white dark:bg-[#1C1F2E] z-10">
                         <div className="relative">
@@ -178,8 +188,9 @@ export function CountrySelect({
                             </div>
                         )}
                     </div>
-                </div>
+                </motion.div>
             )}
+            </AnimatePresence>
         </div>
     );
 }

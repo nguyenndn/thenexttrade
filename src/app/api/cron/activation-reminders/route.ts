@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
             let title = "";
             let message = "";
             let link = "";
-            let icon = "Sparkles";
+            let icon = "Rocket";
 
             if (c.type === "NO_ACCOUNT_24H") {
                 title = "Complete your setup 🚀";
@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
                 message =
                     "You're missing out on AI Trade Score, Psychology Trackers, and Weekly Performance reviews.";
                 link = "/dashboard/accounts?setup=sync";
-                icon = "Sparkles";
+                icon = "Brain";
             } else if (c.type === "MOBILE_SYNC_FALLBACK") {
                 title = "Finish MT5 setup on desktop 💻";
                 message =

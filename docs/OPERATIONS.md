@@ -1,6 +1,6 @@
 # Operations
 
-Last reviewed: 2026-05-24
+Last reviewed: 2026-08-18
 
 This file covers environment, self-hosting, storage, deploy, monitoring, and release operations.
 
@@ -89,6 +89,27 @@ NEXT_PUBLIC_DISABLE_TURNSTILE=false
 
 AI/external APIs should only be set when the feature is enabled.
 
+AI Gateway / OpenRouter:
+
+```env
+OPENROUTER_API_KEY=
+OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+OPENROUTER_SITE_URL=
+OPENROUTER_APP_NAME=TheNextTrade
+```
+
+Economic calendar:
+
+```env
+ECONOMIC_CALENDAR_PROVIDER_URL=
+```
+
+Rules:
+
+- User-facing AI actions must route through the internal AI Gateway before calling OpenRouter.
+- If OpenRouter receives traffic but `/admin/ai` has no request record, the app is bypassing the internal gateway and must be fixed before release.
+- Economic calendar provider banners should not expose implementation details to public users.
+
 ## Production Stack
 
 Recommended services:
@@ -128,28 +149,30 @@ Rules:
 - Forward real client IP headers from Cloudflare.
 - Enforce HTTPS.
 
-## TNT Connect Release
+## Trading System / EA Release
 
-Current release:
+Current user-facing sync and trading-system direction:
 
-- Version source: `apps/tnt-connect/main.py`.
-- Manifest: `public/downloads/app-release.json`.
-- Installer: `public/downloads/TheNextTradeConnect-1.0.2.exe`.
+- Trade Manager EA is the supported automated MT5 sync/execution helper.
+- Manual Journal is the fallback for users who cannot set up MT5 yet.
+- GoldScalperNinja, Trade Manager, and GSN Phoenix Grid are the active trading-system products.
+- TNT Connect is legacy/compatibility only and should not be promoted in new user-facing release copy.
 
-Build:
+Reference docs:
 
-```powershell
-cd apps\tnt-connect
-venv\Scripts\python.exe -m PyInstaller build.spec --clean --noconfirm
-```
+- `docs/systems-pdf/TRADE_MANAGER_USER_GUIDE.md`
+- `docs/systems-pdf/PHOENIX_GRID_MASTER_SPECIFICATION.md`
+- `docs/systems-pdf/PHOENIX_GRID_USER_MANUAL_VI.md`
 
 Release checklist:
 
-- Update app version.
-- Build versioned `.exe`.
-- Update `app-release.json`.
-- Verify `/api/app/version`.
-- Verify download links in dashboard accounts and TNT Connect settings.
+- Update product version/copy in the trading-system data source.
+- Verify `/trading-systems` and each `/trading-systems/[slug]` detail tab.
+- Verify `/dashboard/trading-systems` entitlement/download behavior.
+- Verify `/dashboard/accounts` Trade Manager EA setup copy and download link.
+- Verify `/api/ea/*` heartbeat/sync endpoints with a test MT5 account when the EA payload changes.
+- Verify admin product/license surfaces in `/admin/trading-systems` and `/admin/ib`.
+- Never add performance/backtest claims unless there is approved evidence and matching risk copy.
 
 ## Deploy Checklist
 

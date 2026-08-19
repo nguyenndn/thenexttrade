@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 import { buttonVariants } from "@/components/ui/button-variants";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import {
     X,
     Star,
@@ -62,6 +64,11 @@ function StarRating({ rating }: { rating: number }) {
 
 export function ReviewBadge({ item }: { item: ReviewItem }) {
     const [open, setOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     return (
         <>
@@ -73,9 +80,17 @@ export function ReviewBadge({ item }: { item: ReviewItem }) {
                 Our Review
             </button>
 
-            {open &&
+            {/* Portal always mounted after hydration so AnimatePresence can play exit */}
+            {mounted &&
                 createPortal(
-                    <ReviewModal item={item} onClose={() => setOpen(false)} />,
+                    <AnimatePresence>
+                        {open && (
+                            <ReviewModal
+                                item={item}
+                                onClose={() => setOpen(false)}
+                            />
+                        )}
+                    </AnimatePresence>,
                     document.body
                 )}
         </>
@@ -104,7 +119,12 @@ function ReviewModal({
     }, [onClose]);
 
     return (
-        <div
+        <motion.div
+            variants={backdropVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ type: "tween", duration: 0.2 }}
             className="fixed inset-0 z-[100] flex items-center justify-center p-4"
             role="dialog"
             aria-modal="true"
@@ -115,8 +135,13 @@ function ReviewModal({
             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
 
             {/* Modal */}
-            <div
-                className="relative w-full max-w-lg bg-white dark:bg-[#1A1C24] rounded-2xl border border-dashboard shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 max-h-[85vh] flex flex-col"
+            <motion.div
+                variants={panelVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={SPRING_SOFT}
+                className="relative w-full max-w-lg bg-white dark:bg-[#1A1C24] rounded-2xl border border-dashboard shadow-2xl overflow-hidden max-h-[85vh] flex flex-col"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
@@ -251,7 +276,7 @@ function ReviewModal({
                         </a>
                     </div>
                 )}
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 }

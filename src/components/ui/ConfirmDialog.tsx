@@ -2,9 +2,14 @@
 
 import { X, AlertTriangle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-// If your project uses framer-motion, we animate. Otherwise, fallback to CSS transitions.
+import {
+    SPRING_SOFT,
+    backdropVariants,
+    panelVariants,
+} from "@/lib/animations";
 
 interface ConfirmDialogProps {
     isOpen: boolean;
@@ -29,17 +34,20 @@ export function ConfirmDialog({
     variant = "danger",
     isLoading = false,
 }: ConfirmDialogProps) {
-    const [render, setRender] = useState(isOpen);
-
+    // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
     useEffect(() => {
-        if (isOpen) setRender(true);
+        if (isOpen) document.body.style.overflow = "hidden";
     }, [isOpen]);
 
-    const handleAnimationEnd = () => {
-        if (!isOpen) setRender(false);
-    };
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
 
-    if (!render) return null;
+    const releaseLock = () => {
+        document.body.style.overflow = "unset";
+    };
 
     const variantStyles = {
         danger: {
@@ -64,115 +72,118 @@ export function ConfirmDialog({
     const currentVariant = variantStyles[variant];
 
     return (
-        <div
-            className={cn(
-                "fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-0",
-                isOpen
-                    ? "animate-in fade-in duration-200"
-                    : "animate-out fade-out duration-200"
-            )}
-            onAnimationEnd={handleAnimationEnd}
-        >
-            {/* Backdrop */}
-            <div
-                className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm"
-                onClick={!isLoading ? onCancel : undefined}
-            />
-
-            {/* Dialog Box */}
-            <div
-                className={cn(
-                    "relative w-full max-w-md bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl overflow-hidden border border-dashboard ",
-                    isOpen
-                        ? "animate-in zoom-in-95 slide-in-from-bottom-4 duration-300"
-                        : "animate-out zoom-out-95 slide-out-to-bottom-4 duration-200"
-                )}
-                role="alertdialog"
-            >
-                {/* Close Button */}
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={onCancel}
-                    disabled={isLoading}
-                    className="absolute top-4 right-4 p-2 w-10 h-10 rounded-full text-gray-500 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-300 dark:hover:bg-white/5 transition-colors disabled:opacity-50"
+        <AnimatePresence onExitComplete={releaseLock}>
+            {isOpen && (
+                <motion.div
+                    variants={backdropVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={{ type: "tween", duration: 0.2 }}
+                    className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-0"
                 >
-                    <X size={20} />
-                </Button>
+                    {/* Backdrop */}
+                    <div
+                        className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm"
+                        onClick={!isLoading ? onCancel : undefined}
+                    />
 
-                <div className="p-6 pt-8 text-center sm:text-left">
-                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
-                        {/* Icon */}
-                        <div
-                            className={cn(
-                                "p-3 rounded-full flex-shrink-0 mt-1",
-                                currentVariant.bg
-                            )}
+                    {/* Dialog Box */}
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
+                        className="relative w-full max-w-md bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl overflow-hidden border border-dashboard "
+                        role="alertdialog"
+                    >
+                        {/* Close Button */}
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={onCancel}
+                            disabled={isLoading}
+                            className="absolute top-4 right-4 p-2 w-10 h-10 rounded-full text-gray-500 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-300 dark:hover:bg-white/5 transition-colors disabled:opacity-50"
                         >
-                            {currentVariant.icon}
+                            <X size={20} />
+                        </Button>
+
+                        <div className="p-6 pt-8 text-center sm:text-left">
+                            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+                                {/* Icon */}
+                                <div
+                                    className={cn(
+                                        "p-3 rounded-full flex-shrink-0 mt-1",
+                                        currentVariant.bg
+                                    )}
+                                >
+                                    {currentVariant.icon}
+                                </div>
+
+                                {/* Content */}
+                                <div className="flex-1 space-y-2">
+                                    <h3 className="text-xl font-bold text-gray-700 dark:text-white mt-2 sm:mt-0">
+                                        {title}
+                                    </h3>
+                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-300 leading-relaxed">
+                                        {description}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Content */}
-                        <div className="flex-1 space-y-2">
-                            <h3 className="text-xl font-bold text-gray-700 dark:text-white mt-2 sm:mt-0">
-                                {title}
-                            </h3>
-                            <p className="text-sm font-medium text-gray-600 dark:text-gray-300 leading-relaxed">
-                                {description}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Actions */}
-                <div className="bg-gray-50 dark:bg-[#151925] px-6 py-4 flex flex-col-reverse sm:flex-row justify-end gap-3 border-t border-dashboard">
-                    <Button
-                        variant="ghost"
-                        type="button"
-                        size="smd"
-                        onClick={onCancel}
-                        disabled={isLoading}
-                        className="font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors disabled:opacity-50"
-                    >
-                        {cancelText}
-                    </Button>
-                    <Button
-                        type="button"
-                        size="smd"
-                        onClick={onConfirm}
-                        disabled={isLoading}
-                        className={cn(
-                            "font-bold text-white shadow-sm transition-all flex items-center justify-center gap-2 border-none",
-                            currentVariant.buttonPrefix,
-                            isLoading && "opacity-70 cursor-not-allowed"
-                        )}
-                    >
-                        {isLoading && (
-                            <svg
-                                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
+                        {/* Actions */}
+                        <div className="bg-gray-50 dark:bg-[#151925] px-6 py-4 flex flex-col-reverse sm:flex-row justify-end gap-3 border-t border-dashboard">
+                            <Button
+                                variant="ghost"
+                                type="button"
+                                size="smd"
+                                onClick={onCancel}
+                                disabled={isLoading}
+                                className="font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors disabled:opacity-50"
                             >
-                                <circle
-                                    className="opacity-25"
-                                    cx="12"
-                                    cy="12"
-                                    r="10"
-                                    stroke="currentColor"
-                                    strokeWidth="4"
-                                ></circle>
-                                <path
-                                    className="opacity-75"
-                                    fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                ></path>
-                            </svg>
-                        )}
-                        {confirmText}
-                    </Button>
-                </div>
-            </div>
-        </div>
+                                {cancelText}
+                            </Button>
+                            <Button
+                                type="button"
+                                size="smd"
+                                onClick={onConfirm}
+                                disabled={isLoading}
+                                className={cn(
+                                    "font-bold text-white shadow-sm transition-all flex items-center justify-center gap-2 border-none",
+                                    currentVariant.buttonPrefix,
+                                    isLoading && "opacity-70 cursor-not-allowed"
+                                )}
+                            >
+                                {isLoading && (
+                                    <svg
+                                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <circle
+                                            className="opacity-25"
+                                            cx="12"
+                                            cy="12"
+                                            r="10"
+                                            stroke="currentColor"
+                                            strokeWidth="4"
+                                        ></circle>
+                                        <path
+                                            className="opacity-75"
+                                            fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                        ></path>
+                                    </svg>
+                                )}
+                                {confirmText}
+                            </Button>
+                        </div>
+                    </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
     );
 }

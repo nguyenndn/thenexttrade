@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useTransition, useEffect } from "react";
-import { Sparkles, Loader2, X, RefreshCw } from "lucide-react";
+import { Wand2, Loader2, X, RefreshCw } from "lucide-react";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { TradingViewChart } from "./TradingViewChart";
 import { AiResultPanel } from "./AiResultPanel";
@@ -104,7 +104,7 @@ export function AiChartAnalysisLab() {
                         </h2>
                     </div>
                     <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gold/10">
-                        <Sparkles size={18} className="text-gold" />
+                        <Wand2 size={18} className="text-gold" />
                     </div>
                 </div>
 
@@ -164,7 +164,7 @@ export function AiChartAnalysisLab() {
                                 </>
                             ) : (
                                 <>
-                                    <Sparkles size={16} className="shrink-0" />
+                                    <Wand2 size={16} className="shrink-0" />
                                     <span>Analyze Chart</span>
                                 </>
                             )}

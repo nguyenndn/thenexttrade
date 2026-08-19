@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { Copy, Check, X, Image as ImageIcon, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Copy, Check, X, Image as ImageIcon, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import type { ArticleImagePrompts } from "@/lib/articles/article-readiness.shared";
 
 interface ArticleImagePromptModalProps {
@@ -70,8 +72,23 @@ export function ArticleImagePromptModal({
     prompts,
     onClose,
 }: ArticleImagePromptModalProps) {
+    // Body scroll lock while open; released when AnimatePresence unmounts after exit.
+    useEffect(() => {
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <motion.div
+            variants={backdropVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ type: "tween", duration: 0.2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        >
             {/* Backdrop */}
             <div
                 className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -79,12 +96,19 @@ export function ArticleImagePromptModal({
             />
 
             {/* Modal */}
-            <div className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-2xl">
+            <motion.div
+                variants={panelVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={SPRING_SOFT}
+                className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-2xl"
+            >
                 {/* Header */}
                 <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]">
                     <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-xl bg-gold/10 flex items-center justify-center">
-                            <Sparkles size={18} className="text-gold" />
+                            <Wand2 size={18} className="text-gold" />
                         </div>
                         <div>
                             <h2 className="text-base font-bold text-gray-800 dark:text-white">
@@ -135,7 +159,7 @@ export function ArticleImagePromptModal({
                         paths.
                     </p>
                 </div>
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 }

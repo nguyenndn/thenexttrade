@@ -106,7 +106,7 @@ export default function CreateEABrokerPage() {
                         type="url"
                         value={affiliateUrl}
                         onChange={(e) => setAffiliateUrl(e.target.value)}
-                        placeholder="https://one.exnesstrack.org/..."
+                        placeholder="https://one.exnessonelink.com/..."
                     />
 
                     <PremiumInput

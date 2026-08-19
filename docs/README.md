@@ -1,6 +1,6 @@
 # TheNextTrade Docs
 
-Last reviewed: 2026-08-11
+Last reviewed: 2026-08-18
 
 This folder is the active source of truth for the product, system, operations, design, and email behavior. Old sprint plans, completed QA reports, and stale implementation notes should not live here.
 
@@ -10,6 +10,8 @@ This folder is the active source of truth for the product, system, operations, d
 | --- | --- |
 | [SYSTEM.md](SYSTEM.md) | Architecture, data flow, database areas, routes, APIs, security |
 | [PRODUCT.md](PRODUCT.md) | User-facing modules, admin modules, product rules, current behavior |
+| [PROJECT_HANDOFF.md](PROJECT_HANDOFF.md) | Practical handoff for new developers: what exists, what matters, where to work |
+| [FEATURE_CATALOG.md](FEATURE_CATALOG.md) | Product scope map: which features are necessary, where they belong, what to hide/remove |
 | [FEATURE_SPECS.md](FEATURE_SPECS.md) | Detailed route/function specs for bug fixing and feature continuation |
 | [OPERATIONS.md](OPERATIONS.md) | Environment, self-host stack, deploy, storage, monitoring, release ops |
 | [DESIGN.md](DESIGN.md) | UI standards for dashboard, auth pages, cards, buttons, metrics |
@@ -35,13 +37,15 @@ This folder is the active source of truth for the product, system, operations, d
 
 If a new developer needs to fix bugs or continue feature work, use this order:
 
-1. Read [PRODUCT.md](PRODUCT.md) to understand what features exist and what each feature is supposed to do.
-2. Read [FEATURE_SPECS.md](FEATURE_SPECS.md) to understand the exact route behavior, query params, edge cases, and QA checklist.
-3. Read [SYSTEM.md](SYSTEM.md) to find the route, component, API, database model, and service ownership for that feature.
-4. Read [DESIGN.md](DESIGN.md) before changing user-facing UI.
-5. Read [OPERATIONS.md](OPERATIONS.md) before touching env vars, deploy, storage, sync releases, or production services.
-6. Read [EMAIL.md](EMAIL.md) before changing transactional email behavior.
-7. For a shipped feature, update these docs immediately after code changes. Old implementation plans are not the source of truth once `PRODUCT.md`, `FEATURE_SPECS.md`, and `SYSTEM.md` are updated.
+1. Read [PROJECT_HANDOFF.md](PROJECT_HANDOFF.md) to understand the product thesis, feature priority, and current surface area.
+2. Read [FEATURE_CATALOG.md](FEATURE_CATALOG.md) to decide whether a feature is core, supporting, retention, admin-only, legacy, or removable.
+3. Read [PRODUCT.md](PRODUCT.md) to understand what features exist and what each feature is supposed to do.
+4. Read [FEATURE_SPECS.md](FEATURE_SPECS.md) to understand the exact route behavior, query params, edge cases, and QA checklist.
+5. Read [SYSTEM.md](SYSTEM.md) to find the route, component, API, database model, and service ownership for that feature.
+6. Read [DESIGN.md](DESIGN.md) before changing user-facing UI.
+7. Read [OPERATIONS.md](OPERATIONS.md) before touching env vars, deploy, storage, sync releases, or production services.
+8. Read [EMAIL.md](EMAIL.md) before changing transactional email behavior.
+9. For a shipped feature, update these docs immediately after code changes. Old implementation plans are not the source of truth once `PRODUCT.md`, `FEATURE_SPECS.md`, and `SYSTEM.md` are updated.
 
 Most bug fixes should start from the feature inventory in [PRODUCT.md](PRODUCT.md), then jump to the route spec in [FEATURE_SPECS.md](FEATURE_SPECS.md), then use the code ownership map in [SYSTEM.md](SYSTEM.md).
 

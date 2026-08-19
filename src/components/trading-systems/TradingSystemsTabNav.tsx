@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Bot, Sparkles } from "lucide-react";
+import { Bot, Cpu } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface TradingSystemsTabNavProps {
@@ -13,7 +13,7 @@ const TABS = [
     {
         id: "ai" as const,
         label: "AI Chart Analysis",
-        icon: Sparkles,
+        icon: Cpu,
         badge: "NEW",
     },
     {

@@ -1,15 +1,16 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import DOMPurify from "isomorphic-dompurify";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import {
     ChevronLeft,
     ChevronRight,
     CheckCircle,
-    Sparkles,
     GraduationCap,
     BookOpen,
     Clock,
@@ -242,7 +243,7 @@ export default function LessonClientView({
                                     {completing
                                         ? "Completing..."
                                         : "Mark as Complete"}
-                                    <Sparkles
+                                    <Trophy
                                         size={18}
                                         className={cn(
                                             "text-yellow-300",
@@ -445,12 +446,22 @@ export default function LessonClientView({
             </div>
 
             {/* Mobile Sidebar Drawer */}
-            {mobileMenuOpen && (
-                <div
+            <AnimatePresence>
+                {mobileMenuOpen && (
+                <motion.div
+                    variants={backdropVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={{ type: "tween", duration: 0.2 }}
                     className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm lg:hidden"
                     onClick={() => setMobileMenuOpen(false)}
                 >
-                    <div
+                    <motion.div
+                        initial={{ x: "100%" }}
+                        animate={{ x: 0 }}
+                        exit={{ x: "100%" }}
+                        transition={SPRING_SOFT}
                         className="absolute right-0 top-0 bottom-0 w-3/4 max-w-xs bg-white dark:bg-[#151925] shadow-2xl p-6 overflow-y-auto"
                         onClick={(e) => e.stopPropagation()}
                     >
@@ -525,9 +536,10 @@ export default function LessonClientView({
                                 );
                             })}
                         </div>
-                    </div>
-                </div>
-            )}
+                    </motion.div>
+                </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Mobile Menu Button (floating) */}
             <button
@@ -539,12 +551,23 @@ export default function LessonClientView({
             </button>
 
             {/* Locked Lesson Dialog */}
-            {lockedDialogLesson && (
-                <div
+            <AnimatePresence>
+                {lockedDialogLesson && (
+                <motion.div
+                    variants={backdropVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={{ type: "tween", duration: 0.2 }}
                     className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm"
                     onClick={() => setLockedDialogLesson(null)}
                 >
-                    <div
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
                         className="bg-white dark:bg-[#1a1f2e] rounded-2xl shadow-2xl border border-dashboard p-6 mx-4 max-w-sm text-center"
                         onClick={(e) => e.stopPropagation()}
                     >
@@ -575,9 +598,10 @@ export default function LessonClientView({
                                 Got it!
                             </button>
                         </div>
-                    </div>
-                </div>
-            )}
+                    </motion.div>
+                </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

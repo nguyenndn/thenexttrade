@@ -17,7 +17,7 @@ import {
     X as XIcon,
     BookOpen,
     ListTree,
-    Sparkles,
+    Wand2,
     Lock,
     Unlock,
     RefreshCw,
@@ -1137,7 +1137,7 @@ export function ArticleForm({
                                                 className="animate-spin"
                                             />
                                         ) : (
-                                            <Sparkles size={11} />
+                                            <Wand2 size={11} />
                                         )}
                                         {isSuggestingTags
                                             ? "Analyzing..."
@@ -1288,7 +1288,7 @@ export function ArticleForm({
             </div>
 
             {/* Footer Stats Bar */}
-            <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#1E2028] border-t border-gray-200 dark:border-white/10 p-2 flex gap-6 text-xs text-gray-600 dark:text-gray-300 justify-end px-8 z-40">
+            <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#1E2028] border-t border-gray-200 dark:border-white/10 p-2 flex flex-wrap gap-x-6 gap-y-1 text-xs text-gray-600 dark:text-gray-300 justify-end px-8 z-40">
                 <span className="flex items-center gap-1">
                     <FileText size={14} /> {wordCount} words
                 </span>

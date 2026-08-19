@@ -8,7 +8,8 @@ import {
     forwardRef,
 } from "react";
 import {
-    Sparkles,
+    Wand2,
+    PartyPopper,
     Loader2,
     Link2,
     RefreshCw,
@@ -36,9 +37,11 @@ import {
     Palette,
 } from "lucide-react";
 import DOMPurify from "isomorphic-dompurify";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 
 // ============================================================================
 // TYPES
@@ -99,7 +102,7 @@ const TONES: Array<{
     {
         id: "edutainment",
         label: "Edutainment",
-        icon: <Sparkles size={14} />,
+        icon: <PartyPopper size={14} />,
         desc: "Humor + learning",
     },
     {
@@ -393,6 +396,25 @@ export const AIRewriteDialog = forwardRef<
     };
 
     // ========================================================================
+    // BODY SCROLL LOCK
+    // ========================================================================
+
+    // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
+    useEffect(() => {
+        if (isOpen) document.body.style.overflow = "hidden";
+    }, [isOpen]);
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
+    const releaseLock = () => {
+        document.body.style.overflow = "unset";
+    };
+
+    // ========================================================================
     // COMPUTED
     // ========================================================================
 
@@ -426,25 +448,36 @@ export const AIRewriteDialog = forwardRef<
                 onClick={() => setIsOpen(true)}
                 className="flex items-center gap-2 border-amber-200 dark:border-amber-800/50 text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20 shadow-sm"
             >
-                <Sparkles size={18} />
+                <Wand2 size={18} />
                 AI Rewrite
             </Button>
 
             {/* Modal */}
-            {isOpen && (
-                <div
+            <AnimatePresence onExitComplete={releaseLock}>
+                {isOpen && (
+                <motion.div
+                    variants={backdropVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={{ type: "tween", duration: 0.2 }}
                     className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm"
                     onClick={close}
                 >
-                    <div
-                        className="bg-white dark:bg-[#1a1e2e] rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 w-full max-w-2xl mx-4 max-h-[95vh] overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200 flex flex-col"
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
+                        className="bg-white dark:bg-[#1a1e2e] rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 w-full max-w-2xl mx-4 max-h-[95vh] overflow-hidden flex flex-col"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Header */}
                         <div className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-white/10 shrink-0">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/20">
-                                    <Sparkles
+                                    <Wand2
                                         size={20}
                                         className="text-white"
                                     />
@@ -898,7 +931,7 @@ export const AIRewriteDialog = forwardRef<
                                     <Palette size={13} />
                                     Tone
                                 </label>
-                                <div className="grid grid-cols-4 gap-1.5">
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                                     {TONES.map((t) => (
                                         <button
                                             key={t.id}
@@ -1011,7 +1044,7 @@ export const AIRewriteDialog = forwardRef<
                                 <div className="flex flex-col items-center justify-center py-8 gap-3">
                                     <div className="relative">
                                         <div className="w-12 h-12 rounded-full animate-spin border-4 border-amber-200 dark:border-amber-800 border-t-amber-500" />
-                                        <Sparkles
+                                        <Wand2
                                             size={16}
                                             className="absolute inset-0 m-auto text-amber-500"
                                         />
@@ -1130,7 +1163,7 @@ export const AIRewriteDialog = forwardRef<
                                                 className="animate-spin"
                                             />
                                         ) : (
-                                            <Sparkles size={16} />
+                                            <Wand2 size={16} />
                                         )}
                                         Generate
                                     </Button>
@@ -1144,9 +1177,10 @@ export const AIRewriteDialog = forwardRef<
                                 )}
                             </div>
                         </div>
-                    </div>
-                </div>
-            )}
+                    </motion.div>
+                </motion.div>
+                )}
+            </AnimatePresence>
         </>
     );
 });

@@ -6,7 +6,6 @@ import {
     Bot,
     CheckCircle2,
     ShieldCheck,
-    Sparkles,
     Wrench,
     SlidersHorizontal,
 } from "lucide-react";
@@ -135,7 +134,7 @@ export default async function TradingSystemsIndexPage() {
             <section className="mb-10 grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr] pt-4">
                 <div className="space-y-6 text-left">
                     <div className="inline-flex items-center gap-2 rounded-full border border-gold/25 bg-gold/10 px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-gold">
-                        <Sparkles size={12} className="fill-gold/25" />
+                        <BadgeCheck size={12} className="fill-gold/25" />
                         Verified MT5 Expert Advisors
                     </div>
 

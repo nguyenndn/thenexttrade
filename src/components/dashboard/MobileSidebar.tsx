@@ -1,12 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useFeatureFlags } from "@/lib/dashboard-context";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X, LogOut, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { SPRING_SOFT, backdropVariants } from "@/lib/animations";
 import { Logo } from "@/components/ui/Logo";
 import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
 import { NotificationBell } from "@/components/layout/NotificationBell";
@@ -168,21 +170,43 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
         [rawItems, disabledFlags, flagsLoaded]
     );
 
-    if (!isOpen) return null;
+    // Body scroll lock while the drawer is open.
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+    }, [isOpen]);
 
     const isAdmin = navItems[0]?.href === "/admin";
     const sectionNames = isAdmin ? adminSectionNames : userSectionNames;
 
     return (
-        <div className="fixed inset-0 z-50 lg:hidden">
-            {/* Backdrop */}
-            <div
-                className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-                onClick={onClose}
-            />
+        <AnimatePresence>
+            {isOpen && (
+            <motion.div
+                variants={backdropVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ type: "tween", duration: 0.2 }}
+                className="fixed inset-0 z-50 lg:hidden"
+            >
+                {/* Backdrop */}
+                <motion.div
+                    className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                    onClick={onClose}
+                />
 
-            {/* Sidebar panel */}
-            <div className="absolute left-0 top-0 bottom-0 w-[272px] bg-white dark:bg-[#0B0E14] shadow-2xl flex flex-col">
+                {/* Sidebar panel */}
+                <motion.div
+                    initial={{ x: "-100%" }}
+                    animate={{ x: 0 }}
+                    exit={{ x: "-100%" }}
+                    transition={SPRING_SOFT}
+                    className="absolute left-0 top-0 bottom-0 w-[272px] bg-white dark:bg-[#0B0E14] shadow-2xl flex flex-col"
+                >
                 {/* ── Header: Logo + Close ── */}
                 <div className="flex items-center justify-between px-4 py-3 border-b border-dashboard">
                     <Logo />
@@ -292,7 +316,9 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
                         <span>Logout</span>
                     </Button>
                 </div>
-            </div>
-        </div>
+                </motion.div>
+            </motion.div>
+            )}
+        </AnimatePresence>
     );
 }

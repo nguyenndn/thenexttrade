@@ -11,7 +11,6 @@ import {
     Lock,
     Eye,
     EyeOff,
-    Sparkles,
     CheckCircle,
     ShieldCheck,
 } from "lucide-react";
@@ -217,7 +216,7 @@ export default function LoginPage() {
                                 : "text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
                         }`}
                     >
-                        <Sparkles size={16} />
+                        <Mail size={16} />
                         Magic Link
                     </button>
                 </div>
@@ -365,7 +364,7 @@ export default function LoginPage() {
                             isLoading={loading}
                             disabled={!isHydrated}
                         >
-                            <Sparkles size={18} />
+                            <Mail size={18} />
                             Send Magic Link
                         </Button>
                     </form>

@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 import {
     ArrowRight,
     MessageCircle,
     ShieldCheck,
-    Sparkles,
     Zap,
 } from "lucide-react";
 
@@ -18,7 +18,7 @@ export function NewsletterSection() {
             <section className="relative z-10 mx-auto max-w-[1440px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
                 <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-gold/25 bg-gradient-to-br from-white via-gold/[0.04] to-amber-50/70 px-5 py-8 text-center shadow-[0_18px_55px_rgba(245,158,11,0.08)] dark:from-white/[0.04] dark:via-gold/[0.04] dark:to-white/[0.02] sm:px-8 sm:py-10">
                     <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-gold">
-                        <Sparkles size={12} strokeWidth={2.7} />
+                        <Zap size={12} strokeWidth={2.7} />
                         Ready when you are
                     </div>
 
@@ -41,7 +41,7 @@ export function NewsletterSection() {
                         </Link>
 
                         <a
-                            href="https://t.me/GoldScalperNinja"
+                            href={TELEGRAM_CHANNEL_URL}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-xs sm:text-sm font-extrabold text-gray-800 shadow-sm transition-all duration-300 hover:border-[#2AABEE]/40 hover:text-[#2AABEE] hover:shadow-md dark:border-white/10 dark:bg-white/[0.04] dark:text-white"

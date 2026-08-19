@@ -3,6 +3,8 @@
 import { useState, useMemo } from "react";
 import useSWR from "swr";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { SPRING_SOFT } from "@/lib/animations";
 import {
     MessageSquare,
     Search,
@@ -185,8 +187,15 @@ export default function AdminCommentsPage() {
                         </div>
 
                         {/* Bulk Actions (Visible when selected) */}
+                        <AnimatePresence>
                         {selectedIds.size > 0 && (
-                            <div className="flex items-center gap-1.5 bg-primary/10 px-4 h-[42px] rounded-xl animate-in fade-in zoom-in-95 text-sm shrink-0">
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.92, y: 4 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.92, y: 4 }}
+                                transition={SPRING_SOFT}
+                                className="flex items-center gap-1.5 bg-primary/10 px-4 h-[42px] rounded-xl text-sm shrink-0"
+                            >
                                 <span className="font-bold text-primary mr-2">
                                     {selectedIds.size} selected
                                 </span>
@@ -209,8 +218,9 @@ export default function AdminCommentsPage() {
                                         <Trash2 size={16} />
                                     )}
                                 </Button>
-                            </div>
+                            </motion.div>
                         )}
+                        </AnimatePresence>
                     </div>
                 </div>
 

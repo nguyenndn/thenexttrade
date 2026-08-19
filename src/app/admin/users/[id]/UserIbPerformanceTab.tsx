@@ -386,7 +386,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                         </span>
                                     </div>
 
-                                    <div className="grid grid-cols-3 gap-2 text-center text-xs bg-gray-50 dark:bg-white/5 p-2 rounded-lg border border-gray-200 dark:border-white/10">
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center text-xs bg-gray-50 dark:bg-white/5 p-2 rounded-lg border border-gray-200 dark:border-white/10">
                                         <div>
                                             <p className="text-[10px] text-gray-600 uppercase font-medium">
                                                 Trades

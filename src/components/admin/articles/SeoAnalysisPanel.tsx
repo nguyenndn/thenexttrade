@@ -8,7 +8,6 @@ import {
     Facebook,
     Twitter,
     Wand2,
-    Sparkles,
     Lock,
     Unlock,
 } from "lucide-react";
@@ -475,7 +474,7 @@ export function SeoAnalysisPanel({
 
     return (
         <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-3">
                 <h3 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2">
                     <Search size={20} className="text-primary" />
                     Yoast SEO (Pro)
@@ -737,7 +736,7 @@ export function SeoAnalysisPanel({
                         </div>
                         <div className="mt-6 p-4 rounded-xl bg-purple-500/[0.05] border border-purple-500/10 dark:border-purple-500/20">
                             <h5 className="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider flex items-center gap-1.5 mb-1.5">
-                                <Sparkles size={12} />
+                                <Wand2 size={12} />
                                 <span>What is AI-SEO?</span>
                             </h5>
                             <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed font-semibold">

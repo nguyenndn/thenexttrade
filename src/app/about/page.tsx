@@ -18,6 +18,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { AboutTimeline } from "@/components/home/AboutTimeline";
+import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { DynamicFirefly } from "@/components/ui/DynamicFirefly";
 
@@ -227,7 +228,7 @@ export default async function AboutPage() {
                                         </Button>
                                     </Link>
                                     <a
-                                        href="https://t.me/GoldScalperNinja"
+                                        href={TELEGRAM_CHANNEL_URL}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="w-full sm:w-auto"

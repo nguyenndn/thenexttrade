@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
     ShieldAlert,
     RefreshCw,
@@ -18,6 +19,7 @@ import {
     Globe,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -139,6 +141,15 @@ export default function SecurityDashboard() {
         duration: "",
     });
     const [blocking, setBlocking] = useState(false);
+
+    // Body scroll lock while the Block IP modal is open.
+    useEffect(() => {
+        if (showBlockModal) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+    }, [showBlockModal]);
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -717,13 +728,28 @@ export default function SecurityDashboard() {
                 )}
 
                 {/* Block IP Modal */}
-                {showBlockModal && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <AnimatePresence>
+                    {showBlockModal && (
+                    <motion.div
+                        variants={backdropVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={{ type: "tween", duration: 0.2 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    >
                         <div
-                            className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+                            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
                             onClick={() => setShowBlockModal(false)}
                         />
-                        <div className="relative z-10 w-full max-w-md bg-white dark:bg-[#1E2028] rounded-xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                        <motion.div
+                            variants={panelVariants}
+                            initial="initial"
+                            animate="animate"
+                            exit="exit"
+                            transition={SPRING_SOFT}
+                            className="relative z-10 w-full max-w-md bg-white dark:bg-[#1E2028] rounded-xl shadow-xl overflow-hidden"
+                        >
                             <div className="p-6 space-y-5">
                                 <div className="flex items-center gap-2">
                                     <Ban size={18} className="text-red-500" />
@@ -811,9 +837,10 @@ export default function SecurityDashboard() {
                                     </Button>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                )}
+                        </motion.div>
+                    </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </Tabs>
     );

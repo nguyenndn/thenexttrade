@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { SPRING_SOFT } from "@/lib/animations";
 import {
     LogOut,
     Settings,
@@ -153,8 +155,16 @@ export function UserMenu({
             </Button>
 
             {/* Dropdown Menu */}
+            <AnimatePresence>
             {isOpen && (
-                <div className="absolute right-0 mt-3 w-60 bg-white dark:bg-[#151925] rounded-xl shadow-2xl border border-dashboard overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95, y: -4 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: -4 }}
+                    transition={SPRING_SOFT}
+                    style={{ transformOrigin: "top right" }}
+                    className="absolute right-0 mt-3 w-60 bg-white dark:bg-[#151925] rounded-xl shadow-2xl border border-dashboard overflow-hidden z-50"
+                >
                     {/* Header Info */}
                     <div className="p-4 border-b border-dashboard bg-gray-50/50 dark:bg-white/5">
                         <h4 className="font-bold text-lg text-gray-700 dark:text-white leading-tight">
@@ -309,8 +319,9 @@ export function UserMenu({
                             Log Out
                         </Button>
                     </div>
-                </div>
+                </motion.div>
             )}
+            </AnimatePresence>
 
             <EdgeInfoModal
                 isOpen={isEdgeModalOpen}

@@ -3,8 +3,6 @@
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { revalidatePath } from "next/cache";
-import { vipRequestSchema } from "@/lib/validations/vip-request";
-import { verifyTurnstile } from "@/lib/turnstile";
 import { NotificationType, NotificationPriority } from "@prisma/client";
 import { maskAccountNumber, findOrMatchTradingAccount } from "@/lib/pro-access";
 import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
@@ -14,97 +12,6 @@ import type { IbStatsRange } from "@/actions/ib-lead";
 // ============================================================================
 // USER ACTIONS
 // ============================================================================
-
-export async function submitVipRequest(formData: FormData) {
-    const user = await getAuthUser();
-    if (!user) return { error: "Unauthorized" };
-
-    // Verify Turnstile
-    const turnstileToken = formData.get("cf-turnstile-response") as string;
-    const turnstileResult = await verifyTurnstile(turnstileToken);
-    if (!turnstileResult.success) {
-        return { error: turnstileResult.error || "Verification failed" };
-    }
-
-    // Parse form data
-    const raw = {
-        broker: formData.get("broker") as string,
-        accountNumber: formData.get("accountNumber") as string,
-        balance: formData.get("balance") as string,
-        email: formData.get("email") as string,
-        telegramId: formData.get("telegramId") as string,
-        fullName: (formData.get("fullName") as string) || undefined,
-        country: (formData.get("country") as string) || undefined,
-        screenshotUrl: (formData.get("screenshotUrl") as string) || undefined,
-    };
-
-    // Validate
-    const parsed = vipRequestSchema.safeParse(raw);
-    if (!parsed.success) {
-        const firstError = parsed.error.issues[0];
-        return { error: firstError?.message || "Invalid input" };
-    }
-
-    // Try to match a TradingAccount for account-scoped linking
-    const tradingAccountId = await findOrMatchTradingAccount(
-        user.id,
-        parsed.data.broker,
-        parsed.data.accountNumber
-    );
-
-    // Check for existing pending request for same account
-    const existingRequest = await prisma.vipRequest.findFirst({
-        where: {
-            userId: user.id,
-            status: "PENDING",
-            ...(tradingAccountId
-                ? { tradingAccountId }
-                : {
-                      broker: parsed.data.broker,
-                      accountNumber: parsed.data.accountNumber,
-                  }),
-        },
-    });
-
-    if (existingRequest) {
-        return {
-            error: "You already have a pending VIP request for this account. Please wait for review.",
-        };
-    }
-
-    // Create request
-    const vipRequest = await prisma.vipRequest.create({
-        data: {
-            userId: user.id,
-            tradingAccountId,
-            broker: parsed.data.broker,
-            accountNumber: parsed.data.accountNumber,
-            balance: parsed.data.balance,
-            email: parsed.data.email,
-            telegramId: parsed.data.telegramId,
-            fullName: parsed.data.fullName || null,
-            country: parsed.data.country || null,
-            screenshotUrl: parsed.data.screenshotUrl || null,
-        },
-    });
-
-    // Notify Admins (fire-and-forget)
-    notifyAdminsOfVipRequest({
-        vipRequestId: vipRequest.id,
-        userId: user.id,
-        broker: parsed.data.broker,
-        accountNumber: parsed.data.accountNumber,
-        balance: parsed.data.balance,
-        userEmail: parsed.data.email,
-        userName: parsed.data.fullName || null,
-    }).catch(() => {});
-
-    revalidatePath("/dashboard");
-    revalidatePath("/admin/ib");
-    revalidatePath("/admin/ib/pipeline");
-    revalidatePath("/admin");
-    return { success: true };
-}
 
 export async function getMyVipRequest(tradingAccountId?: string) {
     const user = await getAuthUser();
@@ -124,25 +31,35 @@ export async function getMyVipRequest(tradingAccountId?: string) {
     return request;
 }
 
-// VIP Telegram group invite link — env-configurable so the placeholder is
-// never served in production by accident. Falls back to a clearly-fake default.
-const VIP_TELEGRAM_URL =
-    process.env.VIP_TELEGRAM_URL ||
-    "https://t.me/+YourVipGroupLink"; // TODO: Replace with actual VIP group invite link
+// VIP Telegram group invite link — env-configurable. Without VIP_TELEGRAM_URL
+// the function returns null so the product never surfaces a fake invite link.
+// The owner must set VIP_TELEGRAM_URL in env for the "Join VIP Telegram" button
+// to appear for entitled users.
+const VIP_TELEGRAM_URL = process.env.VIP_TELEGRAM_URL || null;
 
 export async function getVipLink() {
     const user = await getAuthUser();
     if (!user) return null;
 
-    // Check if user has an approved VIP request
-    const approvedRequest = await prisma.vipRequest.findFirst({
-        where: {
-            userId: user.id,
-            status: "APPROVED",
-        },
-    });
+    // Only entitled users see the invite: an ACTIVE/GRACE entitlement (account
+    // or user-level) OR an approved request. Manual grants have no approved
+    // VipRequest, so the entitlement check is the source of truth.
+    const [activeEntitlement, approvedRequest] = await Promise.all([
+        prisma.proEntitlement.findFirst({
+            where: {
+                userId: user.id,
+                status: { in: ["ACTIVE", "GRACE"] },
+            },
+            select: { id: true },
+        }),
+        prisma.vipRequest.findFirst({
+            where: { userId: user.id, status: "APPROVED" },
+            select: { id: true },
+        }),
+    ]);
 
-    if (!approvedRequest) return null;
+    if (!activeEntitlement && !approvedRequest) return null;
+    if (!VIP_TELEGRAM_URL) return null;
 
     return VIP_TELEGRAM_URL;
 }
@@ -329,11 +246,11 @@ export async function approveVipRequest(requestId: string) {
             data: {
                 userId: vipRequest.userId,
                 type: NotificationType.VIP_APPROVED,
-                title: "🎉 Pro Access Activated!",
+                title: "🎉 VIP Access Activated!",
                 message:
-                    "Your VIP request has been approved. You now have full Pro access to all premium features!",
+                    "Your VIP request has been approved. You now have full VIP access — open the VIP tab to join the Telegram channel & TraderRoom.",
                 priority: NotificationPriority.HIGH,
-                link: NOTIFICATION_ROUTES.VIP_ACCOUNTS,
+                link: NOTIFICATION_ROUTES.VIP_COMMUNITY,
             },
         });
 
@@ -548,8 +465,8 @@ export async function grantGracePeriod(
         data: {
             userId,
             type: NotificationType.VIP_APPROVED,
-            title: "⏳ Temporary Pro Access Granted",
-            message: `You have been granted ${days}-day temporary Pro access. Complete your VIP verification to keep access permanently.`,
+            title: "⏳ Temporary VIP Access Granted",
+            message: `You have been granted ${days}-day temporary VIP access. Complete your verification to keep access permanently.`,
             priority: NotificationPriority.NORMAL,
             link: NOTIFICATION_ROUTES.VIP_UNLOCK_PRO,
         },
@@ -616,10 +533,10 @@ export async function revokeProAccess(
         data: {
             userId,
             type: NotificationType.VIP_REJECTED,
-            title: "Pro Access Revoked",
+            title: "VIP Access Revoked",
             message: reason
-                ? `Your Pro access has been revoked. Reason: ${reason}`
-                : "Your Pro access has been revoked. Contact support for details.",
+                ? `Your VIP access has been revoked. Reason: ${reason}`
+                : "Your VIP access has been revoked. Contact support for details.",
             priority: NotificationPriority.HIGH,
             link: NOTIFICATION_ROUTES.VIP_ACCOUNTS,
         },

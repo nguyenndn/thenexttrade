@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Sparkles, Trophy, Zap, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Trophy, Zap, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { cn } from "@/lib/utils";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 
 interface LevelUpEventData {
     xp: number;
@@ -15,6 +16,21 @@ interface LevelUpEventData {
 export function LevelUpModal() {
     const [isOpen, setIsOpen] = useState(false);
     const [data, setData] = useState<LevelUpEventData | null>(null);
+
+    // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
+    useEffect(() => {
+        if (isOpen) document.body.style.overflow = "hidden";
+    }, [isOpen]);
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
+    const releaseLock = () => {
+        document.body.style.overflow = "unset";
+    };
 
     const fireContinuousConfetti = useCallback(async () => {
         const confetti = (await import("canvas-confetti")).default;
@@ -77,18 +93,32 @@ export function LevelUpModal() {
         };
     }, [fireContinuousConfetti]);
 
-    if (!isOpen) return null;
-
     return (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-            {/* Backdrop */}
-            <div
-                className="fixed inset-0 bg-[#07090E]/90 backdrop-blur-md transition-opacity duration-300 animate-in fade-in"
-                onClick={() => setIsOpen(false)}
-            />
+        <AnimatePresence onExitComplete={releaseLock}>
+            {isOpen && (
+                <motion.div
+                    variants={backdropVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={{ type: "tween", duration: 0.2 }}
+                    className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+                >
+                    {/* Backdrop */}
+                    <div
+                        className="fixed inset-0 bg-[#07090E]/90 backdrop-blur-md"
+                        onClick={() => setIsOpen(false)}
+                    />
 
-            {/* Modal Card */}
-            <div className="relative z-10 w-full max-w-md bg-[#0D111A] border border-amber-500/30 rounded-2xl shadow-2xl shadow-amber-500/10 overflow-hidden animate-in fade-in zoom-in-95 duration-500 p-8 text-center">
+                    {/* Modal Card */}
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
+                        className="relative z-10 w-full max-w-md bg-[#0D111A] border border-amber-500/30 rounded-2xl shadow-2xl shadow-amber-500/10 overflow-hidden p-8 text-center"
+                    >
                 {/* Glowing Auroras */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-amber-500/10 rounded-full blur-[90px] pointer-events-none" />
                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-emerald-500/5 rounded-full blur-[80px] pointer-events-none" />
@@ -136,7 +166,7 @@ export function LevelUpModal() {
                 {/* Badge reward alert if any */}
                 {data?.badge && (
                     <div className="mb-6 p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-400 font-bold text-xs flex items-center justify-center gap-2">
-                        <Sparkles
+                        <Trophy
                             size={14}
                             className="animate-spin duration-3000"
                         />
@@ -153,7 +183,9 @@ export function LevelUpModal() {
                 >
                     KEEP CONQUERING
                 </Button>
-            </div>
-        </div>
+                </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
     );
 }

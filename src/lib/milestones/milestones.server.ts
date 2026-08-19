@@ -34,7 +34,7 @@ export const MILESTONES: MilestoneDefinition[] = [
         title: "First Trade Logged! 🚀",
         message:
             "Your dashboard just came alive! Performance charts, Trade Score, and AI insights are now active.",
-        icon: "Sparkles",
+        icon: "Rocket",
         link: "/dashboard",
     },
     {

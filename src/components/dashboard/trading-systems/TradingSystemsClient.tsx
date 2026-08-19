@@ -159,7 +159,10 @@ export function TradingSystemsClient({
                         className="animate-in fade-in slide-in-from-bottom-4 duration-500 mt-0"
                     >
                         <div className="w-full bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-dashboard">
-                            <VipTabSummary vipRequest={vipRequest} />
+                            <VipTabSummary
+                                vipRequest={vipRequest}
+                                vipLink={vipLink}
+                            />
                         </div>
                     </TabsContent>
                 </div>

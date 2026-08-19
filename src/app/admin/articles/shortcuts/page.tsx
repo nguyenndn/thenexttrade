@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import useSWR from "swr";
+import { motion, AnimatePresence } from "framer-motion";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import { Plus, Edit2, Trash2, Zap, Search, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
@@ -76,6 +78,15 @@ export default function ShortcutsManagerPage() {
         setEditingId(null);
         setFormData({ name: "", description: "", content: "" });
     };
+
+    // Body scroll lock while the create/edit modal is open.
+    useEffect(() => {
+        if (isModalOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+    }, [isModalOpen]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -295,14 +306,27 @@ export default function ShortcutsManagerPage() {
             </div>
 
             {/* Create/Edit Modal */}
+            <AnimatePresence>
             {isModalOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                    <div
-                        className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+                    <motion.div
+                        variants={backdropVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={{ type: "tween", duration: 0.2 }}
+                        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
                         onClick={handleCloseModal}
                         aria-hidden="true"
                     />
-                    <div className="relative z-10 bg-white dark:bg-[#151925] w-full max-w-4xl rounded-xl shadow-xl flex flex-col border border-gray-200 dark:border-white/10 max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
+                        className="relative z-10 bg-white dark:bg-[#151925] w-full max-w-4xl rounded-xl shadow-xl flex flex-col border border-gray-200 dark:border-white/10 max-h-[90vh] overflow-hidden"
+                    >
                         <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-white/10">
                             <h2 className="text-xl font-bold text-gray-700 dark:text-white flex items-center gap-2">
                                 <Zap className="text-yellow-500" size={24} />
@@ -413,9 +437,10 @@ export default function ShortcutsManagerPage() {
                                 )}
                             </Button>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             )}
+            </AnimatePresence>
 
             {/* Delete Confirmation Dialog */}
             <ConfirmDialog

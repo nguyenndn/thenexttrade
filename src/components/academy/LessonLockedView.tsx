@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Lock, GraduationCap, ArrowRight, Sparkles } from "lucide-react";
+import { Lock, GraduationCap, ArrowRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -73,7 +73,7 @@ export function LessonLockedView({
                                     "px-8 py-3.5 rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white font-bold text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105",
                             })}
                         >
-                            <Sparkles size={18} />
+                            <GraduationCap size={18} />
                             <span>Sign Up Free to Unlock</span>
                         </Link>
                         <p className="text-xs text-gray-500">

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import {
     Brain,
     Crown,
-    Sparkles,
     AlertCircle,
     BookOpen,
     Activity,
@@ -480,7 +479,7 @@ export function BiasProfileWidget() {
                     </Link>
                 </div>
                 <div className="flex items-center gap-1.5 mt-2 justify-center text-[10px] text-gray-400 dark:text-gray-500">
-                    <Sparkles className="h-3 w-3 text-amber-500" />
+                    <Brain className="h-3 w-3 text-amber-500" />
                     <span>
                         Complete the recommended lesson to earn **+100 Edge** &
                         a Special Badge!

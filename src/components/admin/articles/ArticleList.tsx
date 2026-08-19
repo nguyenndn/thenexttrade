@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback, memo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { SPRING_SOFT } from "@/lib/animations";
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
@@ -390,8 +392,15 @@ export const ArticleList = memo(function ArticleList({
 
                     <div className="flex flex-wrap gap-2 justify-start lg:justify-end items-center shrink-0">
                         {/* Bulk Actions (Visible when selected) */}
+                        <AnimatePresence>
                         {selectedIds.size > 0 && (
-                            <div className="flex items-center gap-1.5 bg-primary/10 px-4 h-[42px] rounded-xl animate-in fade-in zoom-in-95 text-sm shrink-0">
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.92, y: 4 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.92, y: 4 }}
+                                transition={SPRING_SOFT}
+                                className="flex items-center gap-1.5 bg-primary/10 px-4 h-[42px] rounded-xl text-sm shrink-0"
+                            >
                                 <span className="font-bold text-primary mr-2">
                                     {selectedIds.size} selected
                                 </span>
@@ -458,8 +467,9 @@ export const ArticleList = memo(function ArticleList({
                                         <Trash2 size={16} />
                                     )}
                                 </Button>
-                            </div>
+                            </motion.div>
                         )}
+                        </AnimatePresence>
                     </div>
                 </div>
             </div>

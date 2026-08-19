@@ -1,6 +1,6 @@
 # System
 
-Last reviewed: 2026-08-11
+Last reviewed: 2026-08-18
 
 TheNextTrade is a trader operating system: Trade Manager EA/manual trade capture, journal, analytics, Academy, Edge missions, Partner Pro/VIP operations, AI Gateway, trading-system access, and admin reporting in one Next.js app. For route-level behavior specs, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
 
@@ -29,6 +29,8 @@ flowchart TD
   Prisma --> Postgres[(PostgreSQL)]
   App --> R2[Cloudflare R2]
   App --> SMTP[SMTP provider]
+  App --> InternalAI[Internal AI Gateway]
+  InternalAI --> OpenRouter[OpenRouter / provider gateway]
   EA[Trade Manager EA / MT5 EA] --> EaApi[/api/ea/*/]
   LegacySync[Legacy sync clients] --> SyncApi[/api/sync/*/]
   EaApi --> Prisma
@@ -85,6 +87,10 @@ Use this table when assigning bugs or feature work.
 | Academy | `/academy`, `/dashboard/academy`, `/admin/academy`, `/certificate/[id]`, `/certificate/master/[userId]` | academy routes/components/actions, `src/lib/certificates/certificate-share.server.ts`, `src/components/academy/CertificateShareModal.tsx`, `CertificateShareScale.tsx` | levels, modules, lessons, quizzes, progress, certificates, public share-cards |
 | Certificate OG images | `/api/og/certificate/[id]`, `/api/og/certificate/master/[userId]` | `src/app/api/og/certificate/[id]/route.tsx`, `src/app/api/og/certificate/master/[userId]/route.tsx` | `next/og` dynamic preview cards for certificate share links |
 | Trading systems | `/trading-systems`, `/dashboard/trading-systems`, `/admin/trading-systems` | trading system public, user, and admin pages | downloads, licenses, products |
+| Community / GoldScalperNinja | `/community` | `src/app/community/page.tsx`, `src/components/community/*`, `src/config/telegram.ts` | Telegram/community funnel, broker setup guidance |
+| AI Gateway | `/admin/ai`, `/dashboard/intelligence` | `src/actions/admin/ai-gateway.ts`, `src/actions/ai-coach.ts`, `src/lib/ai-gateway/*`, `src/components/admin/ai/*` | providers, models, routing, request logs, audit |
+| Economic calendar | `/tools/economic-calendar` | `src/app/tools/economic-calendar`, `src/lib/services/economic-calendar.ts` | configured calendar provider data |
+| Email Lab | `/admin/email-lab` | `src/app/admin/email-lab`, `src/lib/services/email.service.ts`, `src/lib/emails/*` | SMTP/Mailtrap template testing |
 | Admin users | `/admin/users` | admin user list/detail components | user/profile/country/session/account data |
 | Security | `/admin/security` | security admin pages/APIs | `AuditLog`, `SecurityLog`, `BlockedIP` |
 | Email | no single route | `src/lib/services/email.service.ts`, email actions | SMTP provider, templates, send logs later |
@@ -185,6 +191,24 @@ Internal analytics is the product/admin source of truth:
 - First-value tracking should not depend only on page views. It should use durable product state such as first account, first trade data, first insight celebration, and weekly report generation.
 
 GA4 is optional. Only sanitized client events should be sent when analytics env vars are enabled.
+
+## AI Gateway
+
+The app intentionally uses two gateway layers:
+
+1. **Internal AI Gateway**: application-owned layer for model selection, routing rules, request logging, audit logs, admin visibility, quotas, and fallback behavior.
+2. **OpenRouter/provider gateway**: external billing/provider layer that lets the app call multiple models without managing separate provider accounts for every model.
+
+Required flow:
+
+`dashboard/intelligence -> server action/API -> internal AI Gateway -> provider adapter -> OpenRouter/model`
+
+Rules:
+
+- User-facing AI features must not call OpenRouter directly.
+- Admin request activity must be created inside the internal gateway before/after provider calls.
+- `/admin/ai` should be able to show provider configuration, model catalog, routing policy, request explorer, and audit log.
+- If OpenRouter shows traffic but `/admin/ai` does not, inspect whether a user-facing action bypassed `src/lib/ai-gateway/*` or `src/actions/admin/ai-gateway.ts` logging.
 
 ## Security
 

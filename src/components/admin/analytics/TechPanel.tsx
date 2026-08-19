@@ -29,7 +29,7 @@ export function TechPanel({ devices, browsers }: Props) {
                 <p className="text-xs text-gray-400 uppercase tracking-wider mb-3">
                     Devices
                 </p>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     {devices.map((d) => {
                         const cfg =
                             DEVICE_CONFIG[d.device] || DEVICE_CONFIG.desktop;

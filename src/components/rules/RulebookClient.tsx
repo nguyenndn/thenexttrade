@@ -6,7 +6,6 @@ import {
     Shield,
     Award,
     ClipboardCheck,
-    Sparkles,
     AlertCircle,
     RefreshCw,
     BarChart2,
@@ -213,7 +212,7 @@ export function RulebookClient({
                                     disabled={isPending}
                                     className="flex items-center gap-1.5 border-indigo-200 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-bold"
                                 >
-                                    <Sparkles size={14} />
+                                    <Plus size={14} />
                                     Add Starter Rules
                                 </Button>
                                 <Button

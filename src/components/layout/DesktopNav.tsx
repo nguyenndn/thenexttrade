@@ -8,7 +8,7 @@ export function DesktopNav() {
     const pathname = usePathname();
 
     return (
-        <nav className="hidden lg:flex items-center gap-4 xl:gap-6 relative flex-1 justify-center">
+        <nav className="hidden lg:flex items-center gap-4 xl:gap-6 relative flex-1 lg:justify-start xl:justify-center overflow-x-auto scrollbar-hide">
             {menuItems.map((item) => {
                 const isActive =
                     pathname === item.href ||
@@ -20,7 +20,7 @@ export function DesktopNav() {
                         href={item.href}
                         aria-current={isActive ? "page" : undefined}
                         className={[
-                            "relative py-1.5 text-base nav-menu-text transition-colors group",
+                            "relative py-1.5 text-base nav-menu-text transition-colors group whitespace-nowrap",
                             isActive
                                 ? "text-gray-950 dark:text-white"
                                 : "text-gray-700 hover:text-amber-600 dark:text-gray-300 dark:hover:text-amber-300",

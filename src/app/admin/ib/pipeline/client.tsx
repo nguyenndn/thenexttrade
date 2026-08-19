@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+    SPRING_SOFT,
+    backdropVariants,
+    panelVariants,
+} from "@/lib/animations";
 import Link from "next/link";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
@@ -105,6 +111,20 @@ export function VipPipelineClient({
     const [searchInputValue, setSearchInputValue] = useState(currentParams.q || "");
     const [selectedItem, setSelectedItem] = useState<IbPipelineItem | null>(null);
     const [rejectModalId, setRejectModalId] = useState<string | null>(null);
+
+    // Body scroll lock: lock while the reject modal is open, release after the
+    // exit animation completes (in onExitComplete) so the scrollbar doesn't flash.
+    useEffect(() => {
+        if (rejectModalId) {
+            document.body.style.overflow = "hidden";
+        }
+    }, [rejectModalId]);
+
+    const releaseRejectLock = () => {
+        if (!rejectModalId) {
+            document.body.style.overflow = "unset";
+        }
+    };
     const [rejectReason, setRejectReason] = useState("");
     const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
 
@@ -612,9 +632,25 @@ export function VipPipelineClient({
             </div>
 
             {/* Reject Modal */}
+            <AnimatePresence onExitComplete={releaseRejectLock}>
             {rejectModalId && (
-                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-6 max-w-md w-full space-y-4 shadow-xl">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <motion.div
+                        variants={backdropVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={{ type: "tween", duration: 0.2 }}
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+                    />
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
+                        className="relative bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-6 max-w-md w-full space-y-4 shadow-xl"
+                    >
                         <h3 className="text-lg font-black text-gray-900 dark:text-white">
                             Reject VIP Request
                         </h3>
@@ -639,9 +675,10 @@ export function VipPipelineClient({
                                 Confirm Rejection
                             </Button>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             )}
+            </AnimatePresence>
 
             {/* Delete Confirm Modal */}
             {deleteModalId && (

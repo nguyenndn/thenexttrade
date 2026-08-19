@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Quote, Sparkles } from "lucide-react";
+import { ArrowRight, Quote } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { buttonVariants } from "@/components/ui/button-variants";
 
@@ -21,7 +21,7 @@ export function AboutUsSection() {
                         {/* Left Column: Story text and header */}
                         <div className="flex-1 min-w-0">
                             <div className="mb-2.5 inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.25em] text-amber-600 dark:text-gold/90 select-none">
-                                <Sparkles
+                                <Quote
                                     size={11}
                                     className="opacity-80 text-amber-600 dark:text-gold/90"
                                 />

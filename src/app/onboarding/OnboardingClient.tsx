@@ -13,7 +13,7 @@ import {
     Target,
     Search,
     ShieldCheck,
-    Sparkles,
+    Crown,
     Monitor,
     Cable,
     PenLine,
@@ -66,7 +66,7 @@ const TRADING_GOALS = [
         id: "pro",
         label: "Prepare for Pro tools",
         description: "Get EA access, AI coaching, and advanced analytics",
-        icon: Sparkles,
+        icon: Crown,
     },
 ] as const;
 
@@ -768,7 +768,7 @@ export default function OnboardingClient({
                             </div>
 
                             {/* Unlocked features */}
-                            <div className="grid grid-cols-2 gap-3 mb-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
                                 {[
                                     {
                                         icon: BarChart3,

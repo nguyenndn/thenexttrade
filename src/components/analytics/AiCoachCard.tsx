@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import {
     Brain,
-    Sparkles,
     AlertCircle,
     Target,
     ChevronRight,
@@ -121,7 +120,7 @@ export function AiCoachCard({
                         <div>
                             <h3 className="text-lg font-bold text-amber-950 dark:text-white flex items-center gap-2">
                                 TheNextTrade AI Coach{" "}
-                                <Sparkles
+                                <Brain
                                     size={16}
                                     className="text-amber-500 dark:text-amber-400"
                                 />
@@ -239,7 +238,7 @@ export function AiCoachCard({
                             {/* Executive summary */}
                             <div>
                                 <h4 className="inline-flex text-xs font-bold text-primary bg-primary/10 dark:bg-primary/20 px-2.5 py-1 rounded-lg uppercase tracking-wider mb-3 items-center gap-1.5">
-                                    <Sparkles size={14} /> Executive Summary
+                                    <Brain size={14} /> Executive Summary
                                 </h4>
                                 <p className="text-[15px] leading-relaxed text-gray-800 dark:text-gray-200 font-medium">
                                     {insight.summary}

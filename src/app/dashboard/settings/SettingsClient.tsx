@@ -9,7 +9,8 @@ import {
     BarChart3,
     Search,
     ShieldCheck,
-    Sparkles,
+    Crown,
+    Target,
     Check,
     Mail,
     Wand2,
@@ -59,7 +60,7 @@ const TRADING_GOALS = [
         id: "pro",
         label: "Prepare for Pro tools",
         description: "Get EA access, AI coaching, and advanced analytics",
-        icon: Sparkles,
+        icon: Crown,
     },
 ] as const;
 
@@ -359,7 +360,7 @@ export default function SettingsClient() {
                 <div className="border-t border-dashboard px-6 py-5 space-y-4">
                     <div className="flex items-center gap-2.5 mb-1">
                         <div className="w-7 h-7 rounded-lg bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center">
-                            <Sparkles size={14} className="text-amber-500" />
+                            <Target size={14} className="text-amber-500" />
                         </div>
                         <h2 className="text-sm font-bold text-gray-700 dark:text-white">
                             Main Trading Goal

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import {
     X,
     CheckCircle2,
@@ -10,6 +11,7 @@ import {
     ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -64,6 +66,14 @@ export function ArticleSeoFixModal({
         });
     }, [suggestion]);
 
+    // Body scroll lock while open; released when AnimatePresence unmounts after exit.
+    useEffect(() => {
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
     const isMetaTitleValid =
         formData.metaTitle.length >= 10 && formData.metaTitle.length <= 70;
     const isMetaDescValid =
@@ -88,7 +98,14 @@ export function ArticleSeoFixModal({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <motion.div
+            variants={backdropVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ type: "tween", duration: 0.2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        >
             {/* Backdrop */}
             <div
                 className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -96,7 +113,14 @@ export function ArticleSeoFixModal({
             />
 
             {/* Modal */}
-            <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-2xl flex flex-col">
+            <motion.div
+                variants={panelVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={SPRING_SOFT}
+                className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-2xl flex flex-col"
+            >
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] sticky top-0 z-10 shrink-0">
                     <div className="flex items-center gap-3">
@@ -337,7 +361,7 @@ export function ArticleSeoFixModal({
                         </Button>
                     </div>
                 </div>
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 }

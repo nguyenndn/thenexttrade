@@ -48,6 +48,7 @@ export async function createPartnerProAccount(
         telegramId: formData.get("telegramId") as string,
         fullName: (formData.get("fullName") as string) || undefined,
         country: (formData.get("country") as string) || undefined,
+        screenshotUrl: (formData.get("screenshotUrl") as string) || undefined,
     };
 
     // Validate using shared VIP request schema
@@ -65,6 +66,7 @@ export async function createPartnerProAccount(
         telegramId,
         fullName,
         country,
+        screenshotUrl,
     } = parsed.data;
 
     try {
@@ -147,6 +149,7 @@ export async function createPartnerProAccount(
                 telegramId,
                 fullName: fullName || null,
                 country: country || null,
+                screenshotUrl: screenshotUrl || null,
             },
         });
 

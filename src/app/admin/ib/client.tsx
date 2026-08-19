@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
     Activity,
     ArrowRight,
@@ -8,7 +9,6 @@ import {
     Clock,
     Crown,
     ShieldOff,
-    Sparkles,
     TrendingUp,
     Users,
     DollarSign,
@@ -21,6 +21,7 @@ import {
     ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
@@ -93,6 +94,15 @@ export function IbOverviewClient({
     const [isPending, startTransition] = useTransition();
     const [rejectModalId, setRejectModalId] = useState<string | null>(null);
     const [rejectReason, setRejectReason] = useState("");
+
+    // Body scroll lock while the reject modal is open.
+    useEffect(() => {
+        if (rejectModalId) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+    }, [rejectModalId]);
 
     if (!overview || !leadStats || !vipStats) {
         return (
@@ -350,7 +360,7 @@ export function IbOverviewClient({
                         <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
                             <div className="max-w-xl">
                                 <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/80 px-3 py-1 text-xs font-black uppercase tracking-wider text-emerald-700 dark:border-emerald-500/20 dark:bg-white/5 dark:text-emerald-300">
-                                    <Sparkles size={13} />
+                                    <Crown size={13} />
                                     North star: active Pro traders
                                 </div>
                                 <div className="flex items-end gap-3">
@@ -669,9 +679,24 @@ export function IbOverviewClient({
             </Tabs>
 
             {/* Reject Modal */}
-            {rejectModalId && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-                    <div className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4">
+            <AnimatePresence>
+                {rejectModalId && (
+                <motion.div
+                    variants={backdropVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={{ type: "tween", duration: 0.2 }}
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+                >
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
+                        className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4"
+                    >
                         <h3 className="text-base font-bold text-gray-900 dark:text-white">
                             Reject VIP Request
                         </h3>
@@ -704,9 +729,10 @@ export function IbOverviewClient({
                                 Confirm Rejection
                             </Button>
                         </div>
-                    </div>
-                </div>
-            )}
+                    </motion.div>
+                </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

@@ -5,7 +5,7 @@ import {
     Cpu,
     Shield,
     ShieldAlert,
-    Sparkles,
+    ListChecks,
     Bot,
     SlidersHorizontal,
 } from "lucide-react";
@@ -53,7 +53,7 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
           ];
 
     const tabs = [
-        { id: "overview", label: "Key Features", icon: Sparkles },
+        { id: "overview", label: "Key Features", icon: ListChecks },
         { id: "specs", label: "Specifications", icon: Cpu },
         { id: "logic", label: "Operational Logic", icon: Shield },
         { id: "risk", label: "Risk Controls", icon: ShieldAlert },
@@ -82,7 +82,7 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                     <div className="mb-8 flex flex-col gap-5 border-b border-slate-200/70 dark:border-white/5 pb-6 lg:flex-row lg:items-center lg:justify-between">
                         <div>
                             <div className="mb-2.5 inline-flex items-center gap-2 rounded-full border border-gold/25 bg-gold/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-gold">
-                                <Sparkles className="h-3 w-3" />
+                                <Bot className="h-3 w-3" />
                                 Expert Advisor Technicals
                             </div>
                             <h3 className="text-base font-black text-gray-900 dark:text-white uppercase tracking-wider flex items-center gap-2 mt-1">

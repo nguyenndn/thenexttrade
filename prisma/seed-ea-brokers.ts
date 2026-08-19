@@ -11,7 +11,7 @@ const EA_BROKERS = [
         name: "Exness",
         slug: "EXNESS",
         logo: "/images/brokers/exness.png",
-        affiliateUrl: "https://one.exnesstrack.org/a/1ewjh1ww32",
+        affiliateUrl: "https://one.exnessonelink.com/a/1ewjh1ww32",
         ibCode: "1ewjh1ww32",
         color: "#F59E0B",
         isActive: true,

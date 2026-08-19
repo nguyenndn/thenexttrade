@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { SPRING_SOFT } from "@/lib/animations";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/components/providers/ThemeProvider";
@@ -60,10 +62,16 @@ export function MobileNavigation({
         setOpenDropdown((prev) => (prev === menu ? null : menu));
     };
 
-    if (!isOpen) return null;
-
     return (
-        <div className="lg:hidden px-2 pb-4 absolute top-full left-0 w-full z-40">
+        <AnimatePresence>
+            {isOpen && (
+        <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={SPRING_SOFT}
+            className="lg:hidden px-2 pb-4 absolute top-full left-0 w-full z-40"
+        >
             <div
                 className={`max-w-7xl mx-auto rounded-xl border shadow-lg ${isDark ? "bg-slate-900/95 border-slate-700" : "bg-white border-dashboard"}`}
             >
@@ -231,6 +239,8 @@ export function MobileNavigation({
                     )}
                 </div>
             </div>
-        </div>
+        </motion.div>
+            )}
+        </AnimatePresence>
     );
 }

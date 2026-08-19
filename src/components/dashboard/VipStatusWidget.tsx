@@ -9,6 +9,7 @@ import {
     AlertTriangle,
     ArrowRight,
     ChevronRight,
+    Send,
     type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -39,8 +40,8 @@ interface StatusStyle {
 
 const statusConfig: Record<string, StatusStyle> = {
     ACTIVE: {
-        label: "Pro Active",
-        description: "Full access to all Pro features.",
+        label: "VIP Active",
+        description: "Full access to all VIP features.",
         icon: Crown,
         cardBg: "bg-gradient-to-br from-emerald-50 to-teal-50/60 dark:from-emerald-500/10 dark:to-teal-500/5",
         cardBorder: "border-emerald-200/80 dark:border-emerald-500/25",
@@ -52,7 +53,7 @@ const statusConfig: Record<string, StatusStyle> = {
     },
     GRACE: {
         label: "Grace Period",
-        description: "Temporary Pro access. Complete verification.",
+        description: "Temporary VIP access. Complete verification.",
         icon: Timer,
         cardBg: "bg-gradient-to-br from-violet-50 to-purple-50/60 dark:from-violet-500/10 dark:to-purple-500/5",
         cardBorder: "border-violet-200/80 dark:border-violet-500/25",
@@ -64,7 +65,7 @@ const statusConfig: Record<string, StatusStyle> = {
     },
     EXPIRED: {
         label: "Access Expired",
-        description: "Submit a VIP request to reactivate Pro.",
+        description: "Submit a VIP request to reactivate VIP access.",
         icon: AlertTriangle,
         cardBg: "bg-gradient-to-br from-amber-50 to-orange-50/60 dark:from-amber-500/10 dark:to-orange-500/5",
         cardBorder: "border-amber-200/80 dark:border-amber-500/25",
@@ -88,7 +89,7 @@ const statusConfig: Record<string, StatusStyle> = {
     },
     NONE: {
         label: "Free Plan",
-        description: "Apply as a VIP trader to unlock Pro for free.",
+        description: "Apply as a VIP trader to unlock VIP access for free.",
         icon: Crown,
         cardBg: "bg-white dark:bg-white/[0.03]",
         cardBorder: "border-dashboard dark:border-white/10",
@@ -114,6 +115,7 @@ export function VipStatusWidget() {
     const [vipRequest, setVipRequest] = useState<VipRequest | null>(null);
     const [loadingVip, setLoadingVip] = useState(true);
     const [showBenefits, setShowBenefits] = useState(false);
+    const [vipLink, setVipLink] = useState<string | null>(null);
 
     const currentAccountId = searchParams?.get("accountId") ?? undefined;
 
@@ -165,6 +167,21 @@ export function VipStatusWidget() {
             .catch(() => {})
             .finally(() => setLoadingVip(false));
     }, [resolvedAccountId]);
+
+    // Fetch the VIP Telegram invite link — null unless the user is entitled AND
+    // the owner has configured VIP_TELEGRAM_URL in env.
+    useEffect(() => {
+        let cancelled = false;
+        import("@/actions/vip-request")
+            .then((mod) => mod.getVipLink())
+            .then((link) => {
+                if (!cancelled) setVipLink(link);
+            })
+            .catch(() => {});
+        return () => {
+            cancelled = true;
+        };
+    }, []);
 
     if (proAccess.loading) {
         return (
@@ -247,7 +264,7 @@ export function VipStatusWidget() {
                                         </span>
                                     </div>
                                     <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug truncate">
-                                        Upgrade to unlock Pro features
+                                        Upgrade to unlock VIP features
                                     </p>
                                 </div>
                             </div>
@@ -285,7 +302,7 @@ export function VipStatusWidget() {
                                         className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25"
                                     >
                                         <span className="truncate">
-                                            Check Pro Eligibility
+                                            Apply for VIP Access
                                         </span>
                                         <ArrowRight className="h-3 w-3 shrink-0" />
                                     </Link>
@@ -299,6 +316,7 @@ export function VipStatusWidget() {
                     isOpen={showBenefits}
                     onClose={() => setShowBenefits(false)}
                     isPro={false}
+                    vipLink={vipLink}
                 />
             </>
         );
@@ -343,10 +361,10 @@ export function VipStatusWidget() {
                             <div className="flex-1 min-w-0">
                                 <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
                                     <span className="text-[13px] font-black tracking-tight text-gray-900 dark:text-white whitespace-nowrap">
-                                        Pro Active
+                                        VIP Active
                                     </span>
                                     <span className="rounded-lg bg-emerald-500/10 dark:bg-emerald-500/15 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/20 dark:ring-emerald-500/25">
-                                        PRO
+                                        VIP
                                     </span>
                                 </div>
 
@@ -359,6 +377,20 @@ export function VipStatusWidget() {
                                 </div>
                             </div>
                         </div>
+
+                        {/* Join VIP Telegram — rendered when entitled user + VIP_TELEGRAM_URL configured */}
+                        {vipLink && (
+                            <a
+                                href={vipLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="mx-3 mb-3 flex w-[calc(100%-1.5rem)] items-center justify-center gap-1.5 rounded-xl bg-[#2AABEE] px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-[#2AABEE]/20 transition-all duration-300 hover:bg-[#2298d4] hover:shadow-md hover:shadow-[#2AABEE]/25 active:scale-[0.98]"
+                            >
+                                <Send className="h-3 w-3 shrink-0" />
+                                <span className="truncate">Join VIP Telegram</span>
+                            </a>
+                        )}
                     </div>
                 </div>
 
@@ -366,6 +398,7 @@ export function VipStatusWidget() {
                     isOpen={showBenefits}
                     onClose={() => setShowBenefits(false)}
                     isPro={true}
+                    vipLink={vipLink}
                 />
             </>
         );
@@ -426,7 +459,7 @@ export function VipStatusWidget() {
                                     <span
                                         className={`rounded-lg px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] ring-1 ring-current/15 ${cfg.badgeClass}`}
                                     >
-                                        Pro
+                                        VIP
                                     </span>
                                 )}
                             </div>
@@ -462,7 +495,7 @@ export function VipStatusWidget() {
                                 className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25"
                             >
                                 <span className="truncate">
-                                    Re-apply for Pro
+                                    Re-apply for VIP
                                 </span>
                                 <ArrowRight className="h-3 w-3 shrink-0" />
                             </Link>

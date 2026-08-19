@@ -1,7 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { X, ShieldCheck, CheckCircle2, Info, Lock, Scale, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 
 interface LeaderboardMethodologyModalProps {
     isOpen: boolean;
@@ -12,14 +15,41 @@ export function LeaderboardMethodologyModal({
     isOpen,
     onClose,
 }: LeaderboardMethodologyModalProps) {
-    if (!isOpen) return null;
+    // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
+    useEffect(() => {
+        if (isOpen) document.body.style.overflow = "hidden";
+    }, [isOpen]);
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
+    const releaseLock = () => {
+        document.body.style.overflow = "unset";
+    };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-            <div
-                className="bg-white dark:bg-[#151925] border border-amber-200/50 dark:border-amber-500/20 rounded-2xl max-w-xl w-full p-6 shadow-2xl relative overflow-hidden"
-                onClick={(e) => e.stopPropagation()}
-            >
+        <AnimatePresence onExitComplete={releaseLock}>
+            {isOpen && (
+                <motion.div
+                    variants={backdropVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={{ type: "tween", duration: 0.2 }}
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                >
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
+                        className="bg-white dark:bg-[#151925] border border-amber-200/50 dark:border-amber-500/20 rounded-2xl max-w-xl w-full p-6 shadow-2xl relative overflow-hidden"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                 {/* Close Button */}
                 <button
                     onClick={onClose}
@@ -124,7 +154,9 @@ export function LeaderboardMethodologyModal({
                         Got it
                     </Button>
                 </div>
-            </div>
-        </div>
+                </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
     );
 }

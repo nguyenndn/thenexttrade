@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+    SPRING_SOFT,
+    backdropVariants,
+    panelVariants,
+} from "@/lib/animations";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
@@ -85,6 +91,20 @@ export function RichTextEditor({
     const editorContainerRef = useRef<HTMLDivElement>(null);
     const linkInputRef = useRef<HTMLInputElement>(null);
     const youtubeInputRef = useRef<HTMLInputElement>(null);
+
+    // Body scroll lock: lock while a dialog is open, release after the exit
+    // animation completes (in onExitComplete) so the scrollbar doesn't flash.
+    useEffect(() => {
+        if (linkDialogOpen || youtubeDialogOpen) {
+            document.body.style.overflow = "hidden";
+        }
+    }, [linkDialogOpen, youtubeDialogOpen]);
+
+    const releaseDialogLock = () => {
+        if (!linkDialogOpen && !youtubeDialogOpen) {
+            document.body.style.overflow = "unset";
+        }
+    };
 
     const uploadImageFile = useCallback(
         async (file: File): Promise<string | null> => {
@@ -782,8 +802,15 @@ export function RichTextEditor({
             )}
 
             {/* Keyboard Shortcuts Panel */}
+            <AnimatePresence>
             {isShortcutsPanelOpen && (
-                <div className="border-b border-gray-200 dark:border-white/10 dark:border-gray-800 bg-gray-50 dark:bg-[#0B0E14] p-4 animate-in slide-in-from-top-2 duration-200">
+                <motion.div
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={SPRING_SOFT}
+                    className="border-b border-gray-200 dark:border-white/10 dark:border-gray-800 bg-gray-50 dark:bg-[#0B0E14] p-4"
+                >
                     <div className="flex items-center justify-between mb-3">
                         <h4 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
                             <Keyboard size={16} /> Keyboard Shortcuts
@@ -819,8 +846,9 @@ export function RichTextEditor({
                             </div>
                         ))}
                     </div>
-                </div>
+                </motion.div>
             )}
+            </AnimatePresence>
 
             <div
                 className={`flex-1 overflow-y-auto cursor-text bg-white dark:bg-[#151925] ${isFullscreen ? "px-8 md:px-16 lg:px-32" : ""}`}
@@ -858,13 +886,25 @@ export function RichTextEditor({
             />
 
             {/* Link URL Dialog */}
+            <AnimatePresence onExitComplete={releaseDialogLock}>
             {linkDialogOpen && (
-                <div
-                    className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm"
-                    onClick={() => setLinkDialogOpen(false)}
-                >
-                    <div
-                        className="bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4"
+                <div className="fixed inset-0 z-[60] flex items-center justify-center">
+                    <motion.div
+                        variants={backdropVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={{ type: "tween", duration: 0.2 }}
+                        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+                        onClick={() => setLinkDialogOpen(false)}
+                    />
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
+                        className="relative bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <h3 className="text-lg font-bold text-gray-700 dark:text-white">
@@ -906,18 +946,31 @@ export function RichTextEditor({
                                 Apply
                             </Button>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             )}
+            </AnimatePresence>
 
             {/* YouTube URL Dialog */}
+            <AnimatePresence onExitComplete={releaseDialogLock}>
             {youtubeDialogOpen && (
-                <div
-                    className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm"
-                    onClick={() => setYoutubeDialogOpen(false)}
-                >
-                    <div
-                        className="bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4"
+                <div className="fixed inset-0 z-[60] flex items-center justify-center">
+                    <motion.div
+                        variants={backdropVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={{ type: "tween", duration: 0.2 }}
+                        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+                        onClick={() => setYoutubeDialogOpen(false)}
+                    />
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
+                        className="relative bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <h3 className="text-lg font-bold text-gray-700 dark:text-white">
@@ -951,9 +1004,10 @@ export function RichTextEditor({
                                 Embed
                             </Button>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             )}
+            </AnimatePresence>
 
             {/* Fullscreen: ESC hint */}
             {isFullscreen && (

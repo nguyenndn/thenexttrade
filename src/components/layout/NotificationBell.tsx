@@ -221,7 +221,7 @@ export function NotificationBell() {
                 </div>
 
                 {/* Tabs */}
-                <div className="px-3 border-b border-dashboard">
+                <div className="px-3 border-b border-dashboard overflow-x-auto scrollbar-hide">
                     <div className="grid grid-cols-4 py-0.5">
                         {(Object.keys(TAB_CONFIG) as TabType[]).map(
                             (tabKey) => {
@@ -234,7 +234,7 @@ export function NotificationBell() {
                                         key={tabKey}
                                         onClick={() => setActiveTab(tabKey)}
                                         className={cn(
-                                            "relative py-3 flex items-center justify-center gap-1.5 text-sm font-semibold transition-colors whitespace-nowrap nav-menu-text",
+                                            "relative py-3 flex items-center justify-center gap-1.5 text-sm font-semibold transition-colors whitespace-nowrap nav-menu-text min-w-0",
                                             isActive
                                                 ? "text-primary shadow-sm"
                                                 : "text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white"
@@ -244,7 +244,7 @@ export function NotificationBell() {
                                             size={16}
                                             strokeWidth={isActive ? 2.5 : 2}
                                         />
-                                        <span>{tab.label}</span>
+                                        <span className="truncate">{tab.label}</span>
                                         {count > 0 && (
                                             <span className="flex items-center justify-center min-w-[20px] h-[20px] px-1 text-[11px] font-bold text-white bg-primary rounded-full ml-0.5">
                                                 {count > 99 ? "99+" : count}

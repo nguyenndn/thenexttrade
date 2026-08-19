@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+import { motion } from "framer-motion";
 import {
     X,
     Star,
@@ -11,6 +13,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { UserTierBadge } from "./UserTierBadge";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import type { LeaderboardEntry } from "../actions";
 import { cn } from "@/lib/utils";
 
@@ -28,6 +31,14 @@ function formatStudyTime(minutes: number): string {
 }
 
 export function UserProfileCard({ entry, onClose }: UserProfileCardProps) {
+    // Body scroll lock while open; released when AnimatePresence unmounts after exit.
+    useEffect(() => {
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
     if (!entry) return null;
 
     const stats = [
@@ -70,15 +81,29 @@ export function UserProfileCard({ entry, onClose }: UserProfileCardProps) {
     ];
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <motion.div
+            variants={backdropVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ type: "tween", duration: 0.2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        >
             {/* Backdrop */}
             <div
-                className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm"
                 onClick={onClose}
             />
 
             {/* Card */}
-            <div className="relative z-10 w-full max-w-sm bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-300 border border-dashboard">
+            <motion.div
+                variants={panelVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={SPRING_SOFT}
+                className="relative z-10 w-full max-w-sm bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl overflow-hidden border border-dashboard"
+            >
                 {/* Glow */}
                 <div
                     className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full blur-[80px] pointer-events-none opacity-30"
@@ -144,7 +169,7 @@ export function UserProfileCard({ entry, onClose }: UserProfileCardProps) {
                         ))}
                     </div>
                 </div>
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 }

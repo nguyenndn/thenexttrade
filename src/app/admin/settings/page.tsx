@@ -32,6 +32,7 @@ export default async function AdminSettingsPage() {
         socialFacebook: savedConfig.socialFacebook || "",
         socialYoutube: savedConfig.socialYoutube || "",
         socialInstagram: savedConfig.socialInstagram || "",
+        dailyAnalysisUrl: savedConfig.dailyAnalysisUrl || "",
         welcomeEmail: savedConfig.welcomeEmail ?? true,
         newArticleAlert: savedConfig.newArticleAlert ?? true,
         systemAnnouncement: savedConfig.systemAnnouncement || "",

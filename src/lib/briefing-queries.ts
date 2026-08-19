@@ -149,7 +149,7 @@ function generateInsight(data: InsightInput): {
     }
 
     return {
-        icon: "Sparkles",
+        icon: "Target",
         title: "Stay Disciplined",
         description: `Consistency beats excitement. Follow your plan, manage your risk, and let the edge play out over time.`,
     };

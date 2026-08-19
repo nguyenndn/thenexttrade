@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import {
     X,
     Upload,
@@ -156,15 +158,42 @@ export function MediaLibraryModal({
         );
     };
 
-    if (!isOpen) return null;
+    // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
+    useEffect(() => {
+        if (isOpen) document.body.style.overflow = "hidden";
+    }, [isOpen]);
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
+    const releaseLock = () => {
+        document.body.style.overflow = "unset";
+    };
 
     return (
+        <AnimatePresence onExitComplete={releaseLock}>
+            {isOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <div
-                className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+            <motion.div
+                variants={backdropVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ type: "tween", duration: 0.2 }}
+                className="fixed inset-0 bg-black/50 backdrop-blur-sm"
                 onClick={onClose}
             />
-            <div className="relative z-10 bg-white dark:bg-[#151925] w-full max-w-5xl h-[85vh] rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200 cursor-default">
+            <motion.div
+                variants={panelVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={SPRING_SOFT}
+                className="relative z-10 bg-white dark:bg-[#151925] w-full max-w-5xl h-[85vh] rounded-xl shadow-2xl flex flex-col overflow-hidden cursor-default"
+            >
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/10">
                     <h3 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2">
@@ -396,7 +425,7 @@ export function MediaLibraryModal({
                         </div>
                     )}
                 </div>
-            </div>
+            </motion.div>
 
             {/* Delete Confirmation Dialog */}
             <ConfirmDialog
@@ -411,5 +440,7 @@ export function MediaLibraryModal({
                 variant="danger"
             />
         </div>
+            )}
+        </AnimatePresence>
     );
 }

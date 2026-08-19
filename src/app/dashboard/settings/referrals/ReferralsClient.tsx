@@ -1,6 +1,6 @@
 "use client";
 
-import { Award, Check, Copy, Gift, Info, Sparkles, Users } from "lucide-react";
+import { Award, Check, Copy, Gift, Info, Gem, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import type { ReferralDashboardData } from "@/lib/referrals";
@@ -35,7 +35,7 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
             bgColor: "bg-blue-50 dark:bg-blue-500/10",
         },
         {
-            icon: Sparkles,
+            icon: Gem,
             label: "Edge Earned",
             value: data.edgeEarned.toLocaleString(),
             helper: "Total Edge awarded from referrals.",

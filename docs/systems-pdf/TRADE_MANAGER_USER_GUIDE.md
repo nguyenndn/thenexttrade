@@ -15,7 +15,7 @@ Now with a **Multi-Timeframe Dashboard** and a **Semi-Auto DCA Grid System** bui
 
 1. **Download the EA files**
 
-   Download the `.zip` file from our Telegram channel: [https://t.me/GoldScalperNinja](https://t.me/GoldScalperNinja)
+   Download the `.zip` file from our Telegram channel: [https://t.me/+zS-_Gmt8SCQxYzA1](https://t.me/+zS-_Gmt8SCQxYzA1)
 
 2. **Extract the downloaded file**
 
@@ -350,5 +350,5 @@ Inputs are organized into **7 groups** with separator labels:
 
 ## Support & Help
 - Need license activation?
-- Telegram: [https://t.me/GoldScalperNinja](https://t.me/GoldScalperNinja)
+- Telegram: [https://t.me/+zS-_Gmt8SCQxYzA1](https://t.me/+zS-_Gmt8SCQxYzA1)
 - © 2026 Gold ScalperNinja. All rights reserved.

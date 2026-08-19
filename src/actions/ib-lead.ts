@@ -26,7 +26,7 @@ export async function trackBrokerClick(data: {
 
     // This action runs from public pages (anonymous attribution is by design),
     // so validate inputs and cap lengths — otherwise a junk payload writes
-    // garbage rows into the IB funnel (e.g. VipRequestForm passes
+    // garbage rows into the IB funnel (e.g. a caller may pass
     // `selectedBroker || ""`, which can be empty).
     const broker = (data.broker || "").trim();
     if (!broker || broker.length > 50) return { success: false };

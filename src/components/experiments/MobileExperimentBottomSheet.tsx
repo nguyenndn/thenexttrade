@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Activity, X, PlusCircle, ArrowRight, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { ImprovementExperimentView } from "@/lib/trader-growth/types";
 import { cancelExperiment, reviewAndCompleteExperiment, addExperimentAsTradingRule } from "@/actions/improvement-experiments";
 import { toast } from "sonner";
+import { SPRING_SOFT, backdropVariants } from "@/lib/animations";
 
 interface MobileExperimentBottomSheetProps {
     experiment: ImprovementExperimentView;
@@ -20,7 +22,20 @@ export function MobileExperimentBottomSheet({
 }: MobileExperimentBottomSheetProps) {
     const [isLoading, setIsLoading] = useState(false);
 
-    if (!isOpen) return null;
+    // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
+    useEffect(() => {
+        if (isOpen) document.body.style.overflow = "hidden";
+    }, [isOpen]);
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
+
+    const releaseLock = () => {
+        document.body.style.overflow = "unset";
+    };
 
     const isReady = experiment.status === "READY_FOR_REVIEW" || experiment.progressPercent >= 100;
 
@@ -54,8 +69,23 @@ export function MobileExperimentBottomSheet({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="w-full max-w-lg p-6 bg-white dark:bg-[#0B0E14] border-t sm:border border-gray-200 dark:border-slate-800 rounded-t-3xl sm:rounded-2xl shadow-2xl space-y-4 text-slate-900 dark:text-white">
+        <AnimatePresence onExitComplete={releaseLock}>
+            {isOpen && (
+        <motion.div
+            variants={backdropVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ type: "tween", duration: 0.2 }}
+            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/70 backdrop-blur-sm"
+        >
+            <motion.div
+                initial={{ opacity: 0, y: 32 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 32 }}
+                transition={SPRING_SOFT}
+                className="w-full max-w-lg p-6 bg-white dark:bg-[#0B0E14] border-t sm:border border-gray-200 dark:border-slate-800 rounded-t-3xl sm:rounded-2xl shadow-2xl space-y-4 text-slate-900 dark:text-white"
+            >
                 <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 pb-3">
                     <div className="flex items-center gap-2">
                         <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
@@ -129,7 +159,9 @@ export function MobileExperimentBottomSheet({
                         </span>
                     )}
                 </div>
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
+            )}
+        </AnimatePresence>
     );
 }

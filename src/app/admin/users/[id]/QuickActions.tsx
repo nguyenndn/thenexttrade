@@ -1,6 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+    SPRING_SOFT,
+    backdropVariants,
+    panelVariants,
+} from "@/lib/animations";
 import { Pencil, Bell, X, Send, Loader2, KeyRound } from "lucide-react";
 import { resetUserPassword, sendUserNotification } from "./actions";
 import { Button } from "@/components/ui/Button";
@@ -22,6 +28,20 @@ export function QuickActions({
     currentRole,
 }: QuickActionsProps) {
     const [showNotifyModal, setShowNotifyModal] = useState(false);
+
+    // Body scroll lock: lock while the notify modal is open, release after the
+    // exit animation completes (in onExitComplete) so the scrollbar doesn't flash.
+    useEffect(() => {
+        if (showNotifyModal) {
+            document.body.style.overflow = "hidden";
+        }
+    }, [showNotifyModal]);
+
+    const releaseNotifyLock = () => {
+        if (!showNotifyModal) {
+            document.body.style.overflow = "unset";
+        }
+    };
     const [showResetConfirm, setShowResetConfirm] = useState(false);
     const [showRoleModal, setShowRoleModal] = useState(false);
     const [notifyTitle, setNotifyTitle] = useState("");
@@ -118,13 +138,25 @@ export function QuickActions({
             />
 
             {/* Notify Modal */}
+            <AnimatePresence onExitComplete={releaseNotifyLock}>
             {showNotifyModal && (
-                <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-                    onClick={() => setShowNotifyModal(false)}
-                >
-                    <div
-                        className="bg-white dark:bg-[#1E2028] rounded-xl w-full max-w-md mx-4 border border-gray-200 dark:border-white/10 shadow-2xl"
+                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                    <motion.div
+                        variants={backdropVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={{ type: "tween", duration: 0.2 }}
+                        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+                        onClick={() => setShowNotifyModal(false)}
+                    />
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
+                        className="relative bg-white dark:bg-[#1E2028] rounded-xl w-full max-w-md mx-4 border border-gray-200 dark:border-white/10 shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-white/10">
@@ -201,9 +233,10 @@ export function QuickActions({
                                 Send
                             </Button>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             )}
+            </AnimatePresence>
         </>
     );
 }
