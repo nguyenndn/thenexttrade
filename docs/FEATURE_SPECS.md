@@ -20,7 +20,7 @@ Feature-density rule:
 
 - Do not add a new dashboard/homepage block unless it owns the next best action for that page.
 - Supporting features should live behind their dedicated route, modal, tab, or admin tool.
-- Current user-facing sync copy should say **Trade Manager EA** or **Manual Journal**. Do not reintroduce TNT Connect or VPS import into new UI copy unless explicitly re-approved.
+- Current user-facing sync copy should say **Trade Manager EA** or **Manual Journal**. Do not reintroduce retired sync client names (previously "TNT Connect") or VPS import into new UI copy unless explicitly re-approved.
 
 ## Spec Template
 
@@ -700,7 +700,7 @@ Expected behavior:
 Code paths:
 
 - `src/app/dashboard/settings/sync-settings/page.tsx`
-- `src/app/dashboard/settings/sync-settings/TNTConnectClient.tsx` (legacy file name; UI copy should describe current Trade Manager EA setup)
+- `src/app/dashboard/settings/sync-settings/SyncSettingsClient.tsx` (UI copy describes the current Trade Manager EA setup)
 - `src/app/api/app/version/route.ts`
 - `public/downloads/app-release.json`
 

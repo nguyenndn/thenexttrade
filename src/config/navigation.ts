@@ -65,6 +65,11 @@ export const menuItems = [
         type: "link" as const,
     },
     {
+        name: "Trading Style",
+        href: "/trading-style",
+        type: "link" as const,
+    },
+    {
         name: "Brokers",
         href: "/brokers",
         type: "link" as const,
@@ -150,7 +155,6 @@ export const dashboardMenuItems = [
         icon: Target,
         requiresTradeData: false,
     },
-
 ];
 
 export const adminMenuItems = [
@@ -333,7 +337,7 @@ export const adminMenuGroups = [
             { name: "IB Overview", href: "/admin/ib", icon: TrendingUp },
             { name: "VIP Pipeline", href: "/admin/ib/pipeline", icon: Crown },
             {
-                name: "Trader Monitor (CRM)",
+                name: "Trader Monitor",
                 href: "/admin/ib/traders",
                 icon: UserCheck,
             },

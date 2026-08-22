@@ -48,7 +48,7 @@ import {
     adminRevokeProductAccessAction,
     adminSendSetupReminderAction,
 } from "@/actions/admin-ib";
-import { revokeProAccess, grantGracePeriod } from "@/actions/vip-request";
+import { revokeProAccess } from "@/actions/vip-request";
 
 interface Props {
     initialData: IbTraderPaginatedResult;
@@ -139,17 +139,6 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
         });
     };
 
-    const handleGrantGrace = (userId: string) => {
-        startTransition(async () => {
-            const res = await grantGracePeriod(userId, 14);
-            if (res.success) {
-                toast.success("14-day grace period granted");
-                router.refresh();
-            } else {
-                toast.error(res.error || "Failed to grant grace");
-            }
-        });
-    };
 
     const handleGrantProduct = (userId: string, productSlug: string) => {
         startTransition(async () => {
@@ -456,7 +445,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                             <DropdownMenuTrigger asChild>
                                 <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-xl">
                                     {currentFilters.syncSource === "EA_SYNC"
-                                        ? "Trade Manager EA"
+                                        ? "Trade Manager"
                                         : currentFilters.syncSource === "MANUAL"
                                         ? "Manual Entry"
                                         : currentFilters.syncSource === "UNKNOWN"
@@ -470,7 +459,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                     All Sync Sources
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => updateFilterParams({ syncSource: "EA_SYNC" })}>
-                                    Trade Manager EA
+                                    Trade Manager
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => updateFilterParams({ syncSource: "MANUAL" })}>
                                     Manual Entry
@@ -621,6 +610,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                 <th className="py-3 px-4">Trader Info</th>
                                 <th className="py-3 px-4">VIP Plan</th>
                                 <th className="py-3 px-4">Canonical Products</th>
+                                <th className="py-3 px-4">Trading Style</th>
                                 <th className="py-3 px-4">Accounts & Capital</th>
                                 <th className="py-3 px-4">30d Activity</th>
                                 <th className="py-3 text-right px-4">Actions</th>
@@ -629,7 +619,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                         <tbody className="divide-y divide-gray-100 dark:divide-white/5 text-sm">
                             {rows.length === 0 ? (
                                 <tr>
-                                    <td colSpan={6} className="text-center py-12 text-gray-400">
+                                    <td colSpan={7} className="text-center py-12 text-gray-400">
                                         No traders found matching current filters.
                                     </td>
                                 </tr>
@@ -703,13 +693,31 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                     </div>
                                                 </td>
 
+                                                {/* Trading Style */}
+                                                <td className="py-3.5 px-4">
+                                                    {trader.tradingStyle ? (
+                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20">
+                                                            {trader.tradingStyle}
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-gray-400">—</span>
+                                                    )}
+                                                </td>
+
                                                 {/* Accounts & Capital */}
                                                 <td className="py-3.5 px-4">
                                                     <div>
-                                                        <p className="font-mono font-bold text-gray-900 dark:text-white">
-                                                            {trader.isMixedCurrency
-                                                                ? "Multiple Currencies"
-                                                                : `$${(trader.reportedCapitalByCurrency["USD"] || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
+                                                        <p className="font-mono font-bold text-gray-900 dark:text-white text-xs sm:text-sm">
+                                                            {(() => {
+                                                                const currencies = Object.entries(trader.reportedCapitalByCurrency || {});
+                                                                if (currencies.length === 0) return "$0.00";
+                                                                const usd = trader.reportedCapitalByCurrency["USD"];
+                                                                const others = currencies.filter(([c]) => c !== "USD");
+                                                                if (usd !== undefined && others.length > 0) {
+                                                                    return `$${usd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (+${others.map(([c, v]) => `${v.toLocaleString("en-US", { maximumFractionDigits: 0 })} ${c}`).join(", ")})`;
+                                                                }
+                                                                return currencies.map(([c, v]) => `${c === "USD" ? "$" : ""}${v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}${c !== "USD" ? ` ${c}` : ""}`).join(" · ");
+                                                            })()}
                                                         </p>
                                                         <p className="text-xs text-gray-500 font-medium">
                                                             {trader.registeredAccountCount} registered ({trader.connectedAccountCount} connected)
@@ -733,14 +741,11 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                 <td className="py-3.5 px-4 text-right">
                                                     <DropdownMenu>
                                                         <DropdownMenuTrigger asChild>
-                                                            <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                                                            <Button size="sm" variant="ghost" className="h-8 w-8 p-0" aria-label="More actions">
                                                                 <MoreHorizontal size={16} />
                                                             </Button>
                                                         </DropdownMenuTrigger>
                                                         <DropdownMenuContent align="end" className="w-48">
-                                                            <DropdownMenuItem onClick={() => handleGrantGrace(trader.userId)}>
-                                                                <Clock size={14} className="mr-2" /> Grant Temporary VIP (14d)
-                                                            </DropdownMenuItem>
                                                             {trader.vipStatus === "ACTIVE" && (
                                                                 <DropdownMenuItem
                                                                     onClick={() => handleRevokePro(trader.userId)}

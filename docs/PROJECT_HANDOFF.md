@@ -43,7 +43,7 @@ Do not replace the global platform identity with GoldScalperNinja. Treat GoldSca
 | Supporting | Public trader card | `/trader/[username]`, `/share/[id]` | Yes | Social proof and safe sharing. |
 | Retention | Edge missions, leaderboard, check-ins | `/dashboard/missions`, `/dashboard/leaderboard` | Yes, but secondary | Good retention, but should not block first value. |
 | Admin | Reports, users, IB/VIP, AI Gateway, Email Lab | `/admin/*` | Yes | Needed for operation, support, and monitoring. |
-| Hidden/legacy | TNT Connect, legacy sync copy | legacy files/APIs only | Compatibility only | Current user-facing sync path is Trade Manager EA or Manual Journal. |
+| Hidden/legacy | Retired sync client (previously "TNT Connect"), legacy sync copy | legacy files/APIs only | Compatibility only | Current user-facing sync path is Trade Manager EA or Manual Journal. |
 | Removed/avoid | Prop firm/funded challenge direction | removed routes/blocks | No | Not aligned with the current product direction. |
 | Removed/avoid | EA backtest/performance simulator claims | old plans only | No | We do not have validated public backtest presentation for this flow. |
 
@@ -99,7 +99,7 @@ Current user-facing sync methods:
 - Trade Manager EA: recommended desktop/MT5/VPS path.
 - Manual Journal: fallback for users who cannot or do not want to install MT5 tooling yet.
 
-Do not promote TNT Connect in new UI copy. If legacy data exists, label it as a legacy source or normalize the copy to Trade Manager EA where technically correct.
+Do not promote the retired sync client (previously "TNT Connect") in new UI copy. If legacy data exists, label it as a legacy source or normalize the copy to Trade Manager EA where technically correct.
 
 ## AI Gateway Direction
 

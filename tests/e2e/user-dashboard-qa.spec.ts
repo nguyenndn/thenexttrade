@@ -566,7 +566,7 @@ async function settingsFlow(page: Page, viewport: ViewportName) {
         return "Account settings saved and public-profile controls rendered.";
     });
 
-    await recordStep(viewport, "Settings", "TNT Connect key buttons", async () => {
+    await recordStep(viewport, "Settings", "Sync API key buttons", async () => {
         await gotoHealthy(page, "/dashboard/settings/sync-settings");
         await expect(page.getByRole("button", { name: /generate api key|regenerate/i }).first()).toBeVisible();
         await expect(page.getByRole("link", { name: /Download Trade Manager EA/i })).toBeVisible();

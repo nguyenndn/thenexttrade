@@ -21,7 +21,8 @@
       "Bash(rmdir \"src/app/api/v1/partners/[partner_code]\")",
       "Bash(echo \"partner_code dir removed: $?\")",
       "Bash(npx tsc *)",
-      "Bash(npx prisma *)"
+      "Bash(npx prisma *)",
+      "Bash(npx vitest *)"
     ],
     "defaultMode": "acceptEdits"
   }

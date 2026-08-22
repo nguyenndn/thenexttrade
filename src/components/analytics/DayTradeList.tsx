@@ -17,6 +17,7 @@ interface DayTradeListProps {
         buys: number;
         sells: number;
         totalTrades: number;
+        totalLots?: number;
         bestTrade: number;
         worstTrade: number;
         avgHoldTimeMinutes: number;
@@ -39,6 +40,10 @@ export function DayTradeList({
     onClose,
 }: DayTradeListProps) {
     const netPnl = trades.reduce((sum, t) => sum + (t.netPnl || t.pnl || 0), 0);
+    const totalLots =
+        stats?.totalLots !== undefined
+            ? stats.totalLots
+            : trades.reduce((sum, t) => sum + (t.lotSize || 0), 0);
     const dateObj = new Date(date);
     const displayDate = format(dateObj, "EEE, MMM d, yyyy");
 
@@ -222,14 +227,35 @@ export function DayTradeList({
                                 </span>
                             </span>
                             <span>
-                                Total Trades{" "}
+                                Trades{" "}
                                 <span className="font-bold text-gray-700 dark:text-white ml-1">
                                     {stats?.totalTrades || trades.length}
+                                </span>
+                            </span>
+                            <span>
+                                Lots{" "}
+                                <span className="font-bold text-[#3B82F6] dark:text-[#60A5FA] ml-1">
+                                    {totalLots.toLocaleString("en-US", {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2,
+                                    })}
                                 </span>
                             </span>
                         </div>
 
                         <div className="space-y-4">
+                            <div className="flex justify-between items-center text-sm">
+                                <span className="text-gray-600 dark:text-gray-300">
+                                    Total Traded Lots
+                                </span>
+                                <span className="font-bold text-gray-700 dark:text-white">
+                                    {totalLots.toLocaleString("en-US", {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2,
+                                    })}{" "}
+                                    Lots
+                                </span>
+                            </div>
                             <div className="flex justify-between items-center text-sm">
                                 <span className="text-gray-600 dark:text-gray-300">
                                     Best Trade

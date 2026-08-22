@@ -54,7 +54,7 @@ describe("timezone date utilities", () => {
         expect(parseLocalEndOfDay("not-a-date", "Etc/UTC")).toBeUndefined();
     });
 
-    it("normalizes bad broker timezone payloads from TNT Connect", () => {
+    it("normalizes bad broker timezone payloads from the retired sync client (previously TNT Connect)", () => {
         expect(normalizeBrokerTimezone("Etc/GMT+37", 133200)).toBe("Etc/UTC");
         expect(normalizeBrokerTimezone(undefined, 10800)).toBe("Etc/GMT-3");
         expect(normalizeBrokerTimezone(undefined, "10800")).toBe("Etc/GMT-3");

@@ -60,7 +60,7 @@ prisma/generate-articles.js
 README-Ninja-Integration.md
 feature_copytrading/
 
-# TNT Connect (Python desktop app) — build artifacts
+# Retired desktop sync client (previously "TNT Connect") — build artifacts (legacy)
 apps/tnt-connect/__pycache__/
 apps/tnt-connect/build/
 apps/tnt-connect/dist/

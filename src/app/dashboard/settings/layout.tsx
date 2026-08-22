@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+    Brain,
     Flame,
     Settings,
     Users,
@@ -35,6 +36,11 @@ const baseNavItems: NavItem[] = [
         title: "Public Profile",
         href: "/dashboard/settings/profile",
         icon: Globe,
+    },
+    {
+        title: "Trading Style",
+        href: "/dashboard/settings/trading-style",
+        icon: Brain,
     },
     { title: "Security", href: "/dashboard/settings/security", icon: Lock },
     {

@@ -6,7 +6,6 @@ import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import {
     X,
     Check,
-    ChevronDown,
     RefreshCw,
     Trash2,
     Shield,
@@ -14,17 +13,10 @@ import {
 import { toast } from "sonner";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Button } from "@/components/ui/Button";
-import {
-    DropdownMenu,
-    DropdownMenuTrigger,
-    DropdownMenuContent,
-    DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
 import { updateTradingAccount } from "@/actions/accounts";
 import { updateTradingRules } from "@/actions/trading-rules";
 import {
     BROKER_INFO,
-    SUPPORTED_BROKERS,
     SupportedBroker,
 } from "@/lib/validations/vip-request";
 
@@ -68,12 +60,6 @@ export function AccountSettingsModal({
 }: AccountSettingsModalProps) {
     const [name, setName] = useState(account.name);
     const [color, setColor] = useState(account.color || "hsl(var(--primary))");
-    // Free accounts are created without a broker, which leaves them stuck in
-    // MISSING_ACCOUNT_INFO for Pro eligibility. Let users set their broker here
-    // so they can apply for Partner Pro (upgradeToPartnerPro requires a
-    // supported broker).
-    const [broker, setBroker] = useState<string>(account.broker || "");
-
     const [isSaving, setIsSaving] = useState(false);
 
     // Trading Rules state
@@ -96,7 +82,7 @@ export function AccountSettingsModal({
             const result = await updateTradingAccount(account.id, {
                 name,
                 color,
-                broker: broker || undefined,
+                broker: account.broker || undefined,
                 balance: account.balance,
                 currency: account.currency,
             });
@@ -157,7 +143,7 @@ export function AccountSettingsModal({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="bg-white dark:bg-[#151925] rounded-xl w-full max-w-[520px] overflow-hidden border border-dashboard shadow-2xl flex flex-col max-h-[90vh] cursor-default"
+                className="relative z-10 bg-white dark:bg-[#151925] rounded-xl w-full max-w-[520px] overflow-hidden border border-dashboard shadow-2xl flex flex-col max-h-[90vh] cursor-default"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
@@ -198,52 +184,15 @@ export function AccountSettingsModal({
                             <label className="block text-[11px] font-black text-gray-500 uppercase tracking-widest mb-2">
                                 Broker
                             </label>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        className="w-full justify-between bg-white dark:bg-[#151925] px-3 py-2.5 text-sm font-medium text-gray-700 dark:text-white hover:bg-white dark:hover:bg-[#151925]"
-                                    >
-                                        {broker ? (
-                                            <span className="truncate">
-                                                {BROKER_INFO[
-                                                    broker as SupportedBroker
-                                                ]?.name ?? broker}
-                                            </span>
-                                        ) : (
-                                            <span className="text-gray-400 dark:text-gray-500">
-                                                Select your broker...
-                                            </span>
-                                        )}
-                                        <ChevronDown
-                                            size={16}
-                                            className="shrink-0 opacity-60"
-                                        />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="start"
-                                    className="max-h-[250px] overflow-y-auto"
-                                >
-                                    <DropdownMenuItem
-                                        onClick={() => setBroker("")}
-                                    >
-                                        Select your broker...
-                                    </DropdownMenuItem>
-                                    {SUPPORTED_BROKERS.map((b) => (
-                                        <DropdownMenuItem
-                                            key={b}
-                                            onClick={() => setBroker(b)}
-                                        >
-                                            {BROKER_INFO[b].name}
-                                        </DropdownMenuItem>
-                                    ))}
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+                            <div className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-dashboard text-sm font-semibold text-gray-800 dark:text-white flex items-center justify-between">
+                                <span className="truncate">
+                                    {account.broker
+                                        ? BROKER_INFO[account.broker as SupportedBroker]?.name ?? account.broker
+                                        : "Unassigned"}
+                                </span>
+                            </div>
                             <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">
-                                Used for Pro/VIP eligibility. Choose the broker
-                                your trading account belongs to.
+                                Synced automatically from your MT5 terminal.
                             </p>
                         </div>
 

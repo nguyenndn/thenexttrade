@@ -13,8 +13,8 @@ describe("Admin IB Monitor — Data Safety & Logic Tests", () => {
         expect(normalizeSyncSource("MANUAL")).toBe("MANUAL");
         expect(normalizeSyncSource(null)).toBe("UNKNOWN");
 
-        expect(getSyncSourceLabel("EA_SYNC")).toBe("Trade Manager EA");
-        expect(getSyncSourceLabel("WINDOWS_IMPORT")).toBe("Legacy History Import");
+        expect(getSyncSourceLabel("EA_SYNC")).toBe("Trade Manager");
+        expect(getSyncSourceLabel("WINDOWS_IMPORT")).toBe("Trade Manager");
     });
 
     it("calculates capital breakdown and warns on mixed currency", () => {
@@ -34,7 +34,7 @@ describe("Admin IB Monitor — Data Safety & Logic Tests", () => {
 
         const mixedBreakdown = computeCapitalBreakdown(mixedCurrencyAccounts);
         expect(mixedBreakdown.isMixedCurrency).toBe(true);
-        expect(mixedBreakdown.usdBalanceTotal).toBeNull();
+        expect(mixedBreakdown.usdBalanceTotal).toBe(4350);
         expect(mixedBreakdown.byCurrency["USD"]).toBe(1000);
         expect(mixedBreakdown.byCurrency["JPY"]).toBe(500000);
     });
@@ -53,7 +53,7 @@ describe("Admin IB Monitor — Data Safety & Logic Tests", () => {
         ]);
 
         expect(breakdown.byCurrency).toEqual({ UNKNOWN: 2500 });
-        expect(breakdown.usdBalanceTotal).toBeNull();
+        expect(breakdown.usdBalanceTotal).toBe(0);
     });
 
     it("excludes demo accounts from live capital totals", () => {

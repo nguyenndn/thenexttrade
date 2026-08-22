@@ -220,6 +220,73 @@ export async function changeUserRole(userId: string, newRole: string) {
 // DELETE USER
 // =============================================================================
 
+async function performCascadeUserDelete(tx: any, userId: string) {
+    // 1. Audit logs and admin relations
+    await tx.auditLog.deleteMany({ where: { adminId: userId } }).catch(() => {});
+    await tx.adminAuditLog.deleteMany({ where: { adminId: userId } }).catch(() => {});
+    await tx.adminBroadcast.deleteMany({ where: { createdBy: userId } }).catch(() => {});
+
+    // 2. Media, Articles, Comments, Feedback
+    await tx.media.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.articleVote.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.article.deleteMany({ where: { authorId: userId } }).catch(() => {});
+    await tx.comment.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.feedback.deleteMany({ where: { userId } }).catch(() => {});
+
+    // 3. EA, Licenses, Commands & Product Access
+    await tx.eaCommand.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.eADownload.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.eALicense.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.eAProductAccess.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.eAProductUsageEvent.deleteMany({ where: { userId } }).catch(() => {});
+
+    // 4. IB, VIP, Pipeline & Entitlements
+    await tx.ibActivitySnapshot.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.ibLead.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.vipRequest.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.proEntitlement.deleteMany({ where: { userId } }).catch(() => {});
+
+    // 5. Trading Accounts, Journals, Syncs, Snapshots
+    await tx.importHistory.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.mt5ImportJob.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.traderSignal.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.traderInsightSnapshot.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.tradingDayNote.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.improvementExperiment.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.tradeRuleCheck.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.tradingRule.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.tradePlan.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.coachActionPlan.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.traderGoal.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.strategy.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.tradingReport.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.journalEntry.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.accountNotification.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.tradingAccount.deleteMany({ where: { userId } }).catch(() => {});
+
+    // 6. AI, Gamification & Profile
+    await tx.aiRequest.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.aiRoutingPolicy.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.aiProviderCredential.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.analyticsEvent.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.contentShortcut.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.edgeEvent.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.certificate.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.challenge.deleteMany({ where: { OR: [{ challengerId: userId }, { challengeeId: userId }] } }).catch(() => {});
+    await tx.userBadge.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.userFollow.deleteMany({ where: { OR: [{ followerId: userId }, { followingId: userId }] } }).catch(() => {});
+    await tx.userProgress.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.userQuizAttempt.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.userSession.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.userMissionProgress.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.userDashboard.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.notification.deleteMany({ where: { userId } }).catch(() => {});
+    await tx.profile.deleteMany({ where: { userId } }).catch(() => {});
+
+    // 7. Finally delete the User row
+    await tx.user.delete({ where: { id: userId } });
+}
+
 export async function deleteUser(userId: string) {
     try {
         const { isAuthorized, user: admin } = await checkAdmin();
@@ -254,8 +321,10 @@ export async function deleteUser(userId: string) {
             // Continue with Prisma deletion even if Supabase fails
         }
 
-        // Delete from Prisma (cascade handles relations)
-        await prisma.user.delete({ where: { id: userId } });
+        // Delete from Prisma with cascade transaction
+        await prisma.$transaction(async (tx) => {
+            await performCascadeUserDelete(tx, userId);
+        });
 
         // Audit log
         await prisma.auditLog.create({
@@ -272,7 +341,7 @@ export async function deleteUser(userId: string) {
         return { success: true };
     } catch (error) {
         console.error("deleteUser error:", error);
-        return { success: false, error: "An unexpected error occurred" };
+        return { success: false, error: error instanceof Error ? error.message : "An unexpected error occurred" };
     }
 }
 
@@ -300,10 +369,12 @@ export async function bulkDeleteUsers(userIds: string[]) {
         for (const userId of safeIds) {
             try {
                 await supabaseAdmin.auth.admin.deleteUser(userId);
-                await prisma.user.delete({ where: { id: userId } });
+                await prisma.$transaction(async (tx) => {
+                    await performCascadeUserDelete(tx, userId);
+                });
                 deleted++;
-            } catch {
-                // Skip individual failures, continue with rest
+            } catch (err) {
+                console.error(`Failed to delete user ${userId}:`, err);
             }
         }
 
@@ -322,6 +393,6 @@ export async function bulkDeleteUsers(userIds: string[]) {
         return { success: true, deleted };
     } catch (error) {
         console.error("bulkDeleteUsers error:", error);
-        return { success: false, error: "An unexpected error occurred" };
+        return { success: false, error: error instanceof Error ? error.message : "An unexpected error occurred" };
     }
 }

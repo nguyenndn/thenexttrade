@@ -86,9 +86,9 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
 
             <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center">
                 {/* Grand Headline with Dynamic Typewriter Console */}
-                <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[76px] font-black text-gray-900 dark:text-white tracking-tight leading-[1.08] mb-6 sm:mb-8 max-w-5xl">
+                <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[76px] font-black text-gray-900 dark:text-white tracking-tight leading-[1.08] mb-4 sm:mb-6 max-w-5xl">
                     Turn Your Trade History <br className="hidden sm:inline" />
-                    <span className="block min-h-[2.4em]">
+                    <span className="block mt-1 sm:mt-2 min-h-[1.15em]">
                         Into{" "}
                         <span
                             className={`inline-block text-transparent bg-clip-text bg-gradient-to-r ${currentPhrase.gradient} drop-shadow-sm`}
@@ -105,7 +105,7 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                 </h1>
 
                 {/* Supporting Copy */}
-                <p className="text-base sm:text-xl md:text-2xl text-gray-600 dark:text-gray-300 leading-relaxed mb-10 sm:mb-12 max-w-3xl sm:max-w-4xl font-normal sm:font-medium animate-in fade-in duration-1000">
+                <p className="text-base sm:text-xl md:text-2xl text-gray-600 dark:text-gray-300 leading-relaxed mb-8 sm:mb-10 max-w-3xl sm:max-w-4xl font-normal sm:font-medium animate-in fade-in duration-1000">
                     Sync MT5 trades seamlessly in real time, uncover costly behavioral leaks, and execute focused weekly action plans to trade with ironclad consistency.
                 </p>
 

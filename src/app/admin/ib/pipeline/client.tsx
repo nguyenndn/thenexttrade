@@ -35,7 +35,6 @@ import {
     approveVipRequest,
     rejectVipRequest,
     deleteVipRequest,
-    grantGracePeriod,
     revokeProAccess,
 } from "@/actions/vip-request";
 import { Button } from "@/components/ui/Button";
@@ -177,15 +176,6 @@ export function VipPipelineClient({
         });
     };
 
-    const handleGrace = (userId: string, tradingAccountId?: string | null) => {
-        startTransition(async () => {
-            const result = await grantGracePeriod(userId, 14, tradingAccountId || undefined);
-            if (result.success) {
-                toast.success("14-day grace period granted");
-                router.refresh();
-            }
-        });
-    };
 
     const handleRevoke = (userId: string, tradingAccountId?: string | null) => {
         startTransition(async () => {
@@ -605,14 +595,11 @@ export function VipPipelineClient({
                                                 )}
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
-                                                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                                                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0" aria-label="More actions">
                                                             <MoreHorizontal size={16} />
                                                         </Button>
                                                     </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end" className="w-48">
-                                                        <DropdownMenuItem onClick={() => handleGrace(req.userId, req.linkedAccountId)}>
-                                                            <Clock size={14} className="mr-2" /> Grant Temporary VIP (14d)
-                                                        </DropdownMenuItem>
+                                                    <DropdownMenuContent align="end" className="w-40">
                                                         <DropdownMenuItem
                                                             onClick={() => setDeleteModalId(req.requestId)}
                                                             className="text-red-600 dark:text-red-400"

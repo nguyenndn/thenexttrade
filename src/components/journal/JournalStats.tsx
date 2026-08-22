@@ -1,4 +1,4 @@
-import { Activity, Trophy, Layers, Target } from "lucide-react";
+import { Activity, Trophy, Layers, Target, Scale } from "lucide-react";
 
 interface StatsProps {
     stats: {
@@ -7,6 +7,7 @@ interface StatsProps {
         totalTrades: number;
         winCount: number;
         lossCount: number;
+        totalLots?: number;
     };
 }
 
@@ -56,16 +57,28 @@ export default function JournalStats({ stats }: StatsProps) {
             border: "border-t-purple-500",
             desc: "Wins vs Losses",
         },
+        {
+            title: "Total Lots",
+            value: (stats.totalLots || 0).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            }),
+            icon: Scale,
+            color: "text-sky-500",
+            bg: "bg-sky-50 dark:bg-sky-500/10",
+            border: "border-t-sky-500",
+            desc: "Traded volume",
+        },
     ];
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-6">
             {cards.map((card, index) => {
                 const Icon = card.icon;
                 return (
                     <div
                         key={index}
-                        className="rounded-xl border border-dashboard bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-default"
+                        className="rounded-xl border border-dashboard bg-white dark:bg-[#151925] p-3.5 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-default"
                     >
                         <div className="flex items-center gap-3">
                             <div
@@ -73,13 +86,13 @@ export default function JournalStats({ stats }: StatsProps) {
                             >
                                 <Icon size={16} aria-hidden="true" />
                             </div>
-                            <div>
+                            <div className="min-w-0 flex-1">
                                 <p
-                                    className={`text-xl font-black tabular-nums leading-none ${card.color}`}
+                                    className={`text-lg sm:text-xl font-black tabular-nums leading-none truncate ${card.color}`}
                                 >
                                     {card.value}
                                 </p>
-                                <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-1 uppercase tracking-wider">
+                                <p className="text-[10px] sm:text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-1 uppercase tracking-wider truncate">
                                     {card.title}
                                 </p>
                             </div>

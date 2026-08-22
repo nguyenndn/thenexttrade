@@ -24,13 +24,11 @@ export function normalizeSyncSource(
 export function getSyncSourceLabel(source: CanonicalSyncSource): string {
     switch (source) {
         case "EA_SYNC":
-            return "Trade Manager EA";
         case "APP":
-            return "Legacy App Sync";
+        case "WINDOWS_IMPORT":
+            return "Trade Manager";
         case "MANUAL":
             return "Manual Entry";
-        case "WINDOWS_IMPORT":
-            return "Legacy History Import";
         default:
             return "Unknown";
     }

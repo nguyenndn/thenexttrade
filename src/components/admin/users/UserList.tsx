@@ -427,7 +427,7 @@ export function UserList({
                                         <div className="flex items-center gap-3">
                                             <Avatar className="w-9 h-9 border border-gray-200 dark:border-white/10">
                                                 <AvatarImage
-                                                    src={user.image || ""}
+                                                    src={user.image || undefined}
                                                     alt={user.name || "User"}
                                                 />
                                                 <AvatarFallback className="bg-gradient-to-tr from-cyan-400 to-blue-500 text-white font-bold text-xs">

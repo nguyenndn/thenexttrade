@@ -22,7 +22,7 @@ import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { buttonVariants } from "@/components/ui/button-variants";
 
-export default function TNTConnectClient() {
+export default function SyncSettingsClient() {
     const [isLoading, setIsLoading] = useState(true);
     const [isGenerating, setIsGenerating] = useState(false);
     const [isRevoking, setIsRevoking] = useState(false);
@@ -240,8 +240,8 @@ export default function TNTConnectClient() {
  ═══════════════════════════════════════════════════════════════════ */}
             <div className="relative overflow-hidden rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] shadow-sm">
                 {/* Ambient Glow */}
-                <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-500/10 dark:bg-emerald-500/15 rounded-full blur-[80px] pointer-events-none" />
-                <div className="absolute -bottom-20 -left-20 w-48 h-48 bg-cyan-500/5 dark:bg-cyan-500/10 rounded-full blur-[60px] pointer-events-none" />
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-amber-500/10 dark:bg-amber-500/15 rounded-full blur-[80px] pointer-events-none" />
+                <div className="absolute -bottom-20 -left-20 w-48 h-48 bg-amber-500/5 dark:bg-amber-500/10 rounded-full blur-[60px] pointer-events-none" />
 
                 <div className="relative px-6 py-6">
                     <div className="flex items-start gap-4">

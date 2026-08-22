@@ -19,6 +19,8 @@ import {
     CheckCircle2,
     XCircle,
     ExternalLink,
+    BarChart3,
+    Scale,
 } from "lucide-react";
 import Link from "next/link";
 import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
@@ -42,9 +44,17 @@ interface OverviewStats {
     graceUsers: number;
     revokedUsers: number;
     activeAccounts?: number;
+    activeAccounts24h?: number;
     reportedCapitalUSD?: number | null;
     freshCapitalUSD?: number | null;
     reportedEquityUSD?: number | null;
+    currencyBreakdown?: Record<string, number>;
+    freshCurrencyBreakdown?: Record<string, number>;
+    equityCurrencyBreakdown?: Record<string, number>;
+    totalLots?: number;
+    totalTrades?: number;
+    totalLots30d?: number;
+    totalTrades30d?: number;
     staleAccounts?: number;
     disconnectedAccounts?: number;
     vipUsersWithoutFirstSync?: number;
@@ -125,10 +135,19 @@ export function IbOverviewClient({
               ? "last 30 days"
               : "all time";
 
-    const formatUsd = (value: number | null | undefined) =>
-        value === null || value === undefined
-            ? "Mixed"
-            : `$${value.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
+    const formatUsd = (value: number | null | undefined) => {
+        if (value === null || value === undefined) return "$0";
+        return `$${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    };
+
+    const formatCurrencySubtitle = (breakdown?: Record<string, number>) => {
+        if (!breakdown || Object.keys(breakdown).length === 0) return null;
+        const entries = Object.entries(breakdown).filter(([curr]) => curr !== "USD");
+        if (entries.length === 0) return null;
+        return entries
+            .map(([curr, val]) => `${val.toLocaleString("en-US", { maximumFractionDigits: 1 })} ${curr}`)
+            .join(" · ");
+    };
 
     const handleApprove = (requestId: string) => {
         startTransition(async () => {
@@ -217,14 +236,24 @@ export function IbOverviewClient({
                 </div>
             </div>
 
-            {/* 10 Operational KPI Grid */}
+            {/* 5 Core Operational KPI Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                <AnimatedStatCard
+                    title={`Traded Volume (${range.toUpperCase()})`}
+                    value={overview.totalLots ?? 0}
+                    decimals={2}
+                    suffix=" lots"
+                    icon={BarChart3}
+                    color="emerald"
+                    index={0}
+                    trendPercent={null}
+                />
                 <AnimatedStatCard
                     title="Total Leads"
                     value={leadStats.totalLeads}
                     icon={Users}
                     color="blue"
-                    index={0}
+                    index={1}
                     trendPercent={null}
                 />
                 <AnimatedStatCard
@@ -232,7 +261,7 @@ export function IbOverviewClient({
                     value={overview.activeProUsers}
                     icon={Crown}
                     color="amber"
-                    index={1}
+                    index={2}
                     trendPercent={null}
                 />
                 <AnimatedStatCard
@@ -240,20 +269,13 @@ export function IbOverviewClient({
                     value={overview.activeAccounts || 0}
                     icon={Briefcase}
                     color="cyan"
-                    index={2}
-                    trendPercent={null}
-                />
-                <AnimatedStatCard
-                    title="Pending Requests"
-                    value={overview.pendingRequests}
-                    icon={Clock}
-                    color="amber"
                     index={3}
                     trendPercent={null}
                 />
                 <AnimatedStatCard
                     title="Conversion Rate"
                     value={Math.round(leadStats.conversionRate)}
+                    suffix="%"
                     icon={TrendingUp}
                     color="green"
                     index={4}
@@ -261,53 +283,63 @@ export function IbOverviewClient({
                 />
             </div>
 
+            {/* 4 Financial & Health Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
                 <div className="rounded-xl border border-amber-200/70 bg-amber-50/60 p-4 dark:border-amber-500/20 dark:bg-amber-500/10">
                     <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-amber-700 dark:text-amber-300">
                         <DollarSign size={15} /> Reported Capital
                     </div>
-                    <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">
+                    <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white font-mono">
                         {formatUsd(overview.reportedCapitalUSD)}
                     </p>
                     <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                         Equity {formatUsd(overview.reportedEquityUSD)}
+                        {formatCurrencySubtitle(overview.currencyBreakdown) ? ` · ${formatCurrencySubtitle(overview.currencyBreakdown)}` : ""}
                     </p>
                 </div>
                 <div className="rounded-xl border border-emerald-200/70 bg-emerald-50/60 p-4 dark:border-emerald-500/20 dark:bg-emerald-500/10">
                     <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">
-                        <ShieldCheck size={15} /> Fresh Capital
+                        <ShieldCheck size={15} /> Fresh Capital (24h)
                     </div>
-                    <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">
+                    <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white font-mono">
                         {formatUsd(overview.freshCapitalUSD)}
                     </p>
                     <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        Accounts updated within 24h
+                        {overview.activeAccounts24h || 0} accounts active within 24h
                     </p>
                 </div>
-                <div className="rounded-xl border border-orange-200/70 bg-orange-50/60 p-4 dark:border-orange-500/20 dark:bg-orange-500/10">
-                    <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-orange-700 dark:text-orange-300">
-                        <AlertTriangle size={15} /> Data Quality
+                <Link
+                    href="/admin/ib/traders?accountHealth=STALE"
+                    className="rounded-xl border border-orange-200/70 bg-orange-50/60 p-4 transition-all hover:bg-orange-100/70 dark:border-orange-500/20 dark:bg-orange-500/10 dark:hover:bg-orange-500/15 group block"
+                >
+                    <div className="flex items-center justify-between text-xs font-black uppercase tracking-wider text-orange-700 dark:text-orange-300">
+                        <span className="flex items-center gap-2"><AlertTriangle size={15} /> Retention & Health</span>
+                        <ArrowUpRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                     <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">
                         {overview.staleAccounts || 0} sync overdue
                     </p>
                     <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        {overview.disconnectedAccounts || 0} disconnected ·{" "}
+                        {overview.disconnectedAccounts || 0} inactive (&gt;7d) ·{" "}
                         {overview.duplicateAccountWarnings || 0} duplicate
                         warning{overview.duplicateAccountWarnings === 1 ? "" : "s"}
                     </p>
-                </div>
-                <div className="rounded-xl border border-cyan-200/70 bg-cyan-50/60 p-4 dark:border-cyan-500/20 dark:bg-cyan-500/10">
-                    <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-cyan-700 dark:text-cyan-300">
-                        <Zap size={15} /> Tool Activity
+                </Link>
+                <Link
+                    href="/admin/ib/traders?syncSource=EA"
+                    className="rounded-xl border border-cyan-200/70 bg-cyan-50/60 p-4 transition-all hover:bg-cyan-100/70 dark:border-cyan-500/20 dark:bg-cyan-500/10 dark:hover:bg-cyan-500/15 group block"
+                >
+                    <div className="flex items-center justify-between text-xs font-black uppercase tracking-wider text-cyan-700 dark:text-cyan-300">
+                        <span className="flex items-center gap-2"><Zap size={15} /> Trade Manager Active</span>
+                        <ArrowUpRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                     <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">
                         {overview.activeToolUsers || 0}
                     </p>
                     <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        users with product activity in 24h
+                        users sending EA signals within 24h
                     </p>
-                </div>
+                </Link>
             </div>
 
             {(overview.vipUsersWithoutFirstSync || 0) > 0 && (

@@ -57,22 +57,30 @@ const COLOR_MAP: Record<
     },
 };
 
-function useAnimatedCounter(target: number, duration = 1500, decimals = 0) {
-    const [display, setDisplay] = useState("0");
-    const hasAnimated = useRef(false);
+function useAnimatedCounter(target: number, duration = 1000, decimals = 0) {
+    const [display, setDisplay] = useState(() =>
+        decimals > 0 ? target.toFixed(decimals) : Math.round(target).toLocaleString()
+    );
+    const prevTargetRef = useRef(target);
 
     useEffect(() => {
-        if (hasAnimated.current) return;
-        hasAnimated.current = true;
+        const startVal = prevTargetRef.current;
+        prevTargetRef.current = target;
 
-        let startTime: number;
+        if (startVal === target) {
+            setDisplay(decimals > 0 ? target.toFixed(decimals) : Math.round(target).toLocaleString());
+            return;
+        }
+
+        let startTime: number | null = null;
         let animFrame: number;
 
         const animate = (timestamp: number) => {
-            if (!startTime) startTime = timestamp;
-            const progress = Math.min((timestamp - startTime) / duration, 1);
+            if (startTime === null) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            const progress = Math.min(elapsed / duration, 1);
             const eased = 1 - Math.pow(1 - progress, 3);
-            const current = eased * target;
+            const current = startVal + (target - startVal) * eased;
 
             setDisplay(
                 decimals > 0
@@ -80,7 +88,9 @@ function useAnimatedCounter(target: number, duration = 1500, decimals = 0) {
                     : Math.round(current).toLocaleString()
             );
 
-            if (progress < 1) animFrame = requestAnimationFrame(animate);
+            if (progress < 1) {
+                animFrame = requestAnimationFrame(animate);
+            }
         };
 
         animFrame = requestAnimationFrame(animate);

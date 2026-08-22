@@ -39,7 +39,7 @@ The product becomes confusing when acquisition pages, community, brokers, tools,
 | Keep as conversion/support | Homepage, Community, Trading Systems, Brokers, Tools, Public Trader Card, Free vs Pro | Useful for acquisition and trust, but should not clutter the logged-in dashboard. |
 | Keep as retention | Edge Missions, daily check-in, leaderboard, weekly experiments | Good after first value. Do not show them as the main task before a user has trade data. |
 | Keep as admin only | Admin Reports, AI Gateway, Email Lab, IB/VIP pipeline, content ops, security | Required for operation and support, but should not leak into user-facing complexity. |
-| Hide or remove | Prop firm direction, EA backtest/performance simulator claims, duplicate dashboard alerts, legacy TNT Connect onboarding | These create confusion or overclaim the product. |
+| Hide or remove | Prop firm direction, EA backtest/performance simulator claims, duplicate dashboard alerts, legacy sync-client onboarding (previously "TNT Connect") | These create confusion or overclaim the product. |
 
 ### Surface-Area Rules
 
@@ -101,7 +101,7 @@ The product becomes confusing when acquisition pages, community, brokers, tools,
 - Keep Prop firm functionality out of the current public/product direction unless re-approved.
 - Use Edge as the user-facing progress language. Keep internal `xp` naming only for compatibility until refactored.
 - Prioritize user-facing clarity over admin-only polish when tradeoffs are needed.
-- Current user-facing sync paths are **Trade Manager EA** and **Manual Journal**. Legacy TNT Connect/API code may remain for compatibility, but should not be promoted in new UI unless the product direction changes again.
+- Current user-facing sync paths are **Trade Manager EA** and **Manual Journal**. Legacy sync-client/API code (previously "TNT Connect") may remain for compatibility, but should not be promoted in new UI unless the product direction changes again.
 - For metrics, never show technically correct but confusing values without explanation.
 - TraderWaves-inspired features should strengthen TheNextTrade's core loop, not copy competitor features blindly.
 - Completed QA reports should be deleted after verification. New feature work should be judged by whether it improves activation, trade review quality, retention, or admin support.
@@ -230,7 +230,7 @@ Current user-facing sync methods:
 
 Legacy compatibility:
 
-- TNT Connect and old `/api/sync/*` references may remain in code/history for backwards compatibility, but they are not the current recommended setup path.
+- Old sync-client code (previously "TNT Connect") and old `/api/sync/*` references may remain in code/history for backwards compatibility, but they are not the current recommended setup path.
 - If legacy sync data is displayed, label it safely as a legacy import/source rather than promoting it as a new onboarding option.
 
 The Sync Wizard (`TradeSyncWizard`) is a 4-step flow: Choose Method → Prepare → Connect → Verify.

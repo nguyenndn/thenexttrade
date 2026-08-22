@@ -61,7 +61,7 @@ Any feature that supports this loop is justified. Any feature that competes with
 | Keep admin only | IB/VIP pipeline | Yes | Needed for partner account funnel. | Admin-only plus relevant user upgrade states. |
 | Remove/avoid | Prop firm/funded challenge | No | Not aligned with current direction. | Route/menu/blocks should stay removed. |
 | Remove/avoid | Public EA backtest simulator claims | No | Not enough validated evidence and risks overclaiming. | Replace with product function, setup, and risk controls. |
-| Hide/legacy | TNT Connect onboarding | Compatibility only | Current direction is Trade Manager EA + Manual Journal. | Do not promote in new UI. Legacy code can remain if needed. |
+| Hide/legacy | Retired sync-client onboarding (previously "TNT Connect") | Compatibility only | Current direction is Trade Manager EA + Manual Journal. | Do not promote in new UI. Legacy code can remain if needed. |
 | Simplify | Duplicate dashboard alerts | Yes, but orchestrated | Alerts are useful only when they produce one next action. | One active next action per context. |
 
 ## Route Ownership Map

@@ -85,21 +85,51 @@ export function computeCapitalBreakdown(
         }
     }
 
+    const FX_RATES_TO_USD: Record<string, number> = {
+        USD: 1.0,
+        USC: 0.01,
+        CENT: 0.01,
+        USCENT: 0.01,
+        EUR: 1.08,
+        EUC: 0.0108,
+        GBP: 1.28,
+        GBC: 0.0128,
+        AUD: 0.65,
+        CAD: 0.73,
+        CHF: 1.13,
+        JPY: 0.0067,
+        SGD: 0.76,
+    };
+
     const currencyKeys = Object.keys(byCurrency);
     const isMixedCurrency = currencyKeys.length > 1;
 
-    const isAllUsd =
-        currencyKeys.length === 0 ||
-        (currencyKeys.length === 1 && currencyKeys[0] === "USD");
+    let balSum = 0;
+    let freshSum = 0;
+    let eqSum = 0;
+
+    for (const [curr, bal] of Object.entries(byCurrency)) {
+        const eq = equityByCurrency[curr] || 0;
+        const freshBal = freshByCurrency[curr] || 0;
+        const rate = FX_RATES_TO_USD[curr] ?? (curr === "UNKNOWN" ? 0 : 1.0);
+
+        balSum += bal * rate;
+        freshSum += freshBal * rate;
+        eqSum += eq * rate;
+    }
+
+    const usdBalanceTotal = Math.round(balSum * 100) / 100;
+    const usdFreshBalanceTotal = Math.round(freshSum * 100) / 100;
+    const usdEquityTotal = Math.round(eqSum * 100) / 100;
 
     return {
         byCurrency,
         freshByCurrency,
         equityByCurrency,
         isMixedCurrency,
-        usdBalanceTotal: isAllUsd ? byCurrency["USD"] || 0 : null,
-        usdFreshBalanceTotal: isAllUsd ? freshByCurrency["USD"] || 0 : null,
-        usdEquityTotal: isAllUsd ? equityByCurrency["USD"] || 0 : null,
+        usdBalanceTotal,
+        usdFreshBalanceTotal,
+        usdEquityTotal,
     };
 }
 

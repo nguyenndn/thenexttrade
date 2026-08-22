@@ -27,7 +27,7 @@ This folder is the active source of truth for the product, system, operations, d
 - Storage: Cloudflare R2 for generated assets, uploads, article media, and backups.
 - Email: SMTP-compatible service. Brevo or Postmark recommended for production.
 - Analytics: internal Postgres analytics plus optional GA4.
-- Trade sync: Trade Manager EA is the supported automated sync path. Manual Journal remains the fallback. Legacy TNT Connect code may exist for compatibility, but it is not the current user-facing setup path.
+- Trade sync: Trade Manager EA is the supported automated sync path. Manual Journal remains the fallback. Legacy sync-client code (previously "TNT Connect") may exist for compatibility, but it is not the current user-facing setup path.
 - New-user activation polish is shipped and documented in `PRODUCT.md` and `FEATURE_SPECS.md`; old implementation plans should not be treated as the source of truth.
 - TraderWaves-inspired product loop is active in code: Sync Health Center, Privacy Presets, Rulebook & Goals, Trade Plans, Plan vs Actual, Weekly Coach action loop, safe public profile/share behavior, first insight, and measurable improvement experiments.
 - AI Gateway now uses an internal gateway layer plus provider adapters such as OpenRouter so admin can monitor requests, route models, and avoid direct client-to-provider calls.

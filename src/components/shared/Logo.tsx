@@ -32,18 +32,18 @@ export const Logo = ({
                 style={{ width: imgSizes[size], height: imgSizes[size] }}
             >
                 <Image
-                    src="/images/logo_sentinel_shield.png"
+                    src="/images/logo_thenexttrade_brain.png"
                     alt="TheNextTrade"
                     width={imgSizes[size]}
                     height={imgSizes[size]}
-                    className="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(0,200,136,0.35)]"
+                    className="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(245,158,11,0.25)]"
                     priority
                 />
             </div>
             <span
                 className={`${sizeClasses[size] || "text-xl"} font-black tracking-tight hover:text-inherit text-gray-900 dark:text-white`}
             >
-                TheNext<span className="text-emerald-500">Trade</span>
+                TheNext<span className="text-gold font-black">Trade</span>
             </span>
         </Link>
     );

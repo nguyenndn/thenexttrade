@@ -152,7 +152,7 @@ export async function getJournalEntries(
         prisma.journalEntry.count({ where }),
         prisma.journalEntry.aggregate({
             where,
-            _sum: { pnl: true, swap: true, commission: true },
+            _sum: { pnl: true, swap: true, commission: true, lotSize: true },
         }),
         prisma.journalEntry.groupBy({
             by: ["result"],
@@ -184,6 +184,7 @@ export async function getJournalEntries(
         winCount,
         lossCount,
         winRate,
+        totalLots: pnlResult._sum.lotSize || 0,
     };
 
     const formattedEntries = entries.map((entry) => ({
@@ -581,6 +582,7 @@ export async function getDayDetails(date: string, accountId?: string) {
 
         let buys = 0;
         let sells = 0;
+        let totalLots = 0;
         let bestTrade = -Infinity;
         let worstTrade = Infinity;
         let totalHoldTimeMs = 0;
@@ -608,6 +610,7 @@ export async function getDayDetails(date: string, accountId?: string) {
 
             if (t.type === "BUY") buys++;
             if (t.type === "SELL") sells++;
+            totalLots += t.lotSize || 0;
 
             if (netPnl > bestTrade) bestTrade = netPnl;
             if (netPnl < worstTrade) worstTrade = netPnl;
@@ -655,6 +658,7 @@ export async function getDayDetails(date: string, accountId?: string) {
                 buys,
                 sells,
                 totalTrades: trades.length,
+                totalLots,
                 bestTrade: bestTrade === -Infinity ? 0 : bestTrade,
                 worstTrade: worstTrade === Infinity ? 0 : worstTrade,
                 avgHoldTimeMinutes: trades.length

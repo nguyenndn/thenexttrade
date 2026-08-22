@@ -7,7 +7,7 @@ import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 const tabs = [
     { label: "Overview", href: "/admin/ib", icon: BarChart3 },
     { label: "VIP Pipeline", href: "/admin/ib/pipeline", icon: Crown },
-    { label: "Trader Monitor (CRM)", href: "/admin/ib/traders", icon: Users },
+    { label: "Trader Monitor", href: "/admin/ib/traders", icon: Users },
 ];
 
 export default function IbOperationsLayout({

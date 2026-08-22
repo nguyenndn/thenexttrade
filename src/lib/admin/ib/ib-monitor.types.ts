@@ -120,6 +120,7 @@ export interface IbTraderRow {
     userName: string;
     userEmail: string;
     country: string | null;
+    tradingStyle: string | null;
     vipStatus: "ACTIVE" | "GRACE" | "EXPIRED" | "REVOKED" | "NONE";
     vipExpiresAt: string | null;
     products: ProductUsageSummary[];

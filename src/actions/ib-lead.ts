@@ -201,6 +201,11 @@ export async function getIbOverviewStats(range: IbStatsRange = "30d") {
     const leadWhere = rangeStart ? { clickedAt: { gte: rangeStart } } : {};
     const requestWhere = rangeStart ? { createdAt: { gte: rangeStart } } : {};
 
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const tradeWhere = rangeStart
+        ? { exitDate: { gte: rangeStart }, status: "CLOSED" as const }
+        : { status: "CLOSED" as const };
+
     const [
         totalLeads,
         pendingRequests,
@@ -208,9 +213,11 @@ export async function getIbOverviewStats(range: IbStatsRange = "30d") {
         activeEntitlements,
         graceEntitlements,
         revokedEntitlements,
-        activeAccounts,
+        activeAccounts24h,
         monitoredAccounts,
         activeToolUsers,
+        tradeStatsRange,
+        tradeStats30d,
     ] = await Promise.all([
         prisma.ibLead.count({ where: leadWhere }),
         prisma.vipRequest.count({ where: { status: "PENDING" } }),
@@ -239,7 +246,6 @@ export async function getIbOverviewStats(range: IbStatsRange = "30d") {
         prisma.tradingAccount.count({
             where: {
                 status: { notIn: ["PENDING", "REJECTED", "SUSPENDED"] },
-                // DEMO accounts aren't real active clients — exclude them.
                 accountType: { not: "DEMO" },
                 OR: [
                     { lastHeartbeat: { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) } },
@@ -271,6 +277,16 @@ export async function getIbOverviewStats(range: IbStatsRange = "30d") {
             select: { userId: true },
             distinct: ["userId"],
         }),
+        prisma.journalEntry.aggregate({
+            where: tradeWhere,
+            _sum: { lotSize: true },
+            _count: { _all: true },
+        }),
+        prisma.journalEntry.aggregate({
+            where: { status: "CLOSED", exitDate: { gte: thirtyDaysAgo } },
+            _sum: { lotSize: true },
+            _count: { _all: true },
+        }),
     ]);
 
     const activeUserSet = new Set(activeEntitlements.map((e) => e.userId));
@@ -301,21 +317,31 @@ export async function getIbOverviewStats(range: IbStatsRange = "30d") {
         if (key !== ":") accountKeys.add(key);
     }
 
+    const rangeLotSum = tradeStatsRange._sum?.lotSize ?? 0;
+    const rangeTradeCount = tradeStatsRange._count?._all ?? 0;
+    const d30LotSum = tradeStats30d._sum?.lotSize ?? 0;
+    const d30TradeCount = tradeStats30d._count?._all ?? 0;
+
     return {
         totalLeads,
         pendingRequests,
         requestsInRange,
         verifiedUsers: activeUserSet.size,
-        // A user can hold both an ACTIVE and a GRACE entitlement (legacy
-        // user-level + per-account), so union the two sets instead of adding
-        // their sizes — otherwise that user is double-counted.
         activeProUsers: new Set([...activeUserSet, ...graceUserSet]).size,
         graceUsers: graceUserSet.size,
         revokedUsers: revokedUserSet.size,
-        activeAccounts,
+        activeAccounts: monitoredAccounts.length,
+        activeAccounts24h,
         reportedCapitalUSD: capital.usdBalanceTotal,
         freshCapitalUSD: capital.usdFreshBalanceTotal,
         reportedEquityUSD: capital.usdEquityTotal,
+        currencyBreakdown: capital.byCurrency,
+        freshCurrencyBreakdown: capital.freshByCurrency,
+        equityCurrencyBreakdown: capital.equityByCurrency,
+        totalLots: Math.round(rangeLotSum * 100) / 100,
+        totalTrades: rangeTradeCount,
+        totalLots30d: Math.round(d30LotSum * 100) / 100,
+        totalTrades30d: d30TradeCount,
         staleAccounts,
         disconnectedAccounts,
         vipUsersWithoutFirstSync: [...activeUserSet, ...graceUserSet].filter(

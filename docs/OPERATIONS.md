@@ -156,7 +156,7 @@ Current user-facing sync and trading-system direction:
 - Trade Manager EA is the supported automated MT5 sync/execution helper.
 - Manual Journal is the fallback for users who cannot set up MT5 yet.
 - GoldScalperNinja, Trade Manager, and GSN Phoenix Grid are the active trading-system products.
-- TNT Connect is legacy/compatibility only and should not be promoted in new user-facing release copy.
+- The retired sync client (previously "TNT Connect") is legacy/compatibility only and should not be promoted in new user-facing release copy.
 
 Reference docs:
 

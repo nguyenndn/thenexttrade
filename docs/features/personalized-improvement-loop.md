@@ -23,7 +23,7 @@ Gemini must follow every rule in this section.
 - [ ] For every checklist item, name the exact files to change and the exact test that will prove completion.
 - [ ] Confirm from source whether an existing service already owns the behavior before adding a new service.
 - [ ] Inspect the current Prisma schema before adding or renaming any field.
-- [ ] Use the current supported sync-method registry. Do not reintroduce retired sync options such as TNT Connect or VPS import through hardcoded copy.
+- [ ] Use the current supported sync-method registry. Do not reintroduce retired sync options (previously "TNT Connect") or VPS import through hardcoded copy.
 - [ ] Do not start implementation until the checklist covers all acceptance criteria in this document.
 
 ### 1.2 While coding
@@ -218,7 +218,7 @@ Current product defaults:
 - Trade Manager EA based sync.
 - Manual journal fallback.
 
-Never add TNT Connect or VPS import to UI merely because an old document or stale string mentions it.
+Never add retired sync-client options (previously "TNT Connect") or VPS import to UI merely because an old document or stale string mentions it.
 
 ### 4.4 One orchestration boundary
 

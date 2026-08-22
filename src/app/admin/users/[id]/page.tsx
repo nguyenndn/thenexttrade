@@ -324,7 +324,7 @@ export default async function UserDetailPage({
                         <div className="px-6 pb-5 text-center">
                             <Avatar className="mx-auto -mt-14 mb-4 h-28 w-28 border-[6px] border-white shadow-xl dark:border-[#151925]">
                                 <AvatarImage
-                                    src={user.image || ""}
+                                    src={user.image || undefined}
                                     alt={user.name || "User"}
                                 />
                                 <AvatarFallback className="bg-gradient-to-tr from-primary to-blue-500 text-white font-bold text-3xl">

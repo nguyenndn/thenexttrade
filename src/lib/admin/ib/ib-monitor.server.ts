@@ -139,6 +139,7 @@ async function getPaginatedTraderMonitorLegacy(
             name: true,
             email: true,
             createdAt: true,
+            settings: true,
             profile: {
                 select: { country: true },
             },
@@ -301,6 +302,9 @@ async function getPaginatedTraderMonitorLegacy(
                 userName: u.name || "Unnamed Trader",
                 userEmail: u.email || "No Email",
                 country: u.profile?.country || null,
+                tradingStyle:
+                    (u.settings as { tradingStyle?: { archetypeTitle?: string } } | null)
+                        ?.tradingStyle?.archetypeTitle ?? null,
                 vipStatus,
                 vipExpiresAt,
                 products,

@@ -199,6 +199,9 @@ function buildRow(view: TraderView, lastTradeByAccount: Map<string, string>): Ib
         userName: view.user.name || "Unnamed Trader",
         userEmail: view.user.email || "No Email",
         country: view.user.profile?.country || null,
+        tradingStyle:
+            (view.user.settings as { tradingStyle?: { archetypeTitle?: string } } | null)
+                ?.tradingStyle?.archetypeTitle ?? null,
         vipStatus: view.vip.status,
         vipExpiresAt: view.vip.expiresAt,
         products: view.products,
@@ -251,6 +254,7 @@ export async function getPaginatedTraderMonitorV2(filters: IbTraderFilters): Pro
             name: true,
             email: true,
             createdAt: true,
+            settings: true,
             profile: { select: { country: true } },
             tradingAccounts: {
                 select: {

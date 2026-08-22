@@ -30,10 +30,10 @@ import { normalizeSyncSource } from "@/lib/sync/sync-source";
 
 // Compute the sync method label for each account.
 // Uses syncSource as the primary source of truth (set by the API on each sync).
-// lastHeartbeat is shared by both EA and TNT Connect, so it's not reliable for differentiation.
+// lastHeartbeat is shared by both EA and the retired sync client (previously "TNT Connect"), so it's not reliable for differentiation.
 function getSyncMethodLabel(account: any): {
     label: string;
-    variant: "tnt" | "ea" | "paused" | "none";
+    variant: "ea" | "paused" | "none";
 } {
     if (account.autoSync === false)
         return { label: "Sync paused", variant: "paused" };
@@ -41,22 +41,17 @@ function getSyncMethodLabel(account: any): {
     const source = normalizeSyncSource(account.syncSource);
 
     // Primary: use the explicit sync source field
-    if (source === "EA_SYNC")
+    if (source === "EA_SYNC" || source === "APP" || source === "WINDOWS_IMPORT")
         return { label: "Synced via Trade Manager", variant: "ea" };
     if (source === "MANUAL")
         return { label: "Manual Entry", variant: "paused" };
 
-    // Fallback: infer from presence of EA version or app heartbeat
-    if (account.eaVersion)
+    // Fallback: infer from presence of EA version or heartbeat / sync timestamps
+    if (account.eaVersion || account.appLastHeartbeat || account.lastHeartbeat || account.lastSync)
         return { label: "Synced via Trade Manager", variant: "ea" };
-    if (account.appLastHeartbeat)
-        return { label: "Synced via Trade Manager", variant: "tnt" };
 
     // No sync data at all
-    if (!account.lastHeartbeat && !account.appLastHeartbeat)
-        return { label: "Not connected", variant: "none" };
-
-    return { label: "Connected", variant: "tnt" };
+    return { label: "Not connected", variant: "none" };
 }
 
 interface AccountCardProps {
@@ -169,7 +164,11 @@ export function AccountCard({
     const accentColor = account.color || "hsl(var(--primary))";
     const syncMethod = getSyncMethodLabel(account);
     const hasTradeData = (account.totalTrades ?? 0) > 0;
-    const shouldShowFirstSyncCta = !hasTradeData && !!onOpenSyncSetup;
+    const isUnderReview =
+        account.vipStatus === "PENDING" ||
+        account.eligibility?.status === "PENDING_REVIEW" ||
+        account.eligibility?.status === "PENDING";
+    const shouldShowFirstSyncCta = !hasTradeData && !!onOpenSyncSetup && !isUnderReview;
 
     // Pro upgrade CTA — rendered in BOTH the first-sync branch (a zero-trade
     // eligible account can still request Partner Pro; hiding it forces users
@@ -428,33 +427,19 @@ export function AccountCard({
                         {/* Sync Method Badge */}
                         <div
                             className={`inline-flex h-8 min-w-0 flex-1 items-center gap-1.5 rounded-lg border px-2.5 shadow-sm ${
-                                syncMethod.variant === "tnt"
+                                syncMethod.variant === "ea"
                                     ? "bg-primary/5 dark:bg-primary/10 border-primary/20 dark:border-primary/20 text-primary dark:text-primary"
-                                    : syncMethod.variant === "ea"
-                                      ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200/80 dark:border-amber-500/20 text-amber-600 dark:text-amber-400"
-                                      : syncMethod.variant === "paused"
-                                        ? "bg-yellow-50 dark:bg-yellow-500/10 border-yellow-200/80 dark:border-yellow-500/20 text-yellow-600 dark:text-yellow-400"
-                                        : "bg-white dark:bg-white/5 border-dashboard/80 text-gray-500 dark:text-gray-400"
+                                    : syncMethod.variant === "paused"
+                                      ? "bg-yellow-50 dark:bg-yellow-500/10 border-yellow-200/80 dark:border-yellow-500/20 text-yellow-600 dark:text-yellow-400"
+                                      : "bg-white dark:bg-white/5 border-dashboard/80 text-gray-500 dark:text-gray-400"
                             }`}
                         >
-                            {syncMethod.variant === "tnt" ? (
-                                <Monitor size={11} className="shrink-0" />
-                            ) : (
-                                <Cable size={11} className="shrink-0" />
-                            )}
+                            <Cable size={11} className="shrink-0" />
                             <span className="truncate text-[10px] font-black uppercase tracking-wider">
                                 {syncMethod.label}
                             </span>
                         </div>
                     </div>
-
-                    {/* Zero-trade microcopy */}
-                    {shouldShowFirstSyncCta && (
-                        <p className="text-[10px] text-gray-400 dark:text-gray-500 font-medium px-0.5">
-                            No trades synced yet — Sync history to unlock
-                            analytics
-                        </p>
-                    )}
 
                     {/* Row 2: Status chips + Action buttons */}
                     <div className="flex flex-wrap items-center gap-1.5">
