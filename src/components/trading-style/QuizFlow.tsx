@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -13,8 +13,6 @@ import {
 } from "@/lib/trading-style/scoring";
 import type { ArchetypeId } from "@/config/trading-style-data";
 import { QuizResult } from "@/components/trading-style/QuizResult";
-
-const DRAFT_KEY = "trading-style-draft";
 
 interface QuizFlowProps {
     isLoggedIn: boolean;
@@ -37,40 +35,32 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
         dimensions: DimensionScores;
     } | null>(null);
 
-    // We intentionally start on the welcome screen on every fresh visit.
-    // Draft answers are kept in state only when actively continuing the quiz.
-
-    const persist = useCallback(
-        (next: { started: boolean; index: number; answers: Record<string, string> }) => {
-            try {
-                localStorage.setItem(DRAFT_KEY, JSON.stringify(next));
-            } catch {
-                /* storage unavailable */
-            }
-        },
-        [],
-    );
+    // Clean up any legacy localStorage draft on mount
+    useEffect(() => {
+        try {
+            localStorage.removeItem("trading-style-draft");
+        } catch {
+            /* ignore */
+        }
+    }, []);
 
     const handleStart = () => {
         setStarted(true);
-        persist({ started: true, index: 0, answers });
+        setIndex(0);
     };
 
     const handleSelect = (optionId: string) => {
         const nextAnswers = { ...answers, [QUESTIONS[index].id]: optionId };
         setAnswers(nextAnswers);
-        persist({ started: true, index, answers: nextAnswers });
 
         if (index < QUESTIONS.length - 1) {
             setIndex(index + 1);
-            persist({ started: true, index: index + 1, answers: nextAnswers });
         }
     };
 
     const handleBack = () => {
         if (index > 0) {
             setIndex(index - 1);
-            persist({ started: true, index: index - 1, answers });
         }
     };
 
@@ -81,11 +71,6 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
         const dimensions = computeDimensionScores(nextAnswers);
         setResult({ archetypeId, dimensions });
         setFinished(true);
-        try {
-            localStorage.removeItem(DRAFT_KEY);
-        } catch {
-            /* ignore */
-        }
     };
 
     const handleRetake = () => {
@@ -94,11 +79,6 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
         setAnswers({});
         setFinished(false);
         setResult(null);
-        try {
-            localStorage.removeItem(DRAFT_KEY);
-        } catch {
-            /* ignore */
-        }
     };
 
     // ───────────────────────── Start screen (Hình 1 layout with Gold theme) ─────────────────────────
