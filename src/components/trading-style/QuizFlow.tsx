@@ -18,9 +18,16 @@ const DRAFT_KEY = "trading-style-draft";
 
 interface QuizFlowProps {
     isLoggedIn: boolean;
+    onSaveSuccess?: (data: {
+        archetype: string;
+        archetypeTitle: string;
+        dimensions: Record<string, number>;
+        answers: Record<string, string>;
+        completedAt: string;
+    }) => void;
 }
 
-export function QuizFlow({ isLoggedIn }: QuizFlowProps) {
+export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
     const [started, setStarted] = useState(false);
     const [index, setIndex] = useState(0);
     const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -30,27 +37,8 @@ export function QuizFlow({ isLoggedIn }: QuizFlowProps) {
         dimensions: DimensionScores;
     } | null>(null);
 
-    // Restore draft (guest can resume mid-quiz on refresh)
-    useEffect(() => {
-        try {
-            const raw = localStorage.getItem(DRAFT_KEY);
-            if (raw) {
-                const draft = JSON.parse(raw) as {
-                    started?: boolean;
-                    index: number;
-                    answers: Record<string, string>;
-                };
-                if (draft.started && !finished) {
-                    setStarted(true);
-                    setIndex(draft.index ?? 0);
-                    setAnswers(draft.answers ?? {});
-                }
-            }
-        } catch {
-            /* ignore corrupted draft */
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    // We intentionally start on the welcome screen on every fresh visit.
+    // Draft answers are kept in state only when actively continuing the quiz.
 
     const persist = useCallback(
         (next: { started: boolean; index: number; answers: Record<string, string> }) => {
@@ -171,13 +159,14 @@ export function QuizFlow({ isLoggedIn }: QuizFlowProps) {
                     </div>
                 </div>
 
-                {/* Primary CTA Button with Gold gradient */}
-                <div className="mt-10">
+                {/* Primary CTA Button with standard button size */}
+                <div className="mt-8">
                     <Button
+                        size="md"
                         onClick={handleStart}
-                        className="h-auto rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-9 py-4 text-base sm:text-lg font-black text-white shadow-xl shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all border-none"
+                        className="rounded-xl bg-gold hover:bg-amber-600 px-6 py-2.5 text-sm font-bold text-white shadow-md shadow-gold/20 transition-all border-none"
                     >
-                        Start the test →
+                        Start the assessment →
                     </Button>
                 </div>
             </motion.div>
@@ -193,6 +182,7 @@ export function QuizFlow({ isLoggedIn }: QuizFlowProps) {
                 dimensions={result.dimensions}
                 isLoggedIn={isLoggedIn}
                 onRetake={handleRetake}
+                onSaveSuccess={onSaveSuccess}
             />
         );
     }
@@ -290,7 +280,7 @@ export function QuizFlow({ isLoggedIn }: QuizFlowProps) {
                     <Button
                         onClick={handleFinish}
                         disabled={!currentSelected}
-                        className="rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 font-black text-white shadow-md shadow-amber-500/20"
+                        className="rounded-xl bg-gold hover:bg-amber-600 font-black text-white shadow-md shadow-gold/20"
                     >
                         See my results <ArrowRight size={15} />
                     </Button>

@@ -119,7 +119,7 @@ export function PublicHeader({
                 {/* Content constrained to 1440px */}
                 <div className="flex w-full max-w-[1440px] mx-auto items-center justify-between gap-2 sm:gap-4 md:gap-6 px-2 sm:px-4 md:px-6 h-full">
                     {/* Logo */}
-                    <div className="flex-shrink-0">
+                    <div className="flex-shrink-0 lg:min-w-[200px]">
                         <Logo />
                     </div>
 
@@ -127,7 +127,7 @@ export function PublicHeader({
                     <DesktopNav />
 
                     {/* Action Buttons */}
-                    <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-shrink-0">
+                    <div className="flex items-center justify-end gap-2 sm:gap-3 md:gap-4 flex-shrink-0 lg:min-w-[200px]">
                         {/* Theme Toggle */}
                         <ThemeToggleSwitch />
 

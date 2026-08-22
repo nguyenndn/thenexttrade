@@ -20,6 +20,12 @@ export interface PublicProfileData {
     xp: number;
     streak: number;
 
+    tradingStyle?: {
+        archetype: string;
+        archetypeTitle: string;
+        dimensions?: Record<string, number>;
+    } | null;
+
     performanceWindow: {
         label: string;
         days: number;
@@ -61,6 +67,7 @@ export interface PublicProfileData {
         showBadges: boolean;
         showPairStats: boolean;
         showSessionStats: boolean;
+        showTradingStyle?: boolean;
         showMoney: boolean;
         showBroker: boolean;
         showAccountNumber: boolean;
@@ -130,6 +137,7 @@ export async function getPublicProfileData(
                     level: true,
                     streak: true,
                     createdAt: true,
+                    settings: true,
                     badges: {
                         select: {
                             badge: {
@@ -255,11 +263,41 @@ export async function getPublicProfileData(
 
         preferredSession: sessionPref,
 
+        tradingStyle: (() => {
+            const userSettings = (profile.user.settings as Record<string, any>) || {};
+            const showTradingStyle =
+                (profile as any).showTradingStyle ??
+                userSettings.profileSettings?.showTradingStyle ??
+                userSettings.showTradingStyle ??
+                true;
+            const style = userSettings.tradingStyle as {
+                archetype: string;
+                archetypeTitle: string;
+                dimensions?: Record<string, number>;
+            } | null;
+
+            if (!showTradingStyle || !style) return null;
+            return {
+                archetype: style.archetype,
+                archetypeTitle: style.archetypeTitle || style.archetype,
+                dimensions: style.dimensions,
+            };
+        })(),
+
         visibility: {
             showTradeScore: profile.showTradeScore,
             showBadges: profile.showBadges,
             showPairStats: profile.showPairStats,
             showSessionStats: profile.showSessionStats,
+            showTradingStyle: (() => {
+                const userSettings = (profile.user.settings as Record<string, any>) || {};
+                return (
+                    (profile as any).showTradingStyle ??
+                    userSettings.profileSettings?.showTradingStyle ??
+                    userSettings.showTradingStyle ??
+                    true
+                );
+            })(),
             showMoney: profile.showMoney,
             showBroker: profile.showBroker,
             showAccountNumber: profile.showAccountNumber,

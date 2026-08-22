@@ -6,10 +6,10 @@ import { toast } from "sonner";
 import Markdown from "react-markdown";
 import {
     ArrowRight,
+    Award,
     BookMarked,
     RotateCcw,
     Save,
-    Sparkles,
     UserPlus,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -30,6 +30,13 @@ interface QuizResultProps {
     dimensions: DimensionScores;
     isLoggedIn: boolean;
     onRetake: () => void;
+    onSaveSuccess?: (data: {
+        archetype: string;
+        archetypeTitle: string;
+        dimensions: Record<string, number>;
+        answers: Record<string, string>;
+        completedAt: string;
+    }) => void;
 }
 
 export function QuizResult({
@@ -38,6 +45,7 @@ export function QuizResult({
     dimensions,
     isLoggedIn,
     onRetake,
+    onSaveSuccess,
 }: QuizResultProps) {
     const archetype = ARCHETYPES[archetypeId];
     const [saving, setSaving] = useState(false);
@@ -55,13 +63,20 @@ export function QuizResult({
         }
         setSaved(true);
         toast.success("Trading style saved to your profile");
+        onSaveSuccess?.({
+            archetype: archetypeId,
+            archetypeTitle: archetype.name,
+            dimensions,
+            answers,
+            completedAt: new Date().toISOString(),
+        });
     };
 
     return (
         <div className="space-y-6">
             <div className="flex flex-col items-center text-center">
-                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/25">
-                    <Sparkles size={26} />
+                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-gold text-white shadow-lg shadow-gold/25">
+                    <Award size={28} strokeWidth={2.2} />
                 </div>
                 <h2 className="text-2xl font-black tracking-tight text-gray-900 dark:text-white">
                     Your trading style is
@@ -114,7 +129,7 @@ export function QuizResult({
                             <Button
                                 onClick={handleSave}
                                 isLoading={saving}
-                                className="rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 font-black text-white shadow-md shadow-amber-500/20"
+                                className="rounded-xl bg-gold hover:bg-amber-600 font-black text-white shadow-md shadow-gold/20"
                             >
                                 <Save size={15} /> Save to my profile
                             </Button>
@@ -129,7 +144,7 @@ export function QuizResult({
                         <Link
                             href="/auth/signup"
                             className={cn(
-                                "inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-5 py-2.5 text-sm font-black text-white shadow-md shadow-amber-500/20 transition hover:from-amber-600 hover:to-orange-600",
+                                "inline-flex items-center gap-1.5 rounded-xl bg-gold hover:bg-amber-600 px-5 py-2.5 text-sm font-black text-white shadow-md shadow-gold/20 transition",
                             )}
                         >
                             <UserPlus size={15} /> Create free account

@@ -33,19 +33,32 @@ export default async function PublicProfilePage() {
         },
     });
 
-    const settings = profile || {
-        username: null,
-        isPublicProfile: false,
-        showTradeScore: false,
-        showBadges: true,
-        showPairStats: true,
-        showSessionStats: true,
-        profileHeadline: null,
-        showMoney: false,
-        showBroker: false,
-        showAccountNumber: false,
-        showRealName: false,
-        showPercentMetrics: true,
+    const dbUser = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { settings: true },
+    });
+    const userSettings = (dbUser?.settings as Record<string, any>) || {};
+    const showTradingStyle =
+        (profile as any)?.showTradingStyle ??
+        userSettings?.profileSettings?.showTradingStyle ??
+        userSettings?.showTradingStyle ??
+        true;
+    const userTradingStyle = (userSettings?.tradingStyle as any) ?? null;
+
+    const settings = {
+        username: profile?.username ?? null,
+        isPublicProfile: profile?.isPublicProfile ?? false,
+        showTradeScore: profile?.showTradeScore ?? false,
+        showBadges: profile?.showBadges ?? true,
+        showPairStats: profile?.showPairStats ?? true,
+        showSessionStats: profile?.showSessionStats ?? true,
+        showTradingStyle,
+        profileHeadline: profile?.profileHeadline ?? null,
+        showMoney: profile?.showMoney ?? false,
+        showBroker: profile?.showBroker ?? false,
+        showAccountNumber: profile?.showAccountNumber ?? false,
+        showRealName: profile?.showRealName ?? false,
+        showPercentMetrics: profile?.showPercentMetrics ?? true,
     };
 
     return (
@@ -53,6 +66,7 @@ export default async function PublicProfilePage() {
             initialSettings={settings}
             userDisplayName={user.name}
             userJoinedDate={user.createdAt}
+            userTradingStyle={userTradingStyle}
         />
     );
 }

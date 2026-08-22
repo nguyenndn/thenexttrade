@@ -12,6 +12,7 @@ export interface ProfilePrivacyFields {
     showBadges: boolean;
     showPairStats: boolean;
     showSessionStats: boolean;
+    showTradingStyle: boolean;
 }
 
 export function applyPrivacyPreset(
@@ -34,6 +35,7 @@ export function applyPrivacyPreset(
                 showBadges: true,
                 showPairStats: true,
                 showSessionStats: true,
+                showTradingStyle: true,
             };
         case "PERFORMANCE_ONLY":
             return {
@@ -44,9 +46,10 @@ export function applyPrivacyPreset(
                 showAccountNumber: false,
                 showPercentMetrics: true,
                 showTradeScore: true,
-                showBadges: true,
+                showBadges: false,
                 showPairStats: true,
-                showSessionStats: true,
+                showSessionStats: false,
+                showTradingStyle: false,
             };
         case "FULL_PUBLIC":
             return {
@@ -60,6 +63,7 @@ export function applyPrivacyPreset(
                 showBadges: true,
                 showPairStats: true,
                 showSessionStats: true,
+                showTradingStyle: true,
             };
         default:
             return {};

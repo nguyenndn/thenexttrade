@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Brain, RotateCcw } from "lucide-react";
+import { ArrowRight, RotateCcw } from "lucide-react";
 import { ARCHETYPES, type ArchetypeId } from "@/config/trading-style-data";
 import type { TradingStyleSaved } from "@/app/dashboard/settings/trading-style/page";
 import { DimensionBars } from "@/components/trading-style/DimensionBars";
 import { ArchetypeCard } from "@/components/trading-style/ArchetypeCard";
+import { QuizFlow } from "@/components/trading-style/QuizFlow";
 
 interface TradingStyleDashboardProps {
     initialResult: TradingStyleSaved | null;
@@ -16,37 +17,49 @@ interface TradingStyleDashboardProps {
 export function TradingStyleDashboard({
     initialResult,
 }: TradingStyleDashboardProps) {
-    const archetype = useMemo(() => {
-        if (!initialResult) return null;
-        return ARCHETYPES[initialResult.archetype as ArchetypeId] ?? null;
-    }, [initialResult]);
+    const [result, setResult] = useState<TradingStyleSaved | null>(initialResult);
+    const [isRetaking, setIsRetaking] = useState(false);
 
-    // ─────────────── Empty state ───────────────
-    if (!initialResult || !archetype) {
+    const archetype = useMemo(() => {
+        if (!result) return null;
+        return ARCHETYPES[result.archetype as ArchetypeId] ?? null;
+    }, [result]);
+
+    // ─────────────── Quiz / Assessment flow state (Option A inside Dashboard) ───────────────
+    if (!result || !archetype || isRetaking) {
         return (
-            <div className="flex flex-col items-center rounded-2xl border border-dashboard bg-white/80 p-8 text-center dark:bg-white/[0.03] sm:p-12">
-                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/25">
-                    <Brain size={30} />
-                </div>
-                <h2 className="text-xl font-black tracking-tight text-gray-900 dark:text-white">
-                    You haven&apos;t taken the test yet
-                </h2>
-                <p className="mt-2 max-w-md text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-                    Take the free 3-minute quiz to discover your trading
-                    archetype and get a personalised plan of next moves.
-                </p>
-                <Link
-                    href="/trading-style"
-                    className="mt-5 inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-3 text-sm font-black text-white shadow-md shadow-amber-500/20 transition hover:from-amber-600 hover:to-orange-600"
-                >
-                    Start the Assessment
-                </Link>
+            <div className="rounded-2xl border border-dashboard bg-white/80 p-4 sm:p-8 dark:bg-white/[0.02] shadow-sm relative overflow-hidden">
+                {/* Background ambient glow */}
+                <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-amber-500/[0.05] dark:bg-amber-500/[0.06] rounded-full blur-[120px] pointer-events-none" />
+
+                {isRetaking && (
+                    <div className="mb-4 flex items-center justify-between border-b border-dashboard pb-3">
+                        <p className="text-xs font-black uppercase tracking-[0.16em] text-amber-600 dark:text-gold">
+                            Retaking Assessment
+                        </p>
+                        <button
+                            type="button"
+                            onClick={() => setIsRetaking(false)}
+                            className="text-xs font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white cursor-pointer"
+                        >
+                            Cancel & Return to Results
+                        </button>
+                    </div>
+                )}
+
+                <QuizFlow
+                    isLoggedIn={true}
+                    onSaveSuccess={(savedData) => {
+                        setResult(savedData as TradingStyleSaved);
+                        setIsRetaking(false);
+                    }}
+                />
             </div>
         );
     }
 
-    const completedAt = initialResult.completedAt
-        ? new Date(initialResult.completedAt).toLocaleDateString()
+    const completedAt = result.completedAt
+        ? new Date(result.completedAt).toLocaleDateString()
         : null;
 
     // ─────────────── Result state ───────────────
@@ -63,12 +76,13 @@ export function TradingStyleDashboard({
                             : "Your saved trading style"}
                     </p>
                 </div>
-                <Link
-                    href="/trading-style"
-                    className="inline-flex items-center gap-1.5 text-sm font-bold text-amber-600 hover:underline dark:text-gold"
+                <button
+                    type="button"
+                    onClick={() => setIsRetaking(true)}
+                    className="inline-flex items-center gap-1.5 text-sm font-bold text-amber-600 hover:underline dark:text-gold cursor-pointer"
                 >
                     <RotateCcw size={14} /> Retake the test
-                </Link>
+                </button>
             </div>
 
             <div className="rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/[0.08] to-orange-500/[0.05] p-5 dark:border-amber-500/20">
@@ -84,7 +98,7 @@ export function TradingStyleDashboard({
                 <h3 className="mb-4 text-xs font-black uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">
                     Your profile across 6 core dimensions
                 </h3>
-                <DimensionBars scores={initialResult.dimensions} />
+                <DimensionBars scores={result.dimensions} />
             </div>
 
             <div className="rounded-2xl border border-dashboard bg-white/80 p-5 dark:bg-white/[0.03]">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useMemo } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
 import {
@@ -10,6 +10,7 @@ import {
     BarChart3,
     Clock,
     Award,
+    Brain,
     ExternalLink,
     Save,
     Loader2,
@@ -48,6 +49,7 @@ export interface ProfileSettings {
     showBadges: boolean;
     showPairStats: boolean;
     showSessionStats: boolean;
+    showTradingStyle: boolean;
     profileHeadline: string | null;
     showMoney: boolean;
     showBroker: boolean;
@@ -144,6 +146,11 @@ interface ProfileClientProps {
     userDisplayName?: string | null;
     userJoinedDate?: Date | null;
     userCountry?: string | null;
+    userTradingStyle?: {
+        archetype: string;
+        archetypeTitle: string;
+        dimensions?: Record<string, number>;
+    } | null;
 }
 
 export default function ProfileClient({
@@ -151,6 +158,7 @@ export default function ProfileClient({
     userDisplayName,
     userJoinedDate,
     userCountry,
+    userTradingStyle,
 }: ProfileClientProps) {
     const [settings, setSettings] = useState<ProfileSettings>(initialSettings);
     const [isPending, startTransition] = useTransition();
@@ -191,6 +199,14 @@ export default function ProfileClient({
     };
 
     const visibilityItems = [
+        {
+            key: "showTradingStyle" as const,
+            icon: Brain,
+            title: "Trading Style Archetype",
+            description: "Show your verified trading style archetype",
+            color: "text-amber-500",
+            bgColor: "bg-amber-50 dark:bg-amber-500/10",
+        },
         {
             key: "showTradeScore" as const,
             icon: Trophy,
@@ -400,47 +416,47 @@ export default function ProfileClient({
                                 Privacy Presets
                             </h4>
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                                {(
-                                    [
+                                {(() => {
+                                    const currentActivePreset = (() => {
+                                        if (!settings.isPublicProfile) return "PRIVATE";
+                                        if (
+                                            settings.showRealName &&
+                                            settings.showMoney &&
+                                            settings.showBroker &&
+                                            settings.showAccountNumber
+                                        ) {
+                                            return "FULL_PUBLIC";
+                                        }
+                                        if (
+                                            !settings.showRealName &&
+                                            !settings.showMoney &&
+                                            !settings.showBroker &&
+                                            !settings.showAccountNumber
+                                        ) {
+                                            if (
+                                                settings.showBadges &&
+                                                settings.showSessionStats &&
+                                                settings.showTradingStyle
+                                            ) {
+                                                return "SAFE_PUBLIC";
+                                            }
+                                            if (
+                                                !settings.showBadges &&
+                                                !settings.showSessionStats &&
+                                                !settings.showTradingStyle
+                                            ) {
+                                                return "PERFORMANCE_ONLY";
+                                            }
+                                        }
+                                        return null;
+                                    })();
+
+                                    const presets: PublicPrivacyPreset[] = [
                                         "PRIVATE",
                                         "SAFE_PUBLIC",
                                         "PERFORMANCE_ONLY",
                                         "FULL_PUBLIC",
-                                    ] as PublicPrivacyPreset[]
-                                ).map((preset) => {
-                                    const isSelected = (() => {
-                                        if (preset === "PRIVATE")
-                                            return !settings.isPublicProfile;
-                                        if (preset === "SAFE_PUBLIC") {
-                                            return (
-                                                settings.isPublicProfile &&
-                                                !settings.showRealName &&
-                                                !settings.showMoney &&
-                                                !settings.showBroker &&
-                                                !settings.showAccountNumber
-                                            );
-                                        }
-                                        if (preset === "PERFORMANCE_ONLY") {
-                                            return (
-                                                settings.isPublicProfile &&
-                                                !settings.showRealName &&
-                                                !settings.showMoney &&
-                                                !settings.showBroker &&
-                                                !settings.showAccountNumber &&
-                                                settings.showPercentMetrics
-                                            );
-                                        }
-                                        if (preset === "FULL_PUBLIC") {
-                                            return (
-                                                settings.isPublicProfile &&
-                                                settings.showRealName &&
-                                                settings.showMoney &&
-                                                settings.showBroker &&
-                                                settings.showAccountNumber
-                                            );
-                                        }
-                                        return false;
-                                    })();
+                                    ];
 
                                     const labelMap: Record<
                                         PublicPrivacyPreset,
@@ -452,23 +468,28 @@ export default function ProfileClient({
                                         FULL_PUBLIC: "Full Public",
                                     };
 
-                                    return (
-                                        <button
-                                            key={preset}
-                                            type="button"
-                                            onClick={() =>
-                                                handlePresetSelect(preset)
-                                            }
-                                            className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all ${
-                                                isSelected
-                                                    ? "bg-primary/10 border-primary text-primary"
-                                                    : "bg-white dark:bg-[#151925] border-dashboard hover:border-gray-400 text-gray-600 dark:text-gray-300"
-                                            }`}
-                                        >
-                                            {labelMap[preset]}
-                                        </button>
-                                    );
-                                })}
+                                    return presets.map((preset) => {
+                                        const isSelected =
+                                            currentActivePreset === preset;
+
+                                        return (
+                                            <button
+                                                key={preset}
+                                                type="button"
+                                                onClick={() =>
+                                                    handlePresetSelect(preset)
+                                                }
+                                                className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all ${
+                                                    isSelected
+                                                        ? "bg-primary/10 border-primary text-primary shadow-sm"
+                                                        : "bg-white dark:bg-[#151925] border-dashboard hover:border-gray-400 text-gray-600 dark:text-gray-300"
+                                                }`}
+                                            >
+                                                {labelMap[preset]}
+                                            </button>
+                                        );
+                                    });
+                                })()}
                             </div>
                         </div>
                     )}
@@ -623,17 +644,18 @@ export default function ProfileClient({
             )}
 
             <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-                <DialogContent className="max-w-md p-0 overflow-hidden bg-white dark:bg-[#11141d] border-dashboard dark:border-white/[0.08] rounded-2xl">
-                    <div className="p-6 pb-4 border-b border-dashboard dark:border-white/[0.08]">
+                <DialogContent className="max-w-[490px] w-full p-0 overflow-hidden bg-white dark:bg-[#11141d] border-dashboard dark:border-white/[0.08] rounded-3xl shadow-2xl max-h-[94vh] flex flex-col">
+                    <div className="p-4 px-6 border-b border-dashboard dark:border-white/[0.08] flex-shrink-0">
                         <DialogHeader>
-                            <DialogTitle className="text-lg font-black text-gray-800 dark:text-white flex items-center gap-2">
-                                <Shield size={18} className="text-primary" />
+                            <DialogTitle className="text-base font-black text-gray-800 dark:text-white flex items-center gap-2">
+                                <Shield size={16} className="text-primary" />
                                 Live Trading Card Preview
                             </DialogTitle>
                         </DialogHeader>
                     </div>
-                    <div className="p-0 max-h-[80vh] overflow-y-auto">
+                    <div className="p-0 overflow-y-auto scrollbar-hide flex-1">
                         <PublicProfileCard
+                            isModal={true}
                             profile={{
                                 name: settings.showRealName
                                     ? userDisplayName || "Trader"
@@ -690,6 +712,13 @@ export default function ProfileClient({
                                     avgRR: 2.1,
                                     tradeScore: 82,
                                 },
+                                tradingStyle: settings.showTradingStyle
+                                    ? userTradingStyle || {
+                                          archetype: "DISCIPLINED_SNIPER",
+                                          archetypeTitle:
+                                              "The Disciplined Sniper",
+                                      }
+                                    : null,
                                 visibility: {
                                     showRealName: settings.showRealName,
                                     showMoney: settings.showMoney,
@@ -698,6 +727,7 @@ export default function ProfileClient({
                                     showTradeScore: settings.showTradeScore,
                                     showPairStats: settings.showPairStats,
                                     showSessionStats: settings.showSessionStats,
+                                    showTradingStyle: settings.showTradingStyle,
                                     showBadges: settings.showBadges,
                                     showBroker: settings.showBroker,
                                     showAccountNumber:

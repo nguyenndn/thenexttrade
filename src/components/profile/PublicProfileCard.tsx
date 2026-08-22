@@ -6,6 +6,7 @@ import {
     Check,
     Shield,
     Award,
+    Brain,
     Clock,
     ArrowUpRight,
     Zap,
@@ -79,7 +80,13 @@ function getScoreInfo(score: number) {
     return { label: "Beginner", text: "text-orange-600" };
 }
 
-export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
+export function PublicProfileCard({
+    profile,
+    isModal = false,
+}: {
+    profile: PublicProfileData;
+    isModal?: boolean;
+}) {
     const tilt = useTilt();
     const joinDate = format(new Date(profile.joinedDate), "MMM yyyy");
     const scoreInfo =
@@ -88,7 +95,11 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
             : null;
 
     return (
-        <div className="relative flex min-h-[80vh] items-center justify-center overflow-hidden bg-white px-4 py-12 dark:bg-transparent">
+        <div
+            className={`relative flex flex-col items-center justify-center overflow-hidden bg-white dark:bg-transparent ${
+                isModal ? "px-2 py-4 sm:py-6" : "px-4 py-8 sm:py-12"
+            }`}
+        >
             <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]" />
 
             <div
@@ -377,6 +388,47 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                                 </>
                             )}
 
+                        {profile.tradingStyle &&
+                            profile.visibility.showTradingStyle !== false && (
+                                <>
+                                    <div className="mx-6 h-[1px] bg-amber-100" />
+                                    <div className="relative z-20 px-6 py-4">
+                                        <div className="mb-2.5 flex items-center justify-between">
+                                            <div className="flex items-center gap-1.5">
+                                                <Brain
+                                                    size={11}
+                                                    className="text-amber-700"
+                                                />
+                                                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-amber-800">
+                                                    Trading Style
+                                                </span>
+                                            </div>
+                                            <Link
+                                                href="/trading-style"
+                                                className="text-[9px] font-bold text-amber-700 hover:underline"
+                                            >
+                                                Know Your Style →
+                                            </Link>
+                                        </div>
+                                        <div className="flex items-center justify-between gap-2 rounded-xl border border-amber-500/30 bg-gradient-to-r from-amber-500/[0.08] to-yellow-500/[0.04] px-3.5 py-2.5 dark:border-amber-500/20">
+                                            <div className="flex items-center gap-2.5 min-w-0">
+                                                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gold text-white shadow-sm shadow-gold/30">
+                                                    <Award size={15} />
+                                                </span>
+                                                <div className="min-w-0">
+                                                    <p className="truncate text-xs font-black text-slate-800 dark:text-white">
+                                                        {profile.tradingStyle.archetypeTitle}
+                                                    </p>
+                                                    <p className="text-[10px] font-semibold text-amber-600 dark:text-gold">
+                                                        Verified Archetype
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
                         <div className="relative z-20 px-6 py-4">
                             <div className="mb-3 space-y-1 text-[10px] leading-relaxed text-slate-500">
                                 <p>
@@ -407,15 +459,16 @@ export function PublicProfileCard({ profile }: { profile: PublicProfileData }) {
                 </div>
             </div>
 
-            <div className="absolute bottom-8 left-0 right-0 text-center">
+            {/* CTA Button in natural layout flow below card */}
+            <div className="relative z-20 mt-8 text-center">
                 <Link
                     href={`/auth/signup?ref=${profile.username}`}
-                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 px-6 py-3 text-sm font-black text-white shadow-lg shadow-amber-500/25 transition-all hover:scale-[1.03] active:scale-[0.97] border-0"
+                    className="inline-flex items-center gap-2 rounded-xl bg-gold hover:bg-amber-600 px-6 py-3 text-sm font-black text-white shadow-lg shadow-gold/25 transition-all hover:scale-[1.03] active:scale-[0.97] border-0"
                 >
                     Join TheNextTrade
                     <ArrowUpRight size={16} />
                 </Link>
-                <p className="mt-2 text-sm font-medium text-amber-900/70">
+                <p className="mt-2 text-sm font-medium text-amber-900/70 dark:text-amber-200/70">
                     Track, analyze, and improve your trading
                 </p>
             </div>

@@ -8,7 +8,7 @@ export function DesktopNav() {
     const pathname = usePathname();
 
     return (
-        <nav className="hidden lg:flex items-center gap-4 xl:gap-6 relative flex-1 lg:justify-start xl:justify-center overflow-x-auto scrollbar-hide">
+        <nav className="hidden lg:flex items-center justify-center gap-4 xl:gap-7 relative flex-1 overflow-x-auto scrollbar-hide px-2">
             {menuItems.map((item) => {
                 const isActive =
                     pathname === item.href ||
