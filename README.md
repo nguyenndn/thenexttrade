@@ -6,17 +6,16 @@ TheNextTrade is a trading education and journal platform built around one loop:
 
 ## Current Product Areas
 
-- Public education site, articles, Academy, brokers, and trading tools.
-- Auth, onboarding, first-session setup, and new-user activation.
-- MT5 sync through Trade Manager EA, with Manual Journal as the fallback path.
-- Trading journal, dashboard metrics, analytics, sessions, psychology, and reports.
-- Sync Health Center for account/sync troubleshooting.
-- Rulebook, behavior goals, trade plans, and Plan vs Actual review.
-- Weekly Coach action loop and Personalized Trading Improvement Loop (1-click 10-trade experiments).
-- Deep AI & Analytics (Disposition Effect, Tilt Index, 24-Hour Intraday Heatmap, and R:R Optimizer).
-- Mobile WebApp UX Optimization (Touch-friendly bottom sheet, 16px min font-size fix, zero horizontal scroll).
-- Privacy presets for public trader cards, trade shares, and OG images.
-- Admin reports, analytics, users, articles, Academy, IB/VIP, EA products, notifications, and security.
+- **Trading Style & Personality Assessment**: 14-question psychology assessment mapping traders into 8 distinct archetypes across 6 core skill dimensions (`/trading-style` and `/dashboard/settings/trading-style`).
+- **Public Education & Academy**: Curated articles, structured Academy lessons with 20+ interactive SVG diagrams, brokers comparison, and trader utility tools.
+- **Community Hub & Signals**: GoldScalperNinja Telegram community showcase with curated multi-asset trading signals, randomizer refresh, and media lightbox (`/community`).
+- **Auth, Onboarding & Activation**: Multi-step onboarding flow, first-session wizard, and personalized next-action guidance.
+- **Automated & Manual Trade Capture**: MT5 sync via Trade Manager EA, alongside touch-friendly Manual Journal fallback.
+- **Trading Journal & Deep Analytics**: Journal metrics, session analytics (London/NY/Asian), psychology mistake detection, Disposition Effect, Tilt Index, and 24-hour intraday heatmaps.
+- **AI Coach & Improvement Loop**: Weekly Action Plan, AI Risk Intelligence, and 1-click 10-trade behavioral experiment loops.
+- **Public Proof & Social Sharing**: Live Trading Card (3D Tilt) with customizable Privacy Presets, Trading Style badge, and OpenGraph share card generator.
+- **AI Gateway & Infrastructure Security**: Centralized AI routing (Google Gemini + OpenRouter), per-record AES-256 salt encryption for broker credentials, and stale request sweepers.
+- **Admin Control Plane**: Admin operations cockpit, AI Gateway controls, IB/VIP partner pipeline, Email Lab, and security audit logging.
 
 ## Documentation
 

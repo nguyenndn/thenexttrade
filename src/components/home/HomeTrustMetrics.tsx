@@ -50,8 +50,7 @@ export function HomeTrustMetrics({ metrics }: TrustMetricsProps) {
                         <div className="flex items-center gap-3">
                             <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold text-gray-700 dark:text-gray-200 tracking-wider">
                                 <Terminal size={14} className="text-amber-500 dark:text-gold" />
-                                <span>COCKPIT PIPELINE</span>
-                                <span className="text-gray-400 dark:text-gray-400">v2.6</span>
+                                <span>TRADING OS PIPELINE</span>
                             </div>
 
                             <span className="hidden sm:inline-block h-3 w-px bg-slate-300 dark:bg-white/10" />
@@ -62,7 +61,7 @@ export function HomeTrustMetrics({ metrics }: TrustMetricsProps) {
                                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                                 </span>
                                 <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-                                    Live Stream Active
+                                    Real-Time Sync Active
                                 </span>
                             </div>
                         </div>
@@ -74,7 +73,7 @@ export function HomeTrustMetrics({ metrics }: TrustMetricsProps) {
                             </div>
                             <span className="hidden md:inline-block h-3 w-px bg-slate-300 dark:bg-white/10" />
                             <span className="text-[10px] uppercase font-bold tracking-widest text-gray-600 dark:text-gray-300">
-                                Closed-Loop Growth Engine
+                                Closed-Loop Trading System
                             </span>
                         </div>
                     </div>
@@ -119,7 +118,7 @@ export function HomeTrustMetrics({ metrics }: TrustMetricsProps) {
 
                                     <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-gold font-mono text-[10px] font-bold uppercase tracking-wider shrink-0">
                                         <span className="font-black">01</span>
-                                        <span>Ingestion</span>
+                                        <span>Sync</span>
                                         <span className="flex h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse ml-0.5" />
                                     </div>
                                 </div>
@@ -128,7 +127,7 @@ export function HomeTrustMetrics({ metrics }: TrustMetricsProps) {
                                     Instant MT5 Auto-Sync
                                 </h3>
                                 <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-400 mb-5 font-normal">
-                                    Zero manual CSV uploads. Live EA bridge captures every execution event instantly.
+                                    Trade Manager EA automatically streams every MT5 trade directly to your journal in real time.
                                 </p>
                             </div>
 
@@ -158,7 +157,7 @@ export function HomeTrustMetrics({ metrics }: TrustMetricsProps) {
                         </div>
 
                         {/* ================================================================= */}
-                        {/* BAY 02: DEEP DATA VAULT INDEXING                                  */}
+                        {/* BAY 02: AUTOMATED TRADE JOURNAL                                  */}
                         {/* ================================================================= */}
                         <div
                             onMouseEnter={() => setActiveBay(2)}
@@ -180,16 +179,16 @@ export function HomeTrustMetrics({ metrics }: TrustMetricsProps) {
 
                                     <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono text-[10px] font-bold uppercase tracking-wider shrink-0">
                                         <span className="font-black">02</span>
-                                        <span>Vault</span>
+                                        <span>Journal</span>
                                         <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse ml-0.5" />
                                     </div>
                                 </div>
 
                                 <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1.5">
-                                    Deep Data Journal
+                                    Automated Trade Journal
                                 </h3>
                                 <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-400 mb-5 font-normal">
-                                    Multi-asset breakdown, session win rates, and drawdown curves automatically compiled.
+                                    Multi-asset breakdown, session win rates, and equity curves compiled automatically.
                                 </p>
                             </div>
 
@@ -239,18 +238,18 @@ export function HomeTrustMetrics({ metrics }: TrustMetricsProps) {
                                     </div>
 
                                     <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 font-mono text-[10px] font-bold uppercase tracking-wider shrink-0">
-                                        <span className="font-black">03</span>
-                                        <span>Radar</span>
-                                        <span className="flex h-1.5 w-1.5 rounded-full bg-purple-500 animate-pulse ml-0.5" />
-                                    </div>
-                                </div>
+                                         <span className="font-black">03</span>
+                                         <span>Leaks</span>
+                                         <span className="flex h-1.5 w-1.5 rounded-full bg-purple-500 animate-pulse ml-0.5" />
+                                     </div>
+                                 </div>
 
-                                <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1.5">
-                                    AI Behavior & Leak Engine
-                                </h3>
-                                <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-400 mb-5 font-normal">
-                                    Automated algorithms catch revenge size-ups, loss streaks, and discipline leaks.
-                                </p>
+                                 <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1.5">
+                                     AI Behavior & Leak Radar
+                                 </h3>
+                                 <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-400 mb-5 font-normal">
+                                     Automated detection catches revenge sizing, FOMO entries, and discipline leaks.
+                                 </p>
                             </div>
 
                             {/* Cockpit Visual Widget: Optical Threat Alerts */}
@@ -296,13 +295,13 @@ export function HomeTrustMetrics({ metrics }: TrustMetricsProps) {
 
                                     <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 font-mono text-[10px] font-bold uppercase tracking-wider shrink-0">
                                         <span className="font-black">04</span>
-                                        <span>Loop</span>
+                                        <span>Coach</span>
                                         <span className="flex h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse ml-0.5" />
                                     </div>
                                 </div>
 
                                 <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1.5">
-                                    Data-Driven AI Coach
+                                    Weekly Action Coach
                                 </h3>
                                 <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-400 mb-5 font-normal">
                                     Converts analytical weaknesses into concrete 10-trade improvement cycles with tracked progress.
@@ -347,19 +346,19 @@ export function HomeTrustMetrics({ metrics }: TrustMetricsProps) {
                         <div className="flex flex-wrap items-center gap-4 sm:gap-6">
                             <span className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300 font-semibold">
                                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                                <span>BRIDGE: CONNECTED (MT5)</span>
+                                <span>MT5 SYNC: CONNECTED</span>
                             </span>
                             <span className="hidden sm:flex items-center gap-1.5">
                                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                                <span>DATA ENGINE: ACTIVE</span>
+                                <span>ANALYTICS: ACTIVE</span>
                             </span>
                             <span className="hidden md:flex items-center gap-1.5">
                                 <span className="h-1.5 w-1.5 rounded-full bg-purple-500" />
-                                <span>RADAR SHIELD: ARMED</span>
+                                <span>RISK RADAR: MONITORING</span>
                             </span>
                             <span className="hidden lg:flex items-center gap-1.5">
                                 <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-                                <span>COACH LOOP: RUNNING</span>
+                                <span>AI COACH: OPTIMIZING</span>
                             </span>
                         </div>
 

@@ -135,7 +135,7 @@ export function getArchetype(id: ArchetypeId): Archetype {
 
 export function buildReportMarkdown(
     archetype: Archetype,
-    dimensions: DimensionScores,
+    _dimensions: DimensionScores,
 ): string {
     const lines: string[] = [];
 

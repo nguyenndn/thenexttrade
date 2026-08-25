@@ -33,6 +33,7 @@ Do not replace the global platform identity with GoldScalperNinja. Treat GoldSca
 | Core | Analytics and intelligence | `/dashboard/analytics`, `/dashboard/intelligence` | Yes | Converts raw history into patterns and risk insight. |
 | Core | Reports and weekly coach | `/dashboard/reports`, `/dashboard/reports/weekly` | Yes | Turns analysis into a weekly action. |
 | Core | Rules and goals | `/dashboard/rules` | Yes | Makes improvement measurable. |
+| Core | Trading Style Assessment | `/trading-style`, `/dashboard/settings/trading-style` | Yes | 14-question profiling engine mapping 8 archetypes across 6 dimensions to diagnose behavior. |
 | Core | Academy | `/academy`, `/dashboard/academy` | Yes | Provides lessons/articles tied to user weaknesses. |
 | Core | New-user activation | `/onboarding`, `/dashboard` first-session wizard | Yes | Prevents new users from not knowing what to do. |
 | Supporting | Homepage/public conversion | `/`, `/get-started`, `/faq` | Yes, but simplified | Should guide users into signup or useful public learning. |

@@ -7,6 +7,7 @@ import {
     Wrench,
     Shield,
     ArrowLeft,
+    Bot,
 } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -19,13 +20,13 @@ import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 export const metadata: Metadata = {
     title: "Frequently Asked Questions | TheNextTrade",
     description:
-        "Find answers to all your questions about TheNextTrade platform, MT5 sync, trading journal, academy, free tools, and risk management.",
+        "Find answers to all your questions about TheNextTrade platform, MT5 sync, trading systems, AI coach, academy, free tools, and risk management.",
 };
 
 const FAQ_GROUPS = [
     {
         id: "platform",
-        title: "Platform",
+        title: "Platform & Security",
         icon: HelpCircle,
         color: "text-amber-500",
         bg: "bg-amber-500/10",
@@ -34,11 +35,15 @@ const FAQ_GROUPS = [
         items: [
             {
                 question: "What is TheNextTrade?",
-                answer: "TheNextTrade is an advanced, premium trading analytics and education platform. We offer a progressive Academy, automated MetaTrader 5 (MT5) integration, a behavioral Trading Journal, and deep analytics to help you find and refine your trading edge.",
+                answer: "TheNextTrade is an advanced, premium trading analytics and education platform. We offer a progressive Academy, automated MetaTrader 5 (MT5) integration, a behavioral Trading Journal, weekly AI action plans, and deep analytics to help you find and refine your trading edge.",
             },
             {
                 question: "Is the platform free to use?",
                 answer: "Yes! Our core Academy courses, live trading tools (Market Hours, Economic Calendar), manual journal, and basic analytics are 100% free. Premium features like our GoldScalperNinja MT5 EAs, indicators, or advanced Pro/Intelligence analytics have flexible licensing and broker eligibility paths.",
+            },
+            {
+                question: "Is my trading data secure and private?",
+                answer: "Yes. Your trading credentials, API tokens, and journal history are protected with enterprise-grade encryption. We never have access to your broker funds or withdrawal permissions—your money stays 100% with your regulated broker.",
             },
             {
                 question: "What is Edge?",
@@ -48,7 +53,7 @@ const FAQ_GROUPS = [
     },
     {
         id: "journal",
-        title: "Trading Journal",
+        title: "Trading Journal & AI Coach",
         icon: Layers,
         color: "text-emerald-500",
         bg: "bg-emerald-500/10",
@@ -58,6 +63,14 @@ const FAQ_GROUPS = [
             {
                 question: "What does the trading journal track?",
                 answer: "The journal tracks your exact trade metrics, entry/exit prices, win rate, profit factor, trading scores, sessions, symbols, risk, and behavioral mistakes (e.g. FOMO, revenge trading, overleveraging) to see how psychological mistakes impact your actual bottom-line performance.",
+            },
+            {
+                question: "What is the Weekly AI Coach & 10-Trade Action Plan?",
+                answer: "The Weekly AI Coach analyzes your real trading performance across sessions, symbols, and risk habits. It flags discipline leaks (such as revenge trading or early exits) and generates a concrete 10-trade improvement experiment so you always know exactly what to focus on next week.",
+            },
+            {
+                question: "How does the Behavioral Leak Radar detect mistakes?",
+                answer: "Our analytics engine tracks behavioral metrics like the Tilt Index, Disposition Effect, lot size variations after loss streaks, and session deviations. When an emotional pattern is recognized, it immediately alerts you with actionable remediation advice.",
             },
             {
                 question: "How is win rate calculated?",
@@ -71,20 +84,40 @@ const FAQ_GROUPS = [
     },
     {
         id: "sync",
-        title: "MT5 Sync",
-        icon: LinkIcon,
+        title: "MT5 Sync & Trading Systems",
+        icon: Bot,
         color: "text-cyan-500",
         bg: "bg-cyan-500/10",
         border: "border-cyan-500/20",
         hoverBorder: "hover:border-cyan-500/35",
         items: [
             {
-                question: "How do I sync MT5 trades?",
-                answer: "We offer automated MT5 trade synchronization via the Trade Manager Expert Advisor, which runs directly in your MT5 terminal on a chart or VPS. We also support a Manual Journal if you prefer logging trades yourself.",
+                question: "How do I sync MT5 trades automatically?",
+                answer: "We offer automated MT5 trade synchronization via the GSN Trade Manager Expert Advisor, which runs directly in your MT5 terminal on a chart or VPS to stream executions to your journal in real time.",
             },
             {
-                question: "What is Trade Manager?",
-                answer: "Trade Manager is a unified MetaTrader 5 Expert Advisor (EA). It handles background order execution, matrix panels, and real-time trade synchronization to keep your journal dashboard updated automatically.",
+                question: "Can I connect multiple MT5 accounts?",
+                answer: "Yes! You can connect and manage multiple MT5 trading accounts under a single TheNextTrade workspace, allowing you to track prop firm accounts, personal accounts, and different strategies separately or aggregated.",
+            },
+            {
+                question: "How do I unlock EA GoldScalperNinja, Trade Manager, and Phoenix Grid for free?",
+                answer: "All MT5 trading systems can be unlocked with zero upfront cost through our verified broker partner path. Once your account is active and verified, license keys and downloads become accessible directly inside your dashboard.",
+            },
+            {
+                question: "Do I need a VPS for MT5 automation?",
+                answer: "For automated execution systems like EA GoldScalperNinja and GSN Phoenix Grid, a Windows VPS is recommended to ensure 24/5 continuous connectivity. For GSN Trade Manager, it can be run locally during your active manual trading hours.",
+            },
+            {
+                question: "What is the recommended minimum balance to run the EAs?",
+                answer: "We recommend $500–$1,000 for Standard/Raw accounts to maintain 1–2% risk per trade. For Cent or Micro accounts, you can start with as little as $50–$100.",
+            },
+            {
+                question: "Can I test the Expert Advisors on Demo first?",
+                answer: "Yes, we strongly encourage all traders to test every EA on a demo account for at least 1–2 weeks before deploying live capital.",
+            },
+            {
+                question: "Do these EAs pause during high-impact news?",
+                answer: "Yes, both EA GoldScalperNinja and GSN Phoenix Grid include a built-in Economic News Filter that automatically pauses opening new orders around major events like NFP, CPI, and FOMC rate releases.",
             },
         ],
     },
@@ -109,7 +142,7 @@ const FAQ_GROUPS = [
     },
     {
         id: "tools",
-        title: "Tools",
+        title: "Tools & Calculators",
         icon: Wrench,
         color: "text-purple-500",
         bg: "bg-purple-500/10",
@@ -128,7 +161,7 @@ const FAQ_GROUPS = [
     },
     {
         id: "risk",
-        title: "Brokers & Risk",
+        title: "Brokers & Risk Disclaimer",
         icon: Shield,
         color: "text-rose-500",
         bg: "bg-rose-500/10",
@@ -153,7 +186,7 @@ export default function FAQPage() {
     return (
         <div className="min-h-screen bg-[#F7F4EC] dark:bg-transparent text-gray-700 dark:text-white overflow-hidden relative flex flex-col justify-between">
             {/* Premium brand background */}
-            <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.14)_0%,rgba(255,255,255,0.70)_34%,rgba(16,185,129,0.08)_100%)] dark:bg-[linear-gradient(135deg,rgba(43,35,68,0.55)_0%,rgba(25,52,81,0.40)_48%,rgba(6,69,79,0.30)_100%)] pointer-events-none" />
+            <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.14)_0%,rgba(255,255,255,0.70)_34%,rgba(16,185,129,0.08)_100%)] dark:bg-[linear-gradient(135deg,rgba(43,35,68,0.55)_0%,rgba(255,255,255,0.02)_34%,rgba(16,185,129,0.04)_100%)] pointer-events-none" />
 
             {/* Structured data */}
             <JsonLd
@@ -194,9 +227,7 @@ export default function FAQPage() {
                             <span className="text-gold">Questions</span>
                         </h1>
                         <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-medium">
-                            Everything you need to know about TheNextTrade
-                            platform, trade journal sync, academy, and
-                            calculators.
+                            Everything you need to know about TheNextTrade platform, trade journal sync, MT5 trading systems, academy, and risk management.
                         </p>
                     </div>
 
@@ -233,8 +264,7 @@ export default function FAQPage() {
                             Still have questions?
                         </h3>
                         <p className="mt-1 text-sm text-gray-600 dark:text-gray-400 font-medium">
-                            Join our Telegram channel or get in touch with
-                            support.
+                            Join our Telegram channel or get in touch with support.
                         </p>
                         <div className="mt-6 flex flex-wrap gap-4 justify-center">
                             <Link

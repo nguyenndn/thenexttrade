@@ -83,16 +83,17 @@ The product becomes confusing when acquisition pages, community, brokers, tools,
 | Email notifications | Transactional and product lifecycle email | Partially active, see [EMAIL.md](EMAIL.md) | Service-driven |
 | Sync Health Center | Visualizes sync logs, issues, and recovery actions | Active | `/dashboard/accounts?health=sync` |
 | Privacy Presets | Segmented profile visibility presets & live preview | Active | `/dashboard/settings/profile` |
+| Trading Style Assessment | 14-question psychology engine, 8 archetypes, in-dashboard test/retake, profile share | Active | `/trading-style`, `/dashboard/settings/trading-style`, `/dashboard/settings/profile` |
 | Rulebook & Goals | CRUD for rules/goals and compliance tracking | Active | `/dashboard/rules` |
 | Pre-trade Planning | Plan setups, checklists, and match actual trades | Active | `/dashboard/journal?tab=plans` |
 | Plan vs Actual | Compare a planned setup to the executed trade | Active | `/dashboard/journal?tab=plans`, trade detail |
-| Safe public sharing | Public trader card, OG image, and share card respect privacy | Active | `/trader/[username]`, `/share/[id]`, `/api/og/trader/[username]` |
+| Safe public sharing | Public trader card (3D tilt), trading archetype badge, OG image | Active | `/trader/[username]`, `/share/[id]`, `/api/og/trader/[username]` |
 | Weekly Coach action loop | Turns trade data, rules, leaks, and reports into next actions | Active | `/dashboard`, `/dashboard/reports/weekly` |
 | Personalized Improvement Loop | 1-click 10-trade experiment, auto progress sync, result review, and rule promotion | Active | `/dashboard`, `/dashboard/reports`, `/dashboard/rules` |
 | Deep AI & Analytics | Disposition Effect, Tilt Index, 24-Hour Intraday Heatmap, and R:R Optimizer | Active | `/dashboard/analytics`, `/dashboard/intelligence` |
 | Mobile WebApp UX Optimization | Touch-friendly bottom sheet, 16px min font-size fix, zero horizontal scroll | Active | Site-wide mobile viewport |
 | Admin Activation & Funnel | Real-time 9-stage conversion funnel, 7-14 day retention window, stage drilldowns | Active | `/admin/reports` |
-| Community / GoldScalperNinja | Public Telegram/community ecosystem page | Active | `/community`, `/admin/ib/pipeline` |
+| Community & Signals | 10 curated posts/tab (Forex, Crypto, Indices, Commodities), Randomizer, Lightbox | Active | `/community`, `/admin/ib/pipeline` |
 | Economic Calendar | Public market-events tool | Active | `/tools/economic-calendar` |
 
 ## Current Product Decisions

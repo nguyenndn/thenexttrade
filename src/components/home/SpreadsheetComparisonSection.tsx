@@ -5,11 +5,12 @@ import {
     ArrowRight,
     X,
     Check,
-    FileSpreadsheet,
+    FileText,
     PlugZap,
     Brain,
     Target,
     BookOpenCheck,
+    Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
@@ -20,51 +21,51 @@ interface SpreadsheetComparisonSectionProps {
 
 const comparisonRows = [
     {
-        spreadsheet: "Manual entry becomes inconsistent",
-        tnt: "MT5 sync via Trade Manager EA, all accounts in one workspace",
+        traditional: "Manual copy-pasting is tedious and inconsistent",
+        tnt: "100% automated MT5 sync via Trade Manager EA",
     },
     {
-        spreadsheet: "P&L is the only metric",
-        tnt: "Win rate, profit factor, score, sessions, symbols, risk, behavior",
+        traditional: "P&L is the only tracked number",
+        tnt: "Deep analytics: Win rate, sessions, R:R, and drawdown curves",
     },
     {
-        spreadsheet: "Screenshots, notes, and mistakes are scattered",
-        tnt: "Journal, tags, psychology notes, and accounts stay connected",
+        traditional: "Screenshots, notes, and mistakes are scattered",
+        tnt: "Centralized journal with tags, psychology notes & plan matching",
     },
     {
-        spreadsheet: "Hard to know what leak is actually costing you",
-        tnt: "Edge leak detection shows the habit, setup, or risk to fix first",
+        traditional: "Hard to see what bad habit is draining your profit",
+        tnt: "AI leak detection spots revenge sizing, FOMO & early exits",
     },
     {
-        spreadsheet: "You review trades, then still wonder what to study",
-        tnt: "Lessons and articles match the weakness found in your data",
+        traditional: "Reviewing trades without knowing what to study",
+        tnt: "Curated Academy lessons matched to your exact weaknesses",
     },
     {
-        spreadsheet: "No momentum after review",
-        tnt: "Coach plan, missions, Edge progress, public trader card",
+        traditional: "No follow-through or momentum after review",
+        tnt: "10-trade improvement cycles & Weekly Coach action plans",
     },
 ];
 
 const essenceCards = [
     {
         icon: PlugZap,
-        label: "Auto Sync",
-        copy: "Bring MT5 history in with Trade Manager EA.",
+        label: "Auto MT5 Sync",
+        copy: "Stream MT5 trades directly to your journal in real time via Trade Manager EA.",
     },
     {
         icon: Brain,
-        label: "Find The Leak",
-        copy: "Turn raw trades into sessions, symbols, risk, and behavior signals.",
+        label: "AI Leak Radar",
+        copy: "Uncover hidden behavioral leaks across sessions, symbols, and risk habits.",
     },
     {
         icon: BookOpenCheck,
-        label: "Learn The Fix",
-        copy: "Match weak spots to lessons, articles, and review prompts.",
+        label: "Targeted Learning",
+        copy: "Actionable Academy lessons matched to your real execution weaknesses.",
     },
     {
         icon: Target,
-        label: "Act Weekly",
-        copy: "Leave every review with one practical next action.",
+        label: "Weekly Coach",
+        copy: "Leave every review with one clear 10-trade action plan to execute.",
     },
 ];
 
@@ -79,11 +80,13 @@ export function SpreadsheetComparisonSection({
                 {/* Section Header */}
                 <HomeSectionHeading
                     align="center"
-                    title="A spreadsheet records trades. TheNextTrade turns them into decisions."
-                    highlight="decisions"
-                    description="Sync from MT5, see the patterns behind your results, then get one weekly coach action plus the lesson or article that helps you fix it."
-                    icon={FileSpreadsheet}
-                    className="mb-8"
+                    title="Beyond basic trade logging — Built for real improvement"
+                    highlight="improvement"
+                    description="Traditional journals just store past data. TheNextTrade auto-syncs MT5 trades, flags behavioral leaks, and coaches your next session."
+                    icon={Sparkles}
+                    titleClassName="md:whitespace-nowrap"
+                    contentClassName="!max-w-5xl"
+                    className="mb-8 !max-w-5xl"
                 />
 
                 <div className="max-w-5xl mx-auto">
@@ -115,12 +118,12 @@ export function SpreadsheetComparisonSection({
                     {/* Header Row */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
                         <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50/50 dark:bg-red-500/5 border border-red-100/50 dark:border-red-500/10">
-                            <FileSpreadsheet
+                            <FileText
                                 size={16}
                                 className="text-red-400 flex-shrink-0"
                             />
                             <span className="text-xs font-black uppercase tracking-wider text-red-500">
-                                Spreadsheet / Manual Review
+                                Traditional / Manual Journals
                             </span>
                         </div>
                         <div className="flex items-center gap-2 p-3 rounded-xl bg-gold/5 border border-gold/20">
@@ -129,7 +132,7 @@ export function SpreadsheetComparisonSection({
                                 className="text-gold flex-shrink-0"
                             />
                             <span className="text-xs font-black uppercase tracking-wider text-gold">
-                                TheNextTrade Improvement Loop
+                                TheNextTrade Improvement System
                             </span>
                         </div>
                     </div>
@@ -147,7 +150,7 @@ export function SpreadsheetComparisonSection({
                                         className="text-red-400 flex-shrink-0 mt-0.5"
                                     />
                                     <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium leading-snug">
-                                        {row.spreadsheet}
+                                        {row.traditional}
                                     </span>
                                 </div>
                                 <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-gold/[0.02] dark:bg-gold/[0.01] border border-gold/10 dark:border-gold/5">
@@ -169,7 +172,7 @@ export function SpreadsheetComparisonSection({
                             href={
                                 isLoggedIn
                                     ? "/dashboard"
-                                    : "/auth/signup?source=spreadsheet_comparison"
+                                    : "/auth/signup?source=feature_comparison"
                             }
                         >
                             <Button className="min-h-11 px-8 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-xs sm:text-sm shadow-[0_4px_12px_rgba(245,158,11,0.25)] transition-all flex items-center justify-center gap-2">

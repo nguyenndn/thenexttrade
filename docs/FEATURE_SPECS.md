@@ -223,6 +223,104 @@ QA checklist:
 - External links are correct.
 - Fallback from `?tab=propFirms` to CFD Brokers works with no console errors.
 
+### `/trading-style`
+
+Purpose:
+
+- Public psychological & behavioral profiling assessment for traders.
+- Educate visitors on their trading persona, strengths, weaknesses, and common mistakes.
+- Convert anonymous visitors into registered users by offering to save and track their style.
+
+Users:
+
+- Anonymous visitors discovering their style via marketing/social links.
+- Existing registered users taking or retaking the assessment from the public surface.
+
+Expected behavior:
+
+- Initial load always renders the welcome/start screen (`Know Your Style. Fix Your Leaks.`).
+- Clicking `Start the assessment →` begins the 14-question interactive flow.
+- Questions test 6 core dimensions: Risk Tolerance, Patience, Discipline, Adaptability, Strategy Precision, Emotional Control.
+- State is held purely in React in-memory state; refreshing (F5) at any question cleanly resets back to the welcome screen.
+- Final step displays: Archetype name (e.g. `The Disciplined Sniper`), archetype summary, What's going well, What's holding you back, Common mistakes, Where to focus, and 6 dimension score bars.
+- Unauthenticated users see CTA to `Create Free Account to Save Results`.
+- Authenticated users see `Save to Profile` button which persists results to `User.settings.tradingStyle` via server action.
+
+Code paths:
+
+- `src/app/trading-style/page.tsx`
+- `src/components/trading-style/QuizFlow.tsx`
+- `src/components/trading-style/QuizResult.tsx`
+- `src/components/trading-style/ArchetypeCard.tsx`
+- `src/components/trading-style/DimensionBars.tsx`
+- `src/config/trading-style-data.ts`
+- `src/lib/trading-style/scoring.ts`
+- `src/actions/trading-style.ts`
+
+QA checklist:
+
+- Welcome screen renders first with solid Gold standard button.
+- 14 questions advance smoothly on selection or Next click.
+- Back button navigates to previous question without losing answer state.
+- Refreshing browser resets to welcome screen without stale question state.
+- Scoring server action validates and persists correctly for logged-in users.
+
+### `/community`
+
+Purpose:
+
+- Showcase the active GoldScalperNinja Telegram community, market signals, and trading ecosystem.
+
+Expected behavior:
+
+- Tabbed category filter: `All Signals`, `Forex`, `Crypto`, `Indices`, `Commodities`.
+- Each category features 10 curated signal & analysis posts with timestamps, symbol tags, sentiment, and charts.
+- `Randomize / Refresh` button re-shuffles curated posts with smooth micro-interaction.
+- Clicking signal chart image opens full-screen Media Lightbox with zoom and close controls.
+- Primary CTA guides users to join official GoldScalperNinja Telegram and connect partner broker accounts.
+
+Code paths:
+
+- `src/app/community/page.tsx`
+- `src/components/community/*`
+
+QA checklist:
+
+- Tab switching filters signals instantly.
+- 10 distinct posts per category tab.
+- Randomizer shuffles signals without breaking layout.
+- Media Lightbox opens and closes smoothly on click and Escape key.
+
+### `/trader/[username]` and `/share/[id]`
+
+Purpose:
+
+- Public shareable profile and Live Trading Card showcasing verified trader achievements and statistics.
+
+Expected behavior:
+
+- Renders 3D tilt interactive card (`PublicProfileCard`) with Gold gradient border.
+- Respects all privacy presets configured by user in `/dashboard/settings/profile`.
+- When `showTradingStyle` is enabled and user has completed assessment, displays verified Trading Style Archetype badge with `Award` icon.
+- `Join TheNextTrade` CTA button is positioned below the card in natural flow, preventing overlap regardless of card content height.
+- Dynamic OpenGraph (OG) image generation via `/api/og/trader/[username]`.
+
+Code paths:
+
+- `src/app/trader/[username]/page.tsx`
+- `src/components/profile/PublicProfileCard.tsx`
+- `src/lib/profile-queries.ts`
+- `src/lib/profile/privacy-presets.ts`
+- `src/app/api/og/trader/[username]/route.tsx`
+
+QA checklist:
+
+- Valid public profile loads with correct user details.
+- Private profile shows safe 404 or restricted access state.
+- Trading Style archetype badge displays only when privacy toggle is true.
+- Join CTA button never covers card content.
+- OG image generates correctly on Twitter/Facebook preview.
+
 ### `/tools/*`
 
 Purpose:

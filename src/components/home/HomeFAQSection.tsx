@@ -9,23 +9,23 @@ import Link from "next/link";
 const HOMEPAGE_FAQ = [
     {
         question: "What is TheNextTrade?",
-        answer: "TheNextTrade is an advanced, premium trading analytics and education platform. We offer a progressive Academy, automated MetaTrader 5 (MT5) integration (via Trade Manager EA), a behavioral Trading Journal, daily discipline missions, and deep analytics to help you find and refine your trading edge.",
+        answer: "TheNextTrade is an advanced trading operating system and analytics platform. We provide automated MetaTrader 5 (MT5) trade synchronization, a behavioral trading journal, weekly AI coach action plans, and a structured Academy to help you systematically build your trading edge.",
     },
     {
         question: "Is TheNextTrade free to start?",
-        answer: "Yes! Our core Academy courses, live trading tools (Market Hours, Economic Calendar), manual journal, and basic analytics are 100% free. Premium features like our GoldScalperNinja MT5 EAs, indicators, or advanced Pro/Intelligence analytics have flexible licensing and broker eligibility paths.",
+        answer: "Yes! Our core Academy courses, live trading tools (Market Hours, Economic Calendar, 14 Trading Calculators), manual journal, and basic analytics are 100% free with no credit card required.",
     },
     {
-        question: "How do I sync MT5 trades?",
-        answer: "We offer automated MetaTrader 5 (MT5) synchronization via our Trade Manager Expert Advisor, which runs directly on your chart or VPS to log trades in real time. We also support a Manual Journal if you prefer logging trades yourself.",
+        question: "How do I sync MT5 trades automatically?",
+        answer: "Automated sync is powered by our GSN Trade Manager Expert Advisor, which runs directly on your MT5 terminal (PC or VPS) to stream executed trades to your web journal in real time.",
     },
     {
-        question: "Do I need trading experience to start?",
-        answer: "No. Our Academy is structured for all skill levels. It starts from the absolute basics (first steps, understanding pips, spreads) and progresses to advanced risk modeling and automated systems. No prior trading experience is required.",
+        question: "What is the Weekly AI Coach & 10-Trade Action Plan?",
+        answer: "The Weekly AI Coach scans your actual trading data for psychological and risk leaks (like revenge sizing, FOMO, or early exits) and prescribes one actionable 10-trade improvement focus each week.",
     },
     {
-        question: "Is the MT5 toolkit free?",
-        answer: "The toolkit is free to unlock with an eligible partner account. The download is not a public free-for-all because eligibility depends on your connected broker account path. Your funds always stay in your own broker account.",
+        question: "How do I unlock the MT5 Expert Advisors for free?",
+        answer: "Our MT5 Expert Advisors (EA GoldScalperNinja, GSN Phoenix Grid, Trade Manager) are available for $0 upfront cost through our verified broker partner paths. Once your account is active, licenses and download links appear inside your dashboard.",
     },
 ];
 
@@ -54,7 +54,7 @@ export function HomeFAQSection() {
                         align="center"
                         title="Frequently Asked Questions"
                         highlight="Questions"
-                        description="Quick answers to common platform and trading questions."
+                        description="Quick answers to common platform, journal, MT5 sync, and trading system questions."
                         icon={HelpCircle}
                         className="mb-10"
                     />

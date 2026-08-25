@@ -16,6 +16,7 @@ This folder is the active source of truth for the product, system, operations, d
 | [OPERATIONS.md](OPERATIONS.md) | Environment, self-host stack, deploy, storage, monitoring, release ops |
 | [DESIGN.md](DESIGN.md) | UI standards for dashboard, auth pages, cards, buttons, metrics |
 | [EMAIL.md](EMAIL.md) | Transactional email strategy, templates needed, delivery rules |
+| [features/trading-style-assessment.md](features/trading-style-assessment.md) | Spec and scoring engine for Trading Style Assessment & Archetypes |
 | [features/personalized-improvement-loop.md](features/personalized-improvement-loop.md) | Deep architecture/spec for the Personalized Trading Improvement Loop |
 
 ## Current Snapshot
@@ -23,15 +24,16 @@ This folder is the active source of truth for the product, system, operations, d
 - App: Next.js App Router, React, TypeScript, Tailwind CSS, Lucide icons.
 - Database: PostgreSQL through Prisma.
 - Auth: Supabase Auth plus app-owned `User`, `Profile`, role, session, and security records.
-- Deploy target: VPS with Coolify behind Cloudflare.
+- Deploy target: VPS with Coolify behind Cloudflare / Vercel.
 - Storage: Cloudflare R2 for generated assets, uploads, article media, and backups.
 - Email: SMTP-compatible service. Brevo or Postmark recommended for production.
 - Analytics: internal Postgres analytics plus optional GA4.
-- Trade sync: Trade Manager EA is the supported automated sync path. Manual Journal remains the fallback. Legacy sync-client code (previously "TNT Connect") may exist for compatibility, but it is not the current user-facing setup path.
-- New-user activation polish is shipped and documented in `PRODUCT.md` and `FEATURE_SPECS.md`; old implementation plans should not be treated as the source of truth.
+- Trade sync: Trade Manager EA is the supported automated sync path. Manual Journal remains the fallback.
+- Trading Style Assessment: 14-question psychology engine with 8 Archetypes across 6 skill dimensions, integrated into `/trading-style`, `/dashboard/settings/trading-style`, `/dashboard/settings/profile`, and Live Trading Card preview modal.
+- Community Hub: Telegram signal showcase (`/community`) with 10 curated posts/tab, randomizer, and image lightbox.
+- AI Gateway: Centralized provider routing (Google Gemini + OpenRouter), per-record AES-256 salt encryption for credentials, and stale request sweeping.
+- Brand & UI System: Breek Premium Design System with solid Gold `#E5A50A`, transparent 3D Brain Logo, and responsive mobile-first layouts.
 - TraderWaves-inspired product loop is active in code: Sync Health Center, Privacy Presets, Rulebook & Goals, Trade Plans, Plan vs Actual, Weekly Coach action loop, safe public profile/share behavior, first insight, and measurable improvement experiments.
-- AI Gateway now uses an internal gateway layer plus provider adapters such as OpenRouter so admin can monitor requests, route models, and avoid direct client-to-provider calls.
-- Completed QA reports are deleted after verification. If a report file exists in `/docs`, it should contain active bugs only.
 
 ## New Developer Handoff
 

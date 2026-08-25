@@ -45,6 +45,7 @@ Any feature that supports this loop is justified. Any feature that competes with
 | Keep central | Analytics and Intelligence | Yes | Converts history into patterns and risk insight. | Show after data exists. Avoid duplicate insights across blocks. |
 | Keep central | Reports and Weekly Coach | Yes | Turns analysis into a concrete next action. | One weekly action plan. Remove duplicate coach banners. |
 | Keep central | Rules and goals | Yes | Makes behavior change measurable. | Sidebar/dashboard route for active traders. |
+| Keep central | Trading Style Assessment | Yes | 14-question psychology engine mapping 8 archetypes across 6 dimensions to self-diagnose behavior. | Public `/trading-style`, settings `/dashboard/settings/trading-style`, and profile share. |
 | Keep central | Academy | Yes | Supports learning from real weaknesses. | Public discovery plus logged-in learning path. |
 | Keep central | First Session Wizard | Yes | Prevents new users from asking "what do I do now?" | New users only. Never interrupt active traders. |
 | Keep supporting | Homepage | Yes, simplified | Needs to explain and convert, not list every module. | One primary CTA, proof, then selected paths. |
@@ -73,12 +74,13 @@ Any feature that supports this loop is justified. Any feature that competes with
 | `/` | Explain product and drive signup/learning/tools/brokers | One primary CTA, proof, core loop, selected supporting paths | Homepage as full sitemap, repeated CTA blocks, prop firms |
 | `/get-started` | Give a simple start path | Signup/login, setup steps, current next action | Duplicate onboarding logic |
 | `/faq` | Answer common objections | 4 key homepage FAQs plus full FAQ page | Overlong homepage FAQ |
-| `/community` | Sell GoldScalperNinja Telegram/community | Community benefits, free signals, EA ecosystem, broker setup | Rebranding whole platform to GoldScalperNinja |
+| `/trading-style` | Self-diagnose trading personality | Welcome screen first, 14 questions, in-memory state, archetype diagnosis, CTA to save/signup | Auto-jumping to Q1 on refresh, stale localStorage, raw percentage leakage |
+| `/community` | Sell GoldScalperNinja Telegram/community | 10 curated posts/tab (Forex, Crypto, Indices, Commodities), Randomizer, Media Lightbox, broker setup | Rebranding whole platform to GoldScalperNinja |
 | `/trading-systems` | Sell EA/tool ecosystem responsibly | GoldScalperNinja, Trade Manager, GSN Phoenix Grid, unlock path, guides | Fake performance simulator/backtest claims |
 | `/trading-systems/[slug]` | Explain one system deeply | Mockup, features, setup, risk controls, docs/download path | Unsupported products like Partner Toolkit |
 | `/brokers` | Compare trusted broker/exchange/VPS options | Broker cards, reviews, affiliate context | Prop firm tab |
 | `/tools` and `/tools/*` | SEO and trader utility | Small calculator set, focused tool pages, economic calendar | Letting tools dominate homepage |
-| `/trader/[username]`, `/share/[id]` | Public proof and share cards | Safe stats, privacy-aware fields, reliability context | Leaking sensitive account or P/L details |
+| `/trader/[username]`, `/share/[id]` | Public proof and share cards | Safe stats, privacy presets, verified trading archetype, reliability context | Leaking sensitive account or P/L details, card overlap covering CTA |
 
 ### Auth And New User
 
@@ -104,7 +106,9 @@ Any feature that supports this loop is justified. Any feature that competes with
 | `/dashboard/rules` | Rulebook and goals | Rules, goals, compliance, promote successful experiments | Hidden route/menu |
 | `/dashboard/missions` | Habits and Edge | Daily check-in, missions, progress | Making missions first task before data |
 | `/dashboard/academy` | Logged-in learning | Continue learning, stalled-learning reminder | Rebuilding public Academy inside dashboard |
-| `/dashboard/settings/*` | Account/profile/security/referrals/sync settings | Focused tabs, real data | Fake referral earnings or dead sync copy |
+| `/dashboard/settings/trading-style` | Manage saved style & retake | Archetype summary, 6 dimensions, in-dashboard retake flow | Redirecting out of dashboard to public quiz |
+| `/dashboard/settings/profile` | Public profile & privacy | Mutually exclusive presets, Trading Style toggle, Live 3D Card modal | Multi-preset active bugs, modal vertical clipping |
+| `/dashboard/settings/*` | Account/security/referrals/sync settings | Focused tabs, real data | Fake referral earnings or dead sync copy |
 
 ### Admin
 
