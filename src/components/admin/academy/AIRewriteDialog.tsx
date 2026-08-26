@@ -35,6 +35,7 @@ import {
     Target,
     Lightbulb,
     Palette,
+    Sparkles,
 } from "lucide-react";
 import DOMPurify from "isomorphic-dompurify";
 import { motion, AnimatePresence } from "framer-motion";

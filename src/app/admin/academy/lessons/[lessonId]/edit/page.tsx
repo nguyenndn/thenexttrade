@@ -13,8 +13,13 @@ export default async function LessonEditPage({
     const { lessonId } = await params;
     await requireAdminPageAccess();
 
-    const lesson = await prisma.lesson.findUnique({
-        where: { id: lessonId },
+    const lesson = await prisma.lesson.findFirst({
+        where: {
+            OR: [
+                { id: lessonId },
+                { slug: lessonId },
+            ],
+        },
         include: {
             module: {
                 select: {

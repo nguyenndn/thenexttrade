@@ -41,17 +41,17 @@ interface AcademyMapProps {
     basePath?: string; // e.g., "/dashboard/academy" or "/academy"
 }
 
-// Map Configuration: 5 Phases (Option A - Regrouping all 12 levels)
+// Map Configuration: 5 Phases (Regrouping all 12 levels)
 const PHASES = [
     {
         title: "The Initiate",
-        subtitle: "Beginner & Foundations (Lvl 1-2)",
+        subtitle: "Foundations & MT5 Quickstart (Lvl 1-2)",
         color: "from-blue-400 to-cyan-500",
         icon: BookOpen,
     },
     {
         title: "The Analyst",
-        subtitle: "Technical & Price Action (Lvl 3-5)",
+        subtitle: "Risk, Price Action & Smart Money (Lvl 3-5)",
         color: "from-cyan-500 to-green-500",
         icon: TrendingUp,
     },
@@ -63,13 +63,13 @@ const PHASES = [
     },
     {
         title: "The Operator",
-        subtitle: "Mindset & Fundamentals (Lvl 7, 9-10)",
+        subtitle: "Mindset, Macro & Playbook (Lvl 7, 9-10)",
         color: "from-yellow-500 to-orange-500",
         icon: Shield,
     },
     {
         title: "The Master",
-        subtitle: "Gold & Pro Trading (Lvl 11-12)",
+        subtitle: "Gold Trading & Real Money Launch (Lvl 11-12)",
         color: "from-orange-500 to-red-500",
         icon: Crown,
     },

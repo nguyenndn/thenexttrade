@@ -476,13 +476,19 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                                             <span className="text-xs font-mono text-gray-500 w-5">
                                                                 {lIndex + 1}.
                                                             </span>
-                                                            <FileText
-                                                                size={16}
-                                                                className="text-blue-400 flex-shrink-0"
-                                                            />
-                                                            <span className="text-sm text-gray-700 dark:text-gray-300">
-                                                                {lesson.title}
-                                                            </span>
+                                                            <Link
+                                                                href={`/admin/academy/lessons/${lesson.id}/edit`}
+                                                                className="flex items-center gap-2 group/title hover:text-primary transition-colors cursor-pointer"
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            >
+                                                                <FileText
+                                                                    size={16}
+                                                                    className="text-blue-400 group-hover/title:text-primary transition-colors flex-shrink-0"
+                                                                />
+                                                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover/title:text-primary transition-colors hover:underline">
+                                                                    {lesson.title}
+                                                                </span>
+                                                            </Link>
                                                             {lesson.content &&
                                                                 lesson.content.trim()
                                                                     .length >
