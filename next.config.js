@@ -46,12 +46,17 @@ const nextConfig = {
       static: 180,
     },
   },
-  // Exclude large static assets from serverless function bundles (Vercel 300MB limit)
+  // Exclude large static assets and media from serverless function bundles (Vercel 250MB limit)
   outputFileTracingExcludes: {
     '*': [
-      './public/images/featured/**',
-      './public/images/articles/**',
-      './public/uploads/**',
+      './public/**',
+      './content/**',
+      './docs/**',
+      './scripts/**',
+      './node_modules/@swc/core-win32-x64-msvc/**',
+      './node_modules/@swc/core-linux-x64-gnu/**',
+      './node_modules/@esbuild/**',
+      './node_modules/terser/**',
     ],
   },
   compiler: {
