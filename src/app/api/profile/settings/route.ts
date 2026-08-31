@@ -5,7 +5,6 @@ import {
     getEmailPreferences,
     DEFAULT_EMAIL_PREFERENCES,
 } from "@/lib/email/preferences";
-import { getJournalAutopilot } from "@/lib/journal/autopilot.server";
 
 export async function GET() {
     const user = await getAuthUser();
@@ -59,13 +58,12 @@ export async function GET() {
         true;
 
     const emailPreferences = getEmailPreferences(dbUser?.settings);
-    const journalAutopilot = getJournalAutopilot(dbUser?.settings);
 
     if (!profile) {
-        return NextResponse.json({ ...base, showTradingStyle, emailPreferences, journalAutopilot });
+        return NextResponse.json({ ...base, showTradingStyle, emailPreferences });
     }
 
-    return NextResponse.json({ ...profile, showTradingStyle, emailPreferences, journalAutopilot });
+    return NextResponse.json({ ...profile, showTradingStyle, emailPreferences });
 }
 
 export async function PUT(request: Request) {
@@ -100,25 +98,6 @@ export async function PUT(request: Request) {
                 settings: {
                     ...settings,
                     emailPreferences: merged,
-                },
-            },
-        });
-    }
-
-    // Persist the AI Journal Autopilot toggle inside User.settings, merging
-    // with the stored blob so unrelated settings keys survive.
-    if (typeof body.journalAutopilot === "boolean") {
-        const dbUser = await prisma.user.findUnique({
-            where: { id: user.id },
-            select: { settings: true },
-        });
-        const settings = (dbUser?.settings as Record<string, unknown>) || {};
-        await prisma.user.update({
-            where: { id: user.id },
-            data: {
-                settings: {
-                    ...settings,
-                    journalAutopilot: body.journalAutopilot,
                 },
             },
         });

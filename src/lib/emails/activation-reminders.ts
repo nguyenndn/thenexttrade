@@ -37,17 +37,26 @@ export function buildActivationEmailHtml(
     link: string
 ): string {
     const userName = name || "Trader";
-    const appUrl = link.split("/dashboard")[0];
+    const appUrl =
+        link.split("/dashboard")[0] ||
+        process.env.NEXT_PUBLIC_APP_URL ||
+        "https://thenexttrade.vercel.app";
     const btnStyles = `
- display: inline-block;
- padding: 12px 28px;
- background-color: #00C888;
- color: #ffffff !important;
- text-decoration: none;
- font-weight: bold;
- border-radius: 8px;
- margin: 20px 0;
- `;
+    display: inline-block;
+    padding: 10px 22px;
+    background: #F59E0B;
+    background: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
+    color: #ffffff !important;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    letter-spacing: 0.2px;
+    border-radius: 8px;
+    margin: 16px 0;
+    box-shadow: 0 1px 3px rgba(245,158,11,0.3);
+    vertical-align: middle;
+  `;
 
     let bodyHtml = "";
 

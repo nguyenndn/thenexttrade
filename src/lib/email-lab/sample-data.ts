@@ -111,17 +111,24 @@ export function renderWelcomeEmailHtml(
     template: WelcomeEmailTemplate,
     userName = "Email Lab Trader"
 ): string {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl =
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
     const btnStyles = `
- display: inline-block;
- padding: 12px 28px;
- background-color: #00C888;
- color: #ffffff !important;
- text-decoration: none;
- font-weight: bold;
- border-radius: 8px;
- margin: 20px 0;
- `;
+    display: inline-block;
+    padding: 10px 22px;
+    background: #F59E0B;
+    background: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
+    color: #ffffff !important;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    letter-spacing: 0.2px;
+    border-radius: 8px;
+    margin: 16px 0;
+    box-shadow: 0 1px 3px rgba(245,158,11,0.3);
+    vertical-align: middle;
+  `;
 
     // Format paragraph breaks and bullets
     const bodyFormatted = template.body.bodyText
@@ -184,3 +191,101 @@ export function renderWelcomePreviewEmail(template: "d0" | "d1" | "d3"): {
         subject: t.subject,
     };
 }
+
+// ─── New Mockup Sample Data Generators ──────────────────────────────────────
+
+export function getSampleEALicenseData() {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    return {
+        userName: "Alex Trader",
+        eaName: "GoldScalperNinja Pro MT5",
+        licenseKey: "GSN-LIFETIME-8942-7819-MT5",
+        mt5Account: "5129384 (Raw Spread)",
+        downloadUrl: `${appUrl}/dashboard/ea/downloads`,
+        guideUrl: `${appUrl}/dashboard/ea/guide`,
+    };
+}
+
+export function getSampleEAUpdateData() {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    return {
+        userName: "Alex Trader",
+        eaName: "GoldScalperNinja Pro",
+        version: "v2.5.0",
+        releaseHighlights: [
+            "<strong>Auto High-Impact News Spread Protector:</strong> Automatically pauses trade execution 5 minutes before and after high-impact USD economic events.",
+            "<strong>Multi-Timeframe Order Block Confluence:</strong> Enhances entry precision by cross-validating M15 momentum with H1 liquidity zones.",
+            "<strong>Smart Trailing Stop v2:</strong> Moves Stop Loss dynamically along structural Swing Lows/Highs to lock in maximum profit.",
+            "<strong>Reduced Execution Latency:</strong> Optimized MQL5 memory footprint for ultra-fast VPS execution under 2ms.",
+        ],
+        downloadUrl: `${appUrl}/dashboard/ea/downloads`,
+        changelogUrl: `${appUrl}/dashboard/ea/changelog`,
+    };
+}
+
+export function getSampleAcademyCertificateData() {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    return {
+        userName: "Alex Trader",
+        certificateId: "TNT-CERT-2026-8942",
+        completionDate: "August 28, 2026",
+        pathwayName: "Master Trader Pathway (Levels 1–12)",
+        certificateUrl: `${appUrl}/dashboard/certificates/TNT-CERT-2026-8942`,
+    };
+}
+
+export function getSampleMilestoneData() {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    return {
+        userName: "Alex Trader",
+        milestoneTitle: "100-Trade Discipline Club",
+        badgeName: "Master of Execution",
+        statsSummary: "100 journaled trades with 88.5% strict rule compliance & +14.2% Net ROI.",
+        showcaseUrl: `${appUrl}/dashboard/profile#trophies`,
+    };
+}
+
+export function getSampleSignupOtpData() {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    return {
+        userName: "Alex Trader",
+        otpCode: "849201",
+        confirmUrl: `${appUrl}/auth/confirm?token=sample-otp-verification-token`,
+    };
+}
+
+export function getSampleResendOtpData() {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    return {
+        userName: "Alex Trader",
+        otpCode: "591384",
+        confirmUrl: `${appUrl}/auth/confirm?token=sample-resend-otp-token`,
+    };
+}
+
+export function getSampleMagicLinkData() {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    return {
+        userName: "Alex Trader",
+        magicLinkUrl: `${appUrl}/auth/callback?token=sample-magic-link-token&type=magiclink`,
+    };
+}
+
+export function getSampleForgotPasswordData() {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    return {
+        userName: "Alex Trader",
+        resetUrl: `${appUrl}/auth/reset-password?token=sample-recovery-token`,
+    };
+}
+
+export function getSampleAdminResetData() {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    return {
+        userName: "Alex Trader",
+        adminName: "Security Officer",
+        resetUrl: `${appUrl}/auth/reset-password?token=sample-admin-recovery-token`,
+    };
+}
+
+

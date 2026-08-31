@@ -21,18 +21,20 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
+import type { LucideIcon } from "lucide-react";
+
 const TONE_LABELS: Record<
     string,
-    { label: string; icon: React.ReactNode }
+    { label: string; icon: LucideIcon }
 > = {
-    conversational: { label: "Conversational", icon: <MessageSquare size={12} /> },
-    mentor: { label: "Mentor", icon: <Compass size={12} /> },
-    storytelling: { label: "Storytelling", icon: <BookOpen size={12} /> },
-    edutainment: { label: "Edutainment", icon: <PartyPopper size={12} /> },
-    professional: { label: "Professional", icon: <Briefcase size={12} /> },
-    analytical: { label: "Analytical", icon: <BarChart3 size={12} /> },
-    motivational: { label: "Motivational", icon: <Flame size={12} /> },
-    tactical: { label: "Tactical", icon: <Target size={12} /> },
+    conversational: { label: "Conversational", icon: MessageSquare },
+    mentor: { label: "Mentor", icon: Compass },
+    storytelling: { label: "Storytelling", icon: BookOpen },
+    edutainment: { label: "Edutainment", icon: PartyPopper },
+    professional: { label: "Professional", icon: Briefcase },
+    analytical: { label: "Analytical", icon: BarChart3 },
+    motivational: { label: "Motivational", icon: Flame },
+    tactical: { label: "Tactical", icon: Target },
 };
 
 interface ContentSourceCardProps {
@@ -82,8 +84,8 @@ export function ContentSourceCard({
             {toneInfo && (
                 <div className="flex items-center gap-2">
                     <span className="text-xs text-gray-500">Tone:</span>
-                    <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                        {toneInfo.icon} {toneInfo.label}
+                    <span className="text-xs font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                        <toneInfo.icon size={12} /> {toneInfo.label}
                     </span>
                 </div>
             )}

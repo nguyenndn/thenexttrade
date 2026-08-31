@@ -72,6 +72,8 @@ export interface AIRewriteDialogRef {
     openWithContent: (content: string) => void;
 }
 
+import type { LucideIcon } from "lucide-react";
+
 // ============================================================================
 // TONE DATA
 // ============================================================================
@@ -79,65 +81,72 @@ export interface AIRewriteDialogRef {
 const TONES: Array<{
     id: string;
     label: string;
-    icon: React.ReactNode;
+    icon: LucideIcon;
     desc: string;
 }> = [
     {
         id: "conversational",
         label: "Conversational",
-        icon: <MessageSquare size={14} />,
+        icon: MessageSquare,
         desc: "Friendly, casual",
     },
     {
         id: "mentor",
         label: "Mentor",
-        icon: <Compass size={14} />,
+        icon: Compass,
         desc: "Experience-based",
     },
     {
         id: "storytelling",
         label: "Storytelling",
-        icon: <BookOpen size={14} />,
+        icon: BookOpen,
         desc: "Narrative style",
     },
     {
         id: "edutainment",
         label: "Edutainment",
-        icon: <PartyPopper size={14} />,
+        icon: PartyPopper,
         desc: "Humor + learning",
     },
     {
         id: "professional",
         label: "Professional",
-        icon: <Briefcase size={14} />,
+        icon: Briefcase,
         desc: "Formal, data",
     },
     {
         id: "analytical",
         label: "Analytical",
-        icon: <BarChart3 size={14} />,
+        icon: BarChart3,
         desc: "Compare, analyze",
     },
     {
         id: "motivational",
         label: "Motivational",
-        icon: <Flame size={14} />,
+        icon: Flame,
         desc: "Inspiring energy",
     },
     {
         id: "tactical",
         label: "Tactical",
-        icon: <Target size={14} />,
+        icon: Target,
         desc: "Step-by-step",
     },
 ];
 
-const SOURCE_ICONS: Record<string, React.ReactNode> = {
-    google: <Globe size={13} className="text-blue-500" />,
-    reddit: <MessageCircle size={13} className="text-orange-500" />,
-    twitter: <Twitter size={13} className="text-sky-500" />,
-    youtube: <Youtube size={13} className="text-red-500" />,
+const SOURCE_ICONS: Record<string, { icon: LucideIcon; color: string }> = {
+    google: { icon: Globe, color: "text-blue-500" },
+    reddit: { icon: MessageCircle, color: "text-orange-500" },
+    twitter: { icon: Twitter, color: "text-sky-500" },
+    youtube: { icon: Youtube, color: "text-red-500" },
 };
+
+function SourceIcon({ source }: { source: string }) {
+    const config = SOURCE_ICONS[source];
+    if (!config) return <Globe size={13} className="text-gray-400" />;
+    const Icon = config.icon;
+    return <Icon size={13} className={config.color} />;
+}
 
 // ============================================================================
 // COMPONENT
@@ -665,12 +674,7 @@ export const AIRewriteDialog = forwardRef<
                                                             </div>
                                                             <div className="min-w-0 flex-1">
                                                                 <div className="flex items-center gap-1.5">
-                                                                    {
-                                                                        SOURCE_ICONS[
-                                                                            r
-                                                                                .source
-                                                                        ]
-                                                                    }
+                                                                    <SourceIcon source={r.source} />
                                                                     <span className="text-xs font-medium text-gray-700 dark:text-white truncate">
                                                                         {
                                                                             r.title
@@ -872,12 +876,7 @@ export const AIRewriteDialog = forwardRef<
                                                             </div>
                                                             <div className="min-w-0 flex-1">
                                                                 <div className="flex items-center gap-1.5">
-                                                                    {
-                                                                        SOURCE_ICONS[
-                                                                            r
-                                                                                .source
-                                                                        ]
-                                                                    }
+                                                                    <SourceIcon source={r.source} />
                                                                     <span className="text-xs font-medium text-gray-700 dark:text-white truncate">
                                                                         {
                                                                             r.title
@@ -928,30 +927,32 @@ export const AIRewriteDialog = forwardRef<
 
                             {/* Tone Selector */}
                             <div>
-                                <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider flex items-center gap-1.5">
-                                    <Palette size={13} />
-                                    Tone
+                                <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
+                                    Style / Tone
                                 </label>
-                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
-                                    {TONES.map((t) => (
-                                        <button
-                                            key={t.id}
-                                            type="button"
-                                            onClick={() => setTone(t.id)}
-                                            disabled={isLoading}
-                                            className={cn(
-                                                "flex flex-col items-center gap-0.5 px-2 py-2 rounded-lg text-xs font-medium transition-all border",
-                                                tone === t.id
-                                                    ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 ring-1 ring-amber-200 dark:ring-amber-800"
-                                                    : "bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-100 dark:hover:bg-white/10"
-                                            )}
-                                        >
-                                            <span className="text-base">
-                                                {t.icon}
-                                            </span>
-                                            <span>{t.label}</span>
-                                        </button>
-                                    ))}
+                                <div className="grid grid-cols-4 gap-1.5">
+                                    {TONES.map((t) => {
+                                        const ToneIcon = t.icon;
+                                        return (
+                                            <button
+                                                key={t.id}
+                                                type="button"
+                                                onClick={() => setTone(t.id)}
+                                                disabled={isLoading}
+                                                className={cn(
+                                                    "flex flex-col items-center gap-0.5 px-2 py-2 rounded-lg text-xs font-medium transition-all border",
+                                                    tone === t.id
+                                                        ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 ring-1 ring-amber-200 dark:ring-amber-800"
+                                                        : "bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-100 dark:hover:bg-white/10"
+                                                )}
+                                            >
+                                                <span className="text-base">
+                                                    <ToneIcon size={14} />
+                                                </span>
+                                                <span>{t.label}</span>
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             </div>
 
@@ -1130,7 +1131,12 @@ export const AIRewriteDialog = forwardRef<
                         <div className="flex items-center justify-between p-5 border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] shrink-0">
                             <p className="text-[11px] text-gray-500 flex items-center gap-1">
                                 DeepSeek + FireCrawl + Serper ·{" "}
-                                {TONES.find((t) => t.id === tone)?.icon}
+                                {(() => {
+                                    const matched = TONES.find((t) => t.id === tone);
+                                    if (!matched) return null;
+                                    const FooterToneIcon = matched.icon;
+                                    return <FooterToneIcon size={12} />;
+                                })()}
                                 {TONES.find((t) => t.id === tone)?.label}
                             </p>
                             <div className="flex gap-2">

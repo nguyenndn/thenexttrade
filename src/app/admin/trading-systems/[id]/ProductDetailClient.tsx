@@ -1,8 +1,12 @@
 "use client";
 
-import { Download, Users, Zap, Activity } from "lucide-react";
+import { useState } from "react";
+import { Download, Users, Zap, Activity, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { EditProductView } from "@/components/admin/trading-systems/EditProductView";
+import { ReleaseAnnouncementModal } from "@/components/admin/trading-systems/ReleaseAnnouncementModal";
+import { ProductUsersTable } from "@/components/admin/trading-systems/ProductUsersTable";
 
 interface ProductDetailClientProps {
     product: any;
@@ -28,6 +32,7 @@ const TYPE_LABELS: Record<string, { label: string; color: string; icon: any }> =
     };
 
 export function ProductDetailClient({ product }: ProductDetailClientProps) {
+    const [isAnnouncementOpen, setIsAnnouncementOpen] = useState(false);
     const typeInfo = TYPE_LABELS[product.type] || TYPE_LABELS.AUTO_TRADE;
 
     return (
@@ -37,6 +42,27 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                 title={product.name}
                 description={`${typeInfo.label} · v${product.version} · ${product.isActive ? "Active" : "Inactive"}`}
                 backHref="/admin/trading-systems"
+            >
+                <Button
+                    onClick={() => setIsAnnouncementOpen(true)}
+                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl px-4 py-2 font-bold flex items-center gap-2 shadow-md shadow-amber-500/20"
+                >
+                    <Sparkles size={16} />
+                    <span>Announce Release</span>
+                </Button>
+            </AdminPageHeader>
+
+            {/* Announcement Modal */}
+            <ReleaseAnnouncementModal
+                isOpen={isAnnouncementOpen}
+                onClose={() => setIsAnnouncementOpen(false)}
+                product={product}
+            />
+
+            {/* Active Users & Licensees Table */}
+            <ProductUsersTable
+                productName={product.name}
+                users={product.activeUsers || []}
             />
 
             {/* Edit Form - same layout as Create page */}

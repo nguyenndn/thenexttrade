@@ -13,7 +13,6 @@ import {
     Target,
     Check,
     Mail,
-    Wand2,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Switch } from "@/components/ui/switch";
@@ -69,8 +68,6 @@ export default function SettingsClient() {
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [isSavingEmail, setIsSavingEmail] = useState(false);
-    const [isSavingAutopilot, setIsSavingAutopilot] = useState(false);
-    const [journalAutopilot, setJournalAutopilot] = useState(false);
     const [emailPrefs, setEmailPrefs] = useState<EmailPreferences>({
         ...DEFAULT_EMAIL_PREFS,
     });
@@ -116,9 +113,6 @@ export default function SettingsClient() {
                         ...prefsData.emailPreferences,
                     });
                 }
-                if (typeof prefsData.journalAutopilot === "boolean") {
-                    setJournalAutopilot(prefsData.journalAutopilot);
-                }
             }
         } catch {
             /* Failed to fetch */
@@ -143,25 +137,6 @@ export default function SettingsClient() {
             toast.error("Failed to save email preferences.");
         } finally {
             setIsSavingEmail(false);
-        }
-    };
-
-    const handleAutopilotSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSavingAutopilot(true);
-        try {
-            const res = await fetch("/api/profile/settings", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ journalAutopilot }),
-            });
-            if (!res.ok) throw new Error("Failed to save");
-            toast.success("AI Journal Autopilot updated");
-            router.refresh();
-        } catch {
-            toast.error("Failed to save autopilot setting.");
-        } finally {
-            setIsSavingAutopilot(false);
         }
     };
 
@@ -552,61 +527,6 @@ export default function SettingsClient() {
                 </div>
             </form>
 
-            {/* ── AI Journal Autopilot Card ── */}
-            <form
-                onSubmit={handleAutopilotSubmit}
-                className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm overflow-hidden"
-            >
-                <div className="px-6 py-5 space-y-4">
-                    <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-lg bg-violet-500/10 dark:bg-violet-500/20 flex items-center justify-center">
-                            <Wand2 size={14} className="text-violet-500" />
-                        </div>
-                        <div>
-                            <h2 className="text-sm font-bold text-gray-700 dark:text-white">
-                                AI Journal Autopilot
-                            </h2>
-                            <p className="text-xs text-gray-400 mt-0.5">
-                                Automatically write trading psychology for your
-                                EA-synced closed trades (Pro).
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center justify-between gap-4 py-2.5">
-                        <div className="min-w-0">
-                            <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">
-                                Enabled
-                            </p>
-                            <p className="text-xs text-gray-400 mt-0.5">
-                                The nightly job fills in entry/exit reasons,
-                                emotions, and mistakes for MT5 EA trades — once
-                                per trade, runs automatically.
-                            </p>
-                        </div>
-                        <Switch
-                            checked={journalAutopilot}
-                            onCheckedChange={setJournalAutopilot}
-                        />
-                    </div>
-                </div>
-
-                <div className="px-6 py-4 border-t border-dashboard flex justify-end">
-                    <Button
-                        type="submit"
-                        variant="primary"
-                        size="smd"
-                        disabled={isSavingAutopilot}
-                    >
-                        {isSavingAutopilot ? (
-                            <Loader2 className="animate-spin" size={16} />
-                        ) : (
-                            <Save size={16} />
-                        )}
-                        Save Autopilot Setting
-                    </Button>
-                </div>
-            </form>
         </div>
     );
 }

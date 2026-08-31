@@ -3,7 +3,6 @@ import { generateReportsForAllUsers } from "@/lib/services/report-generator.serv
 import {
     sendEmail,
     buildReportEmailHtml,
-    buildNudgeEmailHtml,
 } from "@/lib/services/email.service";
 import { prisma } from "@/lib/prisma";
 import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
@@ -79,66 +78,9 @@ export async function GET(request: Request) {
             });
 
             if (r.result.skipped && r.result.empty) {
-                // No trades → send nudge notification + email.
-                // Dedup: the empty branch never persists a record, so a cron
-                // re-run for the same period (platform retry, manual ?type=
-                // trigger) used to duplicate the NO_TRADES_NUDGE notification
-                // AND re-send the nudge email every run. Skip when the user was
-                // already nudged within the report window (6 days weekly / 30
-                // days monthly — next period is unaffected).
-                const nudgeWindowDays = type === "WEEKLY" ? 6 : 30;
-                const existingNudge = await prisma.notification.findFirst({
-                    where: {
-                        userId: r.userId,
-                        type: "NO_TRADES_NUDGE",
-                        createdAt: {
-                            gte: new Date(
-                                Date.now() -
-                                    nudgeWindowDays * 24 * 60 * 60 * 1000
-                            ),
-                        },
-                    },
-                    select: { id: true },
-                });
-                if (existingNudge) continue;
-
-                await prisma.notification.create({
-                    data: {
-                        userId: r.userId,
-                        type: "NO_TRADES_NUDGE",
-                        title:
-                            type === "WEEKLY"
-                                ? "📊 No trades last week"
-                                : "📊 No trades last month",
-                        message:
-                            type === "WEEKLY"
-                                ? "You didn't place any trades last week. Consider reviewing your strategy and staying consistent."
-                                : "You didn't place any trades last month. Consistency is key to growth!",
-                        priority: "LOW",
-                        link: NOTIFICATION_ROUTES.JOURNAL,
-                    },
-                });
-                notificationsSent++;
-
-                // Send nudge email (respect email preferences — see docs/EMAIL.md)
-                if (
-                    user?.email &&
-                    canSendEmailCategory(user.settings, "reports")
-                ) {
-                    const nudgeHtml = buildNudgeEmailHtml(
-                        user.name || "Trader",
-                        type
-                    );
-                    const sent = await sendEmail({
-                        to: user.email,
-                        subject:
-                            type === "WEEKLY"
-                                ? "📊 No trades logged this week — stay consistent!"
-                                : "📊 No trades logged this month — keep going!",
-                        html: nudgeHtml,
-                    });
-                    if (sent) emailsSent++;
-                }
+                // User had 0 trades during this period — skip sending empty emails
+                // (trading best practice: sitting on hands is a position, avoid FOMO spam).
+                continue;
             } else if (!r.result.skipped && r.result.reportId) {
                 // Report generated → send notification + email
                 const report = await prisma.tradingReport.findUnique({

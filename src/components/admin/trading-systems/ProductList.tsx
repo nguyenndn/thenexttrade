@@ -6,6 +6,8 @@ import { format } from "date-fns";
 import {
     Bot,
     Download,
+    ShieldCheck,
+    Users,
     Edit,
     Trash2,
     Search,
@@ -20,6 +22,7 @@ import { EAProduct } from "@/types/ea-license";
 import { EAType } from "@prisma/client";
 
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { ProductUsersModal } from "./ProductUsersModal";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -55,6 +58,8 @@ export function ProductList({ products }: ProductListProps) {
         null
     );
     const [isDeleting, setIsDeleting] = useState(false);
+    const [selectedProductForUsers, setSelectedProductForUsers] =
+        useState<any | null>(null);
 
     const confirmDelete = (productId: string) => {
         setProductToDeleteId(productId);
@@ -350,13 +355,33 @@ export function ProductList({ products }: ProductListProps) {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-500 font-medium text-sm">
-                                                    <Download
-                                                        size={16}
-                                                        className="text-gray-500"
-                                                        aria-hidden="true"
-                                                    />
-                                                    {product.totalDownloads}
+                                                <div className="flex flex-col items-start gap-1">
+                                                    <div className="flex items-center gap-1.5 text-gray-700 dark:text-gray-200 font-semibold text-xs">
+                                                        <Download
+                                                            size={13}
+                                                            className="text-amber-500"
+                                                            aria-hidden="true"
+                                                        />
+                                                        <span>{product.totalDownloads || (product as any)._count?.downloads || 0} downloads</span>
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setSelectedProductForUsers(product);
+                                                        }}
+                                                        className="group/users flex items-center gap-1.5 text-gray-500 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 font-normal text-[11px] transition-colors cursor-pointer text-left"
+                                                        title="Click to view detailed user list"
+                                                    >
+                                                        <ShieldCheck
+                                                            size={12}
+                                                            className="text-emerald-500 group-hover/users:scale-110 transition-transform"
+                                                            aria-hidden="true"
+                                                        />
+                                                        <span className="hover:underline decoration-dotted underline-offset-2 font-medium">
+                                                            {(product as any).activeUsers?.length ?? (product as any).activeLicensesCount ?? 0} active users
+                                                        </span>
+                                                    </button>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
@@ -375,6 +400,16 @@ export function ProductList({ products }: ProductListProps) {
                                             </td>
                                             <td className="px-6 py-4 text-right">
                                                 <div className="flex items-center justify-end gap-1">
+                                                    <Button
+                                                        size="icon"
+                                                        variant="ghost"
+                                                        className="h-8 w-8 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors"
+                                                        onClick={() => setSelectedProductForUsers(product)}
+                                                        aria-label={`View active users for ${product.name}`}
+                                                        title="View Active Users"
+                                                    >
+                                                        <Users size={16} />
+                                                    </Button>
                                                     <Link
                                                         href={`/admin/trading-systems/${product.id}`}
                                                     >
@@ -383,6 +418,7 @@ export function ProductList({ products }: ProductListProps) {
                                                             variant="ghost"
                                                             className="h-8 w-8 text-gray-600 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
                                                             aria-label={`Edit ${product.name}`}
+                                                            title="Edit Product"
                                                         >
                                                             <Edit size={16} />
                                                         </Button>
@@ -397,6 +433,7 @@ export function ProductList({ products }: ProductListProps) {
                                                             )
                                                         }
                                                         aria-label={`Delete ${product.name}`}
+                                                        title="Delete Product"
                                                     >
                                                         <Trash2 size={16} />
                                                     </Button>
@@ -448,6 +485,13 @@ export function ProductList({ products }: ProductListProps) {
                     setProductToDeleteId(null);
                 }}
                 variant="danger"
+            />
+
+            {/* Active Users & Licensees Modal */}
+            <ProductUsersModal
+                isOpen={!!selectedProductForUsers}
+                onClose={() => setSelectedProductForUsers(null)}
+                product={selectedProductForUsers}
             />
         </div>
     );
