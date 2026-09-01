@@ -2,7 +2,7 @@
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
-const assetBaseUrl = process.env.ASSET_PUBLIC_BASE_URL || '';
+const assetBaseUrl = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || '';
 let assetHostname = '';
 try {
   if (assetBaseUrl) assetHostname = new URL(assetBaseUrl).hostname;
@@ -16,6 +16,7 @@ const customRemotePatterns = [
   { protocol: 'https', hostname: '*.googleusercontent.com' },
   { protocol: 'https', hostname: '*.gravatar.com' },
   { protocol: 'https', hostname: 'cdn.jsdelivr.net' },
+  { protocol: 'https', hostname: '*.r2.dev' },
 ];
 
 if (assetHostname) {

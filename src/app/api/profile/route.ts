@@ -28,7 +28,12 @@ const updateProfileSchema = z
                 z.literal(""),
             ])
             .optional(),
-        image: z.string().optional(), // In MVP this might be a URL or handled separately
+        image: z
+            .union([
+                z.string().url().startsWith("https://"),
+                z.literal(""),
+            ])
+            .optional(),
         tradingGoal: z.string().optional(),
     })
     .strict();

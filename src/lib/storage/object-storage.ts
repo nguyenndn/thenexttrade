@@ -12,7 +12,7 @@ const R2_REGION = process.env.R2_REGION || "auto";
 const R2_BUCKET = process.env.R2_BUCKET || "";
 const R2_ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID || "";
 const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY || "";
-const ASSET_PUBLIC_BASE_URL = process.env.ASSET_PUBLIC_BASE_URL || "";
+const ASSET_PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || "";
 
 export const isR2Configured = Boolean(
     R2_ENDPOINT &&

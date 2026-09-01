@@ -32,6 +32,7 @@ export default async function StrategiesPage({
             initialStrategies={strategies}
             meta={meta}
             initialPerformance={perfResult.performance || []}
+            initialSummary={perfResult.summary}
         />
     );
 }

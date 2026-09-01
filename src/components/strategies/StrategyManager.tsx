@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { Plus, Search, ArrowUpDown, ChevronDown, Check } from "lucide-react";
+import { Plus, Search, ArrowUpDown, ChevronDown, Check, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import {
     DropdownMenu,
@@ -29,27 +29,40 @@ import {
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { cn } from "@/lib/utils";
 
+import { PlaybookComparisonCard, PlaybookSummary } from "./PlaybookComparisonCard";
+
 export interface Strategy {
     id: string;
     name: string;
     description: string | null;
     rules: string | null;
     color: string;
+    isPlaybook: boolean;
+    setupType: string | null;
+    timeframes: string[];
+    pairs: string[];
+    idealEntry: string | null;
+    idealStopLoss: string | null;
+    idealTakeProfit: string | null;
+    riskRewardMin: number | null;
+    referenceImages: string[];
 }
 
 export interface StrategyPerformance {
     strategy: string;
-    color: string;
     totalTrades: number;
     winRate: number;
     totalPnL: number;
     avgPnL: number;
     profitFactor: number;
+    color: string;
+    isPlaybook?: boolean;
 }
 
 interface StrategyManagerProps {
     initialStrategies: Strategy[];
     initialPerformance?: StrategyPerformance[];
+    initialSummary?: PlaybookSummary;
     meta: {
         total: number;
         page: number;
@@ -62,6 +75,7 @@ export function StrategyManager({
     initialStrategies,
     meta,
     initialPerformance = [],
+    initialSummary,
 }: StrategyManagerProps) {
     const router = useRouter();
     const page = meta.page;
@@ -73,8 +87,10 @@ export function StrategyManager({
 
     const [performance, setPerformance] =
         useState<StrategyPerformance[]>(initialPerformance);
+    const [summary, setSummary] = useState<PlaybookSummary | undefined>(initialSummary);
     const [isLoadingPerformance, setIsLoadingPerformance] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [defaultPlaybook, setDefaultPlaybook] = useState(false);
     const [editingStrategy, setEditingStrategy] = useState<Strategy | null>(
         null
     );
@@ -87,6 +103,7 @@ export function StrategyManager({
     const [isDeleting, setIsDeleting] = useState(false);
 
     const [searchQuery, setSearchQuery] = useState("");
+    const [filterType, setFilterType] = useState<"all" | "playbook" | "standard">("all");
     const [sortBy, setSortBy] = useState<"name" | "pnl" | "winRate" | "trades">(
         "name"
     );
@@ -107,6 +124,7 @@ export function StrategyManager({
             const result = await getStrategyPerformance();
             if (result.error) throw new Error(result.error);
             setPerformance(result.performance || []);
+            if (result.summary) setSummary(result.summary);
         } catch (error: any) {
             console.error(error);
             toast.error(
@@ -125,12 +143,21 @@ export function StrategyManager({
         let matchingStrategy = strategies.find((s) => s.name === perf.strategy);
 
         if (!matchingStrategy) {
-            const tempStrategy = {
+            const tempStrategy: Strategy = {
                 id: `temp-${perf.strategy}`,
                 name: perf.strategy,
                 description: "Unsaved strategy detected from trade history.",
                 rules: null,
-                color: "#9CA3AF", // Grey for unsaved
+                color: "#9CA3AF",
+                isPlaybook: false,
+                setupType: null,
+                timeframes: [],
+                pairs: [],
+                idealEntry: null,
+                idealStopLoss: null,
+                idealTakeProfit: null,
+                riskRewardMin: null,
+                referenceImages: [],
             };
             allStrategies.push(tempStrategy);
             matchingStrategy = tempStrategy;
@@ -139,13 +166,21 @@ export function StrategyManager({
         return {
             ...perf,
             color: matchingStrategy.color,
+            isPlaybook: matchingStrategy.isPlaybook,
         };
     });
 
+    const playbookCount = allStrategies.filter((s) => s.isPlaybook).length;
+    const standardCount = allStrategies.filter((s) => !s.isPlaybook).length;
+
     const filteredStrategies = useMemo(() => {
-        let result = allStrategies.filter((s) =>
-            s.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        let result = allStrategies.filter((s) => {
+            const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase());
+            if (!matchesSearch) return false;
+            if (filterType === "playbook") return s.isPlaybook;
+            if (filterType === "standard") return !s.isPlaybook;
+            return true;
+        });
 
         // PRE-COMPUTE PERFORMANCE lookup object to fix O(N^2) issue
         const perfMap = new Map<string, StrategyPerformance>();
@@ -228,45 +263,101 @@ export function StrategyManager({
                 description="Track performance by trading strategy."
                 mobileFullWidthButton
             >
-                <Button
-                    variant="primary"
-                    size="smd"
-                    onClick={() => setShowModal(true)}
-                    className="flex items-center justify-center gap-2 shadow-lg shadow-primary/25"
-                >
-                    <Plus size={18} strokeWidth={2.5} />
-                    New Strategy
-                </Button>
+                <div className="flex items-center gap-2">
+                    <Button
+                        variant="outline"
+                        size="smd"
+                        onClick={() => { setDefaultPlaybook(true); setShowModal(true); }}
+                        className="flex items-center justify-center gap-2 border-primary/30 text-primary hover:bg-primary/10"
+                    >
+                        <BookOpen size={16} strokeWidth={2.5} />
+                        New Playbook
+                    </Button>
+                    <Button
+                        variant="primary"
+                        size="smd"
+                        onClick={() => { setDefaultPlaybook(false); setShowModal(true); }}
+                        className="flex items-center justify-center gap-2 shadow-lg shadow-primary/25"
+                    >
+                        <Plus size={18} strokeWidth={2.5} />
+                        New Strategy
+                    </Button>
+                </div>
             </PageHeader>
 
-            {/* Performance Chart - Only show when strategies exist */}
+            {/* Performance Chart & Playbook Comparison */}
             <div className="space-y-4">
                 {strategies.length > 0 &&
                     (isLoadingPerformance ? (
                         <StrategiesLoadingSkeleton />
-                    ) : enrichedPerformance.length > 0 ? (
+                    ) : (
                         <>
-                            <StrategyPerformanceChart
-                                data={enrichedPerformance}
-                            />
-                            <StrategyComparisonTable
-                                data={enrichedPerformance}
-                            />
+                            {summary && <PlaybookComparisonCard summary={summary} />}
+                            {enrichedPerformance.length > 0 && (
+                                <>
+                                    <StrategyPerformanceChart
+                                        data={enrichedPerformance}
+                                    />
+                                    <StrategyComparisonTable
+                                        data={enrichedPerformance}
+                                    />
+                                </>
+                            )}
                         </>
-                    ) : null)}
+                    ))}
             </div>
 
             {/* Toolbar */}
             {allStrategies.length > 0 && (
                 <div className="bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl p-4 shadow-sm mt-6">
-                    <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
-                        <div className="w-full sm:max-w-md">
-                            <PremiumInput
-                                icon={Search}
-                                placeholder="Search strategies..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
+                    <div className="flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
+                        <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center flex-1">
+                            <div className="w-full sm:max-w-xs">
+                                <PremiumInput
+                                    icon={Search}
+                                    placeholder="Search setups..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
+                            </div>
+
+                            {/* Filter Type Pills */}
+                            <div className="flex items-center gap-1 p-1 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashboard self-start sm:self-auto">
+                                <button
+                                    type="button"
+                                    onClick={() => setFilterType("all")}
+                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap ${
+                                        filterType === "all"
+                                            ? "bg-primary text-white shadow-sm"
+                                            : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                                    }`}
+                                >
+                                    All ({allStrategies.length})
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setFilterType("playbook")}
+                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 whitespace-nowrap ${
+                                        filterType === "playbook"
+                                            ? "bg-primary text-white shadow-sm"
+                                            : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                                    }`}
+                                >
+                                    <BookOpen size={13} />
+                                    Playbooks ({playbookCount})
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setFilterType("standard")}
+                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap ${
+                                        filterType === "standard"
+                                            ? "bg-primary text-white shadow-sm"
+                                            : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                                    }`}
+                                >
+                                    Standard ({standardCount})
+                                </button>
+                            </div>
                         </div>
 
                         <DropdownMenu>
@@ -274,7 +365,7 @@ export function StrategyManager({
                                 <Button
                                     variant="outline"
                                     size="smd"
-                                    className="flex items-center gap-2 border border-dashboard bg-white dark:bg-[#151925] text-gray-700 dark:text-gray-300"
+                                    className="flex items-center gap-2 border border-dashboard bg-white dark:bg-[#151925] text-gray-700 dark:text-gray-300 self-end lg:self-auto"
                                 >
                                     <ArrowUpDown
                                         size={16}
@@ -372,9 +463,11 @@ export function StrategyManager({
                 {showModal && (
                 <StrategyModal
                     strategy={editingStrategy}
+                    defaultPlaybook={defaultPlaybook}
                     onClose={() => {
                         setShowModal(false);
                         setEditingStrategy(null);
+                        setDefaultPlaybook(false);
                     }}
                     onSave={handleSave}
                 />

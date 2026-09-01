@@ -313,6 +313,8 @@ model JournalEntry {
   emotionAfter        String?              @db.VarChar(50)
   emotionBefore       String?              @db.VarChar(50)
   followedPlan        Boolean?
+  playbookGrade       String?              @map("playbook_grade") @db.VarChar(10)
+  playbookComplianceScore Float?          @map("playbook_compliance_score")
   notesPsychology     String?
   mistakes            Json?
   tradingSession      String?              @map("trading_session") @db.VarChar(20)
@@ -357,6 +359,18 @@ model Strategy {
   color        String        @default("#6366F1") @db.VarChar(7)
   createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt    DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  // Playbook fields
+  isPlaybook      Boolean   @default(false) @map("is_playbook")
+  setupType       String?   @map("setup_type") @db.VarChar(50)
+  timeframes      String[]  @default([])
+  pairs           String[]  @default([])
+  idealEntry      String?   @map("ideal_entry")
+  idealStopLoss   String?   @map("ideal_stop_loss")
+  idealTakeProfit String?   @map("ideal_take_profit")
+  riskRewardMin   Float?    @map("risk_reward_min")
+  referenceImages String[]  @default([]) @map("reference_images")
+
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   tradingRules TradingRule[]
 

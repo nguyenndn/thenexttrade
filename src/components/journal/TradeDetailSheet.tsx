@@ -23,7 +23,10 @@ import {
     ShieldAlert,
     Scale,
     Calendar,
+    BookOpen,
+    Layers,
 } from "lucide-react";
+import { PlaybookLightbox } from "@/components/strategies/PlaybookLightbox";
 import { cn } from "@/lib/utils";
 import {
     Sheet,
@@ -38,7 +41,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { getMistakeByCode } from "@/lib/mistakes";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { transformImageUrl } from "@/lib/utils";
+
 import { PlanVsActualPanel } from "./PlanVsActualPanel";
 
 interface JournalEntry {
@@ -66,6 +69,9 @@ interface JournalEntry {
     tradePlan?: any;
     ruleChecks?: any[];
     autopilotStatus?: string;
+    followedPlan?: boolean | null;
+    playbookGrade?: string | null;
+    playbookComplianceScore?: number | null;
 }
 
 interface TradeDetailSheetProps {
@@ -90,6 +96,7 @@ export function TradeDetailSheet({
     hasPrev,
 }: TradeDetailSheetProps) {
     const [showShareModal, setShowShareModal] = useState(false);
+    const [sheetLightboxIndex, setSheetLightboxIndex] = useState<number | null>(null);
     const [activeCoachPlan, setActiveCoachPlan] = useState<any>(null);
     const [marketEvents, setMarketEvents] = useState<any[]>([]);
 
@@ -700,31 +707,109 @@ export function TradeDetailSheet({
                                         )}
                                     </div>
 
-                                    {/* Strategy - Compact Inline Row */}
-                                    <div className="flex items-center gap-3 bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-xl border border-dashboard">
-                                        <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2 shrink-0">
-                                            <Target
-                                                size={12}
-                                                className="text-blue-500"
-                                            />{" "}
-                                            Strategy
-                                        </h4>
+                                    {/* Strategy / Playbook Benchmark Panel */}
+                                    <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-xl border border-dashboard space-y-3">
+                                        <div className="flex items-center justify-between flex-wrap gap-2">
+                                            <div className="flex items-center gap-2">
+                                                {currentStrategy?.isPlaybook ? (
+                                                    <BookOpen size={14} className="text-primary" />
+                                                ) : (
+                                                    <Target size={14} className="text-blue-500" />
+                                                )}
+                                                <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest">
+                                                    {currentStrategy?.isPlaybook ? "Playbook Setup" : "Strategy"}
+                                                </h4>
+                                            </div>
+
+                                            {/* Grade badge */}
+                                            {entry.playbookGrade && (
+                                                <span className={`px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider ${
+                                                    entry.playbookGrade === "A+"
+                                                        ? "bg-emerald-500/15 text-emerald-500 border border-emerald-500/30"
+                                                        : entry.playbookGrade === "A"
+                                                          ? "bg-blue-500/15 text-blue-500 border border-blue-500/30"
+                                                          : entry.playbookGrade === "B"
+                                                            ? "bg-amber-500/15 text-amber-500 border border-amber-500/30"
+                                                            : "bg-red-500/15 text-red-500 border border-red-500/30"
+                                                }`}>
+                                                    Grade: {entry.playbookGrade}
+                                                </span>
+                                            )}
+                                        </div>
+
                                         {entry.strategy ? (
-                                            <span
-                                                className="px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider border"
-                                                style={{
-                                                    backgroundColor: `${strategyColor}15`,
-                                                    color: strategyColor,
-                                                    borderColor: `${strategyColor}30`,
-                                                }}
-                                            >
-                                                {currentStrategy?.name ||
-                                                    entry.strategy}
-                                            </span>
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                <span
+                                                    className="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider border inline-flex items-center gap-1.5"
+                                                    style={{
+                                                        backgroundColor: `${strategyColor}15`,
+                                                        color: strategyColor,
+                                                        borderColor: `${strategyColor}30`,
+                                                    }}
+                                                >
+                                                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategyColor }} />
+                                                    {currentStrategy?.name || entry.strategy}
+                                                </span>
+
+                                                {currentStrategy?.setupType && (
+                                                    <span className="px-2 py-0.5 rounded-md bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 text-xs font-bold">
+                                                        {currentStrategy.setupType}
+                                                    </span>
+                                                )}
+                                            </div>
                                         ) : (
                                             <span className="text-xs text-gray-400 italic">
                                                 No strategy selected
                                             </span>
+                                        )}
+
+                                        {/* Playbook Benchmark Details */}
+                                        {currentStrategy?.isPlaybook && (
+                                            <div className="pt-2 border-t border-dashboard/50 space-y-2.5">
+                                                {/* Ideal Specs */}
+                                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                                                    {currentStrategy.idealEntry && (
+                                                        <div className="p-2 rounded-lg bg-white dark:bg-white/5 border border-dashboard">
+                                                            <span className="text-[10px] text-gray-400 font-bold block uppercase">Ideal Entry</span>
+                                                            <span className="font-semibold text-gray-700 dark:text-gray-200">{currentStrategy.idealEntry}</span>
+                                                        </div>
+                                                    )}
+                                                    {currentStrategy.idealStopLoss && (
+                                                        <div className="p-2 rounded-lg bg-white dark:bg-white/5 border border-dashboard">
+                                                            <span className="text-[10px] text-gray-400 font-bold block uppercase">Ideal SL</span>
+                                                            <span className="font-semibold text-gray-700 dark:text-gray-200">{currentStrategy.idealStopLoss}</span>
+                                                        </div>
+                                                    )}
+                                                    {currentStrategy.riskRewardMin != null && (
+                                                        <div className="p-2 rounded-lg bg-white dark:bg-white/5 border border-dashboard">
+                                                            <span className="text-[10px] text-gray-400 font-bold block uppercase">Min R:R</span>
+                                                            <span className="font-bold text-primary">{currentStrategy.riskRewardMin}:1</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* Reference Charts Lightbox trigger */}
+                                                {currentStrategy.referenceImages && currentStrategy.referenceImages.length > 0 && (
+                                                    <div>
+                                                        <span className="text-[10px] uppercase font-bold text-gray-400 block mb-1.5">
+                                                            Reference Charts ({currentStrategy.referenceImages.length})
+                                                        </span>
+                                                        <div className="flex gap-2">
+                                                            {currentStrategy.referenceImages.map((url: string, idx: number) => (
+                                                                <button
+                                                                    type="button"
+                                                                    key={url}
+                                                                    onClick={() => setSheetLightboxIndex(idx)}
+                                                                    className="w-16 h-11 rounded-lg overflow-hidden border border-dashboard hover:border-primary transition-colors cursor-pointer"
+                                                                    aria-label={`Preview reference chart ${idx + 1}`}
+                                                                >
+                                                                    <img src={url} alt={`Reference ${idx + 1}`} className="w-full h-full object-cover" />
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
                                         )}
                                     </div>
 
@@ -993,18 +1078,16 @@ export function TradeDetailSheet({
                                 Trade Screenshots
                             </h4>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {entry.images.map((rawImg, idx) => {
-                                    const img = transformImageUrl(rawImg);
-                                    return (
+                                {entry.images.map((imgUrl, idx) => (
                                         <a
                                             key={idx}
-                                            href={img}
+                                            href={imgUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="relative aspect-video rounded-lg overflow-hidden border border-dashboard group hover:ring-2 ring-primary transition-all"
                                         >
                                             <img
-                                                src={img}
+                                                src={imgUrl}
                                                 alt={`Trade Screenshot ${idx + 1}`}
                                                 className="w-full h-full object-cover"
                                             />
@@ -1014,8 +1097,7 @@ export function TradeDetailSheet({
                                                 </div>
                                             </div>
                                         </a>
-                                    );
-                                })}
+                                ))}
                             </div>
                         </div>
                     )}
@@ -1027,6 +1109,17 @@ export function TradeDetailSheet({
                 onClose={() => setShowShareModal(false)}
                 entry={entry}
             />
+
+            {/* Playbook Reference Chart Lightbox */}
+            {sheetLightboxIndex !== null && (
+                <PlaybookLightbox
+                    isOpen={sheetLightboxIndex !== null}
+                    images={currentStrategy?.referenceImages || []}
+                    initialIndex={sheetLightboxIndex}
+                    title={`${currentStrategy?.name || entry.strategy} — Reference Chart`}
+                    onClose={() => setSheetLightboxIndex(null)}
+                />
+            )}
         </Sheet>
     );
 }

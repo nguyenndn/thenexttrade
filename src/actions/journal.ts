@@ -24,10 +24,13 @@ const journalSchema = z.object({
     images: z.array(z.string()).optional(),
     mistakes: z.array(z.string()).optional(), // JSON in DB
     accountId: z.string().min(1),
-    strategy: z.string().optional(), // String field
+    strategy: z.string().optional().nullable(), // String field
     thesis: z.string().optional().nullable(),
     invalidation: z.string().optional().nullable(),
     postTradeLesson: z.string().optional().nullable(),
+    followedPlan: z.boolean().optional().nullable(),
+    playbookGrade: z.string().max(10).optional().nullable(),
+    playbookComplianceScore: z.number().min(0).max(100).optional().nullable(),
 });
 
 // Partial update schema for updateJournalEntry. journalSchema.partial()
@@ -41,6 +44,8 @@ const updateEntrySchema = journalSchema.partial().extend({
     emotionAfter: z.string().nullable().optional(),
     confidenceLevel: z.number().int().min(1).max(5).nullable().optional(),
     followedPlan: z.boolean().nullable().optional(),
+    playbookGrade: z.string().max(10).nullable().optional(),
+    playbookComplianceScore: z.number().min(0).max(100).nullable().optional(),
     notesPsychology: z.string().nullable().optional(),
 });
 

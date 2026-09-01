@@ -1,5 +1,7 @@
+"use client";
+
 import { useState } from "react";
-import { Plus, MoreVertical } from "lucide-react";
+import { Plus, MoreVertical, BookOpen } from "lucide-react";
 import {
     Popover,
     PopoverContent,
@@ -30,6 +32,8 @@ export function StrategyCell({
         setIsOpen(false);
     };
 
+    const matchedStrategy = strategies.find((s) => s.name === entry.strategy);
+
     // Helper to get style for a strategy
     const getStrategyStyle = (strategyName: string) => {
         const strategy = strategies.find((s) => s.name === strategyName);
@@ -53,9 +57,12 @@ export function StrategyCell({
                 >
                     {entry.strategy ? (
                         <span
-                            className="px-2 py-1 rounded-full text-[10px] font-bold uppercase border whitespace-nowrap transition-colors"
+                            className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border whitespace-nowrap transition-colors inline-flex items-center gap-1"
                             style={currentStyle}
                         >
+                            {matchedStrategy?.isPlaybook && (
+                                <BookOpen size={9} className="shrink-0" />
+                            )}
                             {entry.strategy}
                         </span>
                     ) : (
@@ -78,7 +85,7 @@ export function StrategyCell({
                 {/* Header */}
                 <div className="flex items-center justify-between px-4 py-3 border-b border-dashboard">
                     <h4 className="font-semibold text-sm text-gray-700 dark:text-white">
-                        Strategy Tags
+                        Strategy & Playbook Tags
                     </h4>
                     <Button
                         variant="outline"
@@ -95,7 +102,7 @@ export function StrategyCell({
                     <div className="space-y-2">
                         <div className="flex items-center justify-between">
                             <label className="text-xs font-medium text-gray-600">
-                                Current Strategy
+                                Current Tag
                             </label>
                             {entry.strategy && (
                                 <Button
@@ -111,9 +118,12 @@ export function StrategyCell({
                         <div className="flex flex-wrap gap-2">
                             {entry.strategy ? (
                                 <span
-                                    className="px-3 py-1.5 rounded-full text-xs font-bold border"
+                                    className="px-3 py-1.5 rounded-full text-xs font-bold border inline-flex items-center gap-1.5"
                                     style={currentStyle}
                                 >
+                                    {matchedStrategy?.isPlaybook && (
+                                        <BookOpen size={12} className="text-primary shrink-0" />
+                                    )}
                                     {entry.strategy}
                                 </span>
                             ) : (
@@ -122,8 +132,6 @@ export function StrategyCell({
                                 </span>
                             )}
                         </div>
-
-                        {/* Create Tag Button (Visual only for now matching image) */}
                     </div>
 
                     <div className="h-px bg-gray-100 dark:bg-white/5" />
@@ -131,7 +139,7 @@ export function StrategyCell({
                     {/* Select Strategy */}
                     <div className="space-y-2">
                         <label className="text-xs font-medium text-gray-600">
-                            Select a Strategy
+                            Select Strategy / Playbook
                         </label>
                         <div className="flex flex-wrap gap-2 max-h-[200px] overflow-y-auto">
                             {strategies.length > 0 ? (
@@ -149,13 +157,16 @@ export function StrategyCell({
                                             onClick={() =>
                                                 handleSelect(strategy.name)
                                             }
-                                            className={`h-auto px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                                            className={`h-auto px-3 py-1.5 rounded-full text-xs font-medium border transition-all inline-flex items-center gap-1.5 ${
                                                 isSelected
                                                     ? "ring-2 ring-offset-1 ring-blue-500/20"
                                                     : "opacity-70 hover:opacity-100 hover:bg-gray-100 dark:hover:bg-white/5"
                                             }`}
                                             style={style}
                                         >
+                                            {strategy.isPlaybook && (
+                                                <BookOpen size={11} className="shrink-0" />
+                                            )}
                                             {strategy.name}
                                         </Button>
                                     );

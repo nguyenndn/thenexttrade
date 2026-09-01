@@ -15,7 +15,15 @@ import {
     ExternalLink,
     ChevronDown,
     ClipboardList,
+    BookOpen,
+    Layers,
+    CheckSquare,
+    Square,
+    ShieldCheck,
+    Sparkles,
+    ImagePlus,
 } from "lucide-react";
+import { PlaybookLightbox } from "@/components/strategies/PlaybookLightbox";
 import { EmotionSelector } from "@/components/psychology/EmotionSelector";
 import { MistakeSelector } from "@/components/mistakes/MistakeSelector";
 import {
@@ -30,14 +38,14 @@ import {
 } from "@/lib/trade-plans/matching";
 
 import Link from "next/link";
-import Image from "next/image";
+
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/Button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { StrategyModal } from "@/components/strategies/StrategyModal";
 import { calculateProfitLoss } from "@/lib/calculators";
-import { formatAccountLabel, transformImageUrl } from "@/lib/utils";
+import { formatAccountLabel } from "@/lib/utils";
 import { celebrateXP } from "@/lib/celebrate";
 import {
     DropdownMenu,
@@ -76,7 +84,8 @@ export default function JournalForm({
 }: JournalFormProps) {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const imageInputRef = useRef<HTMLInputElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [uploadingImages, setUploadingImages] = useState<number>(0);
     const [strategies, setStrategies] = useState<any[]>([]);
     const [accounts, setAccounts] = useState<any[]>([]);
     const [showStrategyModal, setShowStrategyModal] = useState(false);
@@ -144,8 +153,13 @@ export default function JournalForm({
         mistakes: initialData?.mistakes || [],
         // Screenshots (Phase 53)
         images: initialData?.images || [],
+        // Playbook (Phase 2 & 3)
+        playbookGrade: initialData?.playbookGrade || "",
+        playbookComplianceScore: initialData?.playbookComplianceScore ?? null,
     });
 
+    const [playbookChecks, setPlaybookChecks] = useState<Record<number, boolean>>({});
+    const [formLightboxIndex, setFormLightboxIndex] = useState<number | null>(null);
     const [customTagInput, setCustomTagInput] = useState("");
     const [activeRules, setActiveRules] = useState<any[]>([]);
     const [ruleChecks, setRuleChecks] = useState<
@@ -399,19 +413,7 @@ export default function JournalForm({
         setIsSubmitting(true);
 
         try {
-            // Auto-add pending image URL if user forgot to click add
-            let currentImages = formData.images || [];
-            if (imageInputRef.current) {
-                const pendingUrl = imageInputRef.current.value.trim();
-                if (pendingUrl) {
-                    if (pendingUrl.startsWith("http")) {
-                        const directUrl = transformImageUrl(pendingUrl);
-                        currentImages = [...currentImages, directUrl];
-                        // Clear input to indicate it was handled
-                        imageInputRef.current.value = "";
-                    }
-                }
-            }
+            const currentImages = formData.images || [];
 
             // Convert ruleChecks mapping back to ruleChecks payload array
             const ruleChecksPayload = Object.entries(ruleChecks).map(
@@ -449,6 +451,8 @@ export default function JournalForm({
                     ? parseInt(formData.confidenceLevel.toString())
                     : null,
                 followedPlan: formData.followedPlan,
+                playbookGrade: formData.playbookGrade || null,
+                playbookComplianceScore: formData.playbookComplianceScore != null ? formData.playbookComplianceScore : null,
                 notesPsychology: formData.notesPsychology || null,
                 // Mistakes (Phase 45)
                 mistakes: formData.mistakes || [],
@@ -1002,7 +1006,219 @@ export default function JournalForm({
                                         </Button>
                                     </div>
                                 )}
+
+                                {/* Playbook Quick Guide Card & Setup Grade */}
+                                {(() => {
+                                    const selectedStrategy = strategies.find(
+                                        (s: any) => s.name === formData.strategy
+                                    );
+                                    if (!selectedStrategy || !selectedStrategy.isPlaybook) return null;
+
+                                    const ruleItems: string[] = selectedStrategy.rules
+                                        ? selectedStrategy.rules
+                                              .split("\n")
+                                              .map((r: string) => r.replace(/^[-*•\d.]+\s*/, "").trim())
+                                              .filter(Boolean)
+                                        : [];
+
+                                    const totalRules = ruleItems.length;
+                                    const checkedCount = ruleItems.reduce(
+                                        (acc, _, idx) => (playbookChecks[idx] ? acc + 1 : acc),
+                                        0
+                                    );
+                                    const complianceScore =
+                                        totalRules > 0 ? Math.round((checkedCount / totalRules) * 100) : 100;
+
+                                    const toggleRuleCheck = (idx: number) => {
+                                        const nextChecks = { ...playbookChecks, [idx]: !playbookChecks[idx] };
+                                        setPlaybookChecks(nextChecks);
+
+                                        const nextCheckedCount = ruleItems.reduce(
+                                            (acc, _, i) => (nextChecks[i] ? acc + 1 : acc),
+                                            0
+                                        );
+                                        const nextScore =
+                                            totalRules > 0
+                                                ? Math.round((nextCheckedCount / totalRules) * 100)
+                                                : 100;
+
+                                        let suggestedGrade = "C";
+                                        if (nextScore === 100) suggestedGrade = "A+";
+                                        else if (nextScore >= 75) suggestedGrade = "A";
+                                        else if (nextScore >= 50) suggestedGrade = "B";
+
+                                        setFormData((p) => ({
+                                            ...p,
+                                            playbookComplianceScore: nextScore,
+                                            playbookGrade: suggestedGrade,
+                                        }));
+                                    };
+
+                                    return (
+                                        <div className="mt-3 p-4 rounded-xl bg-primary/5 border border-primary/20 space-y-3.5">
+                                            {/* Header */}
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-2">
+                                                    <BookOpen size={16} className="text-primary" />
+                                                    <span className="text-xs font-bold text-primary uppercase tracking-wider">
+                                                        Playbook Benchmark
+                                                    </span>
+                                                </div>
+                                                {selectedStrategy.setupType && (
+                                                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-primary/10 text-primary border border-primary/20">
+                                                        {selectedStrategy.setupType}
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            {/* Ideal Zones & Min RR */}
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                                                {selectedStrategy.idealEntry && (
+                                                    <div className="bg-white/60 dark:bg-white/5 p-2.5 rounded-xl border border-dashboard">
+                                                        <span className="text-[10px] text-gray-500 font-bold block uppercase">Ideal Entry</span>
+                                                        <span className="font-semibold text-gray-700 dark:text-gray-200 line-clamp-1">{selectedStrategy.idealEntry}</span>
+                                                    </div>
+                                                )}
+                                                {selectedStrategy.idealStopLoss && (
+                                                    <div className="bg-white/60 dark:bg-white/5 p-2.5 rounded-xl border border-dashboard">
+                                                        <span className="text-[10px] text-gray-500 font-bold block uppercase">Ideal SL</span>
+                                                        <span className="font-semibold text-gray-700 dark:text-gray-200 line-clamp-1">{selectedStrategy.idealStopLoss}</span>
+                                                    </div>
+                                                )}
+                                                {selectedStrategy.riskRewardMin != null && (
+                                                    <div className="bg-white/60 dark:bg-white/5 p-2.5 rounded-xl border border-dashboard">
+                                                        <span className="text-[10px] text-gray-500 font-bold block uppercase">Min R:R</span>
+                                                        <span className="font-bold text-primary">{selectedStrategy.riskRewardMin}:1</span>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Pre-Flight Execution Checklist */}
+                                            {totalRules > 0 && (
+                                                <div className="p-3 rounded-xl bg-white/70 dark:bg-white/5 border border-dashboard space-y-2.5">
+                                                    <div className="flex items-center justify-between">
+                                                        <div className="flex items-center gap-1.5">
+                                                            <ShieldCheck size={14} className="text-primary" />
+                                                            <span className="text-xs font-bold text-gray-700 dark:text-gray-200">
+                                                                Pre-Flight Execution Checklist
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-[11px] font-bold text-primary">
+                                                                {checkedCount}/{totalRules} ({complianceScore}%)
+                                                            </span>
+                                                            <span
+                                                                className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded ${
+                                                                    complianceScore === 100
+                                                                        ? "bg-emerald-500/10 text-emerald-600"
+                                                                        : complianceScore >= 50
+                                                                        ? "bg-amber-500/10 text-amber-600"
+                                                                        : "bg-red-500/10 text-red-600"
+                                                                }`}
+                                                            >
+                                                                {complianceScore === 100 ? "A+ Ready" : complianceScore >= 50 ? "Caution" : "Unverified"}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="space-y-1.5">
+                                                        {ruleItems.map((rule, idx) => (
+                                                            <button
+                                                                type="button"
+                                                                key={idx}
+                                                                onClick={() => toggleRuleCheck(idx)}
+                                                                className={`w-full text-left p-2 rounded-lg text-xs flex items-center gap-2.5 transition-all cursor-pointer border ${
+                                                                    playbookChecks[idx]
+                                                                        ? "bg-primary/10 border-primary/30 text-gray-800 dark:text-white"
+                                                                        : "bg-white/40 dark:bg-black/20 border-dashboard text-gray-600 dark:text-gray-400 hover:border-gray-300"
+                                                                }`}
+                                                            >
+                                                                {playbookChecks[idx] ? (
+                                                                    <CheckSquare size={15} className="text-primary shrink-0" />
+                                                                ) : (
+                                                                    <Square size={15} className="text-gray-400 shrink-0" />
+                                                                )}
+                                                                <span className={playbookChecks[idx] ? "font-medium line-through opacity-90" : "font-normal"}>
+                                                                    {rule}
+                                                                </span>
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Reference Charts Preview */}
+                                            {selectedStrategy.referenceImages && selectedStrategy.referenceImages.length > 0 && (
+                                                <div>
+                                                    <span className="text-[10px] uppercase font-bold text-gray-500 block mb-1.5">
+                                                        Reference Charts (Click to inspect)
+                                                    </span>
+                                                    <div className="flex gap-2">
+                                                        {selectedStrategy.referenceImages.map((url: string, idx: number) => (
+                                                            <button
+                                                                type="button"
+                                                                key={url}
+                                                                onClick={() => setFormLightboxIndex(idx)}
+                                                                className="w-16 h-11 rounded-lg overflow-hidden border border-dashboard hover:border-primary transition-colors cursor-pointer"
+                                                            >
+                                                                <img src={url} alt={`Reference ${idx + 1}`} className="w-full h-full object-cover" />
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Setup Grade Selector */}
+                                            <div className="pt-2 border-t border-dashboard/50">
+                                                <div className="flex items-center justify-between mb-1.5">
+                                                    <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                                        Setup Execution Grade
+                                                    </label>
+                                                    {totalRules > 0 && (
+                                                        <span className="text-[10px] text-gray-400 flex items-center gap-1">
+                                                            <Sparkles size={10} className="text-primary" /> Auto-suggested by checklist
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <div className="grid grid-cols-4 gap-1.5">
+                                                    {[
+                                                        { grade: "A+", label: "A+ Textbook", color: "text-emerald-600 bg-emerald-500/10 border-emerald-500/30" },
+                                                        { grade: "A", label: "A Standard", color: "text-blue-600 bg-blue-500/10 border-blue-500/30" },
+                                                        { grade: "B", label: "B Acceptable", color: "text-amber-600 bg-amber-500/10 border-amber-500/30" },
+                                                        { grade: "C", label: "C Impulsive", color: "text-red-600 bg-red-500/10 border-red-500/30" },
+                                                    ].map((g) => (
+                                                        <button
+                                                            key={g.grade}
+                                                            type="button"
+                                                            onClick={() => setFormData((p) => ({ ...p, playbookGrade: p.playbookGrade === g.grade ? "" : g.grade }))}
+                                                            className={`py-1.5 px-2 rounded-lg text-xs font-bold border transition-all text-center ${
+                                                                formData.playbookGrade === g.grade
+                                                                    ? `${g.color} ring-2 ring-primary/40`
+                                                                    : "bg-white/60 dark:bg-white/5 border-dashboard text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                                                            }`}
+                                                        >
+                                                            {g.label}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })()}
                             </div>
+
+                            {/* Lightbox for form preview */}
+                            {formLightboxIndex !== null && (
+                                <PlaybookLightbox
+                                    isOpen={formLightboxIndex !== null}
+                                    images={
+                                        strategies.find((s: any) => s.name === formData.strategy)?.referenceImages || []
+                                    }
+                                    initialIndex={formLightboxIndex}
+                                    title={`${formData.strategy} — Reference Chart`}
+                                    onClose={() => setFormLightboxIndex(null)}
+                                />
+                            )}
 
                             {/* Custom Tags */}
                             <div className="space-y-2">
@@ -1508,34 +1724,32 @@ export default function JournalForm({
                     />
                 )}
 
-                {/* Screenshots Section (Phase 53) */}
+                {/* Screenshots Section — R2 File Upload */}
                 <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm space-y-6">
                     <h3 className="text-xl font-bold text-gray-700 dark:text-white flex items-center gap-2">
                         <div className="w-1.5 h-6 bg-pink-500 rounded-full"></div>
                         Trade Screenshots
+                        <span className="text-xs font-medium text-gray-400 ml-auto">
+                            {(formData.images || []).length}/2
+                        </span>
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {/* Existing Images */}
                         {(formData.images || []).map(
-                            (rawImg: string, idx: number) => {
-                                const img = transformImageUrl(rawImg);
-                                return (
+                            (imgUrl: string, idx: number) => (
                                     <div
                                         key={idx}
                                         className="relative aspect-video rounded-xl overflow-hidden group border border-dashboard"
                                     >
-                                        <Image
-                                            src={img}
+                                        <img
+                                            src={imgUrl}
                                             alt={`Screenshot ${idx + 1}`}
-                                            fill
-                                            unoptimized
-                                            className="object-cover"
+                                            className="w-full h-full object-cover"
                                             onError={(e) => {
                                                 const target = e.currentTarget;
-                                                const parent =
-                                                    target.parentElement;
+                                                const parent = target.parentElement;
                                                 if (parent) {
-                                                    parent.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-white/5 text-gray-500 text-sm p-4 text-center">Image failed to load<br/><span class="text-xs opacity-60 break-all">${img}</span></div>`;
+                                                    parent.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-white/5 text-gray-500 text-sm p-4 text-center">Image failed to load<br/><span class="text-xs opacity-60 break-all">${imgUrl}</span></div>`;
                                                 }
                                             }}
                                         />
@@ -1546,10 +1760,7 @@ export default function JournalForm({
                                                 size="icon"
                                                 aria-label="Remove image"
                                                 onClick={() => {
-                                                    const newImages = [
-                                                        ...(formData.images ||
-                                                            []),
-                                                    ];
+                                                    const newImages = [...(formData.images || [])];
                                                     newImages.splice(idx, 1);
                                                     setFormData((prev) => ({
                                                         ...prev,
@@ -1562,76 +1773,88 @@ export default function JournalForm({
                                             </Button>
                                         </div>
                                     </div>
-                                );
-                            }
+                            )
                         )}
 
-                        {/* URL Input */}
-                        <div className="flex gap-2 items-start">
-                            <input
-                                ref={imageInputRef}
-                                type="url"
-                                placeholder="Paste image URL (e.g. TradingView, Imgur)..."
-                                className="flex-1 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none"
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                        e.preventDefault();
-                                        const input = e.currentTarget;
-                                        const url = input.value.trim();
-                                        if (url) {
-                                            if (url.startsWith("http")) {
-                                                const directUrl =
-                                                    transformImageUrl(url);
-                                                setFormData((prev) => ({
-                                                    ...prev,
-                                                    images: [
-                                                        ...(prev.images || []),
-                                                        directUrl,
-                                                    ],
-                                                }));
-                                                input.value = "";
-                                            } else {
-                                                toast.error(
-                                                    "URL must start with http:// or https://"
-                                                );
-                                            }
-                                        }
-                                    }
-                                }}
-                            />
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => {
-                                    if (imageInputRef.current) {
-                                        const url =
-                                            imageInputRef.current.value.trim();
-                                        if (url) {
-                                            if (url.startsWith("http")) {
-                                                const directUrl =
-                                                    transformImageUrl(url);
-                                                setFormData((prev) => ({
-                                                    ...prev,
-                                                    images: [
-                                                        ...(prev.images || []),
-                                                        directUrl,
-                                                    ],
-                                                }));
-                                                imageInputRef.current.value =
-                                                    "";
-                                            } else {
-                                                toast.error(
-                                                    "URL must start with http:// or https://"
-                                                );
-                                            }
-                                        }
-                                    }
-                                }}
-                                className="h-[50px] px-6 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors text-primary font-bold gap-2"
+                        {/* Upload loading placeholder */}
+                        {uploadingImages > 0 && Array.from({ length: uploadingImages }).map((_, idx) => (
+                            <div
+                                key={`uploading-${idx}`}
+                                className="aspect-video rounded-xl border-2 border-dashed border-primary/30 bg-primary/5 dark:bg-primary/10 flex items-center justify-center"
                             >
-                                Add <Plus size={20} />
-                            </Button>
-                        </div>
+                                <div className="flex flex-col items-center gap-2">
+                                    <Loader2 size={24} className="animate-spin text-primary" />
+                                    <span className="text-xs font-medium text-primary">Uploading...</span>
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* Upload Drop Zone — hidden when 2 images reached */}
+                        {(formData.images || []).length + uploadingImages < 2 && (
+                            <label
+                                className="aspect-video rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-primary dark:hover:border-primary bg-gray-50 dark:bg-black/20 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all cursor-pointer flex flex-col items-center justify-center gap-2 group"
+                                onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add('border-primary', 'bg-primary/5'); }}
+                                onDragLeave={(e) => { e.currentTarget.classList.remove('border-primary', 'bg-primary/5'); }}
+                                onDrop={async (e) => {
+                                    e.preventDefault();
+                                    e.currentTarget.classList.remove('border-primary', 'bg-primary/5');
+                                    const files = Array.from(e.dataTransfer.files);
+                                    const currentCount = (formData.images || []).length + uploadingImages;
+                                    const allowed = Math.min(files.length, 2 - currentCount);
+                                    if (allowed <= 0) { toast.error("Maximum 2 screenshots per trade."); return; }
+                                    for (let i = 0; i < allowed; i++) {
+                                        const file = files[i];
+                                        if (file.size > 1 * 1024 * 1024) { toast.error(`"${file.name}" exceeds 1MB limit.`); continue; }
+                                        if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) { toast.error(`"${file.name}" is not a supported image type.`); continue; }
+                                        setUploadingImages((prev) => prev + 1);
+                                        try {
+                                            const fd = new FormData();
+                                            fd.append('file', file);
+                                            fd.append('purpose', 'journal');
+                                            const res = await fetch('/api/upload', { method: 'POST', body: fd });
+                                            const data = await res.json();
+                                            if (!res.ok) { toast.error(data.error || 'Upload failed'); continue; }
+                                            setFormData((prev) => ({ ...prev, images: [...(prev.images || []), data.url] }));
+                                        } catch { toast.error('Upload failed. Please try again.'); }
+                                        finally { setUploadingImages((prev) => Math.max(0, prev - 1)); }
+                                    }
+                                }}
+                            >
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept="image/jpeg,image/png,image/webp"
+                                    className="sr-only"
+                                    onChange={async (e) => {
+                                        const file = e.target.files?.[0];
+                                        if (!file) return;
+                                        e.target.value = ''; // Reset so same file can be re-selected
+                                        const currentCount = (formData.images || []).length + uploadingImages;
+                                        if (currentCount >= 2) { toast.error("Maximum 2 screenshots per trade."); return; }
+                                        if (file.size > 1 * 1024 * 1024) { toast.error(`File exceeds 1MB limit (${(file.size / 1024 / 1024).toFixed(1)}MB).`); return; }
+                                        if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) { toast.error('Only JPG, PNG, and WebP images are accepted.'); return; }
+                                        setUploadingImages((prev) => prev + 1);
+                                        try {
+                                            const fd = new FormData();
+                                            fd.append('file', file);
+                                            fd.append('purpose', 'journal');
+                                            const res = await fetch('/api/upload', { method: 'POST', body: fd });
+                                            const data = await res.json();
+                                            if (!res.ok) { toast.error(data.error || 'Upload failed'); return; }
+                                            setFormData((prev) => ({ ...prev, images: [...(prev.images || []), data.url] }));
+                                        } catch { toast.error('Upload failed. Please try again.'); }
+                                        finally { setUploadingImages((prev) => Math.max(0, prev - 1)); }
+                                    }}
+                                />
+                                <ImagePlus size={28} className="text-gray-400 dark:text-gray-500 group-hover:text-primary transition-colors" />
+                                <span className="text-xs font-medium text-gray-500 dark:text-gray-400 group-hover:text-primary transition-colors">
+                                    Drop image or click to upload
+                                </span>
+                                <span className="text-[10px] text-gray-400">
+                                    JPG, PNG, WebP · Max 1MB
+                                </span>
+                            </label>
+                        )}
                     </div>
                 </div>
 

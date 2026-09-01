@@ -20,6 +20,8 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
 interface EmailPreferences {
     reports: boolean;
     activation: boolean;
@@ -68,6 +70,7 @@ export default function SettingsClient() {
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [isSavingEmail, setIsSavingEmail] = useState(false);
+    const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
     const [emailPrefs, setEmailPrefs] = useState<EmailPreferences>({
         ...DEFAULT_EMAIL_PREFS,
     });
@@ -209,26 +212,47 @@ export default function SettingsClient() {
                                         <User size={36} />
                                     </div>
                                 )}
+                                {isUploadingAvatar && (
+                                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-xl">
+                                        <Loader2 size={24} className="animate-spin text-white" />
+                                    </div>
+                                )}
                             </div>
                             <label className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors cursor-pointer">
                                 <Camera size={14} className="text-white" />
                                 <input
                                     type="file"
-                                    accept="image/*"
+                                    accept="image/jpeg,image/png,image/webp"
                                     className="sr-only"
-                                    onChange={(e) => {
+                                    onChange={async (e) => {
                                         const file = e.target.files?.[0];
-                                        if (file) {
-                                            if (file.size > 1 * 1024 * 1024)
+                                        if (!file) return;
+                                        e.target.value = ""; // Reset so same file can be re-selected
+                                        if (file.size > 1 * 1024 * 1024) {
+                                            toast.error("Image must be under 1MB.");
+                                            return;
+                                        }
+                                        if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+                                            toast.error("Only JPG, PNG, and WebP images are accepted.");
+                                            return;
+                                        }
+                                        setIsUploadingAvatar(true);
+                                        try {
+                                            const fd = new FormData();
+                                            fd.append("file", file);
+                                            fd.append("purpose", "avatar");
+                                            const res = await fetch("/api/upload", { method: "POST", body: fd });
+                                            const data = await res.json();
+                                            if (!res.ok) {
+                                                toast.error(data.error || "Upload failed");
                                                 return;
-                                            const reader = new FileReader();
-                                            reader.onloadend = () => {
-                                                setFormData((prev) => ({
-                                                    ...prev,
-                                                    image: reader.result as string,
-                                                }));
-                                            };
-                                            reader.readAsDataURL(file);
+                                            }
+                                            setFormData((prev) => ({ ...prev, image: data.url }));
+                                            toast.success("Avatar uploaded! Click Save to apply.");
+                                        } catch {
+                                            toast.error("Upload failed. Please try again.");
+                                        } finally {
+                                            setIsUploadingAvatar(false);
                                         }
                                     }}
                                 />
@@ -244,7 +268,7 @@ export default function SettingsClient() {
                         </div>
                     </div>
                     <p className="text-xs text-gray-400">
-                        JPG, PNG or GIF · Max 1MB · Recommended 400×400px
+                        JPG, PNG or WebP · Max 1MB · Recommended 400×400px
                     </p>
                 </div>
 
