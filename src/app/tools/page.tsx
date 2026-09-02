@@ -9,9 +9,26 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Trading Tools | TheNextTrade",
+    title: "18 Free Professional Forex Trading Calculators & Tools | TheNextTrade",
     description:
-        "14 professional Forex trading tools: calculators for position sizing, risk management, Fibonacci levels, pivot points, compounding, and more. All free.",
+        "Institutional-grade Forex trading tools: Position Size, Pip Value, Margin, Risk/Reward, Fibonacci, Drawdown, and Currency Heat Map calculators. 100% free with no sign-up required.",
+    alternates: {
+        canonical: "/tools",
+    },
+    openGraph: {
+        title: "18 Free Professional Forex Trading Calculators & Tools",
+        description:
+            "Institutional-grade Forex trading tools: Position Size, Pip Value, Margin, Risk/Reward, Fibonacci, and Drawdown calculators. 100% free.",
+        url: "/tools",
+        siteName: "TheNextTrade",
+        type: "website",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "18 Free Professional Forex Trading Calculators & Tools",
+        description:
+            "Position Size, Pip Value, Margin, Risk/Reward, and Fibonacci calculators for Forex traders.",
+    },
 };
 
 export const revalidate = 86400;

@@ -7,6 +7,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { getSimilarTools } from "@/config/tools-data";
 import { buttonVariants } from "@/components/ui/button-variants";
+import { getBaseUrl } from "@/lib/url";
 
 import {
     HelpCircle,
@@ -25,8 +26,7 @@ interface ToolPageLayoutProps {
 
 export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
     const similarTools = getSimilarTools(tool.slug, 6);
-    const baseUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com";
+    const baseUrl = getBaseUrl();
 
     return (
         <ToolsPageShell maxWidth="max-w-6xl" variant="workspace">

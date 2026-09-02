@@ -25,19 +25,31 @@ export const FireflyBackground = ({
     >([]);
 
     useEffect(() => {
-        const classes = [styles.firefly1, styles.firefly2, styles.firefly3];
-        const newFireflies = Array.from({ length: count }).map((_, i) => ({
-            id: i,
-            animationClass: classes[Math.floor(Math.random() * classes.length)],
-            style: {
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDuration: `${7 + Math.random() * 10}s`,
-                animationDelay: `${Math.random() * 5}s`,
-                scale: Math.random() * 0.6 + 0.5,
-            } as React.CSSProperties,
-        }));
-        setFireflies(newFireflies);
+        const init = () => {
+            const classes = [styles.firefly1, styles.firefly2, styles.firefly3];
+            const newFireflies = Array.from({ length: count }).map((_, i) => ({
+                id: i,
+                animationClass: classes[Math.floor(Math.random() * classes.length)],
+                style: {
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                    animationDuration: `${7 + Math.random() * 10}s`,
+                    animationDelay: `${Math.random() * 5}s`,
+                    scale: Math.random() * 0.6 + 0.5,
+                } as React.CSSProperties,
+            }));
+            setFireflies(newFireflies);
+        };
+
+        if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+            const handle = (window as Window & { requestIdleCallback: (cb: () => void) => number }).requestIdleCallback(init);
+            return () => {
+                (window as Window & { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(handle);
+            };
+        } else {
+            const timer = setTimeout(init, 100);
+            return () => clearTimeout(timer);
+        }
     }, [count]);
 
     const activeColorClass = colorStyles[color] || colorStyles.primary;

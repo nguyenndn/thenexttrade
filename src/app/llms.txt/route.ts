@@ -1,16 +1,22 @@
 import { NextResponse } from "next/server";
+import { getBaseUrl } from "@/lib/url";
 
 export async function GET() {
-    const baseUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
+    const baseUrl = getBaseUrl();
 
     const content = `# TheNextTrade
-> Professional Forex Trading Tools, Education & Market Analysis Platform
+> Professional Forex Trading Tools, Trading Playbook & Market Analytics Platform
 
 ## About
-TheNextTrade is a forex trading education and tools platform built by professional traders and software engineers. We provide 18 free institutional-grade trading calculators, a structured 3-level Academy with 30+ lessons, real-time market data, and a comprehensive knowledge base — empowering retail traders to make data-driven, systematic decisions.
+TheNextTrade is a forex trading platform built by professional traders and software engineers. We provide 18 free institutional-grade trading calculators, Trading Playbook Studio with Preset Setups, Automated Trade Journal with MT5 Sync, a structured 3-level Academy with 30+ lessons, real-time market data, and a comprehensive knowledge base — empowering retail traders to make data-driven, systematic decisions.
 
 ## Main Sections
+
+### Trading Playbook & Journal (The Pro Trader OS)
+- Trading Playbook Studio: Build and manage systematic trade setups with defined entry, SL, TP, and reference charts.
+- Pre-Flight Execution Checklist: Live compliance scoring to prevent impulsive trades.
+- Automated Trade Journal: Multi-broker MT5 sync with edge analytics and psychology leak detection.
+- URL: ${baseUrl}/dashboard/strategies
 
 ### Trading Tools (18 Free Calculators)
 Professional-grade financial calculators for forex risk management and analysis.

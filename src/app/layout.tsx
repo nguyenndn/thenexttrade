@@ -8,6 +8,7 @@ import { Lexend, Source_Sans_3 } from "next/font/google";
 import { Toaster } from "sonner";
 import { SystemAnnouncementBanner } from "@/components/layout/SystemAnnouncementBanner";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
+import { getBaseUrl, absoluteUrl } from "@/lib/url";
 
 const sourceSans = Source_Sans_3({
     subsets: ["latin"],
@@ -20,8 +21,9 @@ const sourceSans = Source_Sans_3({
 const lexend = Lexend({
     subsets: ["latin"],
     variable: "--font-lexend",
-    display: "optional",
+    display: "swap",
     preload: true,
+    adjustFontFallback: true,
     weight: ["600", "700"],
 });
 
@@ -84,9 +86,7 @@ export const metadata: Metadata = {
             "application/rss+xml": "/feed.xml",
         },
     },
-    metadataBase: new URL(
-        process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
-    ),
+    metadataBase: new URL(getBaseUrl()),
 };
 
 export const viewport: Viewport = {
@@ -180,12 +180,10 @@ navigator.serviceWorker.register('/sw.js');
                         type="WebSite"
                         data={{
                             name: "TheNextTrade",
-                            url:
-                                process.env.NEXT_PUBLIC_APP_URL ||
-                                "https://thenexttrade.com",
+                            url: getBaseUrl(),
                             potentialAction: {
                                 "@type": "SearchAction",
-                                target: `${process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com"}/search?q={search_term_string}`,
+                                target: absoluteUrl("/search?q={search_term_string}"),
                                 "query-input":
                                     "required name=search_term_string",
                             },
@@ -195,10 +193,8 @@ navigator.serviceWorker.register('/sw.js');
                         type="Organization"
                         data={{
                             name: "TheNextTrade",
-                            url:
-                                process.env.NEXT_PUBLIC_APP_URL ||
-                                "https://thenexttrade.com",
-                            logo: `${process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com"}/logo.png`,
+                            url: getBaseUrl(),
+                            logo: absoluteUrl("/logo.png"),
                             description:
                                 "Professional Forex Trading Tools & Academy. Master the markets with structured education, trading tools, and market analysis.",
                             foundingDate: "2024",
@@ -206,7 +202,7 @@ navigator.serviceWorker.register('/sw.js');
                             contactPoint: {
                                 "@type": "ContactPoint",
                                 contactType: "customer support",
-                                url: `${process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com"}/contact`,
+                                url: absoluteUrl("/contact"),
                             },
                         }}
                     />

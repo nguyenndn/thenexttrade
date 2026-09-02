@@ -1,99 +1,124 @@
-# 🚀 Hướng dẫn Triển khai & Cấu hình Cloudflare (Deployment Guide)
+# 🚀 Hướng dẫn Triển khai & Vận hành Hệ thống (Deployment & Operations Guide)
 
-> **Lưu ý quan trọng cho môi trường Vercel (Testing) & Coolify (Production).**
-> Tài liệu này hướng dẫn cách cấu hình môi trường và quản lý việc tắt/bật cơ chế bảo mật Cloudflare Turnstile (CAPTCHA) cùng Cloudflare Tunnel khi chuyển đổi giữa các môi trường triển khai.
+> **Tài liệu chuẩn dành cho Developer & DevOps khi triển khai TheNextTrade lên các môi trường (Local, Staging, Vercel, Coolify VPS / Docker / Cloudflare).**
+> Cập nhật lần cuối: **02/09/2026**
 
 ---
 
-## 1. Phân biệt các dịch vụ Cloudflare trong dự án
+## 1. 🌐 Kiến Trúc Tên Miền Động & Base URL (Platform-Agnostic)
 
-Để tránh nhầm lẫn trong quá trình vận hành, dự án sử dụng hai khái niệm Cloudflare quan trọng:
+Hệ thống được thiết kế **hoàn toàn độc lập với nền tảng (Platform-Agnostic)**. Toàn bộ hạ tầng SEO, OpenGraph, Canonical URLs, Sitemap, Robots.txt, JSON-LD Schemas, Email Templates và Share Buttons đều được điều hướng tập trung qua module [`src/lib/url.ts`](file:///c:/laragon/www/gsn-crm/src/lib/url.ts) và biến môi trường `NEXT_PUBLIC_APP_URL`.
 
-| Dịch vụ | Mức độ | Vai trò trong dự án | Cấu hình |
+### Cơ chế hoạt động:
+1. **Root Layout (`src/app/layout.tsx`):**
+   - Thiết lập `metadataBase: new URL(getBaseUrl())` trích xuất trực tiếp từ `NEXT_PUBLIC_APP_URL` (hoặc fallback `APP_URL`).
+2. **Page-level Metadata:**
+   - Sử dụng Relative Paths (ví dụ: `canonical: "/tools/position-size-calculator"`, `openGraph: { url: "/tools/position-size-calculator" }`).
+   - Next.js tự động ghép với `metadataBase` tại thời điểm render.
+3. **Sitemap, Robots, `llms.txt`, Schemas & Transactional Emails:**
+   - Sử dụng `getBaseUrl()` hoặc `absoluteUrl("/path")` từ `@/lib/url`.
+
+> [!TIP]
+> **Khi thay đổi tên miền hoặc triển khai domain mới (White-label / Custom domain):**
+> Bạn **KHÔNG CẦN sửa bất kỳ dòng code nào**. Chỉ cần thay đổi đúng 1 biến `NEXT_PUBLIC_APP_URL="https://tenmiencuaban.com"` trên Dashboard máy chủ (Coolify / Vercel / VPS), toàn bộ 100% hệ thống sẽ tự động cập nhật theo domain mới.
+
+---
+
+## 2. 📋 Bảng Tra Cứu Biến Môi Trường (Environment Variables Matrix)
+
+| Tên biến | Bắt buộc? | Môi trường | Mô tả & Giá trị mẫu |
+| :--- | :---: | :---: | :--- |
+| **`NEXT_PUBLIC_APP_URL`** | **Có** | All | URL gốc của website (`http://localhost:3000` ở local, `https://thenexttrade.com` ở prod). |
+| **`DATABASE_URL`** | **Có** | All | PostgreSQL Connection String (hỗ trợ PgBouncer pooler port 6543 cho serverless). |
+| **`DIRECT_URL`** | **Có** | All | PostgreSQL Direct Connection (port 5432 dùng cho Prisma migrations). |
+| **`NEXT_PUBLIC_SUPABASE_URL`** | **Có** | All | URL dự án Supabase Auth (`https://your-project.supabase.co`). |
+| **`NEXT_PUBLIC_SUPABASE_ANON_KEY`** | **Có** | All | Khóa public Supabase Anon Key. |
+| **`SUPABASE_SERVICE_ROLE_KEY`** | **Có** | All | Khóa bí mật Supabase Service Role (chỉ chạy server-side). |
+| **`ENCRYPTION_SECRET`** | **Có** | All | Chuỗi bảo mật ngẫu nhiên ít nhất 32 ký tự để mã hóa API keys của AI Gateway. |
+| **`INTERNAL_SECURITY_SECRET`** | **Có** | All | Secret xác thực giữa các services nội bộ. |
+| **`CRON_SECRET`** | **Có** | Prod/Staging | Token xác thực cho các Background Cron Endpoints. |
+| **`NEXT_PUBLIC_TURNSTILE_SITE_KEY`** | Tùy chọn | Prod | Cloudflare Turnstile Site Key. |
+| **`TURNSTILE_SECRET_KEY`** | Tùy chọn | Prod | Cloudflare Turnstile Secret Key. |
+| **`DISABLE_TURNSTILE`** | Tùy chọn | Local/Staging | Đặt `true` để bypass CAPTCHA khi chạy test tự động hoặc preview. |
+| **`SMTP_HOST` / `SMTP_USER` / ...** | **Có** | Prod | Thông số kết nối gửi email giao dịch (Brevo / Resend / Mailtrap). |
+| **`UPSTASH_REDIS_REST_URL` / `_TOKEN`** | Tùy chọn | Prod | Redis REST URL dùng cho Rate Limiting phân tán. |
+| **`R2_ENDPOINT` / `R2_BUCKET` / ...** | Tùy chọn | All | Cloudflare R2 Object Storage để lưu trữ hình ảnh bài viết và chứng chỉ. |
+| **`GEMINI_API_KEY` / `DEEPSEEK_API_KEY`** | Tùy chọn | All | API keys cho tính năng AI Trading Coach & Playbook Studio. |
+| **`PVSR_API_URL` / `PVSR_API_KEY`** | Tùy chọn | All | API kết nối đối tác PVSR Capital & IB Monitor. |
+
+---
+
+## 3. 🛡️ Cấu Hình Bảo Mật Cloudflare (Turnstile & Tunnel)
+
+Dự án sử dụng 2 dịch vụ độc lập của Cloudflare:
+
+| Dịch vụ | Phạm vi | Mục đích | Cách quản lý |
 | :--- | :--- | :--- | :--- |
-| **Cloudflare Tunnel** | Hạ tầng (Infrastructure) | Chuyển tiếp traffic an toàn từ CDN Cloudflare về cổng `3000` trên VPS mà không cần mở port ra ngoài internet. | Cấu hình trên Cloudflare Dashboard & Coolify VPS (Không cần sửa trong code). |
-| **Cloudflare Turnstile** | Ứng dụng (Application) | Cơ chế CAPTCHA thế hệ mới để bảo vệ các form (Đăng nhập, Đăng ký, VIP Request, Thêm tài khoản) tránh bị spam/bot. | Quản lý bằng biến môi trường `.env` trong code. |
+| **Cloudflare Tunnel** | Hạ tầng | Chuyển tiếp an toàn traffic từ CDN về port `3000` của VPS (Coolify/Docker) mà không cần mở port public. | Cấu hình tại Cloudflare Zero Trust Dashboard & VPS. |
+| **Cloudflare Turnstile** | Ứng dụng | CAPTCHA chống bot cho các form Đăng ký, Đăng nhập, VIP Request, Add MT5 Account. | Bật/tắt bằng biến môi trường `DISABLE_TURNSTILE`. |
+
+### Quy tắc chuyển đổi môi trường:
+- **Môi trường Test / Staging / Preview:**
+  ```env
+  DISABLE_TURNSTILE=true
+  NEXT_PUBLIC_DISABLE_TURNSTILE=true
+  ```
+  *(Cho phép QA và automated test chạy mượt mà không bị vướng CAPTCHA).*
+
+- **Môi trường Production Thực Tế (Bắt buộc bật):**
+  ```env
+  DISABLE_TURNSTILE=false
+  NEXT_PUBLIC_DISABLE_TURNSTILE=false
+  NEXT_PUBLIC_TURNSTILE_SITE_KEY=0x4AAAAAA...
+  TURNSTILE_SECRET_KEY=0x4AAAAAA...
+  ```
 
 ---
 
-## 2. Hướng dẫn cấu hình môi trường Vercel (Bypass Turnstile để Test)
+## 4. ⏰ Thiết Lập Cron Jobs (Background Tasks)
 
-Khi triển khai thử nghiệm trên **Vercel** để kiểm thử giao diện hoặc luồng nghiệp vụ, chúng ta thường muốn **tắt tạm thời Turnstile** để việc test thủ công hoặc test tự động không bị cản trở bởi CAPTCHA.
+Hệ thống có 4 API Cron endpoints định kỳ. Khi cấu hình lịch chạy (Coolify Cron, Vercel Cron, hoặc Crontab VPS), luôn gửi kèm Header:
+`Authorization: Bearer <CRON_SECRET>`
 
-### Các biến môi trường cần thiết trên Vercel:
+| Endpoint | Tần suất khuyến nghị | Chức năng |
+| :--- | :---: | :--- |
+| `GET /api/cron/cleanup-stale-ai-requests` | Mỗi 10 phút (`*/10 * * * *`) | Quét dọn các AI requests bị treo/quá hạn để giải phóng quota. |
+| `GET /api/cron/economic-calendar-sync` | Mỗi 30 phút (`*/30 * * * *`) | Đồng bộ tin tức kinh tế vĩ mô thời gian thực cho Calendar Tool. |
+| `GET /api/cron/generate-reports` | Mỗi Chủ Nhật (`0 0 * * 0`) | Tổng hợp báo cáo tuần & Weekly Action Plan của AI Coach. |
+| `GET /api/cron/activation-reminders` | Hàng ngày (`0 9 * * *`) | Gửi email nhắc nhở kích hoạt MT5 cho người dùng mới. |
 
-Thêm các cặp biến này vào **Vercel Dashboard → Project Settings → Environment Variables**:
+---
 
-```env
-# 1. Tắt cơ chế Turnstile CAPTCHA (Bắt buộc cho Vercel test)
-DISABLE_TURNSTILE=true
-NEXT_PUBLIC_DISABLE_TURNSTILE=true
+## 5. 🔍 Quy Trình Kiểm Tra Trước Khi Deploy (Pre-flight Checklist)
 
-# 2. Các biến môi trường cơ bản khác
-NEXT_PUBLIC_APP_URL=https://your-vercel-preview-url.vercel.app
-DATABASE_URL=postgresql://...
-DIRECT_URL=postgresql://...
-NEXT_PUBLIC_SUPABASE_URL=https://...
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
-SUPABASE_SERVICE_ROLE_KEY=eyJ...
+Trước khi commit/push hoặc kích hoạt lệnh build trên máy chủ, chạy bộ kiểm thử bắt buộc:
+
+```bash
+# 1. Kiểm tra toàn bộ Type TypeScript (Bắt buộc 0 errors)
+npx tsc --noEmit
+
+# 2. Kiểm tra chất lượng mã nguồn & Linting (Bắt buộc 0 errors)
+npm run lint
+
+# 3. Chạy toàn bộ Unit & Integration Tests (Bắt buộc 41/41 test files pass)
+npx vitest run
+
+# 4. Sinh Prisma Client
+npx prisma generate
+
+# 5. Build thử nghiệm bản Production
+npm run build
 ```
 
-> [!NOTE]
-> Khi thiết lập `DISABLE_TURNSTILE=true` và `NEXT_PUBLIC_DISABLE_TURNSTILE=true`, tất cả các form bảo vệ bởi Turnstile sẽ tự động được bypass (bỏ qua kiểm tra) và cho phép submit bình thường mà không hiển thị widget CAPTCHA.
-
 ---
 
-## 3. Hướng dẫn cấu hình môi trường Coolify VPS (Production - Bật lại Turnstile)
+## 6. 🧪 Kiểm Thử Sau Khi Deploy (Post-Deployment Smoke Test)
 
-> [!WARNING]
-> **BẮT BUỘC BẬT LẠI TURNSTILE KHI ĐPLOY LÊN COOLIFY PRODUCTION!**
-> Việc tắt Turnstile ở môi trường production thực tế sẽ khiến hệ thống đối mặt với nguy cơ bị bot đăng ký hàng loạt hoặc brute-force mật khẩu.
+Ngay sau khi hệ thống hoàn tất quá trình deploy lên server:
 
-### Bước 1: Lấy Keys từ Cloudflare Dashboard
-1. Truy cập [Cloudflare Dash](https://dash.cloudflare.com/) → Chọn tài khoản của bạn.
-2. Điều hướng đến mục **Turnstile** ở sidebar.
-3. Nhấp vào **Add Site** → Điền tên website và domain (ví dụ: `thenexttrade.com`).
-4. Chọn loại Widget (Managed hoặc Invisible).
-5. Lấy 2 khóa: **Site Key** và **Secret Key**.
-
-### Bước 2: Thiết lập biến môi trường trên Coolify
-Trong bảng điều khiển quản lý ứng dụng của **Coolify**, hãy cấu hình các biến sau:
-
-```env
-# 1. Bật cơ chế bảo mật Turnstile (Xóa hoặc đặt thành false)
-DISABLE_TURNSTILE=false
-NEXT_PUBLIC_DISABLE_TURNSTILE=false
-
-# 2. Điền Key thật đã lấy từ Cloudflare Dashboard ở Bước 1
-NEXT_PUBLIC_TURNSTILE_SITE_KEY=your_actual_site_key_here
-TURNSTILE_SECRET_KEY=your_actual_secret_key_here
-
-# 3. Các biến môi trường production khác
-NEXT_PUBLIC_APP_URL=https://thenexttrade.com
-CRON_SECRET=your_long_secure_cron_secret
-```
-
-> [!IMPORTANT]
-> - Nếu `DISABLE_TURNSTILE` được đặt thành `false` hoặc xóa đi, hệ thống sẽ kiểm tra token nghiêm ngặt.
-> - Nếu bạn quên cấu hình `TURNSTILE_SECRET_KEY` trong khi `DISABLE_TURNSTILE` là `false` trên production, hệ thống sẽ trả về lỗi **"Configuration error"** và chặn hoàn toàn mọi lượt submit form.
-
----
-
-## 4. Danh sách các Form được bảo vệ bởi Turnstile
-
-Khi Turnstile được kích hoạt (`DISABLE_TURNSTILE=false`), hãy chắc chắn các trang sau hiển thị widget CAPTCHA và hoạt động bình thường:
-1. **Trang Đăng nhập**: `/auth/login` (Tất cả các phương thức đăng nhập)
-2. **Trang Đăng ký**: `/auth/signup`
-3. **Trang Quên mật khẩu**: `/auth/forgot-password`
-4. **Trang Đăng nhập Admin**: `/admin/login`
-5. **Form Đăng ký VIP**: Trên trang `/community`
-6. **Modal Thêm tài khoản giao dịch**: Khi nhấn nút thêm tài khoản trong trang `/dashboard/accounts`
-
----
-
-## 5. Quy trình xác thực Deploy thành công (Smoke Test Checklist)
-
-Sau khi deploy lên Coolify VPS:
-- [ ] Truy cập trang đăng ký `/auth/signup`, kiểm tra widget Turnstile hiển thị và load thành công.
-- [ ] Thử đăng ký một tài khoản ảo và giải CAPTCHA xem đăng ký có thành công không.
-- [ ] Kiểm tra các log bảo mật trong Admin Dashboard để đảm bảo không có lỗi kết nối Cloudflare Turnstile API.
+- [ ] **Trang chủ & SEO:** Truy cập `https://<domain>/` kiểm tra giao diện và thẻ `<link rel="canonical">` trỏ đúng domain hiện tại.
+- [ ] **Robots & Sitemap:** Truy cập `https://<domain>/robots.txt` và `https://<domain>/sitemap.xml` xem đường dẫn XML có chuẩn xác không.
+- [ ] **AI Endpoint:** Kiểm tra `https://<domain>/llms.txt` hiển thị đầy đủ thông tin Markdown của TheNextTrade.
+- [ ] **Công cụ Trading (18 Tools):** Mở thử `/tools/position-size-calculator` và `/tools/economic-calendar` kiểm tra tính toán và tải dữ liệu.
+- [ ] **Xác thực & Form (Auth):** Thử vào `/auth/login` và `/auth/signup` kiểm tra đăng nhập/đăng ký hoạt động trơn tru.
+- [ ] **Đồng bộ MT5 & Journal:** Vào `/dashboard/journal` kiểm tra dữ liệu lệnh và kết nối WebSocket / API sync.

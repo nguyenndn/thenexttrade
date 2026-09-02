@@ -84,7 +84,7 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
             {/* Golden Firefly Particles */}
             <DynamicFirefly color="gold" count={50} />
 
-            <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center">
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center">
                 {/* Grand Headline with Dynamic Typewriter Console */}
                 <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[76px] font-black text-gray-900 dark:text-white tracking-tight leading-[1.08] mb-4 sm:mb-6 max-w-5xl">
                     Turn Your Trade History <br className="hidden sm:inline" />

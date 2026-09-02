@@ -2,8 +2,18 @@ import { Metadata } from "next";
 import { Scale } from "lucide-react";
 
 export const metadata: Metadata = {
-    title: "Terms of Service | TheNextTrade",
-    description: "Terms of Service and Risk Disclaimer for TheNextTrade.",
+    title: "Terms of Service & Risk Disclaimer | TheNextTrade",
+    description: "Terms of Service, user agreement, and high-risk investment disclaimer for TheNextTrade.",
+    alternates: {
+        canonical: "/legal/terms-of-service",
+    },
+    openGraph: {
+        title: "Terms of Service & Risk Disclaimer | TheNextTrade",
+        description: "Terms of Service, user agreement, and high-risk investment disclaimer for TheNextTrade.",
+        url: "/legal/terms-of-service",
+        siteName: "TheNextTrade",
+        type: "website",
+    },
 };
 
 export default function TermsOfServicePage() {

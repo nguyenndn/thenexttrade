@@ -4,7 +4,18 @@ import { Shield } from "lucide-react";
 export const metadata: Metadata = {
     title: "Privacy Policy | TheNextTrade",
     description:
-        "Privacy Policy and Data Protection information for TheNextTrade.",
+        "Privacy Policy and Data Protection information for TheNextTrade. Learn how we safeguard and encrypt your trading data.",
+    alternates: {
+        canonical: "/legal/privacy-policy",
+    },
+    openGraph: {
+        title: "Privacy Policy | TheNextTrade",
+        description:
+            "Privacy Policy and Data Protection information for TheNextTrade.",
+        url: "/legal/privacy-policy",
+        siteName: "TheNextTrade",
+        type: "website",
+    },
 };
 
 export default function PrivacyPolicyPage() {

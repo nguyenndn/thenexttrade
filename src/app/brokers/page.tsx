@@ -6,9 +6,26 @@ import { DynamicFirefly as FireflyBackground } from "@/components/ui/DynamicFire
 import BrokersClient from "./BrokersClient";
 
 export const metadata: Metadata = {
-    title: "Trusted Partners — Brokers, Crypto & VPS | The Next Trade",
+    title: "Verified Forex Brokers & Infrastructure Partners | TheNextTrade",
     description:
-        "Handpicked forex brokers, crypto exchanges, and VPS hosting we personally use and trust.",
+        "Comprehensive reviews of regulated Forex brokers, low-latency VPS hosting, and crypto trading platforms vetted by professional traders.",
+    alternates: {
+        canonical: "/brokers",
+    },
+    openGraph: {
+        title: "Verified Forex Brokers & Infrastructure Partners | TheNextTrade",
+        description:
+            "Regulated Forex brokers, low-latency VPS hosting, and crypto platforms vetted by professional traders.",
+        url: "/brokers",
+        siteName: "TheNextTrade",
+        type: "website",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "Verified Forex Brokers & Infrastructure Partners",
+        description:
+            "Regulated Forex brokers and low-latency VPS hosting vetted by professional traders.",
+    },
 };
 
 export const revalidate = 86400;

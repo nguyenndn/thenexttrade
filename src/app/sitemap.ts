@@ -2,18 +2,23 @@ export const revalidate = 86400; // Cache sitemap statically for 24 hours
 
 import { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
+import { getBaseUrl } from "@/lib/url";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://example.com";
+    const baseUrl = getBaseUrl();
 
     // 1. Static Routes - Main pages
     const mainRoutes = [
-        { path: "", priority: 1, frequency: "daily" as const },
+        { path: "", priority: 1.0, frequency: "daily" as const },
         { path: "/about", priority: 0.8, frequency: "monthly" as const },
         { path: "/academy", priority: 0.9, frequency: "weekly" as const },
         { path: "/knowledge", priority: 0.9, frequency: "daily" as const },
-        { path: "/brokers", priority: 0.8, frequency: "weekly" as const },
-        { path: "/tools", priority: 0.9, frequency: "monthly" as const },
+        { path: "/brokers", priority: 0.85, frequency: "weekly" as const },
+        { path: "/tools", priority: 0.95, frequency: "weekly" as const },
+        { path: "/trading-style", priority: 0.85, frequency: "monthly" as const },
+        { path: "/trading-systems", priority: 0.85, frequency: "monthly" as const },
+        { path: "/faq", priority: 0.75, frequency: "monthly" as const },
+        { path: "/community", priority: 0.7, frequency: "monthly" as const },
         { path: "/contact", priority: 0.5, frequency: "yearly" as const },
         {
             path: "/knowledge/risk-management",

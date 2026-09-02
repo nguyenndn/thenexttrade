@@ -71,26 +71,28 @@ export function TradeJournalPreviewSection({
         >
             <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]" />
 
-            <section className="py-8 sm:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                {/* Two-Column Layout: Steps + Interactive Cockpit Preview */}
+            <section className="py-8 sm:py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                {/* 1. Top Centered Section Heading (Consistent with other sections) */}
+                <HomeSectionHeading
+                    align="center"
+                    eyebrow="3-step workflow"
+                    title="Three steps to your trading edge"
+                    highlight="trading edge"
+                    description="Sync your MT5 trades, spot the pattern, and get one clear action for your next session."
+                    icon={Target}
+                    className="mb-8 sm:mb-10"
+                />
+
+                {/* 2. Two-Column Layout: Interactive Steps + Live Cockpit Preview */}
                 <div
-                    className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center"
+                    className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center"
                     onMouseEnter={() => setIsPaused(true)}
                     onMouseLeave={() => setIsPaused(false)}
                 >
-                    {/* Left Column: Interactive Steps + CTA */}
-                    <div className="lg:col-span-5 flex flex-col justify-center items-start text-left">
-                        <HomeSectionHeading
-                            align="left"
-                            title="Three steps to your trading edge"
-                            highlight="trading edge"
-                            description="Sync your MT5 trades, spot the pattern, and get one clear action for your next session."
-                            titleClassName="lg:whitespace-nowrap"
-                            className="mb-6 w-full"
-                        />
-
+                    {/* Left Column: Interactive Steps List + CTAs */}
+                    <div className="lg:col-span-5 flex flex-col justify-between h-full text-left">
                         {/* Interactive Steps List */}
-                        <div className="space-y-3 mb-6 w-full">
+                        <div className="space-y-2.5 mb-4 w-full">
                             {STEPS.map((step) => {
                                 const Icon = step.icon;
                                 const isActive = activeStep === step.id;
@@ -100,26 +102,26 @@ export function TradeJournalPreviewSection({
                                         key={step.id}
                                         type="button"
                                         onClick={() => setActiveStep(step.id)}
-                                        className={`group w-full flex items-start gap-4 rounded-2xl p-4 text-left transition-all duration-300 relative border ${
+                                        className={`group w-full flex items-start gap-3.5 rounded-2xl p-3 sm:p-3.5 text-left transition-all duration-300 relative border ${
                                             isActive
-                                                ? "border-gold bg-white dark:bg-white/[0.05] shadow-[0_12px_28px_rgba(229,165,10,0.14)] ring-1 ring-gold/40"
+                                                ? "border-gold bg-white dark:bg-white/[0.05] shadow-[0_10px_24px_rgba(229,165,10,0.14)] ring-1 ring-gold/40"
                                                 : "border-gray-200/80 bg-white/70 dark:border-white/10 dark:bg-white/[0.02] hover:border-gold/30 hover:bg-white dark:hover:bg-white/[0.04]"
                                         }`}
                                     >
                                         {/* Icon Container */}
                                         <div
-                                            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-all duration-300 ${
+                                            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all duration-300 ${
                                                 isActive
                                                     ? "bg-gold text-white shadow-md shadow-gold/20 scale-105"
                                                     : "bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 group-hover:text-gold group-hover:bg-gold/10"
                                             }`}
                                         >
-                                            <Icon size={18} strokeWidth={2.2} />
+                                            <Icon size={17} strokeWidth={2.2} />
                                         </div>
 
                                         {/* Step Details */}
                                         <div className="w-full min-w-0 pt-0.5">
-                                            <div className="mb-1 flex items-center justify-between">
+                                            <div className="mb-0.5 flex items-center justify-between">
                                                 <div className="flex items-center gap-2">
                                                     <span
                                                         className={`text-[10px] font-black uppercase tracking-wider ${
@@ -152,7 +154,7 @@ export function TradeJournalPreviewSection({
                                                     {step.tag}
                                                 </span>
                                             </div>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed font-medium">
+                                            <p className="text-xs text-gray-600 dark:text-gray-400 leading-snug font-medium">
                                                 {step.description}
                                             </p>
                                         </div>
@@ -162,7 +164,7 @@ export function TradeJournalPreviewSection({
                         </div>
 
                         {/* CTAs */}
-                        <div className="flex flex-col sm:flex-row gap-3 w-full">
+                        <div className="flex flex-col sm:flex-row gap-2.5 w-full">
                             <Link
                                 href={
                                     isLoggedIn
@@ -171,12 +173,12 @@ export function TradeJournalPreviewSection({
                                 }
                                 className="w-full sm:flex-1 group"
                             >
-                                <Button className="w-full min-h-12 px-7 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-sm shadow-[0_10px_24px_rgba(229,165,10,0.22)] hover:shadow-[0_14px_30px_rgba(229,165,10,0.3)] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap">
+                                <Button className="w-full min-h-11 px-6 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-xs sm:text-sm shadow-[0_8px_20px_rgba(229,165,10,0.2)] hover:shadow-[0_12px_26px_rgba(229,165,10,0.28)] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap">
                                     {isLoggedIn ? (
                                         <>
                                             Go to Dashboard{" "}
                                             <LayoutDashboard
-                                                size={16}
+                                                size={15}
                                                 className="text-yellow-200 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300"
                                             />
                                         </>
@@ -184,7 +186,7 @@ export function TradeJournalPreviewSection({
                                         <>
                                             Start Free Journal{" "}
                                             <Zap
-                                                size={16}
+                                                size={15}
                                                 className="text-yellow-200 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300"
                                             />
                                         </>
@@ -197,7 +199,7 @@ export function TradeJournalPreviewSection({
                             >
                                 <Button
                                     variant="outline"
-                                    className="w-full min-h-12 px-7 rounded-xl bg-white/90 dark:bg-white/[0.03] border border-gold/35 dark:border-gold/25 hover:border-gold hover:bg-gold/[0.08] dark:hover:bg-gold/[0.06] text-gray-800 dark:text-gray-200 hover:text-gray-950 dark:hover:text-white font-black text-sm shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
+                                    className="w-full min-h-11 px-6 rounded-xl bg-white/90 dark:bg-white/[0.03] border border-gold/35 dark:border-gold/25 hover:border-gold hover:bg-gold/[0.08] dark:hover:bg-gold/[0.06] text-gray-800 dark:text-gray-200 hover:text-gray-950 dark:hover:text-white font-black text-xs sm:text-sm shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
                                 >
                                     View Setup Path{" "}
                                     <ArrowRight
@@ -209,59 +211,60 @@ export function TradeJournalPreviewSection({
                         </div>
                     </div>
 
-                    {/* Right Column: Interactive Live Cockpit Console */}
+                    {/* Right Column: Interactive Live Cockpit Console (STRICT FIXED HEIGHT) */}
                     <div className="lg:col-span-7">
-                        <div className="relative p-3.5 sm:p-5 rounded-3xl border border-gold/25 dark:border-gold/15 bg-white/90 dark:bg-[#111318] shadow-[0_24px_70px_rgba(15,23,42,0.12)] dark:shadow-[0_24px_70px_rgba(0,0,0,0.45)] backdrop-blur-md overflow-hidden">
+                        <div className="relative p-3.5 sm:p-4 rounded-3xl border border-gold/25 dark:border-gold/15 bg-white/90 dark:bg-[#111318] shadow-[0_20px_50px_rgba(15,23,42,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.45)] backdrop-blur-md overflow-hidden">
                             {/* Subtle Ambient Decorative Glows */}
                             <div className="absolute -top-12 -left-12 w-48 h-48 bg-gold/15 dark:bg-gold/5 rounded-full blur-3xl pointer-events-none" />
                             <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
                             {/* App Window Header Bar */}
-                            <div className="flex flex-wrap items-center justify-between gap-2 px-2 py-2 border-b border-gray-200/80 dark:border-white/10 mb-4">
+                            <div className="flex flex-wrap items-center justify-between gap-2 px-1.5 py-1 border-b border-gray-200/80 dark:border-white/10 mb-2.5">
                                 <div className="flex items-center gap-1.5">
                                     <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
-                                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
-                                    <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
                                 </div>
 
-                                {/* Step Selector Pills */}
-                                <div className="flex items-center gap-1 bg-gray-100 dark:bg-white/5 p-1 rounded-xl">
-                                    {STEPS.map((s) => (
+                                {/* Step Switcher Inside App Bar */}
+                                <div className="flex items-center gap-1 bg-gray-100 dark:bg-white/5 p-0.5 rounded-lg">
+                                    {STEPS.map((step) => (
                                         <button
-                                            key={s.id}
+                                            key={step.id}
                                             type="button"
-                                            onClick={() => setActiveStep(s.id)}
-                                            className={`px-2.5 py-1 rounded-lg text-[10px] font-extrabold transition-all duration-200 flex items-center gap-1 ${
-                                                activeStep === s.id
+                                            onClick={() => setActiveStep(step.id)}
+                                            className={`text-[10px] font-bold px-2.5 py-1 rounded-md transition-all ${
+                                                activeStep === step.id
                                                     ? "bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm border border-gold/30"
-                                                    : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                                                    : "text-gray-500 hover:text-gray-800 dark:hover:text-gray-200"
                                             }`}
                                         >
-                                            <span>{s.number}</span>
-                                            <span className="hidden sm:inline">{s.tag}</span>
+                                            {step.number} {step.tag}
                                         </button>
                                     ))}
                                 </div>
 
-                                <div className="flex items-center gap-1.5">
+                                <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                    <span className="text-[8px] text-emerald-600 dark:text-emerald-400 font-black uppercase tracking-wider">
-                                        LIVE DATA
-                                    </span>
+                                    <span>LIVE DATA</span>
                                 </div>
                             </div>
 
-                            {/* Dynamic Content Views - Fixed height container to prevent layout shifts */}
-                            <div className="h-[285px] sm:h-[290px] flex flex-col justify-between overflow-hidden">
+                            {/* Interactive Screens Body */}
+                            <div className="min-h-[215px] sm:h-[220px] flex flex-col justify-between overflow-hidden">
                                 {activeStep === 0 && <PreviewConnectView />}
                                 {activeStep === 1 && <PreviewAnalyzeView />}
                                 {activeStep === 2 && <PreviewImproveView />}
                             </div>
 
-                            {/* Interactive Hint Footer */}
-                            <div className="mt-3.5 pt-2.5 border-t border-gray-100 dark:border-white/5 flex items-center justify-between text-[10px] text-gray-400">
-                                <span className="font-mono">app.thenexttrade.com</span>
-                                <span>Click steps or tabs to explore live preview</span>
+                            {/* Cockpit Status Bar Footer */}
+                            <div className="mt-2.5 pt-2 border-t border-gray-100 dark:border-white/5 flex items-center justify-between text-[10px] text-gray-400">
+                                <span className="font-mono text-[9px]">
+                                    app.thenexttrade.com
+                                </span>
+                                <span className="text-[9px]">
+                                    Click steps or tabs to explore live preview
+                                </span>
                             </div>
                         </div>
                     </div>

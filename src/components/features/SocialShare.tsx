@@ -44,6 +44,8 @@ import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 
+import { getBaseUrl } from "@/lib/url";
+
 interface SocialShareProps {
     title: string;
     slug: string;
@@ -62,9 +64,8 @@ export default function SocialShare({
     const [voteCount, setVoteCount] = useState(0);
     const [isToggling, setIsToggling] = useState(false);
 
-    // Use env var for consistent URL on both server and client (avoids hydration mismatch)
-    const baseUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com";
+    // Dynamic URL based on current app environment
+    const baseUrl = getBaseUrl();
     const url = `${baseUrl}/articles/${slug}`;
 
     const shareLinks = {

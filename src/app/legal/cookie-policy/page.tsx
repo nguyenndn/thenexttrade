@@ -3,7 +3,17 @@ import { Cookie } from "lucide-react";
 
 export const metadata: Metadata = {
     title: "Cookie Policy | TheNextTrade",
-    description: "Information about how TheNextTrade uses cookies.",
+    description: "Information about how TheNextTrade uses essential cookies and local storage.",
+    alternates: {
+        canonical: "/legal/cookie-policy",
+    },
+    openGraph: {
+        title: "Cookie Policy | TheNextTrade",
+        description: "Information about how TheNextTrade uses essential cookies and local storage.",
+        url: "/legal/cookie-policy",
+        siteName: "TheNextTrade",
+        type: "website",
+    },
 };
 
 export default function CookiePolicyPage() {

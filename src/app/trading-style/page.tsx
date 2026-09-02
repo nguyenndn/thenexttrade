@@ -9,10 +9,16 @@ export const metadata: Metadata = {
     title: "Know Your Trading Style — Free 3-Minute Trading Psychology Quiz | TheNextTrade",
     description:
         "Answer 14 questions and get your XAU/USD trading archetype — plus a personalised plan of courses, journaling habits and risk rules to fix your leaks.",
+    alternates: {
+        canonical: "/trading-style",
+    },
     openGraph: {
         title: "Know Your Trading Style — Free Trading Psychology Quiz",
         description:
             "14 questions, 8 trading archetypes, one personalised plan. Free on TheNextTrade.",
+        url: "/trading-style",
+        siteName: "TheNextTrade",
+        type: "website",
     },
     keywords: [
         "trading style quiz",

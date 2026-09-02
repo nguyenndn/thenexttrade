@@ -16,6 +16,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { prisma } from "@/lib/prisma";
+import { getBaseUrl } from "@/lib/url";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -111,8 +112,7 @@ const PILLAR_SECTIONS = [
 export const revalidate = 86400;
 
 export default async function RiskManagementPage() {
-    const baseUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com";
+    const baseUrl = getBaseUrl();
 
     // Fetch related articles about risk management
     const relatedArticles = await prisma.article.findMany({

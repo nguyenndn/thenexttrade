@@ -3,7 +3,7 @@ import type { LucideIcon } from "lucide-react";
 import { ArrowRight } from "lucide-react";
 
 interface HomeSectionHeadingProps {
-    title: string;
+    title: React.ReactNode | string;
     eyebrow?: string;
     description?: string;
     highlight?: string;
@@ -16,7 +16,10 @@ interface HomeSectionHeadingProps {
     className?: string;
 }
 
-function renderTitle(title: string, highlight?: string) {
+function renderTitle(title: React.ReactNode, highlight?: string) {
+    if (typeof title !== "string") {
+        return title;
+    }
     if (!highlight || !title.includes(highlight)) {
         return title;
     }

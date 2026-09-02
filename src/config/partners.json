@@ -82,43 +82,6 @@
             },
             {
                 "active": true,
-                "name": "VT Markets",
-                "desc": "Fast Execution • Multi-Asset",
-                "badge": "Trusted",
-                "badgeType": "blue",
-                "logo": "/images/brokers/vtmarkets.png",
-                "initials": "VT",
-                "color": "from-indigo-500 to-indigo-600",
-                "url": "https://www.vtmarkets.com/get-trading/forex-trading-account/?affid=830422",
-                "rating": 4.3,
-                "minDeposit": "$50",
-                "maxLeverage": "1:500",
-                "regulation": "FSCA, FSC",
-                "features": [
-                    "Execution under 1ms",
-                    "1000+ trading instruments",
-                    "MT4 & MT5 supported",
-                    "Copy trading available"
-                ],
-                "review": {
-                    "summary": "VT Markets is a **multi-asset broker** regulated by FSCA and FSC. Their biggest strength is **execution speed under 1ms** and access to 1,000+ trading instruments.",
-                    "pros": [
-                        "Ultra-fast execution under 1ms",
-                        "1,000+ instruments: Forex, Stocks, Crypto, Commodities",
-                        "MT4 & MT5 supported",
-                        "Copy trading for beginners"
-                    ],
-                    "cons": [
-                        "Regulation not as strong as FCA/ASIC",
-                        "Minimum deposit $50",
-                        "No cTrader support yet"
-                    ],
-                    "bestFor": "Traders who want **multi-asset trading** (forex + stocks + crypto) on a single platform.",
-                    "verdict": "**4.3/5** — Great fit for traders who need speed and product diversity."
-                }
-            },
-            {
-                "active": true,
                 "name": "Ultima Markets",
                 "desc": "CySEC & FCA • Up to 1:2000",
                 "badge": "Beginner Friendly",
@@ -153,6 +116,43 @@
                     ],
                     "bestFor": "Traders who want a **CySEC/FCA-regulated broker** with competitive leverage on global accounts.",
                     "verdict": "**4.1/5** — Promising dual-regulated broker with growing reputation."
+                }
+            },
+            {
+                "active": true,
+                "name": "VT Markets",
+                "desc": "Fast Execution • Multi-Asset",
+                "badge": "Trusted",
+                "badgeType": "blue",
+                "logo": "/images/brokers/vtmarkets.png",
+                "initials": "VT",
+                "color": "from-indigo-500 to-indigo-600",
+                "url": "https://www.vtmarkets.com/get-trading/forex-trading-account/?affid=830422",
+                "rating": 4.3,
+                "minDeposit": "$50",
+                "maxLeverage": "1:500",
+                "regulation": "FSCA, FSC",
+                "features": [
+                    "Execution under 1ms",
+                    "1000+ trading instruments",
+                    "MT4 & MT5 supported",
+                    "Copy trading available"
+                ],
+                "review": {
+                    "summary": "VT Markets is a **multi-asset broker** regulated by FSCA and FSC. Their biggest strength is **execution speed under 1ms** and access to 1,000+ trading instruments.",
+                    "pros": [
+                        "Ultra-fast execution under 1ms",
+                        "1,000+ instruments: Forex, Stocks, Crypto, Commodities",
+                        "MT4 & MT5 supported",
+                        "Copy trading for beginners"
+                    ],
+                    "cons": [
+                        "Regulation not as strong as FCA/ASIC",
+                        "Minimum deposit $50",
+                        "No cTrader support yet"
+                    ],
+                    "bestFor": "Traders who want **multi-asset trading** (forex + stocks + crypto) on a single platform.",
+                    "verdict": "**4.3/5** — Great fit for traders who need speed and product diversity."
                 }
             },
             {

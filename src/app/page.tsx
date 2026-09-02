@@ -11,7 +11,43 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Suspense } from "react";
 import { HomeFeedSkeleton } from "@/components/ui/LoadingSkeleton";
+import { SaaSHeroSection } from "@/components/home/SaaSHeroSection";
+import { HomeTrustMetrics } from "@/components/home/HomeTrustMetrics";
 import dynamic from "next/dynamic";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "TheNextTrade - All-in-One Forex Trading OS, Playbook & Journal",
+    description:
+        "Elevate your trading edge with TheNextTrade. Automated MT5 Trade Journal, Playbook Studio, 18 institutional-grade calculators, and structured 3-level Academy.",
+    alternates: {
+        canonical: "/",
+    },
+    openGraph: {
+        title: "TheNextTrade - All-in-One Forex Trading OS, Playbook & Journal",
+        description:
+            "Automated MT5 Trade Journal, Playbook Studio, 18 institutional-grade calculators, and structured 3-level Academy.",
+        url: "https://thenexttrade.com",
+        siteName: "TheNextTrade",
+        images: [
+            {
+                url: "/og-image.jpg",
+                width: 1200,
+                height: 630,
+                alt: "TheNextTrade Trading Platform",
+            },
+        ],
+        locale: "en_US",
+        type: "website",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "TheNextTrade - All-in-One Forex Trading OS",
+        description:
+            "Automated MT5 Trade Journal, Playbook Studio, 18 institutional-grade calculators, and structured 3-level Academy.",
+        images: ["/og-image.jpg"],
+    },
+};
 
 // Revalidate data every 60 seconds
 export const revalidate = 60;
@@ -45,20 +81,6 @@ const WebForexTools = dynamic(
         })),
     { loading: () => <div className="h-48" /> }
 );
-const SaaSHeroSection = dynamic(
-    () =>
-        import("@/components/home/SaaSHeroSection").then((m) => ({
-            default: m.SaaSHeroSection,
-        })),
-    { loading: () => <div className="h-[450px]" /> }
-);
-const HomeTrustMetrics = dynamic(
-    () =>
-        import("@/components/home/HomeTrustMetrics").then((m) => ({
-            default: m.HomeTrustMetrics,
-        })),
-    { loading: () => <div className="h-24" /> }
-);
 const TradeJournalPreviewSection = dynamic(
     () =>
         import("@/components/home/TradeJournalPreviewSection").then((m) => ({
@@ -87,12 +109,12 @@ const MT5TeaserCTA = dynamic(
         })),
     { loading: () => <div className="h-24" /> }
 );
-const HomeSectionCTA = dynamic(
+const BrokerFundedMembershipSection = dynamic(
     () =>
-        import("@/components/home/HomeSectionCTA").then((m) => ({
-            default: m.HomeSectionCTA,
+        import("@/components/home/BrokerFundedMembershipSection").then((m) => ({
+            default: m.BrokerFundedMembershipSection,
         })),
-    { loading: () => <div className="h-[350px]" /> }
+    { loading: () => <div className="h-96" /> }
 );
 const ReviewsSection = dynamic(
     () =>
@@ -197,7 +219,7 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                 {/* Grid Pattern Background */}
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]"></div>
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gold/5 via-transparent to-transparent dark:from-gold/[0.03] dark:via-transparent dark:to-transparent"></div>
-                <section className="py-6 sm:py-8 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <section className="py-6 sm:py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <FadeIn delay={0.1} direction="up">
                         <HomeSectionHeading
                             align="center"
@@ -243,7 +265,12 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                 <BrokerRankingsSection />
             </FadeIn>
 
-            {/* 7b. MT5 Trading Systems Teaser CTA */}
+            {/* 7b. Broker-Funded Zero-Fee Membership Breakdown */}
+            <FadeIn delay={0.1} direction="up">
+                <BrokerFundedMembershipSection isLoggedIn={isLoggedIn} />
+            </FadeIn>
+
+            {/* 7c. MT5 Trading Systems Teaser CTA */}
             <FadeIn delay={0.1} direction="up">
                 <MT5TeaserCTA isLoggedIn={isLoggedIn} />
             </FadeIn>
@@ -258,12 +285,7 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                 <HomeFAQSection />
             </FadeIn>
 
-            {/* 9. Final conversion CTA */}
-            <FadeIn delay={0.1} direction="up">
-                <HomeSectionCTA isLoggedIn={isLoggedIn} />
-            </FadeIn>
-
-            {/* 10. About Us (Short trust-building block) */}
+            {/* 9. About Us (Founder note with integrated Telegram connection) */}
             <FadeIn delay={0.1} direction="up">
                 <AboutUsSection />
             </FadeIn>

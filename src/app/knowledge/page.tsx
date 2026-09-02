@@ -23,10 +23,22 @@ import { X } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Trading Knowledge Base — Articles, Guides & Market Analysis",
+    title: "Trading Knowledge Base — Articles, Guides & Market Analysis | TheNextTrade",
     description:
         "Explore our premium collection of forex trading articles, in-depth market analysis, strategy guides, and trading psychology insights. Updated regularly by experienced traders.",
+    alternates: {
+        canonical: "/knowledge",
+    },
     openGraph: {
+        title: "Trading Knowledge Base | TheNextTrade",
+        description:
+            "Deep-dive articles on forex strategies, technical analysis, and trading psychology.",
+        url: "/knowledge",
+        siteName: "TheNextTrade",
+        type: "website",
+    },
+    twitter: {
+        card: "summary_large_image",
         title: "Trading Knowledge Base | TheNextTrade",
         description:
             "Deep-dive articles on forex strategies, technical analysis, and trading psychology.",

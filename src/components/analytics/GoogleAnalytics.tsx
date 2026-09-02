@@ -49,11 +49,11 @@ export function GoogleAnalytics({ measurementId }: GoogleAnalyticsProps) {
         <>
             <Script
                 src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
-                strategy="afterInteractive"
+                strategy="lazyOnload"
             />
             <Script
                 id="ga4-init"
-                strategy="afterInteractive"
+                strategy="lazyOnload"
                 onReady={() => setReady(true)}
             >
                 {`

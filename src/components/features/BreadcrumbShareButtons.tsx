@@ -5,6 +5,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 
+import { getBaseUrl } from "@/lib/url";
+
 interface BreadcrumbShareButtonsProps {
     title: string;
     slug: string;
@@ -16,8 +18,7 @@ export function BreadcrumbShareButtons({
 }: BreadcrumbShareButtonsProps) {
     const [copied, setCopied] = useState(false);
 
-    const baseUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com";
+    const baseUrl = getBaseUrl();
     const url = `${baseUrl}/articles/${slug}`;
 
     const handleShare = async () => {

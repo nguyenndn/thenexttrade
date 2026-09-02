@@ -30,16 +30,41 @@ export function WebForexTools() {
             {/* Dot pattern bg - same as Quote/Reviews section but Gold themed */}
             <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2] pointer-events-none" />
 
-            <section className="py-6 sm:py-8 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <section className="py-6 sm:py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <FadeIn delay={0.1} direction="up">
-                    <HomeSectionHeading
-                        align="center"
-                        title="Trading Calculators"
-                        highlight="Calculators"
-                        description="Free pro calculators, live data, and visualizers. No signup required."
-                        icon={Wrench}
-                        className="mb-8"
-                    />
+                    <div className="relative mb-8">
+                        <HomeSectionHeading
+                            align="center"
+                            title="Trading Calculators"
+                            highlight="Calculators"
+                            description="Free pro calculators, live data, and visualizers. No signup required."
+                            icon={Wrench}
+                        />
+                        <div className="hidden sm:block absolute right-0 bottom-1">
+                            <Link
+                                href="/tools"
+                                className="group inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-gold hover:text-amber-500 transition-colors"
+                            >
+                                <span>View all {ALL_TOOLS.length} tools</span>
+                                <ArrowRight
+                                    size={13}
+                                    className="transition-transform duration-300 group-hover:translate-x-1"
+                                />
+                            </Link>
+                        </div>
+                        <div className="sm:hidden mt-3 text-center">
+                            <Link
+                                href="/tools"
+                                className="group inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-gold hover:text-amber-500 transition-colors"
+                            >
+                                <span>View all {ALL_TOOLS.length} tools</span>
+                                <ArrowRight
+                                    size={13}
+                                    className="transition-transform duration-300 group-hover:translate-x-1"
+                                />
+                            </Link>
+                        </div>
+                    </div>
 
                     {/* Premium Tools Grid - 3 Columns */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -92,20 +117,6 @@ export function WebForexTools() {
                                 </Link>
                             );
                         })}
-                    </div>
-
-                    {/* Centered Link - unified for all devices */}
-                    <div className="mt-8 flex justify-center sm:mt-10">
-                        <Link
-                            href="/tools"
-                            className="group inline-flex items-center justify-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-gold transition-colors duration-300 hover:text-amber-600 dark:hover:text-amber-300"
-                        >
-                            View all {ALL_TOOLS.length} tools
-                            <ArrowRight
-                                size={13}
-                                className="transition-transform duration-300 group-hover:translate-x-1"
-                            />
-                        </Link>
                     </div>
                 </FadeIn>
             </section>

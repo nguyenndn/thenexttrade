@@ -1,4 +1,5 @@
 import { JsonLd } from "./JsonLd";
+import { getBaseUrl } from "@/lib/url";
 
 export interface BreadcrumbItem {
     name: string;
@@ -15,8 +16,7 @@ interface BreadcrumbJsonLdProps {
  * The last item is treated as the current page (no link in schema).
  */
 export function BreadcrumbJsonLd({ items }: BreadcrumbJsonLdProps) {
-    const baseUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com";
+    const baseUrl = getBaseUrl();
 
     return (
         <JsonLd

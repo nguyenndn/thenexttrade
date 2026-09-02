@@ -18,6 +18,7 @@ import {
     Grid3X3,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import type { Metadata } from "next";
 
 export interface ToolData {
     slug: string;
@@ -1106,4 +1107,36 @@ export function getSimilarTools(currentSlug: string, count = 6): ToolData[] {
     );
 
     return [...sameCategory, ...otherCategory].slice(0, count);
+}
+
+export function getToolMetadata(slug: string): Metadata {
+    const tool = getToolBySlug(slug);
+    if (!tool) {
+        return {
+            title: "Trading Tool | TheNextTrade",
+        };
+    }
+
+    const title = `${tool.title} — Free Online Forex Calculator | TheNextTrade`;
+    const description = `${tool.description} Free, instant calculation with zero sign-up required.`;
+
+    return {
+        title,
+        description,
+        alternates: {
+            canonical: `/tools/${tool.slug}`,
+        },
+        openGraph: {
+            title: `${tool.title} — Free Online Forex Calculator`,
+            description,
+            url: `/tools/${tool.slug}`,
+            siteName: "TheNextTrade",
+            type: "website",
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: `${tool.title} — Free Online Forex Calculator`,
+            description,
+        },
+    };
 }

@@ -24,6 +24,23 @@ export const metadata: Metadata = {
     title: "MT5 Trading Systems & Expert Advisors | TheNextTrade",
     description:
         "Institutional MetaTrader 5 Expert Advisors and trade management tools. Unlock EA GoldScalperNinja, GSN Phoenix Grid, and Trade Manager with an eligible partner account.",
+    alternates: {
+        canonical: "/trading-systems",
+    },
+    openGraph: {
+        title: "MT5 Trading Systems & Expert Advisors | TheNextTrade",
+        description:
+            "Institutional MetaTrader 5 Expert Advisors: GoldScalperNinja, GSN Phoenix Grid, and Trade Manager.",
+        url: "/trading-systems",
+        siteName: "TheNextTrade",
+        type: "website",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "MT5 Trading Systems & Expert Advisors | TheNextTrade",
+        description:
+            "Institutional MetaTrader 5 Expert Advisors: GoldScalperNinja, GSN Phoenix Grid, and Trade Manager.",
+    },
 };
 
 export const revalidate = 60;

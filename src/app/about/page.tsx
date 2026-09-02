@@ -26,10 +26,22 @@ export const metadata: Metadata = {
     title: "About TheNextTrade — From Blown Accounts to Disciplined Execution",
     description:
         "The story behind TheNextTrade. After years of losses and scattered learning, I built a free forex education and journaling platform so new traders don't repeat my mistakes.",
+    alternates: {
+        canonical: "/about",
+    },
     openGraph: {
         title: "About TheNextTrade | From Losses to Disciplined Trading",
         description:
             "From blown accounts to building the platform I wish I had — the authentic story behind TheNextTrade.",
+        url: "/about",
+        siteName: "TheNextTrade",
+        type: "website",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "About TheNextTrade",
+        description:
+            "The story behind TheNextTrade and our mission for retail traders.",
     },
 };
 

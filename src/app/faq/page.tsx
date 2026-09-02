@@ -18,9 +18,26 @@ import { buttonVariants } from "@/components/ui/button-variants";
 import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 
 export const metadata: Metadata = {
-    title: "Frequently Asked Questions | TheNextTrade",
+    title: "Frequently Asked Questions (FAQ) | TheNextTrade",
     description:
-        "Find answers to all your questions about TheNextTrade platform, MT5 sync, trading systems, AI coach, academy, free tools, and risk management.",
+        "Find answers to all your questions about TheNextTrade platform, MT5 sync, Trading Playbooks, AI coach, Academy, 18 free calculators, and risk management.",
+    alternates: {
+        canonical: "/faq",
+    },
+    openGraph: {
+        title: "Frequently Asked Questions (FAQ) | TheNextTrade",
+        description:
+            "Find answers about TheNextTrade platform, MT5 sync, Trading Playbooks, AI coach, Academy, and free tools.",
+        url: "/faq",
+        siteName: "TheNextTrade",
+        type: "website",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "Frequently Asked Questions | TheNextTrade",
+        description:
+            "Questions and answers on MT5 sync, Playbooks, Journal analytics, and free Forex tools.",
+    },
 };
 
 const FAQ_GROUPS = [
