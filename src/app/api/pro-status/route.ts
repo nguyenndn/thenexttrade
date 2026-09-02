@@ -19,6 +19,10 @@ export async function GET(request: NextRequest) {
             status: result.status,
             source: result.source,
             expiresAt: result.expiresAt?.toISOString() || null,
+            policyState: result.policyState || "ACTIVE",
+            trialInfo: result.trialInfo || null,
+            activityInfo: result.activityInfo || null,
+            fundingInfo: result.fundingInfo || null,
         });
     }
 
@@ -36,6 +40,10 @@ export async function GET(request: NextRequest) {
         status: result.status,
         source: result.source,
         expiresAt: result.expiresAt?.toISOString() || null,
+        policyState: result.policyState || "ACTIVE",
+        trialInfo: result.trialInfo || null,
+        activityInfo: result.activityInfo || null,
+        fundingInfo: result.fundingInfo || null,
         activeAccountCount: result.activeAccountCount,
         mainAccountId: profile?.mainTradingAccountId || null,
         accounts: result.accounts.map((a) => ({
@@ -46,6 +54,10 @@ export async function GET(request: NextRequest) {
             isPro: a.isPro,
             source: a.source,
             expiresAt: a.expiresAt?.toISOString() || null,
+            policyState: a.policyState || "ACTIVE",
+            rolling30dLots: a.rolling30dLots ?? 0,
+            daysSinceLastTrade: a.daysSinceLastTrade ?? null,
+            fundingVerified: a.fundingVerified ?? false,
         })),
     });
 }

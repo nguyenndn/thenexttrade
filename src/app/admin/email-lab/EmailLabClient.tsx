@@ -13,6 +13,8 @@ import {
     Key,
     Sparkles,
     ShieldCheck,
+    Crown,
+    BarChart3,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
@@ -36,7 +38,7 @@ interface TemplateCardInfo {
     sourceFile: string;
     status: "active" | "supabase" | "needs_fix";
     statusLabel: string;
-    category: "system" | "reports" | "onboarding" | "ea_academy" | "auth";
+    category: "system" | "vip" | "reports" | "onboarding" | "ea_academy" | "auth";
 }
 
 export function EmailLabClient({
@@ -46,7 +48,7 @@ export function EmailLabClient({
     const [customTo, setCustomTo] = useState(defaultRecipient);
     const [sending, setSending] = useState<Record<string, boolean>>({});
     const [loadingPreview, setLoadingPreview] = useState<Record<string, boolean>>({});
-    const [activeTab, setActiveTab] = useState<"all" | "reports" | "onboarding" | "ea_academy" | "auth">("all");
+    const [activeTab, setActiveTab] = useState<"all" | "vip" | "reports" | "onboarding" | "ea_academy" | "auth">("all");
     const [results, setResults] = useState<
         Record<string, { success: boolean; message: string; timestamp: string }>
     >({});
@@ -135,6 +137,78 @@ export function EmailLabClient({
             status: "active",
             statusLabel: "Active SMTP",
             category: "system",
+        },
+
+        // ── VIP & Retention Lifecycle ──
+        {
+            id: "vip_trial_ending_soon",
+            title: "VIP Trial Ending Soon (Day 6)",
+            description:
+                "Sent 24h before trial expires. Encourages connecting a funded MT5 account ($300+) on partner broker to keep Pro free.",
+            sourceFile: "src/lib/services/vip-email-templates.ts",
+            status: "active",
+            statusLabel: "Active SMTP",
+            category: "vip",
+        },
+        {
+            id: "vip_trial_ended",
+            title: "VIP Trial Expired (Day 7+)",
+            description:
+                "Sent when trial expires. Explains transition to Free tier & zero-cost Pro restore upon connecting funded account.",
+            sourceFile: "src/lib/services/vip-email-templates.ts",
+            status: "active",
+            statusLabel: "Active SMTP",
+            category: "vip",
+        },
+        {
+            id: "vip_inactivity_warning",
+            title: "VIP Inactivity Warning (Day 8)",
+            description:
+                "Sent on day 8 without trades. Reminds trader that 14 days of inactivity will pause VIP Pro status.",
+            sourceFile: "src/lib/services/vip-email-templates.ts",
+            status: "active",
+            statusLabel: "Active SMTP",
+            category: "vip",
+        },
+        {
+            id: "vip_policy_paused",
+            title: "VIP Policy Paused (>14d / Under-Volume)",
+            description:
+                "Sent when VIP is paused. Reassures data is safe and highlights 0s auto-restore upon reaching 2.0 lots in 30 days.",
+            sourceFile: "src/lib/services/vip-email-templates.ts",
+            status: "active",
+            statusLabel: "Active SMTP",
+            category: "vip",
+        },
+        {
+            id: "vip_funding_grace",
+            title: "VIP Funding Grace (Balance < $300)",
+            description:
+                "Sent when 30-day periodic recheck finds balance below $300. Starts 7-day grace period to top up to $300.",
+            sourceFile: "src/lib/services/vip-email-templates.ts",
+            status: "active",
+            statusLabel: "Active SMTP",
+            category: "vip",
+        },
+        {
+            id: "vip_support_sync_success",
+            title: "Support-Sync Batch Success (Saturday)",
+            description:
+                "Sent after Saturday concierge batch when Support successfully syncs closed trades to trader's journal.",
+            sourceFile: "src/lib/services/vip-email-templates.ts",
+            status: "active",
+            statusLabel: "Active SMTP",
+            category: "vip",
+        },
+        {
+            id: "vip_support_sync_failed",
+            title: "Support-Sync Batch Failed (Action Req)",
+            description:
+                "Sent when Saturday batch fails (e.g. invalid investor password) with instructions to update credentials.",
+            sourceFile: "src/lib/services/vip-email-templates.ts",
+            status: "active",
+            statusLabel: "Active SMTP",
+            category: "vip",
         },
 
         // ── EA & Academy Deliveries ──
@@ -292,6 +366,7 @@ export function EmailLabClient({
         }
     };
 
+    const vipCount = activeTemplates.filter((t) => t.category === "vip").length;
     const eaAcademyCount = activeTemplates.filter(
         (t) => t.category === "ea_academy" || t.category === "system"
     ).length;
@@ -306,6 +381,7 @@ export function EmailLabClient({
 
     const filteredActiveTemplates = activeTemplates.filter((t) => {
         if (activeTab === "all") return true;
+        if (activeTab === "vip") return t.category === "vip";
         if (activeTab === "reports") return t.category === "reports";
         if (activeTab === "onboarding") return t.category === "onboarding";
         if (activeTab === "ea_academy") return t.category === "ea_academy" || t.category === "system";
@@ -401,6 +477,17 @@ export function EmailLabClient({
                 </button>
                 <button
                     type="button"
+                    onClick={() => setActiveTab("vip")}
+                    className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${activeTab === "vip"
+                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20"
+                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
+                        }`}
+                >
+                    <Crown size={14} />
+                    <span>VIP & Trial ({vipCount})</span>
+                </button>
+                <button
+                    type="button"
                     onClick={() => setActiveTab("ea_academy")}
                     className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${activeTab === "ea_academy"
                             ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20"
@@ -409,6 +496,18 @@ export function EmailLabClient({
                 >
                     <Key size={14} />
                     <span>EA & Systems ({eaAcademyCount})</span>
+                </button>
+
+                <button
+                    type="button"
+                    onClick={() => setActiveTab("reports")}
+                    className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${activeTab === "reports"
+                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20"
+                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
+                        }`}
+                >
+                    <BarChart3 size={14} />
+                    <span>Reports & Reviews ({reportsCount})</span>
                 </button>
 
                 <button

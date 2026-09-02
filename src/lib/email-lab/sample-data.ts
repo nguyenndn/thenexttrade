@@ -288,4 +288,94 @@ export function getSampleAdminResetData() {
     };
 }
 
+// ─── VIP Lifecycle Email Sample Data ─────────────────────────────────────────
+
+export function getSampleVipTrialEndingSoonData() {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    return {
+        userName: "Alex Trader",
+        daysRemaining: 1,
+        trialEndsAt: tomorrow.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+        }),
+        appUrl,
+    };
+}
+
+export function getSampleVipTrialEndedData() {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    return {
+        userName: "Alex Trader",
+        appUrl,
+    };
+}
+
+export function getSampleVipInactivityWarningData() {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    return {
+        userName: "Alex Trader",
+        daysInactive: 8,
+        daysRemainingBeforePause: 6,
+        rolling30dLots: 2.8,
+        appUrl,
+    };
+}
+
+export function getSampleVipPolicyPausedData() {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    return {
+        userName: "Alex Trader",
+        reason: "No trade activity recorded in over 14 consecutive days",
+        rolling30dLots: 1.2,
+        appUrl,
+    };
+}
+
+export function getSampleVipFundingGraceData() {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const in7Days = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    return {
+        userName: "Alex Trader",
+        accountNumber: "8821940",
+        broker: "Vantage Live",
+        currentBalance: 185.5,
+        graceDaysRemaining: 7,
+        graceDeadline: in7Days.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+        }),
+        appUrl,
+    };
+}
+
+export function getSampleVipSupportSyncSuccessData() {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    return {
+        userName: "Alex Trader",
+        accountNumber: "5510294",
+        broker: "Exness Real",
+        status: "SUCCESS" as const,
+        syncedTradesCount: 18,
+        rolling30dLots: 3.45,
+        appUrl,
+    };
+}
+
+export function getSampleVipSupportSyncFailedData() {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    return {
+        userName: "Alex Trader",
+        accountNumber: "5510294",
+        broker: "Exness Real",
+        status: "FAILED" as const,
+        failureReason: "Invalid Investor Password (Authentication Error on Exness-Real12 server).",
+        appUrl,
+    };
+}
+
+
 

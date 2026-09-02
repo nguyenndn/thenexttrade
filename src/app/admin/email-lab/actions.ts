@@ -4,7 +4,6 @@ import { z } from "zod";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import {
-    sendEmail,
     sendEmailWithDetails,
     buildReportEmailHtml,
     buildNudgeEmailHtml,
@@ -18,6 +17,12 @@ import {
     buildMagicLinkEmailHtml,
     buildForgotPasswordEmailHtml,
     buildAdminResetPasswordEmailHtml,
+    buildVipTrialEndingSoonEmailHtml,
+    buildVipTrialEndedEmailHtml,
+    buildVipInactivityWarningEmailHtml,
+    buildVipPolicyPausedEmailHtml,
+    buildVipFundingGraceEmailHtml,
+    buildVipSupportSyncResultEmailHtml,
 } from "@/lib/services/email.service";
 import {
     buildActivationEmailHtml,
@@ -36,6 +41,13 @@ import {
     getSampleMagicLinkData,
     getSampleForgotPasswordData,
     getSampleAdminResetData,
+    getSampleVipTrialEndingSoonData,
+    getSampleVipTrialEndedData,
+    getSampleVipInactivityWarningData,
+    getSampleVipPolicyPausedData,
+    getSampleVipFundingGraceData,
+    getSampleVipSupportSyncSuccessData,
+    getSampleVipSupportSyncFailedData,
 } from "@/lib/email-lab/sample-data";
 
 export type EmailLabTemplateId =
@@ -60,7 +72,14 @@ export type EmailLabTemplateId =
     | "resend_otp"
     | "magic_link"
     | "forgot_password"
-    | "admin_reset";
+    | "admin_reset"
+    | "vip_trial_ending_soon"
+    | "vip_trial_ended"
+    | "vip_inactivity_warning"
+    | "vip_policy_paused"
+    | "vip_funding_grace"
+    | "vip_support_sync_success"
+    | "vip_support_sync_failed";
 
 interface SendEmailLabResult {
     success: boolean;
@@ -241,12 +260,62 @@ function resolveTemplateContent(templateId: EmailLabTemplateId): {
                 html: buildForgotPasswordEmailHtml(getSampleForgotPasswordData()),
             };
 
-        case "admin_reset":
+        case "admin_reset": {
+            const data = getSampleAdminResetData();
             return {
                 subject: "🛡️ Password Recovery Link from TheNextTrade Admin",
-                html: buildAdminResetPasswordEmailHtml(getSampleAdminResetData()),
+                html: buildAdminResetPasswordEmailHtml(data),
             };
-
+        }
+        case "vip_trial_ending_soon": {
+            const data = getSampleVipTrialEndingSoonData();
+            return {
+                subject: "Your 7-day VIP trial ends soon — connect a funded MT5 account to keep it free",
+                html: buildVipTrialEndingSoonEmailHtml(data),
+            };
+        }
+        case "vip_trial_ended": {
+            const data = getSampleVipTrialEndedData();
+            return {
+                subject: "Your VIP trial has ended — connect MT5 to restore Pro access",
+                html: buildVipTrialEndedEmailHtml(data),
+            };
+        }
+        case "vip_inactivity_warning": {
+            const data = getSampleVipInactivityWarningData();
+            return {
+                subject: "No trades in 7+ days — trade to keep your VIP status active",
+                html: buildVipInactivityWarningEmailHtml(data),
+            };
+        }
+        case "vip_policy_paused": {
+            const data = getSampleVipPolicyPausedData();
+            return {
+                subject: "VIP access paused — trade 2.0 lots in 30 days to restore instantly",
+                html: buildVipPolicyPausedEmailHtml(data),
+            };
+        }
+        case "vip_funding_grace": {
+            const data = getSampleVipFundingGraceData();
+            return {
+                subject: "Action required: Top up to $300 within 7 days to maintain VIP",
+                html: buildVipFundingGraceEmailHtml(data),
+            };
+        }
+        case "vip_support_sync_success": {
+            const data = getSampleVipSupportSyncSuccessData();
+            return {
+                subject: `Support-Sync Batch Completed — ${data.syncedTradesCount} Trades Synced`,
+                html: buildVipSupportSyncResultEmailHtml(data),
+            };
+        }
+        case "vip_support_sync_failed": {
+            const data = getSampleVipSupportSyncFailedData();
+            return {
+                subject: "Support-Sync Update: Action required for your MT5 account",
+                html: buildVipSupportSyncResultEmailHtml(data),
+            };
+        }
         default:
             throw new Error(`Unknown template ID: ${templateId}`);
     }

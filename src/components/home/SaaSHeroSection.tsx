@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, GraduationCap, CheckCircle2 } from "lucide-react";
+import { ArrowRight, ArrowDown, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { DynamicFirefly } from "@/components/ui/DynamicFirefly";
 
@@ -119,7 +119,7 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                         }
                         className="w-full sm:w-auto group"
                     >
-                        <Button className="w-full sm:w-auto min-h-14 px-5 sm:px-10 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-sm sm:text-base shadow-[0_10px_30px_rgba(245,158,11,0.28)] hover:shadow-[0_14px_40px_rgba(245,158,11,0.38)] transition-all duration-300 flex items-center justify-center gap-2.5 whitespace-nowrap animate-btn-shine">
+                        <Button className="w-full sm:w-auto min-h-12 sm:min-h-14 px-4 sm:px-10 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-sm sm:text-base shadow-[0_10px_30px_rgba(245,158,11,0.28)] hover:shadow-[0_14px_40px_rgba(245,158,11,0.38)] transition-all duration-300 flex items-center justify-center gap-2 sm:gap-2.5 whitespace-normal sm:whitespace-nowrap animate-btn-shine">
                             <span>
                                 {isLoggedIn
                                     ? "Open Journal"
@@ -127,27 +127,26 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                             </span>
                             <ArrowRight
                                 size={18}
-                                className="group-hover:translate-x-1 transition-transform duration-300"
+                                className="group-hover:translate-x-1 transition-transform duration-300 shrink-0"
                             />
                         </Button>
                     </Link>
 
-                    <Link
-                        href={
-                            isLoggedIn
-                                ? "/dashboard/academy"
-                                : "/auth/signup?intent=LEARN_FIRST&source=homepage_hero"
-                        }
+                    <a
+                        href="#how-it-works"
                         className="w-full sm:w-auto group"
                     >
                         <Button
                             variant="outline"
-                            className="w-full sm:w-auto min-h-14 px-5 sm:px-10 rounded-xl border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm text-slate-700 dark:text-slate-200 hover:border-gold hover:text-amber-600 dark:hover:text-gold font-bold text-sm sm:text-base shadow-sm transition-all duration-300 flex items-center justify-center gap-2.5 whitespace-nowrap"
+                            className="w-full sm:w-auto min-h-12 sm:min-h-14 px-4 sm:px-8 rounded-xl border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm text-slate-700 dark:text-slate-200 hover:border-gold hover:text-amber-600 dark:hover:text-gold font-bold text-sm sm:text-base shadow-sm transition-all duration-300 flex items-center justify-center gap-2 sm:gap-2.5 whitespace-normal sm:whitespace-nowrap"
                         >
-                            <GraduationCap size={20} className="text-amber-500 dark:text-gold shrink-0" />
-                            <span>Explore Academy Roadmap</span>
+                            <span>See How It Works</span>
+                            <ArrowDown
+                                size={17}
+                                className="text-amber-500 dark:text-gold group-hover:translate-y-1 transition-transform duration-300 shrink-0"
+                            />
                         </Button>
-                    </Link>
+                    </a>
                 </div>
 
                 {/* Micro Trust Badges */}

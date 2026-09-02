@@ -155,7 +155,11 @@ export function BrokerRankingsSection() {
                     {activeItems.map((item, idx) => (
                         <div
                             key={item.name}
-                            className="relative flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-card border border-gray-200/80 dark:border-white/10 hover:border-gold dark:hover:border-gold/60 shadow-sm hover:shadow-xl hover:shadow-gold/5 transition-all duration-300 group overflow-hidden"
+                            className={`relative flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-card border border-gray-200/80 dark:border-white/10 hover:border-gold dark:hover:border-gold/60 shadow-sm hover:shadow-xl hover:shadow-gold/5 transition-all duration-300 group overflow-hidden ${
+                                idx === 2
+                                    ? "md:col-span-2 lg:col-span-1 md:max-w-md md:mx-auto lg:max-w-none w-full"
+                                    : ""
+                            }`}
                         >
                             {/* Top Badge for #1 */}
                             {idx === 0 && (

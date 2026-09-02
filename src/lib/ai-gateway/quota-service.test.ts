@@ -50,19 +50,19 @@ describe("Quota Service", () => {
 
     it("allows request if under quota (pro user)", async () => {
         (getUserProAccess as any).mockResolvedValue({ isPro: true });
-        (prisma.aiRequest.count as any).mockResolvedValue(99);
+        (prisma.aiRequest.count as any).mockResolvedValue(49);
 
         const res = await checkUserQuota("user-1");
         expect(res.hasQuota).toBe(true);
         expect(res.isPro).toBe(true);
-        expect(res.dailyLimit).toBe(100);
-        expect(res.usedToday).toBe(99);
+        expect(res.dailyLimit).toBe(50);
+        expect(res.usedToday).toBe(49);
         expect(res.remainingToday).toBe(1);
     });
 
     it("rejects request if over quota (pro user)", async () => {
         (getUserProAccess as any).mockResolvedValue({ isPro: true });
-        (prisma.aiRequest.count as any).mockResolvedValue(100);
+        (prisma.aiRequest.count as any).mockResolvedValue(50);
 
         const res = await checkUserQuota("user-1");
         expect(res.hasQuota).toBe(false);

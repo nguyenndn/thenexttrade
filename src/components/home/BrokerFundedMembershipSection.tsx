@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import {
     ArrowRight,
+    ArrowDown,
     CheckCircle2,
     XCircle,
     ShieldCheck,
@@ -222,20 +223,21 @@ export function BrokerFundedMembershipSection({
                         <div className="flex flex-col items-center justify-center p-2 text-center relative w-full">
                             {/* Animated Flow Track */}
                             <div className="relative w-full max-w-[240px] flex items-center justify-center mb-2 py-1">
-                                {/* Connecting Background Track */}
-                                <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[2px] bg-gradient-to-r from-gray-200 via-gold/30 to-gray-200 dark:from-white/10 dark:via-gold/30 dark:to-white/10" />
+                                {/* Connecting Background Track (Desktop/Tablet) */}
+                                <div className="hidden md:block absolute inset-x-0 top-1/2 -translate-y-1/2 h-[2px] bg-gradient-to-r from-gray-200 via-gold/30 to-gray-200 dark:from-white/10 dark:via-gold/30 dark:to-white/10" />
 
-                                {/* Flowing Animated Gradient Stream */}
-                                <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[2px] bg-gradient-to-r from-transparent via-amber-400 to-transparent animate-pulse" />
+                                {/* Flowing Animated Gradient Stream (Desktop/Tablet) */}
+                                <div className="hidden md:block absolute inset-x-0 top-1/2 -translate-y-1/2 h-[2px] bg-gradient-to-r from-transparent via-amber-400 to-transparent animate-pulse" />
 
                                 {/* Central Floating Badge with Gold Glow */}
-                                <div className="relative z-10 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-50/90 dark:bg-slate-900/90 text-amber-900 dark:text-gold text-[11px] font-black uppercase tracking-wider border-2 border-gold/60 shadow-[0_0_15px_rgba(229,165,10,0.3)] backdrop-blur-md hover:scale-105 transition-transform">
+                                <div className="relative z-10 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-50/90 dark:bg-slate-900/90 text-amber-900 dark:text-gold text-[11px] font-black uppercase tracking-wider border-2 border-gold/60 shadow-[0_0_15px_rgba(229,165,10,0.3)] backdrop-blur-md hover:scale-105 transition-transform">
                                     <span className="relative flex h-2 w-2">
                                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold opacity-75" />
                                         <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
                                     </span>
                                     <span>Deposit $300</span>
-                                    <ArrowRight size={13} className="text-gold animate-pulse" />
+                                    <ArrowRight size={13} className="text-gold animate-pulse hidden md:inline" />
+                                    <ArrowDown size={13} className="text-gold animate-pulse md:hidden" />
                                 </div>
                             </div>
 

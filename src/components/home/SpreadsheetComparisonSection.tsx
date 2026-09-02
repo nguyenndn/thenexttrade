@@ -117,8 +117,8 @@ export function SpreadsheetComparisonSection({
                     </div>
 
                     {/* Comparison Table */}
-                    {/* Header Row */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                    {/* Header Row (Desktop/Tablet) */}
+                    <div className="hidden md:grid grid-cols-2 gap-4 mb-3">
                         <div className="flex items-center gap-2 p-3.5 rounded-xl bg-red-50/50 dark:bg-red-500/5 border border-red-100/50 dark:border-red-500/10">
                             <FileText
                                 size={16}

@@ -774,3 +774,20 @@ export function buildAdminResetPasswordEmailHtml(
         appUrl,
     });
 }
+
+// ─── VIP Lifecycle Email Templates Re-exports ────────────────────────────────
+export {
+    buildVipTrialEndingSoonEmailHtml,
+    buildVipTrialEndedEmailHtml,
+    buildVipInactivityWarningEmailHtml,
+    buildVipPolicyPausedEmailHtml,
+    buildVipFundingGraceEmailHtml,
+    buildVipSupportSyncResultEmailHtml,
+    type VipTrialEndingSoonEmailData,
+    type VipTrialEndedEmailData,
+    type VipInactivityWarningEmailData,
+    type VipPolicyPausedEmailData,
+    type VipFundingGraceEmailData,
+    type VipSupportSyncResultEmailData,
+} from "./vip-email-templates";
+

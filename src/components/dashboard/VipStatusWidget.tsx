@@ -39,6 +39,18 @@ interface StatusStyle {
 }
 
 const statusConfig: Record<string, StatusStyle> = {
+    TRIAL: {
+        label: "VIP Trial",
+        description: "All Pro features unlocked. Link $300 broker account to keep VIP.",
+        icon: Timer,
+        cardBg: "bg-gradient-to-br from-amber-50 to-orange-50/60 dark:from-amber-500/10 dark:to-orange-500/5",
+        cardBorder: "border-amber-300 dark:border-amber-500/30",
+        iconBg: "bg-amber-100 dark:bg-amber-500/20",
+        iconColor: "text-amber-600 dark:text-amber-400",
+        labelColor: "text-amber-700 dark:text-amber-400",
+        badgeClass:
+            "bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300",
+    },
     ACTIVE: {
         label: "VIP Active",
         description: "Full access to all VIP features.",
@@ -101,6 +113,7 @@ const statusConfig: Record<string, StatusStyle> = {
 };
 
 const accountStatusBadge: Record<string, string> = {
+    TRIAL: "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400",
     ACTIVE: "bg-emerald-100 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400",
     GRACE: "bg-violet-100 dark:bg-violet-500/15 text-violet-700 dark:text-violet-400",
     EXPIRED:
@@ -220,6 +233,78 @@ export function VipStatusWidget() {
     const hasPendingRequest = !loadingVip && vipRequest?.status === "PENDING";
     const { accounts } = proAccess;
 
+    // ─── 7-DAY FREE TRIAL ────────────────────────────────────────────────────────
+    if (status === "TRIAL") {
+        const daysLeft = proAccess.trialInfo?.daysRemaining ?? 7;
+        const ctaHref = "/dashboard/accounts?action=add&intent=unlock-pro";
+
+        return (
+            <>
+                <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#141721] transition-all duration-500">
+                    <div className="absolute inset-0 rounded-2xl p-px">
+                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-400/40 via-yellow-400/20 to-amber-500/30 opacity-70" />
+                    </div>
+
+                    <div className="absolute -top-10 -right-10 w-28 h-28 bg-amber-500/15 rounded-full blur-[35px] pointer-events-none" />
+
+                    <div className="relative m-px rounded-2xl bg-white dark:bg-[#141721] overflow-hidden">
+                        <div className="h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent" />
+
+                        <div className="p-3 space-y-3">
+                            <div className="flex items-center gap-2.5">
+                                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400/20 to-yellow-400/10 ring-1 ring-amber-400/30">
+                                    <Timer className="h-4 w-4 text-amber-500 dark:text-amber-400" />
+                                </div>
+
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+                                        <span className="text-[13px] font-black tracking-tight text-gray-900 dark:text-white whitespace-nowrap">
+                                            VIP Trial
+                                        </span>
+                                        <span className="rounded-lg bg-amber-500/15 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/25">
+                                            {daysLeft}d left
+                                        </span>
+                                    </div>
+                                    <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug truncate">
+                                        All VIP Pro features unlocked
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between text-[10px] text-gray-600 dark:text-gray-400 font-medium">
+                                    <span>Trial Access</span>
+                                    <span className="font-bold text-amber-600 dark:text-amber-400">{daysLeft} of 7 days left</span>
+                                </div>
+                                <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-white/10">
+                                    <div
+                                        className="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-500 transition-all duration-500"
+                                        style={{ width: `${Math.min(100, Math.max(14, (daysLeft / 7) * 100))}%` }}
+                                    />
+                                </div>
+
+                                <Link
+                                    href={ctaHref}
+                                    className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25"
+                                >
+                                    <span className="truncate">Connect $300 Account</span>
+                                    <ArrowRight className="h-3 w-3 shrink-0" />
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <ProBenefitsModal
+                    isOpen={showBenefits}
+                    onClose={() => setShowBenefits(false)}
+                    isPro={true}
+                    vipLink={vipLink}
+                />
+            </>
+        );
+    }
+
     // ─── FREE PLAN ───────────────────────────────────────────────────────────────
     if (status === "NONE") {
         let ctaHref = "/dashboard/accounts?action=add&intent=unlock-pro";
@@ -324,6 +409,98 @@ export function VipStatusWidget() {
 
     // ─── PRO ACTIVE ──────────────────────────────────────────────────────────────
     if (status === "ACTIVE") {
+        const rollingLots = proAccess.activityInfo?.rolling30dLots ?? 0;
+        const minLots = proAccess.activityInfo?.minLotsRequired ?? 2.0;
+        const lotPercent = Math.min(100, (rollingLots / minLots) * 100);
+        const policyState = proAccess.policyState;
+        const isPaused = policyState === "PAUSED";
+
+        if (isPaused) {
+            return (
+                <>
+                    <div
+                        className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#141721] cursor-pointer group transition-all duration-500 hover:shadow-xl hover:shadow-amber-500/10 dark:hover:shadow-amber-500/15"
+                        onClick={() => setShowBenefits(true)}
+                    >
+                        <div className="absolute inset-0 rounded-2xl p-px">
+                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-400/40 via-orange-400/20 to-amber-500/30 opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
+                        </div>
+
+                        <div className="absolute -top-12 -right-12 w-32 h-32 bg-amber-500/10 dark:bg-amber-500/20 rounded-full blur-[40px] pointer-events-none group-hover:scale-125 transition-transform duration-700" />
+
+                        <div className="relative m-px rounded-2xl bg-white dark:bg-[#141721] overflow-hidden">
+                            <div className="h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent" />
+
+                            <div className="flex items-center gap-2.5 p-3">
+                                <div className="relative shrink-0">
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500/15 to-orange-500/10 dark:from-amber-400/20 dark:to-orange-400/10 ring-1 ring-amber-300/40 dark:ring-amber-500/25 shadow-sm">
+                                        <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                                    </div>
+                                </div>
+
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+                                        <span className="text-[13px] font-black tracking-tight text-gray-900 dark:text-white whitespace-nowrap">
+                                            VIP Paused
+                                        </span>
+                                        <span className="rounded-lg bg-amber-500/15 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-amber-700 dark:text-amber-300 ring-1 ring-amber-500/25">
+                                            PAUSED
+                                        </span>
+                                    </div>
+                                    <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug truncate">
+                                        Trade to restore VIP instantly
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Reason Alert */}
+                            <div className="mx-3 mb-2 flex items-start gap-1.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 p-2 text-[10px] text-amber-700 dark:text-amber-400 font-medium">
+                                <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                                <span>
+                                    {proAccess.activityInfo?.reason ||
+                                        "Volume or activity threshold not reached."}
+                                </span>
+                            </div>
+
+                            {/* 30-Day Volume Progress */}
+                            <div className="mx-3 mb-2.5 rounded-xl bg-gray-50/80 dark:bg-white/[0.04] p-2 space-y-1.5 border border-black/[0.04] dark:border-white/[0.06]">
+                                <div className="flex items-center justify-between text-[10px] text-gray-500 dark:text-gray-400">
+                                    <span>30d Volume</span>
+                                    <span className="font-bold text-gray-700 dark:text-gray-200">
+                                        {rollingLots.toFixed(2)} / {minLots.toFixed(1)} Lots ({lotPercent.toFixed(0)}%)
+                                    </span>
+                                </div>
+                                <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-white/10">
+                                    <div
+                                        className="h-full rounded-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-500"
+                                        style={{ width: `${Math.min(100, Math.max(5, lotPercent))}%` }}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="mx-3 mb-3">
+                                <Link
+                                    href="/dashboard/journal"
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25"
+                                >
+                                    <span className="truncate">Open Journal & Restore</span>
+                                    <ArrowRight className="h-3 w-3 shrink-0" />
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ProBenefitsModal
+                        isOpen={showBenefits}
+                        onClose={() => setShowBenefits(false)}
+                        isPro={false}
+                        vipLink={vipLink}
+                    />
+                </>
+            );
+        }
+
         return (
             <>
                 <div
@@ -377,6 +554,34 @@ export function VipStatusWidget() {
                                 </div>
                             </div>
                         </div>
+
+                        {/* 30-Day Volume Progress */}
+                        <div className="mx-3 mb-2.5 rounded-xl bg-gray-50/80 dark:bg-white/[0.04] p-2 space-y-1.5 border border-black/[0.04] dark:border-white/[0.06]">
+                            <div className="flex items-center justify-between text-[10px] text-gray-500 dark:text-gray-400">
+                                <span>30d Volume</span>
+                                <span className="font-bold text-gray-700 dark:text-gray-200">
+                                    {rollingLots.toFixed(2)} / {minLots.toFixed(1)} Lots ({lotPercent.toFixed(0)}%)
+                                </span>
+                            </div>
+                            <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-white/10">
+                                <div
+                                    className={`h-full rounded-full transition-all duration-500 ${
+                                        lotPercent >= 100
+                                            ? "bg-gradient-to-r from-emerald-500 to-teal-500"
+                                            : "bg-gradient-to-r from-amber-500 to-orange-500"
+                                    }`}
+                                    style={{ width: `${Math.min(100, Math.max(5, lotPercent))}%` }}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Policy Warning if Warned */}
+                        {policyState === "WARNED" && (
+                            <div className="mx-3 mb-2.5 flex items-start gap-1.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 p-2 text-[10px] text-amber-700 dark:text-amber-400 font-medium">
+                                <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                                <span>No trades in 7+ days. Trade soon to maintain VIP.</span>
+                            </div>
+                        )}
 
                         {/* Join VIP Telegram — rendered when entitled user + VIP_TELEGRAM_URL configured */}
                         {vipLink && (

@@ -100,14 +100,14 @@ export function HomeTrustMetrics({ metrics }: TrustMetricsProps) {
                     {/* --------------------------------------------------------------------- */}
                     {/* 3. THE 4 STAGES OF A DISCIPLINED PRO TRADER                           */}
                     {/* --------------------------------------------------------------------- */}
-                    <div className="grid grid-cols-1 divide-y divide-slate-200/80 dark:divide-white/[0.08] lg:grid-cols-4 lg:divide-y-0 lg:divide-x">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 divide-slate-200/80 dark:divide-white/[0.08] lg:divide-x">
                         {/* ================================================================= */}
                         {/* STEP 01: REAL-TIME MT5 AUTO-SYNC                                  */}
                         {/* ================================================================= */}
                         <div
                             onMouseEnter={() => setActiveBay(1)}
                             onMouseLeave={() => setActiveBay(null)}
-                            className={`group relative flex flex-col justify-between p-5 sm:p-6 transition-all duration-300 ${
+                            className={`group relative flex flex-col justify-between p-5 sm:p-6 sm:border-b sm:border-r lg:border-b-0 border-slate-200/80 dark:border-white/[0.08] transition-all duration-300 ${
                                 activeBay === 1
                                     ? "bg-amber-500/[0.04] dark:bg-amber-500/[0.03]"
                                     : "hover:bg-slate-100/50 dark:hover:bg-white/[0.01]"
@@ -169,7 +169,7 @@ export function HomeTrustMetrics({ metrics }: TrustMetricsProps) {
                         <div
                             onMouseEnter={() => setActiveBay(2)}
                             onMouseLeave={() => setActiveBay(null)}
-                            className={`group relative flex flex-col justify-between p-5 sm:p-6 transition-all duration-300 ${
+                            className={`group relative flex flex-col justify-between p-5 sm:p-6 sm:border-b lg:border-b-0 border-slate-200/80 dark:border-white/[0.08] transition-all duration-300 ${
                                 activeBay === 2
                                     ? "bg-emerald-500/[0.04] dark:bg-emerald-500/[0.03]"
                                     : "hover:bg-slate-100/50 dark:hover:bg-white/[0.01]"
@@ -228,7 +228,7 @@ export function HomeTrustMetrics({ metrics }: TrustMetricsProps) {
                         <div
                             onMouseEnter={() => setActiveBay(3)}
                             onMouseLeave={() => setActiveBay(null)}
-                            className={`group relative flex flex-col justify-between p-5 sm:p-6 transition-all duration-300 ${
+                            className={`group relative flex flex-col justify-between p-5 sm:p-6 sm:border-r lg:border-b-0 border-slate-200/80 dark:border-white/[0.08] transition-all duration-300 ${
                                 activeBay === 3
                                     ? "bg-purple-500/[0.04] dark:bg-purple-500/[0.03]"
                                     : "hover:bg-slate-100/50 dark:hover:bg-white/[0.01]"

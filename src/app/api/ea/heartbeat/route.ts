@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { detectBroker } from "@/lib/ea/broker-detection";
 import { resolveSyncAuth } from "@/lib/sync-auth";
 import { parseBrokerNumber } from "@/lib/utils";
+import { isVipEligibleBroker, normalizeUsdBalance } from "@/lib/pro-access";
 
 /**
  * Maps a GMT hour offset from the EA to the most appropriate IANA timezone.
@@ -24,6 +25,10 @@ function mapGmtOffsetToTimezone(offsetHours: number): string {
     );
 }
 
+// ============================================================================
+// HANDLER
+// ============================================================================
+
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
@@ -32,6 +37,7 @@ export async function POST(request: NextRequest) {
             accountNumber,
             balance,
             equity,
+            accountTradeMode, // ACCOUNT_TRADE_MODE (0=DEMO, 1=CONTEST, 2=REAL)
             // EA auto-collected info
             broker, // ACCOUNT_COMPANY
             server, // ACCOUNT_SERVER
@@ -132,18 +138,74 @@ export async function POST(request: NextRequest) {
         // map is crude and flips across DST, so it must not overwrite a
         // user-set or previously stored value on every beat.
         let hasStoredTimezone: string | null = null;
-        if (detectedTimezone) {
-            const current = await prisma.tradingAccount.findUnique({
-                where: { id: account.id },
-                select: { timezone: true },
-            });
-            hasStoredTimezone = current?.timezone ?? null;
-        }
+        const currentAccount = await prisma.tradingAccount.findUnique({
+            where: { id: account.id },
+            select: {
+                timezone: true,
+                fundingVerifiedAt: true,
+                fundingGraceUntil: true,
+                broker: true,
+            },
+        });
+        hasStoredTimezone = currentAccount?.timezone ?? null;
 
         // Locale-tolerant numeric parsing (US "1,234.56" or EU "1.234,56",
         // never NaN).
         const safeBalance = parseBrokerNumber(balance) ?? undefined;
         const safeEquity = parseBrokerNumber(equity) ?? undefined;
+
+        // Anti-bypass: Convert Cent/USC balances to standard USD equivalent ($300 threshold)
+        const effectiveUsdBalance =
+            safeBalance !== undefined
+                ? normalizeUsdBalance(safeBalance, currency, server)
+                : undefined;
+
+        // Funding initial verification ($300 on REAL account from partner broker)
+        const resolvedBroker = detectedBroker || broker || currentAccount?.broker || "";
+        const isEligibleBroker = isVipEligibleBroker(resolvedBroker);
+        const isRealAccount =
+            accountTradeMode === "REAL" ||
+            accountTradeMode === 2 ||
+            accountTradeMode === "2" ||
+            accountTradeMode === "ACCOUNT_TRADE_MODE_REAL" ||
+            (!accountTradeMode &&
+                !String(server || "").toLowerCase().includes("demo") &&
+                !String(server || "").toLowerCase().includes("contest") &&
+                !String(broker || "").toLowerCase().includes("demo"));
+
+        let fundingUpdate: Record<string, unknown> = {};
+
+        if (isRealAccount && isEligibleBroker && effectiveUsdBalance !== undefined && effectiveUsdBalance >= 300) {
+            if (!currentAccount?.fundingVerifiedAt) {
+                fundingUpdate = {
+                    fundingVerifiedAt: new Date(),
+                    fundingAmount: effectiveUsdBalance,
+                    fundingLastVerifiedAt: new Date(),
+                    fundingGraceUntil: null,
+                };
+                await prisma.proEntitlement.upsert({
+                    where: { tradingAccountId: account.id },
+                    create: {
+                        userId: user.id,
+                        tradingAccountId: account.id,
+                        broker: resolvedBroker,
+                        status: "ACTIVE",
+                        source: "IB_VERIFIED",
+                        startsAt: new Date(),
+                    },
+                    update: {
+                        status: "ACTIVE",
+                        source: "IB_VERIFIED",
+                        startsAt: new Date(),
+                    },
+                });
+            } else if (currentAccount?.fundingGraceUntil) {
+                fundingUpdate = {
+                    fundingGraceUntil: null,
+                    fundingLastVerifiedAt: new Date(),
+                };
+            }
+        }
 
         // Update heartbeat, status, and EA-collected info
         await prisma.tradingAccount.update({
@@ -175,6 +237,9 @@ export async function POST(request: NextRequest) {
                 ...(detectedTimezone && !hasStoredTimezone
                     ? { timezone: detectedTimezone }
                     : {}),
+
+                // Funding status updates
+                ...fundingUpdate,
             },
         });
 

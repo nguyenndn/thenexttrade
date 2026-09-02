@@ -74,18 +74,19 @@ export function PreviewAnalyzeView() {
                             </linearGradient>
                         </defs>
                         <path
-                            d="M 5,75 Q 40,68 75,70 T 145,55 T 215,62 T 270,36 L 290,28 L 290,95 L 5,95 Z"
+                            d="M 5,75 C 45,74 75,71 110,68 C 145,65 170,48 198,48 C 222,48 234,58 252,54 C 270,50 280,32 290,24 L 290,95 L 5,95 Z"
                             fill="url(#previewChartFill)"
                         />
                         <path
-                            d="M 5,75 Q 40,68 75,70 T 145,55 T 215,62 T 270,36 L 290,28"
+                            d="M 5,75 C 45,74 75,71 110,68 C 145,65 170,48 198,48 C 222,48 234,58 252,54 C 270,50 280,32 290,24"
                             fill="none"
                             stroke="#E5A50A"
                             strokeWidth="2.5"
                             strokeLinecap="round"
+                            strokeLinejoin="round"
                         />
-                        <circle cx="290" cy="28" r="3.5" fill="#E5A50A" />
-                        <circle cx="290" cy="28" r="7" fill="#E5A50A" opacity="0.3" />
+                        <circle cx="290" cy="24" r="3.5" fill="#E5A50A" />
+                        <circle cx="290" cy="24" r="7" fill="#E5A50A" opacity="0.3" />
                     </svg>
                 </div>
             </div>

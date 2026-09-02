@@ -9,14 +9,14 @@ import Link from "next/link";
 const MEMBERSHIP_FAQS = [
     {
         question: "Is TheNextTrade really free? Why do I never pay course fees?",
-        answer: "Yes! You never pay TheNextTrade any course or monthly subscription fees. Our core platform, tools, and 7-day trial are 100% free with no credit card required. To keep full VIP access open (AI Coach, MT5 Auto-Sync, and Academy), you simply fund your own broker account with $500. That capital remains 100% yours in your own name, and you can withdraw it anytime.",
+        answer: "Yes! You never pay TheNextTrade any course or monthly subscription fees. Our core platform, tools, and 7-day trial are 100% free with no credit card required. To keep full VIP access open (AI Coach, MT5 Auto-Sync, and Academy), you simply fund your own broker account with $300. That capital remains 100% yours in your own name, and you can withdraw it anytime.",
     },
     {
         question: "What's the catch? How does TheNextTrade make money?",
         answer: "There is no hidden catch. We operate as an official Introducing Broker (IB) partner with regulated brokers (Exness, XM, IC Markets, Vantage). When you trade, the broker compensates us directly from their standard spread at zero additional cost to you. Our interests are 100% aligned with yours: we only thrive when you trade with discipline and stay profitable long-term.",
     },
     {
-        question: "Is my $500 deposit safe? Can I withdraw it anytime?",
+        question: "Is my $300 deposit safe? Can I withdraw it anytime?",
         answer: "Your capital is deposited directly into your personal account at Tier-1 regulated brokers. TheNextTrade never receives, manages, or touches your deposit. You retain 100% custody and can trade or withdraw your funds at any time at your sole discretion.",
     },
     {

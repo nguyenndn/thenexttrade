@@ -10,6 +10,31 @@ import {
 } from "react";
 import { usePathname } from "next/navigation";
 
+export interface TrialInfo {
+    isTrial: boolean;
+    daysRemaining: number;
+    trialEndsAt: string;
+}
+
+export interface ActivityInfo {
+    rolling30dLots: number;
+    minLotsRequired: number;
+    daysSinceLastTrade: number | null;
+    lastTradeAt: string | null;
+    policyState: "ACTIVE" | "WARNED" | "PAUSED";
+    reason?: string;
+}
+
+export interface FundingInfo {
+    verified: boolean;
+    verifiedAt: string | null;
+    lastVerifiedAt: string | null;
+    graceUntil: string | null;
+    amount: number | null;
+    inGrace: boolean;
+    expired: boolean;
+}
+
 interface AccountProStatus {
     tradingAccountId: string;
     accountName: string;
@@ -18,6 +43,10 @@ interface AccountProStatus {
     isPro: boolean;
     source: string | null;
     expiresAt: string | null;
+    policyState?: "ACTIVE" | "WARNED" | "PAUSED";
+    rolling30dLots?: number;
+    daysSinceLastTrade?: number | null;
+    fundingVerified?: boolean;
 }
 
 interface ProState {
@@ -25,6 +54,10 @@ interface ProState {
     status: string;
     source: string | null;
     expiresAt: string | null;
+    policyState: "ACTIVE" | "WARNED" | "PAUSED";
+    trialInfo: TrialInfo | null;
+    activityInfo: ActivityInfo | null;
+    fundingInfo: FundingInfo | null;
     loading: boolean;
     activeAccountCount: number;
     accounts: AccountProStatus[];
@@ -41,6 +74,10 @@ export interface InitialProStatus {
     status: string;
     source: string | null;
     expiresAt: string | null;
+    policyState?: "ACTIVE" | "WARNED" | "PAUSED";
+    trialInfo?: TrialInfo | null;
+    activityInfo?: ActivityInfo | null;
+    fundingInfo?: FundingInfo | null;
     activeAccountCount: number;
     accounts: AccountProStatus[];
     mainAccountId: string | null;
@@ -51,6 +88,10 @@ const ProContext = createContext<ProContextValue>({
     status: "NONE",
     source: null,
     expiresAt: null,
+    policyState: "ACTIVE",
+    trialInfo: null,
+    activityInfo: null,
+    fundingInfo: null,
     loading: true,
     activeAccountCount: 0,
     accounts: [],
@@ -77,6 +118,10 @@ export function ProProvider({ children, initialProStatus }: ProProviderProps) {
         status: initialProStatus?.status ?? "NONE",
         source: initialProStatus?.source ?? null,
         expiresAt: initialProStatus?.expiresAt ?? null,
+        policyState: initialProStatus?.policyState ?? "ACTIVE",
+        trialInfo: initialProStatus?.trialInfo ?? null,
+        activityInfo: initialProStatus?.activityInfo ?? null,
+        fundingInfo: initialProStatus?.fundingInfo ?? null,
         // If we have SSR data, skip the loading flash
         loading: !initialProStatus,
         activeAccountCount: initialProStatus?.activeAccountCount ?? 0,
@@ -102,6 +147,10 @@ export function ProProvider({ children, initialProStatus }: ProProviderProps) {
                         status: data.status || "NONE",
                         source: data.source || null,
                         expiresAt: data.expiresAt || null,
+                        policyState: data.policyState || "ACTIVE",
+                        trialInfo: data.trialInfo || null,
+                        activityInfo: data.activityInfo || null,
+                        fundingInfo: data.fundingInfo || null,
                         loading: false,
                         activeAccountCount: data.activeAccountCount || 0,
                         accounts: data.accounts || [],

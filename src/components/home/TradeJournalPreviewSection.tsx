@@ -219,34 +219,35 @@ export function TradeJournalPreviewSection({
                             <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
                             {/* App Window Header Bar */}
-                            <div className="flex flex-wrap items-center justify-between gap-2 px-1.5 py-1 border-b border-gray-200/80 dark:border-white/10 mb-2.5">
-                                <div className="flex items-center gap-1.5">
+                            <div className="flex items-center justify-between gap-1.5 sm:gap-2 px-1.5 py-1 border-b border-gray-200/80 dark:border-white/10 mb-2.5">
+                                <div className="flex items-center gap-1.5 shrink-0">
                                     <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
                                     <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
                                     <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
                                 </div>
 
                                 {/* Step Switcher Inside App Bar */}
-                                <div className="flex items-center gap-1 bg-gray-100 dark:bg-white/5 p-0.5 rounded-lg">
+                                <div className="flex items-center gap-0.5 sm:gap-1 bg-gray-100 dark:bg-white/5 p-0.5 rounded-lg overflow-x-auto scrollbar-hide">
                                     {STEPS.map((step) => (
                                         <button
                                             key={step.id}
                                             type="button"
                                             onClick={() => setActiveStep(step.id)}
-                                            className={`text-[10px] font-bold px-2.5 py-1 rounded-md transition-all ${
+                                            className={`text-[9px] sm:text-[10px] font-bold px-2 sm:px-2.5 py-1 rounded-md transition-all whitespace-nowrap ${
                                                 activeStep === step.id
                                                     ? "bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm border border-gold/30"
                                                     : "text-gray-500 hover:text-gray-800 dark:hover:text-gray-200"
                                             }`}
                                         >
-                                            {step.number} {step.tag}
+                                            <span className="hidden sm:inline mr-0.5">{step.number}</span>
+                                            <span>{step.tag}</span>
                                         </button>
                                     ))}
                                 </div>
 
-                                <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                                <div className="flex items-center gap-1 text-[9px] sm:text-[10px] font-bold text-emerald-600 dark:text-emerald-400 shrink-0">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                    <span>LIVE DATA</span>
+                                    <span className="hidden sm:inline">LIVE DATA</span>
                                 </div>
                             </div>
 

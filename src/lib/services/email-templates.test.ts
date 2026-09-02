@@ -12,6 +12,12 @@ import {
     buildMagicLinkEmailHtml,
     buildForgotPasswordEmailHtml,
     buildAdminResetPasswordEmailHtml,
+    buildVipTrialEndingSoonEmailHtml,
+    buildVipTrialEndedEmailHtml,
+    buildVipInactivityWarningEmailHtml,
+    buildVipPolicyPausedEmailHtml,
+    buildVipFundingGraceEmailHtml,
+    buildVipSupportSyncResultEmailHtml,
 } from "./email.service";
 import {
     getSampleEALicenseData,
@@ -24,6 +30,13 @@ import {
     getSampleMagicLinkData,
     getSampleForgotPasswordData,
     getSampleAdminResetData,
+    getSampleVipTrialEndingSoonData,
+    getSampleVipTrialEndedData,
+    getSampleVipInactivityWarningData,
+    getSampleVipPolicyPausedData,
+    getSampleVipFundingGraceData,
+    getSampleVipSupportSyncSuccessData,
+    getSampleVipSupportSyncFailedData,
 } from "../email-lab/sample-data";
 
 describe("Email Templates & Builder Service", () => {
@@ -150,4 +163,78 @@ describe("Email Templates & Builder Service", () => {
         expect(html).toContain("<p>Hello World</p>");
         expect(html).toContain("Manage Preferences");
     });
+
+    // ─── VIP Lifecycle Email Template Tests ──────────────────────────────────
+
+    it("renders VIP Trial Ending Soon email with countdown and benefit highlights", () => {
+        const data = getSampleVipTrialEndingSoonData();
+        const html = buildVipTrialEndingSoonEmailHtml(data);
+
+        expect(html).toContain("Your 7-Day VIP Trial Ends Soon");
+        expect(html).toContain(data.userName);
+        expect(html).toContain(data.trialEndsAt);
+        expect(html).toContain("50 AI requests/day");
+        expect(html).toContain("Vantage, Exness, VTMarkets, or Ultima Markets");
+        expect(html).toContain("Connect Funded Account");
+    });
+
+    it("renders VIP Trial Ended email with free plan summary & restore CTA", () => {
+        const data = getSampleVipTrialEndedData();
+        const html = buildVipTrialEndedEmailHtml(data);
+
+        expect(html).toContain("Your VIP Trial Has Ended");
+        expect(html).toContain(data.userName);
+        expect(html).toContain("Free Plan");
+        expect(html).toContain("Restore VIP Pro Access");
+    });
+
+    it("renders VIP Inactivity Warning email with days inactive & warning badge", () => {
+        const data = getSampleVipInactivityWarningData();
+        const html = buildVipInactivityWarningEmailHtml(data);
+
+        expect(html).toContain(`No Trades Recorded in ${data.daysInactive} Days`);
+        expect(html).toContain(data.userName);
+        expect(html).toContain(`${data.daysRemainingBeforePause} days`);
+        expect(html).toContain("Open Trading Dashboard");
+    });
+
+    it("renders VIP Policy Paused email with explanation and 0s auto-restore guide", () => {
+        const data = getSampleVipPolicyPausedData();
+        const html = buildVipPolicyPausedEmailHtml(data);
+
+        expect(html).toContain("Your VIP Access is Temporarily Paused");
+        expect(html).toContain(data.userName);
+        expect(html).toContain(data.reason);
+        expect(html).toContain("Instant 0-Second Auto-Restore");
+        expect(html).toContain("View Account Status");
+    });
+
+    it("renders VIP Funding Grace email with $300 balance reminder & deadline", () => {
+        const data = getSampleVipFundingGraceData();
+        const html = buildVipFundingGraceEmailHtml(data);
+
+        expect(html).toContain("Action Required: Top Up to Maintain VIP");
+        expect(html).toContain(data.userName);
+        expect(html).toContain(data.accountNumber);
+        expect(html).toContain(data.broker);
+        expect(html).toContain(data.graceDeadline);
+        expect(html).toContain("Manage Trading Accounts");
+    });
+
+    it("renders VIP Support-Sync batch result email for both Success and Failed", () => {
+        // Success case
+        const successData = getSampleVipSupportSyncSuccessData();
+        const successHtml = buildVipSupportSyncResultEmailHtml(successData);
+        expect(successHtml).toContain("Support-Sync Batch Completed Successfully");
+        expect(successHtml).toContain(`${successData.syncedTradesCount} new closed trades`);
+        expect(successHtml).toContain("View Updated Journal");
+
+        // Failed case
+        const failedData = getSampleVipSupportSyncFailedData();
+        const failedHtml = buildVipSupportSyncResultEmailHtml(failedData);
+        expect(failedHtml).toContain("Support-Sync Verification Update");
+        expect(failedHtml).toContain(failedData.failureReason);
+        expect(failedHtml).toContain("Update Investor Password");
+    });
 });
+

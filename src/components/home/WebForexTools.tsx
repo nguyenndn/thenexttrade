@@ -32,7 +32,7 @@ export function WebForexTools() {
 
             <section className="py-6 sm:py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <FadeIn delay={0.1} direction="up">
-                    <div className="relative mb-8">
+                    <div className="mb-8 flex flex-col items-center">
                         <HomeSectionHeading
                             align="center"
                             title="Trading Calculators"
@@ -40,19 +40,7 @@ export function WebForexTools() {
                             description="Free pro calculators, live data, and visualizers. No signup required."
                             icon={Wrench}
                         />
-                        <div className="hidden sm:block absolute right-0 bottom-1">
-                            <Link
-                                href="/tools"
-                                className="group inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-gold hover:text-amber-500 transition-colors"
-                            >
-                                <span>View all {ALL_TOOLS.length} tools</span>
-                                <ArrowRight
-                                    size={13}
-                                    className="transition-transform duration-300 group-hover:translate-x-1"
-                                />
-                            </Link>
-                        </div>
-                        <div className="sm:hidden mt-3 text-center">
+                        <div className="mt-3">
                             <Link
                                 href="/tools"
                                 className="group inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-gold hover:text-amber-500 transition-colors"

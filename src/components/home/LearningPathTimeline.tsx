@@ -141,7 +141,7 @@ export function LearningPathTimeline() {
                             delay: cardDelay,
                             ease: "easeOut",
                         }}
-                        className="relative z-10 group overflow-hidden bg-white dark:bg-[#1E2028] p-4 pt-5 rounded-xl border border-dashboard/80 hover:border-transparent transition-all duration-300 md:w-[30%] lg:w-auto mx-auto w-[85%] md:mx-0 shadow-sm hover:shadow-lg"
+                        className="relative z-10 group overflow-hidden bg-white dark:bg-[#1E2028] p-4 pt-5 rounded-xl border border-dashboard/80 hover:border-transparent transition-all duration-300 w-full max-w-sm md:w-[30%] lg:w-auto mx-auto md:mx-0 shadow-sm hover:shadow-lg"
                         style={{
                             boxShadow: `0 2px 12px ${step.glow}`,
                         }}

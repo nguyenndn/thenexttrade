@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getUserProAccess } from "@/lib/pro-access";
 
-const PRO_LIMIT = 100;
+const PRO_LIMIT = 50;
 const FREE_LIMIT = 10;
 
 // A request left in an in-flight state past this age is considered orphaned
