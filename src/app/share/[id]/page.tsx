@@ -5,7 +5,6 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2, Medal } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { cn } from "@/lib/utils";
 
 // Force dynamic rendering since we are fetching specific trade data
 export const dynamic = "force-dynamic";
@@ -53,11 +52,17 @@ export default async function SharePage({ params }: SharePageProps) {
         return notFound();
     }
 
-    // Fetch active coach plan for the user
-    const activeCoachPlan = await prisma.coachActionPlan.findFirst({
-        where: { userId: trade.userId, status: "ACTIVE" },
-        orderBy: { createdAt: "desc" },
-    });
+    // Enforce privacy: check if the trade is marked as shared or public.
+    // If trade.shareMode === "PRIVATE" or if it is not publicly shared, return notFound().
+    const shareMode = trade.shareMode?.toLowerCase();
+    if (
+        !shareMode ||
+        shareMode === "private" ||
+        shareMode === "none" ||
+        !["basic", "full"].includes(shareMode)
+    ) {
+        return notFound();
+    }
 
     // Enforce profile privacy settings on the shared trade data
     const profile = trade.user?.profile;
@@ -73,19 +78,40 @@ export default async function SharePage({ params }: SharePageProps) {
           ? `@${profile.username}`
           : "Trader";
 
-    // Sanitize account info
-    if (trade.account) {
-        if (!showBroker) {
-            trade.account.name =
-                trade.account.accountType === "DEMO"
-                    ? "Demo Account"
-                    : "Trading Account";
-        }
-    }
+    // Sanitize account info according to privacy settings
+    const safeAccount = trade.account
+        ? {
+              ...trade.account,
+              name: !showBroker
+                  ? trade.account.accountType === "DEMO"
+                      ? "Demo Account"
+                      : "Trading Account"
+                  : trade.account.name,
+              accountNumber: showAccountNumber
+                  ? trade.account.accountNumber
+                  : null,
+          }
+        : null;
+
+    // Ensure sensitive psychological notes, mistakes, and private trade details are not leaked to public share
+    const {
+        mistakes: _mistakes,
+        notesPsychology: _notesPsychology,
+        emotionBefore: _emotionBefore,
+        emotionAfter: _emotionAfter,
+        notes: _notes,
+        thesis: _thesis,
+        invalidation: _invalidation,
+        postTradeLesson: _postTradeLesson,
+        entryReason: _entryReason,
+        exitReason: _exitReason,
+        ...safeTrade
+    } = trade;
 
     // Attach sanitized fields / overrides
     const sanitizedTrade = {
-        ...trade,
+        ...safeTrade,
+        account: safeAccount,
         showMoney,
         showRealName,
         showBroker,
@@ -191,44 +217,6 @@ export default async function SharePage({ params }: SharePageProps) {
                     />
                 </div>
 
-                {/* AI Insights Section - Only shown in FULL mode and if plan exists */}
-                {sanitizedTrade.shareMode === "full" &&
-                    activeCoachPlan &&
-                    ((activeCoachPlan.keepDoing?.length ?? 0) > 0 ||
-                        (activeCoachPlan.fixNext?.length ?? 0) > 0) && (
-                        <div className="w-full max-w-5xl animate-in fade-in slide-in-from-bottom-10 duration-700 delay-150">
-                            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-6 shadow-xl">
-                                <h3 className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-4 flex items-center gap-2">
-                                    <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                                    Trader's Current Focus (AI Insights)
-                                </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {(activeCoachPlan.keepDoing?.length ?? 0) >
-                                        0 && (
-                                        <div className="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl">
-                                            <h4 className="text-sm font-bold text-emerald-700 dark:text-emerald-400 mb-3 flex items-center gap-2">
-                                                What's Working
-                                            </h4>
-                                            <p className="text-sm text-gray-600 dark:text-gray-300">
-                                                {activeCoachPlan.keepDoing}
-                                            </p>
-                                        </div>
-                                    )}
-                                    {(activeCoachPlan.fixNext?.length ?? 0) >
-                                        0 && (
-                                        <div className="p-4 bg-red-500/5 border border-red-500/20 rounded-xl">
-                                            <h4 className="text-sm font-bold text-red-700 dark:text-red-400 mb-3 flex items-center gap-2">
-                                                Needs Fix
-                                            </h4>
-                                            <p className="text-sm text-gray-600 dark:text-gray-300">
-                                                {activeCoachPlan.fixNext}
-                                            </p>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    )}
 
                 {/* CTA Block - Premium */}
                 <div className="w-full max-w-5xl animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200">

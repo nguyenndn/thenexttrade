@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runVipPolicyReconciliation } from "@/lib/services/vip-policy.service";
+import { requireCronSecret } from "@/lib/api-auth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
     try {
-        // Authenticate cron caller (Vercel Cron header or Bearer CRON_SECRET)
-        const authHeader = request.headers.get("authorization");
-        const cronSecret = process.env.CRON_SECRET;
-
-        if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        const cronAuth = requireCronSecret(request);
+        if (cronAuth instanceof NextResponse) {
+            return cronAuth;
         }
 
         const result = await runVipPolicyReconciliation();

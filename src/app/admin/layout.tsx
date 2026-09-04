@@ -12,10 +12,8 @@ export default async function AdminLayout({
 }) {
     const user = await getAuthUser();
 
-    // If no user, let the page render (login page handles its own layout)
-    // Middleware already blocks non-login admin pages for unauthenticated users
     if (!user) {
-        return <AdminButtonSizeProvider>{children}</AdminButtonSizeProvider>;
+        redirect("/auth/login?next=/admin");
     }
 
     const profile = await prisma.profile.findUnique({

@@ -175,33 +175,18 @@ export async function POST(request: NextRequest) {
 
         let fundingUpdate: Record<string, unknown> = {};
 
+        // Security: Telemetry / heartbeat from EA client must NOT automatically grant PRO entitlements
+        // or set fundingVerifiedAt (prevents client-side privilege escalation).
+        // Only record telemetry (fundingLastVerifiedAt) or clear grace period if already verified.
         if (isRealAccount && isEligibleBroker && effectiveUsdBalance !== undefined && effectiveUsdBalance >= 300) {
-            if (!currentAccount?.fundingVerifiedAt) {
+            if (currentAccount?.fundingVerifiedAt) {
                 fundingUpdate = {
-                    fundingVerifiedAt: new Date(),
-                    fundingAmount: effectiveUsdBalance,
                     fundingLastVerifiedAt: new Date(),
-                    fundingGraceUntil: null,
+                    ...(currentAccount.fundingGraceUntil ? { fundingGraceUntil: null } : {}),
                 };
-                await prisma.proEntitlement.upsert({
-                    where: { tradingAccountId: account.id },
-                    create: {
-                        userId: user.id,
-                        tradingAccountId: account.id,
-                        broker: resolvedBroker,
-                        status: "ACTIVE",
-                        source: "IB_VERIFIED",
-                        startsAt: new Date(),
-                    },
-                    update: {
-                        status: "ACTIVE",
-                        source: "IB_VERIFIED",
-                        startsAt: new Date(),
-                    },
-                });
-            } else if (currentAccount?.fundingGraceUntil) {
+            } else {
+                // Record telemetry timestamp without activating funding or entitlements
                 fundingUpdate = {
-                    fundingGraceUntil: null,
                     fundingLastVerifiedAt: new Date(),
                 };
             }

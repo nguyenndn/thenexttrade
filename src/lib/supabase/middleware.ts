@@ -154,8 +154,7 @@ export async function updateSession(request: NextRequest) {
 
         if (isMaintenanceOn && path !== "/maintenance") {
             // Maintenance ON → redirect non-admin users to /maintenance
-            const userRole =
-                user?.app_metadata?.role || user?.user_metadata?.role;
+            const userRole = user?.app_metadata?.role;
             const isAdmin = userRole === "ADMIN";
             if (!isAdmin) {
                 return NextResponse.redirect(

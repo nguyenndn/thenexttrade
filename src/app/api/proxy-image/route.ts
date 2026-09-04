@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 
+const ALLOWED_CONTENT_TYPES = new Set([
+    "image/png",
+    "image/jpeg",
+    "image/webp",
+]);
+
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const url = searchParams.get("url");
@@ -8,7 +14,18 @@ export async function GET(request: Request) {
         return new NextResponse("Missing url parameter", { status: 400 });
     }
 
-    if (!url.startsWith("https://s3.tradingview.com/")) {
+    let parsedUrl: URL;
+    try {
+        parsedUrl = new URL(url);
+    } catch {
+        return new NextResponse("Invalid URL", { status: 400 });
+    }
+
+    if (
+        parsedUrl.protocol !== "https:" ||
+        parsedUrl.hostname !== "s3.tradingview.com" ||
+        !url.startsWith("https://s3.tradingview.com/")
+    ) {
         return new NextResponse(
             "Forbidden - Only TradingView snapshot URLs are permitted",
             { status: 403 }
@@ -17,11 +34,11 @@ export async function GET(request: Request) {
 
     try {
         const response = await fetch(url, {
+            redirect: "error",
             headers: {
-                // Giả lập browser để bypass chống bot nếu có từ BunnyCDN
                 "User-Agent":
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                Accept: "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+                Accept: "image/png,image/jpeg,image/webp",
             },
         });
 
@@ -32,11 +49,22 @@ export async function GET(request: Request) {
             });
         }
 
+        const rawContentType = response.headers.get("content-type") || "";
+        const mimeType = rawContentType.split(";")[0].trim().toLowerCase();
+
+        if (!ALLOWED_CONTENT_TYPES.has(mimeType)) {
+            return new NextResponse(
+                "Forbidden - Unsupported or prohibited image content type",
+                { status: 415 }
+            );
+        }
+
         const arrayBuffer = await response.arrayBuffer();
-        const contentType = response.headers.get("content-type") || "image/png";
 
         const headers = new Headers();
-        headers.set("Content-Type", contentType);
+        headers.set("Content-Type", mimeType);
+        headers.set("X-Content-Type-Options", "nosniff");
+        headers.set("Content-Security-Policy", "default-src 'none'");
         headers.set("Cache-Control", "public, max-age=31536000, immutable");
         headers.set("Access-Control-Allow-Origin", "*");
 
