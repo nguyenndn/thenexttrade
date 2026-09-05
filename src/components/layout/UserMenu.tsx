@@ -96,13 +96,13 @@ export function UserMenu({
 
     if (!user) {
         return (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
                 <Link
                     href="/auth/login"
                     className={buttonVariants({
                         variant: "ghost",
                         className:
-                            "px-4 py-2 text-sm font-semibold whitespace-nowrap rounded-xl text-gray-800 hover:text-amber-600 hover:bg-transparent dark:text-gray-300 dark:hover:text-amber-300 dark:hover:bg-transparent",
+                            "px-3 xl:px-4 py-2 text-sm font-semibold whitespace-nowrap rounded-xl text-gray-800 hover:text-amber-600 hover:bg-transparent dark:text-gray-300 dark:hover:text-amber-300 dark:hover:bg-transparent",
                     })}
                 >
                     Login
@@ -112,7 +112,7 @@ export function UserMenu({
                     className={buttonVariants({
                         variant: "primary",
                         className:
-                            "px-6 py-2 text-sm font-bold whitespace-nowrap rounded-xl bg-amber-500 text-white shadow-sm shadow-amber-500/20 hover:bg-amber-600 hover:shadow-amber-500/20",
+                            "px-4 xl:px-6 py-2 text-sm font-bold whitespace-nowrap rounded-xl bg-amber-500 text-white shadow-sm shadow-amber-500/20 hover:bg-amber-600 hover:shadow-amber-500/20",
                     })}
                 >
                     Sign Up Free

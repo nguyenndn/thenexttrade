@@ -112,14 +112,14 @@ export function PublicHeader({
                 className={[
                     "h-16 transition-all duration-500 ease-header",
                     isScrolled
-                        ? "mx-4 sm:mx-6 lg:mx-16 xl:mx-40 2xl:mx-60 rounded-full border shadow-lg shadow-black/5 dark:shadow-black/20 backdrop-blur-xl bg-white dark:bg-card/90 border-dashboard/50 "
+                        ? "mx-4 sm:mx-6 lg:mx-2 xl:mx-20 2xl:mx-48 rounded-full border shadow-lg shadow-black/5 dark:shadow-black/20 backdrop-blur-xl bg-white dark:bg-card/90 border-dashboard/50 "
                         : "mx-0 rounded-none border-b border-dashboard bg-white dark:bg-card",
                 ].join(" ")}
             >
                 {/* Content constrained to 1440px */}
-                <div className="flex w-full max-w-[1440px] mx-auto items-center justify-between gap-2 sm:gap-4 md:gap-6 px-2 sm:px-4 md:px-6 h-full">
+                <div className="flex w-full max-w-[1440px] mx-auto items-center justify-between gap-2 sm:gap-4 lg:gap-2.5 xl:gap-6 px-3 sm:px-4 lg:px-3.5 xl:px-6 h-full">
                     {/* Logo */}
-                    <div className="flex-shrink-0 lg:min-w-[200px]">
+                    <div className="flex-shrink-0 lg:min-w-0 xl:min-w-[180px]">
                         <Logo />
                     </div>
 
@@ -127,7 +127,7 @@ export function PublicHeader({
                     <DesktopNav />
 
                     {/* Action Buttons */}
-                    <div className="flex items-center justify-end gap-2 sm:gap-3 md:gap-4 flex-shrink-0 lg:min-w-[200px]">
+                    <div className="flex items-center justify-end gap-2 sm:gap-2.5 xl:gap-4 flex-shrink-0 lg:min-w-0 xl:min-w-[180px]">
                         {/* Theme Toggle */}
                         <ThemeToggleSwitch />
 

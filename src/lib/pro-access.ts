@@ -177,10 +177,9 @@ export function normalizeUsdBalance(balance: number, currency?: string | null, s
  */
 export async function getAccountProAccess(
     userId: string,
-    tradingAccountId: string
+    tradingAccountId: string,
+    now: Date = new Date()
 ): Promise<ProAccessResult> {
-    const now = new Date();
-
     // Verify account belongs to user & fetch funding fields
     const account = await prisma.tradingAccount.findFirst({
         where: { id: tradingAccountId, userId },

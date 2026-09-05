@@ -78,19 +78,19 @@ export default function AuthLayout({
     ];
 
     return (
-        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#F7F4EC] text-slate-800 dark:bg-transparent dark:text-white p-4 font-outfit relative overflow-hidden transition-colors duration-300">
+        <div className="min-h-[100dvh] w-full flex flex-col items-center justify-center bg-[#F7F4EC] text-slate-800 dark:bg-transparent dark:text-white px-4 py-6 sm:py-10 md:py-16 font-outfit relative overflow-x-hidden transition-colors duration-300">
             <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.16)_0%,rgba(255,255,255,0.72)_34%,rgba(16,185,129,0.10)_100%)] dark:bg-[linear-gradient(135deg,rgba(43,35,68,0.60)_0%,rgba(25,52,81,0.46)_48%,rgba(6,69,79,0.38)_100%)]" />
 
             <div className="relative z-10 flex w-full max-w-7xl items-center justify-center gap-10 lg:justify-between lg:gap-10">
                 {/* LEFT: Form Section */}
-                <div className="w-full lg:w-[480px] shrink-0">
+                <div className="w-full max-w-[440px] sm:max-w-[480px] lg:max-w-none lg:w-[480px] shrink-0 mx-auto lg:mx-0">
                     <div className="flex flex-row items-center justify-between gap-4 py-4">
                         <Link
                             href="/"
                             className={buttonVariants({
                                 variant: "outline",
                                 className:
-                                    "group rounded-full border-amber-900/10 bg-white/60 px-4 py-2 text-sm font-semibold text-slate-600 shadow-sm shadow-amber-900/5 backdrop-blur hover:border-amber-500/35 hover:text-slate-950 dark:bg-white/[0.06] dark:text-slate-300 dark:hover:border-amber-300/35 dark:hover:text-white",
+                                    "group rounded-full border-amber-900/10 bg-white/60 px-3.5 sm:px-4 py-2 min-h-[40px] sm:min-h-[44px] text-xs sm:text-sm font-semibold text-slate-600 shadow-sm shadow-amber-900/5 backdrop-blur hover:border-amber-500/35 hover:text-slate-950 dark:bg-white/[0.06] dark:text-slate-300 dark:hover:border-amber-300/35 dark:hover:text-white shrink-0 inline-flex items-center gap-2",
                             })}
                         >
                             <ArrowLeft
@@ -99,7 +99,7 @@ export default function AuthLayout({
                             />
                             <span>Back to Home</span>
                         </Link>
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-4 shrink-0">
                             <ThemeToggleSwitch />
                         </div>
                     </div>

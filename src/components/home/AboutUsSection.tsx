@@ -20,15 +20,7 @@ export function AboutUsSection() {
                     <div className="flex flex-col lg:flex-row lg:items-center gap-8 xl:gap-12 justify-between">
                         {/* Left Column: Story text and header */}
                         <div className="flex-1 min-w-0">
-                            <div className="mb-2.5 inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.25em] text-amber-600 dark:text-gold/90 select-none">
-                                <Quote
-                                    size={11}
-                                    className="opacity-80 text-amber-600 dark:text-gold/90"
-                                />
-                                Founder note
-                            </div>
-
-                            <h2 className="mt-4 text-3xl sm:text-4xl font-black tracking-tight text-gray-900 dark:text-white leading-tight">
+                            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gray-900 dark:text-white leading-tight">
                                 Built from losses,
                                 <span className="block text-amber-500 dark:text-gold">
                                     rebuilt into a system.

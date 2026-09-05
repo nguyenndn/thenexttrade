@@ -7,7 +7,6 @@ import {
     Calculator,
     Building,
     ArrowRight,
-    Compass,
 } from "lucide-react";
 import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
 
@@ -82,12 +81,10 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
             <section className="py-6 sm:py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <HomeSectionHeading
                     align="center"
-                    eyebrow="Choose your path"
                     title="What do you want to improve today?"
                     highlight="improve"
                     description="Now that you know the system, pick the next step that fits your current goal."
-                    icon={Compass}
-                    className="mb-10"
+                    className="mb-8 sm:mb-10"
                 />
 
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">

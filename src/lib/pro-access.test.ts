@@ -127,7 +127,7 @@ describe("TC-05 to TC-14: Account Pro Access & Activity Policy Engine", () => {
     });
 
     it("TC-05: ACTIVE VIP trader with 2.5 lots and trade 2 days ago -> policyState = ACTIVE", async () => {
-        const now = new Date();
+        const now = new Date("2026-09-02T12:00:00Z"); // Wednesday (trading day)
         const twoDaysAgo = subtractTradingDays(now, 2);
 
         (prisma.tradingAccount.findFirst as any).mockResolvedValue({
@@ -156,7 +156,7 @@ describe("TC-05 to TC-14: Account Pro Access & Activity Policy Engine", () => {
             entryDate: twoDaysAgo,
         });
 
-        const result = await getAccountProAccess("user-1", "acc-1");
+        const result = await getAccountProAccess("user-1", "acc-1", now);
 
         expect(result.isPro).toBe(true);
         expect(result.status).toBe("ACTIVE");
@@ -167,7 +167,7 @@ describe("TC-05 to TC-14: Account Pro Access & Activity Policy Engine", () => {
     });
 
     it("TC-06: Inactivity Warning when no trades for 8 trading days (7-14 trading days) -> policyState = WARNED", async () => {
-        const now = new Date();
+        const now = new Date("2026-09-02T12:00:00Z"); // Wednesday (trading day)
         const eightDaysAgo = subtractTradingDays(now, 8);
 
         (prisma.tradingAccount.findFirst as any).mockResolvedValue({
@@ -196,7 +196,7 @@ describe("TC-05 to TC-14: Account Pro Access & Activity Policy Engine", () => {
             entryDate: eightDaysAgo,
         });
 
-        const result = await getAccountProAccess("user-1", "acc-1");
+        const result = await getAccountProAccess("user-1", "acc-1", now);
 
         expect(result.isPro).toBe(true); // Still Pro while in warned state
         expect(result.status).toBe("ACTIVE");
@@ -205,7 +205,7 @@ describe("TC-05 to TC-14: Account Pro Access & Activity Policy Engine", () => {
     });
 
     it("TC-07: Inactivity Pause when no trades for 15 trading days (>14 trading days) -> policyState = PAUSED, isPro = false", async () => {
-        const now = new Date();
+        const now = new Date("2026-09-02T12:00:00Z"); // Wednesday (trading day)
         const fifteenDaysAgo = subtractTradingDays(now, 15);
 
         (prisma.tradingAccount.findFirst as any).mockResolvedValue({
@@ -234,7 +234,7 @@ describe("TC-05 to TC-14: Account Pro Access & Activity Policy Engine", () => {
             entryDate: fifteenDaysAgo,
         });
 
-        const result = await getAccountProAccess("user-1", "acc-1");
+        const result = await getAccountProAccess("user-1", "acc-1", now);
 
         expect(result.isPro).toBe(false); // PAUSED means effective Pro is false
         expect(result.policyState).toBe("PAUSED");

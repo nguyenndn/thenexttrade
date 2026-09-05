@@ -5,12 +5,15 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { CountrySelect } from "@/components/ui/CountrySelect";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { signup } from "@/app/auth/actions";
 import { Check, Eye, EyeOff, Lock, Mail, TrendingUp, User } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
 import { trackEvent } from "@/lib/track";
+import { PasswordStrengthPopover } from "@/components/auth/PasswordStrengthPopover";
+import { passwordSchema } from "@/lib/validations/auth";
+import { cn } from "@/lib/utils";
 
 type SignupStep = 1 | 2 | 3;
 
@@ -27,6 +30,8 @@ export default function SignupPage() {
     const [error, setError] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
+    const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+    const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [country, setCountry] = useState("");
@@ -38,16 +43,16 @@ export default function SignupPage() {
     const [referralCode, setReferralCode] = useState("");
 
     const inputClassName =
-        "h-12 bg-white/80 border-amber-900/10 text-slate-900 text-base py-3 placeholder:text-slate-400 focus:bg-white focus:border-amber-400 focus:ring-amber-300/30 dark:bg-black/20 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-black/25 dark:focus:border-amber-300/60 dark:focus:ring-amber-300/20 transition-colors";
+        "h-12 bg-white/80 border-amber-900/10 text-slate-900 text-sm sm:text-base py-3 placeholder:text-slate-400 focus:bg-white focus:border-amber-400 focus:ring-amber-300/30 dark:bg-black/20 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-black/25 dark:focus:border-amber-300/60 dark:focus:ring-amber-300/20 transition-colors";
 
     const primaryButtonClassName =
-        "w-full h-14 rounded-xl border-none bg-[linear-gradient(135deg,#F8D46B_0%,#D99A26_45%,#8A5A13_100%)] text-base font-black text-white shadow-[0_18px_36px_rgba(217,154,38,0.32)] hover:shadow-[0_20px_44px_rgba(217,154,38,0.42)]";
+        "w-full h-12 sm:h-14 rounded-xl border-none bg-[linear-gradient(135deg,#F8D46B_0%,#D99A26_45%,#8A5A13_100%)] text-sm sm:text-base font-black text-white shadow-[0_18px_36px_rgba(217,154,38,0.32)] hover:shadow-[0_20px_44px_rgba(217,154,38,0.42)] active:scale-[0.99] transition-transform";
 
     const secondaryButtonClassName =
-        "h-14 rounded-xl border-amber-900/10 bg-white/70 text-slate-700 hover:border-amber-400/50 hover:bg-white dark:bg-white/[0.06] dark:text-slate-200 dark:hover:border-amber-300/40";
+        "w-full h-12 sm:h-14 rounded-xl border-amber-900/10 bg-white/70 text-sm sm:text-base font-bold text-slate-700 hover:border-amber-400/50 hover:bg-white dark:bg-white/[0.06] dark:text-slate-200 dark:hover:border-amber-300/40 active:scale-[0.99] transition-transform";
 
     const checkboxClassName =
-        "appearance-none h-5 w-5 rounded-lg border border-amber-900/20 bg-white checked:bg-amber-500 checked:border-amber-500 dark:bg-black/20 dark:border-white/20 dark:checked:bg-amber-400 dark:checked:border-amber-400 checked:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%2F%3E%3C%2Fsvg%3E')] bg-[length:70%] bg-center bg-no-repeat transition-all cursor-pointer shrink-0";
+        "appearance-none h-5 w-5 rounded-lg border border-amber-900/20 bg-white checked:bg-amber-500 checked:border-amber-500 dark:bg-black/20 dark:border-white/20 dark:checked:bg-amber-400 dark:checked:border-amber-400 checked:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%2F%3E%3C%2Fsvg%3E')] bg-[length:70%] bg-center bg-no-repeat transition-all cursor-pointer shrink-0 mt-0.5";
 
     useEffect(() => {
         setReferralCode(
@@ -73,6 +78,14 @@ export default function SignupPage() {
         };
     }, [country]);
 
+    useEffect(() => {
+        return () => {
+            if (blurTimeoutRef.current) {
+                clearTimeout(blurTimeoutRef.current);
+            }
+        };
+    }, []);
+
     const validateCurrentStep = () => {
         setError(null);
 
@@ -95,8 +108,12 @@ export default function SignupPage() {
         }
 
         if (step === 3) {
-            if (password.length < 10) {
-                setError("Password must be at least 10 characters.");
+            const passwordValidation = passwordSchema.safeParse(password);
+            if (!passwordValidation.success) {
+                setError(
+                    passwordValidation.error.issues[0]?.message ||
+                        "Password must be at least 10 characters."
+                );
                 return false;
             }
             if (password !== confirm) {
@@ -121,6 +138,11 @@ export default function SignupPage() {
     };
 
     const goBack = () => {
+        if (blurTimeoutRef.current) {
+            clearTimeout(blurTimeoutRef.current);
+            blurTimeoutRef.current = null;
+        }
+        setIsPasswordFocused(false);
         setError(null);
         setStep((current) => Math.max(current - 1, 1) as SignupStep);
     };
@@ -176,38 +198,38 @@ export default function SignupPage() {
     };
 
     return (
-        <div className="w-full max-w-[480px] mx-auto rounded-lg border border-amber-900/10 bg-white/85 p-8 shadow-[0_28px_90px_rgba(88,64,27,0.18)] backdrop-blur-xl transition-colors duration-300 dark:border-amber-300/15 dark:bg-[#11100C]/90 dark:shadow-[0_28px_90px_rgba(0,0,0,0.45)]">
-            <div className="flex justify-center mb-6">
+        <div className="w-full max-w-[440px] sm:max-w-[480px] mx-auto rounded-2xl border border-amber-900/10 bg-white/85 p-5 sm:p-7 md:p-8 shadow-[0_28px_90px_rgba(88,64,27,0.18)] backdrop-blur-xl transition-colors duration-300 dark:border-amber-300/15 dark:bg-[#11100C]/90 dark:shadow-[0_28px_90px_rgba(0,0,0,0.45)]">
+            <div className="flex justify-center mb-5 sm:mb-6">
                 <Logo />
             </div>
-            <div className="text-center mb-6">
-                <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1.5 text-xs font-extrabold uppercase text-amber-700 dark:text-amber-300">
+            <div className="text-center mb-5 sm:mb-6">
+                <div className="mx-auto mb-3 sm:mb-4 inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1.5 text-xs font-extrabold uppercase text-amber-700 dark:text-amber-300">
                     <TrendingUp size={14} />
                     Start with your edge
                 </div>
-                <h1 className="text-3xl font-black text-slate-950 dark:text-white">
+                <h1 className="text-2xl sm:text-3xl font-black text-slate-950 dark:text-white">
                     Create your account
                 </h1>
-                <p className="mt-2 text-base font-medium text-slate-600 dark:text-slate-300">
+                <p className="mt-1.5 sm:mt-2 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300">
                     Set up your premium trading workspace in minutes.
                 </p>
                 {referralCode && (
-                    <p className="mx-auto mt-3 inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-200">
+                    <p className="mx-auto mt-2.5 sm:mt-3 inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-200">
                         Referral applied
                     </p>
                 )}
             </div>
 
-            <div className="mb-7 flex items-center justify-center gap-3">
+            <div className="mb-6 sm:mb-7 flex items-center justify-center gap-1 sm:gap-2 md:gap-3 max-w-full">
                 {steps.map((item, index) => {
                     const isActive = item.id === step;
                     const isDone = item.id < step;
 
                     return (
-                        <div key={item.id} className="flex items-center gap-3">
-                            <div className="flex items-center gap-2">
+                        <div key={item.id} className="flex items-center gap-1 sm:gap-2 md:gap-3">
+                            <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2">
                                 <div
-                                    className={`flex h-9 w-9 items-center justify-center rounded-full border text-sm font-black transition-colors ${
+                                    className={`flex h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 items-center justify-center rounded-full border text-xs sm:text-sm font-black transition-colors shrink-0 ${
                                         isActive
                                             ? "border-amber-500 bg-amber-500/10 text-amber-700 dark:text-amber-300"
                                             : isDone
@@ -215,23 +237,28 @@ export default function SignupPage() {
                                               : "border-dashboard bg-white/70 text-slate-500 dark:bg-white/[0.04] dark:text-slate-400"
                                     }`}
                                 >
-                                    {isDone ? <Check size={16} /> : item.id}
+                                    {isDone ? <Check size={13} className="sm:w-3.5 sm:h-3.5" /> : item.id}
                                 </div>
                                 <span
-                                    className={`hidden sm:inline text-sm font-bold ${isActive ? "text-slate-950 dark:text-white" : "text-slate-500 dark:text-slate-400"}`}
+                                    className={cn(
+                                        "text-[11px] sm:text-xs md:text-sm font-bold whitespace-nowrap transition-colors",
+                                        isActive
+                                            ? "text-slate-950 dark:text-white"
+                                            : "text-slate-500 dark:text-slate-400"
+                                    )}
                                 >
                                     {item.label}
                                 </span>
                             </div>
                             {index < steps.length - 1 && (
-                                <div className="h-px w-4 sm:w-8 bg-amber-900/15 dark:bg-white/15" />
+                                <div className="h-px w-2.5 sm:w-6 md:w-8 bg-amber-900/15 dark:bg-white/15 shrink-0" />
                             )}
                         </div>
                     );
                 })}
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
                 {error && (
                     <div className="p-4 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm text-center">
                         {error}
@@ -302,7 +329,7 @@ export default function SignupPage() {
                             className={inputClassName}
                         />
 
-                        <div className="flex items-start gap-2 rounded-lg border border-amber-900/10 bg-[#FBF6EA] p-4 dark:bg-white/[0.04]">
+                        <div className="flex items-start gap-2.5 sm:gap-3 rounded-xl border border-amber-900/10 bg-[#FBF6EA] p-3.5 sm:p-4 dark:bg-white/[0.04]">
                             <input
                                 type="checkbox"
                                 className={checkboxClassName}
@@ -315,13 +342,13 @@ export default function SignupPage() {
                             />
                             <label
                                 htmlFor="notify"
-                                className="text-sm leading-6 text-slate-600 dark:text-slate-400 cursor-pointer"
+                                className="text-xs sm:text-sm leading-snug sm:leading-6 text-slate-600 dark:text-slate-400 cursor-pointer select-none pt-0.5"
                             >
                                 Notify me about updates & perks (No spam)
                             </label>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
                             <Button
                                 type="button"
                                 variant="outline"
@@ -344,46 +371,82 @@ export default function SignupPage() {
 
                 {step === 3 && (
                     <>
-                        <Input
-                            name="password"
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Password"
-                            label="Password"
-                            required
-                            value={password}
-                            onChange={(event) =>
-                                setPassword(event.target.value)
-                            }
-                            startIcon={
-                                <Lock
-                                    size={20}
-                                    className="text-amber-600/80 dark:text-amber-300/80"
-                                />
-                            }
-                            endIcon={
-                                <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() =>
-                                        setShowPassword(!showPassword)
+                        <div
+                            className={cn(
+                                "relative w-full",
+                                isPasswordFocused ? "z-30" : "z-20"
+                            )}
+                        >
+                            <Input
+                                name="password"
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Password"
+                                label="Password"
+                                required
+                                value={password}
+                                onChange={(event) => {
+                                    setPassword(event.target.value);
+                                    if (error) setError(null);
+                                    if (!isPasswordFocused) {
+                                        if (blurTimeoutRef.current) {
+                                            clearTimeout(blurTimeoutRef.current);
+                                            blurTimeoutRef.current = null;
+                                        }
+                                        setIsPasswordFocused(true);
                                     }
-                                    className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white"
-                                    aria-label={
-                                        showPassword
-                                            ? "Hide password"
-                                            : "Show password"
+                                }}
+                                onFocus={() => {
+                                    if (blurTimeoutRef.current) {
+                                        clearTimeout(blurTimeoutRef.current);
+                                        blurTimeoutRef.current = null;
                                     }
-                                >
-                                    {showPassword ? (
-                                        <EyeOff size={20} />
-                                    ) : (
-                                        <Eye size={20} />
-                                    )}
-                                </Button>
-                            }
-                            className={inputClassName}
-                        />
+                                    setIsPasswordFocused(true);
+                                }}
+                                onBlur={() => {
+                                    blurTimeoutRef.current = setTimeout(() => {
+                                        setIsPasswordFocused(false);
+                                    }, 180);
+                                }}
+                                startIcon={
+                                    <Lock
+                                        size={20}
+                                        className="text-amber-600/80 dark:text-amber-300/80"
+                                    />
+                                }
+                                endIcon={
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        tabIndex={-1}
+                                        onMouseDown={(e) => e.preventDefault()}
+                                        onTouchStart={(e) => e.preventDefault()}
+                                        onClick={() =>
+                                            setShowPassword(!showPassword)
+                                        }
+                                        className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white"
+                                        aria-label={
+                                            showPassword
+                                                ? "Hide password"
+                                                : "Show password"
+                                        }
+                                    >
+                                        {showPassword ? (
+                                            <EyeOff size={20} />
+                                        ) : (
+                                            <Eye size={20} />
+                                        )}
+                                    </Button>
+                                }
+                                className={inputClassName}
+                            />
+
+                            <PasswordStrengthPopover
+                                password={password}
+                                isVisible={isPasswordFocused}
+                                onClick={() => setIsPasswordFocused(false)}
+                            />
+                        </div>
 
                         <Input
                             name="confirm"
@@ -392,7 +455,17 @@ export default function SignupPage() {
                             label="Confirm Password"
                             required
                             value={confirm}
-                            onChange={(event) => setConfirm(event.target.value)}
+                            onFocus={() => {
+                                if (blurTimeoutRef.current) {
+                                    clearTimeout(blurTimeoutRef.current);
+                                    blurTimeoutRef.current = null;
+                                }
+                                setIsPasswordFocused(false);
+                            }}
+                            onChange={(event) => {
+                                setConfirm(event.target.value);
+                                if (error) setError(null);
+                            }}
                             startIcon={
                                 <Lock
                                     size={20}
@@ -404,6 +477,9 @@ export default function SignupPage() {
                                     type="button"
                                     variant="ghost"
                                     size="icon"
+                                    tabIndex={-1}
+                                    onMouseDown={(e) => e.preventDefault()}
+                                    onTouchStart={(e) => e.preventDefault()}
                                     onClick={() => setShowConfirm(!showConfirm)}
                                     className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white"
                                     aria-label={
@@ -422,7 +498,7 @@ export default function SignupPage() {
                             className={inputClassName}
                         />
 
-                        <div className="flex items-start gap-2">
+                        <div className="flex items-start gap-2.5 sm:gap-3">
                             <input
                                 type="checkbox"
                                 className={checkboxClassName}
@@ -436,7 +512,7 @@ export default function SignupPage() {
                             />
                             <label
                                 htmlFor="terms"
-                                className="text-sm leading-6 text-slate-600 dark:text-slate-400 cursor-pointer"
+                                className="text-xs sm:text-sm leading-snug sm:leading-6 text-slate-600 dark:text-slate-400 cursor-pointer select-none pt-0.5"
                             >
                                 I accept the{" "}
                                 <Link
@@ -458,10 +534,10 @@ export default function SignupPage() {
 
                         <TurnstileWidget
                             onVerify={setTurnstileToken}
-                            className="flex justify-center"
+                            className="flex justify-center overflow-hidden max-w-full"
                         />
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
                             <Button
                                 type="button"
                                 variant="outline"
@@ -473,22 +549,22 @@ export default function SignupPage() {
                             <Button
                                 type="submit"
                                 variant="primary"
-                                className={primaryButtonClassName}
+                                className={cn(primaryButtonClassName, "px-2 sm:px-4")}
                                 isLoading={loading}
                             >
-                                Create Account
+                                <span className="truncate">Create Account</span>
                             </Button>
                         </div>
                     </>
                 )}
             </form>
 
-            <div className="mt-8 text-center">
-                <p className="text-sm text-slate-600 dark:text-slate-300">
+            <div className="mt-6 sm:mt-8 text-center">
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
                     Already have an account?{" "}
                     <Link
                         href="/auth/login"
-                        className="font-bold text-amber-700 hover:text-amber-800 hover:underline dark:text-amber-300 dark:hover:text-amber-200"
+                        className="font-bold text-amber-700 hover:text-amber-800 hover:underline dark:text-amber-300 dark:hover:text-amber-200 py-1 inline-block"
                     >
                         Sign In
                     </Link>

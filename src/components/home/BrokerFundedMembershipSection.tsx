@@ -13,7 +13,6 @@ import {
     Lock,
     Building2,
     Zap,
-    Coins,
     Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -36,7 +35,6 @@ export function BrokerFundedMembershipSection({
                 {/* 1. Standardized Section Heading */}
                 <HomeSectionHeading
                     align="center"
-                    eyebrow="Zero-Cost Membership Model"
                     title={
                         <>
                             You never pay us <br className="hidden sm:inline" />
@@ -44,7 +42,6 @@ export function BrokerFundedMembershipSection({
                         </>
                     }
                     description="Free 7-day trial, no credit card required. To keep full access open, simply fund your own broker account with $300 — new or existing. Here is exactly how it works."
-                    icon={Coins}
                     className="mb-6 sm:mb-8"
                 />
 

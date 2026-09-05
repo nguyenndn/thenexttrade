@@ -38,46 +38,55 @@ import {
     Mail,
 } from "lucide-react";
 
-export const menuItems = [
+export interface PublicMenuItem {
+    name: string;
+    shortName?: string;
+    href: string;
+    type: "link";
+}
+
+export const menuItems: PublicMenuItem[] = [
     {
         name: "Home",
         href: "/",
-        type: "link" as const,
+        type: "link",
     },
     {
         name: "Knowledge",
         href: "/knowledge",
-        type: "link" as const,
+        type: "link",
     },
     {
         name: "Academy",
         href: "/academy",
-        type: "link" as const,
+        type: "link",
     },
     {
         name: "Trading Systems",
+        shortName: "Systems",
         href: "/trading-systems",
-        type: "link" as const,
+        type: "link",
     },
     {
         name: "Tools",
         href: "/tools",
-        type: "link" as const,
+        type: "link",
     },
     {
         name: "Trading Style",
+        shortName: "Style",
         href: "/trading-style",
-        type: "link" as const,
+        type: "link",
     },
     {
         name: "Brokers",
         href: "/brokers",
-        type: "link" as const,
+        type: "link",
     },
     {
         name: "Community",
         href: "/community",
-        type: "link" as const,
+        type: "link",
     },
 ];
 

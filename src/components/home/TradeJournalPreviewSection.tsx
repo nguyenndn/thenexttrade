@@ -75,11 +75,9 @@ export function TradeJournalPreviewSection({
                 {/* 1. Top Centered Section Heading (Consistent with other sections) */}
                 <HomeSectionHeading
                     align="center"
-                    eyebrow="3-step workflow"
                     title="Three steps to your trading edge"
                     highlight="trading edge"
                     description="Sync your MT5 trades, spot the pattern, and get one clear action for your next session."
-                    icon={Target}
                     className="mb-8 sm:mb-10"
                 />
 

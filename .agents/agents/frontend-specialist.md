@@ -536,13 +536,42 @@ When reviewing frontend code, verify:
 - [ ] **TypeScript**: Strict mode compliant, no `any`, proper generics
 - [ ] **Performance**: Profiled before optimization, appropriate memoization
 - [ ] **Accessibility**: ARIA labels, keyboard navigation, semantic HTML
-- [ ] **Responsive**: Mobile-first, tested on breakpoints
+- [ ] **Responsive**: Mobile-first, tested on breakpoints (especially 1024px tolerance)
 - [ ] **Error Handling**: Error boundaries, graceful fallbacks
 - [ ] **Loading States**: Skeletons or spinners for async operations
 - [ ] **State Strategy**: Appropriate choice (local/server/global)
 - [ ] **Server Components**: Used where possible (Next.js)
 - [ ] **Tests**: Critical logic covered with tests
 - [ ] **Linting**: No errors or warnings
+
+## 📐 Responsive Breakpoint Typography & Navigation Rules (1024px Tolerance)
+
+1. **Intermediate Font Scaling at `lg` (1024px)**:
+   - Never jump directly from `md:text-5xl` or `text-6xl` to `lg:text-[70px+]`.
+   - At 1024px (`lg`), available container width is typically only 960px (after `px-6`/`px-8` padding).
+   - Display headlines with 20+ characters must use a graduated ramp:
+     `text-3xl sm:text-4xl md:text-5xl lg:text-[54px] xl:text-[68px] 2xl:text-[76px]`
+   - This ensures headlines maintain a crisp 2-line layout on iPad Pro / 1024px laptops without wrapping into 3 lines.
+
+2. **Orphaned Word Prevention in Phrased Headings**:
+   - For headings with a leading connective word before dynamic text (e.g. `Into <DynamicPhrase>`), wrap the phrase in `sm:whitespace-nowrap`.
+   - Never let a single word like "Into" wrap to a line by itself.
+
+3. **Desktop Nav Density at `lg` (1024px)**:
+   - When converting navigation from mobile drawer to desktop bar at `lg:flex`:
+   - Keep item text at `text-sm xl:text-base` and gaps at `gap-2.5 lg:gap-3 xl:gap-6`.
+   - Do not assign excessive fixed `min-w-[200px]` to adjacent logo or action button containers on `lg:`. Use `lg:min-w-0 xl:min-w-[180px]`.
+
+4. **Hero CTA Button Proportions (SaaS Gold Standard 48px)**:
+   - Avoid bloated `min-h-14` (56px) or heavy `px-10` (80px total) padding on SaaS landing page hero CTAs; they look blocky and disjointed, especially for short text (e.g. "Open Journal").
+   - Follow the modern fintech standard: `h-11 sm:h-12` (44px mobile, 48px desktop) with `px-5 sm:px-7` padding, `font-bold` (700 weight, not 900), and soft diffused shadows (`shadow-md shadow-amber-500/20`).
+
+5. **Floating Pill Header & Responsive Short Labels at `lg` (1024px Scrolled State)**:
+   - When a floating pill header contracts on scroll (`isScrolled`), avoid heavy horizontal margins like `lg:mx-16` or `lg:mx-20` which shave off 128px+ at 1024px viewport width. Use `lg:mx-4 xl:mx-20 2xl:mx-48` so the pill retains 992px width at 1024px.
+   - When navigation items contain multi-word labels (e.g. "Trading Systems", "Trading Style"), supply a `shortName` property (e.g. "Systems", "Style") and render responsively:
+     `<span className="lg:inline xl:hidden">{item.shortName}</span><span className="hidden xl:inline">{item.name}</span>`
+   - Pair with compact nav typography and gaps: `text-[13px] xl:text-base` and `gap-2 lg:gap-2.5 xl:gap-6`.
+   - Use compact action button gaps (`gap-2 sm:gap-2.5 xl:gap-4`) to guarantee theme toggle, search, and user avatar stay comfortably inside the pill's rounded border with generous margin of safety.
 
 ## Common Anti-Patterns You Avoid
 

@@ -8,7 +8,7 @@ export function DesktopNav() {
     const pathname = usePathname();
 
     return (
-        <nav className="hidden lg:flex items-center justify-center gap-4 xl:gap-7 relative flex-1 overflow-x-auto scrollbar-hide px-2">
+        <nav className="hidden lg:flex items-center justify-center gap-1.5 lg:gap-2 xl:gap-6 relative flex-1 px-1 lg:px-1.5 xl:px-2">
             {menuItems.map((item) => {
                 const isActive =
                     pathname === item.href ||
@@ -19,6 +19,7 @@ export function DesktopNav() {
                         key={item.name}
                         href={item.href}
                         aria-current={isActive ? "page" : undefined}
+                        aria-label={item.name}
                         className={[
                             "relative py-1.5 text-base nav-menu-text transition-colors group whitespace-nowrap",
                             isActive
@@ -26,7 +27,18 @@ export function DesktopNav() {
                                 : "text-gray-700 hover:text-amber-600 dark:text-gray-300 dark:hover:text-amber-300",
                         ].join(" ")}
                     >
-                        {item.name}
+                        {item.shortName ? (
+                            <>
+                                <span className="lg:inline xl:hidden">
+                                    {item.shortName}
+                                </span>
+                                <span className="hidden xl:inline">
+                                    {item.name}
+                                </span>
+                            </>
+                        ) : (
+                            item.name
+                        )}
                         <span
                             className={[
                                 "absolute -bottom-1 left-0 h-[2px] w-full origin-center rounded-full bg-amber-500 transition-all duration-300 ease-out",

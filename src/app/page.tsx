@@ -1,6 +1,6 @@
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import { GraduationCap, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { AboutUsSection } from "@/components/home/AboutUsSection";
 import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
 import { FadeIn } from "@/components/ui/FadeIn";
@@ -223,14 +223,11 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                     <FadeIn delay={0.1} direction="up">
                         <HomeSectionHeading
                             align="center"
-                            eyebrow="Academy support"
                             title="Learn what your trade data exposes"
                             highlight="trade data"
                             description="Use lessons and guides to fix the weaknesses found in your journal and weekly reports."
-                            icon={GraduationCap}
                             contentClassName="lg:max-w-5xl"
-                            titleClassName="lg:whitespace-nowrap"
-                            className="mb-16"
+                            className="mb-12 sm:mb-16"
                         />
                     </FadeIn>
 

@@ -89,8 +89,8 @@ export function HomeSectionHeading({
                     <div>
                         <h2
                             className={[
-                                "font-heading text-3xl font-black tracking-tight text-gray-900 dark:text-white sm:text-4xl",
-                                isCenter ? "leading-[1.08]" : "leading-tight",
+                                "font-heading text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-gray-900 dark:text-white [text-wrap:balance]",
+                                isCenter ? "leading-[1.15] sm:leading-[1.08]" : "leading-tight",
                                 titleClassName,
                             ].join(" ")}
                         >
@@ -100,7 +100,7 @@ export function HomeSectionHeading({
                         {description && (
                             <p
                                 className={[
-                                    "mt-3 text-sm font-medium leading-relaxed text-gray-600 dark:text-gray-400 sm:text-base",
+                                    "mt-2.5 sm:mt-3 text-xs sm:text-sm md:text-base font-medium leading-relaxed text-gray-600 dark:text-gray-400 [text-wrap:balance]",
                                     isCenter
                                         ? "mx-auto max-w-2xl"
                                         : "max-w-2xl",

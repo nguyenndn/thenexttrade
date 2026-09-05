@@ -119,12 +119,10 @@ export function ReviewsSection() {
             <section className="py-6 sm:py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <HomeSectionHeading
                     align="center"
-                    eyebrow="Community love"
                     title="What Our Traders Say"
                     highlight="Traders"
                     description="Join 12,000+ traders who trust TheNextTrade for their forex success."
-                    icon={Star}
-                    className="mb-12"
+                    className="mb-10 sm:mb-12"
                 />
 
                 {/* Cards */}

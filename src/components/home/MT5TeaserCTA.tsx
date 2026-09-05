@@ -9,7 +9,6 @@ import {
     ArrowRight,
     CheckCircle2,
     HelpCircle,
-    Cpu,
     Zap,
     Layers,
     Activity,
@@ -167,12 +166,6 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                         {/* Left Column: Product Promise, Trust, CTAs */}
                         <div className="space-y-6">
                             <div>
-                                {/* Gold Eyebrow */}
-                                <span className="inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.2em] text-gold block mb-3">
-                                    <Cpu size={12} className="animate-pulse" />
-                                    MT5 Automated Execution
-                                </span>
-
                                 {/* Main Title */}
                                 <h2 className="text-2xl sm:text-3xl font-black text-gray-800 dark:text-white leading-tight tracking-tight">
                                     Looking for Automated Execution?
