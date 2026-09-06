@@ -85,6 +85,19 @@ Before modifying any file:
 - ONLY open or test via browser when the user **explicitly requests** it (e.g., "mở browser test", "/qa browser").
 - Standard verification must strictly use fast static checks: `npx tsc --noEmit` and `npm run lint`.
 
+### ✍️ Anti-AI Copywriting & Tone of Voice (MANDATORY)
+1. **Banned AI Clichés (Tuyệt đối không dùng trong UI/Marketing):**
+   - ❌ "Unlock your potential" / "Elevate your trading journey" / "Your next move"
+   - ❌ "Empowering traders worldwide" / "Seamlessly integrate"
+   - ❌ "Deep dive into" / "Delve into" / "Master the art of"
+   - ❌ "A testament to" / "In today's fast-paced markets" / "Beacon of hope"
+   - ❌ "Game-changing" / "Revolutionize" / "Supercharge"
+2. **Required Domain Realism (Bắt buộc dùng ngôn ngữ thực chiến Forex):**
+   - ✅ Focus on capital preservation: "protect your capital", "hard stop-loss", "drawdown control".
+   - ✅ Real execution telemetry: "live MT5 trade telemetry", "behavioral leak radar", "10-trade sprint", "positive expectancy".
+   - ✅ Honest trader empathy: "no magic indicators", "cold risk math", "hard lessons from blown accounts".
+   - ✅ Brand name consistency: **TheNextTrade** only (never use old name "Breek" in user-facing copy).
+
 ---
 
 ## 5. SOCRATIC GATE

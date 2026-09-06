@@ -99,7 +99,7 @@ export default async function AboutPage() {
                                 5 Hard Truths I Learned the Hard Way
                             </h2>
                             <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                                No fancy marketing buzzwords. Just the honest lessons that saved my trading journey.
+                                No fancy marketing buzzwords. Just the hard lessons that turned my equity curve around.
                             </p>
                         </div>
                     </ScrollReveal>
@@ -227,7 +227,7 @@ export default async function AboutPage() {
                         <div className="rounded-3xl p-8 sm:p-12 md:p-14 text-center border border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-white dark:via-slate-900/90 to-amber-500/5 backdrop-blur-2xl shadow-2xl relative overflow-hidden">
                             <div className="relative z-10 space-y-6">
                                 <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-black text-gray-900 dark:text-white tracking-tight sm:whitespace-nowrap">
-                                    Start Your Disciplined Journey Today
+                                    Build Your Systematic Trading Edge Today
                                 </h2>
                                 <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
                                     No credit card required. Connect your MT5 account in 30 seconds and uncover the behavioral leaks holding you back from consistent profitability.

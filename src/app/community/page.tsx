@@ -822,7 +822,7 @@ export default async function CommunityPage() {
 
                     <div className="mb-10 rounded-2xl border border-amber-500/20 dark:border-white/[0.06] bg-white/80 dark:bg-[#131622]/60 p-4 sm:p-6 backdrop-blur-md">
                         <p className="text-center text-xs font-black uppercase tracking-[0.16em] text-amber-600 dark:text-gold mb-5">
-                            Your Trading Journey
+                            The Trader Growth Loop
                         </p>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                             {[

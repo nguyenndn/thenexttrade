@@ -52,7 +52,7 @@ const FAQ_GROUPS = [
         items: [
             {
                 question: "What is TheNextTrade?",
-                answer: "TheNextTrade is an advanced, premium trading analytics and education platform. We offer a progressive Academy, automated MetaTrader 5 (MT5) integration, a behavioral Trading Journal, weekly AI action plans, and deep analytics to help you find and refine your trading edge.",
+                answer: "TheNextTrade is a trading operating system built to solve the execution paradox: traders know the rules, but fail to follow them under market pressure. We provide automated MT5 trade telemetry, an AI Behavioral Leak Radar, targeted risk calculators, and structured education to protect your capital and build consistent discipline.",
             },
             {
                 question: "Is the platform free to use?",

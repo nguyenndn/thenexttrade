@@ -117,7 +117,7 @@ export default function SearchClient() {
                             {/* Sophisticated Description */}
                             <p className="text-sm md:text-base text-slate-500 dark:text-gray-400 leading-relaxed max-w-2xl font-semibold">
                                 A centralized, elastic-powered search engine to
-                                instantly query Breek's dynamic calculators,
+                                instantly query TheNextTrade&apos;s dynamic calculators,
                                 professional academy lessons, and core trading
                                 insights all in one place.
                             </p>
@@ -243,7 +243,7 @@ export default function SearchClient() {
                             !query && (
                                 <div className="text-center py-20 bg-white/50 dark:bg-white/[0.01] rounded-2xl border border-dashed border-amber-900/15 text-slate-500 dark:text-gray-400 font-semibold text-sm">
                                     Enter a query in the search field above to
-                                    start exploring Breek's assets...
+                                    start exploring TheNextTrade tools and guides...
                                 </div>
                             )
                         )}

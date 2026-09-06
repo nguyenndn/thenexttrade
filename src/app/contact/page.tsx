@@ -88,8 +88,7 @@ export default function ContactPage() {
                         </span>
                     </h1>
                     <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000">
-                        Have a question about our ecosystem, pricing, or need
-                        technical support? Drop us a message below.
+                        Have a question about MT5 EA setup, partner accounts, or need platform assistance? Drop us a direct message below.
                     </p>
                 </div>
 

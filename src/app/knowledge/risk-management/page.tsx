@@ -90,22 +90,22 @@ const PILLAR_SECTIONS = [
     {
         title: "Position Sizing: The Absolute Foundation",
         content:
-            "Position sizing dictates exactly how many lots you commit to a single trade. The professional gold standard: never risk more than 1% to 2% of your total account balance on any individual trade. This strict ceiling ensures that even a standard consecutive losing streak will not cause critical damage to your account. Breek's built-in Position Size Calculator automates this calculation in real-time based on your currency pair, account balance, and stop-loss distance.",
+            "Position sizing dictates exactly how many lots you commit to a single trade. The professional gold standard: never risk more than 1% to 2% of your total account balance on any individual trade. This strict ceiling ensures that even a standard consecutive losing streak will not cause critical damage to your account. TheNextTrade's built-in Position Size Calculator automates this calculation in real-time based on your currency pair, account balance, and stop-loss distance.",
     },
     {
         title: "Understanding Drawdown & Automated Sync",
         content:
-            "Drawdown represents the peak-to-trough drop in your account balance during a trading period. A 50% drawdown requires a massive 100% gain just to recover and break even. Professional traders prioritize keeping maximum drawdown below 15-20%. Instead of manual spreadsheet tracking, Breek uses Trade Manager EA to track your live MT5 account statistics in real-time, mapping your Drawdown, Sharpe Ratio, and Profit Factor on a clean visual dashboard.",
+            "Drawdown represents the peak-to-trough drop in your account balance during a trading period. A 50% drawdown requires a massive 100% gain just to recover and break even. Professional traders prioritize keeping maximum drawdown below 15-20%. Instead of manual spreadsheet tracking, TheNextTrade uses Trade Manager EA to stream your live MT5 account statistics in real-time, mapping your Drawdown, Sharpe Ratio, and Profit Factor on a clean visual dashboard.",
     },
     {
         title: "Risk-Reward Ratio & Professional Win Rate",
         content:
-            "The risk-reward ratio compares your potential profit target to your potential loss limit. Utilizing a minimum 1:2 ratio means that even with a modest 40% win rate, your trading remains steadily profitable over time. Breek ensures professional statistics calculation: we calculate your Win Rate strictly using profitable closed trades, completely excluding break-even trades from inflating your stats, and gracefully rendering as `--` when no decisive trades are present.",
+            "The risk-reward ratio compares your potential profit target to your potential loss limit. Utilizing a minimum 1:2 ratio means that even with a modest 40% win rate, your trading remains steadily profitable over time. TheNextTrade ensures professional statistics calculation: we calculate your Win Rate strictly using profitable closed trades, completely excluding break-even trades from inflating your stats, and gracefully rendering as `--` when no decisive trades are present.",
     },
     {
         title: "Behavioral Risk & Mistake Tracking",
         content:
-            "True risk management extends beyond math—it is about psychological discipline. Most account blowouts are caused by behavioral errors like FOMO (fear of missing out), revenge trading, or moving stop-losses. Breek features a unique Mistake Tracking module, allowing you to tag specific emotional and execution mistakes directly on your trade journal to analyze their direct financial drag on your equity curve and eliminate bad habits.",
+            "True risk management extends beyond math—it is about psychological discipline. Most account blowouts are caused by behavioral errors like FOMO, revenge trading, or moving stop-losses. TheNextTrade features a unique Mistake Tracking module, allowing you to tag specific emotional and execution mistakes directly on your trade journal to analyze their direct financial drag on your equity curve and eliminate bad habits.",
     },
 ];
 
@@ -223,7 +223,7 @@ export default async function RiskManagementPage() {
                                 <p className="text-sm md:text-base text-slate-500 dark:text-gray-400 leading-relaxed max-w-2xl font-semibold">
                                     The absolute #1 core discipline that
                                     separates profitable market masters from
-                                    blown accounts. Learn how Breek automates
+                                    blown accounts. Learn how TheNextTrade automates
                                     capital protection.
                                 </p>
                             </div>

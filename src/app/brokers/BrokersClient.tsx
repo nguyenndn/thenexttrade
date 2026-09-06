@@ -250,14 +250,13 @@ export default function BrokersClient() {
                     <span>Curated by TheNextTrade</span>
                 </div>
                 <h1 className="text-4xl md:text-6xl font-black text-gray-700 dark:text-white mb-6 leading-tight tracking-tight">
-                    Trusted{" "}
+                    Verified Broker Partners &amp;{" "}
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-teal-400">
-                        Partners
+                        Infrastructure
                     </span>
                 </h1>
                 <p className="text-lg text-gray-600 dark:text-gray-500 max-w-2xl mx-auto leading-relaxed">
-                    Handpicked brokers, crypto exchanges, and infrastructure we
-                    personally use and trust.
+                    Tight raw spreads, low-latency MT5 execution, and regulated custody. Connect via verified partner paths to unlock TheNextTrade VIP and automated EAs at $0.
                 </p>
             </div>
 

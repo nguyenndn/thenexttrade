@@ -19,7 +19,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
     title: "TheNextTrade - All-in-One Forex Trading OS, Playbook & Journal",
     description:
-        "Elevate your trading edge with TheNextTrade. Automated MT5 Trade Journal, Playbook Studio, 18 institutional-grade calculators, and structured 3-level Academy.",
+        "Turn your trade history into consistent edge with TheNextTrade. Automated MT5 Trade Journal, Playbook Studio, 18 institutional-grade calculators, and structured Academy.",
     alternates: {
         canonical: "/",
     },
@@ -225,7 +225,7 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                             align="center"
                             title="Fix the leaks your journal exposes"
                             highlight="journal exposes"
-                            description="Skip the generic YouTube candlestick fluff. Master the exact market structure, session dynamics, and risk models that turn red accounts green."
+                            description="Master the exact market structure, liquidity mechanics, session dynamics, and risk models that turn red accounts green."
                             contentClassName="lg:max-w-5xl"
                             className="mb-12 sm:mb-16"
                         />

@@ -12,10 +12,10 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
     title: "The Trader's Ascent | TheNextTrade Academy",
     description:
-        "Master the art of Forex trading through our structured 11-Level career path. From First Steps to Ready to Trade.",
+        "11 structured levels from liquidity models to risk math and execution discipline. The zero-fluff forex curriculum built for consistent funded traders.",
     openGraph: {
         title: "The Trader's Ascent - Zero to Pro",
-        description: "Start your professional trading journey.",
+        description: "Master market structure, liquidity mechanics, and cold risk math.",
         images: ["/academy-og.jpg"],
     },
 };
@@ -60,7 +60,7 @@ export default async function AcademyPage() {
                 type="Course"
                 data={{
                     name: "The Trader's Ascent — Professional Forex Trading Academy",
-                    description: `Comprehensive Forex trading career path with ${levels.length} levels, ${totalModules} modules, and ${totalLessons} lessons. From beginner fundamentals to advanced institutional strategies.`,
+                    description: `Structured Forex execution curriculum with ${levels.length} levels, ${totalModules} modules, and ${totalLessons} lessons. From liquidity fundamentals to risk mathematics and systematic discipline.`,
                     provider: {
                         "@type": "Organization",
                         name: "TheNextTrade",
@@ -196,9 +196,8 @@ export default async function AcademyPage() {
                             Ascent
                         </span>
                     </h1>
-                    <p className="text-lg md:text-xl mb-6 sm:mb-10 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
-                        11 levels. 30+ modules. A structured path from your
-                        first trade to confident, disciplined execution.
+                    <p className="text-lg md:text-xl mb-6 sm:mb-10 text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed lg:whitespace-nowrap">
+                        11 levels. 30+ modules. Built on market structure, liquidity mechanics, and disciplined risk math.
                     </p>
 
                     <AcademyPublicCTA isLoggedIn={isLoggedIn} />

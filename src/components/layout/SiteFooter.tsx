@@ -36,7 +36,7 @@ export function SiteFooter() {
                                 </h4>
                             </Link>
                             <p className="text-base leading-relaxed font-semibold text-gray-600 dark:text-gray-400 mb-8">
-                                Empowering global traders with institutional-grade journal analytics, expert education, and advanced analysis tools. Home of the <strong className="text-amber-500 font-bold">GoldScalperNinja</strong> trading community & EA ecosystem.
+                                Automated MT5 trade telemetry, institutional risk engines, and execution discipline for serious forex traders. Home of the <strong className="text-amber-500 font-bold">GoldScalperNinja</strong> trading community &amp; EA ecosystem.
                             </p>
                         </div>
 

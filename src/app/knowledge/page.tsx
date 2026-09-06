@@ -154,9 +154,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                     </span>
                                 </h1>
                                 <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed mb-8">
-                                    Deep dive into our premium collection of
-                                    trading strategies, market analysis, and
-                                    psychological insights.
+                                    Battle-tested documentation on execution models, risk management mathematics, session dynamics, and behavioral psychology.
                                 </p>
 
                                 {/* Search Component */}

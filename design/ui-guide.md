@@ -764,3 +764,23 @@ Tiêu chuẩn thiết kế cho các thanh Tabs điều hướng sử dụng comp
 - **Trạng thái kích hoạt (TabsTrigger Active):** BẮT BUỘC phải truyền thủ công 2 override props sau để bảo đảm hiệu ứng gradient chuẩn của hệ thống:
   - `activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"`
   - `activeTextClassName="!text-white"`
+
+---
+
+## 15. Tiêu Chuẩn Ngôn Ngữ & Văn Phong Thực Chiến (Tone of Voice & Anti-AI Copywriting)
+
+Mọi văn bản hiển thị trên giao diện người dùng (UI text, headlines, tooltips, placeholders, emails, thông báo) bắt buộc phải tuân theo phong cách **Pro Forex / Systematic Edge / Risk Math**, loại bỏ hoàn toàn các sáo ngữ tiếp thị khuôn mẫu của AI.
+
+### 15.1. Banned AI Clichés (Tuyệt đối không dùng)
+- ❌ *"Unlock your potential"* / *"Elevate your trading journey"* / *"Your next move"*
+- ❌ *"Empowering traders worldwide"* / *"Seamlessly integrate"*
+- ❌ *"Deep dive into"* / *"Delve into"* / *"Master the art of"*
+- ❌ *"A testament to"* / *"In today's fast-paced markets"* / *"Beacon of hope"*
+- ❌ *"Game-changing"* / *"Revolutionize"* / *"Supercharge"*
+
+### 15.2. Required Domain Realism (Bắt buộc dùng ngôn ngữ thực chiến)
+- ✅ **Bảo vệ vốn & kỷ luật sống còn:** *"protect your capital"*, *"hard stop-loss"*, *"drawdown control"*, *"zero revenge sizing"*.
+- ✅ **Hệ thống dữ liệu MT5 chuẩn xác:** *"live MT5 trade telemetry"*, *"behavioral leak radar"*, *"10-trade sprint"*, *"positive expectancy"*.
+- ✅ **Thấu hiểu nỗi đau thực tế của trader:** *"no magic indicators"*, *"cold risk math"*, *"hard lessons from blown accounts"*, *"skip YouTube fluff"*.
+- ✅ **Tính nhất quán thương hiệu:** Luôn luôn dùng **TheNextTrade** (tuyệt đối không dùng tên thương hiệu cũ "Breek").
+
