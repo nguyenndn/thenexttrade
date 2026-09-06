@@ -11,39 +11,39 @@ import Link from "next/link";
 
 const MEMBERSHIP_FAQS = [
     {
-        question: "Is TheNextTrade really free? Why do I never pay course fees?",
-        answer: "Yes! You never pay TheNextTrade any course or monthly subscription fees. Our core platform, tools, and 7-day trial are 100% free with no credit card required. To keep full VIP access open (AI Coach, MT5 Auto-Sync, and Academy), you simply fund your own broker account with $300. That capital remains 100% yours in your own name, and you can withdraw it anytime.",
+        question: "Is TheNextTrade really free? Why do I never pay monthly or course fees?",
+        answer: "Yes! You never pay TheNextTrade any subscription, course, or signal fees. Our core platform, calculators, and 7-day trial are 100% free with no credit card required. To keep full VIP access permanently open (AI Coach, MT5 Auto-Sync, and Academy), you simply fund your own broker account with $300. That deposit remains 100% yours in your own name, and you can trade or withdraw it anytime.",
     },
     {
-        question: "What's the catch? How does TheNextTrade make money?",
-        answer: "There is no hidden catch. We operate as an official Introducing Broker (IB) partner with regulated brokers (Exness, XM, IC Markets, Vantage). When you trade, the broker compensates us directly from their standard spread at zero additional cost to you. Our interests are 100% aligned with yours: we only thrive when you trade with discipline and stay profitable long-term.",
+        question: "What's the catch? How does TheNextTrade make money if VIP is free?",
+        answer: "Zero catch. We operate as an authorized Introducing Broker (IB) partner with regulated brokers (Exness, XM, IC Markets, Vantage). When you execute trades, the broker compensates us directly from their standard spread at zero added cost to you. We succeed only when you trade with strict risk management and stay profitable for the long term.",
     },
     {
         question: "Is my $300 deposit safe? Can I withdraw it anytime?",
-        answer: "Your capital is deposited directly into your personal account at Tier-1 regulated brokers. TheNextTrade never receives, manages, or touches your deposit. You retain 100% custody and can trade or withdraw your funds at any time at your sole discretion.",
+        answer: "Your capital is held directly in your personal account at Tier-1 regulated brokers. TheNextTrade never receives, touches, or manages your funds. You retain 100% custody and can withdraw your principal or profits at any moment without penalty.",
     },
     {
         question: "What if I already have an account with the broker?",
-        answer: "You can easily link your existing broker profile by changing the Partner ID/IB code or creating a new trading sub-account under our link. Once verified, your full TheNextTrade membership unlocks immediately.",
+        answer: "You can easily link your existing broker profile by changing the Partner ID/IB code or opening a new sub-account under our link. Once verified, your full TheNextTrade VIP membership unlocks immediately.",
     },
 ];
 
 const PLATFORM_FAQS = [
     {
         question: "How do I sync MT5 trades automatically?",
-        answer: "Automated sync is powered by our GSN Trade Manager Expert Advisor, which runs directly on your MT5 terminal (PC or VPS) to stream executed trades to your web journal in real time.",
+        answer: "Automated sync is powered by our GSN Trade Manager EA, which runs on your MT5 terminal (PC or VPS) to stream executed trades, stop-losses, and exits to your web journal in real time. Zero manual typing.",
     },
     {
-        question: "What is the Weekly AI Coach & 10-Trade Action Plan?",
-        answer: "The Weekly AI Coach scans your actual trading data for psychological and risk leaks (like revenge sizing, FOMO, or early exits) and prescribes one actionable 10-trade improvement focus each week.",
+        question: "What is the Weekly Coach & 10-Trade Action Plan?",
+        answer: "The Weekly Coach algorithm audits your actual trade execution for psychological leaks — like revenge sizing, moving stops, or off-session FOMO — and prescribes one strict 10-trade improvement focus each week.",
     },
     {
         question: "How do I unlock the MT5 Expert Advisors for free?",
-        answer: "Our MT5 Expert Advisors (EA GoldScalperNinja, GSN Phoenix Grid, Trade Manager) are available for $0 upfront cost through our verified broker partner paths. Once your account is active, licenses and download links appear inside your dashboard.",
+        answer: "Our MT5 Expert Advisors (GoldScalperNinja, GSN Phoenix Grid, Trade Manager) are available for $0 upfront cost through our verified broker partner paths. Once your account qualifies, license keys and downloads appear inside your dashboard.",
     },
     {
         question: "Can I connect multiple accounts or Prop Firms?",
-        answer: "Yes! You can connect multiple live, demo, and prop firm accounts to your journal. The analytics dashboard automatically segments your metrics per account and strategy.",
+        answer: "Yes! You can connect multiple live, demo, and prop firm accounts (like FTMO, Funded Next) to your journal. The dashboard automatically segments your metrics per account, session, and strategy.",
     },
 ];
 

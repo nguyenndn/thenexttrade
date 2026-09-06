@@ -168,21 +168,21 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                             <div>
                                 {/* Main Title */}
                                 <h2 className="text-2xl sm:text-3xl font-black text-gray-800 dark:text-white leading-tight tracking-tight">
-                                    Looking for Automated Execution?
+                                    Tired of Watching Charts All Day?
                                 </h2>
 
                                 {/* Description */}
                                 <p className="mt-3 text-sm text-gray-600 dark:text-gray-400 font-semibold leading-relaxed">
-                                    Unlock EA GoldScalperNinja, GSN Trade Manager, and Phoenix Grid when your broker account qualifies through the partner path.
+                                    Deploy GoldScalperNinja, GSN Trade Manager, and Phoenix Grid. Tested algorithms with hard-coded risk management, free through our partner broker path.
                                 </p>
                             </div>
 
                             {/* Trust Bullets */}
                             <div className="space-y-2.5 border-t border-dashed border-gray-200 dark:border-white/10 pt-5">
                                 {[
-                                    "Free to unlock with an eligible partner account",
-                                    "Your funds stay safely with your broker",
-                                    "Includes EA GoldScalperNinja, Trade Manager & Phoenix Grid",
+                                    "100% automated MT5 live execution with strict hard stop-losses",
+                                    "Capital stays in your regulated account — we never touch your funds",
+                                    "Includes Trade Manager EA, GoldScalperNinja & Phoenix Grid licenses",
                                 ].map((text, idx) => (
                                     <div
                                         key={idx}
@@ -204,7 +204,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                                     className="w-full sm:w-auto group"
                                 >
                                     <Button className="w-full sm:w-auto min-h-12 px-5 sm:px-7 rounded-xl bg-gold hover:bg-amber-600 text-white font-extrabold text-sm shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 flex items-center justify-center gap-2 animate-btn-shine whitespace-nowrap">
-                                        <span>Explore Trading Systems</span>
+                                        <span>Unlock Automated EAs</span>
                                         <ArrowRight
                                             size={16}
                                             className="group-hover:translate-x-1 transition-transform duration-300"

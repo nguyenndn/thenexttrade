@@ -21,18 +21,14 @@ export function AboutUsSection() {
                         {/* Left Column: Story text and header */}
                         <div className="flex-1 min-w-0">
                             <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gray-900 dark:text-white leading-tight">
-                                Built from losses,
+                                Built from the tuition I paid the market,
                                 <span className="block text-amber-500 dark:text-gold">
-                                    rebuilt into a system.
+                                    engineered to protect your capital.
                                 </span>
                             </h2>
 
                             <p className="mt-4 text-sm sm:text-base leading-7 text-gray-600 dark:text-gray-300 max-w-xl font-normal">
-                                After years of losses, scattered learning, and
-                                chasing shortcuts, I built TheNextTrade as a
-                                practical trading workspace: sync your trades,
-                                review what happened, and turn each week into
-                                one clear next action.
+                                I spent years blowing accounts before realizing one truth: manual discipline always breaks under market pressure. You don&apos;t need another magic indicator; you need an automated operating system that catches revenge lot sizes, tracks every tick without friction, and enforces consistent execution.
                             </p>
                         </div>
 
@@ -45,8 +41,7 @@ export function AboutUsSection() {
                                     className="absolute -top-2 left-4 text-amber-500 dark:text-gold"
                                 />
                                 <p className="pl-3 text-sm leading-relaxed text-gray-700 dark:text-gray-200 italic">
-                                    From hard lessons to building the tools
-                                    every trader deserves.
+                                    &ldquo;Stop relying on memory and willpower. Build a system that makes discipline inevitable.&rdquo;
                                 </p>
                             </div>
 

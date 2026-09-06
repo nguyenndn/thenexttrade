@@ -17,32 +17,32 @@ interface Review {
 const REVIEWS: Review[] = [
     {
         name: "Marcus T.",
-        role: "Gold Scalper",
-        text: "TheNextTrade Academy completely changed how I approach XAU/USD. The structured levels made it easy to build a solid foundation before jumping into live trading.",
+        role: "Gold Scalper (Funded)",
+        text: "I used to blow accounts following Telegram VIP signals. TheNextTrade forced me to look at my actual MT5 data on XAU/USD. Cut my revenge lot size, focused on NY open, and finally passed my 100k funded evaluation.",
         rating: 5,
         initials: "MT",
         color: "bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/20",
     },
     {
         name: "Sophia L.",
-        role: "Swing Trader",
-        text: "The Market Hours tool alone is worth it. I used to miss London opens - now I plan my week around sessions. Plus the EA tools are incredibly well-built.",
+        role: "Prop Firm Trader",
+        text: "The Weekly Coach caught my biggest leak: taking 5 random trades in the Asian session when there's zero volume. Cutting that single bad habit flipped my monthly P&L into steady green.",
         rating: 5,
         initials: "SL",
         color: "bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/10",
     },
     {
         name: "James K.",
-        role: "Active Trader",
-        text: "The journaling tools and automated stats completely changed my consistency. Seeing my Win Rate by session helped me cut bad trades. Clean UI, no fluff, just actionable content.",
+        role: "Algorithmic & Manual Trader",
+        text: "Connecting MT5 via Trade Manager EA took 60 seconds. Having live telemetry with session analytics and risk math in one workspace replaced 3 separate paid subscriptions.",
         rating: 5,
         initials: "JK",
         color: "bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/20",
     },
     {
         name: "Liam C.",
-        role: "Forex Educator",
-        text: "As someone who teaches trading, I recommend TheNextTrade to all my students. The content quality rivals platforms charging $500+. And it's completely free.",
+        role: "Forex Community Lead",
+        text: "I tell my members to stop paying for shady signal channels. The zero-cost partner model with verified brokers gives them real institutional software without draining their trading capital.",
         rating: 5,
         initials: "LC",
         color: "bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/10",
@@ -50,15 +50,15 @@ const REVIEWS: Review[] = [
     {
         name: "David R.",
         role: "Day Trader",
-        text: "The Economic Calendar with real-time filters is the best I've used. No ads, no clutter. Combined with the Academy, this is a one-stop shop for forex education.",
+        text: "The 18 risk calculators and live session clocks keep me disciplined before I ever click enter. No marketing hype or holy grail BS, just cold hard math and execution rules.",
         rating: 5,
         initials: "DR",
         color: "bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/20",
     },
     {
         name: "Elena M.",
-        role: "Copy Trader",
-        text: "I was looking for a way to learn the fundamentals before copying trades blindly. TheNextTrade gave me the knowledge to actually understand what I'm investing in.",
+        role: "Disciplined FX Trader",
+        text: "The 10-trade sprint rule cured my overtrading. Instead of spiraling after a red session, I have one clear rule to execute cleanly. Best trading tool I've used.",
         rating: 5,
         initials: "EM",
         color: "bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/10",
@@ -95,11 +95,11 @@ export function ReviewsSection() {
         setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
     };
 
-    // Auto-play
+    // Auto-advance every 6s
     useEffect(() => {
         if (!isAutoPlaying) return;
-        const timer = setInterval(next, 4000);
-        return () => clearInterval(timer);
+        const interval = setInterval(next, 6000);
+        return () => clearInterval(interval);
     }, [isAutoPlaying, next]);
 
     const visibleReviews = REVIEWS.slice(
@@ -115,9 +115,9 @@ export function ReviewsSection() {
             <section className="py-6 sm:py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <HomeSectionHeading
                     align="center"
-                    title="What Our Traders Say"
-                    highlight="Traders"
-                    description="Join 12,000+ traders who trust TheNextTrade for their forex success."
+                    title="Battle-Tested by Real Traders"
+                    highlight="Real Traders"
+                    description="From prop firm challenge passers to disciplined gold scalpers — real feedback from the trenches."
                     className="mb-10 sm:mb-12"
                 />
 

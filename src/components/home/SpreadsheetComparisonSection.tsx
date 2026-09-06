@@ -23,28 +23,28 @@ interface SpreadsheetComparisonSectionProps {
 
 const comparisonRows = [
     {
-        traditional: "Manual copy-pasting is tedious and inconsistent",
-        tnt: "100% automated live sync via MT5 EA",
+        traditional: "45 mins wasted copy-pasting tickets into Excel every weekend",
+        tnt: "Zero manual entry — live MT5 EA logs every trade instantly",
     },
     {
-        traditional: "P&L is the only tracked number",
-        tnt: "Deep analytics: Win rate, R:R & drawdowns",
+        traditional: "Only tracks net P&L — blind to whether it was edge or pure luck",
+        tnt: "Full edge telemetry: Win rate, R:R, session edge, MAE & drawdowns",
     },
     {
-        traditional: "Screenshots, notes, and mistakes are scattered",
-        tnt: "Unified journal with tags & psychology notes",
+        traditional: "Messy charts, scattered Discord notes & lost screenshots",
+        tnt: "Unified playbook: Every setup, note & screenshot linked to your rules",
     },
     {
-        traditional: "Hard to see what bad habit is draining your profit",
-        tnt: "AI leak radar spots revenge sizing & FOMO",
+        traditional: "Can’t pinpoint which bad habit is draining your account",
+        tnt: "Tilt radar flags revenge sizing, over-leveraging & emotional FOMO",
     },
     {
-        traditional: "Reviewing trades without knowing what to study",
-        tnt: "Academy lessons tailored to your weaknesses",
+        traditional: "Reviewing red days without knowing what to fix on Monday",
+        tnt: "Targeted Academy modules matched to your exact execution weakness",
     },
     {
-        traditional: "No follow-through or momentum after review",
-        tnt: "10-trade action cycles with Weekly Coach",
+        traditional: "Zero accountability — repeating the exact same mistakes for months",
+        tnt: "10-trade sprint plans with weekly coach performance benchmarks",
     },
 ];
 
@@ -63,29 +63,29 @@ interface EssenceCard {
 const essenceCards: EssenceCard[] = [
     {
         icon: PlugZap,
-        label: "Auto MT5 Sync",
-        copy: "Stream MT5 trades directly to your journal in real time via Trade Manager EA.",
+        label: "Zero Manual Entry",
+        copy: "Live MT5 EA streams trades in real time. No more manual Excel copy-pasting.",
         animate: { y: [0, -2.5, 0] },
         transition: { duration: 2.2, repeat: Infinity, ease: "easeInOut" },
     },
     {
         icon: Brain,
-        label: "AI Leak Radar",
-        copy: "Uncover hidden behavioral leaks across sessions, symbols, and risk habits.",
+        label: "Tilt & Leak Radar",
+        copy: "Catch the exact moment you revenge-trade, move your stop-loss, or over-leverage.",
         animate: { scale: [1, 1.08, 1] },
         transition: { duration: 2.8, repeat: Infinity, ease: "easeInOut" },
     },
     {
         icon: BookOpenCheck,
-        label: "Targeted Learning",
-        copy: "Actionable Academy lessons matched to your real execution weaknesses.",
+        label: "Surgical Academy",
+        copy: "Curated lessons targeting the exact technical or psychological leak costing you money.",
         animate: { rotate: [-3, 3, -3], y: [0, -1.5, 0] },
         transition: { duration: 3, repeat: Infinity, ease: "easeInOut" },
     },
     {
         icon: Target,
-        label: "Weekly Coach",
-        copy: "Leave every review with one clear 10-trade action plan to execute.",
+        label: "10-Trade Sprints",
+        copy: "Leave every review with one clear execution rule to follow for your next 10 trades.",
         animate: { scale: [1, 1.1, 1] },
         transition: { duration: 2.5, repeat: Infinity, ease: "easeInOut" },
     },
@@ -104,11 +104,11 @@ export function SpreadsheetComparisonSection({
                     align="center"
                     title={
                         <>
-                            Beyond basic trade logging — <br className="hidden sm:inline" />
-                            <span className="text-gold">Built for real improvement</span>
+                            Spreadsheets record history. <br className="hidden sm:inline" />
+                            <span className="text-gold">TheNextTrade protects your capital.</span>
                         </>
                     }
-                    description="Traditional journals just store past data. TheNextTrade auto-syncs MT5 trades, flags behavioral leaks, and coaches your next session."
+                    description="Excel tells you that you lost money on Thursday. TheNextTrade tells you why: 3x revenge lot size on Gold after London close."
                     icon={Sparkles}
                     className="mb-8"
                 />
@@ -153,7 +153,7 @@ export function SpreadsheetComparisonSection({
                                 className="text-slate-400 flex-shrink-0"
                             />
                             <span className="text-xs font-black uppercase tracking-wider text-slate-600 dark:text-slate-400">
-                                Traditional / Manual Journals
+                                Excel & Manual Spreadsheets
                             </span>
                         </div>
                         <div className="flex items-center justify-center gap-2 p-3.5 rounded-xl bg-gold/5 border border-gold/20 dark:border-gold/30 text-center">
@@ -162,7 +162,7 @@ export function SpreadsheetComparisonSection({
                                 className="text-gold flex-shrink-0"
                             />
                             <span className="text-xs font-black uppercase tracking-wider text-gold">
-                                TheNextTrade Improvement System
+                                TheNextTrade OS
                             </span>
                         </div>
                     </div>

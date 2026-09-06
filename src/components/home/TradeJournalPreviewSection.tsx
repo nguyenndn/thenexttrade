@@ -24,26 +24,26 @@ const STEPS = [
     {
         id: 0,
         number: "01",
-        title: "1. Connect",
+        title: "1. Live MT5 Sync",
         icon: PlugZap,
-        description: "Bring in MT5 trades automatically with Trade Manager EA.",
-        tag: "Live Sync",
+        description: "Trade Manager EA streams every tick, entry, and stop-loss directly to your dashboard.",
+        tag: "Real-Time",
     },
     {
         id: 1,
         number: "02",
-        title: "2. Analyze",
+        title: "2. Expose The Leaks",
         icon: BarChart3,
-        description: "See patterns by session, symbol, risk, and behavioral metrics.",
-        tag: "Analytics",
+        description: "Uncover the hidden patterns draining your equity: off-session FOMO, news chasing, and lot size spikes.",
+        tag: "Telemetry",
     },
     {
         id: 2,
         number: "03",
-        title: "3. Improve",
+        title: "3. Execute The Fix",
         icon: Target,
-        description: "Get one weekly action plan and style insights based on real trades.",
-        tag: "AI Coach",
+        description: "Receive one strict weekly action plan. Fix one specific execution habit across your next 10 trades.",
+        tag: "10-Trade Sprint",
     },
 ];
 
@@ -75,9 +75,9 @@ export function TradeJournalPreviewSection({
                 {/* 1. Top Centered Section Heading (Consistent with other sections) */}
                 <HomeSectionHeading
                     align="center"
-                    title="Three steps to your trading edge"
-                    highlight="trading edge"
-                    description="Sync your MT5 trades, spot the pattern, and get one clear action for your next session."
+                    title="From raw MT5 execution to funded consistency"
+                    highlight="funded consistency"
+                    description="Connect your broker in 60 seconds. Let the algorithm uncover where you bleed profit."
                     className="mb-8 sm:mb-10"
                 />
 

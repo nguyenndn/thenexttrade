@@ -223,9 +223,9 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                     <FadeIn delay={0.1} direction="up">
                         <HomeSectionHeading
                             align="center"
-                            title="Learn what your trade data exposes"
-                            highlight="trade data"
-                            description="Use lessons and guides to fix the weaknesses found in your journal and weekly reports."
+                            title="Fix the leaks your journal exposes"
+                            highlight="journal exposes"
+                            description="Skip the generic YouTube candlestick fluff. Master the exact market structure, session dynamics, and risk models that turn red accounts green."
                             contentClassName="lg:max-w-5xl"
                             className="mb-12 sm:mb-16"
                         />

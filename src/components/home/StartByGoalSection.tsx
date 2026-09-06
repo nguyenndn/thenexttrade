@@ -17,28 +17,28 @@ interface StartByGoalSectionProps {
 export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
     const cards = [
         {
-            title: "Learn Trading",
-            description: "Structured lessons and practical guides.",
+            title: "Master Market Structure",
+            description: "Zero-fluff curriculum: liquidity, session profiles & risk math.",
             href: "/academy",
             icon: <BookOpen size={20} />,
             color: "text-slate-700 dark:text-slate-300",
             chipBg: "bg-slate-100 dark:bg-white/5",
-            ctaText: "Start Learning",
+            ctaText: "Start Free Course",
             animClass: "group-hover:scale-110 group-hover:-rotate-6",
             bgClass:
                 "bg-white dark:bg-white/[0.02] border-gray-200/80 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 hover:bg-slate-50 dark:hover:bg-white/[0.04]",
             ctaColor: "group-hover:text-gold",
         },
         {
-            title: "Track My Trades",
-            description: "Sync MT5 trades or log them manually.",
+            title: "Automate My MT5 Journal",
+            description: "Live MT5 sync. Zero Excel typing. Spot your leaks instantly.",
             href: isLoggedIn
                 ? "/dashboard/accounts"
                 : "/auth/signup?source=home_goal&intent=track",
             icon: <LineChart size={20} />,
             color: "text-gold",
             chipBg: "bg-gold/10",
-            ctaText: "Setup Journal",
+            ctaText: "Launch Journal",
             animClass: "group-hover:scale-110 group-hover:translate-x-0.5",
             bgClass:
                 "bg-gradient-to-br from-gold/[0.05] to-amber-500/[0.02] border-gold/30 hover:border-gold/60 hover:shadow-[0_8px_30px_rgba(245,158,11,0.12)] dark:from-gold/[0.03] dark:to-transparent",
@@ -46,26 +46,26 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
             isRecommended: true,
         },
         {
-            title: "Calculate Risk",
-            description: "Risk calculators and position sizing tools.",
+            title: "Calculate Lot Size & Risk",
+            description: "Position sizing, pip valuation & drawdown math before entering.",
             href: "/tools",
             icon: <Calculator size={20} />,
             color: "text-slate-700 dark:text-slate-300",
             chipBg: "bg-slate-100 dark:bg-white/5",
-            ctaText: "Open Calculators",
+            ctaText: "Open 18 Calculators",
             animClass: "group-hover:scale-110 group-hover:rotate-6",
             bgClass:
                 "bg-white dark:bg-white/[0.02] border-gray-200/80 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 hover:bg-slate-50 dark:hover:bg-white/[0.04]",
             ctaColor: "group-hover:text-gold",
         },
         {
-            title: "Compare Brokers",
-            description: "Compare brokers and trading platforms.",
+            title: "Get Zero-Fee VIP Access",
+            description: "Trade with verified partner brokers to unlock all EAs at $0.",
             href: "/brokers",
             icon: <Building size={20} />,
             color: "text-slate-700 dark:text-slate-300",
             chipBg: "bg-slate-100 dark:bg-white/5",
-            ctaText: "Compare Now",
+            ctaText: "Unlock VIP Route",
             animClass: "group-hover:scale-110",
             bgClass:
                 "bg-white dark:bg-white/[0.02] border-gray-200/80 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 hover:bg-slate-50 dark:hover:bg-white/[0.04]",
@@ -81,9 +81,9 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
             <section className="py-6 sm:py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <HomeSectionHeading
                     align="center"
-                    title="What do you want to improve today?"
-                    highlight="improve"
-                    description="Now that you know the system, pick the next step that fits your current goal."
+                    title="Choose your starting edge"
+                    highlight="starting edge"
+                    description="Skip the noise. Pick the exact workspace you need to upgrade your execution today."
                     className="mb-8 sm:mb-10"
                 />
 

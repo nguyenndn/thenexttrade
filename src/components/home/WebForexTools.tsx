@@ -17,7 +17,7 @@ const VISUAL_TOOLS = [
         highlights: [
             "Account balance & risk % modeling",
             "Standard, mini & micro lot sizing",
-            "Eliminates manual calculation errors",
+            "Calculate exact lots before pressing buy",
         ],
     },
     {
@@ -27,7 +27,7 @@ const VISUAL_TOOLS = [
         highlights: [
             "Visual TP / SL target price mapping",
             "Automated R:R & break-even win rate",
-            "Long & Short setup profit simulation",
+            "Know your risk math before entry",
         ],
     },
     {
@@ -37,7 +37,7 @@ const VISUAL_TOOLS = [
         highlights: [
             "Live pricing for Forex, Gold & Indices",
             "Exact dollar value per pip movement",
-            "Multi-currency account base support",
+            "Never guess your dollar exposure",
         ],
     },
 ];
@@ -53,9 +53,9 @@ export function WebForexTools() {
                     <div className="mb-8 flex flex-col items-center">
                         <HomeSectionHeading
                             align="center"
-                            title="Trading Calculators"
-                            highlight="Calculators"
-                            description="Free pro calculators, live data, and visualizers. No signup required."
+                            title="Institutional Risk Calculators"
+                            highlight="Risk Calculators"
+                            description="Know your exact dollar risk and pip valuation before entering the market. 100% free, zero signup."
                             icon={Wrench}
                         />
                         <div className="mt-3">
