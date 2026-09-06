@@ -83,14 +83,14 @@ export function TradeJournalPreviewSection({
 
                 {/* 2. Two-Column Layout: Interactive Steps + Live Cockpit Preview */}
                 <div
-                    className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center"
+                    className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center lg:items-stretch"
                     onMouseEnter={() => setIsPaused(true)}
                     onMouseLeave={() => setIsPaused(false)}
                 >
                     {/* Left Column: Interactive Steps List + CTAs */}
                     <div className="lg:col-span-5 flex flex-col justify-between h-full text-left">
                         {/* Interactive Steps List */}
-                        <div className="space-y-2.5 mb-4 w-full">
+                        <div className="flex-1 flex flex-col justify-between gap-3 mb-4 sm:mb-5 w-full">
                             {STEPS.map((step) => {
                                 const Icon = step.icon;
                                 const isActive = activeStep === step.id;
@@ -100,7 +100,7 @@ export function TradeJournalPreviewSection({
                                         key={step.id}
                                         type="button"
                                         onClick={() => setActiveStep(step.id)}
-                                        className={`group w-full flex items-start gap-3.5 rounded-2xl p-3 sm:p-3.5 text-left transition-all duration-300 relative border ${
+                                        className={`group w-full flex items-start gap-3.5 rounded-2xl p-3.5 sm:p-4 text-left transition-all duration-300 relative border ${
                                             isActive
                                                 ? "border-gold bg-white dark:bg-white/[0.05] shadow-[0_10px_24px_rgba(229,165,10,0.14)] ring-1 ring-gold/40"
                                                 : "border-gray-200/80 bg-white/70 dark:border-white/10 dark:bg-white/[0.02] hover:border-gold/30 hover:bg-white dark:hover:bg-white/[0.04]"
@@ -171,12 +171,12 @@ export function TradeJournalPreviewSection({
                                 }
                                 className="w-full sm:flex-1 group"
                             >
-                                <Button className="w-full min-h-11 px-6 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-xs sm:text-sm shadow-[0_8px_20px_rgba(229,165,10,0.2)] hover:shadow-[0_12px_26px_rgba(229,165,10,0.28)] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap">
+                                <Button className="w-full min-h-12 px-4 sm:px-6 rounded-xl bg-gold hover:bg-amber-600 text-white font-extrabold text-sm shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap">
                                     {isLoggedIn ? (
                                         <>
                                             Go to Dashboard{" "}
                                             <LayoutDashboard
-                                                size={15}
+                                                size={16}
                                                 className="text-yellow-200 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300"
                                             />
                                         </>
@@ -184,7 +184,7 @@ export function TradeJournalPreviewSection({
                                         <>
                                             Start Free Journal{" "}
                                             <Zap
-                                                size={15}
+                                                size={16}
                                                 className="text-yellow-200 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300"
                                             />
                                         </>
@@ -197,11 +197,11 @@ export function TradeJournalPreviewSection({
                             >
                                 <Button
                                     variant="outline"
-                                    className="w-full min-h-11 px-6 rounded-xl bg-white/90 dark:bg-white/[0.03] border border-gold/35 dark:border-gold/25 hover:border-gold hover:bg-gold/[0.08] dark:hover:bg-gold/[0.06] text-gray-800 dark:text-gray-200 hover:text-gray-950 dark:hover:text-white font-black text-xs sm:text-sm shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
+                                    className="w-full min-h-12 px-4 sm:px-6 rounded-xl bg-white/90 dark:bg-white/[0.03] border border-gold/35 dark:border-gold/25 hover:border-gold hover:bg-gold/[0.08] dark:hover:bg-gold/[0.06] text-gray-800 dark:text-gray-200 hover:text-gray-950 dark:hover:text-white font-extrabold text-sm shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
                                 >
                                     View Setup Path{" "}
                                     <ArrowRight
-                                        size={14}
+                                        size={16}
                                         className="group-hover:translate-x-1 transition-transform duration-300"
                                     />
                                 </Button>

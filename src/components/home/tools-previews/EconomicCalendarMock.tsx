@@ -31,7 +31,7 @@ export function EconomicCalendarMock() {
 
     return (
         <div
-            className="h-44 w-full bg-[#faf6f0] dark:bg-[#faf6f0] rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/60 select-none cursor-pointer"
+            className="h-44 w-full bg-[#faf6f0] dark:bg-slate-900/80 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/60 dark:border-white/10 select-none cursor-pointer"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
@@ -39,11 +39,11 @@ export function EconomicCalendarMock() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
                 <span>Economic Calendar</span>
                 <div className="flex items-center gap-1">
                     <span className="w-1 h-1 rounded-full bg-red-500 animate-ping" />
-                    <span className="text-red-600/80 font-black">
+                    <span className="text-red-600/80 dark:text-red-400 font-black">
                         HIGH IMPACT TODAY
                     </span>
                 </div>
@@ -52,26 +52,26 @@ export function EconomicCalendarMock() {
             {/* News Entries */}
             <div className="flex-1 flex flex-col justify-center gap-2.5 z-10 my-1 font-mono">
                 {/* News Item 1 */}
-                <div className="flex items-center justify-between text-[9px] font-bold border-b border-slate-100 pb-1.5">
+                <div className="flex items-center justify-between text-[9px] font-bold border-b border-slate-100 dark:border-white/10 pb-1.5">
                     <div className="flex items-center gap-1.5">
                         <span className="bg-red-500 text-white text-[7px] font-black px-1 rounded-lg">
                             USD
                         </span>
-                        <span className="text-slate-700">
+                        <span className="text-slate-700 dark:text-slate-200">
                             Fed Interest Rate Decision
                         </span>
                     </div>
                     <div>
                         {released ? (
-                            <span className="text-emerald-600 font-extrabold bg-emerald-50 px-1 rounded-lg border border-emerald-200">
+                            <span className="text-emerald-600 dark:text-emerald-400 font-extrabold bg-emerald-50 dark:bg-emerald-950/40 px-1 rounded-lg border border-emerald-200 dark:border-emerald-500/30">
                                 5.25% (Actual)
                             </span>
                         ) : hovered ? (
-                            <span className="text-amber-600 font-extrabold animate-pulse">
+                            <span className="text-amber-600 dark:text-amber-400 font-extrabold animate-pulse">
                                 Releasing in {countdown}s...
                             </span>
                         ) : (
-                            <span className="text-slate-400 font-medium">
+                            <span className="text-slate-400 dark:text-slate-500 font-medium">
                                 Releasing Soon
                             </span>
                         )}
@@ -84,12 +84,12 @@ export function EconomicCalendarMock() {
                         <span className="bg-amber-500 text-white text-[7px] font-black px-1 rounded-lg">
                             EUR
                         </span>
-                        <span className="text-slate-700">
+                        <span className="text-slate-700 dark:text-slate-200">
                             German Flash Services PMI
                         </span>
                     </div>
                     <div>
-                        <span className="text-slate-500 font-extrabold">
+                        <span className="text-slate-500 dark:text-slate-400 font-extrabold">
                             50.8 (Forecast)
                         </span>
                     </div>
@@ -97,7 +97,7 @@ export function EconomicCalendarMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 flex justify-between items-center z-10 border-t border-slate-100 pt-2 font-mono">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-slate-100 dark:border-white/10 pt-2 font-mono">
                 <span>Data Feed: Live</span>
                 <span>Auto-countdown active</span>
             </div>

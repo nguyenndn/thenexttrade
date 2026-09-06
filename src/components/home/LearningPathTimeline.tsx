@@ -8,47 +8,68 @@ const steps = [
     {
         icon: BookOpen,
         title: "1. The Initiate",
-        desc: "Beginner & Foundations (Lvl 1-2)",
-        color: "text-blue-500",
-        bg: "bg-blue-500/10",
-        gradient: "from-blue-400 to-cyan-500",
-        glow: "rgba(59,130,246,0.3)",
+        desc: "Beginner & Foundations",
+        level: "Lvl 1-2",
+        color: "text-slate-600 dark:text-slate-400",
+        bg: "bg-slate-100 dark:bg-slate-800/60",
+        border: "border-slate-200 dark:border-slate-800/80",
+        hoverBorder: "hover:border-slate-400/50 dark:hover:border-slate-600/50",
+        gradient: "from-slate-400 to-slate-500",
+        badge: "bg-slate-100 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700",
+        glow: "rgba(148,163,184,0.15)",
     },
     {
         icon: TrendingUp,
         title: "2. The Analyst",
-        desc: "Technical & Price Action (Lvl 3-5)",
-        color: "text-cyan-500",
-        bg: "bg-cyan-500/10",
-        gradient: "from-cyan-500 to-green-500",
-        glow: "rgba(6,182,212,0.3)",
+        desc: "Technical & Price Action",
+        level: "Lvl 3-5",
+        color: "text-sky-600 dark:text-sky-400",
+        bg: "bg-sky-500/10 dark:bg-sky-500/15",
+        border: "border-sky-200/90 dark:border-sky-900/40",
+        hoverBorder: "hover:border-sky-400/60 dark:hover:border-sky-500/60",
+        gradient: "from-sky-400 to-blue-500",
+        badge: "bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800",
+        glow: "rgba(2,132,199,0.18)",
     },
     {
         icon: Trophy,
         title: "3. The Strategist",
-        desc: "Patterns & Strategy Lab (Lvl 6 & 8)",
-        color: "text-primary",
-        bg: "bg-primary/10",
-        gradient: "from-green-500 to-yellow-500",
-        glow: "rgba(0,200,136,0.3)",
+        desc: "Patterns & Strategy Lab",
+        level: "Lvl 6 & 8",
+        color: "text-emerald-600 dark:text-emerald-400",
+        bg: "bg-emerald-500/10 dark:bg-emerald-500/15",
+        border: "border-emerald-200/90 dark:border-emerald-900/40",
+        hoverBorder: "hover:border-emerald-400/60 dark:hover:border-emerald-500/60",
+        gradient: "from-emerald-400 to-teal-500",
+        badge: "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
+        glow: "rgba(5,150,105,0.18)",
     },
     {
         icon: Shield,
         title: "4. The Operator",
-        desc: "Mindset & Fundamentals (Lvl 7, 9-10)",
-        color: "text-amber-500",
-        bg: "bg-amber-500/10",
-        gradient: "from-yellow-500 to-orange-500",
-        glow: "rgba(245,158,11,0.3)",
+        desc: "Mindset & Fundamentals",
+        level: "Lvl 7, 9-10",
+        color: "text-purple-600 dark:text-purple-400",
+        bg: "bg-purple-500/10 dark:bg-purple-500/15",
+        border: "border-purple-200/90 dark:border-purple-900/40",
+        hoverBorder: "hover:border-purple-400/60 dark:hover:border-purple-500/60",
+        gradient: "from-purple-400 to-indigo-500",
+        badge: "bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800",
+        glow: "rgba(147,51,234,0.18)",
     },
     {
         icon: Crown,
         title: "5. The Master",
-        desc: "Global View & Live Trading (Lvl 11-12)",
-        color: "text-orange-500",
-        bg: "bg-orange-500/10",
-        gradient: "from-orange-500 to-red-500",
-        glow: "rgba(249,115,22,0.3)",
+        desc: "Global View & Live Trading",
+        level: "Lvl 11-12",
+        color: "text-amber-500 dark:text-gold",
+        bg: "bg-gold/15 dark:bg-gold/20",
+        border: "border-amber-300/90 dark:border-gold/50",
+        hoverBorder: "hover:border-amber-500 dark:hover:border-gold",
+        gradient: "from-amber-400 via-yellow-400 to-amber-600",
+        badge: "bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-200 border-amber-300 dark:border-amber-600 font-bold",
+        glow: "rgba(245,158,11,0.28)",
+        shadow: "shadow-[0_4px_20px_rgba(245,158,11,0.22)]",
     },
 ];
 
@@ -69,14 +90,14 @@ export function LearningPathTimeline() {
                 {/* Background track */}
                 <div className="absolute inset-0 bg-gray-200 dark:bg-white/10 rounded-full" />
 
-                {/* Animated fill - "water flow" effect */}
+                {/* Animated fill - "water flow" progression spectrum */}
                 <motion.div
                     className="absolute inset-0 rounded-full"
                     style={{
                         background:
-                            "linear-gradient(90deg, #00C888, #00A570, #00C888)",
+                            "linear-gradient(90deg, #94a3b8 0%, #0284c7 25%, #059669 50%, #9333ea 75%, #f59e0b 100%)",
                         boxShadow:
-                            "0 0 12px rgba(0,200,136,0.5), 0 0 4px rgba(0,200,136,0.3)",
+                            "0 0 12px rgba(245,158,11,0.3), 0 0 6px rgba(147,51,234,0.2)",
                         transformOrigin: "left center",
                     }}
                     initial={{ scaleX: 0 }}
@@ -113,8 +134,9 @@ export function LearningPathTimeline() {
                 <motion.div
                     className="absolute inset-x-0 top-0 bottom-0 rounded-full"
                     style={{
-                        background: "linear-gradient(180deg, #00C888, #00A570)",
-                        boxShadow: "0 0 12px rgba(0,200,136,0.5)",
+                        background:
+                            "linear-gradient(180deg, #94a3b8 0%, #0284c7 25%, #059669 50%, #9333ea 75%, #f59e0b 100%)",
+                        boxShadow: "0 0 10px rgba(245,158,11,0.3)",
                         transformOrigin: "top center",
                     }}
                     initial={{ scaleY: 0 }}
@@ -141,19 +163,19 @@ export function LearningPathTimeline() {
                             delay: cardDelay,
                             ease: "easeOut",
                         }}
-                        className="relative z-10 group overflow-hidden bg-white dark:bg-[#1E2028] p-4 pt-5 rounded-xl border border-dashboard/80 hover:border-transparent transition-all duration-300 w-full max-w-sm md:w-[30%] lg:w-auto mx-auto md:mx-0 shadow-sm hover:shadow-lg"
+                        className={`relative z-10 group overflow-hidden bg-white dark:bg-[#1E2028] p-4 pt-5 rounded-xl border ${step.border} ${step.hoverBorder} transition-all duration-300 w-full max-w-sm md:w-[30%] lg:w-auto mx-auto md:mx-0 shadow-sm hover:shadow-lg ${step.shadow || ""}`}
                         style={{
                             boxShadow: `0 2px 12px ${step.glow}`,
                         }}
                     >
                         {/* Gradient top accent bar */}
                         <div
-                            className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${step.gradient} opacity-60 group-hover:opacity-100 transition-opacity`}
+                            className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${step.gradient} opacity-80 group-hover:opacity-100 transition-opacity`}
                         />
 
                         {/* Icon */}
                         <motion.div
-                            className={`w-12 h-12 rounded-xl ${step.bg} ${step.color} flex items-center justify-center mb-4 mx-auto`}
+                            className={`w-12 h-12 rounded-xl ${step.bg} ${step.color} flex items-center justify-center mb-3 mx-auto`}
                             initial={{ rotate: -15, scale: 0.5 }}
                             animate={isInView ? { rotate: 0, scale: 1 } : {}}
                             transition={{
@@ -166,9 +188,14 @@ export function LearningPathTimeline() {
                             <step.icon size={24} strokeWidth={2.5} />
                         </motion.div>
 
-                        {/* Text */}
+                        {/* Text & Level Badge */}
                         <div className="text-center">
-                            <h3 className="text-base font-bold text-gray-700 dark:text-white mb-1">
+                            <div
+                                className={`inline-block text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full border mb-2 ${step.badge}`}
+                            >
+                                {step.level}
+                            </div>
+                            <h3 className="text-base font-bold text-gray-800 dark:text-white mb-1">
                                 {step.title}
                             </h3>
                             <p className="text-xs text-gray-600 dark:text-gray-300">
@@ -178,7 +205,7 @@ export function LearningPathTimeline() {
 
                         {/* Glow on hover */}
                         <div
-                            className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"
+                            className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 pointer-events-none"
                             style={{ boxShadow: `0 0 30px ${step.glow}` }}
                         />
                     </motion.div>

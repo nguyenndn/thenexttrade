@@ -13,7 +13,7 @@ import {
     Layers,
     Activity,
 } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button-variants";
+import { Button } from "@/components/ui/Button";
 
 interface MT5TeaserCTAProps {
     isLoggedIn?: boolean;
@@ -43,7 +43,7 @@ const TRADING_SYSTEM_ITEMS = [
         badges: [
             { label: "Auto SL/TP", value: "Instant" },
             { label: "Smart BE", value: "Active" },
-            { label: "Journal Sync", value: "12ms" },
+            { label: "Sync", value: "12ms" },
         ],
     },
     {
@@ -54,9 +54,9 @@ const TRADING_SYSTEM_ITEMS = [
         iconColor: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
         desc: "Adaptive grid & hedge recovery system built for exposure protection.",
         badges: [
-            { label: "Max DD Guard", value: "5%" },
-            { label: "DCA Engine", value: "Adaptive" },
-            { label: "Hedge Filter", value: "MLPS" },
+            { label: "Max DD", value: "5%" },
+            { label: "DCA", value: "Adaptive" },
+            { label: "Hedge", value: "MLPS" },
         ],
     },
 ];
@@ -114,7 +114,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
 
             <section className="py-12 sm:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 {/* Main Container Card */}
-                <div className="relative max-w-7xl mx-auto rounded-3xl border border-amber-200/50 dark:border-white/10 bg-slate-50/90 dark:bg-[#0c0f16]/80 backdrop-blur-md p-6 sm:p-8 md:p-10 shadow-lg dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-gold/30 dark:hover:border-gold/20 hover:shadow-xl hover:shadow-gold/[0.01] transition-all duration-500 overflow-hidden group/card">
+                <div className="relative max-w-7xl mx-auto rounded-3xl border border-amber-200/50 dark:border-white/10 bg-slate-50/90 dark:bg-[#0c0f16]/80 backdrop-blur-md p-5 sm:p-8 md:p-10 shadow-lg dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-gold/30 dark:hover:border-gold/20 hover:shadow-xl hover:shadow-gold/[0.01] transition-all duration-500 overflow-hidden group/card">
                     {/* Flowing laser border */}
                     <svg className="absolute inset-0 w-full h-full pointer-events-none rounded-3xl">
                         <defs>
@@ -137,7 +137,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                                 />
                                 <stop
                                     offset="100%"
-                                    stopColor="#10b981"
+                                    stopColor="#d97706"
                                     stopOpacity="0.15"
                                 />
                             </linearGradient>
@@ -201,30 +201,31 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
                                 <Link
                                     href="/trading-systems"
-                                    className={buttonVariants({
-                                        variant: "primary",
-                                        className:
-                                            "relative overflow-hidden bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold shadow-md shadow-amber-500/20 px-6 py-3 min-h-11 rounded-xl flex items-center justify-center gap-2 animate-btn-shine border-none transition-all duration-300",
-                                    })}
+                                    className="w-full sm:w-auto group"
                                 >
-                                    <span className="relative z-10 flex items-center gap-1.5 text-xs uppercase tracking-wider">
-                                        Explore Trading Systems
+                                    <Button className="w-full sm:w-auto min-h-12 px-5 sm:px-7 rounded-xl bg-gold hover:bg-amber-600 text-white font-extrabold text-sm shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 flex items-center justify-center gap-2 animate-btn-shine whitespace-nowrap">
+                                        <span>Explore Trading Systems</span>
                                         <ArrowRight
-                                            size={14}
-                                            className="group-hover/card:translate-x-0.5 transition-transform"
+                                            size={16}
+                                            className="group-hover:translate-x-1 transition-transform duration-300"
                                         />
-                                    </span>
+                                    </Button>
                                 </Link>
 
                                 <Link
                                     href={secondaryUrl}
-                                    className="inline-flex items-center justify-center gap-1.5 text-xs font-extrabold text-gray-500 hover:text-gold dark:text-gray-400 dark:hover:text-amber-400 transition-colors uppercase tracking-wider h-11 px-4"
+                                    className="w-full sm:w-auto group"
                                 >
-                                    <HelpCircle
-                                        size={14}
-                                        className="shrink-0"
-                                    />
-                                    <span>How unlock works</span>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full sm:w-auto min-h-12 px-5 sm:px-6 rounded-xl border border-slate-300 dark:border-white/15 hover:border-gold dark:hover:border-gold/60 bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm text-slate-700 dark:text-slate-200 hover:text-amber-600 dark:hover:text-gold font-extrabold text-sm shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
+                                    >
+                                        <HelpCircle
+                                            size={16}
+                                            className="shrink-0 text-amber-500 dark:text-gold"
+                                        />
+                                        <span>How Unlock Works</span>
+                                    </Button>
                                 </Link>
                             </div>
 
@@ -238,8 +239,8 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                             </p>
                         </div>
 
-                        {/* Right Column: High-Fidelity MT5 Trading Systems Suite Console */}
-                        <div className="relative w-full max-w-[460px] mx-auto lg:max-w-none rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-[#11141f]/95 p-4 sm:p-5 shadow-xl overflow-hidden group/mockup">
+                        {/* Right Column: High-Fidelity MT5 Trading Systems Suite Console (Full-width on tablet/mobile, side-by-side on desktop) */}
+                        <div className="relative w-full rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-[#11141f]/95 p-4 sm:p-5 md:p-6 shadow-xl overflow-hidden group/mockup">
                             {/* Blueprint grid lines overlay */}
                             <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(156,163,175,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(156,163,175,0.05)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none" />
 
@@ -265,42 +266,44 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                             </div>
 
                             {/* 3 Core Trading System Cards */}
-                            <div className="space-y-2.5 relative z-10">
+                            <div className="space-y-3 relative z-10">
                                 {TRADING_SYSTEM_ITEMS.map((item, idx) => {
                                     const Icon = item.icon;
                                     return (
                                         <div
                                             key={idx}
-                                            className="p-3 rounded-xl border border-slate-200/70 dark:border-white/[0.08] bg-slate-50/70 dark:bg-white/[0.02] hover:bg-white dark:hover:bg-white/[0.05] hover:border-gold/30 hover:shadow-sm transition-all duration-300 group/tool"
+                                            className="p-3.5 sm:p-4 rounded-xl border border-slate-200/70 dark:border-white/[0.08] bg-slate-50/70 dark:bg-white/[0.02] hover:bg-white dark:hover:bg-white/[0.05] hover:border-gold/30 hover:shadow-sm transition-all duration-300 group/tool"
                                         >
-                                            <div className="flex items-center justify-between gap-2 mb-1.5">
-                                                <div className="flex items-center gap-2">
+                                            {/* Header Row: Icon + Title + Category Tag */}
+                                            <div className="flex items-center justify-between gap-2 mb-2">
+                                                <div className="flex items-center gap-2.5">
                                                     <div
-                                                        className={`h-7 w-7 rounded-lg flex items-center justify-center border shrink-0 transition-transform group-hover/tool:scale-105 ${item.iconColor}`}
+                                                        className={`h-7 sm:h-8 w-7 sm:w-8 rounded-lg flex items-center justify-center border shrink-0 transition-transform group-hover/tool:scale-105 ${item.iconColor}`}
                                                     >
-                                                        <Icon size={14} />
+                                                        <Icon size={15} />
                                                     </div>
-                                                    <span className="text-xs font-bold text-gray-900 dark:text-white">
+                                                    <span className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white">
                                                         {item.title}
                                                     </span>
                                                 </div>
                                                 <span
-                                                    className={`shrink-0 text-[8px] font-black font-mono uppercase tracking-wider px-2 py-0.5 rounded-md border ${item.tagColor}`}
+                                                    className={`shrink-0 text-[8px] sm:text-[9px] font-black font-mono uppercase tracking-wider px-2 sm:px-2.5 py-0.5 rounded-md border ${item.tagColor}`}
                                                 >
                                                     {item.tag}
                                                 </span>
                                             </div>
 
-                                            <p className="text-[11px] leading-relaxed text-gray-600 dark:text-gray-400 mb-2">
+                                            {/* Description */}
+                                            <p className="text-[11px] sm:text-xs leading-relaxed text-gray-600 dark:text-gray-400 mb-2.5">
                                                 {item.desc}
                                             </p>
 
-                                            {/* Telemetry Parameter Pills */}
-                                            <div className="flex items-center gap-1.5 flex-wrap">
+                                            {/* Telemetry Parameter Pills - Equal 3-column grid spanning full width on tablet/desktop */}
+                                            <div className="flex flex-wrap sm:grid sm:grid-cols-3 gap-1.5 sm:gap-2">
                                                 {item.badges.map((b, bIdx) => (
-                                                    <span
+                                                    <div
                                                         key={bIdx}
-                                                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white dark:bg-black/40 border border-slate-200/80 dark:border-white/[0.06] text-[9px] font-mono"
+                                                        className="inline-flex sm:flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-md bg-white dark:bg-black/40 border border-slate-200/80 dark:border-white/[0.06] text-[9px] sm:text-[10px] font-mono shadow-xs text-center whitespace-nowrap"
                                                     >
                                                         <span className="text-gray-400 font-medium">
                                                             {b.label}:
@@ -308,7 +311,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                                                         <span className="font-bold text-gray-700 dark:text-gray-300">
                                                             {b.value}
                                                         </span>
-                                                    </span>
+                                                    </div>
                                                 ))}
                                             </div>
                                         </div>
@@ -317,10 +320,10 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                             </div>
 
                             {/* Bottom Console Telemetry Strip */}
-                            <div className="mt-3 pt-3 border-t border-slate-200/80 dark:border-white/10 flex items-center justify-between text-[9px] font-mono text-gray-500 dark:text-gray-400 relative z-10">
+                            <div className="mt-3.5 pt-3 border-t border-slate-200/80 dark:border-white/10 flex items-center justify-between text-[9px] sm:text-[10px] font-mono text-gray-500 dark:text-gray-400 relative z-10">
                                 <div className="flex items-center gap-2">
                                     <span className="flex items-center gap-1">
-                                        <Activity size={10} className="text-emerald-500" />
+                                        <Activity size={11} className="text-emerald-500" />
                                         <span>MT5 ALL BROKERS</span>
                                     </span>
                                     <span>•</span>

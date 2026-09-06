@@ -21,13 +21,13 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
             description: "Structured lessons and practical guides.",
             href: "/academy",
             icon: <BookOpen size={20} />,
-            color: "text-primary",
-            chipBg: "bg-primary/10",
+            color: "text-slate-700 dark:text-slate-300",
+            chipBg: "bg-slate-100 dark:bg-white/5",
             ctaText: "Start Learning",
             animClass: "group-hover:scale-110 group-hover:-rotate-6",
             bgClass:
-                "bg-white dark:bg-white/[0.02] border-dashboard/50 dark:border-white/[0.06] hover:border-primary/40 hover:bg-gradient-to-br hover:from-primary/[0.03] hover:to-transparent hover:shadow-[0_8px_30px_rgba(16,185,129,0.04)]",
-            ctaColor: "group-hover:text-primary",
+                "bg-white dark:bg-white/[0.02] border-gray-200/80 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 hover:bg-slate-50 dark:hover:bg-white/[0.04]",
+            ctaColor: "group-hover:text-gold",
         },
         {
             title: "Track My Trades",
@@ -41,7 +41,7 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
             ctaText: "Setup Journal",
             animClass: "group-hover:scale-110 group-hover:translate-x-0.5",
             bgClass:
-                "bg-gradient-to-br from-gold/[0.04] to-amber-500/[0.01] border-gold/30 hover:border-gold/60 hover:shadow-[0_8px_30px_rgba(245,158,11,0.1)] dark:from-gold/[0.03] dark:to-transparent",
+                "bg-gradient-to-br from-gold/[0.05] to-amber-500/[0.02] border-gold/30 hover:border-gold/60 hover:shadow-[0_8px_30px_rgba(245,158,11,0.12)] dark:from-gold/[0.03] dark:to-transparent",
             ctaColor: "group-hover:text-gold",
             isRecommended: true,
         },
@@ -50,26 +50,26 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
             description: "Risk calculators and position sizing tools.",
             href: "/tools",
             icon: <Calculator size={20} />,
-            color: "text-blue-500",
-            chipBg: "bg-blue-500/10",
+            color: "text-slate-700 dark:text-slate-300",
+            chipBg: "bg-slate-100 dark:bg-white/5",
             ctaText: "Open Calculators",
             animClass: "group-hover:scale-110 group-hover:rotate-6",
             bgClass:
-                "bg-white dark:bg-white/[0.02] border-dashboard/50 dark:border-white/[0.06] hover:border-blue-500/40 hover:bg-gradient-to-br hover:from-blue-500/[0.03] hover:to-transparent hover:shadow-[0_8px_30px_rgba(59,130,246,0.04)]",
-            ctaColor: "group-hover:text-blue-500",
+                "bg-white dark:bg-white/[0.02] border-gray-200/80 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 hover:bg-slate-50 dark:hover:bg-white/[0.04]",
+            ctaColor: "group-hover:text-gold",
         },
         {
             title: "Compare Brokers",
             description: "Compare brokers and trading platforms.",
             href: "/brokers",
             icon: <Building size={20} />,
-            color: "text-emerald-500",
-            chipBg: "bg-emerald-500/10",
+            color: "text-slate-700 dark:text-slate-300",
+            chipBg: "bg-slate-100 dark:bg-white/5",
             ctaText: "Compare Now",
             animClass: "group-hover:scale-110",
             bgClass:
-                "bg-white dark:bg-white/[0.02] border-dashboard/50 dark:border-white/[0.06] hover:border-emerald-500/40 hover:bg-gradient-to-br hover:from-emerald-500/[0.03] hover:to-transparent hover:shadow-[0_8px_30px_rgba(16,185,129,0.04)]",
-            ctaColor: "group-hover:text-emerald-500",
+                "bg-white dark:bg-white/[0.02] border-gray-200/80 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 hover:bg-slate-50 dark:hover:bg-white/[0.04]",
+            ctaColor: "group-hover:text-gold",
         },
     ];
 
@@ -92,7 +92,7 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
                         <Link
                             key={idx}
                             href={card.href}
-                            className={`group relative flex min-h-[118px] flex-col justify-between rounded-xl border border-t-[3px] border-t-gold dark:border-t-gold/90 p-4 text-left transition-all duration-300 sm:min-h-[150px] sm:p-5 ${card.bgClass}`}
+                            className={`group relative flex min-h-[118px] flex-col justify-between items-center sm:items-start rounded-xl border p-5 sm:p-5 text-center sm:text-left transition-all duration-300 sm:min-h-[150px] ${card.bgClass}`}
                         >
                             {/* Recommended badge */}
                             {"isRecommended" in card && card.isRecommended && (
@@ -104,9 +104,9 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
                             {/* Subtle inner gradient - matches TrustMetrics style */}
                             <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-transparent via-transparent to-gray-50/50 dark:to-white/[0.01] pointer-events-none" />
 
-                            <div className="relative z-10 w-full">
-                                {/* Icon and Title Inline */}
-                                <div className="mb-3 flex items-center gap-3 pr-20 sm:pr-0">
+                            <div className="relative z-10 w-full flex flex-col items-center sm:items-start">
+                                {/* Icon and Title: Stacked centered on mobile, inline on sm+ */}
+                                <div className="mb-3 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-start gap-2.5 sm:gap-3 w-full">
                                     <div
                                         className={`shrink-0 rounded-xl p-2.5 ${card.chipBg}`}
                                     >
@@ -117,19 +117,19 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
                                         </span>
                                     </div>
                                     <h3
-                                        className={`text-sm sm:text-base font-black text-gray-800 dark:text-white transition-colors leading-tight ${card.ctaColor}`}
+                                        className={`text-sm sm:text-base font-black text-gray-800 dark:text-white transition-colors leading-tight text-center sm:text-left ${card.ctaColor}`}
                                     >
                                         {card.title}
                                     </h3>
                                 </div>
 
-                                <p className="mb-4 text-xs font-medium leading-relaxed text-gray-500 dark:text-gray-400 sm:mb-5">
+                                <p className="mb-4 text-xs font-medium leading-relaxed text-gray-500 dark:text-gray-400 sm:mb-5 text-center sm:text-left">
                                     {card.description}
                                 </p>
                             </div>
 
                             <div
-                                className={`relative z-10 mt-auto flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-gray-500 transition-colors dark:text-gray-400 ${card.ctaColor}`}
+                                className={`relative z-10 mt-auto flex items-center justify-center sm:justify-start gap-1.5 text-[10px] font-black uppercase tracking-wider text-gray-500 transition-colors dark:text-gray-400 w-full sm:w-auto ${card.ctaColor}`}
                             >
                                 {card.ctaText}{" "}
                                 <ArrowRight

@@ -1,16 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { motion, type Transition } from "framer-motion";
 import {
     ArrowRight,
     X,
     Check,
     FileText,
-    PlugZap,
     Brain,
-    Target,
+    PlugZap,
     BookOpenCheck,
+    Target,
     Sparkles,
+    type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
@@ -22,50 +24,70 @@ interface SpreadsheetComparisonSectionProps {
 const comparisonRows = [
     {
         traditional: "Manual copy-pasting is tedious and inconsistent",
-        tnt: "100% automated MT5 sync via Trade Manager EA",
+        tnt: "100% automated live sync via MT5 EA",
     },
     {
         traditional: "P&L is the only tracked number",
-        tnt: "Deep analytics: Win rate, sessions, R:R, and drawdown curves",
+        tnt: "Deep analytics: Win rate, R:R & drawdowns",
     },
     {
         traditional: "Screenshots, notes, and mistakes are scattered",
-        tnt: "Centralized journal with tags, psychology notes & plan matching",
+        tnt: "Unified journal with tags & psychology notes",
     },
     {
         traditional: "Hard to see what bad habit is draining your profit",
-        tnt: "AI leak detection spots revenge sizing, FOMO & early exits",
+        tnt: "AI leak radar spots revenge sizing & FOMO",
     },
     {
         traditional: "Reviewing trades without knowing what to study",
-        tnt: "Curated Academy lessons matched to your exact weaknesses",
+        tnt: "Academy lessons tailored to your weaknesses",
     },
     {
         traditional: "No follow-through or momentum after review",
-        tnt: "10-trade improvement cycles & Weekly Coach action plans",
+        tnt: "10-trade action cycles with Weekly Coach",
     },
 ];
 
-const essenceCards = [
+interface EssenceCard {
+    icon: LucideIcon;
+    label: string;
+    copy: string;
+    animate: {
+        y?: number[];
+        scale?: number[];
+        rotate?: number[];
+    };
+    transition: Transition;
+}
+
+const essenceCards: EssenceCard[] = [
     {
         icon: PlugZap,
         label: "Auto MT5 Sync",
         copy: "Stream MT5 trades directly to your journal in real time via Trade Manager EA.",
+        animate: { y: [0, -2.5, 0] },
+        transition: { duration: 2.2, repeat: Infinity, ease: "easeInOut" },
     },
     {
         icon: Brain,
         label: "AI Leak Radar",
         copy: "Uncover hidden behavioral leaks across sessions, symbols, and risk habits.",
+        animate: { scale: [1, 1.08, 1] },
+        transition: { duration: 2.8, repeat: Infinity, ease: "easeInOut" },
     },
     {
         icon: BookOpenCheck,
         label: "Targeted Learning",
         copy: "Actionable Academy lessons matched to your real execution weaknesses.",
+        animate: { rotate: [-3, 3, -3], y: [0, -1.5, 0] },
+        transition: { duration: 3, repeat: Infinity, ease: "easeInOut" },
     },
     {
         icon: Target,
         label: "Weekly Coach",
         copy: "Leave every review with one clear 10-trade action plan to execute.",
+        animate: { scale: [1, 1.1, 1] },
+        transition: { duration: 2.5, repeat: Infinity, ease: "easeInOut" },
     },
 ];
 
@@ -100,15 +122,21 @@ export function SpreadsheetComparisonSection({
                             return (
                                 <div
                                     key={card.label}
-                                    className="rounded-xl border border-gold/20 bg-white/80 dark:bg-white/[0.02] p-5 shadow-sm flex flex-col items-center text-center sm:items-start sm:text-left transition-all duration-300 hover:border-gold/40 hover:shadow-md"
+                                    className="group rounded-xl border border-gold/20 bg-white/80 dark:bg-white/[0.02] p-5 shadow-sm flex flex-col items-center text-center transition-all duration-300 hover:border-gold/50 hover:shadow-lg hover:-translate-y-1"
                                 >
-                                    <div className="mb-3.5 flex h-10 w-10 items-center justify-center rounded-xl bg-gold/10 text-gold">
-                                        <Icon size={19} />
+                                    <div className="mb-3.5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gold/10 text-gold border border-gold/25 shadow-sm group-hover:scale-110 group-hover:bg-gold/15 group-hover:shadow-[0_0_18px_rgba(245,158,11,0.28)] transition-all duration-300">
+                                        <motion.div
+                                            animate={card.animate}
+                                            transition={card.transition}
+                                            className="flex items-center justify-center"
+                                        >
+                                            <Icon size={22} strokeWidth={2.2} />
+                                        </motion.div>
                                     </div>
-                                    <h3 className="text-sm font-black text-gray-900 dark:text-white">
+                                    <h3 className="text-sm font-black text-gray-900 dark:text-white text-center">
                                         {card.label}
                                     </h3>
-                                    <p className="mt-1.5 text-xs font-medium leading-relaxed text-gray-600 dark:text-gray-400">
+                                    <p className="mt-1.5 text-xs font-medium leading-relaxed text-gray-600 dark:text-gray-400 text-center">
                                         {card.copy}
                                     </p>
                                 </div>
@@ -119,16 +147,16 @@ export function SpreadsheetComparisonSection({
                     {/* Comparison Table */}
                     {/* Header Row (Desktop/Tablet) */}
                     <div className="hidden md:grid grid-cols-2 gap-4 mb-3">
-                        <div className="flex items-center gap-2 p-3.5 rounded-xl bg-red-50/50 dark:bg-red-500/5 border border-red-100/50 dark:border-red-500/10">
+                        <div className="flex items-center justify-center gap-2 p-3.5 rounded-xl bg-slate-100/70 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 text-center">
                             <FileText
                                 size={16}
-                                className="text-red-400 flex-shrink-0"
+                                className="text-slate-400 flex-shrink-0"
                             />
-                            <span className="text-xs font-black uppercase tracking-wider text-red-500">
+                            <span className="text-xs font-black uppercase tracking-wider text-slate-600 dark:text-slate-400">
                                 Traditional / Manual Journals
                             </span>
                         </div>
-                        <div className="flex items-center gap-2 p-3.5 rounded-xl bg-gold/5 border border-gold/20">
+                        <div className="flex items-center justify-center gap-2 p-3.5 rounded-xl bg-gold/5 border border-gold/20 dark:border-gold/30 text-center">
                             <Brain
                                 size={16}
                                 className="text-gold flex-shrink-0"
@@ -146,16 +174,16 @@ export function SpreadsheetComparisonSection({
                                 key={idx}
                                 className="grid grid-cols-1 md:grid-cols-2 gap-4"
                             >
-                                <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-gray-50/50 dark:bg-white/[0.01] border border-dashboard/30 dark:border-white/10">
+                                <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-gray-50/50 dark:bg-white/[0.01] border border-slate-200/80 dark:border-white/10">
                                     <X
                                         size={14}
-                                        className="text-red-400 flex-shrink-0 mt-0.5"
+                                        className="text-slate-400 flex-shrink-0 mt-0.5"
                                     />
                                     <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium leading-snug">
                                         {row.traditional}
                                     </span>
                                 </div>
-                                <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-gold/[0.02] dark:bg-gold/[0.01] border border-gold/10 dark:border-gold/5">
+                                <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-gold/[0.02] dark:bg-gold/[0.02] border border-gold/20 dark:border-gold/25">
                                     <Check
                                         size={14}
                                         className="text-emerald-500 flex-shrink-0 mt-0.5"
@@ -176,13 +204,14 @@ export function SpreadsheetComparisonSection({
                                     ? "/dashboard"
                                     : "/auth/signup?source=feature_comparison"
                             }
+                            className="w-full sm:w-auto inline-block"
                         >
-                            <Button className="min-h-12 px-8 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-sm shadow-[0_10px_24px_rgba(229,165,10,0.25)] hover:shadow-[0_14px_30px_rgba(229,165,10,0.35)] transition-all flex items-center justify-center gap-2 animate-btn-shine">
+                            <Button className="w-full sm:w-auto min-h-12 px-5 sm:px-8 rounded-xl bg-gold hover:bg-amber-600 text-white font-extrabold text-sm shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all flex items-center justify-center gap-2 animate-btn-shine">
                                 {isLoggedIn
                                     ? "Open My Journal"
                                     : "Start Free Journal"}{" "}
                                 <ArrowRight
-                                    size={15}
+                                    size={16}
                                     className="text-yellow-200"
                                 />
                             </Button>

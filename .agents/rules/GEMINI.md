@@ -79,6 +79,12 @@ Before modifying any file:
 - Completing a coding task does NOT mean commit/push — wait for user instruction
 - Only the `/push_code` workflow handles git operations
 
+### 🚫 No Automatic Browser Testing (CRITICAL)
+- **NEVER** launch or interact with browser testing tools (Chrome DevTools MCP, gstack, open browser, screenshot captures) automatically during routine code edits.
+- Browser automation is slow, resource-heavy, and disrupts fast iteration.
+- ONLY open or test via browser when the user **explicitly requests** it (e.g., "mở browser test", "/qa browser").
+- Standard verification must strictly use fast static checks: `npx tsc --noEmit` and `npm run lint`.
+
 ---
 
 ## 5. SOCRATIC GATE

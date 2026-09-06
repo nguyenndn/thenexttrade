@@ -14,7 +14,7 @@ export function AboutUsSection() {
             <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="relative overflow-hidden rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0c0e14]/95 p-6 sm:p-8 lg:p-10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)]">
                     {/* Top highlight bar */}
-                    <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-500 via-gold to-emerald-400" />
+                    <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-500 via-gold to-amber-600/70" />
 
                     {/* Main Layout: Horizontal layout on desktop */}
                     <div className="flex flex-col lg:flex-row lg:items-center gap-8 xl:gap-12 justify-between">
@@ -52,7 +52,7 @@ export function AboutUsSection() {
 
                             {/* Action Button: Read My Story Only */}
                             <Link href="/about" className="w-full">
-                                <Button className="w-full min-h-12 rounded-xl bg-gold px-5 text-sm font-black text-white hover:bg-amber-600 shadow-[0_14px_30px_rgba(245,158,11,0.22)] flex items-center justify-center animate-btn-shine">
+                                <Button className="w-full min-h-12 rounded-xl bg-gold px-6 text-sm font-extrabold text-white hover:bg-amber-600 shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] flex items-center justify-center animate-btn-shine">
                                     Read My Story{" "}
                                     <ArrowRight
                                         size={16}
@@ -89,7 +89,7 @@ export function AboutUsSection() {
                             className={buttonVariants({
                                 variant: "outline",
                                 className:
-                                    "min-h-10 px-5 text-xs sm:text-sm font-bold text-gray-800 dark:text-white hover:border-[#2AABEE]/40 hover:text-[#2AABEE] transition-all duration-300 flex items-center justify-center gap-2 shrink-0",
+                                    "w-full sm:w-auto min-h-10 px-5 text-xs sm:text-sm font-bold text-gray-800 dark:text-white hover:border-[#2AABEE]/40 hover:text-[#2AABEE] transition-all duration-300 flex items-center justify-center gap-2 shrink-0",
                             })}
                         >
                             <MessageCircle size={15} className="text-[#2AABEE]" />

@@ -46,7 +46,7 @@ export function FibonacciMock() {
 
     return (
         <div
-            className="h-44 w-full bg-slate-50 dark:bg-slate-50 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/80 select-none cursor-pointer"
+            className="h-44 w-full bg-slate-50 dark:bg-slate-900/80 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/80 dark:border-white/10 select-none cursor-pointer"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
@@ -54,9 +54,9 @@ export function FibonacciMock() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
                 <span>Fibonacci Levels</span>
-                <span className="text-violet-600/80">RETRACEMENT MODEL</span>
+                <span className="text-violet-600/80 dark:text-violet-400">RETRACEMENT MODEL</span>
             </div>
 
             {/* Levels list */}
@@ -71,7 +71,7 @@ export function FibonacciMock() {
                         >
                             {lvl.label}
                         </span>
-                        <div className="flex-1 h-1 bg-slate-200 rounded-full overflow-hidden relative">
+                        <div className="flex-1 h-1 bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden relative">
                             <div
                                 className={`absolute h-full ${lvl.color} rounded-full transition-all duration-700 ease-out`}
                                 style={{
@@ -91,7 +91,7 @@ export function FibonacciMock() {
                                 }}
                             />
                         </div>
-                        <span className="w-10 text-right text-slate-500">
+                        <span className="w-10 text-right text-slate-500 dark:text-slate-400">
                             {lvl.price}
                         </span>
                     </div>
@@ -99,7 +99,7 @@ export function FibonacciMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 flex justify-between items-center z-10 border-t border-slate-100 pt-2 font-mono">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-slate-100 dark:border-white/10 pt-2 font-mono">
                 <span>EURUSD Daily Anchor</span>
                 <span>Auto calculate active</span>
             </div>

@@ -27,7 +27,7 @@ export function RiskRewardMock() {
 
     return (
         <div
-            className="h-44 w-full bg-[#f4faf8] dark:bg-[#f4faf8] rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/60 select-none cursor-pointer"
+            className="h-44 w-full bg-[#f4faf8] dark:bg-slate-900/80 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/60 dark:border-white/10 select-none cursor-pointer"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
@@ -35,9 +35,9 @@ export function RiskRewardMock() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
                 <span>Risk/Reward Ratio</span>
-                <span className="text-emerald-600/80 font-black">
+                <span className="text-emerald-600/80 dark:text-emerald-400 font-black">
                     R:R = 1:{rrRatio.toFixed(2)}
                 </span>
             </div>
@@ -46,7 +46,7 @@ export function RiskRewardMock() {
             <div className="flex-1 flex flex-col justify-center relative my-2 z-10 gap-0.5">
                 {/* Target Zone (Green) */}
                 <div
-                    className="bg-emerald-100/70 dark:bg-emerald-100/60 border border-emerald-300/40 rounded-t-lg flex items-center justify-between px-3 text-[8px] font-bold text-emerald-700 transition-all duration-350"
+                    className="bg-emerald-100/70 dark:bg-emerald-950/50 border border-emerald-300/40 dark:border-emerald-500/30 rounded-t-lg flex items-center justify-between px-3 text-[8px] font-bold text-emerald-700 dark:text-emerald-400 transition-all duration-350"
                     style={{ height: hovered ? "48px" : "32px" }}
                 >
                     <span>TARGET (TP)</span>
@@ -56,20 +56,20 @@ export function RiskRewardMock() {
                 </div>
 
                 {/* Entry Line (Gray) */}
-                <div className="h-4 bg-slate-200 border-y border-slate-300/60 flex items-center justify-between px-3 text-[8px] font-black text-slate-600">
+                <div className="h-4 bg-slate-200 dark:bg-slate-800 border-y border-slate-300/60 dark:border-white/10 flex items-center justify-between px-3 text-[8px] font-black text-slate-600 dark:text-slate-300">
                     <span>ENTRY PRICE</span>
                     <span className="font-mono">1.1000</span>
                 </div>
 
                 {/* Stop Zone (Red) */}
-                <div className="h-8 bg-rose-100/70 dark:bg-rose-100/60 border border-rose-300/40 rounded-b-lg flex items-center justify-between px-3 text-[8px] font-bold text-rose-700">
+                <div className="h-8 bg-rose-100/70 dark:bg-rose-950/50 border border-rose-300/40 dark:border-rose-500/30 rounded-b-lg flex items-center justify-between px-3 text-[8px] font-bold text-rose-700 dark:text-rose-400">
                     <span>STOP LOSS (SL)</span>
                     <span className="font-mono">-100 Pips</span>
                 </div>
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 flex justify-between items-center z-10 border-t border-slate-100 pt-2 font-mono">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-slate-100 dark:border-white/10 pt-2 font-mono">
                 <span>Long Position Setup</span>
                 <span>Win Prob: {hovered ? "38%" : "50%"}</span>
             </div>

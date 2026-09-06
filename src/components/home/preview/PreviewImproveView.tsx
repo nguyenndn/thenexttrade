@@ -32,7 +32,7 @@ export function PreviewImproveView() {
                     <span className="text-gray-500 font-medium">
                         Target: Prevent tilt drawdown
                     </span>
-                    <span className="text-blue-600 dark:text-blue-400 font-bold hover:underline cursor-pointer">
+                    <span className="text-amber-600 dark:text-gold font-bold hover:underline cursor-pointer">
                         → Risk Management L4
                     </span>
                 </div>

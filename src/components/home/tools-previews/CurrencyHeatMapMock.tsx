@@ -31,7 +31,7 @@ export function CurrencyHeatMapMock() {
 
     return (
         <div
-            className="h-44 w-full bg-[#fdfbf7] dark:bg-[#fdfbf7] rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/60 select-none cursor-pointer"
+            className="h-44 w-full bg-[#fdfbf7] dark:bg-slate-900/80 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/60 dark:border-white/10 select-none cursor-pointer"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
@@ -39,9 +39,9 @@ export function CurrencyHeatMapMock() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
                 <span>Currency Strength Map</span>
-                <span className="text-emerald-600/80 font-black">
+                <span className="text-emerald-600/80 dark:text-emerald-400 font-black">
                     24H TIMEFRAME
                 </span>
             </div>
@@ -50,8 +50,8 @@ export function CurrencyHeatMapMock() {
             <div className="flex-1 flex flex-col justify-center gap-1.5 z-10 my-1 font-mono text-[8.5px] font-bold">
                 {currencies.map((curr, idx) => (
                     <div key={curr.name} className="flex items-center gap-2">
-                        <span className="w-8 text-slate-600">{curr.name}</span>
-                        <div className="flex-1 h-2 bg-slate-200/70 rounded-full overflow-hidden">
+                        <span className="w-8 text-slate-600 dark:text-slate-300">{curr.name}</span>
+                        <div className="flex-1 h-2 bg-slate-200/70 dark:bg-white/10 rounded-full overflow-hidden">
                             <div
                                 className={`h-full ${curr.color} rounded-full transition-all duration-500 ease-out`}
                                 style={{
@@ -62,7 +62,7 @@ export function CurrencyHeatMapMock() {
                             />
                         </div>
                         <span
-                            className={`w-8 text-right font-black ${curr.strength >= 0 ? "text-emerald-600" : "text-rose-600"}`}
+                            className={`w-8 text-right font-black ${curr.strength >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}
                         >
                             {curr.strength >= 0 ? "+" : ""}
                             {hovered
@@ -75,7 +75,7 @@ export function CurrencyHeatMapMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 flex justify-between items-center z-10 border-t border-slate-100 pt-2 font-mono">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-slate-100 dark:border-white/10 pt-2 font-mono">
                 <span>Currencies Tracked: 8</span>
                 <span>Auto-ranking sorted</span>
             </div>

@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
-import { useTheme } from "@/components/providers/ThemeProvider";
 import { Button } from "@/components/ui/Button";
 import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
 
@@ -22,7 +21,7 @@ const REVIEWS: Review[] = [
         text: "TheNextTrade Academy completely changed how I approach XAU/USD. The structured levels made it easy to build a solid foundation before jumping into live trading.",
         rating: 5,
         initials: "MT",
-        color: "bg-emerald-500",
+        color: "bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/20",
     },
     {
         name: "Sophia L.",
@@ -30,7 +29,7 @@ const REVIEWS: Review[] = [
         text: "The Market Hours tool alone is worth it. I used to miss London opens - now I plan my week around sessions. Plus the EA tools are incredibly well-built.",
         rating: 5,
         initials: "SL",
-        color: "bg-blue-500",
+        color: "bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/10",
     },
     {
         name: "James K.",
@@ -38,7 +37,7 @@ const REVIEWS: Review[] = [
         text: "The journaling tools and automated stats completely changed my consistency. Seeing my Win Rate by session helped me cut bad trades. Clean UI, no fluff, just actionable content.",
         rating: 5,
         initials: "JK",
-        color: "bg-rose-500",
+        color: "bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/20",
     },
     {
         name: "Liam C.",
@@ -46,7 +45,7 @@ const REVIEWS: Review[] = [
         text: "As someone who teaches trading, I recommend TheNextTrade to all my students. The content quality rivals platforms charging $500+. And it's completely free.",
         rating: 5,
         initials: "LC",
-        color: "bg-purple-500",
+        color: "bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/10",
     },
     {
         name: "David R.",
@@ -54,7 +53,7 @@ const REVIEWS: Review[] = [
         text: "The Economic Calendar with real-time filters is the best I've used. No ads, no clutter. Combined with the Academy, this is a one-stop shop for forex education.",
         rating: 5,
         initials: "DR",
-        color: "bg-orange-500",
+        color: "bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/20",
     },
     {
         name: "Elena M.",
@@ -62,21 +61,18 @@ const REVIEWS: Review[] = [
         text: "I was looking for a way to learn the fundamentals before copying trades blindly. TheNextTrade gave me the knowledge to actually understand what I'm investing in.",
         rating: 5,
         initials: "EM",
-        color: "bg-cyan-500",
+        color: "bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/10",
     },
 ];
 
 export function ReviewsSection() {
-    const { theme } = useTheme();
-    const isDark = theme === "dark";
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-    // Show 3 on desktop, 1 on mobile
+    // Show 3 on desktop and tablet, 1 on mobile
     const getVisibleCount = () => {
         if (typeof window === "undefined") return 3;
-        if (window.innerWidth >= 1024) return 3;
-        if (window.innerWidth >= 768) return 2;
+        if (window.innerWidth >= 768) return 3;
         return 1;
     };
 
@@ -131,32 +127,32 @@ export function ReviewsSection() {
                     onMouseEnter={() => setIsAutoPlaying(false)}
                     onMouseLeave={() => setIsAutoPlaying(true)}
                 >
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-center">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-4 lg:gap-6 items-center">
                         {visibleReviews.map((review, idx) => {
-                            // Determine if this card is the prominent middle card on desktop
-                            const isMiddle = visibleCount === 3 && idx === 1;
+                            // Determine if this card is the prominent middle card on desktop/tablet, or active on mobile
+                            const isMiddle =
+                                (visibleCount === 3 && idx === 1) ||
+                                visibleCount === 1;
                             const isSide =
                                 visibleCount === 3 && (idx === 0 || idx === 2);
 
                             let cardClasses = "";
                             if (isMiddle) {
-                                cardClasses = isDark
-                                    ? "bg-white/[0.06] border-gold/40 shadow-[0_15px_40px_rgba(245,158,11,0.1)] scale-105 z-20 relative ring-1 ring-gold/10"
-                                    : "bg-white border-amber-400 shadow-[0_15px_40px_rgba(245,158,11,0.06)] scale-105 z-20 relative ring-1 ring-amber-300/30";
+                                cardClasses =
+                                    "bg-white dark:bg-slate-900/90 border-amber-400 dark:border-gold/50 shadow-[0_15px_40px_rgba(245,158,11,0.06)] dark:shadow-[0_15px_40px_rgba(0,0,0,0.5)] ring-1 ring-amber-300/30 dark:ring-gold/20 scale-100 sm:scale-105 z-20 relative";
                             } else if (isSide) {
                                 cardClasses =
-                                    "scale-95 opacity-40 dark:opacity-30 blur-[1.5px] pointer-events-none z-10 relative";
+                                    "bg-white/60 dark:bg-slate-900/50 border-gray-200 dark:border-white/10 scale-95 opacity-60 dark:opacity-50 blur-[0.5px] pointer-events-none z-10 relative";
                             } else {
-                                // Standard layout for mobile/tablet where active card is highlighted
-                                cardClasses = isDark
-                                    ? "bg-white/[0.03] border-amber-500/15 shadow-sm z-10 relative hover:border-gold/30 hover:shadow-md transition-all duration-300"
-                                    : "bg-white border-amber-200/70 shadow-sm z-10 relative hover:border-gold/30 hover:shadow-md transition-all duration-300";
+                                // Standard layout
+                                cardClasses =
+                                    "bg-white dark:bg-slate-900/70 border-amber-200/70 dark:border-white/10 shadow-sm z-10 relative hover:border-gold/30 hover:shadow-md transition-all duration-300";
                             }
 
                             return (
                                 <div
                                     key={`${currentIndex}-${idx}`}
-                                    className={`relative p-5 rounded-xl border transition-all duration-500 animate-in fade-in slide-in-from-right-4 flex flex-col justify-between h-full ${cardClasses}`}
+                                    className={`relative p-4 sm:p-4 lg:p-5 rounded-xl border transition-all duration-500 animate-in fade-in slide-in-from-right-4 flex flex-col justify-between h-full ${cardClasses}`}
                                 >
                                     {/* Top Row: Rating and faint Quote icon */}
                                     <div className="flex items-center justify-between mb-3">
@@ -172,32 +168,32 @@ export function ReviewsSection() {
                                             ))}
                                         </div>
                                         <Quote
-                                            size={24}
+                                            size={22}
                                             className="text-gold/10 dark:text-gold/5 shrink-0"
                                         />
                                     </div>
 
                                     {/* Middle: Testimonial Text */}
-                                    <p className="text-gray-600 dark:text-gray-200 text-[13px] font-semibold leading-relaxed mb-4 min-h-[60px] italic">
+                                    <p className="text-gray-600 dark:text-gray-200 text-xs sm:text-[13px] font-semibold leading-relaxed mb-4 min-h-[72px] sm:min-h-[76px] lg:min-h-[60px] italic">
                                         &ldquo;{review.text}&rdquo;
                                     </p>
 
                                     {/* Bottom Row: User Profile */}
                                     <div className="flex items-center justify-between border-t border-dashboard/80 dark:border-white/10 pt-3 mt-auto">
                                         {/* User Profile */}
-                                        <div className="flex items-center gap-2.5">
+                                        <div className="flex items-center gap-2 sm:gap-2.5">
                                             <div className="relative shrink-0">
                                                 <div
-                                                    className={`w-9 h-9 rounded-full ${review.color} flex items-center justify-center text-white text-xs font-black`}
+                                                    className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full ${review.color} flex items-center justify-center text-xs font-black`}
                                                 >
                                                     {review.initials}
                                                 </div>
                                             </div>
                                             <div className="min-w-0 text-left">
-                                                <p className="text-gray-800 dark:text-white font-black text-sm leading-tight truncate">
+                                                <p className="text-gray-800 dark:text-white font-black text-xs sm:text-sm leading-tight truncate">
                                                     {review.name}
                                                 </p>
-                                                <p className="text-gray-500 dark:text-gray-400 text-[10px] font-bold uppercase tracking-wider mt-0.5">
+                                                <p className="text-gray-500 dark:text-gray-400 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider mt-0.5 truncate">
                                                     {review.role}
                                                 </p>
                                             </div>

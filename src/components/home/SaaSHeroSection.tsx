@@ -14,26 +14,26 @@ const PHRASES = [
     {
         text: "Your Next Move",
         gradient:
-            "from-amber-400 via-gold to-yellow-400 dark:from-amber-300 dark:via-yellow-300 dark:to-amber-400",
-        cursor: "bg-amber-500 dark:bg-gold shadow-[0_0_12px_rgba(245,158,11,0.8)]",
+            "from-amber-400 via-gold to-amber-500 dark:from-amber-200 dark:via-gold dark:to-amber-400",
+        cursor: "bg-gold shadow-[0_0_10px_rgba(245,158,11,0.6)]",
     },
     {
         text: "Consistent Profit",
         gradient:
-            "from-emerald-400 via-teal-300 to-cyan-400 dark:from-emerald-300 dark:via-teal-300 dark:to-cyan-300",
-        cursor: "bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.8)]",
+            "from-amber-400 via-gold to-amber-500 dark:from-amber-200 dark:via-gold dark:to-amber-400",
+        cursor: "bg-gold shadow-[0_0_10px_rgba(245,158,11,0.6)]",
     },
     {
         text: "Disciplined Execution",
         gradient:
-            "from-blue-400 via-cyan-300 to-indigo-400 dark:from-blue-300 dark:via-cyan-300 dark:to-indigo-300",
-        cursor: "bg-cyan-500 shadow-[0_0_12px_rgba(6,182,212,0.8)]",
+            "from-amber-400 via-gold to-amber-500 dark:from-amber-200 dark:via-gold dark:to-amber-400",
+        cursor: "bg-gold shadow-[0_0_10px_rgba(245,158,11,0.6)]",
     },
     {
         text: "Your AI Edge",
         gradient:
-            "from-purple-400 via-fuchsia-400 to-pink-400 dark:from-purple-300 dark:via-fuchsia-300 dark:to-pink-300",
-        cursor: "bg-purple-500 shadow-[0_0_12px_rgba(168,85,247,0.8)]",
+            "from-amber-400 via-gold to-amber-500 dark:from-amber-200 dark:via-gold dark:to-amber-400",
+        cursor: "bg-gold shadow-[0_0_10px_rgba(245,158,11,0.6)]",
     },
 ];
 
@@ -75,14 +75,14 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
     return (
         <div className="pt-24 sm:pt-32 md:pt-36 pb-6 sm:pb-8 bg-white dark:bg-transparent relative overflow-hidden text-center isolate">
             {/* Golden Glow Atmosphere Background */}
-            <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_60%_at_50%_20%,rgba(245,158,11,0.12),transparent_75%)] dark:bg-[radial-gradient(ellipse_70%_60%_at_50%_20%,rgba(245,158,11,0.18),transparent_75%)] pointer-events-none" />
+            <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_60%_at_50%_20%,rgba(245,158,11,0.10),transparent_75%)] dark:bg-[radial-gradient(ellipse_70%_60%_at_50%_20%,rgba(245,158,11,0.14),transparent_75%)] pointer-events-none" />
 
             {/* Technical Grid Pattern */}
             <div className="absolute inset-0 -z-20 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none" />
             <div className="absolute inset-0 -z-10 noise-bg opacity-[0.02] dark:opacity-[0.04] pointer-events-none" />
 
-            {/* Golden Firefly Particles */}
-            <DynamicFirefly color="gold" count={50} />
+            {/* Golden Firefly Particles - Dịu mắt với 20 hạt */}
+            <DynamicFirefly color="gold" count={20} />
 
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center">
                 {/* Grand Headline with Dynamic Typewriter Console */}
@@ -125,14 +125,14 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                         }
                         className="w-full sm:w-auto group"
                     >
-                        <Button className="w-full sm:w-auto h-11 sm:h-12 px-5 sm:px-7 rounded-xl bg-gold hover:bg-amber-600 text-white font-bold text-sm sm:text-base shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all duration-300 flex items-center justify-center gap-2 sm:gap-2.5 whitespace-normal sm:whitespace-nowrap animate-btn-shine">
+                        <Button className="w-full sm:w-auto h-11 sm:h-12 px-5 sm:px-7 rounded-xl bg-gold hover:bg-amber-600 text-white font-extrabold text-sm sm:text-base shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all duration-300 flex items-center justify-center gap-2 sm:gap-2.5 whitespace-normal sm:whitespace-nowrap animate-btn-shine">
                             <span>
                                 {isLoggedIn
                                     ? "Open Journal"
                                     : "Start Free Journal (Sync MT5)"}
                             </span>
                             <ArrowRight
-                                size={17}
+                                size={16}
                                 className="group-hover:translate-x-1 transition-transform duration-300 shrink-0"
                             />
                         </Button>
@@ -144,7 +144,7 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                     >
                         <Button
                             variant="outline"
-                            className="w-full sm:w-auto h-11 sm:h-12 px-5 sm:px-6 rounded-xl border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm text-slate-700 dark:text-slate-200 hover:border-gold hover:text-amber-600 dark:hover:text-gold font-bold text-sm sm:text-base shadow-sm transition-all duration-300 flex items-center justify-center gap-2 sm:gap-2.5 whitespace-normal sm:whitespace-nowrap"
+                            className="w-full sm:w-auto h-11 sm:h-12 px-5 sm:px-7 rounded-xl border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm text-slate-700 dark:text-slate-200 hover:border-gold hover:text-amber-600 dark:hover:text-gold font-extrabold text-sm sm:text-base shadow-sm transition-all duration-300 flex items-center justify-center gap-2 sm:gap-2.5 whitespace-normal sm:whitespace-nowrap"
                         >
                             <span>See How It Works</span>
                             <ArrowDown

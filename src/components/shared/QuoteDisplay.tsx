@@ -53,24 +53,24 @@ export default memo(function QuoteDisplay({ isDark }: { isDark: boolean }) {
     return (
         <div className="relative max-w-4xl mx-auto py-0.5">
             {/* Premium Decorative Line */}
-            <div className="w-12 h-px bg-gradient-to-r from-transparent via-primary to-transparent mx-auto mb-2 opacity-50"></div>
+            <div className="w-12 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent mx-auto mb-2 opacity-50"></div>
 
             <div className="flex flex-col items-center justify-center text-center">
                 <div className="flex items-start justify-center gap-1.5 px-2 max-w-xl">
                     {/* Left Quote Icon */}
                     <Quote
                         size={11}
-                        className="text-primary flex-shrink-0 fill-primary stroke-none rotate-180 -mt-0.5 opacity-70"
+                        className="text-gold/70 flex-shrink-0 fill-gold/70 stroke-none rotate-180 -mt-0.5 opacity-80"
                     />
 
-                    <p className="text-[12px] font-semibold font-heading text-primary leading-normal tracking-wide">
+                    <p className="text-[12px] font-semibold font-heading text-slate-700 dark:text-slate-300 leading-normal tracking-wide">
                         {quote.text}
                     </p>
 
                     {/* Right Quote Icon */}
                     <Quote
                         size={11}
-                        className="text-primary flex-shrink-0 fill-primary stroke-none -mt-0.5 opacity-70"
+                        className="text-gold/70 flex-shrink-0 fill-gold/70 stroke-none -mt-0.5 opacity-80"
                     />
                 </div>
 

@@ -30,6 +30,7 @@
   code compiles: `npx tsc --noEmit`, then `npm run lint`. If the task changes behavior, also
   run the relevant test/build command.
 - A step is **DONE only when its verify command passes**. Fix failures before moving on.
+- **NO AUTOMATIC BROWSER TESTING**: Never launch or interact with browser/DevTools MCP automatically for routine verification. Only test in browser when explicitly requested by user.
 
 ### RULE 5 · NO SILENT SKIPS, NO SURPRISE EXTRAS
 - Every item is either **DONE** (verified) or **BLOCKED** (exact reason + what would unblock).

@@ -23,18 +23,18 @@ export function MarketHoursMock() {
     }, []);
 
     return (
-        <div className="h-44 w-full bg-slate-50 dark:bg-slate-50 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/80 select-none">
+        <div className="h-44 w-full bg-slate-50 dark:bg-slate-900/80 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/80 dark:border-white/10 select-none">
             {/* Glow effect */}
             <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
             <div className="flex items-center justify-between z-10">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">
+                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest font-mono">
                     Sessions Timeline
                 </span>
-                <div className="flex items-center gap-1 bg-cyan-50 border border-cyan-200 px-2 py-0.5 rounded-full">
+                <div className="flex items-center gap-1 bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-500/30 px-2 py-0.5 rounded-full">
                     <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
-                    <span className="text-[9px] text-cyan-600 font-extrabold uppercase tracking-wider">
+                    <span className="text-[9px] text-cyan-600 dark:text-cyan-400 font-extrabold uppercase tracking-wider">
                         LIVE SESSIONS
                     </span>
                 </div>
@@ -43,7 +43,7 @@ export function MarketHoursMock() {
             {/* Grid Timeline Bars */}
             <div className="flex-1 flex flex-col justify-center gap-2.5 relative my-2 z-10">
                 {/* Time markers at the top */}
-                <div className="flex justify-between text-[9px] font-bold text-slate-400 font-mono px-1">
+                <div className="flex justify-between text-[9px] font-bold text-slate-400 dark:text-slate-400 font-mono px-1">
                     <span>00</span>
                     <span>06</span>
                     <span>12</span>
@@ -52,7 +52,7 @@ export function MarketHoursMock() {
                 </div>
 
                 {/* SYD Session */}
-                <div className="relative h-2 w-full bg-slate-200/60 rounded-full overflow-hidden">
+                <div className="relative h-2 w-full bg-slate-200/60 dark:bg-white/10 rounded-full overflow-hidden">
                     <div
                         className="absolute h-full bg-violet-500/75 rounded-full"
                         style={{ left: "0%", width: "29.1%" }} // 0h - 7h
@@ -67,7 +67,7 @@ export function MarketHoursMock() {
                 </div>
 
                 {/* TKY Session */}
-                <div className="relative h-2 w-full bg-slate-200/60 rounded-full overflow-hidden">
+                <div className="relative h-2 w-full bg-slate-200/60 dark:bg-white/10 rounded-full overflow-hidden">
                     <div
                         className="absolute h-full bg-fuchsia-500/75 rounded-full"
                         style={{ left: "0%", width: "37.5%" }} // 0h - 9h
@@ -78,7 +78,7 @@ export function MarketHoursMock() {
                 </div>
 
                 {/* LDN Session */}
-                <div className="relative h-2 w-full bg-slate-200/60 rounded-full overflow-hidden">
+                <div className="relative h-2 w-full bg-slate-200/60 dark:bg-white/10 rounded-full overflow-hidden">
                     <div
                         className="absolute h-full bg-cyan-500/75 rounded-full"
                         style={{ left: "33.3%", width: "37.5%" }} // 8h - 17h
@@ -89,7 +89,7 @@ export function MarketHoursMock() {
                 </div>
 
                 {/* NY Session */}
-                <div className="relative h-2 w-full bg-slate-200/60 rounded-full overflow-hidden">
+                <div className="relative h-2 w-full bg-slate-200/60 dark:bg-white/10 rounded-full overflow-hidden">
                     <div
                         className="absolute h-full bg-emerald-500/75 rounded-full"
                         style={{ left: "54.1%", width: "37.5%" }} // 13h - 22h
@@ -106,7 +106,7 @@ export function MarketHoursMock() {
                         style={{ left: `${nowPercent}%` }}
                     >
                         <div className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_6px_#ef4444]" />
-                        <span className="absolute top-[-10px] text-[7px] font-black text-red-500 bg-white px-1.5 rounded-lg border border-red-200 shadow-sm leading-none py-0.5 select-none whitespace-nowrap">
+                        <span className="absolute top-[-10px] text-[7px] font-black text-red-500 bg-white dark:bg-slate-900 px-1.5 rounded-lg border border-red-200 dark:border-red-500/40 shadow-sm leading-none py-0.5 select-none whitespace-nowrap">
                             NOW
                         </span>
                     </div>
@@ -114,7 +114,7 @@ export function MarketHoursMock() {
             </div>
 
             {/* Footer Info */}
-            <div className="text-[8px] font-bold text-slate-400 flex justify-between items-center z-10 border-t border-slate-100 pt-2 font-mono">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-slate-100 dark:border-white/10 pt-2 font-mono">
                 <span>GMT+7 timezone</span>
                 <span>Auto-sync active</span>
             </div>

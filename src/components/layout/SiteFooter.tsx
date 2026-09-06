@@ -17,7 +17,7 @@ export function SiteFooter() {
         <footer
             id="site-footer"
             role="contentinfo"
-            className="relative bg-slate-50 dark:bg-transparent text-gray-700 dark:text-white border-t border-dashboard dark:border-transparent overflow-hidden transition-colors duration-300"
+            className="relative bg-slate-50 dark:bg-[#070a10] text-gray-700 dark:text-white border-t border-slate-200 dark:border-white/10 overflow-hidden transition-colors duration-300"
         >
             {/* Background Effects */}
             <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
@@ -71,7 +71,7 @@ export function SiteFooter() {
                                         aria-label={social.label}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="w-10 h-10 rounded-full bg-white dark:bg-white/5 border border-dashboard flex items-center justify-center text-gray-500 transition-all hover:text-primary hover:border-primary/30 hover:bg-primary/5 shadow-sm"
+                                        className="w-10 h-10 rounded-full bg-white dark:bg-white/5 border border-dashboard dark:border-white/10 flex items-center justify-center text-gray-500 dark:text-slate-400 transition-all hover:text-primary hover:border-primary/30 hover:bg-primary/5 dark:hover:text-white dark:hover:border-primary/50 shadow-sm"
                                     >
                                         <social.icon size={18} />
                                     </a>
@@ -79,7 +79,7 @@ export function SiteFooter() {
                             </div>
                             <a
                                 href="mailto:support@thenexttrade.com"
-                                className="text-base font-semibold text-gray-600 hover:text-primary transition-colors flex items-center gap-2"
+                                className="text-base font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors flex items-center gap-2"
                             >
                                 <Mail size={16} /> support@thenexttrade.com
                             </a>
@@ -113,7 +113,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/academy"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Trading Academy
                                         </Link>
@@ -121,7 +121,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/knowledge"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Knowledge Base
                                         </Link>
@@ -129,7 +129,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/knowledge?category=market-analysis"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Market Analysis
                                         </Link>
@@ -137,7 +137,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/knowledge?category=technical-analysis"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Technical Analysis
                                         </Link>
@@ -145,7 +145,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/knowledge?category=trading-psychology"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Trading Psychology
                                         </Link>
@@ -161,7 +161,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/academy"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Trading Academy
                                         </Link>
@@ -169,7 +169,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/knowledge"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Knowledge Base
                                         </Link>
@@ -177,7 +177,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/knowledge?category=market-analysis"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Market Analysis
                                         </Link>
@@ -185,7 +185,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/knowledge?category=technical-analysis"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Technical Analysis
                                         </Link>
@@ -193,7 +193,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/knowledge?category=trading-psychology"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Trading Psychology
                                         </Link>
@@ -227,7 +227,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/tools/economic-calendar"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Economic Calendar
                                         </Link>
@@ -235,7 +235,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/tools/market-hours"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Market Hours
                                         </Link>
@@ -243,7 +243,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/tools/position-size-calculator"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Position Size Calculator
                                         </Link>
@@ -259,7 +259,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/tools/economic-calendar"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Economic Calendar
                                         </Link>
@@ -267,7 +267,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/tools/market-hours"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Market Hours
                                         </Link>
@@ -275,7 +275,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/tools/position-size-calculator"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Position Size Calculator
                                         </Link>
@@ -309,7 +309,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/get-started"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Get Started
                                         </Link>
@@ -317,7 +317,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/brokers"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Trusted Brokers
                                         </Link>
@@ -325,7 +325,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/trading-systems"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Trading Systems
                                         </Link>
@@ -333,7 +333,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/edge"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             About Edge Gamification
                                         </Link>
@@ -341,7 +341,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/about"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             About Us
                                         </Link>
@@ -349,7 +349,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/contact"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Contact Us
                                         </Link>
@@ -365,7 +365,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/get-started"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Get Started
                                         </Link>
@@ -373,7 +373,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/brokers"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Trusted Brokers
                                         </Link>
@@ -381,7 +381,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/trading-systems"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Trading Systems
                                         </Link>
@@ -389,7 +389,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/edge"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             About Edge Gamification
                                         </Link>
@@ -397,7 +397,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/about"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             About Us
                                         </Link>
@@ -405,7 +405,7 @@ export function SiteFooter() {
                                     <li>
                                         <Link
                                             href="/contact"
-                                            className="text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                                         >
                                             Contact Us
                                         </Link>
@@ -444,26 +444,26 @@ export function SiteFooter() {
                 </div>
 
                 {/* Bottom Row - Copyright & Legal */}
-                <div className="mt-8 pt-6 border-t border-dashboard flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p className="text-sm font-bold text-gray-600 dark:text-gray-500">
+                <div className="mt-8 pt-6 border-t border-dashboard dark:border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <p className="text-sm font-bold text-gray-600 dark:text-slate-500">
                         &copy; 2026 The Next Trade. All rights reserved.
                     </p>
                     <div className="flex flex-wrap gap-4 sm:gap-6 justify-center items-center">
                         <Link
                             href="/legal/privacy-policy"
-                            className="text-sm font-bold text-gray-600 hover:text-primary transition-colors"
+                            className="text-sm font-bold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                         >
                             Privacy
                         </Link>
                         <Link
                             href="/legal/terms-of-service"
-                            className="text-sm font-bold text-gray-600 hover:text-primary transition-colors"
+                            className="text-sm font-bold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                         >
                             Terms Of Service
                         </Link>
                         <Link
                             href="/legal/cookie-policy"
-                            className="text-sm font-bold text-gray-600 hover:text-primary transition-colors"
+                            className="text-sm font-bold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
                         >
                             Cookies
                         </Link>

@@ -3,6 +3,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { AcademyTree } from "@/components/academy/AcademyTree";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { AcademyPublicCTA } from "@/components/academy/AcademyPublicCTA";
+import { getAuthUser } from "@/lib/auth-cache";
 
 import type { Metadata } from "next";
 
@@ -21,6 +22,8 @@ export const metadata: Metadata = {
 
 export default async function AcademyPage() {
     const basePath = "/academy";
+    const user = await getAuthUser();
+    const isLoggedIn = !!user;
 
     const levels = await prisma.level.findMany({
         orderBy: { order: "asc" },
@@ -198,7 +201,7 @@ export default async function AcademyPage() {
                         first trade to confident, disciplined execution.
                     </p>
 
-                    <AcademyPublicCTA />
+                    <AcademyPublicCTA isLoggedIn={isLoggedIn} />
                 </div>
             </section>
 

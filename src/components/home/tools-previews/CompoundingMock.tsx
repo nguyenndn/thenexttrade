@@ -37,7 +37,7 @@ export function CompoundingMock() {
 
     return (
         <div
-            className="h-44 w-full bg-[#fdfbf7] dark:bg-[#fdfbf7] rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/60 select-none cursor-pointer"
+            className="h-44 w-full bg-[#fdfbf7] dark:bg-slate-900/80 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/60 dark:border-white/10 select-none cursor-pointer"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
@@ -45,9 +45,9 @@ export function CompoundingMock() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
                 <span>Compound Interest</span>
-                <span className="text-amber-600/80 font-black">
+                <span className="text-amber-600/80 dark:text-amber-400 font-black">
                     {periods} PERIODS @ 10%
                 </span>
             </div>
@@ -56,17 +56,17 @@ export function CompoundingMock() {
             <div className="flex-1 flex items-end justify-between gap-4 z-10 py-1.5 px-1">
                 {/* Growth numeric value */}
                 <div className="flex flex-col justify-center mb-1">
-                    <span className="text-[7.5px] font-black text-slate-500 uppercase tracking-wider">
+                    <span className="text-[7.5px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         Future Balance
                     </span>
-                    <span className="text-2xl font-black text-amber-700 tracking-tight font-mono transition-transform duration-300">
+                    <span className="text-2xl font-black text-amber-700 dark:text-amber-400 tracking-tight font-mono transition-transform duration-300">
                         $
                         {balance.toLocaleString(undefined, {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                         })}
                     </span>
-                    <span className="text-[6.5px] font-bold text-slate-400">
+                    <span className="text-[6.5px] font-bold text-slate-400 dark:text-slate-500">
                         Principal: $1,000
                     </span>
                 </div>
@@ -88,9 +88,9 @@ export function CompoundingMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 flex justify-between items-center z-10 border-t border-slate-100 pt-2 font-mono">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-slate-100 dark:border-white/10 pt-2 font-mono">
                 <span>Compounding Mode: Monthly</span>
-                <span className={hovered ? "text-amber-600 font-bold" : ""}>
+                <span className={hovered ? "text-amber-600 dark:text-amber-400 font-bold" : ""}>
                     {hovered
                         ? "Compound Multiplier 9.8x"
                         : "Compound Multiplier 3.1x"}

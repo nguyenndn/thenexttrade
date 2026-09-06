@@ -1,9 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { FAQAccordion } from "@/components/tools/FAQAccordion";
-import { HelpCircle, ArrowRight, ShieldCheck, TrendingUp } from "lucide-react";
+import { HelpCircle, ArrowRight } from "lucide-react";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 const MEMBERSHIP_FAQS = [
@@ -47,6 +50,13 @@ const PLATFORM_FAQS = [
 const ALL_FAQS = [...MEMBERSHIP_FAQS, ...PLATFORM_FAQS];
 
 export function HomeFAQSection() {
+    const [activeTab, setActiveTab] = useState<"membership" | "platform">(
+        "membership"
+    );
+
+    const activeItems =
+        activeTab === "membership" ? MEMBERSHIP_FAQS : PLATFORM_FAQS;
+
     return (
         <>
             <JsonLd
@@ -73,17 +83,14 @@ export function HomeFAQSection() {
                         highlight="Questions"
                         description="Quick answers to common questions about our broker-funded model, automated journal, and trading systems."
                         icon={HelpCircle}
-                        className="mb-10 sm:mb-12"
+                        className="mb-8 sm:mb-10"
                     />
 
-                    {/* 2-Column FAQ Grid */}
-                    <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
+                    {/* Desktop (PC lg+): 2-Column FAQ Grid — Giữ style như cũ */}
+                    <div className="hidden lg:grid grid-cols-2 gap-8 lg:gap-10">
                         {/* Column 1: Membership & Broker Funding */}
                         <div>
-                            <div className="flex items-center gap-2.5 mb-5 pb-2 border-b border-slate-200/80 dark:border-white/10">
-                                <div className="p-1.5 rounded-lg bg-gold/10 text-gold">
-                                    <ShieldCheck size={18} />
-                                </div>
+                            <div className="mb-5 pb-2.5 border-b border-slate-200/80 dark:border-white/10 text-center">
                                 <h3 className="text-base sm:text-lg font-black text-gray-900 dark:text-white tracking-tight">
                                     About TheNextTrade
                                 </h3>
@@ -93,15 +100,77 @@ export function HomeFAQSection() {
 
                         {/* Column 2: Platform, Journal & Systems */}
                         <div>
-                            <div className="flex items-center gap-2.5 mb-5 pb-2 border-b border-slate-200/80 dark:border-white/10">
-                                <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500">
-                                    <TrendingUp size={18} />
-                                </div>
+                            <div className="mb-5 pb-2.5 border-b border-slate-200/80 dark:border-white/10 text-center">
                                 <h3 className="text-base sm:text-lg font-black text-gray-900 dark:text-white tracking-tight">
                                     Platform & Systems
                                 </h3>
                             </div>
                             <FAQAccordion items={PLATFORM_FAQS} />
+                        </div>
+                    </div>
+
+                    {/* Tablet & Mobile (< lg): Category Tabs Pill Switcher — Tab chỉ xuất hiện ở tablet và mobile */}
+                    <div className="block lg:hidden">
+                        <Tabs
+                            value={activeTab}
+                            onValueChange={(v) => setActiveTab(v as any)}
+                            tabsId="faq-category-tabs"
+                            className="w-full mb-6 sm:mb-8"
+                        >
+                            <div className="overflow-x-auto scrollbar-hide flex justify-center">
+                                <TabsList className="bg-gray-50 dark:bg-white/5 border border-dashboard rounded-xl p-1.5 gap-1 shrink-0">
+                                    <TabsTrigger
+                                        value="membership"
+                                        className="px-4 sm:px-5 py-2 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
+                                        activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md border-0"
+                                        activeTextClassName="!text-white"
+                                    >
+                                        <span>About TheNextTrade</span>
+                                        <span
+                                            className={cn(
+                                                "text-[10px] px-1.5 py-0.5 rounded-md font-mono font-bold transition-colors",
+                                                activeTab === "membership"
+                                                    ? "bg-white/20 text-white"
+                                                    : "bg-gray-200/70 dark:bg-white/10 text-gray-500 dark:text-gray-400"
+                                            )}
+                                        >
+                                            {MEMBERSHIP_FAQS.length}
+                                        </span>
+                                    </TabsTrigger>
+
+                                    <TabsTrigger
+                                        value="platform"
+                                        className="px-4 sm:px-5 py-2 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
+                                        activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md border-0"
+                                        activeTextClassName="!text-white"
+                                    >
+                                        <span>Platform & Systems</span>
+                                        <span
+                                            className={cn(
+                                                "text-[10px] px-1.5 py-0.5 rounded-md font-mono font-bold transition-colors",
+                                                activeTab === "platform"
+                                                    ? "bg-white/20 text-white"
+                                                    : "bg-gray-200/70 dark:bg-white/10 text-gray-500 dark:text-gray-400"
+                                            )}
+                                        >
+                                            {PLATFORM_FAQS.length}
+                                        </span>
+                                    </TabsTrigger>
+                                </TabsList>
+                            </div>
+                        </Tabs>
+
+                        {/* FAQ Content Panel */}
+                        <div
+                            id="faq-panel"
+                            role="tabpanel"
+                            aria-labelledby={`tab-${activeTab}`}
+                            className="max-w-3xl mx-auto animate-in fade-in duration-300"
+                        >
+                            <FAQAccordion
+                                key={activeTab}
+                                items={activeItems}
+                            />
                         </div>
                     </div>
 

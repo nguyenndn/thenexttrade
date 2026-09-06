@@ -54,7 +54,7 @@ button, a, input, select, textarea {
 }
 
 .dark body {
-    background: linear-gradient(135deg, #2e2414 0%, #4d3a1c 50%, #8a6a2c 100%)
+    background: linear-gradient(135deg, #090d16 0%, #0d1322 50%, #080c14 100%)
         no-repeat fixed;
     background-size: cover;
 }
@@ -444,21 +444,21 @@ textarea,
 
 /* ===== System-wide Dark Mode Overrides ===== */
 .dark {
-    /* Set variables to correct navy shades matching the gradient */
-    --background: 227 38% 8%; /* Deeper navy #0c0f1b */
-    --card: 227 38% 12%; /* Lighter navy #12172a */
-    --popover: 227 38% 10%;
-    --border: 227 30% 18%;
-    --input: 227 30% 18%;
+    /* Set variables to deep obsidian and navy shades matching the gradient */
+    --background: 224 35% 6%; /* Deep obsidian navy #0a0d15 */
+    --card: 224 32% 11%; /* Sleek dark card #121826 */
+    --popover: 224 32% 9%; /* Popover surface #0e1320 */
+    --border: 224 25% 16%; /* Subtle divider #1e2638 */
+    --input: 224 25% 16%;
 }
 
 /* Ensure the body gradient is applied fixed and cover in dark mode */
 .dark body {
     background-image: linear-gradient(
         135deg,
-        #2e2414 0%,
-        #4d3a1c 50%,
-        #8a6a2c 100%
+        #090d16 0%,
+        #0d1322 50%,
+        #080c14 100%
     ) !important;
     background-repeat: no-repeat !important;
     background-attachment: fixed !important;

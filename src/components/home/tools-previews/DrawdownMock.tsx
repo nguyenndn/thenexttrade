@@ -33,7 +33,7 @@ export function DrawdownMock() {
 
     return (
         <div
-            className="h-44 w-full bg-[#faf6f0] dark:bg-[#faf6f0] rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/60 select-none cursor-pointer"
+            className="h-44 w-full bg-[#faf6f0] dark:bg-slate-900/80 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/60 dark:border-white/10 select-none cursor-pointer"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
@@ -41,9 +41,9 @@ export function DrawdownMock() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
                 <span>Asymmetric Recovery</span>
-                <span className="text-orange-600/80 font-black">
+                <span className="text-orange-600/80 dark:text-orange-400 font-black">
                     MATH MODEL
                 </span>
             </div>
@@ -52,13 +52,13 @@ export function DrawdownMock() {
             <div className="flex-1 flex flex-col justify-center gap-3 z-10 my-1">
                 {/* Drawdown (Loss) Bar */}
                 <div className="space-y-1">
-                    <div className="flex justify-between text-[8px] font-extrabold text-slate-500 uppercase tracking-wider">
+                    <div className="flex justify-between text-[8px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         <span>Account Drawdown</span>
-                        <span className="text-rose-600 font-mono">
+                        <span className="text-rose-600 dark:text-rose-400 font-mono">
                             -{drawdown}%
                         </span>
                     </div>
-                    <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
+                    <div className="h-2 w-full bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
                         <div
                             className="h-full bg-rose-500 rounded-full transition-all duration-300"
                             style={{ width: `${drawdown}%` }}
@@ -68,13 +68,13 @@ export function DrawdownMock() {
 
                 {/* Recovery Required Bar */}
                 <div className="space-y-1">
-                    <div className="flex justify-between text-[8px] font-extrabold text-slate-500 uppercase tracking-wider">
+                    <div className="flex justify-between text-[8px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         <span>Recovery Gain Required</span>
-                        <span className="text-emerald-600 font-mono">
+                        <span className="text-emerald-600 dark:text-emerald-400 font-mono">
                             +{recovery}%
                         </span>
                     </div>
-                    <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
+                    <div className="h-2 w-full bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
                         <div
                             className={`h-full rounded-full transition-all duration-300 ${drawdown >= 40 ? "bg-red-500" : "bg-amber-500"}`}
                             style={{ width: `${Math.min(recovery, 100)}%` }}
@@ -84,7 +84,7 @@ export function DrawdownMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 flex justify-between items-center z-10 border-t border-slate-100 pt-2 font-mono">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-slate-100 dark:border-white/10 pt-2 font-mono">
                 <span>Initial Cap: $10,000</span>
                 <span
                     className={drawdown >= 45 ? "text-red-500 font-bold" : ""}

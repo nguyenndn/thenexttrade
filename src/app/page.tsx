@@ -235,8 +235,8 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
 
                     <FadeIn delay={0.3} direction="up">
                         <div className="flex justify-center mt-6">
-                            <Link href="/academy">
-                                <Button className="relative overflow-hidden rounded-xl bg-gold text-white font-extrabold shadow-[0_4px_12px_rgba(245,158,11,0.25)] hover:bg-amber-600 hover:shadow-[0_4px_20px_rgba(245,158,11,0.35)] transition-all duration-300 min-h-11 px-8 py-3 text-sm group animate-btn-shine">
+                            <Link href="/academy" className="w-full sm:w-auto inline-block">
+                                <Button className="w-full sm:w-auto relative overflow-hidden rounded-xl bg-gold text-white font-extrabold shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:bg-amber-600 hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 min-h-12 px-6 sm:px-8 text-sm group animate-btn-shine flex items-center justify-center">
                                     <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                                     <span className="flex items-center gap-2 relative z-10">
                                         Explore Academy{" "}
@@ -292,7 +292,7 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                 <div className="relative overflow-hidden border-t border-dashboard bg-slate-50/50 dark:bg-[#0F1117] py-2 sm:py-3">
                     {/* Background Effects */}
                     <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]"></div>
-                    <DynamicFirefly />
+                    <DynamicFirefly count={15} color="gold" />
 
                     <section className="max-w-4xl mx-auto px-4 text-center relative z-10">
                         <QuoteDisplay isDark={true} />

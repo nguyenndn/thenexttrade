@@ -48,13 +48,13 @@ export function BrokerFundedMembershipSection({
                 {/* 2. Side-by-Side Full-Width Comparison Cards */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 mb-6 sm:mb-8 w-full">
                     {/* Left: Traditional Academy / Courses (The Cost Trap) */}
-                    <div className="relative rounded-2xl p-5 sm:p-6 bg-slate-50/90 dark:bg-card/40 border border-rose-500/20 dark:border-rose-500/20 shadow-sm flex flex-col justify-between backdrop-blur-sm">
+                    <div className="relative rounded-2xl p-5 sm:p-6 bg-slate-50/90 dark:bg-card/40 border border-slate-200 dark:border-white/10 shadow-sm flex flex-col justify-between backdrop-blur-sm">
                         <div>
                             <div className="flex items-center justify-between mb-3">
-                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 text-xs font-black uppercase tracking-wider border border-rose-500/20">
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-slate-200/60 dark:bg-white/10 text-slate-700 dark:text-slate-300 text-xs font-black uppercase tracking-wider border border-slate-300/40 dark:border-white/10">
                                     <XCircle size={12} /> Typical Trading Course
                                 </span>
-                                <span className="text-[11px] font-mono text-rose-500/80 font-bold">
+                                <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 font-bold">
                                     High Sunk Cost
                                 </span>
                             </div>
@@ -65,25 +65,25 @@ export function BrokerFundedMembershipSection({
 
                             <div className="space-y-2.5">
                                 <div className="flex items-start gap-2.5 text-slate-700 dark:text-slate-300 text-xs sm:text-sm">
-                                    <div className="w-4 h-4 rounded-full bg-rose-500/15 text-rose-500 flex items-center justify-center shrink-0 mt-0.5">
+                                    <div className="w-4 h-4 rounded-full bg-slate-200 dark:bg-white/10 text-slate-500 dark:text-slate-400 flex items-center justify-center shrink-0 mt-0.5">
                                         <XCircle size={12} strokeWidth={2.5} />
                                     </div>
                                     <span><strong>$300 to $2,000+ course fee</strong> paid straight to their bank account</span>
                                 </div>
                                 <div className="flex items-start gap-2.5 text-slate-700 dark:text-slate-300 text-xs sm:text-sm">
-                                    <div className="w-4 h-4 rounded-full bg-rose-500/15 text-rose-500 flex items-center justify-center shrink-0 mt-0.5">
+                                    <div className="w-4 h-4 rounded-full bg-slate-200 dark:bg-white/10 text-slate-500 dark:text-slate-400 flex items-center justify-center shrink-0 mt-0.5">
                                         <XCircle size={12} strokeWidth={2.5} />
                                     </div>
                                     <span>That capital is <strong>gone for good</strong> before you place a single trade</span>
                                 </div>
                                 <div className="flex items-start gap-2.5 text-slate-700 dark:text-slate-300 text-xs sm:text-sm">
-                                    <div className="w-4 h-4 rounded-full bg-rose-500/15 text-rose-500 flex items-center justify-center shrink-0 mt-0.5">
+                                    <div className="w-4 h-4 rounded-full bg-slate-200 dark:bg-white/10 text-slate-500 dark:text-slate-400 flex items-center justify-center shrink-0 mt-0.5">
                                         <XCircle size={12} strokeWidth={2.5} />
                                     </div>
                                     <span>Software & community access <strong>expires</strong> after fixed cohort weeks</span>
                                 </div>
                                 <div className="flex items-start gap-2.5 text-slate-700 dark:text-slate-300 text-xs sm:text-sm">
-                                    <div className="w-4 h-4 rounded-full bg-rose-500/15 text-rose-500 flex items-center justify-center shrink-0 mt-0.5">
+                                    <div className="w-4 h-4 rounded-full bg-slate-200 dark:bg-white/10 text-slate-500 dark:text-slate-400 flex items-center justify-center shrink-0 mt-0.5">
                                         <XCircle size={12} strokeWidth={2.5} />
                                     </div>
                                     <span>Still <strong>$0 balance</strong> remaining in your own broker account to actually execute</span>
@@ -91,8 +91,8 @@ export function BrokerFundedMembershipSection({
                             </div>
                         </div>
 
-                        <div className="mt-5 pt-3.5 border-t border-rose-500/15 text-xs text-rose-600 dark:text-rose-400 font-semibold flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                        <div className="mt-5 pt-3.5 border-t border-slate-200 dark:border-white/10 text-xs text-slate-600 dark:text-slate-400 font-medium flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500" />
                             <span>100% financial risk before taking your first live market trade.</span>
                         </div>
                     </div>
@@ -153,7 +153,7 @@ export function BrokerFundedMembershipSection({
                 </div>
 
                 {/* 3. Four Trust Pillars Grid (Compact & Sleek Single Line Pills) */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8 w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8 w-full">
                     <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-white dark:bg-card/50 border border-gray-200/80 dark:border-white/10 shadow-sm hover:border-gold/40 transition-all group">
                         <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                             <RotateCcw size={15} />
@@ -175,7 +175,7 @@ export function BrokerFundedMembershipSection({
                     </div>
 
                     <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-white dark:bg-card/50 border border-gray-200/80 dark:border-white/10 shadow-sm hover:border-gold/40 transition-all group">
-                        <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                        <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                             <Building2 size={15} />
                         </div>
                         <div className="min-w-0">
@@ -185,7 +185,7 @@ export function BrokerFundedMembershipSection({
                     </div>
 
                     <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-white dark:bg-card/50 border border-gray-200/80 dark:border-white/10 shadow-sm hover:border-gold/40 transition-all group">
-                        <div className="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-500 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                        <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                             <Zap size={15} />
                         </div>
                         <div className="min-w-0">
@@ -269,14 +269,15 @@ export function BrokerFundedMembershipSection({
                                 ? "/dashboard/accounts"
                                 : "/auth/signup?intent=BROKER_FUNDED&source=broker_funded_section"
                         }
+                        className="w-full sm:w-auto inline-block"
                     >
-                        <Button className="min-h-11 px-8 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-sm shadow-[0_8px_24px_rgba(229,165,10,0.25)] hover:shadow-[0_12px_32px_rgba(229,165,10,0.35)] transition-all duration-300 inline-flex items-center gap-2">
+                        <Button className="w-full sm:w-auto min-h-12 px-5 sm:px-8 rounded-xl bg-gold hover:bg-amber-600 text-white font-extrabold text-sm shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 inline-flex items-center justify-center gap-2">
                             <span>
                                 {isLoggedIn
                                     ? "Connect Your Broker Account"
                                     : "Start Your Free 7-Day Trial"}
                             </span>
-                            <ArrowRight size={15} />
+                            <ArrowRight size={16} />
                         </Button>
                     </Link>
                     <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-2.5 font-medium">

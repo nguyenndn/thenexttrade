@@ -150,7 +150,7 @@ export function UserMenu({
                 {/* Gear Icon */}
                 <Settings
                     size={20}
-                    className="text-amber-500 dark:text-amber-300 group-hover:rotate-90 transition-transform duration-500"
+                    className="text-amber-500 dark:text-slate-400 dark:group-hover:text-white group-hover:rotate-90 transition-transform duration-500"
                 />
             </Button>
 

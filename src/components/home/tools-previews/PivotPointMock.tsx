@@ -75,7 +75,7 @@ export function PivotPointMock() {
 
     return (
         <div
-            className="h-44 w-full bg-slate-50 dark:bg-slate-50 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/80 select-none cursor-pointer"
+            className="h-44 w-full bg-slate-50 dark:bg-slate-900/80 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/80 dark:border-white/10 select-none cursor-pointer"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
@@ -83,9 +83,9 @@ export function PivotPointMock() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
                 <span>Pivot Points</span>
-                <span className="text-blue-600/80 font-black">
+                <span className="text-blue-600/80 dark:text-blue-400 font-black">
                     {hovered ? "CAMARILLA MODEL" : "STANDARD CLASSIC"}
                 </span>
             </div>
@@ -103,7 +103,7 @@ export function PivotPointMock() {
                         <div
                             className={`flex-1 mx-2 border-b border-dashed ${lvl.border} h-px`}
                         />
-                        <span className="w-10 text-right text-slate-500">
+                        <span className="w-10 text-right text-slate-500 dark:text-slate-400">
                             {lvl.price}
                         </span>
                     </div>
@@ -111,7 +111,7 @@ export function PivotPointMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 flex justify-between items-center z-10 border-t border-slate-100 pt-2 font-mono">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-slate-100 dark:border-white/10 pt-2 font-mono">
                 <span>EURUSD 4H Anchor</span>
                 <span>Hover to toggle model</span>
             </div>
