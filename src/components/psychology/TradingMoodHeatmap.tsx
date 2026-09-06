@@ -85,7 +85,7 @@ export function TradingMoodHeatmap({ data }: TradingMoodHeatmapProps) {
     const hasTrades = data.some((row) => row.slots.some((s) => s.trades > 0));
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm border-t-4 border-t-pink-500 h-auto sm:h-[530px] flex flex-col overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm h-auto sm:h-[530px] flex flex-col overflow-hidden">
             <div className="px-3 sm:px-5 pt-4 sm:pt-5 pb-3 shrink-0">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex items-center gap-3">

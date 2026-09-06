@@ -62,19 +62,18 @@ export function NextBestActionCard({
 
     if (!mission) {
         return (
-            <div className="rounded-2xl border border-emerald-200 dark:border-emerald-500/20 bg-emerald-50 dark:bg-emerald-500/10 p-6 flex flex-col items-center justify-center text-center">
-                <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center mb-4">
+            <div className="rounded-2xl border border-dashboard dark:border-white/[0.08] bg-white dark:bg-[#1E2028] p-6 md:p-8 flex flex-col items-center justify-center text-center shadow-sm">
+                <div className="w-12 h-12 rounded-full bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center mb-4 border border-emerald-500/20">
                     <CheckCircle2
                         className="text-emerald-600 dark:text-emerald-400"
                         size={24}
                     />
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                    You're caught up!
+                    All Milestones Completed
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
-                    You've completed all available missions. Keep trading and
-                    learning to unlock more opportunities.
+                    All current execution milestones are logged and verified. Maintain your trading routine and log trades to generate new review actions.
                 </p>
                 <div className="flex gap-3">
                     <Link href="/dashboard/journal">
@@ -99,33 +98,22 @@ export function NextBestActionCard({
     return (
         <div
             className={cn(
-                "rounded-2xl border transition-all duration-300 relative overflow-hidden group shadow-[0_15px_30px_rgba(16,185,129,0.03)]",
-                "bg-gradient-to-br from-white via-emerald-50/20 to-teal-50/10 border-emerald-200/50",
-                "dark:from-[#1E2028] dark:to-[#151925] dark:border-white/[0.06]"
+                "rounded-2xl border transition-all duration-300 relative overflow-hidden group shadow-sm hover:shadow-md",
+                "bg-white dark:bg-[#1E2028] border-dashboard dark:border-white/[0.08]"
             )}
         >
-            {/* Left vertical glowing accent border */}
-            <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-gradient-to-b from-primary via-teal-400 to-emerald-500 rounded-l-2xl animate-pulse" />
-
-            {/* Large background decorative icon */}
-            <div className="absolute -bottom-10 -right-8 text-primary/[0.03] dark:text-primary/[0.01] pointer-events-none group-hover:scale-105 transition-transform duration-500">
-                <Target size={220} className="fill-current" />
-            </div>
+            {/* Left vertical accent border */}
+            <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-2xl" />
 
             <div className="relative p-6 md:p-8 pl-7 md:pl-9 flex flex-col lg:flex-row lg:items-center justify-between gap-6 z-10">
                 <div className="flex-1 space-y-4">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 dark:bg-primary/5 text-primary border border-primary/20 dark:border-primary/10 shadow-[0_0_15px_rgba(16,185,129,0.05)]">
-                        <Target
-                            size={12}
-                            className="fill-current animate-pulse"
-                        />
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">
-                            Your Next Best Action
-                        </span>
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 dark:bg-primary/15 text-primary border border-primary/20 text-[11px] font-semibold uppercase tracking-wider">
+                        <Target size={13} className="shrink-0" />
+                        <span>Next Best Action</span>
                     </div>
 
                     <div>
-                        <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">
+                        <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">
                             {mission.def.title}
                         </h3>
                         <p className="text-gray-600 dark:text-gray-400 text-sm max-w-xl leading-relaxed">
@@ -136,15 +124,15 @@ export function NextBestActionCard({
 
                     {!isClaimable && (
                         <div className="flex items-center gap-3 mt-4">
-                            <div className="flex-1 h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden max-w-xs border border-dashboard/20">
+                            <div className="flex-1 h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden max-w-xs border border-dashboard">
                                 <div
-                                    className="h-full bg-gradient-to-r from-primary to-teal-500 transition-all duration-500 rounded-full"
+                                    className="h-full bg-primary transition-all duration-500 rounded-full"
                                     style={{
                                         width: `${Math.min(100, Math.round((mission.progress / mission.target) * 100))}%`,
                                     }}
                                 />
                             </div>
-                            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
+                            <span className="text-xs font-semibold text-gray-600 dark:text-gray-400 tabular-nums">
                                 {mission.progress} / {mission.target}
                             </span>
                         </div>
@@ -153,18 +141,15 @@ export function NextBestActionCard({
 
                 <div className="w-full lg:w-auto shrink-0 flex flex-col sm:flex-row items-stretch sm:items-start gap-4 pt-1">
                     {/* Reward Box */}
-                    <div className="flex items-center gap-3 px-4 rounded-2xl bg-amber-500/10 dark:bg-amber-400/5 border border-amber-500/25 dark:border-amber-400/10 shrink-0 h-[46px]">
-                        <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-md shadow-orange-500/20">
-                            <Zap
-                                size={14}
-                                className="fill-current animate-pulse"
-                            />
+                    <div className="flex items-center gap-3 px-4 rounded-xl bg-amber-500/10 dark:bg-amber-400/5 border border-amber-500/20 dark:border-amber-400/10 shrink-0 h-[44px]">
+                        <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-amber-500 text-white shadow-sm">
+                            <Zap size={14} className="shrink-0" />
                         </div>
                         <div>
-                            <p className="text-sm font-black text-amber-600 dark:text-amber-400 leading-tight">
+                            <p className="text-sm font-bold text-amber-600 dark:text-amber-400 leading-tight tabular-nums">
                                 +{mission.def.xpReward} Edge
                             </p>
-                            <p className="text-[9px] text-gray-500 dark:text-gray-400 font-extrabold uppercase tracking-wider leading-none mt-0.5">
+                            <p className="text-[10px] text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wider leading-none mt-0.5">
                                 Reward
                             </p>
                         </div>
@@ -176,7 +161,7 @@ export function NextBestActionCard({
                             <Button
                                 onClick={handleClaim}
                                 disabled={isClaiming}
-                                className="w-full bg-gradient-to-r from-gold to-amber-500 hover:from-amber-400 hover:to-gold text-white border-0 shadow-lg shadow-gold/20 font-black px-6 rounded-2xl transition-all hover:scale-105 h-[46px]"
+                                className="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 rounded-xl transition-all shadow-sm h-[44px]"
                             >
                                 {isClaiming ? (
                                     <>
@@ -186,7 +171,7 @@ export function NextBestActionCard({
                                 ) : (
                                     <>
                                         <Trophy className="mr-2 h-4 w-4" />
-                                        Claim
+                                        Claim Reward
                                     </>
                                 )}
                             </Button>
@@ -213,7 +198,7 @@ export function NextBestActionCard({
                             >
                                 <Button
                                     variant="primary"
-                                    className="w-full px-6 rounded-2xl font-bold group-hover:shadow-lg group-hover:shadow-primary/20 transition-all h-[46px]"
+                                    className="w-full px-6 rounded-xl font-semibold transition-all h-[44px]"
                                 >
                                     {mission.def.ctaLabel || "Continue"}
                                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
@@ -222,8 +207,8 @@ export function NextBestActionCard({
                         )}
 
                         {isClaimable && (
-                            <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">
-                                Ready to claim!
+                            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">
+                                Ready to claim
                             </span>
                         )}
                     </div>

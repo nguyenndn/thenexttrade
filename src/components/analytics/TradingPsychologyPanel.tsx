@@ -40,7 +40,7 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* 1. Disposition Effect Card */}
-                <div className="p-5 rounded-2xl bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-slate-800 shadow-sm space-y-4">
+                <div className="p-5 rounded-2xl bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                             <Clock className="w-4 h-4 text-cyan-500" />
@@ -72,13 +72,13 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                         </div>
                     </div>
 
-                    <p className="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 p-2.5 rounded-xl border border-gray-200 dark:border-slate-800">
+                    <p className="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-white/[0.04] p-2.5 rounded-xl border border-dashboard dark:border-white/[0.06]">
                         {disposition.insight}
                     </p>
                 </div>
 
                 {/* 2. Tilt & Revenge Trading Vulnerability Card */}
-                <div className="p-5 rounded-2xl bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-slate-800 shadow-sm space-y-4">
+                <div className="p-5 rounded-2xl bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                             <Flame className="w-4 h-4 text-amber-500" />
@@ -114,13 +114,13 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                         </div>
                     </div>
 
-                    <p className="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 p-2.5 rounded-xl border border-gray-200 dark:border-slate-800">
+                    <p className="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-white/[0.04] p-2.5 rounded-xl border border-dashboard dark:border-white/[0.06]">
                         {tilt.insight}
                     </p>
                 </div>
 
                 {/* 3. Optimal Risk-Reward Simulator Card */}
-                <div className="p-5 rounded-2xl bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-slate-800 shadow-sm space-y-4">
+                <div className="p-5 rounded-2xl bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                             <Target className="w-4 h-4 text-emerald-500" />
@@ -138,7 +138,7 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                                 className={`flex justify-between items-center p-2 rounded-xl border ${
                                     opt.isOptimal
                                         ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-500/30 font-bold"
-                                        : "bg-slate-50 dark:bg-slate-900/50 border-gray-200 dark:border-slate-800 text-slate-600 dark:text-slate-400"
+                                        : "bg-slate-50 dark:bg-white/[0.04] border-dashboard dark:border-white/[0.06] text-slate-600 dark:text-slate-400"
                                 }`}
                             >
                                 <span>Target 1:{opt.targetRR} R:R</span>

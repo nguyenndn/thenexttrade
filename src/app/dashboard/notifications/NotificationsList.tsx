@@ -95,13 +95,13 @@ const typeConfig: Record<
     },
     WEEKLY_REPORT: {
         icon: BarChart3,
-        color: "text-indigo-600 dark:text-indigo-400",
-        bg: "bg-indigo-100 dark:bg-indigo-900/30",
+        color: "text-amber-500 dark:text-amber-400",
+        bg: "bg-amber-500/10 dark:bg-amber-500/10",
     },
     MONTHLY_REPORT: {
         icon: BarChart3,
-        color: "text-violet-600 dark:text-violet-400",
-        bg: "bg-violet-100 dark:bg-violet-900/30",
+        color: "text-emerald-500 dark:text-emerald-400",
+        bg: "bg-emerald-500/10 dark:bg-emerald-500/10",
     },
     NO_TRADES_NUDGE: {
         icon: TrendingUp,
@@ -115,6 +115,11 @@ const defaultConfig = {
     color: "text-gray-600 dark:text-gray-400",
     bg: "bg-gray-100 dark:bg-white/10",
 };
+
+function cleanNotificationTitle(text: string): string {
+    if (!text) return "";
+    return text.replace(/\p{Extended_Pictographic}\s*/gu, "").trim();
+}
 
 function getRelativeTime(dateStr: string): string {
     const now = new Date();
@@ -252,7 +257,7 @@ export function NotificationsList({ initialNotifications }: Props) {
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-start justify-between gap-3">
                                                 <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">
-                                                    {n.title}
+                                                    {cleanNotificationTitle(n.title)}
                                                 </h3>
                                                 <span className="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap shrink-0">
                                                     {getRelativeTime(

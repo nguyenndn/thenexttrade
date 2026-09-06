@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { CalendarCheck, Target, Trophy, Zap, BookOpen } from "lucide-react";
+import { CalendarCheck, Target, Trophy, Zap, BookOpen, CheckCircle2 } from "lucide-react";
 import { MissionCard } from "./MissionCard";
 import { NextBestActionCard } from "./NextBestActionCard";
 import { StreakCalendarGrid } from "./StreakCalendarGrid";
 import { getMyMissions } from "@/actions/edge-missions";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { cn } from "@/lib/utils";
 import type { MissionProgressItem } from "@/lib/services/edge-missions.service";
 
 interface MissionsClientProps {
@@ -86,10 +87,10 @@ export function MissionsClient({
                     label="Total Edge"
                     value={xp.toLocaleString()}
                     icon={Zap}
-                    color="text-gold"
+                    color="text-amber-500"
                 />
                 <StatCard
-                    label="Missions Done"
+                    label="Missions Completed"
                     value={`${completedCount}/${missions.length}`}
                     icon={Trophy}
                     color="text-emerald-500"
@@ -103,7 +104,7 @@ export function MissionsClient({
                 <StatCard
                     label="Ready to Claim"
                     value={String(claimableCount)}
-                    icon={Target}
+                    icon={CheckCircle2}
                     color="text-amber-500"
                 />
             </div>
@@ -120,7 +121,7 @@ export function MissionsClient({
             {/* Explore Missions */}
             <div className="space-y-6">
                 <div>
-                    <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight mb-4">
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight mb-4">
                         Explore Missions
                     </h2>
                     <Tabs
@@ -189,15 +190,18 @@ function StatCard({
     color: string;
 }) {
     return (
-        <div className="rounded-xl border border-dashboard bg-white dark:bg-[#151925] p-4">
+        <div className="rounded-xl border border-dashboard dark:border-white/[0.08] bg-white dark:bg-[#1E2028] p-4 shadow-sm">
             <div className="flex items-center gap-3">
                 <div
-                    className={`w-9 h-9 rounded-xl flex items-center justify-center bg-gray-50 dark:bg-white/5 ${color}`}
+                    className={cn(
+                        "w-9 h-9 rounded-xl flex items-center justify-center bg-gray-50 dark:bg-white/5 shrink-0",
+                        color
+                    )}
                 >
                     <Icon size={16} />
                 </div>
                 <div>
-                    <p className="text-xl font-black text-gray-800 dark:text-white tabular-nums">
+                    <p className="text-xl font-bold text-gray-900 dark:text-white tabular-nums">
                         {value}
                     </p>
                     <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">

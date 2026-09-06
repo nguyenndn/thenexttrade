@@ -186,15 +186,15 @@ export default async function UserAcademyDashboard() {
         <div className="space-y-4">
             <PageHeader
                 title="Academy"
-                description="Your professional trading journey tracker."
+                description="Curated execution playbooks, risk math, and structured trader curriculum."
             >
                 <div className="flex items-center gap-3 text-sm font-bold w-full sm:w-auto">
-                    <div className="flex items-center justify-center gap-1.5 text-amber-600 dark:text-amber-400 bg-gradient-to-br from-amber-500/10 to-yellow-500/5 border border-amber-500/30 dark:border-amber-400/20 shadow-[0_0_15px_rgba(245,158,11,0.1)] px-4 py-1.5 rounded-full flex-1 sm:flex-none transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.2)]">
-                        <GraduationCap size={15} className="text-amber-500" />
+                    <div className="flex items-center justify-center gap-1.5 text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-white/[0.05] border border-dashboard dark:border-white/[0.08] px-3.5 py-1.5 rounded-xl flex-1 sm:flex-none text-xs font-semibold">
+                        <GraduationCap size={15} className="text-primary" />
                         <span>{Math.round(overallProgress)}% Complete</span>
                     </div>
-                    <div className="flex items-center justify-center gap-1.5 text-amber-600 dark:text-amber-400 bg-gradient-to-br from-amber-500/10 to-yellow-500/5 border border-amber-500/30 dark:border-amber-400/20 shadow-[0_0_15px_rgba(245,158,11,0.1)] px-4 py-1.5 rounded-full flex-1 sm:flex-none transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.2)]">
-                        <BookOpen size={15} className="text-amber-500" />
+                    <div className="flex items-center justify-center gap-1.5 text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-white/[0.05] border border-dashboard dark:border-white/[0.08] px-3.5 py-1.5 rounded-xl flex-1 sm:flex-none text-xs font-semibold">
+                        <BookOpen size={15} className="text-primary" />
                         <span>
                             {completedLessons}/{totalLessons} Lessons
                         </span>
@@ -212,14 +212,14 @@ export default async function UserAcademyDashboard() {
                             className={cn(
                                 "relative overflow-hidden rounded-2xl border p-6 shadow-sm transition-all duration-300",
                                 idleDays >= 7
-                                    ? "bg-gradient-to-br from-white via-amber-50/40 to-yellow-50/20 dark:from-[#1E2028] dark:to-[#1C1E26] border-amber-500/20 dark:border-amber-500/10"
-                                    : "bg-gradient-to-br from-white via-emerald-50/40 to-teal-50/20 dark:from-[#1E2028] dark:to-[#151925] border-emerald-200/60 dark:border-white/[0.06]"
+                                    ? "bg-white dark:bg-[#1E2028] border-amber-500/30 dark:border-amber-500/20"
+                                    : "bg-white dark:bg-[#1E2028] border-dashboard dark:border-white/[0.08]"
                             )}
                         >
                             <div className="relative z-10 flex flex-col items-start gap-4">
                                 <div className="flex flex-wrap items-center gap-2">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                                        <div className="w-2 h-2 rounded-full bg-primary" />
                                         <span className="text-primary font-bold text-xs uppercase tracking-wider">
                                             {hasStarted
                                                 ? "Ready to Resume"
@@ -284,9 +284,6 @@ export default async function UserAcademyDashboard() {
                                     )}
                                 </div>
                             </div>
-                            {/* Decor */}
-                            <div className="absolute -top-8 -right-8 w-48 h-48 bg-primary/5 dark:bg-primary/10 rounded-full blur-[60px] pointer-events-none" />
-                            <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-teal-200/30 dark:bg-teal-500/10 rounded-full blur-[40px] pointer-events-none" />
                         </div>
                     ) : (
                         <div className="p-6 rounded-xl bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 text-yellow-600 dark:text-yellow-400 flex items-center gap-4">
@@ -304,7 +301,7 @@ export default async function UserAcademyDashboard() {
                     {/* Academy Tree (Synced with /academy) */}
                     <div
                         id="onborda-academy-tree"
-                        className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm overflow-hidden"
+                        className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden"
                     >
                         <AcademyTree
                             levels={levels as any}
@@ -319,38 +316,35 @@ export default async function UserAcademyDashboard() {
                 {/* Sidebar Stats */}
                 <div id="onborda-academy-sidebar" className="space-y-4">
                     {/* Daily Streak */}
-                    <div className="bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 dark:from-[#2A1B0E] dark:via-[#1E2028] dark:to-[#151925] p-5 rounded-2xl border border-orange-200/20 dark:border-orange-500/10 text-white shadow-xl relative overflow-hidden group">
+                    <div className="bg-white dark:bg-[#1E2028] p-5 rounded-2xl border border-dashboard dark:border-white/[0.08] shadow-sm relative overflow-hidden">
                         <div className="relative z-10">
-                            <div className="flex items-center gap-2 mb-3">
-                                <div className="p-2 bg-white/10 dark:bg-amber-500/10 rounded-xl text-white dark:text-amber-400 group-hover:scale-110 transition-transform duration-300">
+                            <div className="flex items-center gap-2.5 mb-3">
+                                <div className="p-2 bg-amber-500/10 rounded-xl text-amber-500">
                                     <Zap
-                                        size={20}
-                                        className="fill-current animate-pulse"
+                                        size={18}
+                                        className="fill-current"
                                     />
                                 </div>
-                                <h3 className="font-extrabold text-sm tracking-wider uppercase text-white/90 dark:text-gray-400">
-                                    Daily Streak
+                                <h3 className="font-bold text-xs tracking-wider uppercase text-gray-500 dark:text-gray-400">
+                                    Execution Streak
                                 </h3>
                             </div>
-                            <p className="text-white/85 dark:text-gray-400 text-xs mb-4">
-                                Consistency is key to trading success.
+                            <p className="text-gray-500 dark:text-gray-400 text-xs mb-4">
+                                Daily discipline and playbook consistency.
                             </p>
                             <div className="flex items-baseline gap-2">
-                                <span className="text-4xl font-black text-white dark:bg-gradient-to-r dark:from-amber-400 dark:to-orange-500 dark:bg-clip-text dark:text-transparent">
+                                <span className="text-4xl font-black text-gray-900 dark:text-white tabular-nums">
                                     {currentStreak}
                                 </span>
-                                <span className="text-white/80 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">
+                                <span className="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">
                                     Days Active
                                 </span>
                             </div>
                         </div>
-                        <div className="absolute -bottom-6 -right-6 text-white/10 dark:text-white/[0.01] pointer-events-none group-hover:scale-105 transition-transform duration-500">
-                            <Zap size={140} className="fill-current" />
-                        </div>
                     </div>
 
                     {/* Available Quizzes */}
-                    <div className="bg-white dark:bg-[#151925] p-5 rounded-2xl border border-dashboard shadow-sm">
+                    <div className="bg-white dark:bg-[#1E2028] p-5 rounded-2xl border border-dashboard dark:border-white/[0.08] shadow-sm">
                         <h3 className="font-extrabold text-sm text-gray-700 dark:text-white mb-4 flex items-center gap-2 tracking-wider uppercase">
                             <Trophy size={18} className="text-yellow-500" />{" "}
                             Quizzes
@@ -474,7 +468,7 @@ export default async function UserAcademyDashboard() {
                         href="/dashboard/academy/certificates"
                         className="block"
                     >
-                        <div className="bg-white dark:bg-[#151925] p-5 rounded-2xl border border-dashboard shadow-sm hover:border-primary/30 hover:shadow-md transition-all group">
+                        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-2xl border border-dashboard dark:border-white/[0.08] shadow-sm hover:border-primary/30 hover:shadow-md transition-all group">
                             <h3 className="font-extrabold text-sm text-gray-700 dark:text-white mb-3 flex items-center gap-2 tracking-wider uppercase">
                                 <Award size={18} className="text-primary" />{" "}
                                 Certificates

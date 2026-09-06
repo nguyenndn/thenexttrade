@@ -12,7 +12,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
     if (!data) return null;
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-dashboard shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex justify-between items-center mb-6">
                 <h3 className="font-bold text-gray-700 dark:text-white text-lg">
                     Report Preview

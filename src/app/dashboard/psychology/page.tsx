@@ -5,9 +5,9 @@ import { getAuthUser } from "@/lib/auth-cache";
 import { getUserTradingDataState } from "@/lib/trading-data-state";
 
 export const metadata: Metadata = {
-    title: "Psychology Tracking | TheNextTrade",
+    title: "Trading Psychology & Tilt Telemetry | TheNextTrade",
     description:
-        "Track your emotions and confidence to identify trading patterns.",
+        "Analyze emotional execution triggers, confidence correlation, and plan adherence to control drawdown.",
 };
 
 export default async function PsychologyPage() {

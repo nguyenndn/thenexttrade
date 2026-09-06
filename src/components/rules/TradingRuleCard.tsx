@@ -105,7 +105,7 @@ export function TradingRuleCard({
         <div
             className={`relative flex flex-col justify-between p-5 rounded-2xl border transition-all duration-300 ${
                 localActive
-                    ? "bg-white dark:bg-[#151925] border-dashboard/80 dark:border-white/[0.08] hover:shadow-md"
+                    ? "bg-white dark:bg-[#1E2028] border-dashboard/80 dark:border-white/[0.08] hover:shadow-md"
                     : "bg-gray-50/50 dark:bg-white/[0.02] border-dashboard/80 dark:border-white/[0.04] opacity-60"
             }`}
         >

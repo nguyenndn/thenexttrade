@@ -19,7 +19,6 @@ export default function JournalStats({ stats }: StatsProps) {
             icon: Layers,
             color: "text-blue-500",
             bg: "bg-blue-50 dark:bg-blue-500/10",
-            border: "border-t-blue-500",
             desc: "Completed setups",
         },
         {
@@ -28,7 +27,6 @@ export default function JournalStats({ stats }: StatsProps) {
             icon: Trophy,
             color: "text-amber-500",
             bg: "bg-amber-50 dark:bg-amber-500/10",
-            border: "border-t-amber-500",
             desc: "Winning percentage",
         },
         {
@@ -44,8 +42,6 @@ export default function JournalStats({ stats }: StatsProps) {
                 stats.totalPnL >= 0
                     ? "bg-primary/10"
                     : "bg-red-50 dark:bg-red-500/10",
-            border:
-                stats.totalPnL >= 0 ? "border-t-primary" : "border-t-red-500",
             desc: "Realized P&L",
         },
         {
@@ -54,7 +50,6 @@ export default function JournalStats({ stats }: StatsProps) {
             icon: Target,
             color: "text-purple-500",
             bg: "bg-purple-50 dark:bg-purple-500/10",
-            border: "border-t-purple-500",
             desc: "Wins vs Losses",
         },
         {
@@ -66,7 +61,6 @@ export default function JournalStats({ stats }: StatsProps) {
             icon: Scale,
             color: "text-sky-500",
             bg: "bg-sky-50 dark:bg-sky-500/10",
-            border: "border-t-sky-500",
             desc: "Traded volume",
         },
     ];
@@ -78,7 +72,7 @@ export default function JournalStats({ stats }: StatsProps) {
                 return (
                     <div
                         key={index}
-                        className="rounded-xl border border-dashboard bg-white dark:bg-[#151925] p-3.5 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-default"
+                        className="rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] p-3.5 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-default"
                     >
                         <div className="flex items-center gap-3">
                             <div

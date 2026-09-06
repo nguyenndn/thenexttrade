@@ -30,7 +30,7 @@ export const EDGE_MISSIONS: MissionDef[] = [
         title: "Log Your First Trade",
         description: "Add one trade to start building your trading journal.",
         whyItMatters:
-            "Your first trade unlocks performance stats, weekly reviews, and pattern detection.",
+            "Your first trade activates performance analytics, weekly reviews, and execution pattern detection.",
         icon: "file-text",
         category: "ONBOARDING",
         target: 1,

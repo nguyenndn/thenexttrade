@@ -143,7 +143,7 @@ export function PsychologyDashboard({
             <>
                 <PageHeader
                     title="Psychology Analysis"
-                    description="Understand how emotions affect your trading"
+                    description="Identify emotional leak triggers, rule adherence metrics, and tilt telemetry from your execution history."
                     mobileFullWidthButton
                 >
                     {hasTradeData && (
@@ -177,8 +177,7 @@ export function PsychologyDashboard({
                         No Psychology Data Yet
                     </h3>
                     <p className="text-gray-600 dark:text-gray-300 px-6 max-w-sm mx-auto mb-2">
-                        Start tracking emotions and confidence when logging
-                        trades to unlock psychology insights here.
+                        Log your emotional state, confidence score, and plan adherence with each trade to generate behavioral telemetry and tilt radar.
                     </p>
 
                     <EmptyStateCTAs />
@@ -253,7 +252,7 @@ export function PsychologyDashboard({
             {/* Header */}
             <PageHeader
                 title="Psychology Analysis"
-                description="Understand how emotions affect your trading"
+                description="Identify emotional leak triggers, rule adherence metrics, and tilt telemetry from your execution history."
                 mobileFullWidthButton
             >
                 <DateRangePicker value={dateRange} onChange={setDateRange} />
@@ -323,7 +322,7 @@ export function PsychologyDashboard({
                     return (
                         <div
                             key={stat.label}
-                            className="rounded-xl border border-dashboard bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-default"
+                            className="rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-default"
                         >
                             <div className="flex items-center gap-3">
                                 <div

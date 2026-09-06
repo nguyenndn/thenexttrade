@@ -260,7 +260,7 @@ export function StrategyManager({
             {/* Page Header — same pattern as /dashboard/accounts */}
             <PageHeader
                 title="Strategies"
-                description="Track performance by trading strategy."
+                description="Track edge expectancy, benchmark playbook setups, and audit strategy performance."
                 mobileFullWidthButton
             >
                 <div className="flex items-center gap-2">
@@ -309,7 +309,7 @@ export function StrategyManager({
 
             {/* Toolbar */}
             {allStrategies.length > 0 && (
-                <div className="bg-white dark:bg-[#0B0E14] border border-dashboard rounded-xl p-4 shadow-sm mt-6">
+                <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl p-4 shadow-sm mt-6">
                     <div className="flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
                         <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center flex-1">
                             <div className="w-full sm:max-w-xs">
@@ -365,7 +365,7 @@ export function StrategyManager({
                                 <Button
                                     variant="outline"
                                     size="smd"
-                                    className="flex items-center gap-2 border border-dashboard bg-white dark:bg-[#151925] text-gray-700 dark:text-gray-300 self-end lg:self-auto"
+                                    className="flex items-center gap-2 border border-dashboard bg-white dark:bg-[#1E2028] text-gray-700 dark:text-gray-300 self-end lg:self-auto"
                                 >
                                     <ArrowUpDown
                                         size={16}

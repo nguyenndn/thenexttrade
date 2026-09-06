@@ -288,7 +288,7 @@ export function AccountListClient({
                 title="Account Hub"
                 description="Connect and manage MT5 accounts, sync trades, and unlock Pro benefits."
             >
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mt-4 sm:mt-0">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto mt-4 sm:mt-0">
                     <Button
                         variant="outline"
                         size="smd"
@@ -298,12 +298,12 @@ export function AccountListClient({
                             });
                         }}
                         disabled={isPending}
-                        className="flex items-center justify-center gap-2 border-gray-300 dark:border-white/15 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-white/15 flex-1 sm:flex-none"
+                        className="flex items-center justify-center gap-2 border-dashboard bg-white dark:bg-white/[0.04] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08] flex-1 sm:flex-none shadow-sm"
                     >
                         <RefreshCw
-                            size={15}
+                            size={14}
                             className={
-                                isPending ? "animate-spin text-primary" : ""
+                                isPending ? "animate-spin text-primary" : "text-gray-400 dark:text-gray-500"
                             }
                         />
                         Refresh
@@ -313,9 +313,9 @@ export function AccountListClient({
                         variant="outline"
                         size="smd"
                         onClick={() => setActiveModal({ type: "SYNC_SETUP" })}
-                        className="flex items-center justify-center gap-2 border-cyan-400 dark:border-cyan-500/40 bg-cyan-100 dark:bg-cyan-500/15 text-cyan-800 dark:text-cyan-300 hover:bg-cyan-200 dark:hover:bg-cyan-500/25 flex-1 sm:flex-none"
+                        className="flex items-center justify-center gap-2 border-dashboard bg-white dark:bg-white/[0.04] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08] flex-1 sm:flex-none shadow-sm"
                     >
-                        <Cable size={15} />
+                        <Cable size={14} className="text-cyan-500" />
                         Set up Trade Sync
                     </Button>
                     {isSyncHealthCenterEnabled() && (
@@ -325,9 +325,9 @@ export function AccountListClient({
                             onClick={() =>
                                 setActiveModal({ type: "SYNC_HEALTH" })
                             }
-                            className="flex items-center justify-center gap-2 border-indigo-400 dark:border-indigo-500/40 bg-indigo-100 dark:bg-indigo-500/15 text-indigo-800 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-500/25 flex-1 sm:flex-none"
+                            className="flex items-center justify-center gap-2 border-dashboard bg-white dark:bg-white/[0.04] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08] flex-1 sm:flex-none shadow-sm"
                         >
-                            <Activity size={15} />
+                            <Activity size={14} className="text-amber-500" />
                             Sync Health Center
                         </Button>
                     )}
@@ -335,9 +335,9 @@ export function AccountListClient({
                         variant="outline"
                         size="smd"
                         onClick={() => setActiveModal({ type: "FREE_VS_PRO" })}
-                        className="flex items-center justify-center gap-2 border-emerald-400 dark:border-emerald-500/40 bg-emerald-100 dark:bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-500/25 flex-1 sm:flex-none"
+                        className="flex items-center justify-center gap-2 border-dashboard bg-white dark:bg-white/[0.04] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08] flex-1 sm:flex-none shadow-sm"
                     >
-                        <Crown size={15} />
+                        <Crown size={14} className="text-amber-500" />
                         Free vs Pro
                     </Button>
                     <Button
@@ -345,7 +345,7 @@ export function AccountListClient({
                         variant="primary"
                         size="smd"
                         onClick={() => setActiveModal({ type: "ADD" })}
-                        className="flex items-center justify-center gap-2 shadow-lg shadow-primary/25 flex-1 sm:flex-none"
+                        className="flex items-center justify-center gap-2 shadow-lg shadow-primary/25 flex-1 sm:flex-none font-bold"
                     >
                         <Plus size={16} />
                         Add Account
@@ -364,43 +364,19 @@ export function AccountListClient({
                     ))}
                 </div>
             ) : initialAccounts.length === 0 ? (
-                <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-8">
-                    <div className="flex flex-col items-center justify-center text-center">
-                        {/* Animated Wallet Icon */}
-                        <div className="relative w-20 h-20 mb-6 mx-auto">
-                            {/* Glow ring */}
-                            <div className="absolute inset-0 rounded-full bg-primary/10 dark:bg-primary/5 animate-ping-slow" />
-                            {/* Icon container with float */}
-                            <div className="relative w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center shadow-sm animate-float">
-                                <Wallet
-                                    size={32}
-                                    className="text-gray-500 dark:text-gray-300"
-                                    strokeWidth={1.5}
-                                />
-                                {/* Coin dropping in */}
-                                <div className="absolute -top-1 right-1 animate-coin-drop">
-                                    <div className="w-4 h-4 rounded-full bg-gradient-to-br from-amber-400 to-amber-500 dark:from-gold dark:to-amber-500 border-2 border-amber-300 dark:border-amber-400/50 shadow-md flex items-center justify-center">
-                                        <span className="text-[6px] font-black text-white">
-                                            $
-                                        </span>
-                                    </div>
-                                </div>
-                                {/* Sparkle dots */}
-                                <div className="absolute -top-2 -left-1 w-1.5 h-1.5 rounded-full bg-primary/40 animate-sparkle-1" />
-                                <div className="absolute -bottom-1 -right-2 w-1 h-1 rounded-full bg-primary/30 animate-sparkle-2" />
-                                <div className="absolute top-1 -right-2 w-1 h-1 rounded-full bg-primary/25 animate-sparkle-3" />
-                            </div>
+                <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-2xl border-2 border-dashed border-dashboard mt-8 shadow-sm">
+                    <div className="flex flex-col items-center justify-center text-center max-w-md mx-auto px-4">
+                        <div className="w-16 h-16 mb-5 rounded-2xl bg-primary/10 dark:bg-primary/15 border border-primary/20 flex items-center justify-center text-primary shadow-sm">
+                            <Wallet size={30} strokeWidth={1.75} />
                         </div>
 
-                        <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">
-                            No Accounts Yet
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                            No Trading Accounts Linked
                         </h3>
-                        <p className="text-gray-600 dark:text-gray-300 px-6 max-w-sm mx-auto mb-6">
-                            Connect Free MT5 accounts to track and sync trades,
-                            or open an eligible Partner Pro account to unlock EA
-                            access, VIP tools, and premium trading intelligence.
+                        <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-6">
+                            Connect your MT5 account to track execution telemetry and sync trade history, or apply for Partner Pro to unlock EA downloads and advanced risk analytics.
                         </p>
-                        <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+                        <div className="flex flex-col sm:flex-row gap-3 justify-center w-full sm:w-auto">
                             <Button
                                 variant="outline"
                                 onClick={() => {
@@ -413,9 +389,9 @@ export function AccountListClient({
                                         initialMode: "free",
                                     });
                                 }}
-                                className="min-w-[140px] border-amber-300 dark:border-amber-500/30 text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/10 hover:border-amber-400 dark:hover:border-amber-500/50 font-extrabold"
+                                className="min-w-[140px] border-dashboard bg-white dark:bg-white/[0.04] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08] font-bold"
                             >
-                                Free Account
+                                Free MT5 Sync
                             </Button>
                             <Button
                                 variant="primary"
@@ -429,115 +405,12 @@ export function AccountListClient({
                                         initialMode: "pro",
                                     });
                                 }}
-                                className="shadow-lg min-w-[160px] bg-gradient-to-r from-amber-500 to-amber-600 border-none hover:from-amber-600 hover:to-amber-700"
+                                className="shadow-lg min-w-[160px] bg-gradient-to-r from-amber-500 to-amber-600 border-none hover:from-amber-600 hover:to-amber-700 font-bold"
                             >
                                 Apply for Partner Pro
                             </Button>
                         </div>
                     </div>
-
-                    {/* Keyframe styles */}
-                    <style jsx>{`
-                        @keyframes float {
-                            0%,
-                            100% {
-                                transform: translateY(0px);
-                            }
-                            50% {
-                                transform: translateY(-6px);
-                            }
-                        }
-                        @keyframes coin-drop {
-                            0% {
-                                transform: translateY(-12px) scale(0.6);
-                                opacity: 0;
-                            }
-                            30% {
-                                transform: translateY(0px) scale(1);
-                                opacity: 1;
-                            }
-                            50% {
-                                transform: translateY(-3px) scale(1);
-                                opacity: 1;
-                            }
-                            65% {
-                                transform: translateY(2px) scale(0.95);
-                                opacity: 1;
-                            }
-                            80%,
-                            100% {
-                                transform: translateY(0px) scale(1);
-                                opacity: 1;
-                            }
-                        }
-                        @keyframes sparkle-1 {
-                            0%,
-                            100% {
-                                opacity: 0;
-                                transform: scale(0);
-                            }
-                            50% {
-                                opacity: 1;
-                                transform: scale(1);
-                            }
-                        }
-                        @keyframes sparkle-2 {
-                            0%,
-                            100% {
-                                opacity: 0;
-                                transform: scale(0);
-                            }
-                            60% {
-                                opacity: 1;
-                                transform: scale(1.2);
-                            }
-                        }
-                        @keyframes sparkle-3 {
-                            0%,
-                            100% {
-                                opacity: 0;
-                                transform: scale(0);
-                            }
-                            40% {
-                                opacity: 0.8;
-                                transform: scale(1);
-                            }
-                        }
-                        @keyframes ping-slow {
-                            0% {
-                                transform: scale(1);
-                                opacity: 0.3;
-                            }
-                            75%,
-                            100% {
-                                transform: scale(1.3);
-                                opacity: 0;
-                            }
-                        }
-                        .animate-float {
-                            animation: float 3s ease-in-out infinite;
-                        }
-                        .animate-coin-drop {
-                            animation: coin-drop 2.5s ease-out infinite;
-                            animation-delay: 0.5s;
-                        }
-                        .animate-sparkle-1 {
-                            animation: sparkle-1 2.5s ease-in-out infinite;
-                            animation-delay: 1.2s;
-                        }
-                        .animate-sparkle-2 {
-                            animation: sparkle-2 3s ease-in-out infinite;
-                            animation-delay: 0.8s;
-                        }
-                        .animate-sparkle-3 {
-                            animation: sparkle-3 2s ease-in-out infinite;
-                            animation-delay: 1.5s;
-                        }
-                        .animate-ping-slow {
-                            animation: ping-slow 3s cubic-bezier(0, 0, 0.2, 1)
-                                infinite;
-                        }
-                    `}</style>
                 </div>
             ) : (
                 <div className="flex flex-col lg:flex-row gap-6 w-full items-stretch mt-6">
@@ -577,7 +450,7 @@ export function AccountListClient({
 
                             {/* Card 3: Active Synchronization */}
                             <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-[#382F1D] rounded-2xl p-4 shadow-sm flex items-center gap-4">
-                                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
+                                <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
                                     <Cable className="w-5 h-5" />
                                 </div>
                                 <div className="min-w-0">
@@ -750,7 +623,7 @@ export function AccountListClient({
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between p-2 rounded-lg bg-gray-50 dark:bg-white/5">
-                                    <span>AI Coach & Intelligence</span>
+                                    <span>Discipline Coach & Telemetry</span>
                                     <span className="text-emerald-600 dark:text-emerald-400">
                                         Included
                                     </span>
@@ -899,8 +772,8 @@ export function AccountListClient({
                     !open && setActiveModal({ type: "NONE" })
                 }
             >
-                <DialogContent className="max-w-4xl p-0 overflow-hidden bg-white dark:bg-gray-900 border-dashboard dark:border-gray-800">
-                    <div className="p-6 pb-4 border-b border-dashboard dark:border-gray-800">
+                <DialogContent className="max-w-4xl p-0 overflow-hidden bg-white dark:bg-[#1E2028] border-dashboard dark:border-white/[0.08]">
+                    <div className="p-6 pb-4 border-b border-dashboard dark:border-white/[0.08]">
                         <DialogHeader>
                             <DialogTitle className="flex items-center gap-2 text-xl">
                                 <Crown className="w-6 h-6 text-amber-500" />
@@ -917,7 +790,7 @@ export function AccountListClient({
 
                     <div className="max-h-[70vh] overflow-auto">
                         <table className="w-full min-w-[640px] text-sm text-left">
-                            <thead className="bg-gray-50 dark:bg-gray-800/50 sticky top-0">
+                            <thead className="bg-gray-50 dark:bg-white/[0.04] sticky top-0 border-b border-dashboard dark:border-white/[0.08]">
                                 <tr>
                                     <th className="px-6 py-4 font-semibold text-gray-900 dark:text-gray-100">
                                         Feature
@@ -933,7 +806,7 @@ export function AccountListClient({
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-dashboard dark:divide-gray-800">
+                            <tbody className="divide-y divide-dashboard dark:divide-white/[0.06]">
                                 {[
                                     {
                                         name: "Account tracking",
@@ -971,7 +844,7 @@ export function AccountListClient({
                                         label: "/dashboard/trading-systems",
                                     },
                                     {
-                                        name: "AI Coach / Risk Assessment",
+                                        name: "Discipline Radar / Risk Assessment",
                                         free: "Locked",
                                         pro: "Included",
                                         url: "/dashboard/intelligence",
@@ -1008,7 +881,7 @@ export function AccountListClient({
                                 ].map((row, i) => (
                                     <tr
                                         key={i}
-                                        className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30"
+                                        className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02]"
                                     >
                                         <td className="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">
                                             {row.name}
@@ -1083,7 +956,7 @@ export function AccountListClient({
                         </table>
                     </div>
 
-                    <div className="p-4 bg-gray-50 dark:bg-gray-800/50 text-xs text-gray-500 dark:text-gray-400 border-t border-dashboard dark:border-gray-800">
+                    <div className="p-4 bg-gray-50 dark:bg-white/[0.02] text-xs text-gray-500 dark:text-gray-400 border-t border-dashboard dark:border-white/[0.08]">
                         <p>
                             Partner Pro access depends on supported broker and
                             account eligibility. If an account is not eligible,

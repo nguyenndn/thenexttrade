@@ -39,7 +39,7 @@ const goalMessages: Record<string, { title: string; subtitle: string }> = {
     pro: {
         title: "Let's unlock your Pro toolkit.",
         subtitle:
-            "Connect your account to access AI coaching, Trade Score, advanced analytics, and exclusive Pro features.",
+            "Connect your account to access Discipline Coach, Trade Score, advanced telemetry, and exclusive Pro tools.",
     },
 };
 
@@ -298,8 +298,8 @@ export function WelcomeHero({
                             Your performance charts will appear here
                         </p>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                            After your first trade: AI insights, Trade Score,
-                            Psychology tracker &amp; more
+                            After your first trade: Discipline Coach, Trade Score,
+                            Tilt Radar &amp; more
                         </p>
                     </div>
                 </div>

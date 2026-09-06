@@ -21,8 +21,8 @@ const SESSION_CONFIG: Record<
     },
     Tokyo: {
         icon: Moon,
-        color: "text-indigo-500",
-        bgColor: "bg-indigo-500/10",
+        color: "text-cyan-500",
+        bgColor: "bg-cyan-500/10",
         hours: "07:00–16:00",
     },
     London: {
@@ -51,11 +51,11 @@ export function TradingSessionsCard({ data }: TradingSessionsCardProps) {
     const totalTrades = data.reduce((sum, s) => sum + s.trades, 0);
 
     return (
-        <div className="flex flex-col h-full w-full border-t-4 border-t-indigo-500 overflow-hidden">
+        <div className="flex flex-col h-full w-full border-t-4 border-t-amber-500 overflow-hidden">
             {/* Header */}
             <div className="px-5 pt-5 pb-3">
                 <div className="flex items-center gap-3 mb-1">
-                    <div className="p-2 bg-indigo-500/10 rounded-lg text-indigo-500">
+                    <div className="p-2 bg-amber-500/10 rounded-lg text-amber-500">
                         <Globe size={20} />
                     </div>
                     <div>

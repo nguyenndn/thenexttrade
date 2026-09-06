@@ -12,7 +12,6 @@ import {
     Eye,
     EyeOff,
     CheckCircle,
-    ShieldCheck,
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
@@ -182,10 +181,6 @@ export default function LoginPage() {
                     <Logo />
                 </div>
                 <div className="text-center mb-6 sm:mb-8">
-                    <div className="mx-auto mb-3 sm:mb-4 inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1.5 text-xs font-extrabold uppercase text-amber-700 dark:text-amber-300">
-                        <ShieldCheck size={14} />
-                        Secure access
-                    </div>
                     <p className="text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400">
                         Welcome back
                     </p>

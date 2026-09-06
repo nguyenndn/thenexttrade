@@ -57,7 +57,7 @@ export function SyncHealthCenter({
 
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-4xl p-6 bg-white dark:bg-[#11141d] border-dashboard dark:border-white/[0.08] overflow-hidden rounded-2xl">
+            <DialogContent className="max-w-4xl p-6 bg-white dark:bg-[#1E2028] border-dashboard dark:border-white/[0.08] overflow-hidden rounded-2xl">
                 <DialogHeader className="border-b border-dashboard/80 dark:border-white/[0.08] pb-4 flex flex-row items-center justify-between">
                     <div>
                         <DialogTitle className="flex items-center gap-2 text-xl font-black text-gray-800 dark:text-white">
@@ -76,7 +76,7 @@ export function SyncHealthCenter({
                         variant="outline"
                         onClick={handleRefresh}
                         disabled={loading || isPending}
-                        className="flex items-center gap-1.5 h-8 border-gray-300 dark:border-white/10 text-xs text-gray-700 dark:text-gray-200"
+                        className="flex items-center gap-1.5 h-8 border-dashboard bg-white dark:bg-white/[0.04] text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08]"
                     >
                         <RefreshCw
                             size={12}

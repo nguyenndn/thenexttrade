@@ -82,7 +82,7 @@ export function LeaderboardSidebar({ initialData }: LeaderboardSidebarProps) {
     return (
         <div className="space-y-6">
             {/* Privacy & Settings Card */}
-            <div className="bg-white dark:bg-[#151925] rounded-2xl border border-dashboard shadow-sm p-6 space-y-6">
+            <div className="bg-white dark:bg-[#1E2028] rounded-2xl border border-dashboard dark:border-white/[0.08] shadow-sm p-6 space-y-6">
                 <div>
                     <h3 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">
                         My Accounts & Privacy Settings

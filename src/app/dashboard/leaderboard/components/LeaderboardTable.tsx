@@ -90,7 +90,7 @@ export function LeaderboardTable({
     }
 
     return (
-        <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard dark:border-white/[0.08] shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                     <thead className="bg-gray-50 dark:bg-white/5 text-[11px] uppercase text-gray-500 font-bold tracking-wider">

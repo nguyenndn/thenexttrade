@@ -84,11 +84,11 @@ export function SystemDetailCard({
 
     return (
         <>
-            <div className="group relative bg-white dark:bg-[#0B0E14] rounded-xl overflow-hidden border border-dashboard hover:shadow-md transition-shadow">
+            <div className="group relative bg-white dark:bg-[#1E2028] rounded-xl overflow-hidden border border-dashboard dark:border-white/[0.08] hover:shadow-md transition-shadow shadow-sm">
                 <div className="flex flex-row p-4 gap-4">
-                    {/* Thumbnail � Small Square */}
+                    {/* Thumbnail */}
                     <div
-                        className="relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-[#151925] dark:to-[#0B0E14] border border-dashboard cursor-pointer"
+                        className="relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-[#151925] dark:to-[#1E2028] border border-dashboard dark:border-white/[0.08] cursor-pointer"
                         onClick={() =>
                             product.thumbnail && setIsImagePreviewOpen(true)
                         }
@@ -110,14 +110,14 @@ export function SystemDetailCard({
                         )}
                     </div>
 
-                    {/* Content � Right Side */}
+                    {/* Content */}
                     <div className="flex-1 flex flex-col min-w-0">
                         {/* Title Row + Version */}
                         <div className="flex items-start justify-between gap-2 mb-1.5">
-                            <h3 className="text-base font-extrabold uppercase tracking-tight leading-tight text-gray-700 dark:text-white group-hover:text-primary transition-colors duration-300 line-clamp-1">
+                            <h3 className="text-base font-bold uppercase tracking-tight leading-tight text-gray-900 dark:text-white group-hover:text-primary transition-colors duration-300 line-clamp-1">
                                 {product.name}
                             </h3>
-                            <span className="flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 bg-black/5 dark:bg-white/5 text-gray-600 dark:text-gray-300 text-[10px] font-bold rounded-lg">
+                            <span className="flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 bg-black/5 dark:bg-white/5 text-gray-600 dark:text-gray-300 text-[10px] font-semibold rounded-lg">
                                 {product.version}
                             </span>
                         </div>
@@ -125,11 +125,11 @@ export function SystemDetailCard({
                         {/* Badge */}
                         <div className="flex flex-wrap gap-1.5 mb-2">
                             {(product as any).isFree ? (
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/10 text-primary rounded-lg text-[10px] font-bold border border-primary/20">
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/10 text-primary rounded-lg text-[10px] font-semibold border border-primary/20">
                                     FREE
                                 </span>
                             ) : (
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/10 text-primary rounded-lg text-[10px] font-bold border border-primary/20">
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/10 text-primary rounded-lg text-[10px] font-semibold border border-primary/20">
                                     <Shield size={9} />
                                     MT5 VERIFIED
                                 </span>
@@ -137,15 +137,15 @@ export function SystemDetailCard({
                         </div>
 
                         {/* Description */}
-                        <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-2">
+                        <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-2">
                             {product.description ||
-                                "Professional trading system designed for optimal performance."}
+                                "Professional trading system designed for disciplined execution."}
                         </p>
                     </div>
                 </div>
 
                 {/* Footer Actions */}
-                <div className="flex items-center justify-between gap-3 px-4 py-3 border-t border-dashboard">
+                <div className="flex items-center justify-between gap-3 px-4 py-3 border-t border-dashboard dark:border-white/[0.08]">
                     <Button
                         variant="ghost"
                         className="flex items-center gap-1.5 h-auto text-xs text-primary hover:text-primary/80 font-semibold transition-colors bg-primary/5 hover:bg-primary/10 px-3 py-1.5 rounded-lg"
@@ -172,10 +172,10 @@ export function SystemDetailCard({
                                 }
                             }}
                             className={cn(
-                                "flex items-center justify-center gap-2 h-8 rounded-lg px-4 font-bold text-xs transition-all duration-300",
+                                "flex items-center justify-center gap-2 h-8 rounded-lg px-4 font-semibold text-xs transition-all duration-300 shadow-sm",
                                 isLocked
-                                    ? "bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 border border-dashboard "
-                                    : "bg-amber-500 hover:bg-amber-600 text-white shadow-[0_4px_15px_rgba(245,158,11,0.25)] hover:shadow-[0_6px_20px_rgba(245,158,11,0.4)]"
+                                    ? "bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-dashboard dark:border-white/10"
+                                    : "bg-amber-500 hover:bg-amber-600 text-white"
                             )}
                         >
                             {isLocked ? (
@@ -203,10 +203,10 @@ export function SystemDetailCard({
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: 4 }}
                                     transition={{ type: "tween", duration: 0.2 }}
-                                    className="absolute bottom-[calc(100%+8px)] right-0 w-48 p-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-700 text-xs rounded-xl shadow-xl font-medium z-20 text-center leading-relaxed"
+                                    className="absolute bottom-[calc(100%+8px)] right-0 w-48 p-2.5 bg-gray-900 dark:bg-[#1E2028] text-white text-xs rounded-xl shadow-xl border border-dashboard dark:border-white/10 font-medium z-20 text-center leading-relaxed"
                                 >
                                     Please connect your TheNextTrade account
-                                    to unlock downloads.
+                                    to access downloads.
                                 </motion.div>
                             )}
                         </AnimatePresence>
@@ -232,15 +232,15 @@ export function SystemDetailCard({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="bg-white dark:bg-[#0B0E14] w-full max-w-3xl rounded-xl shadow-2xl overflow-hidden border border-dashboard relative"
+                            className="bg-white dark:bg-[#1E2028] w-full max-w-3xl rounded-xl shadow-2xl overflow-hidden border border-dashboard dark:border-white/[0.08] relative"
                             onClick={(e) => e.stopPropagation()}
                         >
-                        <div className="flex items-center justify-between p-6 border-b border-dashboard">
+                        <div className="flex items-center justify-between p-6 border-b border-dashboard dark:border-white/[0.08]">
                             <div>
-                                <h2 className="text-xl font-bold text-gray-700 dark:text-white">
+                                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                                     Installation Guide
                                 </h2>
-                                <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                                     Follow these steps to install {product.name}
                                 </p>
                             </div>
@@ -250,7 +250,7 @@ export function SystemDetailCard({
                                 onClick={() => setIsGuideModalOpen(false)}
                                 className="w-10 h-10 p-0 rounded-xl"
                             >
-                                <X size={20} className="text-gray-600" />
+                                <X size={20} className="text-gray-600 dark:text-gray-300" />
                             </Button>
                         </div>
                         <div className="p-6 md:p-8 max-h-[75vh] overflow-y-auto">

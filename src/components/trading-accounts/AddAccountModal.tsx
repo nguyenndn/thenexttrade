@@ -424,7 +424,7 @@ export function AddAccountModal({
                 {step === "upgrade-pro" && sourceAccount && (
                     <>
                         {renderHeader(
-                            "Unlock Partner Pro",
+                            "Apply for Partner Pro",
                             `Upgrade ${sourceAccount.name || sourceAccount.accountNumber || "your account"} to Pro`,
                             false
                         )}
@@ -1450,7 +1450,7 @@ export function AddAccountModal({
                             Request Submitted!
                         </h2>
                         <p className="text-gray-600 dark:text-gray-400 max-w-sm mx-auto">
-                            Your VIP request is under review. The account has
+                            Your Partner Pro request is under review. The account has
                             been added to your dashboard. We will upgrade its
                             status once verified.
                         </p>

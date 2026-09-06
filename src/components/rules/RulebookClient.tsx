@@ -184,7 +184,7 @@ export function RulebookClient({
                                 className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
                                     selectedCategory === cat.value
                                         ? "bg-primary/10 border-primary text-primary"
-                                        : "bg-white dark:bg-[#151925] border-dashboard hover:border-gray-400 text-gray-600 dark:text-gray-400"
+                                        : "bg-white dark:bg-[#1E2028] border-dashboard hover:border-gray-400 text-gray-600 dark:text-gray-400"
                                 }`}
                             >
                                 {cat.label}
@@ -193,7 +193,7 @@ export function RulebookClient({
                     </div>
 
                     {filteredRules.length === 0 ? (
-                        <div className="text-center py-16 bg-white dark:bg-[#11141d] rounded-2xl border border-dashboard shadow-sm max-w-xl mx-auto mt-6">
+                        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-2xl border border-dashboard shadow-sm max-w-xl mx-auto mt-6">
                             <div className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-500/15 flex items-center justify-center mx-auto mb-4 text-indigo-500">
                                 <Shield size={24} />
                             </div>
@@ -245,7 +245,7 @@ export function RulebookClient({
                 {/* --- GOALS TAB --- */}
                 <TabsContent value="goals">
                     {initialGoals.length === 0 ? (
-                        <div className="text-center py-16 bg-white dark:bg-[#11141d] rounded-2xl border border-dashboard shadow-sm max-w-xl mx-auto">
+                        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-2xl border border-dashboard shadow-sm max-w-xl mx-auto">
                             <div className="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-500/15 flex items-center justify-center mx-auto mb-4 text-amber-500">
                                 <Award size={24} />
                             </div>
@@ -304,7 +304,7 @@ export function RulebookClient({
                             {/* Compliance Overview Grid */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Stats Table */}
-                                <div className="bg-white dark:bg-[#151925] border border-dashboard/80 dark:border-white/[0.08] p-5 rounded-2xl">
+                                <div className="bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] p-5 rounded-2xl">
                                     <h3 className="text-sm font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                                         <BarChart2
                                             size={16}
@@ -359,7 +359,7 @@ export function RulebookClient({
                                 </div>
 
                                 {/* Focus / Advice panel */}
-                                <div className="bg-white dark:bg-[#151925] border border-dashboard/80 dark:border-white/[0.08] p-5 rounded-2xl flex flex-col justify-between">
+                                <div className="bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] p-5 rounded-2xl flex flex-col justify-between">
                                     <div>
                                         <h3 className="text-sm font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                                             <AlertCircle

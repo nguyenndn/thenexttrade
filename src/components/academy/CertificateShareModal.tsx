@@ -111,7 +111,7 @@ export function CertificateShareModal({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative w-full max-w-sm rounded-2xl bg-white dark:bg-[#151925] border border-dashboard shadow-2xl"
+                        className="relative w-full max-w-sm rounded-2xl bg-white dark:bg-[#1E2028] border border-dashboard shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     >
                 {/* Header */}

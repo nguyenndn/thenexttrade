@@ -3,9 +3,9 @@ import { TabBar } from "@/components/ui/TabBar";
 import { PageHeader } from "@/components/ui/PageHeader";
 
 export const metadata = {
-    title: "Mistake Analysis | TheNextTrade",
+    title: "Mistake Telemetry & Leak Detection | TheNextTrade",
     description:
-        "Track and analyze your trading mistakes to improve performance.",
+        "Isolate recurring execution errors, calculate cost-per-mistake, and eliminate discipline leaks.",
 };
 
 const analyticsTabs = [
@@ -20,7 +20,7 @@ export default function MistakeAnalysisPage() {
         <div className="space-y-4">
             <PageHeader
                 title="Mistake Analysis"
-                description="Identify leaks and correct your behavior."
+                description="Isolate behavioral errors, quantify leak impact, and enforce execution discipline."
             />
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
                 <TabBar tabs={analyticsTabs} />

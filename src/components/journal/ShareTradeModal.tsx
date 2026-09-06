@@ -151,7 +151,7 @@ export function ShareTradeModal({
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="max-w-4xl bg-gray-50 dark:bg-[#0F1117] border-none p-0 overflow-hidden">
+            <DialogContent className="max-w-4xl bg-gray-50 dark:bg-[#1E2028] border-none p-0 overflow-hidden">
                 {/* 
         A11y Requirement: Radix DialogContent requires a DialogTitle. 
         Since we build our own visual header below, we hide the official one for screen readers.
@@ -164,7 +164,7 @@ export function ShareTradeModal({
                 </VisuallyHidden>
 
                 {/* Header */}
-                <div className="px-6 py-4 border-b border-dashboard flex items-center justify-between bg-white dark:bg-[#151925]">
+                <div className="px-6 py-4 border-b border-dashboard flex items-center justify-between bg-white dark:bg-[#1E2028]">
                     <h2 className="text-lg font-bold text-gray-700 dark:text-white">
                         Share Your Trade
                     </h2>

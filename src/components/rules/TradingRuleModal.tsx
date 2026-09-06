@@ -192,7 +192,7 @@ export function TradingRuleModal({
                                         onValueChange={field.onChange}
                                         value={field.value}
                                     >
-                                        <SelectTrigger className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                                        <SelectTrigger className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#1E2028] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
                                             <SelectValue placeholder="Select Category" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -220,7 +220,7 @@ export function TradingRuleModal({
                                         onValueChange={field.onChange}
                                         value={field.value}
                                     >
-                                        <SelectTrigger className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                                        <SelectTrigger className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#1E2028] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
                                             <SelectValue placeholder="Select Severity" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -248,7 +248,7 @@ export function TradingRuleModal({
                                         onValueChange={field.onChange}
                                         value={field.value}
                                     >
-                                        <SelectTrigger className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                                        <SelectTrigger className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#1E2028] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
                                             <SelectValue placeholder="Select Account" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -279,7 +279,7 @@ export function TradingRuleModal({
                                         onValueChange={field.onChange}
                                         value={field.value}
                                     >
-                                        <SelectTrigger className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                                        <SelectTrigger className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#1E2028] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
                                             <SelectValue placeholder="Select Strategy" />
                                         </SelectTrigger>
                                         <SelectContent>

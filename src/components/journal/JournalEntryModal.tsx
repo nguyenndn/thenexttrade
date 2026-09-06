@@ -17,7 +17,7 @@ export function JournalEntryModal({
 }: JournalEntryModalProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-gray-50 dark:bg-[#0B0E14] border-none p-0">
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-gray-50 dark:bg-[#1E2028] border-none p-0">
                 <div className="p-6">
                     <JournalForm
                         initialData={entry}

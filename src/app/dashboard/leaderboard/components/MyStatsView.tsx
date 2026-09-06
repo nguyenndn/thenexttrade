@@ -117,7 +117,7 @@ export function MyStatsView({
 
     return (
         <div>
-            <div className="bg-white dark:bg-[#151925] rounded-2xl border border-dashboard shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] rounded-2xl border border-dashboard shadow-sm overflow-hidden">
                 {/* ═══════════════════════════════════════════════════════════ */}
                 {/* PROFILE HERO */}
                 {/* ═══════════════════════════════════════════════════════════ */}
@@ -138,7 +138,7 @@ export function MyStatsView({
                                 )}
                             </div>
                             {/* Level badge */}
-                            <div className="absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-lg bg-primary text-white text-xs font-black flex items-center justify-center shadow-md border-2 border-white dark:border-[#151925]">
+                            <div className="absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-lg bg-primary text-white text-xs font-black flex items-center justify-center shadow-md border-2 border-white dark:border-[#1E2028]">
                                 {level}
                             </div>
                         </div>

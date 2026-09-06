@@ -60,7 +60,7 @@ const TRADING_GOALS = [
     {
         id: "pro",
         label: "Prepare for Pro tools",
-        description: "Get EA access, AI coaching, and advanced analytics",
+        description: "Get EA access, Discipline Coach, and advanced telemetry",
         icon: Crown,
     },
 ] as const;

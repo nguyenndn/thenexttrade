@@ -27,7 +27,7 @@ export async function notifyAdminsOfVipRequest(params: NotifyVipRequestParams) {
 
         const traderIdentifier =
             params.userName || params.userEmail || "A trader";
-        const title = `👑 New VIP Request: ${params.broker} (${params.accountNumber})`;
+        const title = `New VIP Request: ${params.broker} (${params.accountNumber})`;
         const balanceStr = params.balance ? ` • Balance: $${params.balance}` : "";
         const message = `${traderIdentifier} requested VIP Partner Pro for ${params.broker} account ${params.accountNumber}${balanceStr}.`;
 

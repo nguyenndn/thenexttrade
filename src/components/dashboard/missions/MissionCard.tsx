@@ -17,20 +17,27 @@ interface MissionCardProps {
     onClaimed?: () => void;
 }
 
-const CATEGORY_COLORS = {
-    DAILY: "from-white via-sky-50/20 to-cyan-50/10 border-sky-200/60 dark:from-[#1E2028] dark:via-sky-950/5 dark:to-[#151925] dark:border-sky-500/20",
-    ONBOARDING:
-        "from-white via-emerald-50/20 to-teal-50/10 border-emerald-200/60 dark:from-[#1E2028] dark:via-emerald-950/5 dark:to-[#151925] dark:border-emerald-500/20",
-    WEEKLY: "from-white via-amber-50/20 to-orange-50/10 border-amber-200/60 dark:from-[#1E2028] dark:via-amber-950/5 dark:to-[#151925] dark:border-amber-500/20",
-    MASTERY:
-        "from-white via-purple-50/20 to-indigo-50/10 border-purple-200/60 dark:from-[#1E2028] dark:via-purple-950/5 dark:to-[#151925] dark:border-purple-500/20",
-};
-
-const CATEGORY_LABELS = {
-    DAILY: "Daily",
-    ONBOARDING: "Onboarding",
-    WEEKLY: "Weekly",
-    MASTERY: "Mastery",
+const CATEGORY_BADGES: Record<string, { label: string; className: string }> = {
+    DAILY: {
+        label: "Daily",
+        className:
+            "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20",
+    },
+    ONBOARDING: {
+        label: "Onboarding",
+        className:
+            "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+    },
+    WEEKLY: {
+        label: "Weekly",
+        className:
+            "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+    },
+    MASTERY: {
+        label: "Mastery",
+        className:
+            "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
+    },
 };
 
 export function MissionCard({ mission, onClaimed }: MissionCardProps) {
@@ -68,52 +75,57 @@ export function MissionCard({ mission, onClaimed }: MissionCardProps) {
         });
     };
 
-    const categoryColor =
-        CATEGORY_COLORS[mission.def.category] || CATEGORY_COLORS.ONBOARDING;
+    const categoryBadge =
+        CATEGORY_BADGES[mission.def.category] || CATEGORY_BADGES.ONBOARDING;
 
     return (
         <div
             className={cn(
-                "relative rounded-2xl border bg-gradient-to-br p-5 transition-all duration-300 hover:shadow-md",
-                claimed
-                    ? "bg-white dark:bg-[#151925] border-dashboard/50 opacity-60"
-                    : categoryColor,
-                canClaim && "ring-2 ring-gold/30 shadow-lg shadow-gold/10"
+                "relative rounded-xl border p-5 transition-all duration-300 flex flex-col justify-between",
+                "bg-white dark:bg-[#1E2028] border-dashboard dark:border-white/[0.08] shadow-sm hover:shadow-md",
+                claimed && "opacity-60 bg-gray-50/50 dark:bg-[#151925]/60",
+                canClaim && "border-amber-500/40 ring-1 ring-amber-500/20 shadow-amber-500/5"
             )}
         >
             {/* Header */}
             <div className="flex items-start gap-3 mb-3">
                 <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                    className={cn(
+                        "w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border",
                         claimed
-                            ? "bg-gray-100 dark:bg-white/5"
+                            ? "bg-gray-100 dark:bg-white/5 border-dashboard dark:border-white/10 text-emerald-500"
                             : canClaim
-                              ? "bg-gold/10"
-                              : "bg-white/60 dark:bg-white/5"
-                    }`}
+                              ? "bg-amber-500/10 border-amber-500/20 text-amber-500"
+                              : "bg-gray-50 dark:bg-white/5 border-dashboard dark:border-white/10 text-gray-400"
+                    )}
                 >
                     {claimed ? (
-                        <Check size={18} className="text-emerald-500" />
+                        <Check size={16} className="text-emerald-500" />
                     ) : canClaim ? (
-                        <Gift size={18} className="text-gold" />
+                        <Gift size={16} className="text-amber-500" />
                     ) : (
-                        <Lock size={18} className="text-gray-400" />
+                        <Lock size={16} className="text-gray-400" />
                     )}
                 </div>
                 <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                        <h3 className="text-sm font-bold text-gray-800 dark:text-white truncate">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                        <h3 className="text-sm font-bold text-gray-900 dark:text-white truncate">
                             {mission.def.title}
                         </h3>
-                        <span className="text-[9px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 shrink-0">
-                            {CATEGORY_LABELS[mission.def.category]}
+                        <span
+                            className={cn(
+                                "text-[10px] font-semibold px-2 py-0.5 rounded-md border uppercase tracking-wider shrink-0",
+                                categoryBadge.className
+                            )}
+                        >
+                            {categoryBadge.label}
                         </span>
                     </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">
                         {mission.def.description}
                     </p>
                     {mission.def.whyItMatters && (
-                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-2 italic line-clamp-2">
+                        <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-2 italic line-clamp-2 leading-relaxed">
                             {mission.def.whyItMatters}
                         </p>
                     )}
@@ -121,24 +133,25 @@ export function MissionCard({ mission, onClaimed }: MissionCardProps) {
             </div>
 
             {/* Progress Bar */}
-            <div className="mb-3">
-                <div className="flex items-center justify-between mb-1">
-                    <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 tabular-nums">
-                        {mission.progress}/{mission.target}
+            <div className="mb-4 mt-auto pt-2">
+                <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 tabular-nums">
+                        {mission.progress} / {mission.target}
                     </span>
-                    <span className="text-[10px] font-black text-gold tabular-nums">
+                    <span className="text-[11px] font-bold text-amber-500 tabular-nums">
                         +{mission.def.xpReward} Edge
                     </span>
                 </div>
-                <div className="h-2 rounded-full bg-gray-100 dark:bg-white/5 overflow-hidden">
+                <div className="h-2 rounded-full bg-gray-100 dark:bg-white/5 overflow-hidden border border-dashboard dark:border-white/5">
                     <div
-                        className={`h-full rounded-full transition-all duration-500 ${
+                        className={cn(
+                            "h-full rounded-full transition-all duration-500",
                             claimed
                                 ? "bg-gray-300 dark:bg-gray-600"
                                 : isComplete
-                                  ? "bg-gradient-to-r from-amber-400 to-orange-500"
+                                  ? "bg-amber-500"
                                   : "bg-primary"
-                        }`}
+                        )}
                         style={{ width: `${progressPct}%` }}
                     />
                 </div>
@@ -147,10 +160,9 @@ export function MissionCard({ mission, onClaimed }: MissionCardProps) {
             {/* CTA */}
             {canClaim && (
                 <Button
-                    variant="primary"
                     onClick={handleClaim}
                     disabled={isPending}
-                    className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg shadow-amber-500/20 font-bold text-xs"
+                    className="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold text-xs rounded-xl shadow-sm h-9"
                 >
                     {isPending ? (
                         <Loader2 size={14} className="animate-spin" />
@@ -177,7 +189,7 @@ export function MissionCard({ mission, onClaimed }: MissionCardProps) {
                 >
                     <Button
                         variant="primary"
-                        className="w-full text-xs font-bold"
+                        className="w-full text-xs font-semibold rounded-xl h-9"
                     >
                         {mission.def.ctaLabel || "Continue"}
                     </Button>
@@ -185,8 +197,8 @@ export function MissionCard({ mission, onClaimed }: MissionCardProps) {
             )}
 
             {claimed && (
-                <div className="flex items-center justify-center gap-1.5 text-[11px] font-bold text-emerald-500">
-                    <Check size={12} />
+                <div className="flex items-center justify-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 py-1.5">
+                    <Check size={14} />
                     Claimed
                 </div>
             )}

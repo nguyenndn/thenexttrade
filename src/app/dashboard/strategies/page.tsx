@@ -3,8 +3,9 @@ import { StrategyManager } from "@/components/strategies/StrategyManager";
 import { getStrategies, getStrategyPerformance } from "@/actions/strategies";
 
 export const metadata: Metadata = {
-    title: "Strategies | Trading Dashboard",
-    description: "Manage your trading strategies",
+    title: "Trading Playbooks & Strategy Benchmarking | TheNextTrade",
+    description:
+        "Define systematic trade setups, track edge expectancy, and benchmark strategy performance.",
 };
 
 export default async function StrategiesPage({

@@ -364,7 +364,7 @@ export function ReportsDashboard() {
             {isReviewType && (
                 <div className="animate-in fade-in duration-500 space-y-4">
                     {/* Generate Report Button */}
-                    <div className="flex items-center justify-between bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard p-4 shadow-sm">
+                    <div className="flex items-center justify-between bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-4 shadow-sm">
                         <div>
                             <p className="text-sm font-bold text-gray-700 dark:text-white">
                                 {selectedType === "weekly-review"
@@ -451,7 +451,7 @@ export function ReportsDashboard() {
                         </div>
                     )}
                     {reviewLoading ? (
-                        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard p-12 text-center shadow-sm">
+                        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-12 text-center shadow-sm">
                             <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4" />
                             <p className="text-sm text-gray-500">
                                 Loading reports...

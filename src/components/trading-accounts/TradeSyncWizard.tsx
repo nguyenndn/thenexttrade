@@ -249,9 +249,7 @@ export function TradeSyncWizard({
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
             <DialogContent className="max-w-2xl p-0 overflow-hidden bg-white dark:bg-[#1E2028] border-dashboard shadow-2xl">
                 {/* Wizard Steps Indicator */}
-                <div className="relative overflow-hidden bg-gradient-to-r from-amber-500/10 via-primary/5 to-cyan-500/10 p-6 border-b border-dashboard">
-                    <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 rounded-full blur-2xl pointer-events-none" />
-
+                <div className="relative overflow-hidden bg-gray-50/70 dark:bg-white/[0.02] p-6 border-b border-dashboard">
                     <div className="flex items-center justify-between">
                         <DialogHeader className="space-y-1">
                             <DialogTitle className="flex items-center gap-2 text-xl font-black text-gray-800 dark:text-white">
@@ -617,10 +615,11 @@ export function TradeSyncWizard({
                                         </div>
                                         <Button
                                             type="button"
+                                            variant="primary"
                                             onClick={() => {
                                                 onOpenAddAccount?.(syncMethod);
                                             }}
-                                            className="w-full sm:w-auto h-11 rounded-xl bg-[linear-gradient(135deg,#F8D46B_0%,#D99A26_45%,#8A5A13_100%)] border-none text-xs font-black text-white hover:shadow-[0_4px_12px_rgba(217,154,38,0.2)] shadow-md active:scale-95 transition-all flex items-center justify-center mx-auto"
+                                            className="w-full sm:w-auto h-11 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 border-none text-xs font-black text-white shadow-lg shadow-amber-500/20 active:scale-95 transition-all flex items-center justify-center mx-auto"
                                         >
                                             <Plus
                                                 size={14}
@@ -964,7 +963,7 @@ export function TradeSyncWizard({
                                     onClose();
                                     setStep(1);
                                 }}
-                                className="bg-gray-700 hover:bg-gray-800 text-white border-none flex items-center gap-1.5"
+                                className="font-bold flex items-center gap-1.5"
                             >
                                 <PenLine size={14} />
                                 Go to Journal

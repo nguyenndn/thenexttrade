@@ -8,6 +8,7 @@ import {
     PieChart,
     Check,
     Inbox,
+    ShieldCheck,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
@@ -30,6 +31,11 @@ const TAB_CONFIG: Record<TabType, { label: string; icon: any }> = {
     System: { label: "System", icon: Bell },
 };
 
+function cleanNotificationTitle(text: string): string {
+    if (!text) return "";
+    return text.replace(/\p{Extended_Pictographic}\s*/gu, "").trim();
+}
+
 const getNotificationIcon = (type: string) => {
     switch (type) {
         case "WEEKLY_REPORT":
@@ -37,7 +43,7 @@ const getNotificationIcon = (type: string) => {
         case "REPORT_NUDGE":
             return {
                 Icon: PieChart,
-                bg: "bg-emerald-100 dark:bg-emerald-500/20",
+                bg: "bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/20",
                 color: "text-emerald-600 dark:text-emerald-400",
             };
         case "FEATURE_UPDATE":
@@ -46,22 +52,28 @@ const getNotificationIcon = (type: string) => {
         case "COACH_NUDGE":
             return {
                 Icon: Zap,
-                bg: "bg-orange-100 dark:bg-orange-500/20",
-                color: "text-orange-600 dark:text-orange-400",
+                bg: "bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20",
+                color: "text-amber-600 dark:text-amber-400",
             };
         case "MILESTONE":
             return {
                 Icon: Trophy,
-                bg: "bg-yellow-100 dark:bg-yellow-500/20",
-                color: "text-yellow-600 dark:text-yellow-400",
+                bg: "bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20",
+                color: "text-amber-600 dark:text-amber-400",
+            };
+        case "VIP_APPROVED":
+            return {
+                Icon: ShieldCheck,
+                bg: "bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/20",
+                color: "text-emerald-600 dark:text-emerald-400",
             };
         case "SYSTEM":
         case "ONBOARDING":
         default:
             return {
                 Icon: Bell,
-                bg: "bg-blue-100 dark:bg-blue-500/20",
-                color: "text-blue-600 dark:text-blue-400",
+                bg: "bg-gray-100 dark:bg-white/5 border border-gray-200/70 dark:border-white/10",
+                color: "text-gray-600 dark:text-gray-300",
             };
     }
 };
@@ -206,80 +218,89 @@ export function NotificationBell() {
                 sideOffset={8}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between p-5 pb-3">
-                    <h3 className="text-sm font-semibold nav-menu-text text-gray-700 dark:text-gray-300">
-                        Notifications
-                    </h3>
+                <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-dashboard">
+                    <div className="flex items-center gap-2">
+                        <h3 className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">
+                            Notifications
+                        </h3>
+                        {unreadCount > 0 && (
+                            <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 rounded-full">
+                                {unreadCount} new
+                            </span>
+                        )}
+                    </div>
                     {unreadCount > 0 && (
                         <button
-                            className="text-xs font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-primary hover:bg-primary/10 transition-colors"
+                            className="text-xs font-semibold flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-gray-500 hover:text-amber-600 dark:text-gray-400 dark:hover:text-amber-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                             onClick={() => markAsRead()}
                         >
-                            <Check size={14} /> Mark all read
+                            <Check size={13} className="text-amber-500" /> Mark all read
                         </button>
                     )}
                 </div>
 
-                {/* Tabs */}
-                <div className="px-3 border-b border-dashboard overflow-x-auto scrollbar-hide">
-                    <div className="grid grid-cols-4 py-0.5">
-                        {(Object.keys(TAB_CONFIG) as TabType[]).map(
-                            (tabKey) => {
-                                const tab = TAB_CONFIG[tabKey];
-                                const isActive = activeTab === tabKey;
-                                const count = unreadCounts[tabKey];
+                {/* Tabs — Segmented Control */}
+                <div className="p-2 border-b border-dashboard bg-gray-50/50 dark:bg-white/[0.01]">
+                    <div className="grid grid-cols-4 gap-1 p-1 bg-gray-100 dark:bg-white/5 rounded-xl">
+                        {(Object.keys(TAB_CONFIG) as TabType[]).map((tabKey) => {
+                            const tab = TAB_CONFIG[tabKey];
+                            const isActive = activeTab === tabKey;
+                            const count = unreadCounts[tabKey];
 
-                                return (
-                                    <button
-                                        key={tabKey}
-                                        onClick={() => setActiveTab(tabKey)}
-                                        className={cn(
-                                            "relative py-3 flex items-center justify-center gap-1.5 text-sm font-semibold transition-colors whitespace-nowrap nav-menu-text min-w-0",
-                                            isActive
-                                                ? "text-primary shadow-sm"
-                                                : "text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white"
-                                        )}
-                                    >
-                                        <tab.icon
-                                            size={16}
-                                            strokeWidth={isActive ? 2.5 : 2}
-                                        />
-                                        <span className="truncate">{tab.label}</span>
-                                        {count > 0 && (
-                                            <span className="flex items-center justify-center min-w-[20px] h-[20px] px-1 text-[11px] font-bold text-white bg-primary rounded-full ml-0.5">
-                                                {count > 99 ? "99+" : count}
-                                            </span>
-                                        )}
-                                        {isActive && (
-                                            <span className="absolute bottom-[-1px] left-0 w-full h-[2px] bg-primary rounded-t-full" />
-                                        )}
-                                    </button>
-                                );
-                            }
-                        )}
+                            return (
+                                <button
+                                    key={tabKey}
+                                    onClick={() => setActiveTab(tabKey)}
+                                    className={cn(
+                                        "py-1.5 px-2 flex items-center justify-center gap-1.5 text-xs font-semibold rounded-lg transition-all min-w-0 select-none",
+                                        isActive
+                                            ? "bg-white dark:bg-[#151925] text-gray-900 dark:text-white shadow-sm font-bold"
+                                            : "text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-white/40 dark:hover:bg-white/5"
+                                    )}
+                                >
+                                    <tab.icon
+                                        size={13}
+                                        strokeWidth={isActive ? 2.5 : 2}
+                                        className={cn(isActive ? "text-amber-500" : "text-gray-400")}
+                                    />
+                                    <span className="truncate">{tab.label}</span>
+                                    {count > 0 && (
+                                        <span
+                                            className={cn(
+                                                "flex items-center justify-center min-w-[16px] h-[16px] px-1 text-[10px] font-mono font-bold rounded-full",
+                                                isActive
+                                                    ? "bg-amber-500 text-white"
+                                                    : "bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300"
+                                            )}
+                                        >
+                                            {count > 99 ? "99+" : count}
+                                        </span>
+                                    )}
+                                </button>
+                            );
+                        })}
                     </div>
                 </div>
 
                 {/* Notifications List */}
-                <div className="max-h-[380px] overflow-y-auto">
+                <div className="max-h-[380px] overflow-y-auto custom-scrollbar divide-y divide-dashboard/50">
                     {filteredNotifications.length === 0 ? (
                         <div className="p-8 flex flex-col items-center justify-center text-center">
-                            <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center">
+                            <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-gray-100 dark:bg-white/5 border border-dashboard flex items-center justify-center">
                                 <Bell
-                                    size={24}
+                                    size={22}
                                     className="text-gray-400 dark:text-gray-500"
                                 />
                             </div>
-                            <p className="text-sm font-bold text-gray-700 dark:text-gray-200 mb-1">
+                            <p className="text-sm font-bold text-gray-800 dark:text-gray-200 mb-1">
                                 {isLoading ? "Loading..." : "All caught up!"}
                             </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 max-w-[220px] mx-auto">
-                                Sync alerts, weekly reports, and AI insights
-                                will appear here.
+                            <p className="text-xs text-gray-500 dark:text-gray-400 max-w-[240px] mx-auto leading-relaxed">
+                                Execution alerts, weekly reviews, and telemetry reports will appear here.
                             </p>
                         </div>
                     ) : (
-                        <div className="py-2">
+                        <div>
                             {filteredNotifications.map((n) => {
                                 const { Icon, bg, color } = getNotificationIcon(
                                     n.type
@@ -288,9 +309,8 @@ export function NotificationBell() {
                                     <div
                                         key={n.id}
                                         className={cn(
-                                            "group relative flex items-start gap-4 p-4 hover:bg-gray-50/80 dark:hover:bg-white/[0.02] transition-colors cursor-pointer",
-                                            !n.isRead &&
-                                                "bg-blue-50/40 dark:bg-blue-900/10"
+                                            "group relative flex items-start gap-3.5 px-4 py-3.5 hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors cursor-pointer",
+                                            !n.isRead && "bg-amber-500/[0.025] dark:bg-amber-500/[0.03]"
                                         )}
                                         onClick={() => {
                                             if (!n.isRead) markAsRead(n.id);
@@ -323,36 +343,36 @@ export function NotificationBell() {
                                             }
                                         }}
                                     >
-                                        {/* Unread indicator dot (left absolute) */}
+                                        {/* Unread vertical indicator bar */}
                                         {!n.isRead && (
-                                            <span className="absolute left-1.5 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
+                                            <span className="absolute left-0 top-3 bottom-3 w-1 bg-amber-500 rounded-r-full" />
                                         )}
 
                                         {/* Left Icon */}
                                         <div
                                             className={cn(
-                                                "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-sm",
+                                                "w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 transition-transform group-hover:scale-105",
                                                 bg,
                                                 color
                                             )}
                                         >
-                                            <Icon size={18} strokeWidth={2.5} />
+                                            <Icon size={16} strokeWidth={2} />
                                         </div>
 
                                         {/* Content */}
                                         <div className="flex-1 min-w-0 pr-1">
-                                            <div className="flex justify-between items-start mb-1 gap-2">
-                                                <h3
+                                            <div className="flex justify-between items-baseline mb-1 gap-2">
+                                                <h4
                                                     className={cn(
-                                                        "text-sm font-semibold truncate",
+                                                        "text-xs truncate tracking-tight",
                                                         !n.isRead
-                                                            ? "text-gray-900 dark:text-white"
-                                                            : "text-gray-700 dark:text-gray-300"
+                                                            ? "text-gray-900 dark:text-white font-bold"
+                                                            : "text-gray-700 dark:text-gray-300 font-medium"
                                                     )}
                                                 >
-                                                    {n.title}
-                                                </h3>
-                                                <span className="text-[10px] font-medium text-gray-500 shrink-0 whitespace-nowrap pt-0.5">
+                                                    {cleanNotificationTitle(n.title)}
+                                                </h4>
+                                                <span className="text-[10px] font-mono text-gray-400 shrink-0 whitespace-nowrap">
                                                     {formatDistanceToNow(
                                                         new Date(n.createdAt),
                                                         {
@@ -362,7 +382,7 @@ export function NotificationBell() {
                                                     )}
                                                 </span>
                                             </div>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed">
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">
                                                 {n.message}
                                             </p>
                                         </div>
@@ -374,10 +394,10 @@ export function NotificationBell() {
                 </div>
 
                 {/* Footer */}
-                <div className="p-3 border-t border-dashboard bg-gray-50/50 dark:bg-[#1E2028]/50 rounded-b-2xl">
+                <div className="p-2.5 border-t border-dashboard bg-gray-50/50 dark:bg-white/[0.01] rounded-b-2xl">
                     <Button
                         variant="ghost"
-                        className="w-full text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white justify-center h-9"
+                        className="w-full text-xs font-semibold text-gray-500 hover:text-amber-600 dark:text-gray-400 dark:hover:text-amber-400 hover:bg-gray-100 dark:hover:bg-white/5 justify-center h-8 rounded-xl"
                         onClick={() => {
                             setIsOpen(false);
                             router.push("/dashboard/notifications");

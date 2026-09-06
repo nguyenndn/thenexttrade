@@ -298,9 +298,6 @@ export default function LessonView({
                                 })}
                             </div>
                         </div>
-
-                        {/* Background Decor */}
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
                     </div>
                 </div>
             </div>

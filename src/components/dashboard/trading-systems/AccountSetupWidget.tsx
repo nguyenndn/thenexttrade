@@ -54,14 +54,14 @@ export function AccountSetupWidget({
     if (isDismissed) return null;
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard dark:border-white/[0.08] shadow-sm overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
             {/* Header */}
             <div className="flex items-center justify-between px-5 pt-5 pb-3">
-                <h3 className="text-base font-extrabold text-gray-700 dark:text-white tracking-tight">
+                <h3 className="text-base font-bold text-gray-900 dark:text-white tracking-tight">
                     Account Setup
                 </h3>
                 <div className="flex items-center gap-3">
-                    <span className="text-xs font-bold text-gray-600 dark:text-gray-300">
+                    <span className="text-xs font-semibold text-gray-600 dark:text-gray-400 tabular-nums">
                         {completedCount}/{steps.length} complete
                     </span>
                     <Button
@@ -77,9 +77,9 @@ export function AccountSetupWidget({
 
             {/* Progress Bar */}
             <div className="px-5 pb-4">
-                <div className="h-1.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                <div className="h-1.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden border border-dashboard dark:border-white/5">
                     <div
-                        className="h-full rounded-full bg-gradient-to-r from-primary via-[#00B078] to-[#2F80ED] transition-all duration-700 ease-out"
+                        className="h-full rounded-full bg-primary transition-all duration-500 ease-out"
                         style={{ width: `${progress}%` }}
                     />
                 </div>
@@ -105,7 +105,7 @@ export function AccountSetupWidget({
                                     "flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center transition-all",
                                     step.completed
                                         ? "text-primary"
-                                        : "border-2 border-dashboard "
+                                        : "border-2 border-dashboard dark:border-white/10"
                                 )}
                             >
                                 {step.completed && (
@@ -120,17 +120,17 @@ export function AccountSetupWidget({
                                     "flex-shrink-0 transition-colors",
                                     step.completed
                                         ? "text-primary"
-                                        : "text-gray-600 dark:text-gray-300"
+                                        : "text-gray-400 dark:text-gray-500"
                                 )}
                             />
 
                             {/* Label */}
                             <span
                                 className={cn(
-                                    "text-sm font-semibold transition-colors",
+                                    "text-sm font-medium transition-colors",
                                     step.completed
-                                        ? "text-primary"
-                                        : "text-gray-600 dark:text-gray-300"
+                                        ? "text-primary font-semibold"
+                                        : "text-gray-600 dark:text-gray-400"
                                 )}
                             >
                                 {step.label}

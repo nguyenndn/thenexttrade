@@ -34,8 +34,9 @@ import { PageHeader } from "@/components/ui/PageHeader";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-    title: "Analytics | Trading Dashboard",
-    description: "Analyze your trading performance",
+    title: "Performance Analytics & Trade Telemetry | TheNextTrade",
+    description:
+        "Comprehensive execution metrics, risk-reward ratios, expectancy curves, and behavioral leak analytics.",
 };
 
 const analyticsTabs = [

@@ -86,7 +86,7 @@ export async function adminSendSetupReminderAction(params: {
             data: {
                 userId: params.targetUserId,
                 type: "VIP_APPROVED",
-                title: "📌 EA Setup Reminder",
+                title: "EA Setup Reminder",
                 message: `Don't forget to complete setting up ${params.productSlug} on MetaTrader 5 to start automated tracking.`,
                 link: `/trading-systems/${params.productSlug}`,
             },

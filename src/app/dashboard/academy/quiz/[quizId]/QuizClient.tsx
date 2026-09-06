@@ -276,7 +276,7 @@ export function QuizClient({
     const sidebarContent = (
         <>
             {/* Quiz Info Card */}
-            <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm p-5 space-y-3">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5 space-y-3">
                 <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
                     Module Quiz
                 </h3>
@@ -334,7 +334,7 @@ export function QuizClient({
 
             {/* Lessons in Module */}
             {moduleLessons.length > 0 && (
-                <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm overflow-hidden">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                     <div className="p-4 border-b border-dashboard flex items-center justify-between">
                         <h3 className="font-bold text-sm text-gray-700 dark:text-white">
                             Lessons in Module
@@ -421,7 +421,7 @@ export function QuizClient({
 
             {/* Previous Attempts */}
             {previousAttempts.length > 0 && (
-                <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm p-5 space-y-3">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5 space-y-3">
                     <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
                         Previous Attempts
                     </h3>
@@ -522,13 +522,13 @@ export function QuizClient({
                 <div className="lg:col-span-2 space-y-4">
                     {/* Result Screen */}
                     {result ? (
-                        <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm overflow-hidden">
+                        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                             <div
                                 className={cn(
                                     "p-8 lg:p-12 text-center",
                                     result.passed
-                                        ? "bg-gradient-to-b from-emerald-50 to-white dark:from-emerald-500/5 dark:to-[#151925]"
-                                        : "bg-gradient-to-b from-red-50 to-white dark:from-red-500/5 dark:to-[#151925]"
+                                        ? "bg-gradient-to-b from-emerald-50 to-white dark:from-emerald-500/5 dark:to-[#1E2028]"
+                                        : "bg-gradient-to-b from-red-50 to-white dark:from-red-500/5 dark:to-[#1E2028]"
                                 )}
                             >
                                 {result.passed ? (
@@ -621,7 +621,7 @@ export function QuizClient({
                     ) : (
                         <>
                             {/* Quiz Card */}
-                            <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm overflow-hidden">
+                            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                                 {/* Quiz Header */}
                                 <div className="px-6 lg:px-8 pt-6 lg:pt-8 pb-4">
                                     <h1 className="text-2xl lg:text-3xl font-black text-gray-700 dark:text-white leading-tight tracking-tight">
@@ -849,7 +849,7 @@ export function QuizClient({
                             </div>
 
                             {/* Navigation */}
-                            <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm p-6 flex items-center justify-between gap-4">
+                            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-6 flex items-center justify-between gap-4">
                                 <Button
                                     variant="outline"
                                     onClick={handlePrev}
@@ -938,7 +938,7 @@ export function QuizClient({
                         animate={{ x: 0 }}
                         exit={{ x: "100%" }}
                         transition={SPRING_SOFT}
-                        className="absolute right-0 top-0 bottom-0 w-3/4 max-w-xs bg-white dark:bg-[#151925] shadow-2xl p-6 overflow-y-auto"
+                        className="absolute right-0 top-0 bottom-0 w-3/4 max-w-xs bg-white dark:bg-[#1E2028] shadow-2xl p-6 overflow-y-auto"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="flex justify-between items-center mb-6">

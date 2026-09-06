@@ -40,74 +40,74 @@ interface StatusStyle {
 
 const statusConfig: Record<string, StatusStyle> = {
     TRIAL: {
-        label: "VIP Trial",
-        description: "All Pro features unlocked. Link $300 broker account to keep VIP.",
+        label: "Partner Pro Trial",
+        description: "All Partner Pro features available. Link an eligible broker account to keep access.",
         icon: Timer,
-        cardBg: "bg-gradient-to-br from-amber-50 to-orange-50/60 dark:from-amber-500/10 dark:to-orange-500/5",
-        cardBorder: "border-amber-300 dark:border-amber-500/30",
-        iconBg: "bg-amber-100 dark:bg-amber-500/20",
+        cardBg: "bg-white dark:bg-[#1E2028]",
+        cardBorder: "border-amber-500/30 dark:border-amber-500/30",
+        iconBg: "bg-amber-500/10 dark:bg-amber-500/15",
         iconColor: "text-amber-600 dark:text-amber-400",
-        labelColor: "text-amber-700 dark:text-amber-400",
+        labelColor: "text-gray-900 dark:text-white",
         badgeClass:
-            "bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300",
+            "bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20",
     },
     ACTIVE: {
-        label: "VIP Active",
-        description: "Full access to all VIP features.",
+        label: "Partner Pro Active",
+        description: "Full access to institutional features & telemetry.",
         icon: Crown,
-        cardBg: "bg-gradient-to-br from-emerald-50 to-teal-50/60 dark:from-emerald-500/10 dark:to-teal-500/5",
-        cardBorder: "border-emerald-200/80 dark:border-emerald-500/25",
-        iconBg: "bg-emerald-100 dark:bg-emerald-500/20",
+        cardBg: "bg-white dark:bg-[#1E2028]",
+        cardBorder: "border-dashboard dark:border-white/[0.08]",
+        iconBg: "bg-emerald-500/10 dark:bg-emerald-500/15",
         iconColor: "text-emerald-600 dark:text-emerald-400",
-        labelColor: "text-emerald-700 dark:text-emerald-400",
+        labelColor: "text-gray-900 dark:text-white",
         badgeClass:
-            "bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400",
+            "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20",
     },
     GRACE: {
         label: "Grace Period",
-        description: "Temporary VIP access. Complete verification.",
+        description: "Temporary Pro access. Complete account verification.",
         icon: Timer,
-        cardBg: "bg-gradient-to-br from-violet-50 to-purple-50/60 dark:from-violet-500/10 dark:to-purple-500/5",
-        cardBorder: "border-violet-200/80 dark:border-violet-500/25",
-        iconBg: "bg-violet-100 dark:bg-violet-500/20",
-        iconColor: "text-violet-600 dark:text-violet-400",
-        labelColor: "text-violet-700 dark:text-violet-400",
+        cardBg: "bg-white dark:bg-[#1E2028]",
+        cardBorder: "border-amber-500/30 dark:border-amber-500/30",
+        iconBg: "bg-amber-500/10 dark:bg-amber-500/15",
+        iconColor: "text-amber-600 dark:text-amber-400",
+        labelColor: "text-gray-900 dark:text-white",
         badgeClass:
-            "bg-violet-100 dark:bg-violet-500/20 text-violet-700 dark:text-violet-400",
+            "bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20",
     },
     EXPIRED: {
         label: "Access Expired",
-        description: "Submit a VIP request to reactivate VIP access.",
+        description: "Apply for Partner Pro to restore institutional features.",
         icon: AlertTriangle,
-        cardBg: "bg-gradient-to-br from-amber-50 to-orange-50/60 dark:from-amber-500/10 dark:to-orange-500/5",
-        cardBorder: "border-amber-200/80 dark:border-amber-500/25",
-        iconBg: "bg-amber-100 dark:bg-amber-500/20",
+        cardBg: "bg-white dark:bg-[#1E2028]",
+        cardBorder: "border-amber-500/30 dark:border-amber-500/30",
+        iconBg: "bg-amber-500/10 dark:bg-amber-500/15",
         iconColor: "text-amber-600 dark:text-amber-400",
-        labelColor: "text-amber-700 dark:text-amber-400",
+        labelColor: "text-gray-900 dark:text-white",
         badgeClass:
-            "bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400",
+            "bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20",
     },
     REVOKED: {
-        label: "Access Revoked",
+        label: "Access Suspended",
         description: "Contact support for assistance.",
         icon: Shield,
-        cardBg: "bg-gradient-to-br from-red-50 to-rose-50/60 dark:from-red-500/10 dark:to-rose-500/5",
-        cardBorder: "border-red-200/80 dark:border-red-500/25",
-        iconBg: "bg-red-100 dark:bg-red-500/20",
+        cardBg: "bg-white dark:bg-[#1E2028]",
+        cardBorder: "border-red-500/30 dark:border-red-500/30",
+        iconBg: "bg-red-500/10 dark:bg-red-500/15",
         iconColor: "text-red-600 dark:text-red-400",
-        labelColor: "text-red-700 dark:text-red-400",
+        labelColor: "text-gray-900 dark:text-white",
         badgeClass:
-            "bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400",
+            "bg-red-500/10 text-red-700 dark:text-red-400 border border-red-500/20",
     },
     NONE: {
-        label: "Free Plan",
-        description: "Apply as a VIP trader to unlock VIP access for free.",
+        label: "Free Tier",
+        description: "Apply for Partner Pro with an eligible broker account.",
         icon: Crown,
-        cardBg: "bg-white dark:bg-white/[0.03]",
-        cardBorder: "border-dashboard dark:border-white/10",
-        iconBg: "bg-gray-100 dark:bg-white/10",
-        iconColor: "text-gray-400 dark:text-gray-500",
-        labelColor: "text-gray-700 dark:text-gray-300",
+        cardBg: "bg-white dark:bg-[#1E2028]",
+        cardBorder: "border-dashboard dark:border-white/[0.08]",
+        iconBg: "bg-gray-100 dark:bg-white/[0.06]",
+        iconColor: "text-gray-500 dark:text-gray-400",
+        labelColor: "text-gray-900 dark:text-white",
         badgeClass: "",
     },
 };
@@ -115,7 +115,7 @@ const statusConfig: Record<string, StatusStyle> = {
 const accountStatusBadge: Record<string, string> = {
     TRIAL: "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400",
     ACTIVE: "bg-emerald-100 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400",
-    GRACE: "bg-violet-100 dark:bg-violet-500/15 text-violet-700 dark:text-violet-400",
+    GRACE: "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400",
     EXPIRED:
         "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400",
     REVOKED: "bg-red-100 dark:bg-red-500/15 text-red-700 dark:text-red-400",
@@ -240,57 +240,47 @@ export function VipStatusWidget() {
 
         return (
             <>
-                <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#141721] transition-all duration-500">
-                    <div className="absolute inset-0 rounded-2xl p-px">
-                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-400/40 via-yellow-400/20 to-amber-500/30 opacity-70" />
-                    </div>
-
-                    <div className="absolute -top-10 -right-10 w-28 h-28 bg-amber-500/15 rounded-full blur-[35px] pointer-events-none" />
-
-                    <div className="relative m-px rounded-2xl bg-white dark:bg-[#141721] overflow-hidden">
-                        <div className="h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent" />
-
-                        <div className="p-3 space-y-3">
-                            <div className="flex items-center gap-2.5">
-                                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400/20 to-yellow-400/10 ring-1 ring-amber-400/30">
-                                    <Timer className="h-4 w-4 text-amber-500 dark:text-amber-400" />
-                                </div>
-
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
-                                        <span className="text-[13px] font-black tracking-tight text-gray-900 dark:text-white whitespace-nowrap">
-                                            VIP Trial
-                                        </span>
-                                        <span className="rounded-lg bg-amber-500/15 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/25">
-                                            {daysLeft}d left
-                                        </span>
-                                    </div>
-                                    <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug truncate">
-                                        All VIP Pro features unlocked
-                                    </p>
-                                </div>
+                <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#1E2028] border border-amber-500/25 dark:border-amber-500/30 shadow-sm transition-all duration-300">
+                    <div className="p-3 space-y-3">
+                        <div className="flex items-center gap-2.5">
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20">
+                                <Timer className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                             </div>
 
-                            <div className="space-y-2">
-                                <div className="flex items-center justify-between text-[10px] text-gray-600 dark:text-gray-400 font-medium">
-                                    <span>Trial Access</span>
-                                    <span className="font-bold text-amber-600 dark:text-amber-400">{daysLeft} of 7 days left</span>
+                            <div className="flex-1 min-w-0">
+                                <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+                                    <span className="text-[13px] font-black tracking-tight text-gray-900 dark:text-white whitespace-nowrap">
+                                        Partner Pro Trial
+                                    </span>
+                                    <span className="rounded-lg bg-amber-500/15 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-amber-700 dark:text-amber-300 border border-amber-500/25">
+                                        {daysLeft}d left
+                                    </span>
                                 </div>
-                                <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-white/10">
-                                    <div
-                                        className="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-500 transition-all duration-500"
-                                        style={{ width: `${Math.min(100, Math.max(14, (daysLeft / 7) * 100))}%` }}
-                                    />
-                                </div>
-
-                                <Link
-                                    href={ctaHref}
-                                    className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25"
-                                >
-                                    <span className="truncate">Connect $300 Account</span>
-                                    <ArrowRight className="h-3 w-3 shrink-0" />
-                                </Link>
+                                <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug truncate">
+                                    All Partner Pro features available
+                                </p>
                             </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between text-[10px] text-gray-600 dark:text-gray-400 font-medium">
+                                <span>Trial Access</span>
+                                <span className="font-bold text-amber-600 dark:text-amber-400 font-mono">{daysLeft} of 7 days left</span>
+                            </div>
+                            <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-white/10">
+                                <div
+                                    className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-600 transition-all duration-500"
+                                    style={{ width: `${Math.min(100, Math.max(14, (daysLeft / 7) * 100))}%` }}
+                                />
+                            </div>
+
+                            <Link
+                                href={ctaHref}
+                                className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 active:scale-[0.98]"
+                            >
+                                <span className="truncate">Connect Eligible Account</span>
+                                <ArrowRight className="h-3 w-3 shrink-0" />
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -318,82 +308,68 @@ export function VipStatusWidget() {
 
         return (
             <>
-                <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#141721] transition-all duration-500">
-                    {/* Gradient Border */}
-                    <div className="absolute inset-0 rounded-2xl p-px">
-                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-400/30 via-orange-400/15 to-amber-400/30 dark:from-amber-400/20 dark:via-orange-500/10 dark:to-amber-400/20 opacity-60" />
-                    </div>
+                <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm transition-all duration-300">
+                    <div className="p-3 space-y-3">
+                        {/* Header Row */}
+                        <div className="flex items-center gap-2.5">
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-100 dark:bg-white/[0.06] border border-dashboard dark:border-white/[0.06]">
+                                <Crown className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                            </div>
 
-                    {/* Ambient Glow */}
-                    <div className="absolute -top-10 -right-10 w-28 h-28 bg-amber-500/10 dark:bg-amber-500/15 rounded-full blur-[35px] pointer-events-none" />
-
-                    {/* Inner Card */}
-                    <div className="relative m-px rounded-2xl bg-white dark:bg-[#141721] overflow-hidden">
-                        {/* Top accent line */}
-                        <div className="h-px bg-gradient-to-r from-transparent via-amber-400/50 to-transparent" />
-
-                        <div className="p-3 space-y-3">
-                            {/* Header Row */}
-                            <div className="flex items-center gap-2.5">
-                                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400/15 to-orange-400/10 dark:from-amber-400/20 dark:to-orange-400/10 ring-1 ring-amber-300/30 dark:ring-amber-500/20">
-                                    <Crown className="h-4 w-4 text-amber-500 dark:text-amber-400" />
+                            <div className="flex-1 min-w-0">
+                                <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+                                    <span className="text-[13px] font-black tracking-tight text-gray-900 dark:text-white whitespace-nowrap">
+                                        Free Tier
+                                    </span>
+                                    <span className="rounded-lg bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-gray-600 dark:text-gray-400 border border-dashboard dark:border-white/10">
+                                        Current
+                                    </span>
                                 </div>
+                                <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug truncate">
+                                    Upgrade for institutional features & telemetry
+                                </p>
+                            </div>
+                        </div>
 
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
-                                        <span className="text-[13px] font-black tracking-tight text-gray-900 dark:text-white whitespace-nowrap">
-                                            Free Plan
-                                        </span>
-                                        <span className="rounded-lg bg-amber-50 dark:bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
-                                            Current
-                                        </span>
-                                    </div>
-                                    <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug truncate">
-                                        Upgrade to unlock VIP features
+                        {hasPendingRequest ? (
+                            <div className="flex items-start gap-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 px-2.5 py-2">
+                                <Timer className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
+                                <div className="min-w-0">
+                                    <p className="text-[10px] font-bold text-amber-700 dark:text-amber-400 truncate">
+                                        Partner Pro Request Submitted
+                                    </p>
+                                    <p className="text-[9px] text-amber-600/70 dark:text-amber-400/60 truncate">
+                                        {new Date(
+                                            vipRequest!.createdAt
+                                        ).toLocaleDateString("en-US", {
+                                            month: "short",
+                                            day: "numeric",
+                                        })}{" "}
+                                        · Awaiting verification
                                     </p>
                                 </div>
                             </div>
+                        ) : (
+                            <div className="space-y-2">
+                                <button
+                                    onClick={() => setShowBenefits(true)}
+                                    className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition-colors"
+                                >
+                                    View Pro privileges
+                                    <ChevronRight className="h-3 w-3" />
+                                </button>
 
-                            {hasPendingRequest ? (
-                                <div className="flex items-start gap-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 px-2.5 py-2">
-                                    <Timer className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
-                                    <div className="min-w-0">
-                                        <p className="text-[10px] font-bold text-amber-700 dark:text-amber-400 truncate">
-                                            VIP Request Submitted
-                                        </p>
-                                        <p className="text-[9px] text-amber-600/70 dark:text-amber-400/60 truncate">
-                                            {new Date(
-                                                vipRequest!.createdAt
-                                            ).toLocaleDateString("en-US", {
-                                                month: "short",
-                                                day: "numeric",
-                                            })}{" "}
-                                            · Awaiting review
-                                        </p>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="space-y-2">
-                                    <button
-                                        onClick={() => setShowBenefits(true)}
-                                        className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition-colors"
-                                    >
-                                        View Pro benefits
-                                        <ChevronRight className="h-3 w-3" />
-                                    </button>
-
-                                    <Link
-                                        href={ctaHref}
-                                        className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25"
-                                    >
-                                        <span className="truncate">
-                                            Apply for VIP Access
-                                        </span>
-                                        <ArrowRight className="h-3 w-3 shrink-0" />
-                                    </Link>
-                                </div>
-                            )}
-                        </div>
+                                <Link
+                                    href={ctaHref}
+                                    className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 active:scale-[0.98]"
+                                >
+                                    <span className="truncate">
+                                        Apply for Partner Pro
+                                    </span>
+                                    <ArrowRight className="h-3 w-3 shrink-0" />
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -419,75 +395,65 @@ export function VipStatusWidget() {
             return (
                 <>
                     <div
-                        className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#141721] cursor-pointer group transition-all duration-500 hover:shadow-xl hover:shadow-amber-500/10 dark:hover:shadow-amber-500/15"
+                        className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#1E2028] border border-amber-500/25 dark:border-amber-500/30 cursor-pointer group shadow-sm hover:border-amber-500/40 transition-all duration-300"
                         onClick={() => setShowBenefits(true)}
                     >
-                        <div className="absolute inset-0 rounded-2xl p-px">
-                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-400/40 via-orange-400/20 to-amber-500/30 opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
-                        </div>
-
-                        <div className="absolute -top-12 -right-12 w-32 h-32 bg-amber-500/10 dark:bg-amber-500/20 rounded-full blur-[40px] pointer-events-none group-hover:scale-125 transition-transform duration-700" />
-
-                        <div className="relative m-px rounded-2xl bg-white dark:bg-[#141721] overflow-hidden">
-                            <div className="h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent" />
-
-                            <div className="flex items-center gap-2.5 p-3">
-                                <div className="relative shrink-0">
-                                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500/15 to-orange-500/10 dark:from-amber-400/20 dark:to-orange-400/10 ring-1 ring-amber-300/40 dark:ring-amber-500/25 shadow-sm">
-                                        <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-                                    </div>
-                                </div>
-
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
-                                        <span className="text-[13px] font-black tracking-tight text-gray-900 dark:text-white whitespace-nowrap">
-                                            VIP Paused
-                                        </span>
-                                        <span className="rounded-lg bg-amber-500/15 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-amber-700 dark:text-amber-300 ring-1 ring-amber-500/25">
-                                            PAUSED
-                                        </span>
-                                    </div>
-                                    <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug truncate">
-                                        Trade to restore VIP instantly
-                                    </p>
+                        <div className="flex items-center gap-2.5 p-3">
+                            <div className="relative shrink-0">
+                                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20 text-amber-600 dark:text-amber-400 shadow-sm">
+                                    <AlertTriangle className="h-4 w-4" />
                                 </div>
                             </div>
 
-                            {/* Reason Alert */}
-                            <div className="mx-3 mb-2 flex items-start gap-1.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 p-2 text-[10px] text-amber-700 dark:text-amber-400 font-medium">
-                                <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-                                <span>
-                                    {proAccess.activityInfo?.reason ||
-                                        "Volume or activity threshold not reached."}
-                                </span>
-                            </div>
-
-                            {/* 30-Day Volume Progress */}
-                            <div className="mx-3 mb-2.5 rounded-xl bg-gray-50/80 dark:bg-white/[0.04] p-2 space-y-1.5 border border-black/[0.04] dark:border-white/[0.06]">
-                                <div className="flex items-center justify-between text-[10px] text-gray-500 dark:text-gray-400">
-                                    <span>30d Volume</span>
-                                    <span className="font-bold text-gray-700 dark:text-gray-200">
-                                        {rollingLots.toFixed(2)} / {minLots.toFixed(1)} Lots ({lotPercent.toFixed(0)}%)
+                            <div className="flex-1 min-w-0">
+                                <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+                                    <span className="text-[13px] font-black tracking-tight text-gray-900 dark:text-white whitespace-nowrap">
+                                        Pro Paused
+                                    </span>
+                                    <span className="rounded-lg bg-amber-500/15 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-amber-700 dark:text-amber-300 border border-amber-500/25">
+                                        PAUSED
                                     </span>
                                 </div>
-                                <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-white/10">
-                                    <div
-                                        className="h-full rounded-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-500"
-                                        style={{ width: `${Math.min(100, Math.max(5, lotPercent))}%` }}
-                                    />
-                                </div>
+                                <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug truncate">
+                                    Trade to restore Pro access instantly
+                                </p>
                             </div>
+                        </div>
 
-                            <div className="mx-3 mb-3">
-                                <Link
-                                    href="/dashboard/journal"
-                                    onClick={(e) => e.stopPropagation()}
-                                    className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25"
-                                >
-                                    <span className="truncate">Open Journal & Restore</span>
-                                    <ArrowRight className="h-3 w-3 shrink-0" />
-                                </Link>
+                        {/* Reason Alert */}
+                        <div className="mx-3 mb-2 flex items-start gap-1.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 p-2 text-[10px] text-amber-700 dark:text-amber-400 font-medium">
+                            <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                            <span>
+                                {proAccess.activityInfo?.reason ||
+                                    "Volume or activity threshold not reached."}
+                            </span>
+                        </div>
+
+                        {/* 30-Day Volume Progress */}
+                        <div className="mx-3 mb-2.5 rounded-xl bg-gray-50/80 dark:bg-white/[0.02] p-2 space-y-1.5 border border-dashboard dark:border-white/[0.06]">
+                            <div className="flex items-center justify-between text-[10px] text-gray-500 dark:text-gray-400">
+                                <span>30d Volume</span>
+                                <span className="font-bold text-gray-800 dark:text-gray-200 font-mono">
+                                    {rollingLots.toFixed(2)} / {minLots.toFixed(1)} Lots ({lotPercent.toFixed(0)}%)
+                                </span>
                             </div>
+                            <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-white/10">
+                                <div
+                                    className="h-full rounded-full bg-amber-500 transition-all duration-500"
+                                    style={{ width: `${Math.min(100, Math.max(5, lotPercent))}%` }}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="mx-3 mb-3">
+                            <Link
+                                href="/dashboard/journal"
+                                onClick={(e) => e.stopPropagation()}
+                                className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 active:scale-[0.98]"
+                            >
+                                <span className="truncate">Open Journal & Restore</span>
+                                <ArrowRight className="h-3 w-3 shrink-0" />
+                            </Link>
                         </div>
                     </div>
 
@@ -504,99 +470,81 @@ export function VipStatusWidget() {
         return (
             <>
                 <div
-                    className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#141721] cursor-pointer group transition-all duration-500 hover:shadow-xl hover:shadow-emerald-500/10 dark:hover:shadow-emerald-500/15"
+                    className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] hover:border-emerald-500/30 dark:hover:border-emerald-500/30 cursor-pointer group shadow-sm hover:shadow-md transition-all duration-300"
                     onClick={() => setShowBenefits(true)}
                 >
-                    {/* Animated Gradient Border */}
-                    <div className="absolute inset-0 rounded-2xl p-px">
-                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-400/40 via-teal-400/20 to-cyan-400/40 dark:from-emerald-400/30 dark:via-teal-500/15 dark:to-cyan-400/30 opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
-                    </div>
+                    <div className="flex items-center gap-2.5 p-3">
+                        {/* Icon */}
+                        <div className="relative shrink-0">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 shadow-sm transition-transform duration-300 group-hover:scale-105">
+                                <Crown className="h-4 w-4" />
+                            </div>
+                            {/* Static status indicator */}
+                            <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#1E2028]" />
+                        </div>
 
-                    {/* Ambient Glow */}
-                    <div className="absolute -top-12 -right-12 w-32 h-32 bg-emerald-500/10 dark:bg-emerald-500/20 rounded-full blur-[40px] pointer-events-none group-hover:scale-125 transition-transform duration-700" />
-                    <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-teal-500/10 dark:bg-teal-400/15 rounded-full blur-[35px] pointer-events-none" />
-
-                    {/* Inner Card */}
-                    <div className="relative m-px rounded-2xl bg-white dark:bg-[#141721] overflow-hidden">
-                        {/* Top accent line */}
-                        <div className="h-px bg-gradient-to-r from-transparent via-emerald-400/60 to-transparent" />
-
-                        <div className="flex items-center gap-2.5 p-3">
-                            {/* Icon */}
-                            <div className="relative shrink-0">
-                                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/15 to-teal-500/10 dark:from-emerald-400/20 dark:to-teal-400/10 ring-1 ring-emerald-300/40 dark:ring-emerald-500/25 shadow-sm transition-all duration-300 group-hover:shadow-md group-hover:shadow-emerald-500/15">
-                                    <Crown className="h-4 w-4 text-emerald-600 dark:text-emerald-400 transition-transform duration-300 group-hover:scale-110" />
-                                </div>
-                                {/* Active pulse dot */}
-                                <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
-                                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 ring-2 ring-white dark:ring-[#141721]" />
+                        {/* Text Content */}
+                        <div className="flex-1 min-w-0">
+                            <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+                                <span className="text-[13px] font-black tracking-tight text-gray-900 dark:text-white whitespace-nowrap">
+                                    Partner Pro Active
+                                </span>
+                                <span className="rounded-lg bg-emerald-500/10 dark:bg-emerald-500/15 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                                    PRO
                                 </span>
                             </div>
 
-                            {/* Text Content */}
-                            <div className="flex-1 min-w-0">
-                                <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
-                                    <span className="text-[13px] font-black tracking-tight text-gray-900 dark:text-white whitespace-nowrap">
-                                        VIP Active
-                                    </span>
-                                    <span className="rounded-lg bg-emerald-500/10 dark:bg-emerald-500/15 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/20 dark:ring-emerald-500/25">
-                                        VIP
-                                    </span>
-                                </div>
-
-                                {/* CTA */}
-                                <div className="flex items-center gap-1 mt-0.5 text-[10px] font-semibold text-emerald-600/70 dark:text-emerald-400/60 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-300">
-                                    <span className="truncate">
-                                        View your benefits
-                                    </span>
-                                    <ChevronRight className="h-2.5 w-2.5 shrink-0 transition-transform duration-300 group-hover:translate-x-0.5" />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* 30-Day Volume Progress */}
-                        <div className="mx-3 mb-2.5 rounded-xl bg-gray-50/80 dark:bg-white/[0.04] p-2 space-y-1.5 border border-black/[0.04] dark:border-white/[0.06]">
-                            <div className="flex items-center justify-between text-[10px] text-gray-500 dark:text-gray-400">
-                                <span>30d Volume</span>
-                                <span className="font-bold text-gray-700 dark:text-gray-200">
-                                    {rollingLots.toFixed(2)} / {minLots.toFixed(1)} Lots ({lotPercent.toFixed(0)}%)
+                            {/* CTA */}
+                            <div className="flex items-center gap-1 mt-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors duration-300">
+                                <span className="truncate">
+                                    View your benefits
                                 </span>
-                            </div>
-                            <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-white/10">
-                                <div
-                                    className={`h-full rounded-full transition-all duration-500 ${
-                                        lotPercent >= 100
-                                            ? "bg-gradient-to-r from-emerald-500 to-teal-500"
-                                            : "bg-gradient-to-r from-amber-500 to-orange-500"
-                                    }`}
-                                    style={{ width: `${Math.min(100, Math.max(5, lotPercent))}%` }}
-                                />
+                                <ChevronRight className="h-2.5 w-2.5 shrink-0 transition-transform duration-300 group-hover:translate-x-0.5" />
                             </div>
                         </div>
-
-                        {/* Policy Warning if Warned */}
-                        {policyState === "WARNED" && (
-                            <div className="mx-3 mb-2.5 flex items-start gap-1.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 p-2 text-[10px] text-amber-700 dark:text-amber-400 font-medium">
-                                <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-                                <span>No trades in 7+ days. Trade soon to maintain VIP.</span>
-                            </div>
-                        )}
-
-                        {/* Join VIP Telegram — rendered when entitled user + VIP_TELEGRAM_URL configured */}
-                        {vipLink && (
-                            <a
-                                href={vipLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={(e) => e.stopPropagation()}
-                                className="mx-3 mb-3 flex w-[calc(100%-1.5rem)] items-center justify-center gap-1.5 rounded-xl bg-[#2AABEE] px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-[#2AABEE]/20 transition-all duration-300 hover:bg-[#2298d4] hover:shadow-md hover:shadow-[#2AABEE]/25 active:scale-[0.98]"
-                            >
-                                <Send className="h-3 w-3 shrink-0" />
-                                <span className="truncate">Join VIP Telegram</span>
-                            </a>
-                        )}
                     </div>
+
+                    {/* 30-Day Volume Progress */}
+                    <div className="mx-3 mb-2.5 rounded-xl bg-gray-50/80 dark:bg-white/[0.02] p-2 space-y-1.5 border border-dashboard dark:border-white/[0.06]">
+                        <div className="flex items-center justify-between text-[10px] text-gray-500 dark:text-gray-400">
+                            <span>30d Volume</span>
+                            <span className="font-bold text-gray-800 dark:text-gray-200 font-mono">
+                                {rollingLots.toFixed(2)} / {minLots.toFixed(1)} Lots ({lotPercent.toFixed(0)}%)
+                            </span>
+                        </div>
+                        <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-white/10">
+                            <div
+                                className={`h-full rounded-full transition-all duration-500 ${
+                                    lotPercent >= 100
+                                        ? "bg-emerald-500"
+                                        : "bg-amber-500"
+                                }`}
+                                style={{ width: `${Math.min(100, Math.max(5, lotPercent))}%` }}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Policy Warning if Warned */}
+                    {policyState === "WARNED" && (
+                        <div className="mx-3 mb-2.5 flex items-start gap-1.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 p-2 text-[10px] text-amber-700 dark:text-amber-400 font-medium">
+                            <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                            <span>No trades in 7+ days. Trade soon to maintain Pro status.</span>
+                        </div>
+                    )}
+
+                    {/* Join Pro Telegram — rendered when entitled user + VIP_TELEGRAM_URL configured */}
+                    {vipLink && (
+                        <a
+                            href={vipLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="mx-3 mb-3 flex w-[calc(100%-1.5rem)] items-center justify-center gap-1.5 rounded-xl bg-[#2AABEE] px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-[#2AABEE]/20 transition-all duration-300 hover:bg-[#2298d4] hover:shadow-md hover:shadow-[#2AABEE]/25 active:scale-[0.98]"
+                        >
+                            <Send className="h-3 w-3 shrink-0" />
+                            <span className="truncate">Join Pro Telegram</span>
+                        </a>
+                    )}
                 </div>
 
                 <ProBenefitsModal
@@ -610,115 +558,91 @@ export function VipStatusWidget() {
     }
 
     // ─── GRACE / EXPIRED / REVOKED ───────────────────────────────────────────────
-
-    // Map status to gradient colors for the border effect
-    const borderGradient: Record<string, string> = {
-        GRACE: "from-violet-400/30 via-purple-400/15 to-violet-400/30 dark:from-violet-400/20 dark:via-purple-500/10 dark:to-violet-400/20",
-        EXPIRED:
-            "from-amber-400/30 via-orange-400/15 to-amber-400/30 dark:from-amber-400/20 dark:via-orange-500/10 dark:to-amber-400/20",
-        REVOKED:
-            "from-red-400/30 via-rose-400/15 to-red-400/30 dark:from-red-400/20 dark:via-rose-500/10 dark:to-red-400/20",
-    };
-
-    const accentLine: Record<string, string> = {
-        GRACE: "via-violet-400/50",
-        EXPIRED: "via-amber-400/50",
-        REVOKED: "via-red-400/50",
+    const borderClass: Record<string, string> = {
+        GRACE: "border-amber-500/30 dark:border-amber-500/30",
+        EXPIRED: "border-amber-500/30 dark:border-amber-500/30",
+        REVOKED: "border-red-500/30 dark:border-red-500/30",
     };
 
     return (
-        <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#141721] transition-all duration-500">
-            {/* Gradient Border */}
-            <div className="absolute inset-0 rounded-2xl p-px">
-                <div
-                    className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${borderGradient[status] || borderGradient.EXPIRED} opacity-60`}
-                />
-            </div>
-
-            {/* Inner Card */}
-            <div className="relative m-px rounded-2xl bg-white dark:bg-[#141721] overflow-hidden">
-                {/* Top accent line */}
-                <div
-                    className={`h-px bg-gradient-to-r from-transparent ${accentLine[status] || accentLine.EXPIRED} to-transparent`}
-                />
-
-                <div className="p-3 space-y-3">
-                    {/* Header Row */}
-                    <div className="flex items-center gap-2.5">
-                        <div
-                            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${cfg.iconBg} ring-1 ring-black/5 dark:ring-white/10`}
-                        >
-                            <StatusIcon
-                                className={`h-4 w-4 ${cfg.iconColor}`}
-                            />
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                            <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
-                                <span
-                                    className={`text-[13px] font-black tracking-tight whitespace-nowrap ${cfg.labelColor}`}
-                                >
-                                    {cfg.label}
-                                </span>
-                                {isPro && (
-                                    <span
-                                        className={`rounded-lg px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] ring-1 ring-current/15 ${cfg.badgeClass}`}
-                                    >
-                                        VIP
-                                    </span>
-                                )}
-                            </div>
-                            <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug truncate">
-                                {cfg.description}
-                            </p>
-                        </div>
+        <div className={`relative overflow-hidden rounded-2xl bg-white dark:bg-[#1E2028] border ${borderClass[status] || "border-dashboard dark:border-white/[0.08]"} shadow-sm transition-all duration-300`}>
+            <div className="p-3 space-y-3">
+                {/* Header Row */}
+                <div className="flex items-center gap-2.5">
+                    <div
+                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${cfg.iconBg} border border-dashboard dark:border-white/10`}
+                    >
+                        <StatusIcon
+                            className={`h-4 w-4 ${cfg.iconColor}`}
+                        />
                     </div>
 
-                    {/* Grace expiry */}
-                    {status === "GRACE" && expiresAt && (
-                        <div className="flex items-start gap-2 rounded-xl bg-violet-50 dark:bg-violet-500/10 border border-violet-200/60 dark:border-violet-500/20 px-2.5 py-2">
-                            <Timer className="h-3.5 w-3.5 text-violet-500 shrink-0 mt-0.5" />
-                            <p className="text-[10px] font-semibold text-violet-600 dark:text-violet-400 truncate">
-                                Expires{" "}
-                                {new Date(expiresAt).toLocaleDateString(
-                                    "en-US",
-                                    {
-                                        month: "short",
-                                        day: "numeric",
-                                        year: "numeric",
-                                    }
-                                )}
-                            </p>
-                        </div>
-                    )}
-
-                    {/* CTAs */}
-                    {!isPro &&
-                        (status === "EXPIRED" || status === "REVOKED") && (
-                            <Link
-                                href="/dashboard/accounts?action=add&intent=unlock-pro"
-                                className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-md hover:shadow-amber-500/25"
+                    <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+                            <span
+                                className={`text-[13px] font-black tracking-tight whitespace-nowrap ${cfg.labelColor}`}
                             >
-                                <span className="truncate">
-                                    Re-apply for VIP
+                                {cfg.label}
+                            </span>
+                            {isPro && (
+                                <span
+                                    className={`rounded-lg px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] ${cfg.badgeClass}`}
+                                >
+                                    PRO
                                 </span>
-                                <ArrowRight className="h-3 w-3 shrink-0" />
-                            </Link>
-                        )}
+                            )}
+                        </div>
+                        <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug truncate">
+                            {cfg.description}
+                        </p>
+                    </div>
+                </div>
 
-                    {status === "GRACE" && (
+                {/* Grace expiry */}
+                {status === "GRACE" && expiresAt && (
+                    <div className="flex items-start gap-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 px-2.5 py-2">
+                        <Timer className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
+                        <p className="text-[10px] font-semibold text-amber-700 dark:text-amber-400 truncate">
+                            Expires{" "}
+                            {new Date(expiresAt).toLocaleDateString(
+                                "en-US",
+                                {
+                                    month: "short",
+                                    day: "numeric",
+                                    year: "numeric",
+                                }
+                            )}
+                        </p>
+                    </div>
+                )}
+
+                {/* CTAs */}
+                {!isPro &&
+                    (status === "EXPIRED" || status === "REVOKED") && (
                         <Link
                             href="/dashboard/accounts?action=add&intent=unlock-pro"
-                            className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-violet-500 to-purple-500 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-violet-500/20 transition-all duration-300 hover:from-violet-600 hover:to-purple-600 hover:shadow-md hover:shadow-violet-500/25"
+                            className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 active:scale-[0.98]"
                         >
                             <span className="truncate">
-                                Complete Verification
+                                Re-apply for Partner Pro
                             </span>
                             <ArrowRight className="h-3 w-3 shrink-0" />
                         </Link>
                     )}
-                </div>
+
+                {status === "GRACE" && (
+                    <Link
+                        href="/dashboard/accounts?action=add&intent=unlock-pro"
+                        className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 active:scale-[0.98]"
+                    >
+                        <span className="truncate">
+                            Complete Verification
+                        </span>
+                        <ArrowRight className="h-3 w-3 shrink-0" />
+                    </Link>
+                )}
             </div>
         </div>
     );
 }
+

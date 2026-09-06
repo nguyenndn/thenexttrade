@@ -673,8 +673,7 @@ function EmptyState({ totalTrades }: { totalTrades: number }) {
                 More Trades Needed
             </h3>
             <p className="text-gray-600 dark:text-gray-300 px-6 max-w-sm mx-auto mb-6">
-                Complete at least 30 closed trades to unlock Trading
-                Intelligence.
+                Log at least 30 closed trades to activate trade telemetry and execution leak detection.
             </p>
             <div className="max-w-xs mx-auto mb-6">
                 <div className="flex items-center justify-between mb-2">
@@ -815,7 +814,7 @@ export function IntelligenceDashboard({
                 </div>
             </div>
 
-            {/* TheNextTrade AI Coach */}
+            {/* TheNextTrade Discipline Coach */}
             <div className="mb-6">
                 <AiCoachCard
                     accountId={accountId}

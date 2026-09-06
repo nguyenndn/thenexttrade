@@ -92,7 +92,7 @@ const PRO_STATUS_CONFIG: Record<string, { label: string; className: string }> =
         GRACE: {
             label: "Grace",
             className:
-                "bg-purple-50 text-purple-600 border-purple-200/80 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20",
+                "bg-amber-50 text-amber-600 border-amber-200/80 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20",
         },
         EXPIRED: {
             label: "Expired",
@@ -221,13 +221,6 @@ export function AccountCard({
                 style={{ backgroundColor: accentColor }}
             />
 
-            {/* Ambient glow */}
-            <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
-                <div
-                    className="absolute -top-16 -right-16 w-36 h-36 rounded-full blur-[60px] opacity-[0.06] group-hover:opacity-[0.12] transition-opacity duration-700"
-                    style={{ backgroundColor: accentColor }}
-                />
-            </div>
 
             {/* === Card Content === */}
             <div className="relative z-10 flex flex-col flex-1 px-5 pt-4 pb-3">

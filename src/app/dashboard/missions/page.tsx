@@ -15,14 +15,13 @@ export default async function MissionsPage() {
         <div className="space-y-4 pb-10">
             {/* Page Header */}
             <div className="flex items-center gap-4">
-                <div className="w-1 self-stretch min-h-[40px] rounded-full bg-gradient-to-b from-primary via-teal-400 to-emerald-500 shrink-0" />
+                <div className="w-1 self-stretch min-h-[40px] rounded-full bg-primary shrink-0" />
                 <div>
-                    <h1 className="text-xl font-bold text-gray-700 dark:text-white tracking-tight">
+                    <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
                         Edge Missions
                     </h1>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-0.5">
-                        Complete missions to earn Edge and level up your trading
-                        journey.
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
+                        Structured execution milestones to eliminate behavioral leaks, sharpen risk execution, and build positive expectancy.
                     </p>
                 </div>
             </div>

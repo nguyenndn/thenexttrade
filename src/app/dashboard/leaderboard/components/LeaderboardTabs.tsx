@@ -12,25 +12,22 @@ const TABS: {
     icon: React.ElementType;
     activeColor: string;
     activeBg: string;
-    activeGlow: string;
 }[] = [
     {
         type: "trading",
         label: "Trading",
         icon: BarChart3,
-        activeColor: "text-blue-600 dark:text-blue-400",
+        activeColor: "text-primary dark:text-emerald-400",
         activeBg:
-            "bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/20",
-        activeGlow: "shadow-[0_0_12px_rgba(59,130,246,0.15)]",
+            "bg-primary/10 dark:bg-primary/15 border-primary/25 dark:border-primary/20",
     },
     {
         type: "xp",
         label: "Edge Ranking",
         icon: Trophy,
-        activeColor: "text-yellow-600 dark:text-yellow-400",
+        activeColor: "text-amber-600 dark:text-amber-400",
         activeBg:
-            "bg-yellow-50 dark:bg-yellow-500/10 border-yellow-200 dark:border-yellow-500/20",
-        activeGlow: "shadow-[0_0_12px_rgba(234,179,8,0.15)]",
+            "bg-amber-500/10 dark:bg-amber-400/10 border-amber-500/25 dark:border-amber-400/20",
     },
     {
         type: "streak",
@@ -38,8 +35,7 @@ const TABS: {
         icon: Flame,
         activeColor: "text-orange-600 dark:text-orange-400",
         activeBg:
-            "bg-orange-50 dark:bg-orange-500/10 border-orange-200 dark:border-orange-500/20",
-        activeGlow: "shadow-[0_0_12px_rgba(249,115,22,0.15)]",
+            "bg-orange-500/10 dark:bg-orange-400/10 border-orange-500/25 dark:border-orange-400/20",
     },
     {
         type: "academy",
@@ -47,17 +43,15 @@ const TABS: {
         icon: GraduationCap,
         activeColor: "text-emerald-600 dark:text-emerald-400",
         activeBg:
-            "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20",
-        activeGlow: "shadow-[0_0_12px_rgba(16,185,129,0.15)]",
+            "bg-emerald-500/10 dark:bg-emerald-400/10 border-emerald-500/25 dark:border-emerald-400/20",
     },
     {
         type: "mystats",
         label: "My Stats",
         icon: User,
-        activeColor: "text-cyan-600 dark:text-cyan-400",
+        activeColor: "text-sky-600 dark:text-sky-400",
         activeBg:
-            "bg-cyan-50 dark:bg-cyan-500/10 border-cyan-200 dark:border-cyan-500/20",
-        activeGlow: "shadow-[0_0_12px_rgba(6,182,212,0.15)]",
+            "bg-sky-500/10 dark:bg-sky-400/10 border-sky-500/25 dark:border-sky-400/20",
     },
 ];
 
@@ -75,7 +69,7 @@ export function LeaderboardTabs({
     return (
         <div
             className={cn(
-                "bg-white dark:bg-[#151925] p-1.5 rounded-xl border border-dashboard h-auto",
+                "bg-white dark:bg-[#1E2028] p-1.5 rounded-xl border border-dashboard dark:border-white/[0.08] shadow-sm h-auto",
                 equalWidth
                     ? "w-full flex lg:w-auto lg:inline-flex"
                     : "w-auto inline-flex"
@@ -92,28 +86,15 @@ export function LeaderboardTabs({
                         key={tab.type}
                         href={`/dashboard/leaderboard?${tabParams.toString()}`}
                         className={cn(
-                            "rounded-lg px-4 py-2 text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2 border whitespace-nowrap relative",
+                            "rounded-lg px-3.5 py-1.5 text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 border whitespace-nowrap",
                             equalWidth && "flex-1 text-center lg:flex-none",
                             isActive
-                                ? cn(
-                                      tab.activeBg,
-                                      tab.activeColor,
-                                      tab.activeGlow
-                                  )
-                                : "text-gray-600 dark:text-gray-300 border-transparent hover:text-gray-600 dark:hover:text-gray-300 hover:bg-white/50 dark:hover:bg-white/5"
+                                ? cn(tab.activeBg, tab.activeColor, "font-bold shadow-xs")
+                                : "text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5"
                         )}
                     >
-                        <Icon
-                            size={16}
-                            className={cn(
-                                "transition-transform duration-300",
-                                isActive && "scale-110"
-                            )}
-                        />
+                        <Icon size={15} className="shrink-0" />
                         <span>{tab.label}</span>
-                        {isActive && (
-                            <span className="absolute -bottom-[7px] left-1/2 -translate-x-1/2 w-6 h-1 rounded-full bg-current opacity-60" />
-                        )}
                     </Link>
                 );
             })}

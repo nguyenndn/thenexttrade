@@ -64,21 +64,21 @@ const MedalBadge = ({ rank }: { rank: number }) => {
             fromColor: "#FBBF24", // yellow-400
             toColor: "#D97706", // amber-600
             strokeColor: "#FEF3C7", // yellow-100
-            glowClass: "drop-shadow-[0_4px_10px_rgba(245,158,11,0.4)]",
+            glowClass: "drop-shadow-xs",
         },
         {
             gradientId: "silver-medal-grad",
             fromColor: "#CBD5E1", // slate-300
             toColor: "#475569", // slate-600
             strokeColor: "#F8FAFC", // slate-50
-            glowClass: "drop-shadow-[0_4px_10px_rgba(148,163,184,0.35)]",
+            glowClass: "drop-shadow-xs",
         },
         {
             gradientId: "bronze-medal-grad",
             fromColor: "#FB923C", // orange-400
             toColor: "#9A3412", // orange-800
             strokeColor: "#FFEDD5", // orange-100
-            glowClass: "drop-shadow-[0_4px_10px_rgba(249,115,22,0.35)]",
+            glowClass: "drop-shadow-xs",
         },
     ];
 
@@ -329,13 +329,13 @@ export function TopMedalStrip({
                         key={entry.userId}
                         onClick={() => onUserClick?.(entry)}
                         className={cn(
-                            "group flex flex-col rounded-2xl border p-4 text-left transition shadow-sm bg-white dark:bg-[#0B0E14]",
+                            "group flex flex-col rounded-2xl border p-4 text-left transition shadow-sm bg-white dark:bg-[#1E2028]",
                             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
                             config.borderColor,
                             config.hoverBorderColor,
                             "hover:shadow-md transition-shadow",
                             isCurrentUser &&
-                                "ring-2 ring-primary/30 ring-offset-2 dark:ring-offset-[#151925]"
+                                "ring-2 ring-primary/30 ring-offset-2 dark:ring-offset-[#1E2028]"
                         )}
                     >
                         {/* Top Row: Avatar + Name/Subtext + Medal */}
@@ -344,7 +344,7 @@ export function TopMedalStrip({
                                 <div className="relative shrink-0">
                                     <div
                                         className={cn(
-                                            "w-14 h-14 rounded-full flex items-center justify-center font-bold text-white bg-gray-400 dark:bg-gray-600 overflow-hidden ring-2 ring-offset-2 ring-offset-white dark:ring-offset-[#0B0E14] transition-transform group-hover:scale-105",
+                                            "w-14 h-14 rounded-full flex items-center justify-center font-bold text-white bg-gray-400 dark:bg-gray-600 overflow-hidden ring-2 ring-offset-2 ring-offset-white dark:ring-offset-[#1E2028] transition-transform group-hover:scale-105",
                                             config.avatarRing
                                         )}
                                     >

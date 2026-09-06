@@ -378,9 +378,9 @@ export function TradeDetailSheet({
                                         No AI Insights Available
                                     </p>
                                     <p className="text-sm mt-2">
-                                        Log more trades and generate a Weekly
-                                        Review to unlock personalized AI
-                                        coaching.
+                                        Log more trades and run a Weekly
+                                        Review to generate personalized
+                                        execution feedback.
                                     </p>
                                 </div>
                             )}
@@ -418,7 +418,7 @@ export function TradeDetailSheet({
                                                         size={12}
                                                         className="text-primary"
                                                     />{" "}
-                                                    Trade Journey
+                                                    Execution Timeline
                                                 </h4>
                                                 <div className="space-y-4">
                                                     <div className="flex justify-between items-center bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-xl border border-dashboard">
@@ -568,7 +568,7 @@ export function TradeDetailSheet({
                                             </div>
 
                                             {/* Trade Results Hub */}
-                                            <div className="bg-white dark:bg-[#151925] p-6 rounded-xl border border-dashboard shadow-inner relative overflow-hidden">
+                                            <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-inner relative overflow-hidden">
                                                 <div
                                                     className={cn(
                                                         "absolute inset-0 opacity-[0.03] pattern-diagonal-lines pattern-size-4 pattern-bg-white",
@@ -684,7 +684,7 @@ export function TradeDetailSheet({
                                         {marketEvents.length > 0 ? (
                                             <div className="space-y-2">
                                                 {marketEvents.map((ev) => (
-                                                    <div key={ev.id} className="flex items-center justify-between bg-white dark:bg-[#151925] p-2.5 rounded-lg border border-dashboard text-xs">
+                                                    <div key={ev.id} className="flex items-center justify-between bg-white dark:bg-[#1E2028] p-2.5 rounded-lg border border-dashboard text-xs">
                                                         <div className="flex items-center gap-2">
                                                             <span className={cn(
                                                                 "px-1.5 py-0.5 rounded-lg text-[10px] font-bold uppercase",

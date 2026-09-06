@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
         const vipNotifications = recentVipRequests.map((vip) => ({
             id: vip.id,
             type: "NEW_VIP_REQUEST" as const,
-            title: "👑 New VIP Request",
+            title: "New VIP Request",
             message: `${vip.user?.name || vip.fullName || vip.user?.email || vip.email} — ${vip.broker} (${vip.accountNumber})`,
             link: `${NOTIFICATION_ROUTES.VIP_PIPELINE_ADMIN}?status=PENDING`,
             isRead: false,

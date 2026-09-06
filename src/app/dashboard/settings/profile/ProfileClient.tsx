@@ -305,7 +305,7 @@ export default function ProfileClient({
                                                                 true
                                                             )
                                                         }
-                                                        className="inline-flex items-center gap-1 text-xs text-indigo-500 hover:underline font-bold"
+                                                        className="inline-flex items-center gap-1 text-xs text-amber-500 hover:underline font-bold"
                                                     >
                                                         <Eye size={11} />
                                                         Live Preview Card
@@ -353,7 +353,7 @@ export default function ProfileClient({
                     <div className="border-t border-dashboard px-5 py-4">
                         <div className="flex items-center justify-between gap-3 mb-3">
                             <div className="flex items-center gap-2">
-                                <Type size={14} className="text-indigo-500" />
+                                <Type size={14} className="text-amber-500" />
                                 <span className="text-sm font-bold text-gray-700 dark:text-white">
                                     Profile Headline
                                 </span>
@@ -549,8 +549,8 @@ export default function ProfileClient({
                 <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                     <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center">
-                                <Lock size={16} className="text-indigo-500" />
+                            <div className="w-9 h-9 rounded-lg bg-amber-500/10 dark:bg-amber-500/10 flex items-center justify-center">
+                                <Lock size={16} className="text-amber-500" />
                             </div>
                             <div>
                                 <h3 className="font-bold text-gray-700 dark:text-white text-sm">
@@ -571,8 +571,8 @@ export default function ProfileClient({
                             description="Show P&L in dollar values (e.g., +$120)"
                             enabled={settings.showMoney}
                             onToggle={() => handleToggle("showMoney")}
-                            color="text-green-500"
-                            bgColor="bg-green-50 dark:bg-green-500/10"
+                            color="text-emerald-500"
+                            bgColor="bg-emerald-50 dark:bg-emerald-500/10"
                         />
                         <PrivacyToggleCard
                             icon={Percent}
@@ -589,8 +589,8 @@ export default function ProfileClient({
                             description="Show your real name or only username"
                             enabled={settings.showRealName}
                             onToggle={() => handleToggle("showRealName")}
-                            color="text-violet-500"
-                            bgColor="bg-violet-50 dark:bg-violet-500/10"
+                            color="text-amber-500"
+                            bgColor="bg-amber-50 dark:bg-amber-500/10"
                         />
                         <PrivacyToggleCard
                             icon={Building2}

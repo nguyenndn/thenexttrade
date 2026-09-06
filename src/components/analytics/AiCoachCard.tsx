@@ -105,10 +105,7 @@ export function AiCoachCard({
 
     if (!insight && !isLoading && !error) {
         return (
-            <div className="bg-white dark:bg-gradient-to-br dark:from-amber-900 dark:via-[#1E2028] dark:to-[#1E2028] bg-gradient-to-br from-amber-50/50 via-white to-amber-50/50 rounded-xl border border-amber-100 dark:border-amber-500/30 shadow-sm dark:shadow-lg overflow-hidden relative">
-                {/* Decorative background element */}
-                <div className="absolute -top-24 -right-24 w-48 h-48 bg-amber-500/10 dark:bg-amber-500/20 rounded-full blur-3xl" />
-
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-amber-200/50 dark:border-dashboard shadow-sm overflow-hidden relative">
                 <div className="px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-6 relative z-10">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-500/20 border border-amber-200 dark:border-amber-500/30 flex items-center justify-center shrink-0">
@@ -118,16 +115,15 @@ export function AiCoachCard({
                             />
                         </div>
                         <div>
-                            <h3 className="text-lg font-bold text-amber-950 dark:text-white flex items-center gap-2">
-                                TheNextTrade AI Coach{" "}
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                TheNextTrade Discipline Coach{" "}
                                 <Brain
                                     size={16}
                                     className="text-amber-500 dark:text-amber-400"
                                 />
                             </h3>
-                            <p className="text-sm text-amber-900/70 dark:text-amber-200 mt-1">
-                                Get a blunt, personalized risk assessment based
-                                on your recent trading patterns.
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                Automated execution audit: detects revenge sizing, stop-loss violations, and tilt patterns.
                             </p>
                         </div>
                     </div>
@@ -136,7 +132,7 @@ export function AiCoachCard({
                         className="shrink-0 min-h-12 px-8 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-sm shadow-[0_10px_24px_rgba(245,158,11,0.22)] hover:shadow-[0_14px_30px_rgba(245,158,11,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap animate-btn-shine border-0"
                     >
                         <Brain size={16} className="mr-2" />
-                        Analyze My Trades
+                        Audit My Execution
                     </Button>
                 </div>
             </div>
@@ -160,8 +156,8 @@ export function AiCoachCard({
                     <div className="p-1.5 bg-amber-500 rounded-lg shrink-0">
                         <Bot size={16} className="text-white" />
                     </div>
-                    <h3 className="font-bold text-amber-900 dark:text-amber-300">
-                        TheNextTrade Risk Assessment
+                    <h3 className="font-bold text-gray-900 dark:text-amber-300">
+                        Execution Discipline Assessment
                     </h3>
                 </div>
                 <div className="flex items-center gap-3">
@@ -212,12 +208,11 @@ export function AiCoachCard({
                                     />
                                 </div>
                             </div>
-                            <p className="text-sm font-bold text-gray-600 dark:text-gray-300 animate-pulse">
-                                TheNextTrade AI is analyzing your trades...
+                            <p className="text-sm font-bold text-gray-700 dark:text-gray-200 animate-pulse">
+                                Auditing trade execution & telemetry...
                             </p>
                             <p className="text-xs text-gray-400 mt-1">
-                                Cross-referencing emotions, sessions, and risk
-                                patterns
+                                Benchmarking drawdown, sizing drift, and session consistency
                             </p>
                         </div>
                     ) : error ? (
@@ -226,7 +221,7 @@ export function AiCoachCard({
                             <p className="text-sm font-medium">{error}</p>
                             <Button
                                 variant="outline"
-                                size="smd"
+                                size="sm"
                                 onClick={() => handleGenerate(true)}
                                 className="ml-auto"
                             >

@@ -106,7 +106,7 @@ export function GoalCard({ goal, onUpdate }: GoalCardProps) {
     };
 
     return (
-        <div className="p-5 bg-white dark:bg-[#151925] border border-dashboard/80 dark:border-white/[0.08] rounded-2xl flex flex-col justify-between hover:shadow-md transition-all">
+        <div className="p-5 bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] rounded-2xl flex flex-col justify-between hover:shadow-md transition-all">
             <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
                     <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">
@@ -142,7 +142,7 @@ export function GoalCard({ goal, onUpdate }: GoalCardProps) {
                                 <span className="text-[10px] uppercase font-black text-gray-400 dark:text-gray-500 flex-1">
                                     Update Progress:
                                 </span>
-                                <div className="flex items-center bg-gray-50 dark:bg-[#11141d] rounded-xl border border-dashboard p-0.5">
+                                <div className="flex items-center bg-gray-50 dark:bg-white/[0.04] rounded-xl border border-dashboard p-0.5">
                                     <Button
                                         type="button"
                                         variant="outline"

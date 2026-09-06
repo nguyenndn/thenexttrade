@@ -193,7 +193,7 @@ export default function LessonClientView({
                     )}
 
                     {/* Article Content Card */}
-                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm overflow-hidden">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                         <div className="px-6 lg:px-8 pt-6 lg:pt-8 pb-4">
                             <h1 className="text-2xl lg:text-3xl font-black text-gray-700 dark:text-white leading-tight tracking-tight">
                                 {lesson.title}
@@ -209,7 +209,7 @@ export default function LessonClientView({
                     </div>
 
                     {/* Completion + Navigation */}
-                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm p-6 flex items-center justify-between gap-4">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-6 flex items-center justify-between gap-4">
                         {prevLesson ? (
                             <Link
                                 href={lessonPath(prevLesson.slug)}
@@ -270,7 +270,7 @@ export default function LessonClientView({
                 {/* ── Sidebar ── */}
                 <div className="space-y-4">
                     {/* Module Info Card */}
-                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm p-5 space-y-3">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5 space-y-3">
                         <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
                             Current Module
                         </h3>
@@ -311,7 +311,7 @@ export default function LessonClientView({
                     </div>
 
                     {/* Lesson List Card */}
-                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm overflow-hidden">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                         <div className="p-4 border-b border-dashboard flex items-center justify-between">
                             <h3 className="font-bold text-sm text-gray-700 dark:text-white">
                                 Lessons in Module
@@ -462,7 +462,7 @@ export default function LessonClientView({
                         animate={{ x: 0 }}
                         exit={{ x: "100%" }}
                         transition={SPRING_SOFT}
-                        className="absolute right-0 top-0 bottom-0 w-3/4 max-w-xs bg-white dark:bg-[#151925] shadow-2xl p-6 overflow-y-auto"
+                        className="absolute right-0 top-0 bottom-0 w-3/4 max-w-xs bg-white dark:bg-[#1E2028] shadow-2xl p-6 overflow-y-auto"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="flex justify-between items-center mb-6">
@@ -470,7 +470,7 @@ export default function LessonClientView({
                                 Course Content
                             </h3>
                             <Button
-                                variant="ghost"
+                                variant="outline"
                                 size="icon"
                                 onClick={() => setMobileMenuOpen(false)}
                                 aria-label="Close menu"

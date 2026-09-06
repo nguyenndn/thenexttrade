@@ -78,19 +78,19 @@ export function PlaybookComparisonCard({ summary }: { summary?: PlaybookSummary 
                     </div>
 
                     <div className="grid grid-cols-3 gap-3">
-                        <div className="bg-white/80 dark:bg-[#151925] p-3 rounded-xl border border-dashboard text-center">
+                        <div className="bg-white/80 dark:bg-[#1E2028] p-3 rounded-xl border border-dashboard text-center">
                             <p className="text-[10px] uppercase font-bold text-gray-500 mb-0.5">Win Rate</p>
                             <p className="text-xl font-black text-primary">
                                 {playbook.winRate.toFixed(1)}%
                             </p>
                         </div>
-                        <div className="bg-white/80 dark:bg-[#151925] p-3 rounded-xl border border-dashboard text-center">
+                        <div className="bg-white/80 dark:bg-[#1E2028] p-3 rounded-xl border border-dashboard text-center">
                             <p className="text-[10px] uppercase font-bold text-gray-500 mb-0.5">Total P&L</p>
                             <p className={`text-xl font-black ${playbook.totalPnL >= 0 ? "text-primary" : "text-red-500"}`}>
                                 ${playbook.totalPnL.toFixed(0)}
                             </p>
                         </div>
-                        <div className="bg-white/80 dark:bg-[#151925] p-3 rounded-xl border border-dashboard text-center">
+                        <div className="bg-white/80 dark:bg-[#1E2028] p-3 rounded-xl border border-dashboard text-center">
                             <p className="text-[10px] uppercase font-bold text-gray-500 mb-0.5">Profit Factor</p>
                             <p className="text-xl font-black text-gray-700 dark:text-white">
                                 {playbook.profitFactor >= 99 ? "MAX" : playbook.profitFactor.toFixed(2)}
@@ -115,19 +115,19 @@ export function PlaybookComparisonCard({ summary }: { summary?: PlaybookSummary 
                     </div>
 
                     <div className="grid grid-cols-3 gap-3">
-                        <div className="bg-white/80 dark:bg-[#151925] p-3 rounded-xl border border-dashboard text-center">
+                        <div className="bg-white/80 dark:bg-[#1E2028] p-3 rounded-xl border border-dashboard text-center">
                             <p className="text-[10px] uppercase font-bold text-gray-500 mb-0.5">Win Rate</p>
                             <p className="text-xl font-black text-gray-700 dark:text-white">
                                 {discretionary.winRate.toFixed(1)}%
                             </p>
                         </div>
-                        <div className="bg-white/80 dark:bg-[#151925] p-3 rounded-xl border border-dashboard text-center">
+                        <div className="bg-white/80 dark:bg-[#1E2028] p-3 rounded-xl border border-dashboard text-center">
                             <p className="text-[10px] uppercase font-bold text-gray-500 mb-0.5">Total P&L</p>
                             <p className={`text-xl font-black ${discretionary.totalPnL >= 0 ? "text-green-500" : "text-red-500"}`}>
                                 ${discretionary.totalPnL.toFixed(0)}
                             </p>
                         </div>
-                        <div className="bg-white/80 dark:bg-[#151925] p-3 rounded-xl border border-dashboard text-center">
+                        <div className="bg-white/80 dark:bg-[#1E2028] p-3 rounded-xl border border-dashboard text-center">
                             <p className="text-[10px] uppercase font-bold text-gray-500 mb-0.5">Profit Factor</p>
                             <p className="text-xl font-black text-gray-700 dark:text-white">
                                 {discretionary.profitFactor >= 99 ? "MAX" : discretionary.profitFactor.toFixed(2)}

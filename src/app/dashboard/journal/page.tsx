@@ -12,8 +12,9 @@ import { getUserTradingDataState } from "@/lib/trading-data-state";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-    title: "Trading Journal | TheNextTrade",
-    description: "Your trading history",
+    title: "Trading Journal & Execution Telemetry | TheNextTrade",
+    description:
+        "Detailed trade logs, execution telemetry, trade planning, and performance verification.",
 };
 
 export default async function JournalPage({

@@ -124,7 +124,7 @@ export function GoalModal({ isOpen, onClose, onSuccess }: GoalModalProps) {
                                         onValueChange={field.onChange}
                                         value={field.value}
                                     >
-                                        <SelectTrigger className="w-full h-10 px-3 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none">
+                                        <SelectTrigger className="w-full h-10 px-3 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#1E2028] text-sm text-gray-800 dark:text-white focus:outline-none">
                                             <SelectValue placeholder="Select Goal Type" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -164,7 +164,7 @@ export function GoalModal({ isOpen, onClose, onSuccess }: GoalModalProps) {
                                         onValueChange={field.onChange}
                                         value={field.value}
                                     >
-                                        <SelectTrigger className="w-full h-10 px-3 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none">
+                                        <SelectTrigger className="w-full h-10 px-3 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#1E2028] text-sm text-gray-800 dark:text-white focus:outline-none">
                                             <SelectValue placeholder="Select Goal Period" />
                                         </SelectTrigger>
                                         <SelectContent>

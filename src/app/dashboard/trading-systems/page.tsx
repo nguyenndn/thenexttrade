@@ -7,8 +7,9 @@ import { TradingSystemsClient } from "@/components/dashboard/trading-systems/Tra
 import { getMyVipRequest, getVipLink } from "@/actions/vip-request";
 
 export const metadata: Metadata = {
-    title: "Trading System | TheNextTrade",
-    description: "Download professional trading EAs, indicators, and join VIP",
+    title: "Trading Systems | TheNextTrade",
+    description:
+        "Verified execution algorithms, indicators, and institutional license controls.",
 };
 
 export default async function TradingSystemsPage() {

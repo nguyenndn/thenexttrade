@@ -79,7 +79,7 @@ export function LessonPreviewModal({
                         }}
                         className="fixed inset-0 z-[70] flex items-center justify-center p-4 pointer-events-none"
                     >
-                        <div className="bg-white dark:bg-[#151925] rounded-2xl border border-dashboard shadow-2xl w-full max-w-2xl pointer-events-auto overflow-hidden max-h-[90vh] flex flex-col">
+                        <div className="bg-white dark:bg-[#1E2028] rounded-2xl border border-dashboard shadow-2xl w-full max-w-2xl pointer-events-auto overflow-hidden max-h-[90vh] flex flex-col">
                             {/* Header */}
                             <div className="relative bg-gradient-to-r from-primary/15 to-cyan-500/15 px-6 py-5 flex-shrink-0">
                                 <button

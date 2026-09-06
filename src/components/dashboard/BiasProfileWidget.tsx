@@ -93,7 +93,7 @@ export function BiasProfileWidget() {
         } catch (e) {
             console.error(e);
             setError(
-                "Failed to load AI Cognitive Bias Profile. Please try again."
+                "Failed to load Cognitive Bias Profile. Please try again."
             );
         } finally {
             setLoading(false);
@@ -139,10 +139,10 @@ export function BiasProfileWidget() {
                 <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
                 <div className="text-center space-y-1">
                     <p className="text-sm font-bold text-gray-700 dark:text-gray-200">
-                        AI is scanning journal logs...
+                        Scanning journal logs & telemetry...
                     </p>
                     <p className="text-xs text-gray-400 dark:text-gray-500">
-                        Analyzing emotional tags and metrics to map cognitive
+                        Analyzing emotional tags and metrics to map execution
                         biases...
                     </p>
                 </div>
@@ -169,39 +169,37 @@ export function BiasProfileWidget() {
                         </div>
                         <div>
                             <h3 className="text-base font-black text-gray-800 dark:text-white flex items-center gap-1.5">
-                                AI Cognitive Bias Profiler
-                                <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-[9px] font-black text-white uppercase tracking-wider shadow-sm">
+                                Cognitive Bias Profiler
+                                <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full border border-amber-500/25 bg-amber-500/10 text-[9px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-wider">
                                     Pro
                                 </span>
                             </h3>
                             <p className="text-xs text-gray-500 dark:text-gray-400">
-                                AI Trading Psychology Bias Map
+                                Execution Bias Radar
                             </p>
                         </div>
                     </div>
 
                     <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-dashboard space-y-3">
                         <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
-                            <strong>Upgrade to Pro to unlock:</strong> AI will
-                            automatically analyze your closed trades combined
-                            with before/after entry emotions to identify
-                            psychological blind spots causing you to lose money
+                            <strong>Upgrade to Pro to unlock:</strong> Telemetry
+                            engine analyzes your execution history against
+                            pre/post trade emotional logs to identify
+                            behavioral blind spots causing equity drawdowns
                             (Loss Aversion, FOMO, Overconfidence).
                         </p>
                         <ul className="space-y-1.5 text-xs text-gray-500 dark:text-gray-400">
                             <li className="flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                                4D Trading Psychology Radar Chart
+                                4D Behavioral Bias Radar Chart
                             </li>
                             <li className="flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                                Actionable "Tough Love" discipline coaching
-                                feedback
+                                Execution discipline &amp; drawdown alerts
                             </li>
                             <li className="flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                                Closed-loop learning: Automatically recommended
-                                Academy lessons
+                                Targeted Academy lessons to fix identified leaks
                             </li>
                         </ul>
                     </div>
@@ -237,7 +235,7 @@ export function BiasProfileWidget() {
                         </div>
                         <div>
                             <h3 className="text-base font-black text-gray-800 dark:text-white flex items-center gap-1.5">
-                                AI Cognitive Bias Profiler
+                                Cognitive Bias Profiler
                             </h3>
                             <p className="text-xs text-gray-500 dark:text-gray-400">
                                 Cognitive Bias Map
@@ -253,9 +251,9 @@ export function BiasProfileWidget() {
                             Insufficient Data for Analysis
                         </h4>
                         <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mx-auto">
-                            The AI system requires at least **5 closed trades**
-                            with emotional tags in your journal to accurately
-                            identify your psychological biases.
+                            Requires at least **5 closed trades** with emotional
+                            tags in your journal to accurately map your
+                            execution bias radar.
                         </p>
                     </div>
                 </div>
@@ -324,7 +322,7 @@ export function BiasProfileWidget() {
                                 Cognitive Bias Profiler
                             </h3>
                             <p className="text-xs text-gray-500">
-                                AI Trading Psychologist Bias Map
+                                Execution Bias Radar
                             </p>
                         </div>
                     </div>
@@ -432,7 +430,7 @@ export function BiasProfileWidget() {
                     {/* Assessment */}
                     <div className="p-3 rounded-xl bg-amber-500/[0.02] dark:bg-amber-500/[0.03] border border-amber-500/10">
                         <p className="text-[9px] font-black text-amber-500 uppercase tracking-widest">
-                            AI Mentor Assessment:
+                            Discipline Assessment:
                         </p>
                         <p className="text-xs text-gray-600 dark:text-gray-300 italic leading-relaxed mt-0.5">
                             "{profile.assessment}"

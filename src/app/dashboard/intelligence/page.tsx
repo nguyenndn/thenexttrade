@@ -17,8 +17,8 @@ import { PageHeader } from "@/components/ui/PageHeader";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-    title: "Trading Intelligence | Dashboard",
-    description: "AI-powered insights from your trading data",
+    title: "Trading Intelligence & Leak Radar | TheNextTrade",
+    description: "Execution leak radar, discipline scoring, and behavioral pattern detection from your trade telemetry.",
 };
 
 const analyticsTabs = [
@@ -99,7 +99,7 @@ export default async function IntelligencePage({
         <div className="space-y-4">
             <PageHeader
                 title="Trading Intelligence"
-                description="Pattern detection and insights from your trading data."
+                description="Execution leak radar, discipline scoring, and behavioral pattern detection from your trade history."
             >
                 {tradingDataState.hasTradeData && (
                     <DashboardFilter

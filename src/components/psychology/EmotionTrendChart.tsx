@@ -47,7 +47,7 @@ const EMOTION_EMOJI: Record<string, string> = {
 export function EmotionTrendChart({ data }: EmotionTrendChartProps) {
     if (!data || data.length < 2) {
         return (
-            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm border-t-4 border-t-indigo-500 h-auto sm:h-[530px] flex flex-col overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm h-auto sm:h-[530px] flex flex-col overflow-hidden">
                 <div className="px-5 pt-5 pb-3 shrink-0">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-indigo-500/10 rounded-lg text-indigo-500">
@@ -80,7 +80,7 @@ export function EmotionTrendChart({ data }: EmotionTrendChartProps) {
     }));
 
     return (
-        <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm border-t-4 border-t-indigo-500 h-auto sm:h-[530px] flex flex-col overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm h-auto sm:h-[530px] flex flex-col overflow-hidden">
             <div className="px-5 pt-5 pb-3 shrink-0">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">

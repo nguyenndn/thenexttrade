@@ -72,8 +72,8 @@ export function TradingSystemsClient({
         <>
             {/* Header */}
             <PageHeader
-                title="Trading System"
-                description="Manage EA, indicators & VIP access."
+                title="Trading Systems"
+                description="Verified execution algorithms, indicators, and institutional license controls."
             />
 
             {/* Account Setup Progress */}
@@ -86,7 +86,7 @@ export function TradingSystemsClient({
             {/* Unified Tabs */}
             <Tabs defaultValue={defaultTab} className="w-full">
                 <div className="overflow-x-auto scrollbar-hide -mx-1 px-1">
-                    <TabsList className="bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-xl border border-dashboard w-auto inline-flex h-auto shrink-0">
+                    <TabsList className="bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-xl border border-dashboard dark:border-white/[0.08] w-auto inline-flex h-auto shrink-0">
                         <TabsTrigger
                             value="MT5_EA"
                             className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"

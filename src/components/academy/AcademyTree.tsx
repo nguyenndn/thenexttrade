@@ -559,7 +559,7 @@ export function AcademyTree({
 
     return (
         <>
-            <div className="relative min-h-[600px] w-full py-16 px-4 overflow-hidden bg-[#fbfaf6] dark:bg-[#0B0E14] transition-colors duration-300">
+            <div className="relative min-h-[600px] w-full py-16 px-4 overflow-hidden bg-[#fbfaf6] dark:bg-[#1E2028] transition-colors duration-300">
                 {/* Paper Grid (light mode) */}
                 <div className="absolute inset-0 z-0 pointer-events-none opacity-70 bg-[linear-gradient(to_right,rgba(15,23,42,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.035)_1px,transparent_1px)] [background-size:48px_48px] dark:opacity-0" />
 

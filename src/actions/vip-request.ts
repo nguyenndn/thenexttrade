@@ -246,7 +246,7 @@ export async function approveVipRequest(requestId: string) {
             data: {
                 userId: vipRequest.userId,
                 type: NotificationType.VIP_APPROVED,
-                title: "🎉 VIP Access Activated!",
+                title: "VIP Access Activated!",
                 message:
                     "Your VIP request has been approved. You now have full VIP access — open the VIP tab to join the Telegram channel & TraderRoom.",
                 priority: NotificationPriority.HIGH,
@@ -465,7 +465,7 @@ export async function grantGracePeriod(
         data: {
             userId,
             type: NotificationType.VIP_APPROVED,
-            title: "⏳ Temporary VIP Access Granted",
+            title: "Temporary VIP Access Granted",
             message: `You have been granted ${days}-day temporary VIP access. Complete your verification to keep access permanently.`,
             priority: NotificationPriority.NORMAL,
             link: NOTIFICATION_ROUTES.VIP_UNLOCK_PRO,

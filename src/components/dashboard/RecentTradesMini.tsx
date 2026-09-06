@@ -34,11 +34,11 @@ export function RecentTradesMini({ trades }: RecentTradesMiniProps) {
     };
 
     return (
-        <div className="flex flex-col h-full w-full border-t-4 border-t-fuchsia-500 overflow-hidden">
+        <div className="flex flex-col h-full w-full border-t-4 border-t-amber-500 overflow-hidden">
             {/* Header */}
             <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                    <div className="p-2 bg-indigo-500/10 rounded-lg text-indigo-500">
+                    <div className="p-2 bg-amber-500/10 rounded-lg text-amber-500">
                         <Clock size={18} />
                     </div>
                     <div>

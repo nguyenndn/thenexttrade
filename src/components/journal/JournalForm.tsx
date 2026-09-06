@@ -1451,7 +1451,7 @@ export default function JournalForm({
                                                                     )
                                                                 }
                                                                 placeholder={`Explain why this rule was ${currentCheck.status.toLowerCase()}...`}
-                                                                className="w-full text-xs p-2 rounded-lg bg-white dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none"
+                                                                className="w-full text-xs p-2 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard focus:border-primary focus:outline-none"
                                                             />
                                                         </div>
                                                     )}

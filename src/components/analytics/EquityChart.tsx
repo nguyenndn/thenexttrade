@@ -22,7 +22,7 @@ interface EquityChartProps {
 const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
         return (
-            <div className="bg-white dark:bg-[#0B0E14] border border-dashboard p-4 rounded-xl shadow-xl">
+            <div className="bg-white dark:bg-[#1E2028] border border-dashboard p-4 rounded-xl shadow-xl">
                 <p className="text-sm font-bold text-gray-600 mb-2">
                     {format(new Date(label), "MMM dd, yyyy")}
                 </p>

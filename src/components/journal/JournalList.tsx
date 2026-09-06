@@ -417,7 +417,7 @@ export default function JournalList({
             {/* Compact Header: Description + TabBar + Filters */}
             <PageHeader
                 title="Journal"
-                description="Track your trades and analyze your performance."
+                description="Log trade setups, review execution telemetry, and audit plan compliance."
             />
             <div
                 id="onborda-journal-filters"
@@ -565,7 +565,7 @@ export default function JournalList({
                             <p className="text-gray-600 dark:text-gray-300 px-6 max-w-sm mx-auto mb-2 font-medium">
                                 {hasTradeData
                                     ? "You haven't recorded any trades matching the current filters."
-                                    : "Start your trading journal to track your trades, analyze performance, and find your trading edge."}
+                                    : "Log trades to verify setup execution, analyze risk-reward ratios, and isolate behavioral leaks."}
                             </p>
 
                             <EmptyStateCTAs

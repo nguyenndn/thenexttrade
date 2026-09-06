@@ -45,7 +45,7 @@ export function StreakCalendarGrid() {
 
     if (isLoading) {
         return (
-            <div className="rounded-xl border border-dashboard bg-white dark:bg-[#151925] p-6 flex flex-col items-center justify-center min-h-[220px]">
+            <div className="rounded-2xl border border-dashboard dark:border-white/[0.08] bg-white dark:bg-[#1E2028] p-6 flex flex-col items-center justify-center min-h-[220px]">
                 <Loader2 className="animate-spin text-amber-500" size={32} />
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-medium">
                     Loading streak history...
@@ -79,39 +79,38 @@ export function StreakCalendarGrid() {
     const totalTradeDays = trades.length;
 
     return (
-        <div className="rounded-2xl border border-dashboard bg-white dark:bg-[#151925] p-6 shadow-sm hover:shadow-md hover:border-primary/10 transition-all duration-300">
+        <div className="rounded-2xl border border-dashboard dark:border-white/[0.08] bg-white dark:bg-[#1E2028] p-6 shadow-sm hover:shadow-md transition-all duration-300">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div>
-                    <h3 className="text-lg font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
                         <Flame
-                            className="text-orange-500 animate-pulse"
+                            className="text-amber-500"
                             size={20}
                         />
-                        Visual Trading Streak Grid
+                        Trading Consistency Calendar
                     </h3>
                     <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                        Your daily trading and check-in consistency over the
-                        past 365 days.
+                        Daily trading and check-in consistency over the past 365 days.
                     </p>
                 </div>
 
                 {/* Mini stats */}
-                <div className="flex items-center gap-6 text-xs font-bold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-white/5 px-4 py-2.5 rounded-xl border border-dashboard">
+                <div className="flex items-center gap-6 text-xs font-semibold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-white/5 px-4 py-2.5 rounded-xl border border-dashboard dark:border-white/[0.08]">
                     <div className="flex items-center gap-1.5">
                         <CheckCircle className="text-amber-500" size={14} />
                         <span>
                             Check-in Days:{" "}
-                            <span className="text-amber-500">
+                            <span className="text-amber-500 font-bold tabular-nums">
                                 {totalCheckIns}
                             </span>
                         </span>
                     </div>
                     <div className="h-4 w-px bg-gray-200 dark:bg-white/10" />
                     <div className="flex items-center gap-1.5">
-                        <TrendingUp className="text-amber-500" size={14} />
+                        <TrendingUp className="text-emerald-500" size={14} />
                         <span>
                             Trading Days:{" "}
-                            <span className="text-amber-500">
+                            <span className="text-emerald-500 font-bold tabular-nums">
                                 {totalTradeDays}
                             </span>
                         </span>
@@ -123,7 +122,7 @@ export function StreakCalendarGrid() {
                 <div className="w-full overflow-x-auto scrollbar-hide select-none pb-2">
                     <div className="flex gap-1 min-w-[760px] justify-between">
                         {/* Days of Week Y-Axis Labels */}
-                        <div className="flex flex-col justify-between text-[9px] font-extrabold text-gray-500 dark:text-gray-400 pr-2 pt-1 pb-1 uppercase tracking-wider shrink-0 h-[88px]">
+                        <div className="flex flex-col justify-between text-[9px] font-semibold text-gray-500 dark:text-gray-400 pr-2 pt-1 pb-1 uppercase tracking-wider shrink-0 h-[88px]">
                             <span>Sun</span>
                             <span>Tue</span>
                             <span>Thu</span>
@@ -158,7 +157,7 @@ export function StreakCalendarGrid() {
                                             subtitle =
                                                 "Trading Day (Trades Logged)";
                                             colorClass =
-                                                "bg-gradient-to-br from-amber-400 to-amber-600 border border-amber-500/40 shadow-sm shadow-amber-500/20";
+                                                "bg-amber-500 border border-amber-600/40 shadow-sm";
                                         } else if (hasCheckedIn) {
                                             subtitle =
                                                 "Daily Check-in Completed";
@@ -172,7 +171,7 @@ export function StreakCalendarGrid() {
                                             !hasTraded
                                         ) {
                                             colorClass =
-                                                "border border-dashed border-amber-500/50 bg-gray-50 dark:bg-white/5 animate-pulse";
+                                                "border border-dashed border-amber-500/50 bg-gray-50 dark:bg-white/5";
                                         }
 
                                         if (isFutureDay) {
@@ -196,12 +195,12 @@ export function StreakCalendarGrid() {
                                                 </TooltipTrigger>
                                                 <TooltipContent
                                                     side="top"
-                                                    className="bg-[#121620] border-white/10 text-white font-bold p-3 rounded-lg shadow-xl text-xs space-y-1 z-50"
+                                                    className="bg-[#151925] border-white/10 text-white font-semibold p-3 rounded-lg shadow-xl text-xs space-y-1 z-50"
                                                 >
                                                     <p className="text-gray-400 font-medium">
                                                         {title}
                                                     </p>
-                                                    <p className="flex items-center gap-1.5 text-amber-400 font-extrabold">
+                                                    <p className="flex items-center gap-1.5 text-amber-400 font-bold">
                                                         {hasTraded ? (
                                                             <TrendingUp
                                                                 size={12}
@@ -229,11 +228,11 @@ export function StreakCalendarGrid() {
             </TooltipProvider>
 
             {/* Grid Legend */}
-            <div className="flex items-center justify-end gap-3 mt-4 text-[10px] font-bold text-gray-500 dark:text-gray-400">
+            <div className="flex items-center justify-end gap-3 mt-4 text-[10px] font-semibold text-gray-500 dark:text-gray-400">
                 <span>Less</span>
-                <div className="w-2.5 h-2.5 rounded-[2px] bg-gray-100 dark:bg-white/5" />
+                <div className="w-2.5 h-2.5 rounded-[2px] bg-gray-100 dark:bg-white/5 border border-dashboard dark:border-white/10" />
                 <div className="w-2.5 h-2.5 rounded-[2px] bg-amber-500/25 dark:bg-amber-500/20 border border-amber-500/30" />
-                <div className="w-2.5 h-2.5 rounded-[2px] bg-gradient-to-br from-amber-400 to-amber-600 border border-amber-500/40" />
+                <div className="w-2.5 h-2.5 rounded-[2px] bg-amber-500 border border-amber-600/40" />
                 <span>More</span>
             </div>
         </div>

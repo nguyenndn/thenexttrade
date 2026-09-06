@@ -149,8 +149,7 @@ function AnalyticsEmptyState() {
                 No Trading Data Yet
             </h3>
             <p className="text-gray-600 dark:text-gray-300 px-6 max-w-sm mx-auto mb-2">
-                Start logging trades in your journal to unlock powerful
-                analytics and performance insights.
+                Log closed trades in your journal to calculate execution metrics, win rate distribution, and profit factor.
             </p>
 
             <EmptyStateCTAs />

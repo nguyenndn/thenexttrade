@@ -138,7 +138,7 @@ export function CertificateCard({
         const progress =
             totalQuizzes > 0 ? (passedQuizzes / totalQuizzes) * 100 : 0;
         return (
-            <div className="relative bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm p-6 opacity-70">
+            <div className="relative bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-6 opacity-70">
                 <div className="absolute top-4 right-4">
                     <Lock size={18} className="text-gray-400" />
                 </div>

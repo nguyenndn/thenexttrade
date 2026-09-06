@@ -142,9 +142,7 @@ export default async function CertificatesPage() {
                         </p>
                     </div>
                     <div className="ml-auto">
-                        <div className="text-2xl font-black text-yellow-400/30">
-                            🏆
-                        </div>
+                        <Trophy size={28} className="text-yellow-500/40" />
                     </div>
                 </div>
             )}
@@ -185,7 +183,7 @@ export default async function CertificatesPage() {
             <div className="text-center pt-4">
                 <Link
                     href="/dashboard/academy"
-                    className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-gray-600 dark:text-gray-300 bg-white dark:bg-[#151925] border border-dashboard rounded-xl shadow-sm hover:border-primary hover:text-primary transition-colors"
+                    className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-gray-600 dark:text-gray-300 bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl shadow-sm hover:border-primary hover:text-primary transition-colors"
                 >
                     <GraduationCap size={16} />
                     Back to Academy
