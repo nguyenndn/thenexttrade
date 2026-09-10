@@ -14,6 +14,7 @@ import {
     Activity,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 interface NorthStarPanelProps {
     data: NorthStarReport;
@@ -24,43 +25,37 @@ const funnelSteps = [
         key: "newUsers",
         label: "New Users",
         icon: Users,
-        color: "text-blue-600",
-        bg: "bg-blue-50 border-blue-100 dark:bg-blue-500/10 dark:border-blue-500/20",
+        gradient: "bg-gradient-to-br from-blue-500 to-indigo-600",
     },
     {
         key: "connectedAccountUsers",
         label: "Connected",
         icon: Wallet,
-        color: "text-cyan-600",
-        bg: "bg-cyan-50 border-cyan-100 dark:bg-cyan-500/10 dark:border-cyan-500/20",
+        gradient: "bg-gradient-to-br from-cyan-500 to-teal-600",
     },
     {
         key: "firstTradeUsers",
         label: "First Trade",
         icon: BookOpen,
-        color: "text-emerald-600",
-        bg: "bg-emerald-50 border-emerald-100 dark:bg-emerald-500/10 dark:border-emerald-500/20",
+        gradient: "bg-gradient-to-br from-emerald-500 to-green-600",
     },
     {
         key: "weeklyReportUsers",
         label: "Weekly Rep",
         icon: FileText,
-        color: "text-amber-600",
-        bg: "bg-amber-50 border-amber-100 dark:bg-amber-500/10 dark:border-amber-500/20",
+        gradient: "bg-gradient-to-br from-amber-500 to-orange-600",
     },
     {
         key: "proRequestUsers",
         label: "Pro Req",
         icon: Crown,
-        color: "text-orange-600",
-        bg: "bg-orange-50 border-orange-100 dark:bg-orange-500/10 dark:border-orange-500/20",
+        gradient: "bg-gradient-to-br from-orange-500 to-rose-600",
     },
     {
         key: "proUnlockedUsers",
         label: "Pro Active",
         icon: Zap,
-        color: "text-primary",
-        bg: "bg-primary/10 border-primary/20",
+        gradient: "bg-gradient-to-br from-primary via-teal-500 to-emerald-500",
     },
 ] as const;
 
@@ -78,167 +73,188 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
             : 0;
 
     return (
-        <section className="relative overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-[linear-gradient(135deg,#ffffff_0%,#fbfffd_52%,#fff8ea_100%)] shadow-[0_8px_30px_rgba(15,23,42,0.05)] dark:bg-[linear-gradient(135deg,#121722_0%,#111827_56%,#17120a_100%)]">
-            <div className="absolute inset-x-0 top-0 h-1 bg-[linear-gradient(90deg,#10b981,#38bdf8,#f59e0b)]" />
+        <section className="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm hover:shadow-md transition-shadow p-5 sm:p-6 space-y-6">
+            {/* Top Accent Gradient Line */}
+            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 via-sky-400 to-amber-500" />
 
-            <div className="relative p-4 md:p-5">
-                <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
-                    <div className="min-w-0">
-                        <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300">
-                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.55)]" />
-                            North Star
+            {/* Top Header: North Star Badge, Primary Metric & Action */}
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+                <div className="space-y-3">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-xs">
+                        <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                        </span>
+                        North Star Metric
+                    </div>
+
+                    <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
+                        <div>
+                            <p className="text-xs font-bold text-gray-500 dark:text-gray-400">
+                                Weekly active traders
+                            </p>
+                            <p className="mt-0.5 text-4xl sm:text-5xl font-black text-gray-900 dark:text-white tabular-nums tracking-tight">
+                                {data.activeTraders.toLocaleString()}
+                            </p>
                         </div>
 
-                        <div className="mt-3 flex flex-wrap items-end gap-x-4 gap-y-2">
-                            <div>
-                                <p className="text-xs font-bold text-gray-500 dark:text-gray-400">
-                                    Weekly active traders
-                                </p>
-                                <p className="mt-0.5 text-5xl font-black leading-none tracking-tight text-gray-950 tabular-nums dark:text-white">
-                                    {data.activeTraders.toLocaleString()}
-                                </p>
-                            </div>
+                        {/* Trend Percentage Badge */}
+                        <span
+                            className={cn(
+                                "mb-1 inline-flex items-center gap-1.5 rounded-xl border px-3 py-1 text-xs font-black tabular-nums shadow-xs",
+                                isPositive &&
+                                    "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20",
+                                isNegative &&
+                                    "bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/20",
+                                !isPositive &&
+                                    !isNegative &&
+                                    "bg-gray-100 text-gray-700 dark:bg-white/5 dark:text-gray-300 border-gray-200 dark:border-white/10"
+                            )}
+                        >
+                            <TrendIcon size={14} />
+                            {isPositive ? "+" : ""}
+                            {data.trendPct}%
+                        </span>
 
-                            <span
-                                className={cn(
-                                    "mb-1 inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-black tabular-nums",
-                                    isPositive &&
-                                        "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
-                                    isNegative &&
-                                        "bg-red-500/15 text-red-700 dark:text-red-300",
-                                    !isPositive &&
-                                        !isNegative &&
-                                        "bg-gray-500/15 text-gray-700 dark:text-gray-300"
-                                )}
-                            >
-                                <TrendIcon size={14} />
-                                {isPositive ? "+" : ""}
-                                {data.trendPct}%
-                            </span>
-
-                            <div className="mb-1 border-l border-gray-200 dark:border-white/10 pl-4">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                        {/* Secondary Stats Capsules */}
+                        <div className="flex items-center gap-2 mb-0.5">
+                            <div className="px-3 py-1.5 rounded-xl bg-gray-50/90 dark:bg-white/[0.03] border border-gray-200/80 dark:border-white/10 shadow-xs">
+                                <p className="text-[10px] font-black uppercase tracking-wider text-gray-400">
                                     Previous
                                 </p>
-                                <p className="mt-0.5 text-base font-black text-gray-900 tabular-nums dark:text-white">
+                                <p className="text-sm font-black text-gray-900 dark:text-white tabular-nums mt-0.5">
                                     {data.previousActiveTraders.toLocaleString()}
                                 </p>
                             </div>
 
-                            <div className="mb-1 border-l border-gray-200 dark:border-white/10 pl-4">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
-                                    Pro activation
+                            <div className="px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 shadow-xs">
+                                <p className="text-[10px] font-black uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                                    Pro Activation
                                 </p>
-                                <p className="mt-0.5 text-base font-black text-amber-700 tabular-nums dark:text-amber-300">
+                                <p className="text-sm font-black text-amber-700 dark:text-amber-300 tabular-nums mt-0.5">
                                     {activationRate}%
                                 </p>
                             </div>
                         </div>
                     </div>
-
-                    <Link
-                        href="/admin/users"
-                        className="inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 px-3 text-xs font-black text-emerald-700 transition-colors hover:bg-emerald-100 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300 dark:hover:bg-emerald-500/15"
-                    >
-                        View Users
-                        <ArrowRight size={14} />
-                    </Link>
                 </div>
 
-                <div className="mt-5 border-t border-gray-200 dark:border-white/10 pt-4">
-                    <div className="flex flex-col gap-1.5 md:flex-row md:items-center md:justify-between">
+                <Link
+                    href="/admin/users"
+                    className={buttonVariants({
+                        variant: "outline",
+                        size: "sm",
+                        className:
+                            "rounded-xl font-bold shadow-xs shrink-0 self-start lg:self-center gap-1.5",
+                    })}
+                >
+                    View Users
+                    <ArrowRight size={14} />
+                </Link>
+            </div>
+
+            {/* Funnel Section: Weekly Active Traders Funnel */}
+            <div className="pt-5 border-t border-gray-200/80 dark:border-white/10 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                    <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 shadow-xs">
+                            <Activity size={16} />
+                        </div>
                         <div>
-                            <div className="flex items-center gap-1.5">
-                                <Activity
-                                    size={16}
-                                    className="text-amber-600"
-                                />
-                                <h2 className="text-sm font-black text-gray-950 dark:text-white">
-                                    Weekly Active Traders Funnel
-                                </h2>
-                            </div>
-                            <p className="mt-0.5 text-xs font-medium text-gray-500 dark:text-gray-400">
-                                From signup to Pro activation, measured across
-                                the selected report window.
+                            <h2 className="text-base font-black text-gray-950 dark:text-white">
+                                Weekly Active Traders Funnel
+                            </h2>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                From signup to Pro activation, measured across the selected report window.
                             </p>
                         </div>
-                        <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400">
-                            {data.proUnlockedUsers.toLocaleString()} of{" "}
-                            {data.newUsers.toLocaleString()} users reached Pro
-                            Active
-                        </span>
                     </div>
 
-                    <div className="mt-4 grid min-w-0 grid-cols-1 border-y border-gray-200 dark:border-white/10 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
-                        {funnelSteps.map((step, i) => {
-                            const value = data[step.key];
-                            const prevValue =
-                                i > 0 ? data[funnelSteps[i - 1].key] : null;
-                            const convRate =
-                                prevValue && prevValue > 0
-                                    ? Math.round((value / prevValue) * 100)
-                                    : null;
-                            const Icon = step.icon;
+                    <span className="self-start sm:self-auto px-3 py-1 rounded-full text-xs font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/5 border border-gray-200/60 dark:border-white/10">
+                        {data.proUnlockedUsers.toLocaleString()} of{" "}
+                        {data.newUsers.toLocaleString()} users reached Pro Active
+                    </span>
+                </div>
 
-                            return (
-                                <div
-                                    key={step.key}
-                                    className="group min-w-0 border-b border-gray-200 dark:border-white/10 p-3 transition-colors last:border-b-0 hover:bg-white/70 dark:hover:bg-white/[0.03] sm:border-r sm:last:border-r-0 2xl:border-b-0"
-                                >
-                                    <div className="flex items-center gap-3">
+                {/* 6 Elevated Non-Flat Funnel Cards Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3.5">
+                    {funnelSteps.map((step, i) => {
+                        const value = data[step.key];
+                        const prevValue =
+                            i > 0 ? data[funnelSteps[i - 1].key] : null;
+                        const convRate =
+                            prevValue && prevValue > 0
+                                ? Math.round((value / prevValue) * 100)
+                                : null;
+                        const Icon = step.icon;
+
+                        return (
+                            <div
+                                key={step.key}
+                                className="relative p-4 rounded-xl border border-gray-200/80 dark:border-white/10 bg-gray-50/70 dark:bg-white/[0.02] hover:bg-white dark:hover:bg-white/[0.05] shadow-xs hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 group flex flex-col justify-between"
+                            >
+                                <div>
+                                    {/* Icon & Step Number */}
+                                    <div className="flex items-center justify-between gap-2 mb-3">
                                         <div
                                             className={cn(
-                                                "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border shadow-sm",
-                                                step.bg
+                                                "w-9 h-9 rounded-xl flex items-center justify-center text-white shadow-xs shrink-0",
+                                                step.gradient
                                             )}
                                         >
-                                            <Icon
-                                                size={16}
-                                                className={step.color}
-                                            />
+                                            <Icon size={16} />
                                         </div>
 
-                                        <div className="min-w-0 flex-1">
-                                            <div className="flex items-center justify-between gap-2">
-                                                <p className="text-xl font-black leading-none text-gray-950 tabular-nums dark:text-white truncate">
-                                                    {value.toLocaleString()}
-                                                </p>
-                                                {convRate !== null && (
-                                                    <span className="shrink-0 rounded-full bg-emerald-50 px-1.5 py-0.5 text-[9px] font-black text-emerald-700 tabular-nums dark:bg-emerald-500/10 dark:text-emerald-300">
-                                                        {convRate}%
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <p className="mt-1 text-[10px] font-black uppercase tracking-widest text-gray-400 truncate">
-                                                {step.label}
-                                            </p>
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="text-[10px] font-extrabold text-gray-400">
+                                                #{i + 1}
+                                            </span>
+                                            {convRate !== null && (
+                                                <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[10px] font-black text-emerald-600 dark:text-emerald-400 tabular-nums">
+                                                    {convRate}%
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
 
-                                    <div className="mt-3 h-1 overflow-hidden rounded-full bg-gray-100 dark:bg-white/10">
+                                    {/* Value & Step Label */}
+                                    <div>
+                                        <p className="text-2xl font-black text-gray-900 dark:text-white tabular-nums tracking-tight truncate">
+                                            {value.toLocaleString()}
+                                        </p>
+                                        <p className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mt-1 truncate">
+                                            {step.label}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Progress depth bar */}
+                                <div className="mt-3.5 pt-2 border-t border-gray-200/60 dark:border-white/5">
+                                    <div className="h-1.5 w-full rounded-full bg-gray-200/80 dark:bg-white/10 overflow-hidden shadow-inner">
                                         <div
-                                            className="h-full rounded-full bg-[linear-gradient(90deg,#10b981,#f59e0b)] transition-all duration-500"
+                                            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-500"
                                             style={{
-                                                width: `${Math.max(8, Math.min(100, i === 0 ? 100 : (convRate ?? 0)))}%`,
+                                                width: `${Math.max(6, Math.min(100, i === 0 ? 100 : (convRate ?? 0)))}%`,
                                             }}
                                         />
                                     </div>
                                 </div>
-                            );
-                        })}
-                    </div>
+                            </div>
+                        );
+                    })}
+                </div>
 
-                    <div className="mt-3 flex flex-col gap-1.5 text-[11px] font-medium text-gray-500 dark:text-gray-400 md:flex-row md:items-center md:justify-between">
-                        <span>
-                            Pro activation rate is calculated as Pro Active
-                            divided by New Users for this period.
-                        </span>
-                        <span className="font-black text-amber-700 dark:text-amber-300">
-                            {activationRate}% activation
-                        </span>
-                    </div>
+                {/* Footer Subtext & Rate */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pt-1 text-[11px] text-gray-500 dark:text-gray-400 font-medium">
+                    <span>
+                        Pro activation rate is calculated as Pro Active divided by New Users for this period.
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 font-bold px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-300 w-fit">
+                        {activationRate}% activation
+                    </span>
                 </div>
             </div>
         </section>
     );
 }
+

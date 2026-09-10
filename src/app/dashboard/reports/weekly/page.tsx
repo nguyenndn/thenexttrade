@@ -5,6 +5,7 @@ import { getReports } from "@/actions/reports";
 import { ReportView } from "@/components/reports/ReportView";
 import { TabBar } from "@/components/ui/TabBar";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { ANALYTICS_TABS } from "@/config/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -12,13 +13,6 @@ export const metadata: Metadata = {
     title: "Weekly Review | Trading Dashboard",
     description: "Review your weekly trading performance and patterns",
 };
-
-const analyticsTabs = [
-    { label: "Analytics", href: "/dashboard/analytics" },
-    { label: "Reports", href: "/dashboard/reports" },
-    { label: "Mistakes", href: "/dashboard/mistakes" },
-    { label: "Intelligence", href: "/dashboard/intelligence" },
-];
 
 export default async function WeeklyReviewPage() {
     const user = await getAuthUser();
@@ -33,7 +27,7 @@ export default async function WeeklyReviewPage() {
                 description="Your automated weekly trading report — track progress and improve consistency."
             />
             <div className="mb-4">
-                <TabBar tabs={analyticsTabs} />
+                <TabBar tabs={ANALYTICS_TABS} />
             </div>
 
             <ReportView reports={reports as any} total={total} type="weekly" />

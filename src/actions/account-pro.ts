@@ -49,6 +49,7 @@ export async function createPartnerProAccount(
         fullName: (formData.get("fullName") as string) || undefined,
         country: (formData.get("country") as string) || undefined,
         screenshotUrl: (formData.get("screenshotUrl") as string) || undefined,
+        server: (formData.get("server") as string) || undefined,
     };
 
     // Validate using shared VIP request schema
@@ -67,6 +68,7 @@ export async function createPartnerProAccount(
         fullName,
         country,
         screenshotUrl,
+        server,
     } = parsed.data;
 
     try {
@@ -97,11 +99,17 @@ export async function createPartnerProAccount(
                 broker: { equals: broker, mode: "insensitive" },
                 accountNumber,
             },
-            select: { id: true },
+            select: { id: true, server: true },
         });
 
         if (existingAccount) {
             tradingAccountId = existingAccount.id;
+            if (server && !existingAccount.server) {
+                await prisma.tradingAccount.update({
+                    where: { id: existingAccount.id },
+                    data: { server },
+                });
+            }
         } else {
             // Create new TradingAccount
             apiKey = generateApiKey();
@@ -110,6 +118,7 @@ export async function createPartnerProAccount(
                     userId: user.id,
                     name: `${broker} ${accountNumber.slice(-4)}`,
                     broker,
+                    server: server || null,
                     accountNumber,
                     platform: "MT5",
                     balance: parseFloat(balance) || 0,
@@ -213,6 +222,7 @@ const upgradeFormSchema = z.object({
     fullName: z.string().max(100).optional(),
     country: z.string().max(100).optional(),
     screenshotUrl: z.string().url().max(500).optional().or(z.literal("")),
+    server: z.string().max(100).optional(),
 });
 
 /**
@@ -249,6 +259,7 @@ export async function upgradeToPartnerPro(
         fullName: (formData.get("fullName") as string) || undefined,
         country: (formData.get("country") as string) || undefined,
         screenshotUrl: (formData.get("screenshotUrl") as string) || undefined,
+        server: (formData.get("server") as string) || undefined,
     });
 
     if (!parsed.success) {
@@ -311,6 +322,14 @@ export async function upgradeToPartnerPro(
             return {
                 error: "You already have a pending verification request for this account. Please wait for review.",
             };
+        }
+
+        // 4d. Update server if provided
+        if (parsed.data.server) {
+            await prisma.tradingAccount.update({
+                where: { id: account.id },
+                data: { server: parsed.data.server },
+            });
         }
 
         // 5. Create VipRequest linked to the EXISTING TradingAccount

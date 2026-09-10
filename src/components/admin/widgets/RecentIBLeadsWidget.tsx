@@ -40,16 +40,18 @@ export function RecentIBLeadsWidget({ leads }: { leads: IBLead[] }) {
                     className="w-5 h-5 text-indigo-500"
                     aria-hidden="true"
                 />
-                Recent IB Leads
+                Recent Partner Referrals
             </h3>
 
             <div className="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar">
                 {leads.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-10 text-gray-500">
                         <UsersRound className="w-10 h-10 mb-3 opacity-30" />
-                        <p className="font-medium">No IB leads yet</p>
-                        <p className="text-xs mt-1">
-                            New leads will appear here
+                        <p className="font-bold text-gray-700 dark:text-white">
+                            No partner referrals yet
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                            Incoming broker referral conversions will appear here
                         </p>
                     </div>
                 ) : (

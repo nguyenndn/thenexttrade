@@ -5,6 +5,7 @@ import { ArticleList } from "@/components/admin/articles/ArticleList";
 import { ArticleStatsClient } from "@/components/admin/articles/ArticleStatsClient";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Button } from "@/components/ui/Button";
+import { ArticleVotesAuditModal } from "@/components/admin/articles/ArticleVotesAuditModal";
 
 export const dynamic = "force-dynamic";
 
@@ -208,15 +209,18 @@ export default async function AdminArticlesPage({ searchParams }: PageProps) {
                 title="Article Management"
                 description="Manage blog posts, track performance and analytics."
             >
-                <Link href="/admin/articles/create">
-                    <Button
-                        variant="primary"
-                        className="shadow-lg shadow-primary/30"
-                    >
-                        <Plus size={18} strokeWidth={2.5} />
-                        Add New
-                    </Button>
-                </Link>
+                <div className="flex items-center gap-2">
+                    <ArticleVotesAuditModal />
+                    <Link href="/admin/articles/create">
+                        <Button
+                            variant="primary"
+                            className="shadow-lg shadow-primary/30"
+                        >
+                            <Plus size={18} strokeWidth={2.5} />
+                            Add New
+                        </Button>
+                    </Link>
+                </div>
             </AdminPageHeader>
 
             {/* Animated Hero Stats */}

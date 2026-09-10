@@ -31,7 +31,7 @@ export function ProfitDistributionChart({
     if (!data || data.length === 0) {
         return (
             <div
-                className={`flex flex-col w-full h-full border-t-4 border-t-rose-500 overflow-hidden items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300`}
+                className="flex flex-col w-full h-full overflow-hidden items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300"
             >
                 No data available
             </div>
@@ -45,14 +45,14 @@ export function ProfitDistributionChart({
     const totalProfit = validData.reduce((sum, d) => sum + d.value, 0);
 
     return (
-        <div className="flex flex-col h-full w-full border-t-4 border-t-rose-500 overflow-hidden p-4">
+        <div className="flex flex-col h-full w-full overflow-hidden p-4">
             <ChartContainer
                 height="100%"
                 minHeight={100}
                 className="w-full h-full flex-1"
             >
                 <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-                    <PieChart key={JSON.stringify(validData)}>
+                    <PieChart>
                         <defs>
                             {COLORS.map((color, i) => (
                                 <linearGradient
@@ -84,7 +84,8 @@ export function ProfitDistributionChart({
                             outerRadius={outerRadius}
                             paddingAngle={4}
                             dataKey="absValue"
-                            animationDuration={800}
+                            animationDuration={400}
+                            animationEasing="ease-out"
                             animationBegin={0}
                             stroke="none"
                         >

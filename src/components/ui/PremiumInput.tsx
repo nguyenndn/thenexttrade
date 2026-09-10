@@ -2,16 +2,18 @@ import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { LucideIcon, Eye, EyeOff } from "lucide-react";
 
-export interface PremiumInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface PremiumInputProps
+    extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "prefix"> {
     error?: string;
     label?: string;
     icon?: LucideIcon;
+    prefix?: React.ReactNode;
     helperText?: string;
 }
 
 const PremiumInput = React.forwardRef<HTMLInputElement, PremiumInputProps>(
     (
-        { className, type, error, label, id, icon: Icon, helperText, ...props },
+        { className, type, error, label, id, icon: Icon, prefix, helperText, ...props },
         ref
     ) => {
         const [showPassword, setShowPassword] = useState(false);
@@ -29,14 +31,18 @@ const PremiumInput = React.forwardRef<HTMLInputElement, PremiumInputProps>(
                     </label>
                 )}
                 <div className="relative group transition-all duration-300">
-                    {Icon && (
+                    {prefix ? (
+                        <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center z-10">
+                            {prefix}
+                        </div>
+                    ) : Icon ? (
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <Icon
                                 size={16}
                                 className="text-gray-500 group-focus-within:text-primary transition-colors duration-300"
                             />
                         </div>
-                    )}
+                    ) : null}
                     <input
                         id={id}
                         type={inputType}
@@ -46,7 +52,7 @@ const PremiumInput = React.forwardRef<HTMLInputElement, PremiumInputProps>(
                             "w-full p-2.5 rounded-xl bg-gray-50 dark:bg-[#151925] border border-dashboard text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:border-primary transition-all",
                             "placeholder:text-gray-500 dark:placeholder:text-gray-600 placeholder:font-normal",
                             "text-gray-700 dark:text-white font-medium",
-                            Icon ? "pl-9" : "",
+                            prefix ? "pl-16" : Icon ? "pl-9" : "",
                             type === "password" ? "pr-10" : "",
                             error
                                 ? "border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/50"

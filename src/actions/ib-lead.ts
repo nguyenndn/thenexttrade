@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import type { IbLeadSource } from "@prisma/client";
 import { computeCapitalBreakdown } from "@/lib/admin/ib/capital.server";
+import { buildEligibleJournalWhere } from "@/lib/admin/ib/eligible-volume.server";
 
 // ============================================================================
 // IB LEAD TRACKING
@@ -114,18 +115,13 @@ export async function linkIbLeadToVipRequest(broker: string) {
 // ADMIN QUERIES
 // ============================================================================
 
-export type IbStatsRange = "7d" | "30d" | "all";
+import {
+    resolveIbDateFilter,
+    buildDateRangeClause,
+    type IbStatsFilter,
+} from "@/lib/admin/ib/date-filter";
 
-function getRangeStart(range: IbStatsRange) {
-    const now = new Date();
-    if (range === "7d")
-        return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    if (range === "30d")
-        return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-    return null;
-}
-
-export async function getIbLeadStats(range: IbStatsRange = "30d") {
+export async function getIbLeadStats(range: IbStatsFilter = "30d") {
     const user = await getAuthUser();
     if (!user) return null;
 
@@ -137,8 +133,9 @@ export async function getIbLeadStats(range: IbStatsRange = "30d") {
     const now = new Date();
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const rangeStart = getRangeStart(range);
-    const rangeWhere = rangeStart ? { clickedAt: { gte: rangeStart } } : {};
+    const { start: rangeStart, end: rangeEnd } = resolveIbDateFilter(range);
+    const rangeDateClause = buildDateRangeClause(rangeStart, rangeEnd);
+    const rangeWhere = rangeDateClause ? { clickedAt: rangeDateClause } : {};
 
     const [
         totalLeads,
@@ -187,7 +184,7 @@ export async function getIbLeadStats(range: IbStatsRange = "30d") {
     };
 }
 
-export async function getIbOverviewStats(range: IbStatsRange = "30d") {
+export async function getIbOverviewStats(range: IbStatsFilter = "30d") {
     const user = await getAuthUser();
     if (!user) return null;
 
@@ -197,14 +194,21 @@ export async function getIbOverviewStats(range: IbStatsRange = "30d") {
     if (profile?.role !== "ADMIN") return null;
 
     const now = new Date();
-    const rangeStart = getRangeStart(range);
-    const leadWhere = rangeStart ? { clickedAt: { gte: rangeStart } } : {};
-    const requestWhere = rangeStart ? { createdAt: { gte: rangeStart } } : {};
+    const { start: rangeStart, end: rangeEnd, label: rangeLabel } = resolveIbDateFilter(range);
+    const rangeDateClause = buildDateRangeClause(rangeStart, rangeEnd);
+    const leadWhere = rangeDateClause ? { clickedAt: rangeDateClause } : {};
+    const requestWhere = rangeDateClause ? { createdAt: rangeDateClause } : {};
 
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-    const tradeWhere = rangeStart
-        ? { exitDate: { gte: rangeStart }, status: "CLOSED" as const }
-        : { status: "CLOSED" as const };
+    const tradeWhere = buildEligibleJournalWhere({
+        status: "CLOSED",
+        since: rangeStart ?? undefined,
+        until: rangeEnd ?? undefined,
+    });
+    const tradeStats30dWhere = buildEligibleJournalWhere({
+        status: "CLOSED",
+        since: thirtyDaysAgo,
+    });
 
     const [
         totalLeads,
@@ -218,6 +222,7 @@ export async function getIbOverviewStats(range: IbStatsRange = "30d") {
         activeToolUsers,
         tradeStatsRange,
         tradeStats30d,
+        activeBrokers,
     ] = await Promise.all([
         prisma.ibLead.count({ where: leadWhere }),
         prisma.vipRequest.count({ where: { status: "PENDING" } }),
@@ -267,6 +272,7 @@ export async function getIbOverviewStats(range: IbStatsRange = "30d") {
                 status: true,
                 lastHeartbeat: true,
                 lastSync: true,
+                ibAttribution: true,
             },
         }),
         prisma.eAProductUsageEvent.findMany({
@@ -283,9 +289,13 @@ export async function getIbOverviewStats(range: IbStatsRange = "30d") {
             _count: { _all: true },
         }),
         prisma.journalEntry.aggregate({
-            where: { status: "CLOSED", exitDate: { gte: thirtyDaysAgo } },
+            where: tradeStats30dWhere,
             _sum: { lotSize: true },
             _count: { _all: true },
+        }),
+        prisma.eABroker.findMany({
+            where: { isActive: true },
+            select: { commissionPerLot: true },
         }),
     ]);
 
@@ -322,6 +332,21 @@ export async function getIbOverviewStats(range: IbStatsRange = "30d") {
     const d30LotSum = tradeStats30d._sum?.lotSize ?? 0;
     const d30TradeCount = tradeStats30d._count?._all ?? 0;
 
+    const brokersWithCom = (activeBrokers || []).filter((b: { commissionPerLot: number | null }) => b.commissionPerLot !== null && b.commissionPerLot > 0);
+    const averageCommissionPerLot = brokersWithCom.length > 0
+        ? Math.round((brokersWithCom.reduce((acc: number, b: { commissionPerLot: number | null }) => acc + (b.commissionPerLot || 0), 0) / brokersWithCom.length) * 10) / 10
+        : 17.0;
+
+    // Out-of-IB active trader ratio (Doc #3 Step 5)
+    const activeConfirmedUsers = new Set(
+        monitoredAccounts.filter((a) => (a as any).ibAttribution === "CONFIRMED").map((a) => a.userId)
+    );
+    const totalActiveUsers = new Set(monitoredAccounts.map((a) => a.userId)).size;
+    const outOfIbActiveCount = Math.max(0, totalActiveUsers - activeConfirmedUsers.size);
+    const outOfIbActiveRatio = totalActiveUsers > 0
+        ? Math.round((outOfIbActiveCount / totalActiveUsers) * 1000) / 10
+        : 0;
+
     return {
         totalLeads,
         pendingRequests,
@@ -344,10 +369,15 @@ export async function getIbOverviewStats(range: IbStatsRange = "30d") {
         totalTrades30d: d30TradeCount,
         staleAccounts,
         disconnectedAccounts,
+        averageCommissionPerLot,
+        outOfIbActiveRatio,
+        outOfIbActiveCount,
+        totalActiveUsers,
         vipUsersWithoutFirstSync: [...activeUserSet, ...graceUserSet].filter(
             (userId) => !monitoredAccounts.some((account) => account.userId === userId && account.lastSync)
         ).length,
         activeToolUsers: activeToolUsers.length,
         duplicateAccountWarnings,
+        rangeLabel,
     };
 }

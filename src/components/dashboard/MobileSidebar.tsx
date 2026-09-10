@@ -69,7 +69,7 @@ function MobileSidebarItem({
                         className={cn(
                             "flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm nav-menu-text transition-colors mb-0.5 text-left select-none relative",
                             isChildActive
-                                ? "text-primary font-semibold"
+                                ? "text-amber-600 dark:text-amber-400 font-bold"
                                 : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5"
                         )}
                     >
@@ -78,7 +78,7 @@ function MobileSidebarItem({
                                 size={18}
                                 className={
                                     isChildActive
-                                        ? "text-primary"
+                                        ? "text-amber-500 dark:text-amber-400"
                                         : "text-gray-600 dark:text-gray-300"
                                 }
                             />
@@ -107,7 +107,7 @@ function MobileSidebarItem({
                                         className={cn(
                                             "flex items-center gap-2 py-1.5 pl-1.5 pr-3 rounded-lg text-[13px] font-semibold transition-colors relative",
                                             isSubActive
-                                                ? "text-primary bg-primary/5 dark:bg-primary/10"
+                                                ? "text-amber-600 dark:text-amber-400 bg-amber-500/10 dark:bg-amber-500/15"
                                                 : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white"
                                         )}
                                     >
@@ -115,7 +115,7 @@ function MobileSidebarItem({
                                             className={cn(
                                                 "w-1.5 h-1.5 rounded-full shrink-0 transition-colors",
                                                 isSubActive
-                                                    ? "bg-primary"
+                                                    ? "bg-amber-500 dark:bg-amber-400"
                                                     : "bg-gray-300 dark:bg-gray-700"
                                             )}
                                         />
@@ -133,7 +133,7 @@ function MobileSidebarItem({
                     className={cn(
                         "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm nav-menu-text transition-colors mb-0.5",
                         isActive
-                            ? "bg-primary/10 text-primary dark:text-primary font-semibold"
+                            ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold"
                             : "text-gray-600 dark:text-gray-550 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-700 dark:hover:text-white"
                     )}
                 >
@@ -142,7 +142,7 @@ function MobileSidebarItem({
                             size={18}
                             className={
                                 isActive
-                                    ? "text-primary"
+                                    ? "text-amber-500 dark:text-amber-400"
                                     : "text-gray-600 dark:text-gray-300"
                             }
                         />
@@ -205,7 +205,7 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
                     animate={{ x: 0 }}
                     exit={{ x: "-100%" }}
                     transition={SPRING_SOFT}
-                    className="absolute left-0 top-0 bottom-0 w-[272px] bg-white dark:bg-[#0B0E14] shadow-2xl flex flex-col"
+                    className="absolute left-0 top-0 bottom-0 w-[272px] bg-white dark:bg-[#1E2028] shadow-2xl flex flex-col"
                 >
                 {/* ── Header: Logo + Close ── */}
                 <div className="flex items-center justify-between px-4 py-3 border-b border-dashboard">
@@ -228,11 +228,13 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
                         // Map child tab routes to parent menu items
                         const childRouteMap: Record<string, string> = {
                             "/dashboard/sessions": "/dashboard/journal",
+                            "/dashboard/psychology": "/dashboard/analytics",
                             "/dashboard/reports": "/dashboard/analytics",
                             "/dashboard/reports/weekly": "/dashboard/analytics",
                             "/dashboard/reports/monthly":
                                 "/dashboard/analytics",
                             "/dashboard/mistakes": "/dashboard/analytics",
+                            "/dashboard/intelligence": "/dashboard/analytics",
                         };
                         const effectivePath =
                             childRouteMap[pathname] || pathname;

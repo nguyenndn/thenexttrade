@@ -36,16 +36,18 @@ export function RecentTradesWidget({ trades }: { trades: Trade[] }) {
         <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
             <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
                 <Clock className="w-5 h-5 text-blue-500" aria-hidden="true" />
-                Recent Trading Activity
+                Live MT5 Trade Telemetry
             </h3>
 
             <div className="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar">
                 {trades.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-10 text-gray-500">
                         <ArrowUpRight className="w-10 h-10 mb-3 opacity-30" />
-                        <p className="font-medium">No recent trades</p>
-                        <p className="text-xs mt-1">
-                            Trading activity will appear here
+                        <p className="font-bold text-gray-700 dark:text-white">
+                            No live trades synced yet
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                            Trade execution telemetry will appear here
                         </p>
                     </div>
                 ) : (

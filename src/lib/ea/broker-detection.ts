@@ -1,3 +1,5 @@
+import { POPULAR_MT5_SERVERS } from "@/lib/constants/mt5-servers";
+
 // Map of broker names to identifying patterns in server names or company names
 const BROKER_PATTERNS: Record<string, string[]> = {
     "IC Markets": [
@@ -19,9 +21,27 @@ const BROKER_PATTERNS: Record<string, string[]> = {
     Vantage: ["Vantage", "VantageFX"],
     RoboForex: ["RoboForex"],
     JustMarkets: ["JustMarkets", "JustForex"],
+    StarTrader: ["StarTrader", "STARTRADER", "STARTRADERFinancial"],
+    TMGM: ["TMGM", "TrademaxGlobal", "TradeMax"],
+    HFM: ["HFMarkets", "HFM", "HotForex"],
+    "VT Markets": ["VTMarkets", "VT Markets"],
+    "Ultima Markets": ["UltimaMarkets", "Ultima Markets"],
+    "PU Prime": ["PUPrime", "PU Prime", "Pacific Union"],
+    "CXM Direct": ["CXMDirect", "CXM Direct", "CXM"],
 };
 
 export function detectBroker(server: string, company: string): string | null {
+    // Check known server catalog first (1,300+ servers mapped to brokers)
+    if (server) {
+        const cleanServer = server.trim().toLowerCase();
+        const catalogMatch = POPULAR_MT5_SERVERS.find(
+            (s) => s.name.toLowerCase() === cleanServer
+        );
+        if (catalogMatch?.broker) {
+            return catalogMatch.broker;
+        }
+    }
+
     // Normalize inputs
     const combined = `${server} ${company}`.toLowerCase();
 

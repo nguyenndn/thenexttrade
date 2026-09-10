@@ -143,8 +143,8 @@ export function CreateLessonModal({
                         <input
                             {...register("title")}
                             onChange={handleTitleChange}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
-                            placeholder="Introduction to Trading"
+                            aria-label="Lesson Title"
+                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                         />
                         {errors.title && (
                             <p className="text-red-500 text-xs">
@@ -160,8 +160,8 @@ export function CreateLessonModal({
                         <input
                             {...register("slug")}
                             readOnly
+                            aria-label="Lesson Slug"
                             className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-4 py-2.5 text-sm outline-none text-gray-600 dark:text-gray-300 cursor-not-allowed"
-                            placeholder="auto-generated"
                         />
                         {errors.slug && (
                             <p className="text-red-500 text-xs">
@@ -181,22 +181,22 @@ export function CreateLessonModal({
                         </label>
                         <input
                             {...register("videoUrl")}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
-                            placeholder="https://youtube.com/watch?v=..."
+                            aria-label="Video URL"
+                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                         />
                     </div>
                     <div className="space-y-0">
                         <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">
                             Duration{" "}
                             <span className="font-normal text-gray-500">
-                                (min)
+                                (Minutes)
                             </span>
                         </label>
                         <input
                             type="number"
                             {...register("duration")}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
-                            placeholder="10"
+                            aria-label="Duration in minutes"
+                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                         />
                     </div>
                 </div>

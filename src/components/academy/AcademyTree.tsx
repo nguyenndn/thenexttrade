@@ -20,6 +20,7 @@ import {
     RotateCcw,
     FlaskConical,
     Trophy,
+    Crown,
     X,
 } from "lucide-react";
 import Link from "next/link";
@@ -28,11 +29,13 @@ import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { LessonPreviewModal } from "@/components/academy/LessonPreviewModal";
 import { LevelUpCelebration } from "@/components/academy/LevelUpCelebration";
+import { ModuleQuestModal } from "@/components/academy/ModuleQuestModal";
 
 interface LessonInfo {
     id: string;
     slug: string;
     title?: string;
+    duration?: number | null;
 }
 
 interface Module {
@@ -57,6 +60,7 @@ interface AcademyTreeProps {
     isGuest?: boolean;
     completedLessonIds?: string[];
     devMode?: boolean;
+    className?: string;
 }
 
 const LEVEL_ICONS: Record<number, typeof BookOpen> = {
@@ -71,6 +75,7 @@ const LEVEL_ICONS: Record<number, typeof BookOpen> = {
     9: Shield,
     10: Brain,
     11: Rocket,
+    12: Crown,
 };
 
 const LEVEL_SUBTITLES: Record<number, string> = {
@@ -85,6 +90,7 @@ const LEVEL_SUBTITLES: Record<number, string> = {
     9: "Risk Manager",
     10: "Mind Master",
     11: "Ready for Launch",
+    12: "Live Execution Master",
 };
 
 const LEVEL_COLORS: Record<
@@ -186,6 +192,14 @@ const LEVEL_COLORS: Record<
         gradient: "from-pink-400 to-rose-500",
         hex: "#ec4899",
     },
+    12: {
+        border: "border-amber-400",
+        glow: "bg-amber-500",
+        text: "text-amber-500",
+        bg: "bg-amber-500/10",
+        gradient: "from-amber-400 to-yellow-500",
+        hex: "#f59e0b",
+    },
 };
 
 const ICON_ANIMATIONS: Record<
@@ -235,6 +249,10 @@ const ICON_ANIMATIONS: Record<
     11: {
         animate: { y: [0, -5, 0], scale: [1, 1.1, 1] },
         transition: { duration: 1.5, repeat: Infinity, ease: "easeInOut" },
+    },
+    12: {
+        animate: { scale: [1, 1.15, 1], rotate: [0, 5, 0, -5, 0] },
+        transition: { duration: 2, repeat: Infinity, ease: "easeInOut" },
     },
 };
 
@@ -417,6 +435,7 @@ export function AcademyTree({
     isGuest = false,
     completedLessonIds,
     devMode = false,
+    className,
 }: AcademyTreeProps) {
     const [fireflies, setFireflies] = useState<
         {
@@ -459,6 +478,12 @@ export function AcademyTree({
     });
     const [devTestLevel, setDevTestLevel] = useState(1);
     const celebrationGuardRef = useRef(false);
+
+    // Gamified Module Quest Modal State
+    const [selectedQuestModule, setSelectedQuestModule] = useState<{
+        level: Level;
+        module: Module;
+    } | null>(null);
 
     const handleDevAction = useCallback(
         async (action: "next" | "reset" | "module") => {
@@ -559,9 +584,14 @@ export function AcademyTree({
 
     return (
         <>
-            <div className="relative min-h-[600px] w-full py-16 px-4 overflow-hidden bg-[#fbfaf6] dark:bg-[#1E2028] transition-colors duration-300">
-                {/* Paper Grid (light mode) */}
-                <div className="absolute inset-0 z-0 pointer-events-none opacity-70 bg-[linear-gradient(to_right,rgba(15,23,42,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.035)_1px,transparent_1px)] [background-size:48px_48px] dark:opacity-0" />
+            <div
+                className={cn(
+                    "relative min-h-[600px] w-full py-16 px-4 overflow-hidden bg-[#fbfaf6] dark:bg-[#0B0E14] transition-colors duration-300",
+                    className
+                )}
+            >
+                {/* Paper Grid (light + dark mode) */}
+                <div className="absolute inset-0 z-0 pointer-events-none opacity-70 bg-[linear-gradient(to_right,rgba(15,23,42,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.035)_1px,transparent_1px)] [background-size:48px_48px] dark:opacity-100 dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)]" />
 
                 {/* Soft dot overlay (reduced from original) */}
                 <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.18] bg-[radial-gradient(rgba(0,200,136,0.55)_1px,transparent_1px)] [background-size:32px_32px] dark:opacity-[0.12] dark:bg-[radial-gradient(rgba(255,255,255,0.5)_1px,transparent_1px)] dark:[background-size:24px_24px]" />
@@ -682,7 +712,12 @@ export function AcademyTree({
                                 : null;
 
                         return (
-                            <div key={level.id}>
+                            <div
+                                key={level.id}
+                                id={`academy-level-${level.order}`}
+                                data-level={level.order}
+                                className="scroll-mt-28"
+                            >
                                 {/* Level Node */}
                                 <div
                                     className={cn(
@@ -1039,7 +1074,7 @@ export function AcademyTree({
                                                         justUnlockedIds.size >
                                                             0;
 
-                                                    let moduleTargetSlug =
+                                                    let _moduleTargetSlug =
                                                         modFirstSlug;
                                                     if (isModCurrent) {
                                                         const currentLesson =
@@ -1051,7 +1086,7 @@ export function AcademyTree({
                                                                     "current"
                                                             );
                                                         if (currentLesson)
-                                                            moduleTargetSlug =
+                                                            _moduleTargetSlug =
                                                                 currentLesson.slug;
                                                     }
 
@@ -1082,22 +1117,26 @@ export function AcademyTree({
                                                                         0.05,
                                                                 }}
                                                                 whileHover={{
-                                                                    x: isModLocked
-                                                                        ? [
-                                                                              0,
-                                                                              -2,
-                                                                              2,
-                                                                              -2,
-                                                                              0,
-                                                                          ]
-                                                                        : 0,
+                                                                    scale: 1.03,
+                                                                    y: -2,
                                                                 }}
+                                                                whileTap={{
+                                                                    scale: 0.97,
+                                                                }}
+                                                                onClick={() =>
+                                                                    setSelectedQuestModule(
+                                                                        {
+                                                                            level,
+                                                                            module: mod,
+                                                                        }
+                                                                    )
+                                                                }
                                                                 className={cn(
-                                                                    "flex items-center gap-2.5 py-2 px-3 rounded-lg border w-full max-w-[85%] sm:max-w-xs cursor-not-allowed",
-                                                                    "bg-gray-50 dark:bg-white/[0.01] border-dashboard ",
+                                                                    "flex items-center gap-2.5 py-2 px-3 rounded-lg border w-full max-w-[85%] sm:max-w-xs cursor-pointer select-none transition-all",
+                                                                    "bg-gray-50 dark:bg-white/[0.01] border-dashboard hover:border-gray-400 dark:hover:border-white/20",
                                                                     isLevelLocked
-                                                                        ? "opacity-30"
-                                                                        : "opacity-50",
+                                                                        ? "opacity-40"
+                                                                        : "opacity-60",
                                                                     isEven
                                                                         ? "mx-auto md:ml-0 md:mr-auto"
                                                                         : "mx-auto md:mr-0 md:ml-auto md:flex-row-reverse"
@@ -1105,7 +1144,7 @@ export function AcademyTree({
                                                                 title={
                                                                     isLevelLocked
                                                                         ? `Complete Level ${level.order - 1} to unlock`
-                                                                        : "Complete previous lessons to unlock"
+                                                                        : "Click to preview locked quest"
                                                                 }
                                                             >
                                                                 <Lock
@@ -1115,7 +1154,7 @@ export function AcademyTree({
                                                                 <span className="text-sm text-gray-600 dark:text-gray-300 truncate flex-1">
                                                                     {mod.title}
                                                                 </span>
-                                                                <span className="text-[10px] text-gray-300 dark:text-gray-700 font-bold whitespace-nowrap">
+                                                                <span className="text-[10px] text-gray-400 dark:text-gray-600 font-bold whitespace-nowrap">
                                                                     {
                                                                         mod
                                                                             ._count
@@ -1148,14 +1187,29 @@ export function AcademyTree({
                                                                         modIndex *
                                                                         0.05,
                                                                 }}
+                                                                whileHover={{
+                                                                    scale: 1.04,
+                                                                    y: -2,
+                                                                }}
+                                                                whileTap={{
+                                                                    scale: 0.96,
+                                                                }}
                                                                 className="w-full flex justify-center md:block"
                                                             >
-                                                                <Link
-                                                                    href={`${isGuest ? "/academy/lesson" : "/dashboard/academy/lessons"}/${modFirstSlug}`}
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() =>
+                                                                        setSelectedQuestModule(
+                                                                            {
+                                                                                level,
+                                                                                module: mod,
+                                                                            }
+                                                                        )
+                                                                    }
                                                                     className={cn(
-                                                                        "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs",
+                                                                        "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs text-left cursor-pointer",
                                                                         "bg-emerald-50 dark:bg-emerald-500/5 border-emerald-200 dark:border-emerald-500/20",
-                                                                        "hover:border-emerald-400 dark:hover:border-emerald-500/40 hover:shadow-sm",
+                                                                        "hover:border-emerald-400 dark:hover:border-emerald-500/40 hover:shadow-md hover:shadow-emerald-500/10",
                                                                         isEven
                                                                             ? "mx-auto md:ml-0 md:mr-auto"
                                                                             : "mx-auto md:mr-0 md:ml-auto md:flex-row-reverse"
@@ -1185,7 +1239,7 @@ export function AcademyTree({
                                                                                 : "rotate-180 group-hover:-translate-x-0.5"
                                                                         )}
                                                                     />
-                                                                </Link>
+                                                                </button>
                                                             </motion.div>
                                                         );
                                                     }
@@ -1224,6 +1278,13 @@ export function AcademyTree({
                                                                 }
                                                                 viewport={{
                                                                     once: true,
+                                                                }}
+                                                                whileHover={{
+                                                                    scale: 1.04,
+                                                                    y: -2,
+                                                                }}
+                                                                whileTap={{
+                                                                    scale: 0.96,
                                                                 }}
                                                                 transition={
                                                                     isJustUnlocked
@@ -1282,10 +1343,18 @@ export function AcademyTree({
                                                                         ease: "easeInOut",
                                                                     }}
                                                                 />
-                                                                <Link
-                                                                    href={`${isGuest ? "/academy/lesson" : "/dashboard/academy/lessons"}/${moduleTargetSlug}`}
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() =>
+                                                                        setSelectedQuestModule(
+                                                                            {
+                                                                                level,
+                                                                                module: mod,
+                                                                            }
+                                                                        )
+                                                                    }
                                                                     className={cn(
-                                                                        "group flex items-center gap-2.5 py-2.5 px-3 rounded-lg border-2 transition-all w-full max-w-[85%] sm:max-w-xs relative z-10",
+                                                                        "group flex items-center gap-2.5 py-2.5 px-3 rounded-lg border-2 transition-all w-full max-w-[85%] sm:max-w-xs relative z-10 text-left cursor-pointer",
                                                                         "bg-white dark:bg-white/[0.03] border-primary/60 dark:border-primary/40",
                                                                         "hover:border-primary dark:hover:border-primary/60 hover:shadow-md hover:shadow-primary/10",
                                                                         isEven
@@ -1339,98 +1408,16 @@ export function AcademyTree({
                                                                                 : "rotate-180 group-hover:-translate-x-0.5"
                                                                         )}
                                                                     />
-                                                                </Link>
+                                                                </button>
                                                             </motion.div>
                                                         );
                                                     }
 
-                                                    // === DEFAULT (no progress / guest) ===
-                                                    if (isGuest) {
-                                                        const isPremiumLevel =
-                                                            level.accessLevel !==
+                                                    // === DEFAULT / GUEST / FALLBACK MODULE ===
+                                                    const isPremiumLevel =
+                                                        isGuest &&
+                                                        level.accessLevel !==
                                                             "PUBLIC";
-                                                        return (
-                                                            <motion.div
-                                                                key={mod.id}
-                                                                initial={{
-                                                                    opacity: 0,
-                                                                    y: 10,
-                                                                }}
-                                                                whileInView={{
-                                                                    opacity: 1,
-                                                                    y: 0,
-                                                                }}
-                                                                viewport={{
-                                                                    once: true,
-                                                                }}
-                                                                transition={{
-                                                                    duration: 0.3,
-                                                                    delay:
-                                                                        modIndex *
-                                                                        0.05,
-                                                                }}
-                                                                className="w-full flex justify-center md:block"
-                                                            >
-                                                                <Link
-                                                                    href={`${isGuest ? "/academy/lesson" : "/dashboard/academy/lessons"}/${modFirstSlug}`}
-                                                                    className={cn(
-                                                                        "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs text-left",
-                                                                        "bg-white dark:bg-white/[0.03] border-dashboard ",
-                                                                        "hover:border-primary/50 dark:hover:border-primary/30 hover:shadow-sm",
-                                                                        isEven
-                                                                            ? "mx-auto md:ml-0 md:mr-auto"
-                                                                            : "mx-auto md:mr-0 md:ml-auto md:flex-row-reverse"
-                                                                    )}
-                                                                >
-                                                                    <div
-                                                                        className={cn(
-                                                                            "w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0",
-                                                                            isPremiumLevel
-                                                                                ? "bg-amber-100 dark:bg-amber-500/10 text-amber-500"
-                                                                                : "bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300",
-                                                                            "group-hover:bg-primary group-hover:text-white transition-colors"
-                                                                        )}
-                                                                    >
-                                                                        {isPremiumLevel ? (
-                                                                            <Lock
-                                                                                size={
-                                                                                    12
-                                                                                }
-                                                                            />
-                                                                        ) : (
-                                                                            mod.title.charAt(
-                                                                                0
-                                                                            )
-                                                                        )}
-                                                                    </div>
-                                                                    <span className="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-gray-700 dark:group-hover:text-white transition-colors truncate flex-1">
-                                                                        {
-                                                                            mod.title
-                                                                        }
-                                                                    </span>
-                                                                    <span className="text-[10px] text-gray-500 font-bold whitespace-nowrap">
-                                                                        {
-                                                                            mod
-                                                                                ._count
-                                                                                .lessons
-                                                                        }
-                                                                    </span>
-                                                                    <ChevronRight
-                                                                        size={
-                                                                            14
-                                                                        }
-                                                                        className={cn(
-                                                                            "text-gray-300 dark:text-gray-600 group-hover:text-primary transition-all group-hover:translate-x-0.5",
-                                                                            isEven
-                                                                                ? ""
-                                                                                : "rotate-180 group-hover:-translate-x-0.5"
-                                                                        )}
-                                                                    />
-                                                                </Link>
-                                                            </motion.div>
-                                                        );
-                                                    }
-
                                                     return (
                                                         <motion.div
                                                             key={mod.id}
@@ -1451,14 +1438,29 @@ export function AcademyTree({
                                                                     modIndex *
                                                                     0.05,
                                                             }}
+                                                            whileHover={{
+                                                                scale: 1.04,
+                                                                y: -2,
+                                                            }}
+                                                            whileTap={{
+                                                                scale: 0.96,
+                                                            }}
                                                             className="w-full flex justify-center md:block"
                                                         >
-                                                            <Link
-                                                                href={`${isGuest ? "/academy/lesson" : "/dashboard/academy/lessons"}/${modFirstSlug}`}
+                                                            <button
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    setSelectedQuestModule(
+                                                                        {
+                                                                            level,
+                                                                            module: mod,
+                                                                        }
+                                                                    )
+                                                                }
                                                                 className={cn(
-                                                                    "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs",
+                                                                    "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs text-left cursor-pointer",
                                                                     "bg-white dark:bg-white/[0.03] border-dashboard ",
-                                                                    "hover:border-primary/50 dark:hover:border-primary/30 hover:shadow-sm",
+                                                                    "hover:border-primary/50 dark:hover:border-primary/30 hover:shadow-md hover:shadow-primary/5",
                                                                     isEven
                                                                         ? "mx-auto md:ml-0 md:mr-auto"
                                                                         : "mx-auto md:mr-0 md:ml-auto md:flex-row-reverse"
@@ -1467,18 +1469,28 @@ export function AcademyTree({
                                                                 <div
                                                                     className={cn(
                                                                         "w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0",
-                                                                        "bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300",
+                                                                        isPremiumLevel
+                                                                            ? "bg-amber-100 dark:bg-amber-500/10 text-amber-500"
+                                                                            : "bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300",
                                                                         "group-hover:bg-primary group-hover:text-white transition-colors"
                                                                     )}
                                                                 >
-                                                                    {mod.title.charAt(
-                                                                        0
+                                                                    {isPremiumLevel ? (
+                                                                        <Lock
+                                                                            size={
+                                                                                12
+                                                                            }
+                                                                        />
+                                                                    ) : (
+                                                                        mod.title.charAt(
+                                                                            0
+                                                                        )
                                                                     )}
                                                                 </div>
                                                                 <span className="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-gray-700 dark:group-hover:text-white transition-colors truncate flex-1">
                                                                     {mod.title}
                                                                 </span>
-                                                                <span className="text-[10px] text-gray-500 font-bold whitespace-nowrap">
+                                                                <span className="text-[10px] text-gray-400 dark:text-gray-500 font-bold whitespace-nowrap">
                                                                     {
                                                                         mod
                                                                             ._count
@@ -1486,7 +1498,9 @@ export function AcademyTree({
                                                                     }
                                                                 </span>
                                                                 <ChevronRight
-                                                                    size={14}
+                                                                    size={
+                                                                        14
+                                                                    }
                                                                     className={cn(
                                                                         "text-gray-300 dark:text-gray-600 group-hover:text-primary transition-all group-hover:translate-x-0.5",
                                                                         isEven
@@ -1494,7 +1508,7 @@ export function AcademyTree({
                                                                             : "rotate-180 group-hover:-translate-x-0.5"
                                                                     )}
                                                                 />
-                                                            </Link>
+                                                            </button>
                                                         </motion.div>
                                                     );
                                                 }
@@ -1518,6 +1532,23 @@ export function AcademyTree({
                     })}
                 </div>
             </div>
+
+            {/* Gamified Module Quest Modal */}
+            {selectedQuestModule && (
+                <ModuleQuestModal
+                    isOpen={!!selectedQuestModule}
+                    onClose={() => setSelectedQuestModule(null)}
+                    level={selectedQuestModule.level}
+                    module={selectedQuestModule.module}
+                    lessonStates={lessonStates}
+                    basePath={basePath}
+                    isGuest={isGuest}
+                    levelColor={
+                        LEVEL_COLORS[selectedQuestModule.level.order] ||
+                        LEVEL_COLORS[1]
+                    }
+                />
+            )}
 
             {/* Preview Modal for guests */}
             <LessonPreviewModal
@@ -1609,7 +1640,7 @@ export function AcademyTree({
                                             autoDismiss: true,
                                         });
                                         setDevTestLevel((prev) =>
-                                            prev >= 11 ? 1 : prev + 1
+                                            prev >= 12 ? 1 : prev + 1
                                         );
                                     }}
                                     className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-amber-50 hover:bg-amber-100 dark:bg-amber-500/10 dark:hover:bg-amber-500/20 text-amber-600 transition-colors"

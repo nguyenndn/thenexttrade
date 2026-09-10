@@ -50,3 +50,49 @@ export async function notifyAdminsOfVipRequest(params: NotifyVipRequestParams) {
         // Non-blocking: we log and allow parent action to succeed
     }
 }
+
+interface NotifySyncFailureParams {
+    jobId: string;
+    userId: string;
+    broker: string;
+    accountNumber: string;
+    server?: string | null;
+    errorMessage: string;
+}
+
+/**
+ * Sends in-app urgent notification to all ADMIN users when
+ * MT5 sync fails after 5 handshake attempts.
+ */
+export async function notifyAdminsOfSyncFailure(params: NotifySyncFailureParams) {
+    try {
+        const admins = await prisma.profile.findMany({
+            where: { role: "ADMIN" },
+            select: { userId: true },
+        });
+
+        if (!admins.length) return;
+
+        const title = `🚨 Cloud Sync 5x Timeout: ${params.broker} #${params.accountNumber}`;
+        const serverStr = params.server ? ` (${params.server})` : "";
+        const message = `Account #${params.accountNumber}${serverStr} on ${params.broker} failed 5 connection attempts. Reason: ${params.errorMessage}`;
+
+        const notificationsData = admins.map((admin) => ({
+            userId: admin.userId,
+            type: NotificationType.ANNOUNCEMENT,
+            title,
+            message,
+            link: `/admin/trading-accounts?search=${encodeURIComponent(params.accountNumber)}`,
+            priority: NotificationPriority.URGENT,
+            dedupeKey: `admin-sync-fail-${params.jobId}-${admin.userId}`,
+        }));
+
+        await prisma.notification.createMany({
+            data: notificationsData,
+            skipDuplicates: true,
+        });
+    } catch (error) {
+        console.error("[notifyAdminsOfSyncFailure error]:", error);
+    }
+}
+

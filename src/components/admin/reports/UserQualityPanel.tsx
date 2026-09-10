@@ -1,5 +1,6 @@
 import { ReportSection } from "./ReportSection";
 import { ReportMetricCard } from "./ReportMetricCard";
+import { Award, Users, CheckCircle2, Clock } from "lucide-react";
 import type {
     UserQualityReport,
     UserQualityRow,
@@ -31,6 +32,8 @@ export function UserQualityPanel({ data }: UserQualityPanelProps) {
                     label="Quality Score"
                     value={data.averageScore}
                     helper="Average 0-100"
+                    icon={Award}
+                    gradient="from-indigo-500 to-purple-600"
                     tone={
                         data.averageScore >= 60
                             ? "good"
@@ -42,15 +45,21 @@ export function UserQualityPanel({ data }: UserQualityPanelProps) {
                 <ReportMetricCard
                     label="With Account"
                     value={data.usersWithAccount}
+                    icon={Users}
+                    gradient="from-cyan-500 to-blue-500"
                 />
                 <ReportMetricCard
                     label="Real Account"
                     value={data.realAccountUsers}
+                    icon={CheckCircle2}
+                    gradient="from-emerald-500 to-teal-600"
                     tone="good"
                 />
                 <ReportMetricCard
                     label="Inactive 24h"
                     value={data.inactiveAfterSignup}
+                    icon={Clock}
+                    gradient="from-amber-500 to-orange-500"
                     tone={data.inactiveAfterSignup > 10 ? "warning" : "default"}
                 />
             </div>

@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
+import { getPairConfig } from "@/lib/calculators";
 
 // ============================================================================
 // RULE VIOLATION TRACKER — Server Actions
@@ -85,6 +86,7 @@ export async function getRuleViolations(
         orderBy: { exitDate: "asc" },
         select: {
             id: true,
+            symbol: true,
             pnl: true,
             lotSize: true,
             exitDate: true,
@@ -144,13 +146,14 @@ export async function getRuleViolations(
         }
     }
 
-    // Check risk percent (estimate from SL distance)
+    // Check risk percent (estimate from SL distance with asset contract size)
     if (maxRiskPercent && maxRiskPercent > 0 && account.balance > 0) {
         const violationDates: string[] = [];
         for (const trade of trades) {
             if (trade.stopLoss && trade.entryPrice) {
                 const slDistance = Math.abs(trade.entryPrice - trade.stopLoss);
-                const riskAmount = slDistance * trade.lotSize * 100000; // Forex lot assumption
+                const { contractSize } = getPairConfig(trade.symbol);
+                const riskAmount = slDistance * trade.lotSize * contractSize;
                 const riskPercent = (riskAmount / account.balance) * 100;
                 if (riskPercent > maxRiskPercent) {
                     const day = trade.exitDate

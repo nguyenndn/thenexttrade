@@ -95,7 +95,7 @@ function FormSelect({
                 <DropdownMenuTrigger asChild>
                     <Button
                         variant="outline"
-                        className="w-full flex justify-between items-center text-sm font-normal bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 px-3 py-2 h-auto text-left shadow-none rounded-lg focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all"
+                        className="w-full flex justify-between items-center text-sm font-normal bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 px-3 py-2.5 h-auto text-left shadow-none rounded-xl focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all"
                     >
                         <span
                             className={
@@ -940,13 +940,13 @@ export function ArticleForm({
                             />
                             {formData.schemaType === "HOWTO" && (
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-600 mb-1 uppercase tracking-wider">
+                                    <label className="block text-xs font-bold text-gray-600 dark:text-gray-300 mb-1 uppercase tracking-wider">
                                         Estimated Time (minutes)
                                     </label>
                                     <input
                                         type="number"
                                         min={1}
-                                        className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
+                                        className="w-full p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
                                         value={formData.estimatedTime ?? ""}
                                         onChange={(e) =>
                                             setFormData({
@@ -956,18 +956,18 @@ export function ArticleForm({
                                                     : null,
                                             })
                                         }
-                                        placeholder="e.g. 30"
+                                        aria-label="Estimated reading time in minutes"
                                     />
                                 </div>
                             )}
 
                             <div>
-                                <label className="block text-xs font-bold text-gray-600 mb-1 uppercase tracking-wider">
+                                <label className="block text-xs font-bold text-gray-600 dark:text-gray-300 mb-1 uppercase tracking-wider">
                                     Publish Date
                                 </label>
                                 <input
                                     type="datetime-local"
-                                    className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
+                                    className="w-full p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
                                     value={formData.publishedAt}
                                     onChange={(e) =>
                                         setFormData({
@@ -975,6 +975,7 @@ export function ArticleForm({
                                             publishedAt: e.target.value,
                                         })
                                     }
+                                    aria-label="Publish date"
                                 />
                             </div>
                         </div>

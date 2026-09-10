@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { parseEATrade } from "@/lib/ea/utils";
 import { rateLimit } from "@/lib/rate-limit";
 import { resolveSyncAuth } from "@/lib/sync-auth";
+import { isCentAccount, isCentSymbol, normalizeLotSize } from "@/lib/utils/cent-account";
 
 const limiter = rateLimit({
     uniqueTokenPerInterval: 500,
@@ -68,6 +69,10 @@ export async function POST(request: NextRequest) {
                     platform: true,
                     autoSync: true,
                     syncOpenTrades: true,
+                    currency: true,
+                    server: true,
+                    accountType: true,
+                    broker: true,
                 },
             });
             if (existing) account = existing;
@@ -109,11 +114,14 @@ export async function POST(request: NextRequest) {
 
         // Batch import with skipDuplicates so a concurrent duplicate post
         // can't abort mid-way or drop trades without a count.
+        const isCent = isCentAccount(account);
         const importData: any[] = [];
         for (const rawTrade of trades) {
             try {
                 const trade = parseEATrade(rawTrade, account.platform || "MT4");
                 const isClosed = trade.closeTime !== null;
+                const isTradeCent = isCent || isCentSymbol(trade.symbol);
+                const normalizedLot = normalizeLotSize(trade.volume, isTradeCent);
                 importData.push({
                     userId: account.userId,
                     accountId: account.id,
@@ -123,7 +131,7 @@ export async function POST(request: NextRequest) {
                     entryPrice: trade.openPrice,
                     exitDate: isClosed ? trade.closeTime : null,
                     exitPrice: isClosed ? trade.closePrice : null,
-                    lotSize: trade.volume,
+                    lotSize: normalizedLot,
                     pnl: trade.profit,
                     commission: trade.commission,
                     swap: trade.swap,

@@ -8,11 +8,13 @@ import {
     ShieldCheck,
     Trash2,
     KeyRound,
+    LogIn,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { deleteUser } from "@/app/admin/users/actions";
+import { impersonateUserAction } from "@/actions/admin-impersonate";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -37,6 +39,22 @@ export function UserRowActions({ user }: UserRowActionsProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
+    const [isImpersonating, setIsImpersonating] = useState(false);
+
+    const handleImpersonate = async () => {
+        setIsImpersonating(true);
+        toast.loading("Starting impersonation session...");
+        const res = await impersonateUserAction(user.id);
+        toast.dismiss();
+        setIsImpersonating(false);
+        if (res.success) {
+            toast.success(`Switched view to ${res.targetName || user.email}`);
+            router.push("/dashboard");
+            router.refresh();
+        } else {
+            toast.error(res.error || "Failed to impersonate user");
+        }
+    };
 
     const handleDelete = async () => {
         setIsDeleting(true);
@@ -75,7 +93,7 @@ export function UserRowActions({ user }: UserRowActionsProps) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                     align="end"
-                    className="w-44 rounded-xl border-gray-200 dark:border-white/10"
+                    className="w-48 rounded-xl border-gray-200 dark:border-white/10"
                 >
                     <DropdownMenuItem
                         onClick={() => router.push(`/admin/users/${user.id}`)}
@@ -83,6 +101,14 @@ export function UserRowActions({ user }: UserRowActionsProps) {
                     >
                         <Eye size={14} className="mr-2 text-gray-500" />
                         View Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={handleImpersonate}
+                        disabled={isImpersonating}
+                        className="font-medium cursor-pointer rounded-lg mx-1 my-0.5 text-amber-600 dark:text-amber-400 focus:bg-amber-50 dark:focus:bg-amber-500/10"
+                    >
+                        <LogIn size={14} className="mr-2" />
+                        Impersonate Trader
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         onClick={() => setIsRoleModalOpen(true)}

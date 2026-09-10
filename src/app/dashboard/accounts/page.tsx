@@ -2,7 +2,8 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "Trading Accounts | TheNextTrade",
-    description: "Manage your trading accounts and Trade Manager EA sync",
+    description:
+        "Manage live trading accounts, Trade Manager EA synchronization telemetry, and broker credentials.",
 };
 
 import { redirect } from "next/navigation";

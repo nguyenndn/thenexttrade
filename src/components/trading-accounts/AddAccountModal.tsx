@@ -18,6 +18,8 @@ import {
     AlertTriangle,
     ExternalLink,
     Mail,
+    CloudSync,
+    ShieldCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { PremiumInput } from "@/components/ui/PremiumInput";
@@ -29,7 +31,36 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import {
+    Popover,
+    PopoverTrigger,
+    PopoverContent,
+} from "@/components/ui/popover";
+
+const ACCOUNT_COLORS = [
+    "hsl(var(--primary))",
+    "#10B981",
+    "#3B82F6",
+    "#0EA5E9",
+    "#6366F1",
+    "#8B5CF6",
+    "#A855F7",
+    "#D946EF",
+    "#EC4899",
+    "#F43F5E",
+    "#EF4444",
+    "#F97316",
+    "#F59E0B",
+    "#EAB308",
+    "#84CC16",
+    "#14B8A6",
+    "#06B6D4",
+    "#64748B",
+    "#475569",
+    "#1E293B",
+];
 import { createTradingAccount } from "@/actions/accounts";
+import { saveCloudSyncCredentials } from "@/actions/cloud-sync";
 import {
     createPartnerProAccount,
     upgradeToPartnerPro,
@@ -43,6 +74,7 @@ import {
     SUPPORTED_BROKERS,
     SupportedBroker,
 } from "@/lib/validations/vip-request";
+import { ServerCombobox } from "@/components/trading-accounts/ServerCombobox";
 import Image from "next/image";
 
 interface AddAccountModalProps {
@@ -118,6 +150,7 @@ export function AddAccountModal({
             setCreatedAccount(null);
             setCopied(false);
             setFreeAccountNumber("");
+            setFreeServer("");
 
             setSelectedBroker(null);
             setAccountStatus(null);
@@ -131,7 +164,7 @@ export function AddAccountModal({
             setTelegramId(userTelegramId);
             setFullName(userName);
             setCountry(userCountry);
-            setScreenshotUrl("");
+            setProServer(sourceAccount?.server ?? "");
             setError(null);
         }
     }, [isOpen, initialMode, userName, sourceAccount]);
@@ -155,11 +188,14 @@ export function AddAccountModal({
     const platform = "MT5";
     const [name, setName] = useState("");
     const [freeAccountNumber, setFreeAccountNumber] = useState("");
+    const [freeServer, setFreeServer] = useState("");
     // Optional on free create — lets users who already hold a supported broker
     // account set it up front instead of being stuck in MISSING_ACCOUNT_INFO
     // for Pro eligibility until they edit Settings.
     const [freeBroker, setFreeBroker] = useState<string>("");
     const [color, setColor] = useState("hsl(var(--primary))");
+    const [colorPickerOpen, setColorPickerOpen] = useState(false);
+    const [investorPassword, setInvestorPassword] = useState("");
     const [createdAccount, setCreatedAccount] = useState<any>(null);
     const [copied, setCopied] = useState(false);
 
@@ -174,7 +210,7 @@ export function AddAccountModal({
     const [telegramId, setTelegramId] = useState(userTelegramId);
     const [fullName, setFullName] = useState(userName);
     const [country, setCountry] = useState(userCountry);
-    const [screenshotUrl, setScreenshotUrl] = useState("");
+    const [proServer, setProServer] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [turnstileToken, setTurnstileToken] = useState("");
 
@@ -223,17 +259,30 @@ export function AddAccountModal({
 
     // --- Free Account Actions ---
     async function handleCreateFree() {
-        if (!name) {
+        if (!name.trim()) {
             toast.error("Please enter an account name");
             return;
+        }
+
+        const trimmedPass = investorPassword.trim();
+        if (trimmedPass) {
+            if (!freeAccountNumber.trim()) {
+                toast.error("MT5 Account Number is required for Cloud Sync");
+                return;
+            }
+            if (!freeServer.trim()) {
+                toast.error("Broker Server is required for Cloud Sync");
+                return;
+            }
         }
 
         startTransition(async () => {
             try {
                 const result = await createTradingAccount({
                     platform,
-                    name,
+                    name: name.trim(),
                     broker: freeBroker || undefined,
+                    server: freeServer || undefined,
                     accountNumber: freeAccountNumber || undefined,
                     color,
                     balance: 0,
@@ -243,9 +292,34 @@ export function AddAccountModal({
                 if (result.error) throw new Error(result.error);
 
                 if (result.account) {
-                    setCreatedAccount(result.account);
+                    let hasCloudSync = false;
+                    if (trimmedPass) {
+                        const credResult = await saveCloudSyncCredentials(
+                            result.account.id,
+                            trimmedPass,
+                            freeServer.trim() || undefined
+                        );
+
+                        if (credResult.success) {
+                            hasCloudSync = true;
+                            toast.success("Account created & Investor password saved!");
+                        } else {
+                            toast.warning(
+                                credResult.error ||
+                                    "Account created, but Cloud Sync setup failed. You can configure it later in Settings."
+                            );
+                        }
+                    } else {
+                        toast.success("Account created successfully!");
+                    }
+
+                    setCreatedAccount({
+                        ...result.account,
+                        hasCloudSync,
+                        accountNumber: freeAccountNumber,
+                        server: freeServer,
+                    });
                     setStep("free-setup");
-                    toast.success("Account created successfully!");
                 }
             } catch (error: any) {
                 toast.error(error.message || "Failed to create account");
@@ -273,7 +347,7 @@ export function AddAccountModal({
         formData.set("telegramId", telegramId);
         if (fullName) formData.set("fullName", fullName);
         if (country) formData.set("country", country);
-        if (screenshotUrl) formData.set("screenshotUrl", screenshotUrl);
+        if (proServer) formData.set("server", proServer);
         formData.set("cf-turnstile-response", turnstileToken);
 
         startTransition(async () => {
@@ -377,7 +451,7 @@ export function AddAccountModal({
         formData.set("telegramId", telegramId);
         if (fullName) formData.set("fullName", fullName);
         if (country) formData.set("country", country);
-        if (screenshotUrl) formData.set("screenshotUrl", screenshotUrl);
+        if (proServer) formData.set("server", proServer);
         formData.set("cf-turnstile-response", turnstileToken);
 
         startTransition(async () => {
@@ -502,7 +576,7 @@ export function AddAccountModal({
                                     if (!brokerKey) return null;
                                     const bInfo = BROKER_INFO[brokerKey];
                                     return (
-                                        <div className="space-y-2 rounded-lg bg-white dark:bg-[#151925] border border-amber-200/60 dark:border-amber-500/15 p-3">
+                                        <div className="space-y-2 rounded-lg bg-white dark:bg-[#1E2028] border border-amber-200/60 dark:border-amber-500/15 p-3">
                                             <p className="text-xs font-bold text-gray-800 dark:text-white">
                                                 {bInfo.name} setup under our IB
                                             </p>
@@ -536,7 +610,6 @@ export function AddAccountModal({
                                     onChange={(e) =>
                                         setTelegramId(e.target.value)
                                     }
-                                    placeholder="@yourusername"
                                 />
                                 <PremiumInput
                                     label="Email *"
@@ -554,23 +627,18 @@ export function AddAccountModal({
                                     label="Country (optional)"
                                     value={country}
                                     onChange={(e) => setCountry(e.target.value)}
-                                    placeholder="e.g. Vietnam"
                                 />
                             </div>
 
-                            <PremiumInput
-                                label="Account Screenshot URL (optional)"
-                                placeholder="https://imgur.com/... or Google Drive link"
-                                value={screenshotUrl}
-                                onChange={(e) =>
-                                    setScreenshotUrl(e.target.value)
-                                }
+                            {/* Server selection — filtered by account broker if known */}
+                            <ServerCombobox
+                                value={proServer}
+                                onChange={(server) => setProServer(server)}
+                                brokerFilter={sourceAccount.broker}
+                                label="Select Server"
+                                required={false}
+                                helperText="Broker server name. Required for automated Cloud Sync (Passview)."
                             />
-                            <p className="text-[11px] text-gray-400 dark:text-gray-500 -mt-2">
-                                Paste a link to a screenshot showing your
-                                account number and balance. Speeds up
-                                verification.
-                            </p>
 
                             <TurnstileWidget
                                 onVerify={setTurnstileToken}
@@ -672,14 +740,89 @@ export function AddAccountModal({
                         <div className="p-6 space-y-6">
                             <PremiumInput
                                 label="Account Name"
-                                placeholder={`e.g. My ${platform} Growth`}
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
+                                prefix={
+                                    <Popover
+                                        open={colorPickerOpen}
+                                        onOpenChange={setColorPickerOpen}
+                                    >
+                                        <PopoverTrigger asChild>
+                                            <button
+                                                type="button"
+                                                className="flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-gray-200/70 dark:hover:bg-white/10 transition-colors cursor-pointer group/color focus:outline-none"
+                                                title="Choose account label color"
+                                                aria-label="Choose account label color"
+                                            >
+                                                <span
+                                                    className="w-4 h-4 rounded-full border border-black/15 dark:border-white/20 shadow-sm shrink-0 transition-transform group-hover/color:scale-110"
+                                                    style={{
+                                                        backgroundColor: color,
+                                                    }}
+                                                />
+                                                <ChevronDown
+                                                    size={11}
+                                                    className="text-gray-400 group-hover/color:text-gray-600 dark:group-hover/color:text-gray-300 transition-colors shrink-0"
+                                                />
+                                            </button>
+                                        </PopoverTrigger>
+                                        <PopoverContent
+                                            className="w-64 p-3 bg-white dark:bg-[#1E2028] border border-dashboard shadow-2xl rounded-2xl z-[150]"
+                                            align="start"
+                                            sideOffset={8}
+                                        >
+                                            <div className="space-y-2.5">
+                                                <div className="flex items-center justify-between pb-1.5 border-b border-dashboard">
+                                                    <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                                                        Label Color
+                                                    </span>
+                                                    <span
+                                                        className="w-3.5 h-3.5 rounded-full border border-black/10 dark:border-white/10"
+                                                        style={{
+                                                            backgroundColor: color,
+                                                        }}
+                                                    />
+                                                </div>
+                                                <div className="grid grid-cols-5 gap-2 pt-0.5">
+                                                    {ACCOUNT_COLORS.map((c) => (
+                                                        <button
+                                                            type="button"
+                                                            key={c}
+                                                            onClick={() => {
+                                                                setColor(c);
+                                                                setColorPickerOpen(false);
+                                                            }}
+                                                            aria-label={`Select color ${c}`}
+                                                            className={`w-8 h-8 rounded-full transition-all flex items-center justify-center cursor-pointer ${
+                                                                color === c
+                                                                    ? "ring-2 ring-offset-2 ring-offset-white dark:ring-offset-[#1E2028] scale-110"
+                                                                    : "hover:scale-110 opacity-90 hover:opacity-100"
+                                                            }`}
+                                                            style={{
+                                                                backgroundColor: c,
+                                                                boxShadow:
+                                                                    color === c
+                                                                        ? `0 0 8px ${c}80`
+                                                                        : "none",
+                                                            }}
+                                                        >
+                                                            {color === c && (
+                                                                <Check
+                                                                    size={14}
+                                                                    className="text-white drop-shadow-md"
+                                                                />
+                                                            )}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </PopoverContent>
+                                    </Popover>
+                                }
                             />
 
                             <PremiumInput
                                 label="MT5 Account Number"
-                                placeholder="e.g. 2001140658"
                                 value={freeAccountNumber}
                                 onChange={(e) =>
                                     setFreeAccountNumber(
@@ -689,120 +832,37 @@ export function AddAccountModal({
                                 helperText="Find this in MT5 → Navigator → Accounts. Required for Trade Manager sync."
                             />
 
-                            <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
-                                    Broker{" "}
-                                    <span className="text-[10px] font-black bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-lg tracking-wider uppercase ml-1">
+                            <ServerCombobox
+                                value={freeServer}
+                                onChange={(server, broker) => {
+                                    setFreeServer(server);
+                                    if (broker) {
+                                        setFreeBroker(broker);
+                                    }
+                                }}
+                                label="Select Server"
+                                required={false}
+                                helperText="Broker server name. Required for automated Cloud Sync (Passview)."
+                            />
+
+                            {/* Cloud Sync (Optional) */}
+                            <div className="space-y-2 pt-3 border-t border-dashboard">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
+                                        <CloudSync size={13} className="text-primary shrink-0" />
+                                        Automated Cloud Sync
+                                    </span>
+                                    <span className="text-[9px] font-black bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-lg tracking-wider uppercase">
                                         Optional
                                     </span>
-                                </label>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            className="w-full justify-between bg-white dark:bg-[#151925] px-3 py-2.5 text-sm font-medium text-gray-700 dark:text-white hover:bg-white dark:hover:bg-[#151925]"
-                                        >
-                                            {freeBroker ? (
-                                                <span className="truncate">
-                                                    {BROKER_INFO[
-                                                        freeBroker as SupportedBroker
-                                                    ]?.name ?? freeBroker}
-                                                </span>
-                                            ) : (
-                                                <span className="text-gray-400 dark:text-gray-500">
-                                                    Select your broker (if
-                                                    any)...
-                                                </span>
-                                            )}
-                                            <ChevronDown
-                                                size={16}
-                                                className="shrink-0 opacity-60"
-                                            />
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                        align="start"
-                                        className="max-h-[250px] overflow-y-auto"
-                                    >
-                                        <DropdownMenuItem
-                                            onClick={() => setFreeBroker("")}
-                                        >
-                                            Select your broker (if any)...
-                                        </DropdownMenuItem>
-                                        {SUPPORTED_BROKERS.map((b) => (
-                                            <DropdownMenuItem
-                                                key={b}
-                                                onClick={() =>
-                                                    setFreeBroker(b)
-                                                }
-                                            >
-                                                {BROKER_INFO[b].name}
-                                            </DropdownMenuItem>
-                                        ))}
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1.5">
-                                    Required later to apply for free Partner Pro.
-                                    You can also set it anytime in Account
-                                    Settings.
-                                </p>
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
-                                    Label Color
-                                </label>
-                                <div className="flex flex-wrap gap-2">
-                                    {[
-                                        "hsl(var(--primary))",
-                                        "#10B981",
-                                        "#3B82F6",
-                                        "#0EA5E9",
-                                        "#6366F1",
-                                        "#8B5CF6",
-                                        "#A855F7",
-                                        "#D946EF",
-                                        "#EC4899",
-                                        "#F43F5E",
-                                        "#EF4444",
-                                        "#F97316",
-                                        "#F59E0B",
-                                        "#EAB308",
-                                        "#84CC16",
-                                        "#14B8A6",
-                                        "#06B6D4",
-                                        "#64748B",
-                                        "#475569",
-                                        "#1E293B",
-                                    ].map((c) => (
-                                        <Button
-                                            variant="ghost"
-                                            type="button"
-                                            key={c}
-                                            onClick={() => setColor(c)}
-                                            aria-label={`Select color ${c}`}
-                                            className={`w-9 h-9 p-0 rounded-full transition-all flex items-center justify-center ${color === c
-                                                    ? "ring-2 ring-offset-2 ring-offset-white dark:ring-offset-[#1E2028] scale-110 hover:bg-transparent hover:text-white"
-                                                    : "hover:scale-105 hover:bg-transparent"
-                                                }`}
-                                            style={{
-                                                backgroundColor: c,
-                                                boxShadow:
-                                                    color === c
-                                                        ? `0 0 10px ${c}80`
-                                                        : "none",
-                                            }}
-                                        >
-                                            {color === c && (
-                                                <Check
-                                                    size={14}
-                                                    className="text-white drop-shadow-md"
-                                                />
-                                            )}
-                                        </Button>
-                                    ))}
                                 </div>
+                                <PremiumInput
+                                    type="password"
+                                    label="Investor Password (Passview)"
+                                    value={investorPassword}
+                                    onChange={(e) => setInvestorPassword(e.target.value)}
+                                    helperText="Read-only investor password. Enables automated 24/7 trade sync without VPS or EA."
+                                />
                             </div>
 
                             <div className="flex gap-3 pt-2">
@@ -834,14 +894,21 @@ export function AddAccountModal({
                 {step === "free-setup" &&
                     createdAccount &&
                     (() => {
+                        const hasCloudSync = Boolean(createdAccount.hasCloudSync);
                         const isManual = setupSyncMethod === "MANUAL";
-                        const successTitle = isManual
+                        const successTitle = hasCloudSync
+                            ? "Cloud Sync Activated"
+                            : isManual
                             ? "Account created"
                             : "Trade Manager is ready";
-                        const successDesc = isManual
+                        const successDesc = hasCloudSync
+                            ? "Automated background sync is active. Your trade telemetry syncs 24/7 without needing a VPS or EA."
+                            : isManual
                             ? "You can now start logging trades manually."
                             : setupInstructions.description;
-                        const primaryCtaLabel = isManual
+                        const primaryCtaLabel = hasCloudSync
+                            ? "Done & View Accounts"
+                            : isManual
                             ? "Log First Trade"
                             : "Continue to Trade Manager Setup";
 
@@ -849,73 +916,147 @@ export function AddAccountModal({
                             <>
                                 {renderHeader(successTitle, successDesc, false)}
                                 <div className="p-6 space-y-6">
-                                    {/* API Key — always shown */}
-                                    <div className="p-4 bg-gray-50 dark:bg-[#151925] rounded-xl border border-dashboard">
-                                        <p className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">
-                                            Your Sync API Key
-                                        </p>
-                                        <div className="flex items-center gap-2">
-                                            <code className="flex-1 p-3 bg-white dark:bg-[#1E2028] rounded-lg text-sm font-mono text-primary break-all border border-dashboard">
-                                                {createdAccount.apiKey}
-                                            </code>
-                                            <Button
-                                                variant="primary"
-                                                size="icon"
-                                                onClick={() =>
-                                                    copyToClipboard(
-                                                        createdAccount.apiKey
-                                                    )
-                                                }
-                                                aria-label="Copy API Key"
-                                                className="h-11 w-11 rounded-lg shrink-0 hover:bg-[#00B377]"
-                                            >
-                                                {copied ? (
-                                                    <Check size={18} />
-                                                ) : (
-                                                    <Copy size={18} />
-                                                )}
-                                            </Button>
-                                        </div>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                                            {isManual
-                                                ? "Save this key — you can use it later to set up auto-sync with Trade Manager."
-                                                : "Save this key now — you can find it later in Settings → Sync Settings."}
-                                        </p>
-                                    </div>
-
-                                    {/* Setup steps — only for TNT/EA, hidden for MANUAL */}
-                                    {!isManual && (
+                                    {hasCloudSync ? (
                                         <div className="space-y-4">
-                                            <h3 className="font-semibold text-gray-700 dark:text-white border-b border-dashboard pb-2">
-                                                Setup Steps
-                                            </h3>
-                                            <ol className="space-y-4 text-sm text-gray-600 dark:text-gray-500">
-                                                {setupInstructions.steps.map(
-                                                    (stepText, index) => (
-                                                        <li
-                                                            key={index}
-                                                            className="flex gap-3 items-start"
-                                                        >
-                                                            <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
-                                                                {index + 1}
+                                            {/* Cloud Sync Status Card */}
+                                            <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20 space-y-3">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                                        <h4 className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+                                                            Automated Cloud Worker
+                                                        </h4>
+                                                    </div>
+                                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                                                        <ShieldCheck size={11} className="text-emerald-500" />
+                                                        Active & Encrypted
+                                                    </span>
+                                                </div>
+                                                <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                                                    Your investor password is securely stored with AES-256 encryption. Initial synchronization for the past 30 days has been dispatched to the automated worker queue.
+                                                </p>
+                                                {/* 2x2 Matrix Specs */}
+                                                <div className="rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard divide-y divide-gray-200/60 dark:divide-white/5 text-xs overflow-hidden">
+                                                    <div className="grid grid-cols-2 divide-x divide-gray-200/60 dark:divide-white/5">
+                                                        <div className="px-3.5 py-2">
+                                                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
+                                                                Account
                                                             </span>
-                                                            <span className="break-words">
-                                                                {stepText}
+                                                            <span className="font-bold text-gray-800 dark:text-gray-200 tabular-nums">
+                                                                #{createdAccount.accountNumber || freeAccountNumber || "N/A"}
                                                             </span>
-                                                        </li>
-                                                    )
-                                                )}
-                                            </ol>
-                                        </div>
-                                    )}
+                                                        </div>
+                                                        <div className="px-3.5 py-2">
+                                                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
+                                                                Server
+                                                            </span>
+                                                            <span
+                                                                className="font-semibold text-gray-800 dark:text-gray-200 font-mono truncate block"
+                                                                title={createdAccount.server || freeServer}
+                                                            >
+                                                                {createdAccount.server || freeServer || "Default"}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                    {/* Troubleshooting help — only for TNT/EA */}
-                                    {!isManual && (
-                                        <SyncTroubleshootingPanel
-                                            method={
-                                                effectiveSetupMethod as "EA_SYNC"
-                                            }
-                                        />
+                                            {/* Optional EA API Key disclosure */}
+                                            <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-dashboard flex items-center justify-between text-xs">
+                                                <div className="min-w-0 pr-2">
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
+                                                        Sync API Key (Optional)
+                                                    </span>
+                                                    <span className="font-mono text-gray-500 truncate block text-[11px]">
+                                                        {createdAccount.apiKey}
+                                                    </span>
+                                                </div>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => copyToClipboard(createdAccount.apiKey)}
+                                                    className="shrink-0 text-xs font-semibold rounded-lg h-7 px-2.5"
+                                                >
+                                                    {copied ? (
+                                                        <Check size={12} className="mr-1 text-emerald-500" />
+                                                    ) : (
+                                                        <Copy size={12} className="mr-1" />
+                                                    )}
+                                                    {copied ? "Copied" : "Copy"}
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            {/* API Key — always shown */}
+                                            <div className="p-4 bg-gray-50 dark:bg-[#1E2028] rounded-xl border border-dashboard">
+                                                <p className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">
+                                                    Your Sync API Key
+                                                </p>
+                                                <div className="flex items-center gap-2">
+                                                    <code className="flex-1 p-3 bg-white dark:bg-[#1E2028] rounded-lg text-sm font-mono text-primary break-all border border-dashboard">
+                                                        {createdAccount.apiKey}
+                                                    </code>
+                                                    <Button
+                                                        variant="primary"
+                                                        size="icon"
+                                                        onClick={() =>
+                                                            copyToClipboard(
+                                                                createdAccount.apiKey
+                                                            )
+                                                        }
+                                                        aria-label="Copy API Key"
+                                                        className="h-11 w-11 rounded-lg shrink-0 hover:bg-[#00B377]"
+                                                    >
+                                                        {copied ? (
+                                                            <Check size={18} />
+                                                        ) : (
+                                                            <Copy size={18} />
+                                                        )}
+                                                    </Button>
+                                                </div>
+                                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                                                    {isManual
+                                                        ? "Save this key — you can use it later to set up auto-sync with Trade Manager."
+                                                        : "Save this key now — you can find it later in Settings → Sync Settings."}
+                                                </p>
+                                            </div>
+
+                                            {/* Setup steps — only for TNT/EA, hidden for MANUAL */}
+                                            {!isManual && (
+                                                <div className="space-y-4">
+                                                    <h3 className="font-semibold text-gray-700 dark:text-white border-b border-dashboard pb-2">
+                                                        Setup Steps
+                                                    </h3>
+                                                    <ol className="space-y-4 text-sm text-gray-600 dark:text-gray-500">
+                                                        {setupInstructions.steps.map(
+                                                            (stepText, index) => (
+                                                                <li
+                                                                    key={index}
+                                                                    className="flex gap-3 items-start"
+                                                                >
+                                                                    <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                                                                        {index + 1}
+                                                                    </span>
+                                                                    <span className="break-words">
+                                                                        {stepText}
+                                                                    </span>
+                                                                </li>
+                                                            )
+                                                        )}
+                                                    </ol>
+                                                </div>
+                                            )}
+
+                                            {/* Troubleshooting help — only for TNT/EA */}
+                                            {!isManual && (
+                                                <SyncTroubleshootingPanel
+                                                    method={
+                                                        effectiveSetupMethod as "EA_SYNC"
+                                                    }
+                                                />
+                                            )}
+                                        </>
                                     )}
 
                                     {/* Primary CTA — method-aware */}
@@ -927,12 +1068,17 @@ export function AddAccountModal({
                                                 trackEvent(
                                                     "add_account_success_next_clicked",
                                                     {
-                                                        method: isManual
+                                                        method: hasCloudSync
+                                                            ? "cloud"
+                                                            : isManual
                                                             ? "manual"
                                                             : "ea",
                                                     }
                                                 );
-                                                if (isManual) {
+                                                if (hasCloudSync) {
+                                                    handleClose();
+                                                    onSuccess(createdAccount);
+                                                } else if (isManual) {
                                                     // Route to journal
                                                     handleClose();
                                                     onSuccess(createdAccount);
@@ -949,17 +1095,19 @@ export function AddAccountModal({
                                             {primaryCtaLabel}
                                             <ArrowRight size={16} />
                                         </Button>
-                                        <Button
-                                            variant="outline"
-                                            size="smd"
-                                            onClick={() => {
-                                                handleClose();
-                                                onSuccess(createdAccount);
-                                            }}
-                                            className="w-full font-bold"
-                                        >
-                                            Skip for now
-                                        </Button>
+                                        {!hasCloudSync && (
+                                            <Button
+                                                variant="outline"
+                                                size="smd"
+                                                onClick={() => {
+                                                    handleClose();
+                                                    onSuccess(createdAccount);
+                                                }}
+                                                className="w-full font-bold"
+                                            >
+                                                Skip for now
+                                            </Button>
+                                        )}
                                     </div>
                                 </div>
                             </>
@@ -995,7 +1143,7 @@ export function AddAccountModal({
                                             onClick={() =>
                                                 handleSelectBroker(broker)
                                             }
-                                            className="group flex flex-col items-center justify-center gap-3 p-6 rounded-xl border border-dashboard hover:border-amber-400 dark:hover:border-amber-500/50 bg-white dark:bg-[#151925] hover:shadow-lg transition-all text-center"
+                                            className="group flex flex-col items-center justify-center gap-3 p-6 rounded-xl border border-dashboard hover:border-amber-400 dark:hover:border-amber-500/50 bg-white dark:bg-[#1E2028] hover:shadow-lg transition-all text-center"
                                         >
                                             <div className="h-16 flex items-center justify-center">
                                                 <Image
@@ -1048,7 +1196,7 @@ export function AddAccountModal({
                                     }}
                                     className={`flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all text-center ${accountStatus === "new"
                                             ? "border-amber-400 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-500/5"
-                                            : "border-dashboard hover:border-amber-300 dark:hover:border-amber-500/20 bg-white dark:bg-[#151925]"
+                                            : "border-dashboard hover:border-amber-300 dark:hover:border-amber-500/20 bg-white dark:bg-[#1E2028]"
                                         }`}
                                 >
                                     <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-500/15 flex items-center justify-center">
@@ -1070,7 +1218,7 @@ export function AddAccountModal({
                                     onClick={() => setAccountStatus("existing")}
                                     className={`flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all text-center ${accountStatus === "existing"
                                             ? "border-blue-400 dark:border-blue-500/40 bg-blue-50 dark:bg-blue-500/5"
-                                            : "border-dashboard hover:border-blue-300 dark:hover:border-blue-500/20 bg-white dark:bg-[#151925]"
+                                            : "border-dashboard hover:border-blue-300 dark:hover:border-blue-500/20 bg-white dark:bg-[#1E2028]"
                                         }`}
                                 >
                                     <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-500/15 flex items-center justify-center">
@@ -1103,7 +1251,7 @@ export function AddAccountModal({
                                         )}
                                     </ol>
                                     {brokerInfo.ibTransferGuide.emails && (
-                                        <div className="p-3 rounded-lg bg-white dark:bg-[#151925] border border-blue-100 space-y-1.5">
+                                        <div className="p-3 rounded-lg bg-white dark:bg-[#1E2028] border border-blue-100 space-y-1.5">
                                             <div className="text-xs space-y-0.5 text-gray-700 dark:text-gray-300">
                                                 <p>
                                                     <strong>To:</strong>{" "}
@@ -1178,7 +1326,7 @@ export function AddAccountModal({
                                             )
                                         )}
                                     </ol>
-                                    <p className="text-xs text-amber-700 dark:text-amber-400 bg-white dark:bg-[#151925] border border-amber-200 dark:border-amber-500/15 rounded-lg p-2.5">
+                                    <p className="text-xs text-amber-700 dark:text-amber-400 bg-white dark:bg-[#1E2028] border border-amber-200 dark:border-amber-500/15 rounded-lg p-2.5">
                                         <UserPlus size={13} className="inline-block mr-1 align-[-1px]" /> Registration link opened in a new tab — once your account is funded and verified, click Continue below.
                                     </p>
                                 </div>
@@ -1220,13 +1368,11 @@ export function AddAccountModal({
                                     onChange={(e) =>
                                         setAccountNumber(e.target.value)
                                     }
-                                    placeholder="e.g. 12345678"
                                 />
                                 <PremiumInput
                                     label="Balance (USD) *"
                                     value={balance}
                                     onChange={(e) => setBalance(e.target.value)}
-                                    placeholder="e.g. 200"
                                 />
                                 <PremiumInput
                                     label="Telegram ID *"
@@ -1234,7 +1380,6 @@ export function AddAccountModal({
                                     onChange={(e) =>
                                         setTelegramId(e.target.value)
                                     }
-                                    placeholder="@yourusername"
                                 />
                                 <PremiumInput
                                     label="Email *"
@@ -1251,32 +1396,27 @@ export function AddAccountModal({
                                     />
                                 )}
                                 {brokerInfo.requiresCountry && (
-                                    <div className="space-y-1">
-                                        <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 pl-1">
+                                    <div className="w-full space-y-2">
+                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
                                             Country *
                                         </label>
                                         <CountrySelect
                                             value={country}
                                             onChange={setCountry}
-                                            className="h-11 bg-white/80 border-amber-900/10 text-slate-900 focus:bg-white focus:border-amber-400 dark:bg-black/20 dark:text-white dark:focus:bg-black/25 dark:focus:border-amber-300/60 rounded-xl"
+                                            className="h-[42px] px-3.5 py-2.5 rounded-xl bg-gray-50 dark:bg-[#151925] border border-dashboard text-sm font-medium text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-none active:scale-100"
                                         />
                                     </div>
                                 )}
                             </div>
-                            {/* Screenshot proof — optional but shown to admin */}
-                            <PremiumInput
-                                label="Account Screenshot URL (optional)"
-                                placeholder="https://imgur.com/... or Google Drive link"
-                                value={screenshotUrl}
-                                onChange={(e) =>
-                                    setScreenshotUrl(e.target.value)
-                                }
+                            {/* Server selection — strictly filtered by chosen broker */}
+                            <ServerCombobox
+                                value={proServer}
+                                onChange={(server) => setProServer(server)}
+                                brokerFilter={selectedBroker}
+                                label="Select Server"
+                                required={false}
+                                helperText={`Select your ${brokerInfo.name} server for automated Cloud Sync.`}
                             />
-                            <p className="text-[11px] text-gray-400 dark:text-gray-500 -mt-2">
-                                Paste a link to a screenshot of your broker
-                                account page showing your account number and
-                                balance. Helps speed up verification.
-                            </p>
                             <div className="flex justify-end pt-4">
                                 <Button
                                     variant="primary"
@@ -1321,7 +1461,7 @@ export function AddAccountModal({
                                     <AlertCircle size={16} /> {error}
                                 </div>
                             )}
-                            <div className="rounded-xl border border-dashboard bg-gray-50 dark:bg-[#151925] p-5">
+                            <div className="rounded-xl border border-dashboard bg-gray-50 dark:bg-[#1E2028] p-5">
                                 <div className="grid grid-cols-3 divide-x divide-dashboard">
                                     <div className="text-center px-2">
                                         <p className="text-[10px] text-gray-500 uppercase mb-1">
@@ -1390,19 +1530,14 @@ export function AddAccountModal({
                                             </p>
                                         </div>
                                     )}
-                                    {screenshotUrl && (
-                                        <div className="col-span-2 text-center px-2 mt-2">
+                                    {proServer && (
+                                        <div className="col-span-2 text-center px-2 mt-2 pt-2 border-t border-dashboard/50">
                                             <p className="text-[10px] text-gray-500 uppercase mb-1">
-                                                Screenshot
+                                                Server
                                             </p>
-                                            <a
-                                                href={screenshotUrl}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-xs font-medium text-primary hover:underline truncate block mx-auto max-w-full"
-                                            >
-                                                {screenshotUrl}
-                                            </a>
+                                            <p className="font-bold text-primary dark:text-primary-light break-words text-sm">
+                                                {proServer}
+                                            </p>
                                         </div>
                                     )}
                                 </div>

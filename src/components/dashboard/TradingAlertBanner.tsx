@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { cookies } from "next/headers";
-import { TradingAlertBannerClient } from "./TradingAlertBannerClient";
+import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
+import { getPairConfig } from "@/lib/calculators";
 
 export interface TradingAlert {
     id: string;
@@ -22,9 +23,10 @@ export async function TradingAlertBanner() {
     const account = await prisma.tradingAccount.findUnique({
         where: { id: accountId, userId: user.id },
         select: {
+            balance: true,
             maxDailyLoss: true,
             maxDailyTrades: true,
-            cooldownAfterLosses: true,
+            maxRiskPercent: true,
             timezone: true,
             currency: true,
         },
@@ -36,7 +38,7 @@ export async function TradingAlertBanner() {
     const hasRules =
         account.maxDailyLoss ||
         account.maxDailyTrades ||
-        account.cooldownAfterLosses;
+        account.maxRiskPercent;
     if (!hasRules) return null;
 
     // Get today's date range in account timezone
@@ -50,24 +52,33 @@ export async function TradingAlertBanner() {
         month: "2-digit",
         day: "2-digit",
     });
-    const todayStr = formatter.format(now); // "2026-04-08"
-    const todayStart = new Date(`${todayStr}T00:00:00`);
-    const todayEnd = new Date(`${todayStr}T23:59:59.999`);
+    const todayStr = formatter.format(now); // "YYYY-MM-DD"
+    const todayStart = parseLocalStartOfDay(todayStr, tz);
+    const todayEnd = parseLocalEndOfDay(todayStr, tz);
 
-    // Fetch today's closed trades for this account
+    // Fetch today's closed trades for this account (aligned by close/exit date)
     const todayTrades = await prisma.journalEntry.findMany({
         where: {
             userId: user.id,
             accountId: accountId,
             status: "CLOSED",
-            entryDate: { gte: todayStart, lte: todayEnd },
+            OR: [
+                { exitDate: { gte: todayStart, lte: todayEnd } },
+                { exitDate: null, entryDate: { gte: todayStart, lte: todayEnd } },
+            ],
         },
         select: {
+            id: true,
             pnl: true,
             result: true,
+            symbol: true,
+            lotSize: true,
+            entryPrice: true,
+            stopLoss: true,
+            exitDate: true,
             entryDate: true,
         },
-        orderBy: { entryDate: "desc" },
+        orderBy: { exitDate: "desc" },
     });
 
     const alerts: TradingAlert[] = [];
@@ -109,31 +120,34 @@ export async function TradingAlertBanner() {
                 level: "warning",
                 icon: "🚨",
                 title: "Overtrading Alert",
-                description: `You've placed ${tradesCount} trades today (limit: ${account.maxDailyTrades}). Are you following your plan?`,
+                description: `You've placed ${tradesCount} trades today (limit: ${account.maxDailyTrades}). Review your plan before continuing.`,
             });
         }
     }
 
-    // 3. Consecutive Losses Cooldown
-    if (account.cooldownAfterLosses && account.cooldownAfterLosses > 0) {
-        // Check recent consecutive losses (most recent first)
-        let consecutiveLosses = 0;
+    // 3. Max Risk % / Trade Check
+    if (
+        account.maxRiskPercent &&
+        account.maxRiskPercent > 0 &&
+        account.balance > 0
+    ) {
         for (const trade of todayTrades) {
-            if (trade.result === "LOSS") {
-                consecutiveLosses++;
-            } else {
-                break; // Stop counting at first non-loss
+            if (trade.stopLoss && trade.entryPrice) {
+                const slDistance = Math.abs(trade.entryPrice - trade.stopLoss);
+                const { contractSize } = getPairConfig(trade.symbol);
+                const riskAmount = slDistance * trade.lotSize * contractSize;
+                const riskPercent = (riskAmount / account.balance) * 100;
+                if (riskPercent > account.maxRiskPercent) {
+                    alerts.push({
+                        id: `risk-exceeded-${trade.id}`,
+                        level: "danger",
+                        icon: "⚠️",
+                        title: "Risk Limit Exceeded",
+                        description: `Trade on ${trade.symbol} exceeded your ${account.maxRiskPercent}% risk limit (${riskPercent.toFixed(1)}%). Protect your capital.`,
+                    });
+                    break;
+                }
             }
-        }
-
-        if (consecutiveLosses >= account.cooldownAfterLosses) {
-            alerts.push({
-                id: "cooldown",
-                level: "danger",
-                icon: "🧊",
-                title: "Cooldown Recommended",
-                description: `${consecutiveLosses} consecutive losses. Take a break, review your trades, and come back with a clear mind.`,
-            });
         }
     }
 
@@ -155,7 +169,7 @@ export async function TradingAlertBanner() {
                     type: "FEATURE_UPDATE",
                     title: `Risk Alert: ${alert.title}`,
                     message: alert.description,
-                    link: "/dashboard/rules",
+                    link: "/dashboard/intelligence",
                     icon: "AlertTriangle",
                     priority: alert.level === "danger" ? "URGENT" : "HIGH",
                     dedupeKey,
@@ -171,5 +185,6 @@ export async function TradingAlertBanner() {
         }
     }
 
+    // Alerts are held within the Notification Bell without displaying on the dashboard
     return null;
 }

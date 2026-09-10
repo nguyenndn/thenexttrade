@@ -69,8 +69,8 @@ export function CountrySelect({
                 type="button"
                 onClick={() => !loading && setIsOpen(!isOpen)}
                 className={cn(
-                    "flex items-center justify-between w-full h-12 px-4 rounded-xl border bg-gray-50 dark:bg-[#0B0E14] text-left transition-all font-normal hover:bg-gray-50 dark:hover:bg-[#0B0E14]",
-                    "border-dashboard hover:border-gray-300 dark:hover:border-white/20 focus:outline-none focus:border-[#2F80ED]/50 dark:focus:border-[#2F80ED]/50 focus:ring-1 focus:ring-[#2F80ED]/50 dark:focus:ring-[#2F80ED]/50",
+                    "flex items-center justify-between w-full h-[42px] px-3.5 py-2.5 rounded-xl border bg-gray-50 dark:bg-[#151925] text-left transition-all font-medium hover:bg-gray-50 dark:hover:bg-[#151925]",
+                    "border-dashboard hover:border-gray-300 dark:hover:border-white/20 focus:outline-none focus:border-primary dark:focus:border-primary focus:ring-2 focus:ring-primary/20 dark:focus:ring-primary/20 active:scale-100",
                     error ? "border-red-500/50" : "",
                     loading ? "opacity-70 cursor-wait" : "",
                     className
@@ -78,27 +78,27 @@ export function CountrySelect({
                 disabled={loading}
             >
                 {loading ? (
-                    <span className="text-gray-600 text-sm">
+                    <span className="text-gray-500 text-sm">
                         Loading countries...
                     </span>
                 ) : selectedCountry ? (
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2.5 min-w-0">
                         <img
                             src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/${selectedCountry.code.toLowerCase()}.svg`}
                             alt={selectedCountry.name}
-                            className="w-6 h-4 rounded-lg object-cover shadow-sm shrink-0"
+                            className="w-5 h-3.5 rounded object-cover shadow-sm shrink-0"
                         />
-                        <span className="text-gray-700 dark:text-white text-base truncate pr-2">
+                        <span className="text-gray-700 dark:text-white text-sm font-medium truncate pr-2">
                             {selectedCountry.name}
                         </span>
                     </div>
                 ) : (
-                    <span className="text-gray-600 text-base">
+                    <span className="text-gray-400 dark:text-gray-500 text-sm font-normal">
                         Select Country
                     </span>
                 )}
                 <ChevronDown
-                    size={20}
+                    size={18}
                     className={cn(
                         "text-gray-500 transition-transform shrink-0",
                         isOpen ? "rotate-180" : ""

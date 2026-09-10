@@ -1,6 +1,6 @@
 # TheNextTrade Docs
 
-Last reviewed: 2026-08-18
+Last reviewed: 2026-09-10
 
 This folder is the active source of truth for the product, system, operations, design, and email behavior. Old sprint plans, completed QA reports, and stale implementation notes should not live here.
 
@@ -19,6 +19,18 @@ This folder is the active source of truth for the product, system, operations, d
 | [features/trading-style-assessment.md](features/trading-style-assessment.md) | Spec and scoring engine for Trading Style Assessment & Archetypes |
 | [features/personalized-improvement-loop.md](features/personalized-improvement-loop.md) | Deep architecture/spec for the Personalized Trading Improvement Loop |
 
+## Admin Growth & Revenue Docs
+
+These four specs (plus the sync support fallback) cover the admin tooling that turns user telemetry into revenue and support decisions. All are shipped; treat them as reference, not as pending work.
+
+| File | Covers |
+| --- | --- |
+| [features/admin-user-data-coverage-plan.md](features/admin-user-data-coverage-plan.md) | What trader data exists and what admin screens surface it |
+| [features/admin-user-behavior-segmentation-plan.md](features/admin-user-behavior-segmentation-plan.md) | Behaviour segmentation console at `/admin/users/behavior` |
+| [features/admin-user-narrative-summary-plan.md](features/admin-user-narrative-summary-plan.md) | Template-generated narrative summary on `/admin/users/[id]` |
+| [features/admin-revenue-pipeline-plan.md](features/admin-revenue-pipeline-plan.md) | IB revenue pipeline and eligible volume |
+| [features/admin-sync-cloud-support-plan.md](features/admin-sync-cloud-support-plan.md) | Cloud Sync jobs and the manual sync support ticket fallback |
+
 ## Current Snapshot
 
 - App: Next.js App Router, React, TypeScript, Tailwind CSS, Lucide icons.
@@ -34,6 +46,8 @@ This folder is the active source of truth for the product, system, operations, d
 - AI Gateway: Centralized provider routing (Google Gemini + OpenRouter), per-record AES-256 salt encryption for credentials, and stale request sweeping.
 - Brand & UI System: Breek Premium Design System with solid Gold `#E5A50A`, transparent 3D Brain Logo, and responsive mobile-first layouts.
 - TraderWaves-inspired product loop is active in code: Sync Health Center, Privacy Presets, Rulebook & Goals, Trade Plans, Plan vs Actual, Weekly Coach action loop, safe public profile/share behavior, first insight, and measurable improvement experiments.
+- Admin revenue & growth tooling: behaviour segmentation (`/admin/users/behavior`), 8-domain user telemetry with narrative summary (`/admin/users/[id]`), per-broker commission rates (`/admin/trading-systems/brokers`), and the sync request console (`/admin/ib/sync-requests`).
+- IB revenue model: traders pay **$0**; revenue is **rebate per lot** from partner brokers (Vantage / VT Markets / Ultima Markets at $17 per XAUUSD lot, Exness at $6). Rebate only accrues on accounts marked `CONFIRMED` whose broker exists in the broker table. See [PRODUCT.md](PRODUCT.md#ib-business-model).
 
 ## New Developer Handoff
 

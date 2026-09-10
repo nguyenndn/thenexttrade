@@ -12,11 +12,31 @@ export async function GET(request: NextRequest) {
     const auth = await requireAdmin();
     if (auth instanceof NextResponse) return auth;
 
+    const fromParam = request.nextUrl.searchParams.get("from");
+    const toParam = request.nextUrl.searchParams.get("to");
     const period = request.nextUrl.searchParams.get("period") || "7d";
-    const days = period === "90d" ? 90 : period === "30d" ? 30 : 7;
 
-    const since = new Date();
-    since.setDate(since.getDate() - days);
+    let since: Date;
+    let until = new Date();
+
+    if (fromParam && toParam) {
+        const parsedSince = new Date(fromParam);
+        const parsedUntil = new Date(toParam);
+        if (!isNaN(parsedSince.getTime()) && !isNaN(parsedUntil.getTime())) {
+            since = parsedSince;
+            since.setHours(0, 0, 0, 0);
+            until = new Date(parsedUntil);
+            until.setHours(23, 59, 59, 999);
+        } else {
+            const days = period === "90d" ? 90 : period === "30d" ? 30 : 7;
+            since = new Date();
+            since.setDate(since.getDate() - days);
+        }
+    } else {
+        const days = period === "90d" ? 90 : period === "30d" ? 30 : 7;
+        since = new Date();
+        since.setDate(since.getDate() - days);
+    }
 
     try {
         const [
@@ -31,14 +51,14 @@ export async function GET(request: NextRequest) {
             // Event breakdown by name
             prisma.analyticsEvent.groupBy({
                 by: ["name"],
-                where: { createdAt: { gte: since } },
+                where: { createdAt: { gte: since, lte: until } },
                 _count: { _all: true },
                 orderBy: { _count: { name: "desc" } },
             }),
 
             // Recent events (last 20)
             prisma.analyticsEvent.findMany({
-                where: { createdAt: { gte: since } },
+                where: { createdAt: { gte: since, lte: until } },
                 orderBy: { createdAt: "desc" },
                 take: 20,
                 select: {
@@ -55,7 +75,7 @@ export async function GET(request: NextRequest) {
             prisma.pageView
                 .groupBy({
                     by: ["sessionId"],
-                    where: { createdAt: { gte: since } },
+                    where: { createdAt: { gte: since, lte: until } },
                 })
                 .then((r) => r.length),
 
@@ -64,7 +84,7 @@ export async function GET(request: NextRequest) {
                 .groupBy({
                     by: ["sessionId"],
                     where: {
-                        createdAt: { gte: since },
+                        createdAt: { gte: since, lte: until },
                         pathname: { startsWith: "/leaderboard" },
                     },
                 })
@@ -75,7 +95,7 @@ export async function GET(request: NextRequest) {
                 .groupBy({
                     by: ["sessionId"],
                     where: {
-                        createdAt: { gte: since },
+                        createdAt: { gte: since, lte: until },
                         name: {
                             in: ["complete_lesson", "journal_entry_created"],
                         },
@@ -88,7 +108,7 @@ export async function GET(request: NextRequest) {
                 .groupBy({
                     by: ["sessionId"],
                     where: {
-                        createdAt: { gte: since },
+                        createdAt: { gte: since, lte: until },
                         name: "click_download_ea",
                     },
                 })

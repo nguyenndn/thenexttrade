@@ -335,6 +335,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                                     variant="ghost"
                                                     size="icon"
                                                     className="text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 h-8 w-8"
+                                                    aria-label="Module options"
                                                 >
                                                     <MoreVertical size={16} />
                                                 </Button>
@@ -347,10 +348,10 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                                     href={`/admin/academy/lessons/create?moduleId=${module.id}`}
                                                     className="flex items-center gap-2 text-sm px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300 transition-colors"
                                                 >
-                                                    <Plus size={14} /> Add
-                                                    Lesson
+                                                    <Plus size={14} /> Add Lesson
                                                 </Link>
-                                                <button
+                                                <Button
+                                                    variant="ghost"
                                                     onClick={() =>
                                                         handleManageQuiz(
                                                             module.id,
@@ -362,7 +363,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                                         isQuizLoading ===
                                                         module.id
                                                     }
-                                                    className="w-full flex items-center gap-2 text-sm px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300 transition-colors disabled:opacity-50"
+                                                    className="w-full flex items-center justify-start gap-2 text-sm px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300 transition-colors h-auto font-normal disabled:opacity-50"
                                                 >
                                                     <ListChecks size={14} />
                                                     {isQuizLoading === module.id
@@ -370,7 +371,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                                         : module.quiz
                                                           ? "Edit Quiz"
                                                           : "Add Quiz"}
-                                                </button>
+                                                </Button>
                                                 <Button
                                                     variant="ghost"
                                                     onClick={() =>
@@ -382,8 +383,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                                     }
                                                     className="w-full flex items-center justify-start gap-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg text-left"
                                                 >
-                                                    <Trash2 size={14} /> Delete
-                                                    Module
+                                                    <Trash2 size={14} /> Delete Module
                                                 </Button>
                                             </PopoverContent>
                                         </Popover>
@@ -514,18 +514,16 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                                                     variant="ghost"
                                                                     size="icon"
                                                                     className="h-7 w-7 text-gray-500 hover:text-primary"
+                                                                    aria-label="Edit lesson"
                                                                 >
-                                                                    <Edit
-                                                                        size={
-                                                                            14
-                                                                        }
-                                                                    />
+                                                                    <Edit size={14} />
                                                                 </Button>
                                                             </Link>
                                                             <Button
                                                                 variant="ghost"
                                                                 size="icon"
                                                                 className="h-7 w-7 text-gray-500 hover:text-red-500"
+                                                                aria-label="Delete lesson"
                                                                 onClick={() =>
                                                                     confirmDelete(
                                                                         "lesson",
@@ -534,9 +532,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                                                     )
                                                                 }
                                                             >
-                                                                <Trash2
-                                                                    size={14}
-                                                                />
+                                                                <Trash2 size={14} />
                                                             </Button>
                                                         </div>
                                                     </div>

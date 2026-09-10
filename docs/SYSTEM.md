@@ -1,6 +1,6 @@
 # System
 
-Last reviewed: 2026-08-18
+Last reviewed: 2026-09-10
 
 TheNextTrade is a trader operating system: Trade Manager EA/manual trade capture, journal, analytics, Academy, Edge missions, Partner Pro/VIP operations, AI Gateway, trading-system access, and admin reporting in one Next.js app. For route-level behavior specs, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
 
@@ -35,6 +35,12 @@ flowchart TD
   LegacySync[Legacy sync clients] --> SyncApi[/api/sync/*/]
   EaApi --> Prisma
   SyncApi --> Prisma
+  App -->|create Mt5ImportJob| Prisma
+  Worker[Python worker on laptop/VPS] -->|poll /api/worker/jobs/pull| WorkerApi[/api/worker/jobs/*/]
+  Worker -->|drive local MT5 terminal| MT5[MT5 terminal]
+  WorkerApi --> Prisma
+  Worker -->|env failure| Ticket[SupportSyncTicket]
+  Ticket --> Admin[Admin logs into MT5 manually]
 ```
 
 ## Core Data Areas
@@ -166,8 +172,10 @@ Current recurring release checks:
 - User APIs must resolve the authenticated user server-side.
 - Admin APIs must require `Profile.role` of `ADMIN` or `EDITOR`.
 - Sync APIs must authenticate with account/user API keys.
+- Worker APIs (`/api/worker/*`) authenticate with a shared worker key and are the only path allowed to claim jobs or submit extracted deals.
 - Analytics APIs must avoid storing sensitive personal or broker data.
 - File/media APIs should go through the object storage abstraction, not hard-coded local paths.
+- Read paths must not write. A `get*` server action or a page render must never mutate the database — writes triggered on page load fire on every visit and are invisible to the caller.
 
 ## Trade Sync
 
@@ -175,6 +183,11 @@ The current user-facing sync paths are:
 
 - Trade Manager EA: `/api/ea/*`.
 - Manual Journal: `/dashboard/journal`.
+- Cloud Sync: a `Mt5ImportJob` row is created by the web app, then an external Python worker (`tools/tnt-worker/`) polls `GET /api/worker/jobs/pull`, drives a local MT5 terminal, extracts deals, and submits via `POST /api/worker/jobs/submit`. The worker reports terminal-side failures to `/api/worker/jobs/fail`.
+
+Cloud Sync environment failures are expected, not exceptional. The worker distinguishes account errors from **MT5 environment errors** — `SERVERS_DAT_PROVISION_FAILED` (`-10005`), `MT5_INIT_FAILED`, and `LOGIN_TIMEOUT` are terminal-side and would hit a human on the same machine identically. Only `INVALID_CREDENTIALS` is an account problem. On `-10005` the worker fails fast after attempt 1 rather than looping 5 times.
+
+**Manual Sync Support Ticket is the fallback for every environment failure.** When an automated sync cannot complete, a `SupportSyncTicket` is raised (by the worker automatically, or by the user from `/dashboard/accounts`). An admin then logs into MT5 manually with the ticket's broker/server/account and the stored investor password, syncs by hand, and marks the ticket verified or failed. The user is notified in-app when the ticket reaches either state. The investor password is read through `src/lib/credentials/investor-password.server.ts`, which handles both `keyVersion` storage formats (`"plain"` legacy plaintext and `"v1"` AES-256-GCM); revealing it writes an `ADMIN_VIEW_CREDENTIAL` row to `SecurityLog`.
 
 Legacy `/api/sync/*` code may remain for backwards compatibility, but it should not appear as a primary setup path in new product surfaces.
 

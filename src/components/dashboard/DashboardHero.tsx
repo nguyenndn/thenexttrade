@@ -16,6 +16,7 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import { NumberTicker } from "@/components/ui/NumberTicker";
 
 export type HeroWidgetType =
     | "TOTAL_BALANCE"
@@ -138,10 +139,11 @@ export function DashboardHero({
                 return (
                     <>
                         <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 bg-clip-text text-transparent">
-                            {new Intl.NumberFormat("en-US", {
-                                style: "currency",
-                                currency: "USD",
-                            }).format(totalBalance)}
+                            <NumberTicker
+                                value={totalBalance}
+                                prefix="$"
+                                decimals={2}
+                            />
                         </p>
                         <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Live + Funded
@@ -170,11 +172,11 @@ export function DashboardHero({
                                         : "text-red-500"
                                 }`}
                             >
-                                {new Intl.NumberFormat("en-US", {
-                                    style: "currency",
-                                    currency: "USD",
-                                    signDisplay: "always",
-                                }).format(periodPnL)}
+                                <NumberTicker
+                                    value={Math.abs(periodPnL)}
+                                    prefix={periodPnL >= 0 ? "+$" : "-$"}
+                                    decimals={2}
+                                />
                             </p>
                         </div>
                         <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
@@ -212,10 +214,15 @@ export function DashboardHero({
                                         fill="none"
                                         strokeLinecap="round"
                                         strokeDasharray={`${(winRate / 100) * 150.8} 150.8`}
+                                        className="transition-[stroke-dasharray] duration-500 ease-out"
                                     />
                                 </svg>
                                 <span className="absolute inset-0 flex items-center justify-center text-xs font-black text-gray-700 dark:text-white">
-                                    {winRate.toFixed(0)}%
+                                    <NumberTicker
+                                        value={winRate}
+                                        suffix="%"
+                                        decimals={0}
+                                    />
                                 </span>
                             </div>
                         </div>
@@ -255,11 +262,19 @@ export function DashboardHero({
                                             fill="none"
                                             strokeLinecap="round"
                                             strokeDasharray={`${(tradeScore / 100) * 150.8} 150.8`}
+                                            className="transition-[stroke-dasharray] duration-500 ease-out"
                                         />
                                     )}
                                 </svg>
                                 <span className="absolute inset-0 flex items-center justify-center text-xs font-black text-gray-700 dark:text-white">
-                                    {tradeScore !== null ? tradeScore : "--"}
+                                    {tradeScore !== null ? (
+                                        <NumberTicker
+                                            value={tradeScore}
+                                            decimals={0}
+                                        />
+                                    ) : (
+                                        "--"
+                                    )}
                                 </span>
                             </div>
                         </div>
@@ -288,7 +303,14 @@ export function DashboardHero({
                                 pfColor
                             )}
                         >
-                            {profitFactor > 0 ? profitFactor.toFixed(2) : "--"}
+                            {profitFactor > 0 ? (
+                                <NumberTicker
+                                    value={profitFactor}
+                                    decimals={2}
+                                />
+                            ) : (
+                                "--"
+                            )}
                         </p>
                         <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Gross Profit / Loss
@@ -299,7 +321,10 @@ export function DashboardHero({
                 return (
                     <>
                         <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-gray-900 dark:text-white">
-                            {totalTrades}
+                            <NumberTicker
+                                value={totalTrades}
+                                decimals={0}
+                            />
                         </p>
                         <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Trades Executed
@@ -310,10 +335,11 @@ export function DashboardHero({
                 return (
                     <>
                         <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-emerald-500">
-                            {new Intl.NumberFormat("en-US", {
-                                style: "currency",
-                                currency: "USD",
-                            }).format(avgWin)}
+                            <NumberTicker
+                                value={avgWin}
+                                prefix="$"
+                                decimals={2}
+                            />
                         </p>
                         <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Per winning trade
@@ -324,10 +350,11 @@ export function DashboardHero({
                 return (
                     <>
                         <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-red-500">
-                            {new Intl.NumberFormat("en-US", {
-                                style: "currency",
-                                currency: "USD",
-                            }).format(-Math.abs(avgLoss))}
+                            <NumberTicker
+                                value={Math.abs(avgLoss)}
+                                prefix="-$"
+                                decimals={2}
+                            />
                         </p>
                         <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Per losing trade
@@ -343,7 +370,11 @@ export function DashboardHero({
                                 className="text-orange-500 fill-orange-500"
                             />
                             <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-orange-500">
-                                {streak} Days
+                                <NumberTicker
+                                    value={streak}
+                                    suffix=" Days"
+                                    decimals={0}
+                                />
                             </p>
                         </div>
                         <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
@@ -366,7 +397,17 @@ export function DashboardHero({
                                 rrColor
                             )}
                         >
-                            {avgRR > 0 ? `1:${avgRR.toFixed(2)}` : "--"}
+                            {avgRR > 0 ? (
+                                <>
+                                    1:
+                                    <NumberTicker
+                                        value={avgRR}
+                                        decimals={2}
+                                    />
+                                </>
+                            ) : (
+                                "--"
+                            )}
                         </p>
                         <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Average Risk:Reward
@@ -384,11 +425,11 @@ export function DashboardHero({
                                 expColor
                             )}
                         >
-                            {new Intl.NumberFormat("en-US", {
-                                style: "currency",
-                                currency: "USD",
-                                signDisplay: "always",
-                            }).format(expectancy)}
+                            <NumberTicker
+                                value={Math.abs(expectancy)}
+                                prefix={expectancy >= 0 ? "+$" : "-$"}
+                                decimals={2}
+                            />
                         </p>
                         <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Expectancy per trade
@@ -399,10 +440,11 @@ export function DashboardHero({
                 return (
                     <>
                         <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-red-500">
-                            {new Intl.NumberFormat("en-US", {
-                                style: "currency",
-                                currency: "USD",
-                            }).format(-Math.abs(fees))}
+                            <NumberTicker
+                                value={Math.abs(fees)}
+                                prefix="-$"
+                                decimals={2}
+                            />
                         </p>
                         <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Commission + Swap
@@ -413,10 +455,11 @@ export function DashboardHero({
                 return (
                     <>
                         <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-emerald-500">
-                            {new Intl.NumberFormat("en-US", {
-                                style: "currency",
-                                currency: "USD",
-                            }).format(maxWin)}
+                            <NumberTicker
+                                value={maxWin}
+                                prefix="$"
+                                decimals={2}
+                            />
                         </p>
                         <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Single best trade
@@ -427,10 +470,11 @@ export function DashboardHero({
                 return (
                     <>
                         <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-red-500">
-                            {new Intl.NumberFormat("en-US", {
-                                style: "currency",
-                                currency: "USD",
-                            }).format(-Math.abs(maxLoss))}
+                            <NumberTicker
+                                value={Math.abs(maxLoss)}
+                                prefix="-$"
+                                decimals={2}
+                            />
                         </p>
                         <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Single worst trade
@@ -443,7 +487,7 @@ export function DashboardHero({
     return (
         <div
             id="onborda-hero"
-            className="relative overflow-hidden rounded-xl bg-gradient-to-r from-white to-gray-50 dark:from-[#0B0E14] dark:to-[#131720] border border-gray-200 dark:border-[#382F1D] px-4 py-3 sm:px-6 sm:py-4 shadow-lg"
+            className="relative overflow-hidden rounded-xl bg-gradient-to-r from-white to-gray-50 dark:from-[#1E2028] dark:to-[#171922] border border-gray-200 dark:border-white/[0.08] px-4 py-3 sm:px-6 sm:py-4 shadow-lg"
         >
             {/* Glow effects */}
             <div className="absolute top-0 left-1/4 w-40 h-40 bg-amber-500/10 dark:bg-amber-500/20 rounded-full blur-[80px] pointer-events-none" />

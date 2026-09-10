@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     ShieldAlert,
@@ -27,6 +28,8 @@ import {
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { format, subDays } from "date-fns";
+import { DateRangePicker } from "@/components/ui/DateRangePicker";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { TradingAnomaliesPanel } from "@/components/admin/security/TradingAnomaliesPanel";
 
@@ -103,12 +106,6 @@ const TYPE_COLORS: Record<string, string> = {
         "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
 };
 
-const PERIODS = [
-    { value: "7d", label: "7D" },
-    { value: "30d", label: "30D" },
-    { value: "90d", label: "90D" },
-] as const;
-
 function timeAgo(dateStr: string): string {
     const diff = Date.now() - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
@@ -120,7 +117,55 @@ function timeAgo(dateStr: string): string {
 }
 
 export default function SecurityDashboard() {
-    const [period, setPeriod] = useState<"7d" | "30d" | "90d">("7d");
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
+    const fromParam = searchParams.get("from");
+    const toParam = searchParams.get("to");
+
+    const [dateRange, setDateRange] = useState<{ start: Date; end: Date }>(() => {
+        if (fromParam && toParam) {
+            const start = new Date(fromParam);
+            const end = new Date(toParam);
+            if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+                return { start, end };
+            }
+        }
+        return {
+            start: subDays(new Date(), 7),
+            end: new Date(),
+        };
+    });
+
+    useEffect(() => {
+        if (fromParam && toParam) {
+            const start = new Date(fromParam);
+            const end = new Date(toParam);
+            if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+                setDateRange((prev) => {
+                    if (
+                        prev.start.getTime() === start.getTime() &&
+                        prev.end.getTime() === end.getTime()
+                    ) {
+                        return prev;
+                    }
+                    return { start, end };
+                });
+            }
+        }
+    }, [fromParam, toParam]);
+
+    const handleDateRangeChange = (newRange: { start: Date; end: Date }) => {
+        setDateRange(newRange);
+        setPage(1);
+        const fromStr = format(newRange.start, "yyyy-MM-dd");
+        const toStr = format(newRange.end, "yyyy-MM-dd");
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("from", fromStr);
+        params.set("to", toStr);
+        router.push(`/admin/security?${params.toString()}`);
+    };
+
     const [tab, setTab] = useState<"events" | "blocked">("events");
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
@@ -154,7 +199,13 @@ export default function SecurityDashboard() {
     const fetchData = useCallback(async () => {
         setLoading(true);
         try {
-            const params = new URLSearchParams({ period, page: String(page) });
+            const fromStr = format(dateRange.start, "yyyy-MM-dd");
+            const toStr = format(dateRange.end, "yyyy-MM-dd");
+            const params = new URLSearchParams({
+                from: fromStr,
+                to: toStr,
+                page: String(page),
+            });
             if (typeFilter) params.set("type", typeFilter);
             if (ipSearch) params.set("ip", ipSearch);
             const [secRes, blockedRes] = await Promise.all([
@@ -178,14 +229,14 @@ export default function SecurityDashboard() {
         } finally {
             setLoading(false);
         }
-    }, [period, page, typeFilter, ipSearch]);
+    }, [dateRange, page, typeFilter, ipSearch]);
 
     useEffect(() => {
         fetchData();
     }, [fetchData]);
     useEffect(() => {
         setPage(1);
-    }, [typeFilter, ipSearch, period]);
+    }, [typeFilter, ipSearch, dateRange]);
 
     async function handleBlockIP() {
         if (!blockForm.ip) return;
@@ -229,6 +280,13 @@ export default function SecurityDashboard() {
     const currentFilterLabel =
         EVENT_TYPES.find((t) => t.value === typeFilter)?.label || "All Types";
 
+    const asOfTimestamp = new Date().toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+
+    const displayRangeLabel = `${format(dateRange.start, "MMM dd, yyyy")} - ${format(dateRange.end, "MMM dd, yyyy")}`;
+
     return (
         <Tabs
             value={tab}
@@ -237,7 +295,7 @@ export default function SecurityDashboard() {
         >
             <div className="space-y-4 pb-10">
                 {/* Admin Page Header — matching AdminPageHeader */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
                     <div className="flex items-center gap-4">
                         <div className="w-1 self-stretch min-h-[40px] rounded-full bg-gradient-to-b from-primary via-emerald-400 to-teal-500 shrink-0" />
                         <div>
@@ -249,37 +307,38 @@ export default function SecurityDashboard() {
                             </p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-1 shadow-sm">
-                            {PERIODS.map((p) => (
-                                <button
-                                    key={p.value}
-                                    onClick={() =>
-                                        setPeriod(p.value as typeof period)
-                                    }
-                                    className={`rounded-lg px-4 py-2 text-xs font-black transition-colors ${
-                                        period === p.value
-                                            ? "bg-primary text-white shadow-sm"
-                                            : "text-gray-500 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
-                                    }`}
-                                >
-                                    {p.label}
-                                </button>
-                            ))}
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full lg:w-auto">
+                        <div className="hidden xl:flex items-center gap-2 text-xs font-bold text-gray-400">
+                            <Clock size={13} /> Updated as of{" "}
+                            <span className="font-mono text-gray-700 dark:text-gray-300">
+                                {asOfTimestamp}
+                            </span>
+                            <span className="text-gray-300 dark:text-gray-600">
+                                ·
+                            </span>
+                            <span className="text-gray-500 dark:text-gray-400 capitalize">
+                                {displayRangeLabel}
+                            </span>
                         </div>
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={fetchData}
-                            disabled={loading}
-                            aria-label="Refresh data"
-                            className="rounded-xl"
-                        >
-                            <RefreshCw
-                                size={16}
-                                className={loading ? "animate-spin" : ""}
+                        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                            <DateRangePicker
+                                value={dateRange}
+                                onChange={handleDateRangeChange}
                             />
-                        </Button>
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={fetchData}
+                                disabled={loading}
+                                aria-label="Refresh data"
+                                className="rounded-xl shrink-0"
+                            >
+                                <RefreshCw
+                                    size={16}
+                                    className={loading ? "animate-spin" : ""}
+                                />
+                            </Button>
+                        </div>
                     </div>
                 </div>
 
@@ -383,7 +442,7 @@ export default function SecurityDashboard() {
                             <TabsTrigger
                                 key={t.id}
                                 value={t.id}
-                                className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+                                className="px-4 py-1.5 rounded-xl text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
                                 activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
                                 activeTextClassName="!text-white"
                             >
@@ -511,7 +570,7 @@ export default function SecurityDashboard() {
                                                 >
                                                     <td className="px-6 py-4">
                                                         <span
-                                                            className={`inline-flex px-2.5 py-1 text-xs font-bold rounded-lg border ${TYPE_COLORS[ev.type] || "bg-gray-100 text-gray-600"}`}
+                                                            className={`inline-flex px-2.5 py-1 text-xs font-bold rounded-xl border ${TYPE_COLORS[ev.type] || "bg-gray-100 text-gray-600"}`}
                                                         >
                                                             {ev.type.replace(
                                                                 /_/g,
@@ -767,7 +826,7 @@ export default function SecurityDashboard() {
                                         </label>
                                         <input
                                             type="text"
-                                            placeholder="e.g. 192.168.1.1"
+                                            aria-label="IP Address to block"
                                             value={blockForm.ip}
                                             onChange={(e) =>
                                                 setBlockForm((f) => ({
@@ -775,7 +834,7 @@ export default function SecurityDashboard() {
                                                     ip: e.target.value,
                                                 }))
                                             }
-                                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500"
+                                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                                         />
                                     </div>
                                     <div className="group">
@@ -787,7 +846,7 @@ export default function SecurityDashboard() {
                                         </label>
                                         <input
                                             type="text"
-                                            placeholder="e.g. Brute force attempt"
+                                            aria-label="Reason for block"
                                             value={blockForm.reason}
                                             onChange={(e) =>
                                                 setBlockForm((f) => ({
@@ -795,7 +854,7 @@ export default function SecurityDashboard() {
                                                     reason: e.target.value,
                                                 }))
                                             }
-                                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500"
+                                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                                         />
                                     </div>
                                     <div className="group">
@@ -807,7 +866,7 @@ export default function SecurityDashboard() {
                                         </label>
                                         <input
                                             type="number"
-                                            placeholder="e.g. 1440 (24h)"
+                                            aria-label="Duration in minutes"
                                             value={blockForm.duration}
                                             onChange={(e) =>
                                                 setBlockForm((f) => ({
@@ -815,7 +874,7 @@ export default function SecurityDashboard() {
                                                     duration: e.target.value,
                                                 }))
                                             }
-                                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500"
+                                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                                         />
                                     </div>
                                 </div>

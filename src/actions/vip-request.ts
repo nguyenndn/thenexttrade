@@ -7,7 +7,7 @@ import { NotificationType, NotificationPriority } from "@prisma/client";
 import { maskAccountNumber, findOrMatchTradingAccount } from "@/lib/pro-access";
 import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 import { notifyAdminsOfVipRequest } from "@/lib/admin/admin-notification.server";
-import type { IbStatsRange } from "@/actions/ib-lead";
+import { resolveIbDateFilter, type IbStatsFilter } from "@/lib/admin/ib/date-filter";
 
 // ============================================================================
 // USER ACTIONS
@@ -68,16 +68,7 @@ export async function getVipLink() {
 // ADMIN ACTIONS
 // ============================================================================
 
-function getVipStatsRangeStart(range: IbStatsRange) {
-    const now = new Date();
-    if (range === "7d")
-        return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    if (range === "30d")
-        return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-    return null;
-}
-
-export async function getVipRequestStats(range: IbStatsRange = "30d") {
+export async function getVipRequestStats(range: IbStatsFilter = "30d") {
     const user = await getAuthUser();
     if (!user) return null;
 
@@ -86,8 +77,14 @@ export async function getVipRequestStats(range: IbStatsRange = "30d") {
     });
     if (profile?.role !== "ADMIN") return null;
 
-    const rangeStart = getVipStatsRangeStart(range);
-    const rangeWhere = rangeStart ? { createdAt: { gte: rangeStart } } : {};
+    const { start: rangeStart, end: rangeEnd } = resolveIbDateFilter(range);
+    const rangeWhere = rangeStart
+        ? rangeEnd
+            ? { createdAt: { gte: rangeStart, lte: rangeEnd } }
+            : { createdAt: { gte: rangeStart } }
+        : rangeEnd
+          ? { createdAt: { lte: rangeEnd } }
+          : {};
 
     const [total, pending, approved, rejected] = await Promise.all([
         prisma.vipRequest.count({ where: rangeWhere }),

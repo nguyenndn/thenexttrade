@@ -34,7 +34,7 @@ export function WinLossDistribution({
     // Calculate coordinates for the text in the middle of the donut
     // A half pie chart goes from 180 (left) to 0 (right).
     return (
-        <div className="flex flex-col h-full bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-emerald-500 p-5">
+        <div className="flex flex-col h-full bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow p-5">
             <h3 className="font-bold text-gray-700 dark:text-white text-sm mb-6">
                 Win/Loss Distribution
             </h3>

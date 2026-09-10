@@ -74,7 +74,7 @@ export default function AuthLayout({
         },
         {
             icon: BookOpen,
-            label: "11-Level Academy",
+            label: "12-Level Academy",
             desc: "Market structure & liquidity",
             color: "text-amber-600 dark:text-amber-400",
         },

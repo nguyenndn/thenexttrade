@@ -72,7 +72,7 @@ export function RegenerateKeyModal({
 
                 {newKey ? (
                     <div className="space-y-4 py-4">
-                        <div className="p-4 bg-gray-50 dark:bg-[#151925] rounded-xl border border-dashboard">
+                        <div className="p-4 bg-gray-50 dark:bg-[#1E2028] rounded-xl border border-dashboard">
                             <p className="text-xs font-bold text-gray-600 mb-2 uppercase">
                                 New API Key
                             </p>

@@ -347,19 +347,19 @@ export function EmailLabClient({
         switch (status) {
             case "active":
                 return (
-                    <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide border border-amber-500/20">
+                    <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2.5 py-1 rounded-xl text-xs font-bold tracking-wide border border-amber-500/20">
                         {label}
                     </span>
                 );
             case "supabase":
                 return (
-                    <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide border border-amber-500/20">
+                    <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2.5 py-1 rounded-xl text-xs font-bold tracking-wide border border-amber-500/20">
                         {label}
                     </span>
                 );
             case "needs_fix":
                 return (
-                    <span className="bg-red-500/10 text-red-500 px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide border border-red-500/20">
+                    <span className="bg-red-500/10 text-red-500 px-2.5 py-1 rounded-xl text-xs font-bold tracking-wide border border-red-500/20">
                         {label}
                     </span>
                 );
@@ -440,7 +440,7 @@ export function EmailLabClient({
                         value={customTo}
                         onChange={(e) => setCustomTo(e.target.value)}
                         disabled={!allowCustomRecipient}
-                        placeholder="test@example.com"
+                        aria-label="Default test recipient address"
                         className="text-sm"
                     />
                     {!allowCustomRecipient ? (
@@ -448,7 +448,7 @@ export function EmailLabClient({
                             <Info size={14} className="text-amber-500" />
                             Custom recipient is locked by environment config.
                             Sending only to default:{" "}
-                            <code className="text-gray-700 dark:text-gray-300 font-bold bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded-lg text-xs">
+                            <code className="text-gray-700 dark:text-gray-300 font-bold bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded-xl text-xs">
                                 {defaultRecipient}
                             </code>
                             .
@@ -568,7 +568,7 @@ export function EmailLabClient({
                                         <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed min-h-[48px]">
                                             {template.description}
                                         </p>
-                                        <div className="text-xs font-mono text-gray-400 bg-gray-50 dark:bg-white/[0.02] p-2 rounded-lg truncate">
+                                        <div className="text-xs font-mono text-gray-400 bg-gray-50 dark:bg-white/[0.02] p-2 rounded-xl truncate">
                                             {template.sourceFile}
                                         </div>
                                     </div>
@@ -684,7 +684,7 @@ export function EmailLabClient({
                                         <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed min-h-[48px]">
                                             {template.description}
                                         </p>
-                                        <div className="text-xs font-mono text-gray-400 bg-gray-50 dark:bg-white/[0.02] p-2 rounded-lg truncate">
+                                        <div className="text-xs font-mono text-gray-400 bg-gray-50 dark:bg-white/[0.02] p-2 rounded-xl truncate">
                                             {template.sourceFile}
                                         </div>
                                     </div>

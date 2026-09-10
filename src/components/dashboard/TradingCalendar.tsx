@@ -78,7 +78,7 @@ export function TradingCalendar({ data, selectedDates }: TradingCalendarProps) {
     const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
     return (
-        <div className="flex flex-col h-full justify-between border-t-4 border-t-amber-500 overflow-hidden p-4 pb-2">
+        <div className="flex flex-col h-full justify-between overflow-hidden p-4 pb-2">
             {/* Calendar Header */}
             <div className="flex items-center justify-between mb-3 border-b border-gray-100 dark:border-white/5 pb-2">
                 <h3 className="text-sm font-black text-gray-800 dark:text-gray-200">

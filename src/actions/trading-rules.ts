@@ -9,7 +9,7 @@ const tradingRulesSchema = z.object({
     maxDailyLoss: z.number().min(0).nullable(),
     maxDailyTrades: z.number().int().min(0).nullable(),
     maxRiskPercent: z.number().min(0).max(100).nullable(),
-    cooldownAfterLosses: z.number().int().min(0).nullable(),
+    cooldownAfterLosses: z.number().int().min(0).nullable().optional(),
 });
 
 export type TradingRulesInput = z.infer<typeof tradingRulesSchema>;
@@ -31,7 +31,10 @@ export async function updateTradingRules(
                 maxDailyLoss: validation.data.maxDailyLoss,
                 maxDailyTrades: validation.data.maxDailyTrades,
                 maxRiskPercent: validation.data.maxRiskPercent,
-                cooldownAfterLosses: validation.data.cooldownAfterLosses,
+                cooldownAfterLosses:
+                    validation.data.cooldownAfterLosses !== undefined
+                        ? validation.data.cooldownAfterLosses
+                        : null,
             },
         });
 

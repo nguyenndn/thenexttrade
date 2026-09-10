@@ -50,7 +50,7 @@ export function SyncRecoveryAction({
         return (
             <Link
                 href={action.href}
-                className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-3 text-[11px] font-black text-white shadow-sm hover:bg-primary/90 transition-colors"
+                className="inline-flex h-8 items-center gap-1.5 rounded-xl bg-amber-500 px-3 text-[11px] font-black text-white shadow-sm shadow-amber-500/20 hover:bg-amber-600 transition-colors"
             >
                 <IconComponent size={12} />
                 <span>{action.label}</span>
@@ -60,9 +60,8 @@ export function SyncRecoveryAction({
 
     return (
         <Button
-            variant="ghost"
             onClick={handleActionClick}
-            className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary hover:bg-primary/90 px-3 text-[11px] font-black text-white hover:text-white shadow-sm transition-colors"
+            className="inline-flex h-8 items-center gap-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 px-3 text-[11px] font-black text-white shadow-sm shadow-amber-500/20 transition-colors border-none"
         >
             <IconComponent size={12} />
             <span>{action.label}</span>

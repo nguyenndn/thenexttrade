@@ -55,10 +55,12 @@ export function MobileBottomTabBar() {
         // Map child tab routes to parent
         const childRouteMap: Record<string, string> = {
             "/dashboard/sessions": "/dashboard/journal",
+            "/dashboard/psychology": "/dashboard/analytics",
             "/dashboard/reports": "/dashboard/analytics",
             "/dashboard/reports/weekly": "/dashboard/analytics",
             "/dashboard/reports/monthly": "/dashboard/analytics",
             "/dashboard/mistakes": "/dashboard/analytics",
+            "/dashboard/intelligence": "/dashboard/analytics",
         };
         const effectivePath = childRouteMap[pathname] || pathname;
 
@@ -105,7 +107,7 @@ export function MobileBottomTabBar() {
                         transition={SPRING_SOFT}
                         className="fixed bottom-[64px] left-0 right-0 z-40 lg:hidden"
                     >
-                    <div className="bg-white dark:bg-[#151925] rounded-t-2xl shadow-2xl shadow-black/20 border-t border-x border-dashboard overflow-hidden">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-t-2xl shadow-2xl shadow-black/20 border-t border-x border-dashboard overflow-hidden">
                         {/* Drag Handle */}
                         <div className="flex justify-center pt-3 pb-1">
                             <div className="w-10 h-1 bg-gray-300 dark:bg-gray-600 rounded-full" />
@@ -140,7 +142,7 @@ export function MobileBottomTabBar() {
                                         className={cn(
                                             "flex items-center gap-3 px-4 py-3 rounded-xl text-sm nav-menu-text transition-colors",
                                             isActive
-                                                ? "bg-primary/10 text-primary"
+                                                ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold"
                                                 : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
                                         )}
                                     >
@@ -148,7 +150,7 @@ export function MobileBottomTabBar() {
                                             size={20}
                                             className={cn(
                                                 isActive
-                                                    ? "text-primary"
+                                                    ? "text-amber-500 dark:text-amber-400"
                                                     : "text-gray-600 dark:text-gray-300"
                                             )}
                                         />
@@ -207,7 +209,7 @@ export function MobileBottomTabBar() {
             </AnimatePresence>
 
             {/* Tab Bar */}
-            <nav className="fixed bottom-0 inset-x-0 z-50 lg:hidden bg-white dark:bg-[#151925] border-t border-dashboard safe-area-bottom">
+            <nav className="fixed bottom-0 inset-x-0 z-50 lg:hidden bg-white dark:bg-[#1E2028] border-t border-dashboard safe-area-bottom">
                 <div className="flex items-center justify-around h-16 px-2">
                     {filteredGroups.map((group) => {
                         const Icon = group.icon;
@@ -221,21 +223,21 @@ export function MobileBottomTabBar() {
                                 className={cn(
                                     "flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors relative",
                                     isActive || isSheetOpen
-                                        ? "text-primary"
+                                        ? "text-amber-500 dark:text-amber-400"
                                         : "text-gray-600 dark:text-gray-300"
                                 )}
                                 aria-label={group.label}
                             >
                                 {/* Active indicator dot */}
                                 {isSheetOpen && (
-                                    <div className="absolute top-1.5 w-1 h-1 rounded-full bg-primary" />
+                                    <div className="absolute top-1.5 w-1 h-1 rounded-full bg-amber-500" />
                                 )}
                                 <Icon
                                     size={22}
                                     className={cn(
                                         "transition-colors",
                                         isActive || isSheetOpen
-                                            ? "text-primary"
+                                            ? "text-amber-500 dark:text-amber-400"
                                             : "text-gray-600 dark:text-gray-300"
                                     )}
                                 />
@@ -243,7 +245,7 @@ export function MobileBottomTabBar() {
                                     className={cn(
                                         "text-[10px] font-semibold",
                                         isActive || isSheetOpen
-                                            ? "text-primary"
+                                            ? "text-amber-500 dark:text-amber-400"
                                             : "text-gray-600 dark:text-gray-300"
                                     )}
                                 >
@@ -252,7 +254,7 @@ export function MobileBottomTabBar() {
                                 {/* Red dot for claimable missions */}
                                 {group.label === "More" &&
                                     claimableCount > 0 && (
-                                        <span className="absolute top-2 right-1/2 translate-x-4 w-2 h-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-[#151925]" />
+                                        <span className="absolute top-2 right-1/2 translate-x-4 w-2 h-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-[#1E2028]" />
                                     )}
                             </button>
                         );

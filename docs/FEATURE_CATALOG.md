@@ -1,6 +1,6 @@
 # Feature Catalog And Scope Control
 
-Last reviewed: 2026-08-18
+Last reviewed: 2026-09-10
 
 This file answers two questions:
 
@@ -117,10 +117,13 @@ Any feature that supports this loop is justified. Any feature that competes with
 | `/admin/reports` | Owner operating cockpit | Activation funnel, stuck users, action queue, system health | Decorative metrics without next action |
 | `/admin/analytics` | Traffic and attribution | Countries, referrers, campaigns, events | Confusing it with user support reports |
 | `/admin/users` | User list and support entry | Role, country, status, search/filter | Unknown country when profile has country |
-| `/admin/users/[id]` | User support detail | Real-account total balance, accounts, Pro/VIP state, reports, notes | Est. IB revenue without API evidence |
+| `/admin/users/behavior` | Segmentation console | Needs Attention (urgency, risk signals), Value Radar (IB value, tempo, adoption) | Segments that offer no next action |
+| `/admin/users/[id]` | User support detail | Narrative summary, real-account total balance, accounts, Pro/VIP state, reports, notes | Est. IB revenue without API evidence |
 | `/admin/ib` | Partner Pro operations overview | Pipeline, trader monitor summary, VIP/account states | Unsupported sync source options |
 | `/admin/ib/pipeline` | Upgrade workflow | Stages, account/user context, actions | 404 from removed route wiring |
 | `/admin/ib/traders` | Trader/account monitoring | User, account count, real balance, activity, product access | Duplicate account rows |
+| `/admin/ib/sync-requests` | Sync operations console | Cloud Sync job telemetry, manual sync support tickets, credential reveal with audit log | Showing investor passwords without `ADMIN_VIEW_CREDENTIAL` logging |
+| `/admin/trading-systems/brokers` | Commission rates config | Per-broker/per-symbol rates, `*` wildcard fallback, audit log | Rates that silently disagree with the broker's actual rebate |
 | `/admin/ai` | AI Gateway control plane | Providers, models, routing, request logs, audit | User requests bypassing internal logs |
 | `/admin/email-lab` | Email testing | Template buttons, Mailtrap/SMTP results, audit log | Ungated production sends |
 | `/admin/articles/ops` | Content operations | Missing SEO/images, fix actions | Silent overwrites |

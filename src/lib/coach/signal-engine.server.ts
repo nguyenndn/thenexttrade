@@ -211,6 +211,42 @@ export async function computeTraderSignals(
             });
         }
 
+        // 7b. WIN_STREAK (3+ consecutive wins)
+        let consecutiveWins = 0;
+        let maxWinStreak = 0;
+        for (const t of chronologicalTrades) {
+            const outcome = classifyTradeOutcome(t);
+            if (outcome === "WIN") {
+                consecutiveWins++;
+                maxWinStreak = Math.max(maxWinStreak, consecutiveWins);
+            } else if (outcome === "LOSS" || outcome === "BREAK_EVEN") {
+                consecutiveWins = 0;
+            }
+        }
+        if (maxWinStreak >= 3) {
+            signals.push({
+                signalType: "WIN_STREAK",
+                severity: "MEDIUM",
+                title: `${maxWinStreak}-Trade Win Streak Observed`,
+                summary: `You recently hit a streak of ${maxWinStreak} consecutive wins. Maintain discipline and protect your capital against overconfidence.`,
+                actionLabel: "View Trade Journal",
+                actionHref: "/dashboard/journal",
+                metadata: {
+                    maxStreak: maxWinStreak,
+                    evidence: [
+                        {
+                            id: `win-streak-${Date.now()}`,
+                            kind: "TRADE_SET",
+                            label: "Consecutive Wins",
+                            description:
+                                "Number of winning trades in a row without a loss.",
+                            count: maxWinStreak,
+                        },
+                    ],
+                },
+            });
+        }
+
         // 8. SL_CLUSTER (3+ losses in same day)
         const lossesByDay: Record<string, number> = {};
         for (const t of trades) {

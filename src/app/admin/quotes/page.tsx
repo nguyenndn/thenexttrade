@@ -257,13 +257,10 @@ export default function AdminQuotesPage() {
                                             <Button
                                                 onClick={openCreateModal}
                                                 variant="outline"
-                                                className="text-sm shadow-sm transition-transform active:scale-95"
+                                                className="text-sm shadow-sm transition-transform active:scale-95 gap-2"
                                             >
-                                                <Plus
-                                                    size={16}
-                                                    className="mr-1.5"
-                                                />{" "}
-                                                Create Quote
+                                                <Plus size={16} />
+                                                <span>Create Quote</span>
                                             </Button>
                                         </div>
                                     </td>
@@ -382,7 +379,7 @@ export default function AdminQuotesPage() {
                             value={formText}
                             onChange={(e) => setFormText(e.target.value)}
                             className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[100px] resize-none"
-                            placeholder="Enter the quote text..."
+                            aria-label="Quote text content"
                         />
                     </div>
 
@@ -398,7 +395,7 @@ export default function AdminQuotesPage() {
                             value={formAuthor}
                             onChange={(e) => setFormAuthor(e.target.value)}
                             className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
-                            placeholder="e.g. Warren Buffett"
+                            aria-label="Quote author name"
                         />
                     </div>
 

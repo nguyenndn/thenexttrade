@@ -1,6 +1,6 @@
 # Product
 
-Last reviewed: 2026-08-18
+Last reviewed: 2026-09-10
 
 This file describes the current product behavior at a practical level. For detailed URL/query-param behavior and QA checklists, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
 
@@ -292,6 +292,33 @@ Admin-facing:
 - `/admin/reports` currently covers activation partially. The next target is to make it the canonical admin view for where new users get stuck before first value.
 - `/admin/analytics` shows traffic, countries, registered user countries, referrers, devices, campaigns, and events.
 - `/admin/users` shows country, activity, user detail, accounts, sessions, notes, and admin actions.
+- `/admin/users/behavior` is the segmentation console: **Needs Attention** (urgency, risk signals, one-click impersonation) and **Value Radar** (high-IB-value traders, trading tempo, product adoption).
+- `/admin/users/[id]` opens with a **narrative summary** — a template-generated behavioural synopsis at the top of the page (behaviour status, trading cadence, risk and value indicators). It is computed from existing telemetry, never written by AI, and performs zero database writes on view.
+- `/admin/trading-systems/brokers` owns per-broker, per-symbol **commission rates** (with a wildcard `*` fallback). These rates drive estimated IB gross revenue.
+- `/admin/ib/sync-requests` covers both worker-driven **Cloud Sync jobs** and **Manual Sync Support Tickets** — the fallback path when an automated sync cannot complete.
+
+## IB Business Model
+
+The platform charges traders **$0**. Revenue comes entirely from **IB rebates paid per traded lot** by the partner brokers. This means every revenue number in the admin is an *estimate of rebate owed*, not money collected from users.
+
+Partner brokers (VIP-eligible) and current rebate on gold:
+
+| Broker | Rebate per lot (XAUUSD) |
+| --- | --- |
+| Vantage Markets | $17 |
+| VT Markets | $17 |
+| Ultima Markets | $17 |
+| Exness | $6 |
+
+Rates live in `BrokerCommissionRate` (per broker + symbol, with a `*` wildcard fallback of `0`). Edit them at `/admin/trading-systems/brokers`.
+
+**IB attribution is the gate that decides whether an account earns rebate at all.** Every trading account carries an `ibAttribution` value:
+
+- `CONFIRMED` — verified as belonging to this IB. Counts toward revenue and eligible volume.
+- `NOT_OURS` — verified as *not* this IB. Never counts.
+- `UNKNOWN` — the default, meaning nobody has verified it yet. Never counts.
+
+Revenue stays **$0** unless *both* conditions hold: the account is `CONFIRMED` **and** its broker matches a row in the broker table. A `CONFIRMED` account on a broker the platform does not have a record for still returns $0 — the two gates are independent, and forgetting the second one is an easy mistake when debugging a missing revenue figure.
 
 ## Academy
 
@@ -303,12 +330,13 @@ Admin-facing:
 
 Admin modules:
 
-- Users and user detail.
+- Users and user detail (with narrative summary and per-account IB attribution).
+- User behaviour segmentation and value radar.
 - Reports and analytics.
 - Articles and article ops, including SEO/image fixes.
 - Academy management.
-- IB/VIP pipeline and trader monitor.
-- EA products, accounts, brokers, settings.
+- IB/VIP pipeline, trader monitor, and the sync request console.
+- EA products, accounts, brokers (including commission rates), settings.
 - Security logs and blocked IPs.
 
 Admin screens should be action-oriented: each report should make the next action obvious.

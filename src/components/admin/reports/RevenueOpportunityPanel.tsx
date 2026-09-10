@@ -1,5 +1,6 @@
 import { ReportSection } from "./ReportSection";
 import { ReportMetricCard } from "./ReportMetricCard";
+import { Crown, Users, Clock, DollarSign } from "lucide-react";
 import type { RevenueOpportunityReport } from "@/lib/admin/reports/types";
 
 interface Props {
@@ -17,16 +18,22 @@ export function RevenueOpportunityPanel({ data }: Props) {
                 <ReportMetricCard
                     label="Pro Users"
                     value={data.proUsers}
+                    icon={Crown}
+                    gradient="from-emerald-500 to-teal-600"
                     tone="good"
                 />
                 <ReportMetricCard
                     label="Candidates"
                     value={data.proCandidates}
+                    icon={Users}
+                    gradient="from-indigo-500 to-purple-600"
                     tone="warning"
                 />
                 <ReportMetricCard
                     label="Pending"
                     value={data.pendingProRequests}
+                    icon={Clock}
+                    gradient="from-amber-500 to-orange-500"
                     tone={data.pendingProRequests > 0 ? "warning" : "default"}
                     href="/admin/ib/pipeline"
                 />
@@ -37,6 +44,8 @@ export function RevenueOpportunityPanel({ data }: Props) {
                             ? `$${Math.round(data.estimatedIbRevenue).toLocaleString()}`
                             : "N/A"
                     }
+                    icon={DollarSign}
+                    gradient="from-cyan-500 to-blue-500"
                 />
             </div>
             {data.opportunities.length > 0 ? (

@@ -1,8 +1,5 @@
-import {
-    getIbOverviewStats,
-    getIbLeadStats,
-    type IbStatsRange,
-} from "@/actions/ib-lead";
+import { getIbOverviewStats, getIbLeadStats } from "@/actions/ib-lead";
+import { type IbStatsFilter } from "@/lib/admin/ib/date-filter";
 import { getVipRequestStats } from "@/actions/vip-request";
 import { getPipelineQueueV2 } from "@/lib/admin/ib/pipeline.server-v2";
 import { IbOverviewClient } from "./client";
@@ -15,28 +12,27 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 type PageProps = {
-    searchParams: Promise<{ range?: string }>;
+    searchParams: Promise<{ range?: string; from?: string; to?: string }>;
 };
-
-function normalizeRange(range?: string): IbStatsRange {
-    if (range === "7d" || range === "30d" || range === "all") return range;
-    return "30d";
-}
 
 export default async function IbOverviewPage({ searchParams }: PageProps) {
     const params = await searchParams;
-    const range = normalizeRange(params?.range);
+    const filter: IbStatsFilter = {
+        range: params?.range,
+        from: params?.from,
+        to: params?.to,
+    };
 
     const [overview, leadStats, vipStats, pendingQueue] = await Promise.all([
-        getIbOverviewStats(range),
-        getIbLeadStats(range),
-        getVipRequestStats(range),
+        getIbOverviewStats(filter),
+        getIbLeadStats(filter),
+        getVipRequestStats(filter),
         getPipelineQueueV2({ status: "PENDING", pageSize: 10 }),
     ]);
 
     return (
         <IbOverviewClient
-            range={range}
+            rangeFilter={filter}
             overview={overview}
             leadStats={leadStats}
             vipStats={vipStats}

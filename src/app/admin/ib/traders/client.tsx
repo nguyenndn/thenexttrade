@@ -26,10 +26,16 @@ import {
     AlertTriangle,
     Check,
     X,
+    LogIn,
+    CheckSquare,
+    Square,
+    CalendarPlus,
+    BellRing,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { BrokerLogo } from "@/components/ui/BrokerLogo";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -37,6 +43,7 @@ import {
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
+import { AccountIbAttributionBadge } from "@/components/admin/users/AccountIbAttributionBadge";
 import {
     IbTraderPaginatedResult,
     IbTraderFilters,
@@ -47,7 +54,10 @@ import {
     adminGrantProductAccessAction,
     adminRevokeProductAccessAction,
     adminSendSetupReminderAction,
+    adminBulkExtendGracePeriodAction,
+    adminBulkSendSetupReminderAction,
 } from "@/actions/admin-ib";
+import { impersonateUserAction } from "@/actions/admin-impersonate";
 import { revokeProAccess } from "@/actions/vip-request";
 
 interface Props {
@@ -97,6 +107,76 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
 
     const [expandedUserIds, setExpandedUserIds] = useState<Set<string>>(new Set());
     const [searchInputValue, setSearchInputValue] = useState(currentFilters.q || "");
+    const [selectedUserIds, setSelectedUserIds] = useState<Set<string>>(new Set());
+    const [isBulkGraceOpen, setIsBulkGraceOpen] = useState(false);
+    const [bulkGraceDays, setBulkGraceDays] = useState<number>(7);
+    const [isBulkReminderOpen, setIsBulkReminderOpen] = useState(false);
+    const [isBulkProcessing, setIsBulkProcessing] = useState(false);
+
+    const toggleSelectAll = () => {
+        if (selectedUserIds.size === initialData.rows.length && initialData.rows.length > 0) {
+            setSelectedUserIds(new Set());
+        } else {
+            setSelectedUserIds(new Set(initialData.rows.map((r) => r.userId)));
+        }
+    };
+
+    const toggleSelectUser = (userId: string) => {
+        setSelectedUserIds((prev) => {
+            const next = new Set(prev);
+            if (next.has(userId)) next.delete(userId);
+            else next.add(userId);
+            return next;
+        });
+    };
+
+    const handleImpersonate = async (userId: string, userName: string) => {
+        toast.loading(`Starting impersonation session for ${userName}...`);
+        const res = await impersonateUserAction(userId);
+        toast.dismiss();
+        if (res.success) {
+            toast.success(`Switched view to ${res.targetName || userName}`);
+            router.push("/dashboard");
+            router.refresh();
+        } else {
+            toast.error(res.error || "Failed to impersonate user");
+        }
+    };
+
+    const handleBulkExtendGrace = async () => {
+        if (selectedUserIds.size === 0) return;
+        setIsBulkProcessing(true);
+        const res = await adminBulkExtendGracePeriodAction({
+            userIds: Array.from(selectedUserIds),
+            days: bulkGraceDays,
+        });
+        setIsBulkProcessing(false);
+        setIsBulkGraceOpen(false);
+        if (res.success) {
+            toast.success(`Grace period extended by ${bulkGraceDays} days for ${res.count} traders`);
+            setSelectedUserIds(new Set());
+            router.refresh();
+        } else {
+            toast.error(res.error || "Failed to extend grace period");
+        }
+    };
+
+    const handleBulkSendReminder = async () => {
+        if (selectedUserIds.size === 0) return;
+        setIsBulkProcessing(true);
+        const res = await adminBulkSendSetupReminderAction({
+            userIds: Array.from(selectedUserIds),
+            productSlug: "gold-scalper-ninja",
+        });
+        setIsBulkProcessing(false);
+        setIsBulkReminderOpen(false);
+        if (res.success) {
+            toast.success(`Setup reminders sent to ${res.count} traders`);
+            setSelectedUserIds(new Set());
+        } else {
+            toast.error(res.error || "Failed to send setup reminders");
+        }
+    };
 
     const updateFilterParams = (updates: Record<string, string | null>) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -607,6 +687,20 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="border-b border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] text-[11px] font-black uppercase text-gray-500 tracking-wider">
+                                <th className="py-3 px-3 w-10 text-center">
+                                    <button
+                                        type="button"
+                                        onClick={toggleSelectAll}
+                                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 inline-flex items-center justify-center transition-colors"
+                                        aria-label="Select all traders"
+                                    >
+                                        {selectedUserIds.size > 0 && selectedUserIds.size === rows.length ? (
+                                            <CheckSquare size={16} className="text-primary" />
+                                        ) : (
+                                            <Square size={16} />
+                                        )}
+                                    </button>
+                                </th>
                                 <th className="py-3 px-4">Trader Info</th>
                                 <th className="py-3 px-4">VIP Plan</th>
                                 <th className="py-3 px-4">Canonical Products</th>
@@ -619,7 +713,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                         <tbody className="divide-y divide-gray-100 dark:divide-white/5 text-sm">
                             {rows.length === 0 ? (
                                 <tr>
-                                    <td colSpan={7} className="text-center py-12 text-gray-400">
+                                    <td colSpan={8} className="text-center py-12 text-gray-400">
                                         No traders found matching current filters.
                                     </td>
                                 </tr>
@@ -630,6 +724,22 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                     return (
                                         <React.Fragment key={trader.userId}>
                                             <tr className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                                                {/* Select Checkbox */}
+                                                <td className="py-3.5 px-3 text-center w-10">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => toggleSelectUser(trader.userId)}
+                                                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 inline-flex items-center justify-center transition-colors"
+                                                        aria-label={`Select trader ${trader.userName}`}
+                                                    >
+                                                        {selectedUserIds.has(trader.userId) ? (
+                                                            <CheckSquare size={16} className="text-primary" />
+                                                        ) : (
+                                                            <Square size={16} />
+                                                        )}
+                                                    </button>
+                                                </td>
+
                                                 {/* User Info */}
                                                 <td className="py-3.5 px-4">
                                                     <div className="flex items-center gap-3">
@@ -745,7 +855,13 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                                 <MoreHorizontal size={16} />
                                                             </Button>
                                                         </DropdownMenuTrigger>
-                                                        <DropdownMenuContent align="end" className="w-48">
+                                                        <DropdownMenuContent align="end" className="w-52">
+                                                            <DropdownMenuItem
+                                                                onClick={() => handleImpersonate(trader.userId, trader.userName)}
+                                                                className="text-amber-600 dark:text-amber-400 font-medium cursor-pointer"
+                                                            >
+                                                                <LogIn size={14} className="mr-2" /> Impersonate Trader
+                                                            </DropdownMenuItem>
                                                             {trader.vipStatus === "ACTIVE" && (
                                                                 <DropdownMenuItem
                                                                     onClick={() => handleRevokePro(trader.userId)}
@@ -765,7 +881,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                             {/* Expanded Account Details */}
                                             {isExpanded && (
                                                 <tr className="bg-gray-50/80 dark:bg-white/[0.01]">
-                                                    <td colSpan={6} className="p-4 border-t border-b border-gray-100 dark:border-white/5">
+                                                    <td colSpan={8} className="p-4 border-t border-b border-gray-100 dark:border-white/5">
                                                         <div className="space-y-3">
                                                             <h4 className="text-xs font-black uppercase tracking-wider text-gray-500">
                                                                 Linked Trading Accounts ({trader.accounts.length})
@@ -779,13 +895,21 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                                             key={acc.id}
                                                                             className="p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] space-y-1.5"
                                                                         >
-                                                                            <div className="flex items-center justify-between">
-                                                                                <span className="font-mono font-bold text-xs text-gray-900 dark:text-white">
+                                                                            <div className="flex items-center justify-between gap-2">
+                                                                                <span className="font-mono font-bold text-xs text-gray-900 dark:text-white truncate">
                                                                                     {acc.accountNumber}
                                                                                 </span>
-                                                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20">
-                                                                                    {acc.syncSourceLabel}
-                                                                                </span>
+                                                                                <div className="flex items-center gap-1.5 shrink-0">
+                                                                                    <AccountIbAttributionBadge
+                                                                                        accountId={acc.id}
+                                                                                        initialAttribution={acc.ibAttribution}
+                                                                                        userId={trader.userId}
+                                                                                        accountNumber={acc.accountNumber}
+                                                                                    />
+                                                                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20">
+                                                                                        {acc.syncSourceLabel}
+                                                                                    </span>
+                                                                                </div>
                                                                             </div>
                                                                             <div className="flex items-center justify-between text-xs text-gray-500">
                                                                                 <span>{acc.broker} ({acc.platform})</span>
@@ -847,6 +971,85 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                     </div>
                 </div>
             </div>
+
+            {/* Floating Bulk Action Bar */}
+            {selectedUserIds.size > 0 && (
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 bg-gray-950/95 dark:bg-[#1A1C24]/95 backdrop-blur-md border border-gray-800 dark:border-white/10 px-5 py-3 rounded-2xl shadow-2xl text-white animate-in fade-in slide-in-from-bottom-4 duration-200">
+                    <div className="flex items-center gap-2 pr-3 border-r border-gray-800 dark:border-white/10 text-xs font-bold">
+                        <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                        <span>
+                            {selectedUserIds.size} {selectedUserIds.size === 1 ? "trader" : "traders"} selected
+                        </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 text-xs font-bold gap-1.5 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 rounded-xl"
+                            onClick={() => {
+                                setBulkGraceDays(7);
+                                setIsBulkGraceOpen(true);
+                            }}
+                        >
+                            <CalendarPlus size={13} />
+                            Extend Grace (+7d)
+                        </Button>
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 text-xs font-bold gap-1.5 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 rounded-xl"
+                            onClick={() => {
+                                setBulkGraceDays(14);
+                                setIsBulkGraceOpen(true);
+                            }}
+                        >
+                            <CalendarPlus size={13} />
+                            Extend Grace (+14d)
+                        </Button>
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 text-xs font-bold gap-1.5 border-blue-500/30 text-blue-400 hover:bg-blue-500/10 rounded-xl"
+                            onClick={() => setIsBulkReminderOpen(true)}
+                        >
+                            <BellRing size={13} />
+                            Send Setup Reminder
+                        </Button>
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 text-xs text-gray-400 hover:text-white rounded-xl"
+                            onClick={() => setSelectedUserIds(new Set())}
+                        >
+                            Clear
+                        </Button>
+                    </div>
+                </div>
+            )}
+
+            {/* Bulk Extend Grace Dialog */}
+            <ConfirmDialog
+                isOpen={isBulkGraceOpen}
+                title="Bulk Extend Grace Period"
+                description={`Are you sure you want to extend the temporary VIP Grace Period by ${bulkGraceDays} days for all ${selectedUserIds.size} selected trader(s)?`}
+                confirmText={`Extend +${bulkGraceDays} Days`}
+                cancelText="Cancel"
+                isLoading={isBulkProcessing}
+                onConfirm={handleBulkExtendGrace}
+                onCancel={() => setIsBulkGraceOpen(false)}
+            />
+
+            {/* Bulk Send Reminder Dialog */}
+            <ConfirmDialog
+                isOpen={isBulkReminderOpen}
+                title="Bulk Send Setup Reminder"
+                description={`Send an EA Setup reminder notification to ${selectedUserIds.size} selected trader(s) with instructions to connect MetaTrader 5?`}
+                confirmText="Send Reminders"
+                cancelText="Cancel"
+                isLoading={isBulkProcessing}
+                onConfirm={handleBulkSendReminder}
+                onCancel={() => setIsBulkReminderOpen(false)}
+            />
         </div>
     );
 }

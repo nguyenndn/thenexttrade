@@ -9,16 +9,34 @@ import {
     RefreshCw,
     Trash2,
     Shield,
+    ShieldCheck,
+    CloudSync,
+    KeyRound,
+    AlertCircle,
+    ExternalLink,
+    Server,
+    Hash,
+    Building2,
+    Monitor,
+    ChevronDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Button } from "@/components/ui/Button";
+import {
+    Popover,
+    PopoverTrigger,
+    PopoverContent,
+} from "@/components/ui/popover";
 import { updateTradingAccount } from "@/actions/accounts";
 import { updateTradingRules } from "@/actions/trading-rules";
+import { saveCloudSyncCredentials, getCloudSyncStatus } from "@/actions/cloud-sync";
 import {
     BROKER_INFO,
     SupportedBroker,
 } from "@/lib/validations/vip-request";
+import { ServerCombobox } from "@/components/trading-accounts/ServerCombobox";
+import Link from "next/link";
 
 interface AccountSettingsModalProps {
     isOpen: boolean;
@@ -29,6 +47,7 @@ interface AccountSettingsModalProps {
 }
 
 const COLORS = [
+    // Row 1: 15 Vibrant & Fresh Shades
     "hsl(var(--primary))", // Primary Green
     "#10B981", // Emerald
     "#3B82F6", // Blue
@@ -44,11 +63,22 @@ const COLORS = [
     "#F59E0B", // Amber
     "#EAB308", // Yellow
     "#84CC16", // Lime
+    // Row 2: 15 Deep, Jewel & Pro Tech Shades
+    "#059669", // Forest Green
     "#14B8A6", // Teal
     "#06B6D4", // Cyan
+    "#0284C7", // Cobalt
+    "#1D4ED8", // Navy Blue
+    "#4338CA", // Deep Indigo
+    "#7C3AED", // Royal Violet
+    "#9333EA", // Deep Purple
+    "#C026D3", // Magenta Plum
+    "#BE123C", // Ruby Wine
+    "#DC2626", // Crimson
+    "#C2410C", // Rust Orange
+    "#B45309", // Bronze
     "#64748B", // Slate
-    "#475569", // Dark Slate
-    "#1E293B", // Zinc
+    "#1E293B", // Midnight Zinc
 ];
 
 export function AccountSettingsModal({
@@ -58,11 +88,15 @@ export function AccountSettingsModal({
     onUpdate,
     onDelete,
 }: AccountSettingsModalProps) {
-    const [name, setName] = useState(account.name);
+    const [name, setName] = useState(account.name || "");
+    const [server, setServer] = useState(account.server || "");
     const [color, setColor] = useState(account.color || "hsl(var(--primary))");
+    const [colorPickerOpen, setColorPickerOpen] = useState(false);
+    const [investorPassword, setInvestorPassword] = useState("");
+    const [hasCredentials, setHasCredentials] = useState(Boolean(account.credential));
     const [isSaving, setIsSaving] = useState(false);
 
-    // Trading Rules state
+    // Trading Protection Rules state
     const [maxDailyLoss, setMaxDailyLoss] = useState<string>(
         account.maxDailyLoss?.toString() || ""
     );
@@ -72,26 +106,56 @@ export function AccountSettingsModal({
     const [maxRiskPercent, setMaxRiskPercent] = useState<string>(
         account.maxRiskPercent?.toString() || ""
     );
-    const [cooldownAfterLosses, setCooldownAfterLosses] = useState<string>(
-        account.cooldownAfterLosses?.toString() || ""
-    );
+
+    // Fetch fresh cloud sync credential status on open
+    useEffect(() => {
+        if (!isOpen || !account?.id) return;
+        let isMounted = true;
+        setServer(account.server || "");
+
+        getCloudSyncStatus(account.id)
+            .then((res) => {
+                if (!isMounted) return;
+                if (res.success) {
+                    setHasCredentials(Boolean(res.hasCredentials));
+                }
+            })
+            .catch(() => { });
+
+        return () => {
+            isMounted = false;
+        };
+    }, [isOpen, account?.id]);
+
+    // Body scroll lock
+    useEffect(() => {
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, []);
 
     async function handleSave() {
+        if (!name.trim()) {
+            toast.error("Account name cannot be empty");
+            return;
+        }
+
         setIsSaving(true);
         try {
+            // 1. Update basic account fields
             const result = await updateTradingAccount(account.id, {
-                name,
+                name: name.trim(),
                 color,
                 broker: account.broker || undefined,
+                server: server.trim() || undefined,
                 balance: account.balance,
                 currency: account.currency,
             });
 
             if (result.error) throw new Error(result.error);
 
-            toast.success("Account settings updated successfully");
-
-            // Save Trading Rules separately
+            // 2. Save Trading Rules
             const rulesResult = await updateTradingRules(account.id, {
                 maxDailyLoss: maxDailyLoss ? parseFloat(maxDailyLoss) : null,
                 maxDailyTrades: maxDailyTrades
@@ -100,14 +164,31 @@ export function AccountSettingsModal({
                 maxRiskPercent: maxRiskPercent
                     ? parseFloat(maxRiskPercent)
                     : null,
-                cooldownAfterLosses: cooldownAfterLosses
-                    ? parseInt(cooldownAfterLosses)
-                    : null,
+                cooldownAfterLosses: null,
             });
+
             if (rulesResult.error) {
                 toast.error("Failed to save trading rules");
             }
 
+            // 3. Save Investor Password if provided
+            if (investorPassword.trim()) {
+                const credResult = await saveCloudSyncCredentials(
+                    account.id,
+                    investorPassword.trim(),
+                    server.trim() || undefined
+                );
+
+                if (!credResult.success) {
+                    toast.error(credResult.error || "Failed to update investor password");
+                } else {
+                    setHasCredentials(true);
+                    setInvestorPassword("");
+                    toast.success("Investor password encrypted & stored securely");
+                }
+            }
+
+            toast.success("Account settings updated successfully");
             onUpdate();
             onClose();
         } catch (error: any) {
@@ -117,14 +198,9 @@ export function AccountSettingsModal({
         }
     }
 
-    // Body scroll lock: parent remounts this on each open, so lock on mount
-    // and release on unmount (which happens after the exit animation completes).
-    useEffect(() => {
-        document.body.style.overflow = "hidden";
-        return () => {
-            document.body.style.overflow = "unset";
-        };
-    }, []);
+    const brokerDisplayName = account.broker
+        ? BROKER_INFO[account.broker as SupportedBroker]?.name ?? account.broker
+        : "Unassigned";
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
@@ -143,16 +219,12 @@ export function AccountSettingsModal({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="relative z-10 bg-white dark:bg-[#151925] rounded-xl w-full max-w-[520px] overflow-hidden border border-dashboard shadow-2xl flex flex-col max-h-[90vh] cursor-default"
+                className="relative z-10 bg-white dark:bg-[#1E2028] rounded-2xl w-full max-w-[540px] overflow-hidden border border-dashboard shadow-2xl flex flex-col max-h-[90vh] cursor-default"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-dashboard relative bg-white dark:bg-[#151925] z-10 shrink-0">
-                    <h2 className="text-xl font-black text-gray-700 dark:text-white flex items-center gap-3">
-                        <div
-                            className="w-2.5 h-8 rounded-full shadow-sm"
-                            style={{ backgroundColor: color }}
-                        />
+                <div className="flex items-center justify-between px-6 py-4 border-b border-dashboard relative bg-white dark:bg-[#1E2028] z-10 shrink-0">
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">
                         Account Settings
                     </h2>
                     <Button
@@ -160,189 +232,302 @@ export function AccountSettingsModal({
                         size="icon"
                         onClick={onClose}
                         aria-label="Close settings"
-                        className="w-10 h-10 rounded-full text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10"
+                        className="w-8 h-8 rounded-xl text-gray-400 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 shrink-0"
                     >
-                        <X size={20} />
+                        <X size={18} />
                     </Button>
                 </div>
 
+                {/* Content */}
                 <div className="p-6 space-y-6 overflow-y-auto custom-scrollbar">
                     {/* General Settings */}
                     <div className="space-y-4">
-                        <h3 className="text-[11px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600"></span>
-                            General Information
-                        </h3>
-
                         <PremiumInput
                             label="Account Name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
+                            prefix={
+                                <Popover
+                                    open={colorPickerOpen}
+                                    onOpenChange={setColorPickerOpen}
+                                >
+                                    <PopoverTrigger asChild>
+                                        <button
+                                            type="button"
+                                            className="flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-gray-200/70 dark:hover:bg-white/10 transition-colors cursor-pointer group/color focus:outline-none"
+                                            title="Choose account color badge"
+                                            aria-label="Choose account color badge"
+                                        >
+                                            <span
+                                                className="w-4 h-4 rounded-full border border-black/15 dark:border-white/20 shadow-sm shrink-0 transition-transform group-hover/color:scale-110"
+                                                style={{
+                                                    backgroundColor: color,
+                                                }}
+                                            />
+                                            <ChevronDown
+                                                size={11}
+                                                className="text-gray-400 group-hover/color:text-gray-600 dark:group-hover/color:text-gray-300 transition-colors shrink-0"
+                                            />
+                                        </button>
+                                    </PopoverTrigger>
+                                    <PopoverContent
+                                        className="w-64 p-3 bg-white dark:bg-[#1E2028] border border-dashboard shadow-2xl rounded-2xl z-[150]"
+                                        align="start"
+                                        sideOffset={8}
+                                    >
+                                        <div className="space-y-2.5">
+                                            <div className="flex items-center justify-between pb-1.5 border-b border-dashboard">
+                                                <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                                                    Account Color Badge
+                                                </span>
+                                                <span
+                                                    className="w-3.5 h-3.5 rounded-full border border-black/10 dark:border-white/10"
+                                                    style={{
+                                                        backgroundColor: color,
+                                                    }}
+                                                />
+                                            </div>
+                                            <div className="grid grid-cols-6 gap-2 pt-0.5">
+                                                {COLORS.map((c) => (
+                                                    <button
+                                                        type="button"
+                                                        key={c}
+                                                        onClick={() => {
+                                                            setColor(c);
+                                                            setColorPickerOpen(false);
+                                                        }}
+                                                        aria-label={`Select color ${c}`}
+                                                        className={`w-7 h-7 rounded-full transition-all flex items-center justify-center cursor-pointer ${
+                                                            color === c
+                                                                ? "ring-2 ring-offset-2 ring-offset-white dark:ring-offset-[#1E2028] scale-110"
+                                                                : "hover:scale-110 opacity-90 hover:opacity-100"
+                                                        }`}
+                                                        style={{
+                                                            backgroundColor: c,
+                                                            boxShadow:
+                                                                color === c
+                                                                    ? `0 0 8px ${c}80`
+                                                                    : "none",
+                                                        }}
+                                                    >
+                                                        {color === c && (
+                                                            <Check
+                                                                size={13}
+                                                                strokeWidth={3}
+                                                                className="text-white drop-shadow-md"
+                                                            />
+                                                        )}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </PopoverContent>
+                                </Popover>
+                            }
                         />
 
-                        <div>
-                            <label className="block text-[11px] font-black text-gray-500 uppercase tracking-widest mb-2">
-                                Broker
-                            </label>
-                            <div className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-dashboard text-sm font-semibold text-gray-800 dark:text-white flex items-center justify-between">
-                                <span className="truncate">
-                                    {account.broker
-                                        ? BROKER_INFO[account.broker as SupportedBroker]?.name ?? account.broker
-                                        : "Unassigned"}
-                                </span>
-                            </div>
-                            <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">
-                                Synced automatically from your MT5 terminal.
-                            </p>
-                        </div>
+                        <ServerCombobox
+                            value={server}
+                            onChange={(val) => setServer(val)}
+                            label="Broker Server"
+                            required={false}
+                            helperText="MT5 Broker server name used for automated Cloud Sync"
+                        />
 
-                        <div className="pt-2">
-                            <label className="block text-[11px] font-black text-gray-500 uppercase tracking-widest mb-2">
-                                Account Color
-                            </label>
-                            <div className="flex flex-wrap gap-2.5">
-                                {COLORS.map((c) => (
-                                    <Button
-                                        variant="ghost"
-                                        type="button"
-                                        key={c}
-                                        onClick={() => setColor(c)}
-                                        aria-label={`Select color ${c}`}
-                                        className={`w-9 h-9 p-0 hover:bg-transparent hover:text-white rounded-full transition-all flex items-center justify-center relative shadow-sm ring-offset-2 ring-offset-white dark:ring-offset-[#151925] ${
-                                            color === c
-                                                ? "scale-110 z-10 ring-2 ring-current"
-                                                : "hover:scale-105"
-                                        }`}
-                                        style={{
-                                            backgroundColor: c,
-                                            color: c, // Đặt color = c để class ring-current ăn theo màu này
-                                        }}
+                        {/* Account Specs - 2 rows x 2 columns */}
+                        <div className="rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-dashboard divide-y divide-gray-200/60 dark:divide-white/5 text-xs overflow-hidden">
+                            {/* Row 1: Account Number & Broker */}
+                            <div className="grid grid-cols-2 divide-x divide-gray-200/60 dark:divide-white/5">
+                                <div className="px-4 py-2.5 min-w-0">
+                                    <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider flex items-center gap-1.5 mb-0.5">
+                                        <Hash size={12} className="text-gray-400 shrink-0" />
+                                        Account Number
+                                    </span>
+                                    <span className="font-bold text-gray-800 dark:text-gray-200 tabular-nums block truncate">
+                                        #{account.accountNumber || "N/A"}
+                                    </span>
+                                </div>
+                                <div className="px-4 py-2.5 min-w-0">
+                                    <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider flex items-center gap-1.5 mb-0.5">
+                                        <Building2 size={12} className="text-gray-400 shrink-0" />
+                                        Broker
+                                    </span>
+                                    <span
+                                        className="font-semibold text-gray-800 dark:text-gray-200 block truncate"
+                                        title={brokerDisplayName}
                                     >
-                                        {color === c && (
-                                            <Check
-                                                size={16}
-                                                strokeWidth={3}
-                                                className="text-white drop-shadow-md"
-                                            />
-                                        )}
-                                    </Button>
-                                ))}
+                                        {brokerDisplayName}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Row 2: Active Server & Platform & Base */}
+                            <div className="grid grid-cols-2 divide-x divide-gray-200/60 dark:divide-white/5">
+                                <div className="px-4 py-2.5 min-w-0">
+                                    <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider flex items-center gap-1.5 mb-0.5">
+                                        <Server size={12} className="text-gray-400 shrink-0" />
+                                        Active Server
+                                    </span>
+                                    <span
+                                        className="font-semibold text-gray-800 dark:text-gray-200 font-mono block truncate"
+                                        title={server || account.server || "Not configured"}
+                                    >
+                                        {server || account.server || "Not configured"}
+                                    </span>
+                                </div>
+                                <div className="px-4 py-2.5 min-w-0">
+                                    <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider flex items-center gap-1.5 mb-0.5">
+                                        <Monitor size={12} className="text-gray-400 shrink-0" />
+                                        Platform & Base
+                                    </span>
+                                    <span className="font-semibold text-gray-800 dark:text-gray-200 block truncate">
+                                        {account.platform || "MT5"} ({account.currency || "USD"})
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Trading Rules (Soft Nudge) */}
-                    <div className="space-y-4">
-                        <h3 className="text-[11px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                            Trading Protection Rules
-                            <span className="text-[9px] font-black bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-lg tracking-wider uppercase ml-1">
+                    {/* Cloud Sync & Credentials */}
+                    <div className="space-y-4 pt-2 border-t border-dashboard">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                <h3 className="text-[11px] font-black text-primary uppercase tracking-widest">
+                                    Cloud Sync Credentials
+                                </h3>
+                            </div>
+                            {hasCredentials ? (
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                                    <ShieldCheck size={11} className="text-emerald-500" />
+                                    Active & Encrypted
+                                </span>
+                            ) : (
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                    <KeyRound size={11} className="text-amber-500" />
+                                    Password Required
+                                </span>
+                            )}
+                        </div>
+
+                        {/* Domain Realism Notice */}
+                        <div className="p-3 rounded-xl bg-primary/5 border border-primary/15 text-xs text-gray-600 dark:text-gray-300 flex items-center gap-2.5">
+                            <CloudSync size={16} className="text-primary shrink-0" />
+                            <p className="text-[11px] leading-relaxed">
+                                Provide your <strong>investor password (passview)</strong> to enable automated Cloud Sync.
+                            </p>
+                        </div>
+
+                        <div>
+                            <PremiumInput
+                                type="password"
+                                label="Investor Password (Passview)"
+                                value={investorPassword}
+                                onChange={(e) => setInvestorPassword(e.target.value)}
+                                placeholder={
+                                    hasCredentials
+                                        ? "•••••••••••• (Leave blank to keep existing passview)"
+                                        : "Enter investor password (passview)"
+                                }
+                                helperText={
+                                    hasCredentials
+                                        ? "Passview encrypted and stored securely. Fill only to update."
+                                        : "Enter read-only passview to enable Cloud Sync."
+                                }
+                            />
+                        </div>
+                    </div>
+
+                    {/* Capital Preservation Guardrails */}
+                    <div className="space-y-4 pt-2 border-t border-dashboard">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                                <h3 className="text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">
+                                    Capital Preservation Guardrails
+                                </h3>
+                            </div>
+                            <span className="text-[9px] font-black bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-lg tracking-wider uppercase">
                                 Optional
                             </span>
-                        </h3>
+                        </div>
                         <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed -mt-1">
-                            Set limits to protect your discipline. Dashboard
-                            will show alerts when you approach or exceed these.
+                            Set hard risk limits to prevent revenge trading and drawdowns. System will dispatch breach alerts to your Notification Bell when approaching thresholds.
                         </p>
 
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <PremiumInput
-                                label={`Max Daily Loss (${account.currency || "USD"})`}
+                                label={`Daily Loss (${account.currency || "USD"})`}
                                 type="number"
                                 value={maxDailyLoss}
-                                onChange={(e) =>
-                                    setMaxDailyLoss(e.target.value)
-                                }
-                                placeholder="e.g. 200"
+                                onChange={(e) => setMaxDailyLoss(e.target.value)}
                             />
                             <PremiumInput
                                 label="Max Trades / Day"
                                 type="number"
                                 value={maxDailyTrades}
-                                onChange={(e) =>
-                                    setMaxDailyTrades(e.target.value)
-                                }
-                                placeholder="e.g. 5"
+                                onChange={(e) => setMaxDailyTrades(e.target.value)}
                             />
                             <PremiumInput
                                 label="Max Risk % / Trade"
                                 type="number"
                                 value={maxRiskPercent}
-                                onChange={(e) =>
-                                    setMaxRiskPercent(e.target.value)
-                                }
-                                placeholder="e.g. 2"
-                            />
-                            <PremiumInput
-                                label="Cooldown After Losses"
-                                type="number"
-                                value={cooldownAfterLosses}
-                                onChange={(e) =>
-                                    setCooldownAfterLosses(e.target.value)
-                                }
-                                placeholder="e.g. 3"
+                                onChange={(e) => setMaxRiskPercent(e.target.value)}
                             />
                         </div>
                     </div>
 
-                    {/* Sync Key Info */}
-                    <div className="space-y-3">
-                        <h3 className="text-[11px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600"></span>
-                            API Configuration
-                        </h3>
+                    {/* API Configuration */}
+                    <div className="space-y-3 pt-2 border-t border-dashboard">
+                        <div className="flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500" />
+                            <h3 className="text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">
+                                API Configuration
+                            </h3>
+                        </div>
 
-                        <div className="p-4 bg-gray-50/80 dark:bg-white/[0.02] rounded-xl border border-dashboard">
-                            <div className="flex items-start gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5">
-                                    <Shield
-                                        size={14}
-                                        className="text-emerald-500"
-                                    />
-                                </div>
-                                <div>
-                                    <p className="text-sm font-bold text-gray-700 dark:text-white">
-                                        Unified Sync API Key
-                                    </p>
-                                    <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed mt-0.5">
-                                        One API key works for all your accounts.
-                                        Manage your Sync API Key in{" "}
-                                        <a
-                                            href="/dashboard/settings/sync-settings"
-                                            className="text-primary hover:underline font-semibold"
-                                        >
-                                            Settings
-                                        </a>
-                                        .
-                                    </p>
-                                </div>
+                        <div className="p-3.5 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-dashboard flex items-start gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                                <Shield size={15} className="text-emerald-500" />
                             </div>
+                            <div className="min-w-0 flex-1">
+                                <p className="text-xs font-bold text-gray-800 dark:text-white">
+                                    Unified Sync API Key
+                                </p>
+                                <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed mt-0.5">
+                                    One global key syncs all your connected accounts.
+                                </p>
+                            </div>
+                            <Link
+                                href="/dashboard/settings/sync-settings"
+                                className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline shrink-0"
+                            >
+                                <span>Settings</span>
+                                <ExternalLink size={12} />
+                            </Link>
                         </div>
                     </div>
                 </div>
 
                 {/* Footer */}
-                <div className="px-6 py-4 border-t border-dashboard flex flex-col sm:flex-row gap-3 bg-white dark:bg-[#151925] shrink-0 justify-between items-center w-full">
+                <div className="px-6 py-4 border-t border-dashboard flex items-center justify-between gap-3 bg-white dark:bg-[#1E2028] shrink-0">
                     <Button
                         variant="destructive"
                         size="smd"
                         onClick={onDelete}
-                        className="w-full sm:w-auto px-4 group"
+                        className="px-3.5 rounded-xl font-bold gap-1.5 text-xs"
                         title="Delete this account"
                     >
-                        <Trash2
-                            size={16}
-                            className="group-hover:scale-110 transition-transform sm:mr-0 mr-2"
-                        />
-                        <span className="sm:hidden">Delete Account</span>
+                        <Trash2 size={14} />
+                        <span className="hidden sm:inline">Delete Account</span>
                     </Button>
 
-                    <div className="flex flex-col-reverse sm:flex-row gap-3 w-full sm:w-auto">
+                    <div className="flex items-center gap-2.5">
                         <Button
                             variant="outline"
                             size="smd"
                             onClick={onClose}
-                            className="w-full sm:w-auto px-6 font-bold"
+                            className="px-4 rounded-xl font-bold text-xs"
                         >
                             Cancel
                         </Button>
@@ -351,15 +536,15 @@ export function AccountSettingsModal({
                             size="smd"
                             onClick={handleSave}
                             disabled={isSaving}
-                            className="w-full sm:w-auto px-6 font-bold shadow-lg shadow-primary/25"
+                            className="px-5 rounded-xl font-bold text-xs shadow-lg shadow-primary/20 min-w-[120px]"
                         >
                             {isSaving ? (
                                 <>
                                     <RefreshCw
-                                        size={16}
+                                        size={14}
                                         className="animate-spin mr-1.5"
                                     />
-                                    Saving...
+                                    <span>Saving...</span>
                                 </>
                             ) : (
                                 "Save Changes"

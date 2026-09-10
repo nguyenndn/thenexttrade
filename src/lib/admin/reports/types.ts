@@ -2,14 +2,18 @@
 // Admin System Reports — Type Definitions
 // =============================================================================
 
-export type ReportPeriod = "7d" | "30d" | "90d";
+export type ReportPeriod = "7d" | "30d" | "90d" | "all" | "custom";
 
 export interface DateRange {
     period: ReportPeriod;
     days: number;
     since: Date;
+    until?: Date;
     previousSince: Date;
     previousUntil: Date;
+    label?: string;
+    from?: string;
+    to?: string;
 }
 
 // --- North Star ---
@@ -211,6 +215,7 @@ export interface BusinessHealthReport {
 // --- Root ---
 export interface AdminReportsData {
     period: ReportPeriod;
+    range: DateRange;
     generatedAt: string;
     actionQueue: ActionQueueReport;
     northStar: NorthStarReport;

@@ -73,7 +73,7 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 20, scale: 0.95 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-24 right-6 z-[9998] w-[calc(100vw-2rem)] sm:w-[380px] max-h-[calc(100vh-140px)] bg-white dark:bg-[#151925] rounded-2xl shadow-2xl shadow-black/20 border border-dashboard flex flex-col overflow-hidden"
+            className="fixed bottom-24 right-6 z-[9998] w-[calc(100vw-2rem)] sm:w-[380px] max-h-[calc(100vh-140px)] bg-white dark:bg-[#1E2028] rounded-2xl shadow-2xl shadow-black/20 border border-dashboard flex flex-col overflow-hidden"
         >
             {/* Header */}
             <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between bg-gradient-to-r from-primary/5 to-transparent">
@@ -183,7 +183,7 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
                                     : "Describe the feature you'd like to see..."
                             }
                             rows={5}
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0B0E14] border border-dashboard rounded-xl text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary resize-none transition-all"
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-[#141721] border border-dashboard rounded-xl text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary resize-none transition-all"
                         />
                         <p className="text-[11px] text-gray-500 mt-1.5 pl-0.5">
                             {message.length}/1000 characters

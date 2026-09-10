@@ -16,6 +16,8 @@ import {
 import { LevelUpModal } from "@/components/dashboard/LevelUpModal";
 import { MilestoneCelebrationModal } from "@/components/dashboard/MilestoneCelebrationModal";
 
+import { ImpersonationBanner } from "@/components/admin/ImpersonationBanner";
+
 interface DashboardLayoutClientProps {
     children: React.ReactNode;
     user: AuthUser | null;
@@ -37,6 +39,9 @@ export function DashboardLayoutClient({
                     className="h-screen font-sans flex flex-col overflow-hidden"
                     style={{ backgroundColor: "var(--dashboard-bg)" }}
                 >
+                    {/* Admin Impersonation Alert Banner */}
+                    <ImpersonationBanner user={user} />
+
                     {/* Top Header - Full Width */}
                     <Header
                         onMobileMenuClick={() => setMobileMenuOpen(true)}

@@ -62,7 +62,7 @@ export function SyncHealthCenter({
                     <div>
                         <DialogTitle className="flex items-center gap-2 text-xl font-black text-gray-800 dark:text-white">
                             <Activity
-                                className="text-primary animate-pulse"
+                                className="text-amber-500 animate-pulse"
                                 size={20}
                             />
                             Sync Health Center
@@ -76,7 +76,7 @@ export function SyncHealthCenter({
                         variant="outline"
                         onClick={handleRefresh}
                         disabled={loading || isPending}
-                        className="flex items-center gap-1.5 h-8 border-dashboard bg-white dark:bg-white/[0.04] text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08]"
+                        className="flex items-center gap-1.5 h-8 rounded-xl border-dashboard bg-white dark:bg-white/[0.04] text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08]"
                     >
                         <RefreshCw
                             size={12}
@@ -93,7 +93,7 @@ export function SyncHealthCenter({
                         <div className="flex flex-col items-center justify-center py-16 space-y-3">
                             <RefreshCw
                                 size={32}
-                                className="animate-spin text-primary"
+                                className="animate-spin text-amber-500"
                             />
                             <p className="text-xs text-gray-400 dark:text-gray-500 font-semibold">
                                 Loading sync diagnostics...

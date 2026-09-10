@@ -21,7 +21,7 @@ export function AdminReportsDashboard({ data }: Props) {
         <div className="space-y-6">
             <NorthStarPanel data={data.northStar} />
 
-            <ActivationImprovementFunnelPanel />
+            <ActivationImprovementFunnelPanel dateRange={data.range} />
 
             {/* Admin Activation Inbox */}
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6 group hover:shadow-md transition-shadow">

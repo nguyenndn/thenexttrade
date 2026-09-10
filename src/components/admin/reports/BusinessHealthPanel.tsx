@@ -27,72 +27,76 @@ export function BusinessHealthPanel({ data }: Props) {
                 system assets.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* IB Referrals */}
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center shrink-0">
-                        <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 font-medium mb-1">
-                            IB Referred Users
-                        </p>
-                        <div className="flex items-baseline gap-2">
-                            <span className="text-2xl font-black text-slate-800 dark:text-white">
-                                {data.totalIbReferrals.toLocaleString()}
-                            </span>
-                            <span className="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded-full">
-                                {data.referralRate.toFixed(1)}% of total
-                            </span>
+                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+                            <Users className="w-5 h-5" />
                         </div>
-                        <p className="text-xs text-gray-400 mt-1">
-                            vs {data.directSignups.toLocaleString()} direct
-                            signups
-                        </p>
+                        <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2">
+                                <span className="text-xl font-black text-gray-900 dark:text-white tabular-nums leading-none truncate">
+                                    {data.totalIbReferrals.toLocaleString()}
+                                </span>
+                                <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 px-1.5 py-0.5 rounded-lg shrink-0">
+                                    {data.referralRate.toFixed(1)}%
+                                </span>
+                            </div>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-1 truncate">
+                                IB Referred Users
+                            </p>
+                            <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 truncate">
+                                vs {data.directSignups.toLocaleString()} direct
+                            </p>
+                        </div>
                     </div>
                 </div>
 
                 {/* Funded Accounts */}
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center shrink-0">
-                        <CreditCard className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                    </div>
-                    <div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 font-medium mb-1">
-                            Funded Traders
-                        </p>
-                        <div className="flex items-baseline gap-2">
-                            <span className="text-2xl font-black text-slate-800 dark:text-white">
-                                {data.fundedAccounts.toLocaleString()}
-                            </span>
-                            <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                                {data.fundingRate.toFixed(1)}% conversion
-                            </span>
+                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                            <CreditCard className="w-5 h-5" />
                         </div>
-                        <p className="text-xs text-gray-400 mt-1">
-                            vs {data.unfundedAccounts.toLocaleString()} unfunded
-                        </p>
+                        <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2">
+                                <span className="text-xl font-black text-gray-900 dark:text-white tabular-nums leading-none truncate">
+                                    {data.fundedAccounts.toLocaleString()}
+                                </span>
+                                <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-1.5 py-0.5 rounded-lg shrink-0">
+                                    {data.fundingRate.toFixed(1)}%
+                                </span>
+                            </div>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-1 truncate">
+                                Funded Traders
+                            </p>
+                            <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 truncate">
+                                vs {data.unfundedAccounts.toLocaleString()} unfunded
+                            </p>
+                        </div>
                     </div>
                 </div>
 
                 {/* System Assets */}
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-500/10 flex items-center justify-center shrink-0">
-                        <DollarSign className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                    </div>
-                    <div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 font-medium mb-1">
-                            Total System Assets
-                        </p>
-                        <div className="flex items-baseline gap-2">
-                            <span className="text-2xl font-black text-slate-800 dark:text-white">
-                                {formatCurrency(data.totalSystemAssets)}
-                            </span>
+                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                            <DollarSign className="w-5 h-5" />
                         </div>
-                        <p className="text-xs text-gray-400 mt-1">
-                            Avg: {formatCurrency(data.averageBalance)} per
-                            funded user
-                        </p>
+                        <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2">
+                                <span className="text-xl font-black text-gray-900 dark:text-white tabular-nums leading-none truncate">
+                                    {formatCurrency(data.totalSystemAssets)}
+                                </span>
+                            </div>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-1 truncate">
+                                Total System Assets
+                            </p>
+                            <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 truncate">
+                                avg {formatCurrency(data.averageBalance)} / funded
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -98,7 +98,7 @@ export function SyncHealthAccountRow({
                                 {account.name}
                             </h4>
                             {account.accountNumber && (
-                                <span className="text-[10px] font-mono bg-white/50 dark:bg-black/20 border border-dashboard px-1.5 py-0.5 rounded-lg text-gray-600 dark:text-gray-300">
+                                <span className="text-[10px] font-semibold tabular-nums bg-white/50 dark:bg-black/20 border border-dashboard px-1.5 py-0.5 rounded-lg text-gray-600 dark:text-gray-300">
                                     #{account.accountNumber}
                                 </span>
                             )}

@@ -37,7 +37,7 @@ const goalMessages: Record<string, { title: string; subtitle: string }> = {
             "Start with Academy lessons and connect your account - your dashboard will track consistency and risk management.",
     },
     pro: {
-        title: "Let's unlock your Pro toolkit.",
+        title: "Let's activate your Pro telemetry.",
         subtitle:
             "Connect your account to access Discipline Coach, Trade Score, advanced telemetry, and exclusive Pro tools.",
     },
@@ -46,7 +46,7 @@ const goalMessages: Record<string, { title: string; subtitle: string }> = {
 const defaultMessage = {
     title: "let's set up your edge.",
     subtitle:
-        "Your dashboard will come alive once you start logging trades. Complete these steps to unlock analytics, insights, and your personal Trade Score.",
+        "Your dashboard will come alive once you start logging trades. Complete these steps to enable live analytics, behavioral insights, and your proprietary Trade Score.",
 };
 
 export function WelcomeHero({
@@ -87,7 +87,7 @@ export function WelcomeHero({
     return (
         <div className="space-y-4">
             {/* Hero Card */}
-            <div className="relative rounded-2xl border border-dashboard bg-white dark:bg-[#0B0E14] overflow-hidden">
+            <div className="relative rounded-2xl border border-dashboard bg-white dark:bg-[#1E2028] overflow-hidden">
                 {/* Background glow */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 dark:bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/5 dark:bg-purple-500/10 rounded-full blur-[80px] pointer-events-none" />
@@ -192,7 +192,7 @@ export function WelcomeHero({
                             }
                             className="group block"
                         >
-                            <div className="relative rounded-xl border border-dashboard bg-white dark:bg-[#0B0E14] p-5 transition-all duration-300 hover:shadow-lg hover:border-primary/30">
+                            <div className="relative rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] p-5 transition-all duration-300 hover:shadow-lg hover:border-primary/30">
                                 <div className="flex items-start gap-3">
                                     <div className="p-2.5 rounded-xl bg-gray-100 dark:bg-white/5 shrink-0">
                                         {step.id === "START_ACADEMY" ? (
@@ -232,7 +232,7 @@ export function WelcomeHero({
             )}
 
             {/* Ghost Chart Preview - show what the dashboard will look like */}
-            <div className="relative rounded-2xl border border-dashboard bg-white dark:bg-[#0B0E14] overflow-hidden">
+            <div className="relative rounded-2xl border border-dashboard bg-white dark:bg-[#1E2028] overflow-hidden">
                 {/* Blurred mock chart (SVG) */}
                 <div className="relative h-36 md:h-48 overflow-hidden">
                     <svg
@@ -292,7 +292,7 @@ export function WelcomeHero({
                     </svg>
 
                     {/* Overlay text */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-white/80 via-white/40 to-transparent dark:from-[#0B0E14]/80 dark:via-[#0B0E14]/40 dark:to-transparent">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-white/80 via-white/40 to-transparent dark:from-[#1E2028]/80 dark:via-[#1E2028]/40 dark:to-transparent">
                         <BarChart3 size={24} className="text-primary/50 mb-2" />
                         <p className="text-sm font-bold text-gray-800 dark:text-white">
                             Your performance charts will appear here

@@ -66,6 +66,10 @@
 | Border radius | `rounded-md` / `rounded-sm` | `rounded-xl` minimum |
 | Cancel/Close | `variant="ghost"` | `variant="outline"` |
 | Accessibility | icon button with no label | `aria-label` |
+| Input Placeholders | `placeholder="e.g. 200"` | No placeholder (rely on clear Label & Helper Text) |
+| Entity Color Picker | Sprawling 2-row / 30-button sections | Prefix popover swatch `[🟢▾]` in Name input |
+| Spec Lists / Info Cards | Long vertical 4-row lists | 2x2 Matrix Card (`grid-cols-2` with `divide-x/y`) |
+| Telemetry Status | Rigid text badges like `Live (EA)` | Pulsing dot + relative time (`formatDistanceToNow`) |
 
 ## TECH CONVENTIONS
 

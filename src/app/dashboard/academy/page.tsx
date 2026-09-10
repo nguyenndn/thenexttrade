@@ -298,17 +298,15 @@ export default async function UserAcademyDashboard() {
                         </div>
                     )}
 
-                    {/* Academy Tree (Synced with /academy) */}
-                    <div
-                        id="onborda-academy-tree"
-                        className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden"
-                    >
+                    {/* Visual Journey Tree with Gamified Module Quest Modal */}
+                    <div id="onborda-academy-tree">
                         <AcademyTree
                             levels={levels as any}
                             basePath="/dashboard/academy"
                             isGuest={false}
                             completedLessonIds={completedLessonIds}
                             devMode={academyDevMode}
+                            className="rounded-2xl border border-dashboard dark:border-white/[0.08] shadow-sm"
                         />
                     </div>
                 </div>

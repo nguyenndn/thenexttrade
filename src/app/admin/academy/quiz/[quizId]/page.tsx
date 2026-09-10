@@ -225,6 +225,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
             >
                 <Button
                     variant="outline"
+                    aria-label="Delete quiz"
                     onClick={() => setIsConfirmOpen(true)}
                     disabled={isDeleting || isSubmitting}
                     className="text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-900/50 hover:bg-red-100"
@@ -278,6 +279,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
                                     <Button
                                         onClick={() => removeQuestion(qIndex)}
                                         variant="ghost"
+                                        aria-label="Remove question"
                                         className="absolute top-4 right-4 p-2 text-red-400 hover:bg-red-50 hover:text-red-500 opacity-0 group-hover:opacity-100 h-auto w-auto"
                                     >
                                         <Trash2 size={16} />
@@ -329,7 +331,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
                                                     )}
                                                 </Button>
                                                 <input
-                                                    className="flex-1 bg-gray-50 dark:bg-white/5 px-4 py-2 rounded-lg text-sm border-transparent focus:outline-none focus:border-primary border"
+                                                    className="flex-1 bg-gray-50 dark:bg-white/5 px-4 py-2 rounded-xl text-sm border-transparent focus:outline-none focus:border-primary border"
                                                     placeholder={`Option ${oIndex + 1}`}
                                                     value={opt.text}
                                                     onChange={(e) =>
@@ -344,6 +346,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
+                                                        aria-label="Remove option"
                                                         className="h-6 w-6 p-0 text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100"
                                                         onClick={() =>
                                                             removeOption(

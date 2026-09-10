@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { computeCapitalBreakdown } from "./capital.server";
+import { buildEligibleJournalWhere } from "./eligible-volume.server";
 import { DEFAULT_PAGE_SIZE } from "./ib-monitor.constants";
 import { resolveProductSummariesForUsers } from "./product-usage.server";
 import { normalizeSyncSource, getSyncSourceLabel } from "@/lib/sync/sync-source";
@@ -185,6 +186,7 @@ function buildRow(view: TraderView, lastTradeByAccount: Map<string, string>): Ib
             isFresh: item.freshness === "FRESH",
             isDuplicate: duplicate,
             totalTrades: raw.totalTrades || 0,
+            ibAttribution: (raw as any).ibAttribution || "UNKNOWN",
         };
     });
     const activeAccounts = accountViews.filter((item) => eligible(item.raw));
@@ -280,8 +282,27 @@ export async function getPaginatedTraderMonitorV2(filters: IbTraderFilters): Pro
     const userIds = users.map((user) => user.id);
     const accountIds = users.flatMap((user) => user.tradingAccounts.map((account) => account.id));
     const [groupedTrades, accountTrades, productMap] = await Promise.all([
-        prisma.journalEntry.groupBy({ by: ["userId"], where: { userId: { in: userIds }, status: "CLOSED", exitDate: { gte: thirtyDaysAgo } }, _count: { id: true }, _sum: { lotSize: true }, _max: { exitDate: true } }),
-        accountIds.length ? prisma.journalEntry.findMany({ where: { accountId: { in: accountIds }, status: "CLOSED", exitDate: { not: null } }, select: { accountId: true, exitDate: true }, orderBy: { exitDate: "desc" } }) : Promise.resolve([]),
+        prisma.journalEntry.groupBy({
+            by: ["userId"],
+            where: buildEligibleJournalWhere({
+                userIds,
+                status: "CLOSED",
+                since: thirtyDaysAgo,
+            }),
+            _count: { id: true },
+            _sum: { lotSize: true },
+            _max: { exitDate: true },
+        }),
+        accountIds.length
+            ? prisma.journalEntry.findMany({
+                  where: buildEligibleJournalWhere({
+                      accountIds,
+                      status: "CLOSED",
+                  }),
+                  select: { accountId: true, exitDate: true },
+                  orderBy: { exitDate: "desc" },
+              })
+            : Promise.resolve([]),
         resolveProductSummariesForUsers(users.map((user) => ({ userId: user.id, hasActiveProEntitlement: user.proEntitlements.some((item) => ["ACTIVE", "GRACE"].includes(item.status) && (!item.expiresAt || item.expiresAt > now)) }))),
     ]);
     const tradeStats = new Map(groupedTrades.map((item) => [item.userId, { count: item._count.id, lots: item._sum.lotSize || 0, last: item._max.exitDate?.toISOString() || null }]));

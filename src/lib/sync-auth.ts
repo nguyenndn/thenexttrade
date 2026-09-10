@@ -16,6 +16,10 @@ export type SyncAuthResult = {
         platform: string | null;
         autoSync: boolean;
         syncOpenTrades: boolean;
+        currency?: string | null;
+        server?: string | null;
+        accountType?: string | null;
+        broker?: string | null;
     };
     authMode: "USER_SYNC_KEY" | "LEGACY_ACCOUNT_KEY";
 };
@@ -96,6 +100,10 @@ export async function resolveSyncAuth(
                     platform: true,
                     autoSync: true,
                     syncOpenTrades: true,
+                    currency: true,
+                    server: true,
+                    accountType: true,
+                    broker: true,
                 },
             });
 
@@ -133,6 +141,10 @@ export async function resolveSyncAuth(
                 platform: true,
                 autoSync: true,
                 syncOpenTrades: true,
+                currency: true,
+                server: true,
+                accountType: true,
+                broker: true,
                 user: {
                     select: {
                         id: true,
@@ -155,6 +167,10 @@ export async function resolveSyncAuth(
                         platform: legacyAccount.platform,
                         autoSync: legacyAccount.autoSync,
                         syncOpenTrades: legacyAccount.syncOpenTrades,
+                        currency: legacyAccount.currency,
+                        server: legacyAccount.server,
+                        accountType: legacyAccount.accountType,
+                        broker: legacyAccount.broker,
                     },
                     authMode: "LEGACY_ACCOUNT_KEY",
                 },

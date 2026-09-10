@@ -13,6 +13,7 @@ import {
     Brain,
     CalendarDays,
     CalendarRange,
+    Activity,
 } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
@@ -23,6 +24,7 @@ const routeIconMap: Record<string, LucideIcon> = {
     "/dashboard/sessions": Clock,
     "/dashboard/strategies": Route,
     "/dashboard/analytics": BarChart3,
+    "/dashboard/psychology": Activity,
     "/dashboard/reports": FileSpreadsheet,
     "/dashboard/reports/weekly": CalendarDays,
     "/dashboard/reports/monthly": CalendarRange,

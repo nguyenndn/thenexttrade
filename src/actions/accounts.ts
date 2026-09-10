@@ -7,10 +7,14 @@ import crypto from "crypto";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getAccountsProEligibility } from "@/lib/pro-eligibility";
+import { getUserProAccess } from "@/lib/pro-access";
+import { POPULAR_MT5_SERVERS } from "@/lib/constants/mt5-servers";
+import { detectBroker } from "@/lib/ea/broker-detection";
 
 const accountSchema = z.object({
     name: z.string().min(1).max(50),
     broker: z.string().optional(),
+    server: z.string().max(100).optional(),
     accountNumber: z.string().max(20).optional(),
     balance: z.number().min(0),
     currency: z.string().length(3),
@@ -66,6 +70,24 @@ export async function getTradingAccounts(page = 1, limit = 12) {
                 _count: {
                     select: { journalEntries: true },
                 },
+                credential: {
+                    select: { accountId: true },
+                },
+                mt5ImportJobs: {
+                    orderBy: { createdAt: "desc" as const },
+                    take: 1,
+                    select: {
+                        id: true,
+                        status: true,
+                        message: true,
+                        progressPercent: true,
+                        dealsReceived: true,
+                        errorMessage: true,
+                        errorCode: true,
+                        createdAt: true,
+                        completedAt: true,
+                    },
+                },
                 // Pro/VIP status joins
                 proEntitlement: {
                     select: { status: true, source: true, expiresAt: true },
@@ -110,6 +132,58 @@ export async function getTradingAccounts(page = 1, limit = 12) {
             acc._count?.journalEntries || 0
         );
 
+        const rawJob = acc.mt5ImportJobs?.[0] || null;
+        let latestJob = rawJob
+            ? {
+                  id: rawJob.id,
+                  status: rawJob.status,
+                  message: rawJob.message,
+                  progressPercent: rawJob.progressPercent,
+                  dealsReceived: rawJob.dealsReceived,
+                  errorMessage: rawJob.errorMessage,
+                  errorCode: rawJob.errorCode || null,
+                  createdAt: rawJob.createdAt.toISOString(),
+                  completedAt: rawJob.completedAt
+                      ? rawJob.completedAt.toISOString()
+                      : null,
+              }
+            : null;
+
+        // Auto-expire stale PENDING (60s) or PROCESSING (120s) jobs
+        if (
+            latestJob &&
+            (latestJob.status === "PENDING" || latestJob.status === "PROCESSING")
+        ) {
+            const ageMs = Date.now() - new Date(latestJob.createdAt).getTime();
+            const isPending = latestJob.status === "PENDING";
+            const STALE_THRESHOLD_MS = isPending ? 60 * 1000 : 120 * 1000;
+            if (ageMs > STALE_THRESHOLD_MS) {
+                const timeoutMsg = isPending
+                    ? "Sync timed out: No worker available to pick up request. Click Sync to try again or request Support Sync."
+                    : "Sync timed out during processing. Click Sync to try again.";
+
+                // Persist FAILED state to database so it doesn't linger
+                prisma.mt5ImportJob
+                    .update({
+                        where: { id: latestJob.id },
+                        data: {
+                            status: "FAILED",
+                            errorCode: "JOB_TIMEOUT",
+                            errorMessage: timeoutMsg,
+                            completedAt: new Date(),
+                        },
+                    })
+                    .catch(() => {});
+
+                latestJob = {
+                    ...latestJob,
+                    status: "FAILED",
+                    errorCode: "JOB_TIMEOUT",
+                    errorMessage: timeoutMsg,
+                };
+            }
+        }
+
         return {
             ...acc,
             totalTrades: effectiveTotalTrades,
@@ -126,6 +200,8 @@ export async function getTradingAccounts(page = 1, limit = 12) {
                 ? Date.now() - new Date(acc.lastHeartbeat).getTime() <
                   10 * 60 * 1000
                 : false,
+            hasCredentials: Boolean(acc.credential?.accountId),
+            latestJob,
             // Pro/VIP/EA enrichment
             proStatus,
             proSource,
@@ -134,6 +210,8 @@ export async function getTradingAccounts(page = 1, limit = 12) {
             eaAccess,
             eligibility,
             // Remove raw relations from serialized output
+            credential: undefined,
+            mt5ImportJobs: undefined,
             proEntitlement: undefined,
             vipRequests: undefined,
             _count: undefined,
@@ -163,6 +241,7 @@ export async function createTradingAccount(
     const {
         name,
         broker,
+        server,
         accountNumber,
         balance,
         currency,
@@ -172,6 +251,20 @@ export async function createTradingAccount(
     } = validation.data;
 
     try {
+        // Enforce account connection quota: Free tier is limited to 3 accounts
+        const existingCount = await prisma.tradingAccount.count({
+            where: { userId: user.id },
+        });
+
+        if (existingCount >= 3) {
+            const proAccess = await getUserProAccess(user.id);
+            if (!proAccess.isPro) {
+                return {
+                    error: "Free tier is limited to 3 connected accounts. Upgrade to Partner Pro for unlimited accounts.",
+                };
+            }
+        }
+
         // Reject duplicate account numbers within the same user. The schema
         // has no unique constraint (prod may already contain dupes), so we
         // guard at the code level.
@@ -222,11 +315,25 @@ export async function createTradingAccount(
         // but it is no longer shown in the UI setup flow
         const legacyApiKey = generateApiKey();
 
+        // Auto-resolve broker from server name if not explicitly provided
+        let resolvedBroker = broker || null;
+        if (!resolvedBroker && server) {
+            const matched = POPULAR_MT5_SERVERS.find(
+                (s) => s.name.toLowerCase() === server.trim().toLowerCase()
+            );
+            if (matched?.broker) {
+                resolvedBroker = matched.broker;
+            } else {
+                resolvedBroker = detectBroker(server, "");
+            }
+        }
+
         const account = await prisma.tradingAccount.create({
             data: {
                 userId: user.id,
                 name,
-                broker,
+                broker: resolvedBroker,
+                server: server || null,
                 accountNumber: accountNumber || null,
                 balance,
                 currency,
@@ -241,10 +348,9 @@ export async function createTradingAccount(
         return {
             success: true,
             account: {
-                id: account.id,
-                name: account.name,
-                platform: account.platform,
+                ...account,
                 apiKey: syncApiKey, // Return user-level sync key for setup instructions
+                createdAt: account.createdAt.toISOString(),
             },
         };
     } catch (error) {
@@ -272,6 +378,9 @@ export async function regenerateAccountKey(id: string) {
     }
 }
 
+// Alias for backwards compatibility
+export const regenerateApiKey = regenerateAccountKey;
+
 export async function updateTradingAccount(
     id: string,
     data: z.infer<typeof accountSchema>
@@ -290,9 +399,22 @@ export async function updateTradingAccount(
             });
         }
 
+        const updateData = { ...validation.data };
+        if (!updateData.broker && updateData.server) {
+            const matched = POPULAR_MT5_SERVERS.find(
+                (s) => s.name.toLowerCase() === updateData.server?.trim().toLowerCase()
+            );
+            if (matched?.broker) {
+                updateData.broker = matched.broker;
+            } else {
+                const detected = detectBroker(updateData.server, "");
+                if (detected) updateData.broker = detected;
+            }
+        }
+
         await prisma.tradingAccount.update({
             where: { id, userId: user.id },
-            data: validation.data,
+            data: updateData,
         });
 
         revalidatePath("/dashboard/accounts");

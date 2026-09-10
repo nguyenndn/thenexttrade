@@ -225,17 +225,10 @@ export default function CreateBroadcastPage() {
                             type="submit"
                             variant="primary"
                             className="bg-primary hover:bg-[#00B078] text-white"
-                            disabled={isSubmitting}
+                            isLoading={isSubmitting}
                         >
-                            {isSubmitting ? (
-                                <Loader2
-                                    className="animate-spin mr-2"
-                                    size={18}
-                                />
-                            ) : (
-                                <Send className="mr-2" size={18} />
-                            )}
-                            {isSubmitting ? "Sending..." : "Send Broadcast"}
+                            <Send size={18} />
+                            <span>{isSubmitting ? "Sending..." : "Send Broadcast"}</span>
                         </Button>
                     </div>
                 </form>

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import type { ActivityStatus } from "@prisma/client";
+import { buildEligibleJournalWhere } from "@/lib/admin/ib/eligible-volume.server";
 
 // ============================================================================
 // IB ACTIVITY SNAPSHOT SERVICE
@@ -96,6 +97,7 @@ export async function generateActivitySnapshots() {
                       accountNumber: true,
                       lastHeartbeat: true,
                       status: true,
+                      ibAttribution: true,
                   },
               })
             : await prisma.tradingAccount.findFirst({
@@ -107,26 +109,32 @@ export async function generateActivitySnapshots() {
                       accountNumber: true,
                       lastHeartbeat: true,
                       status: true,
+                      ibAttribution: true,
                   },
               });
 
-        // Compute 30d trade stats
+        // Compute 30d trade stats with eligible volume filtering
         const [tradeStats, lastTradeEntry] = await Promise.all([
             prisma.journalEntry.aggregate({
                 where: {
-                    userId: pe.userId,
-                    status: "CLOSED",
-                    exitDate: { gte: periodStart, lte: periodEnd },
-                    ...(account ? { accountId: account.id } : {}),
+                    ...buildEligibleJournalWhere({
+                        userId: pe.userId,
+                        status: "CLOSED",
+                        since: periodStart,
+                        until: periodEnd,
+                        accountId: account?.id,
+                    }),
                 },
                 _count: true,
                 _sum: { lotSize: true, pnl: true },
             }),
             prisma.journalEntry.findFirst({
                 where: {
-                    userId: pe.userId,
-                    status: "CLOSED",
-                    ...(account ? { accountId: account.id } : {}),
+                    ...buildEligibleJournalWhere({
+                        userId: pe.userId,
+                        status: "CLOSED",
+                        accountId: account?.id,
+                    }),
                 },
                 orderBy: { exitDate: "desc" },
                 select: { exitDate: true },
@@ -137,17 +145,65 @@ export async function generateActivitySnapshots() {
         const closedLotVolume = tradeStats._sum.lotSize || 0;
         const netPnl = tradeStats._sum.pnl || 0;
 
-        // Estimate IB revenue
-        const brokerConfig = pe.broker
-            ? await prisma.eABroker.findFirst({
-                  where: { slug: pe.broker },
-                  select: { commissionPerLot: true },
-              })
-            : null;
+        // Estimate IB revenue using symbol rates and CONFIRMED IB attribution (Doc #3)
+        let estimatedIbRevenue = 0;
+        const isIbConfirmed = account?.ibAttribution === "CONFIRMED";
 
-        const estimatedIbRevenue = brokerConfig?.commissionPerLot
-            ? closedLotVolume * brokerConfig.commissionPerLot
-            : 0;
+        if (isIbConfirmed) {
+            const brokerSlug = pe.broker || account?.broker;
+            const brokerRecord = brokerSlug
+                ? await prisma.eABroker.findFirst({
+                      where: {
+                          OR: [
+                              { slug: { equals: brokerSlug, mode: "insensitive" } },
+                              { name: { equals: brokerSlug, mode: "insensitive" } },
+                          ],
+                      },
+                      include: {
+                          commissionRates: {
+                              where: { effectiveFrom: { lte: periodEnd } },
+                              orderBy: { effectiveFrom: "desc" },
+                          },
+                      },
+                  })
+                : null;
+
+            if (brokerRecord) {
+                const tradesBySymbol = await prisma.journalEntry.groupBy({
+                    by: ["symbol"],
+                    where: {
+                        ...buildEligibleJournalWhere({
+                            userId: pe.userId,
+                            status: "CLOSED",
+                            since: periodStart,
+                            until: periodEnd,
+                            accountId: account?.id,
+                        }),
+                    },
+                    _sum: { lotSize: true },
+                });
+
+                for (const groupItem of tradesBySymbol) {
+                    const rawSymbol = groupItem.symbol.toUpperCase();
+                    const lotVolume = groupItem._sum.lotSize || 0;
+                    if (lotVolume <= 0) continue;
+
+                    const exactMatch = brokerRecord.commissionRates.find(
+                        (r) =>
+                            r.symbol.toUpperCase() === rawSymbol ||
+                            (rawSymbol.includes("XAU") && r.symbol === "XAUUSD")
+                    );
+                    const fallbackMatch = brokerRecord.commissionRates.find((r) => r.symbol === "*");
+                    const rate =
+                        exactMatch?.commissionPerLot ??
+                        fallbackMatch?.commissionPerLot ??
+                        brokerRecord.commissionPerLot ??
+                        0;
+
+                    estimatedIbRevenue += lotVolume * rate;
+                }
+            }
+        }
 
         // Compute activity status
         const activityStatus = computeActivityStatus({

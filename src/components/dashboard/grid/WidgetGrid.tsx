@@ -30,6 +30,8 @@ interface WidgetGridProps {
     children: React.ReactNode;
 }
 
+import { motion } from "framer-motion";
+
 export function WidgetGrid({
     layout,
     onLayoutChange,
@@ -56,31 +58,46 @@ export function WidgetGrid({
         }
     };
 
-    if (!mounted) return null;
+    if (!mounted) {
+        return (
+            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 animate-pulse min-h-[500px]">
+                <div className="h-[380px] rounded-2xl bg-gray-100 dark:bg-white/[0.03] border border-dashboard" />
+                <div className="h-[380px] rounded-2xl bg-gray-100 dark:bg-white/[0.03] border border-dashboard" />
+                <div className="h-[280px] rounded-2xl bg-gray-100 dark:bg-white/[0.03] border border-dashboard" />
+                <div className="h-[280px] rounded-2xl bg-gray-100 dark:bg-white/[0.03] border border-dashboard" />
+            </div>
+        );
+    }
 
     return (
-        <ResponsiveGridLayout
-            className="layout"
-            layouts={{
-                lg: layout,
-                md: layout,
-                sm: layout,
-                xs: layout,
-                xxs: layout,
-            }}
-            breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-            cols={{ lg: 240, md: 240, sm: 120, xs: 60, xxs: 20 }}
-            rowHeight={5} // Finer vertical sizing steps (5px base height)
-            onDragStop={handleLayoutChange}
-            onResizeStop={handleLayoutChange}
-            isDraggable={isEditable}
-            isResizable={isEditable}
-            resizeHandles={["se", "sw"]}
-            margin={[0, 0]}
-            containerPadding={[0, 0]}
-            useCSSTransforms={true}
+        <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         >
-            {children}
-        </ResponsiveGridLayout>
+            <ResponsiveGridLayout
+                className="layout"
+                layouts={{
+                    lg: layout,
+                    md: layout,
+                    sm: layout,
+                    xs: layout,
+                    xxs: layout,
+                }}
+                breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+                cols={{ lg: 240, md: 240, sm: 120, xs: 60, xxs: 20 }}
+                rowHeight={5} // Finer vertical sizing steps (5px base height)
+                onDragStop={handleLayoutChange}
+                onResizeStop={handleLayoutChange}
+                isDraggable={isEditable}
+                isResizable={isEditable}
+                resizeHandles={["se", "sw"]}
+                margin={[0, 0]}
+                containerPadding={[0, 0]}
+                useCSSTransforms={true}
+            >
+                {children}
+            </ResponsiveGridLayout>
+        </motion.div>
     );
 }

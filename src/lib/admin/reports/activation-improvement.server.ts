@@ -243,16 +243,48 @@ const PREDICATES: Record<string, (u: FunnelUser) => boolean> = {
     PRO_ACTIVE: hasProActive,
 };
 
-export async function getAdminActivationImprovementFunnel(
-    days: number = 30
-): Promise<AdminActivationFunnelReport> {
+export type ActivationFunnelFilter =
+    | number
+    | {
+          days?: number;
+          start?: Date | string | null;
+          end?: Date | string | null;
+      };
+
+function resolveDateClause(filter: ActivationFunnelFilter): Prisma.DateTimeFilter {
+    if (typeof filter === "number") {
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - filter);
+        return { gte: startDate };
+    }
+    if (filter?.start && filter?.end) {
+        return {
+            gte: new Date(filter.start),
+            lte: new Date(filter.end),
+        };
+    }
+    if (filter?.start) {
+        return { gte: new Date(filter.start) };
+    }
+    if (filter?.days) {
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - filter.days);
+        return { gte: startDate };
+    }
     const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
+    startDate.setDate(startDate.getDate() - 30);
+    return { gte: startDate };
+}
+
+export async function getAdminActivationImprovementFunnel(
+    filter: ActivationFunnelFilter = 30
+): Promise<AdminActivationFunnelReport> {
+    const dateClause = resolveDateClause(filter);
 
     // Cohort users signed up in the period
     const cohortUsers = (await prisma.user.findMany({
         where: {
-            createdAt: { gte: startDate },
+            createdAt: dateClause,
         },
         select: COHORT_SELECT,
     })) as unknown as DrilldownUserRow[];
@@ -425,13 +457,11 @@ const JSON_FILTER_STAGES = new Set([
 
 export async function getAdminFunnelDrilldownUsers(
     stage: string,
-    days: number = 30,
+    filter: ActivationFunnelFilter = 30,
     page: number = 1,
     limit: number = 20
 ): Promise<{ users: AdminFunnelDrilldownUser[]; total: number }> {
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-    const baseWhere = { createdAt: { gte: startDate } };
+    const baseWhere = { createdAt: resolveDateClause(filter) };
 
     // Prisma-resolvable stage: paginate at the DB level
     if (!JSON_FILTER_STAGES.has(stage)) {

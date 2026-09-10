@@ -275,6 +275,7 @@ async function getPaginatedTraderMonitorLegacy(
                     isFresh,
                     isDuplicate: isDup,
                     totalTrades: a.totalTrades || 0,
+                    ibAttribution: (a as any).ibAttribution || "UNKNOWN",
                 };
             });
 

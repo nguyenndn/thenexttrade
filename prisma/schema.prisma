@@ -448,8 +448,13 @@ model TradingAccount {
   fundingLastVerifiedAt    DateTime?                 @map("funding_last_verified_at") @db.Timestamptz(6)
   fundingGraceUntil        DateTime?                 @map("funding_grace_until") @db.Timestamptz(6)
   supportSyncTickets       SupportSyncTicket[]
+  ibAttribution            String                    @default("UNKNOWN") @map("ib_attribution") @db.VarChar(20)
+  ibAttributionSource      String?                   @map("ib_attribution_source") @db.VarChar(30)
+  ibAttributionAt          DateTime?                 @map("ib_attribution_at") @db.Timestamptz(6)
+  ibAttributionBy          String?                   @map("ib_attribution_by") @db.Uuid
 
   @@index([userId])
+  @@index([ibAttribution])
   @@map("trading_accounts")
 }
 
@@ -713,9 +718,27 @@ model EABroker {
   requiresCountry          Boolean  @default(false) @map("requires_country")
   requiresScreenshot       Boolean  @default(false) @map("requires_screenshot")
   verificationInstructions String?  @map("verification_instructions")
+  commissionRates          BrokerCommissionRate[]
 
   @@index([isActive])
   @@map("ea_brokers")
+}
+
+model BrokerCommissionRate {
+  id               String   @id @default(uuid())
+  brokerId         String   @map("broker_id")
+  symbol           String   @db.VarChar(30)
+  commissionPerLot Float    @map("commission_per_lot")
+  currency         String   @default("USD") @db.VarChar(10)
+  effectiveFrom    DateTime @default(now()) @map("effective_from") @db.Timestamptz(6)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  broker           EABroker @relation(fields: [brokerId], references: [id], onDelete: Cascade)
+
+  @@unique([brokerId, symbol, effectiveFrom])
+  @@index([brokerId, symbol])
+  @@map("broker_commission_rates")
 }
 
 model EALicense {

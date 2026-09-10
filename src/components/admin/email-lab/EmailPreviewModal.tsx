@@ -98,7 +98,7 @@ export function EmailPreviewModal({
                             <button
                                 type="button"
                                 onClick={() => setViewMode("desktop")}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                                     viewMode === "desktop"
                                         ? "bg-white dark:bg-[#0C0F1B] text-amber-500 shadow-sm"
                                         : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
@@ -111,7 +111,7 @@ export function EmailPreviewModal({
                             <button
                                 type="button"
                                 onClick={() => setViewMode("mobile")}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                                     viewMode === "mobile"
                                         ? "bg-white dark:bg-[#0C0F1B] text-amber-500 shadow-sm"
                                         : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
@@ -159,9 +159,9 @@ export function EmailPreviewModal({
                         {allowCustomRecipient ? (
                             <div className="w-full sm:w-72">
                                 <PremiumInput
-                                    placeholder="Enter test recipient..."
                                     value={recipient}
                                     onChange={(e) => setRecipient(e.target.value)}
+                                    aria-label="Test recipient email address"
                                     className="h-9 text-xs"
                                 />
                             </div>

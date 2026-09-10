@@ -4,20 +4,13 @@ import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
-import {
-    Bell,
-    Trash2,
-    AlertTriangle,
-    ShieldCheck,
-    CreditCard,
-    Megaphone,
-    Bug,
-    Lightbulb,
-    BarChart3,
-    TrendingUp,
-} from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import {
+    getNotificationConfig,
+    cleanNotificationTitle,
+} from "@/lib/notifications/notification-config";
 
 interface Notification {
     id: string;
@@ -32,93 +25,6 @@ interface Notification {
 
 interface Props {
     initialNotifications: Notification[];
-}
-
-const typeConfig: Record<
-    string,
-    { icon: typeof Bell; color: string; bg: string }
-> = {
-    LICENSE_APPROVED: {
-        icon: ShieldCheck,
-        color: "text-emerald-600 dark:text-emerald-400",
-        bg: "bg-emerald-100 dark:bg-emerald-900/30",
-    },
-    LICENSE_REJECTED: {
-        icon: AlertTriangle,
-        color: "text-red-600 dark:text-red-400",
-        bg: "bg-red-100 dark:bg-red-900/30",
-    },
-    LICENSE_EXPIRED: {
-        icon: AlertTriangle,
-        color: "text-amber-600 dark:text-amber-400",
-        bg: "bg-amber-100 dark:bg-amber-900/30",
-    },
-    NEW_EA_VERSION: {
-        icon: TrendingUp,
-        color: "text-blue-600 dark:text-blue-400",
-        bg: "bg-blue-100 dark:bg-blue-900/30",
-    },
-    VIP_APPROVED: {
-        icon: CreditCard,
-        color: "text-purple-600 dark:text-purple-400",
-        bg: "bg-purple-100 dark:bg-purple-900/30",
-    },
-    VIP_REJECTED: {
-        icon: CreditCard,
-        color: "text-red-600 dark:text-red-400",
-        bg: "bg-red-100 dark:bg-red-900/30",
-    },
-    ANNOUNCEMENT: {
-        icon: Megaphone,
-        color: "text-blue-600 dark:text-blue-400",
-        bg: "bg-blue-100 dark:bg-blue-900/30",
-    },
-    MAINTENANCE: {
-        icon: AlertTriangle,
-        color: "text-amber-600 dark:text-amber-400",
-        bg: "bg-amber-100 dark:bg-amber-900/30",
-    },
-    PROMOTION: {
-        icon: Megaphone,
-        color: "text-pink-600 dark:text-pink-400",
-        bg: "bg-pink-100 dark:bg-pink-900/30",
-    },
-    FEATURE_UPDATE: {
-        icon: Lightbulb,
-        color: "text-cyan-600 dark:text-cyan-400",
-        bg: "bg-cyan-100 dark:bg-cyan-900/30",
-    },
-    FEEDBACK_RECEIVED: {
-        icon: Bug,
-        color: "text-orange-600 dark:text-orange-400",
-        bg: "bg-orange-100 dark:bg-orange-900/30",
-    },
-    WEEKLY_REPORT: {
-        icon: BarChart3,
-        color: "text-amber-500 dark:text-amber-400",
-        bg: "bg-amber-500/10 dark:bg-amber-500/10",
-    },
-    MONTHLY_REPORT: {
-        icon: BarChart3,
-        color: "text-emerald-500 dark:text-emerald-400",
-        bg: "bg-emerald-500/10 dark:bg-emerald-500/10",
-    },
-    NO_TRADES_NUDGE: {
-        icon: TrendingUp,
-        color: "text-gray-600 dark:text-gray-400",
-        bg: "bg-gray-100 dark:bg-gray-800",
-    },
-};
-
-const defaultConfig = {
-    icon: Bell,
-    color: "text-gray-600 dark:text-gray-400",
-    bg: "bg-gray-100 dark:bg-white/10",
-};
-
-function cleanNotificationTitle(text: string): string {
-    if (!text) return "";
-    return text.replace(/\p{Extended_Pictographic}\s*/gu, "").trim();
 }
 
 function getRelativeTime(dateStr: string): string {
@@ -210,12 +116,6 @@ export function NotificationsList({ initialNotifications }: Props) {
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                 {notifications.length === 0 ? (
                     <div className="p-16 text-center">
-                        <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center mx-auto mb-4">
-                            <Bell
-                                size={28}
-                                className="text-gray-400 dark:text-gray-500"
-                            />
-                        </div>
                         <h3 className="text-lg font-bold text-gray-700 dark:text-gray-200">
                             No notifications
                         </h3>
@@ -227,7 +127,10 @@ export function NotificationsList({ initialNotifications }: Props) {
                 ) : (
                     <div className="divide-y divide-dashboard">
                         {notifications.map((n) => {
-                            const config = typeConfig[n.type] || defaultConfig;
+                            const config = getNotificationConfig(
+                                n.type,
+                                n.title
+                            );
                             const Icon = config.icon;
 
                             return (

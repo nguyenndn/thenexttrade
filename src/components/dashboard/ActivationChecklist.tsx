@@ -19,7 +19,7 @@ export function ActivationChecklist({ state }: ActivationChecklistProps) {
     };
 
     return (
-        <div className="rounded-2xl border border-dashboard bg-white dark:bg-[#0B0E14] overflow-hidden">
+        <div className="rounded-2xl border border-dashboard bg-white dark:bg-[#1E2028] overflow-hidden">
             {/* Header */}
             <div className="px-5 py-4 border-b border-dashboard">
                 <div className="flex items-center justify-between">

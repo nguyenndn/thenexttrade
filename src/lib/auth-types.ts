@@ -6,6 +6,8 @@ export interface AuthUser {
     email: string | null;
     image: string | null;
     createdAt: Date;
+    isImpersonated?: boolean;
+    originalAdminId?: string;
     profile: {
         role: UserRole;
         bio: string | null;

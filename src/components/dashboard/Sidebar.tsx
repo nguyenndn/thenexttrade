@@ -81,21 +81,21 @@ function SidebarItemComponent({
             <div className="relative">
                 {/* Active indicator bar - flush against sidebar left edge */}
                 {isActiveStyle && (
-                    <div className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full bg-primary" />
+                    <div className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full bg-amber-500" />
                 )}
                 <div
                     className={cn(
                         "flex items-center gap-3 px-3 py-2.5 mx-3 rounded-xl cursor-pointer transition-all duration-300 group relative select-none overflow-hidden",
                         collapsed ? "justify-center px-0 mx-2" : "",
                         isActiveStyle
-                            ? "text-primary font-semibold shadow-sm"
+                            ? "text-amber-600 dark:text-amber-400 font-bold shadow-sm"
                             : "text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-700 dark:hover:text-white"
                     )}
                     style={
                         isActiveStyle
                             ? {
                                   background:
-                                      "linear-gradient(to right, hsl(var(--primary) / 0.2), hsl(var(--primary) / 0.02))",
+                                      "linear-gradient(to right, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.02))",
                               }
                             : undefined
                     }
@@ -113,7 +113,7 @@ function SidebarItemComponent({
                         className={cn(
                             "transition-colors relative z-10 pointer-events-none min-w-[20px]",
                             isActiveStyle
-                                ? "text-primary"
+                                ? "text-amber-500 dark:text-amber-400"
                                 : "text-gray-600 dark:text-gray-300 group-hover:text-gray-600 dark:group-hover:text-gray-300"
                         )}
                     />
@@ -179,7 +179,7 @@ function SidebarItemComponent({
                                 className={cn(
                                     "flex items-center gap-2 py-1.5 pl-2 pr-3 rounded-lg text-[13px] font-semibold transition-colors relative",
                                     isSubActive
-                                        ? "text-primary bg-primary/5 dark:bg-primary/10"
+                                        ? "text-amber-600 dark:text-amber-400 bg-amber-500/10 dark:bg-amber-500/15"
                                         : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white"
                                 )}
                             >
@@ -188,7 +188,7 @@ function SidebarItemComponent({
                                     className={cn(
                                         "w-1.5 h-1.5 rounded-full shrink-0 transition-colors",
                                         isSubActive
-                                            ? "bg-primary"
+                                            ? "bg-amber-500 dark:bg-amber-400"
                                             : "bg-gray-300 dark:bg-gray-700"
                                     )}
                                 />
@@ -231,6 +231,7 @@ export function Sidebar({
     // (These routes are accessed via TabBar but not shown in sidebar)
     const childRouteMap: Record<string, string> = {
         "/dashboard/sessions": "/dashboard/journal",
+        "/dashboard/psychology": "/dashboard/analytics",
         "/dashboard/reports": "/dashboard/analytics",
         "/dashboard/reports/weekly": "/dashboard/analytics",
         "/dashboard/reports/monthly": "/dashboard/analytics",
@@ -366,7 +367,7 @@ export function Sidebar({
 
             {/* VIP Pro Status Widget - only show in user dashboard, not admin */}
             {!isCollapsed && !isAdmin && (
-                <div className="px-4 pb-2">
+                <div className="pt-3 px-4 pb-1 border-t border-dashboard dark:border-white/[0.08]">
                     <VipStatusWidget />
                 </div>
             )}

@@ -61,7 +61,7 @@ export function AdminDashboardClient(props: Props) {
                         </h1>
                     </div>
                     <p className="text-base text-gray-600 dark:text-gray-300 font-medium pl-4.5">
-                        Here&apos;s what&apos;s happening in your CRM today.
+                        Here&apos;s what&apos;s happening across TheNextTrade platform today.
                     </p>
                 </div>
                 <div className="text-sm text-gray-500 font-medium pl-4.5 md:pl-0">

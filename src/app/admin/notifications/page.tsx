@@ -32,7 +32,7 @@ export default async function AdminNotificationsPage() {
             >
                 <Link href="/admin/notifications/create">
                     <Button variant="primary" className="shadow-primary/30">
-                        <Plus size={18} className="mr-2" />
+                        <Plus size={18} />
                         New Broadcast
                     </Button>
                 </Link>

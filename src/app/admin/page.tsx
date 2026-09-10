@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 import { Suspense } from "react";
+import { buildEligibleJournalWhere } from "@/lib/admin/ib/eligible-volume.server";
 import { AdminDashboardClient } from "@/components/admin/dashboard/AdminDashboardClient";
 import { AnimatedSection } from "@/components/admin/dashboard/AnimatedSection";
 import { UserGrowthChart } from "@/components/admin/charts/UserGrowthChart";
@@ -69,7 +70,10 @@ const getStats = unstable_cache(
             prisma.ibLead.count(),
             prisma.proEntitlement.count({ where: { status: "ACTIVE" } }),
             prisma.lesson.count(),
-            prisma.journalEntry.aggregate({ _sum: { lotSize: true } }),
+            prisma.journalEntry.aggregate({
+                where: buildEligibleJournalWhere(),
+                _sum: { lotSize: true },
+            }),
             prisma.user.findMany({
                 where: { createdAt: { gte: thirtyDaysAgo } },
                 select: { createdAt: true },
@@ -166,8 +170,8 @@ const getStats = unstable_cache(
             contentDistribution,
         };
     },
-    ["admin-dashboard-crm-stats-v1"],
-    { revalidate: 300, tags: ["admin-stats"] }
+    ["admin-dashboard-crm-stats-v2"],
+    { revalidate: 60, tags: ["admin-stats"] }
 );
 
 export default async function AdminDashboard() {

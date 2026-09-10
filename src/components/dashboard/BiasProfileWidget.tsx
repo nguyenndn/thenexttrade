@@ -135,7 +135,7 @@ export function BiasProfileWidget() {
     // ─── LOADING STATE ────────────────────────────────────────────────────────
     if (loading) {
         return (
-            <div className="relative overflow-hidden rounded-2xl border border-dashboard bg-white dark:bg-[#151925] p-6 min-h-[460px] lg:h-full flex flex-col items-center justify-center space-y-4">
+            <div className="relative overflow-hidden rounded-2xl border border-dashboard bg-white dark:bg-[#1E2028] p-6 min-h-[460px] lg:h-full flex flex-col items-center justify-center space-y-4">
                 <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
                 <div className="text-center space-y-1">
                     <p className="text-sm font-bold text-gray-700 dark:text-gray-200">
@@ -153,7 +153,7 @@ export function BiasProfileWidget() {
     // ─── PRO CONVERSION CTA STATE ──────────────────────────────────────────────
     if (isProCTA) {
         return (
-            <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#141721] p-6 min-h-[460px] lg:h-full flex flex-col justify-between group transition-all duration-300">
+            <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#1E2028] p-6 min-h-[460px] lg:h-full flex flex-col justify-between group transition-all duration-300">
                 {/* Gradient Border */}
                 <div className="absolute inset-0 rounded-2xl p-px pointer-events-none">
                     <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-400/40 via-orange-500/10 to-amber-400/40 dark:from-amber-400/30 dark:via-orange-500/10 dark:to-amber-400/30" />
@@ -182,9 +182,9 @@ export function BiasProfileWidget() {
 
                     <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-dashboard space-y-3">
                         <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
-                            <strong>Upgrade to Pro to unlock:</strong> Telemetry
+                            <strong>Partner Pro Behavioral Telemetry:</strong> System
                             engine analyzes your execution history against
-                            pre/post trade emotional logs to identify
+                            pre/post trade emotional logs to isolate
                             behavioral blind spots causing equity drawdowns
                             (Loss Aversion, FOMO, Overconfidence).
                         </p>
@@ -212,7 +212,7 @@ export function BiasProfileWidget() {
                     >
                         <Button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-xs py-3 shadow-lg shadow-amber-500/20 flex items-center justify-center gap-1.5 rounded-xl border-none">
                             <Crown className="w-4 h-4" />
-                            Upgrade to VIP to Unlock Pro for Free
+                            Connect Partner Broker to Activate Pro Tier
                         </Button>
                     </Link>
                     <p className="text-[10px] text-gray-400 text-center">
@@ -227,7 +227,7 @@ export function BiasProfileWidget() {
     // ─── NOT ENOUGH DATA STATE ──────────────────────────────────────────────────
     if (!hasEnoughData) {
         return (
-            <div className="relative overflow-hidden rounded-2xl border border-dashed border-dashboard bg-white dark:bg-[#151925] p-6 min-h-[460px] lg:h-full flex flex-col justify-between group transition-all duration-300">
+            <div className="relative overflow-hidden rounded-2xl border border-dashed border-dashboard bg-white dark:bg-[#1E2028] p-6 min-h-[460px] lg:h-full flex flex-col justify-between group transition-all duration-300">
                 <div className="space-y-4">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 shrink-0">
@@ -275,7 +275,7 @@ export function BiasProfileWidget() {
     // ─── ERROR STATE ────────────────────────────────────────────────────────────
     if (error || !profile) {
         return (
-            <div className="relative overflow-hidden rounded-2xl border border-red-500/20 bg-white dark:bg-[#151925] p-6 min-h-[460px] lg:h-full flex flex-col items-center justify-center space-y-4 text-center">
+            <div className="relative overflow-hidden rounded-2xl border border-red-500/20 bg-white dark:bg-[#1E2028] p-6 min-h-[460px] lg:h-full flex flex-col items-center justify-center space-y-4 text-center">
                 <AlertCircle className="h-10 w-10 text-red-500" />
                 <div>
                     <h3 className="text-sm font-bold text-gray-800 dark:text-white">
@@ -376,6 +376,9 @@ export function BiasProfileWidget() {
                                 fill="#F59E0B"
                                 fillOpacity={0.15}
                                 strokeWidth={2.5}
+                                isAnimationActive={true}
+                                animationDuration={400}
+                                animationEasing="ease-out"
                                 dot={{ r: 4, fill: "#D97706", strokeWidth: 0 }}
                                 activeDot={{
                                     r: 6,

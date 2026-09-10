@@ -6,17 +6,38 @@ export const dynamic = "force-dynamic";
 
 /**
  * GET /api/admin/analytics/campaigns?period=7d|30d|90d
+ * GET /api/admin/analytics/campaigns?period=7d|30d|90d&from=YYYY-MM-DD&to=YYYY-MM-DD
  * Returns UTM campaign analytics.
  */
 export async function GET(request: NextRequest) {
     const auth = await requireAdmin();
     if (auth instanceof NextResponse) return auth;
 
+    const fromParam = request.nextUrl.searchParams.get("from");
+    const toParam = request.nextUrl.searchParams.get("to");
     const period = request.nextUrl.searchParams.get("period") || "7d";
-    const days = period === "90d" ? 90 : period === "30d" ? 30 : 7;
 
-    const since = new Date();
-    since.setDate(since.getDate() - days);
+    let since: Date;
+    let until = new Date();
+
+    if (fromParam && toParam) {
+        const parsedSince = new Date(fromParam);
+        const parsedUntil = new Date(toParam);
+        if (!isNaN(parsedSince.getTime()) && !isNaN(parsedUntil.getTime())) {
+            since = parsedSince;
+            since.setHours(0, 0, 0, 0);
+            until = new Date(parsedUntil);
+            until.setHours(23, 59, 59, 999);
+        } else {
+            const days = period === "90d" ? 90 : period === "30d" ? 30 : 7;
+            since = new Date();
+            since.setDate(since.getDate() - days);
+        }
+    } else {
+        const days = period === "90d" ? 90 : period === "30d" ? 30 : 7;
+        since = new Date();
+        since.setDate(since.getDate() - days);
+    }
 
     try {
         // Campaign-level aggregation
@@ -29,19 +50,19 @@ export async function GET(request: NextRequest) {
                 unique_visitors: bigint;
             }>
         >`
- SELECT
- COALESCE("utmCampaign", '(not set)') as utm_campaign,
- COALESCE("utmSource", '(not set)') as utm_source,
- COALESCE("utmMedium", '(not set)') as utm_medium,
- COUNT(*)::bigint as views,
- COUNT(DISTINCT "sessionId")::bigint as unique_visitors
- FROM page_views
- WHERE "createdAt" >= ${since}
- AND ("utmSource" IS NOT NULL OR "utmMedium" IS NOT NULL OR "utmCampaign" IS NOT NULL)
- GROUP BY "utmCampaign", "utmSource", "utmMedium"
- ORDER BY views DESC
- LIMIT 20
- `;
+            SELECT 
+                COALESCE("utmCampaign", '(not set)') as utm_campaign,
+                COALESCE("utmSource", '(not set)') as utm_source,
+                COALESCE("utmMedium", '(not set)') as utm_medium,
+                COUNT(*)::bigint as views,
+                COUNT(DISTINCT "sessionId")::bigint as unique_visitors
+            FROM page_views
+            WHERE "createdAt" >= ${since} AND "createdAt" <= ${until}
+                AND ("utmSource" IS NOT NULL OR "utmMedium" IS NOT NULL OR "utmCampaign" IS NOT NULL)
+            GROUP BY "utmCampaign", "utmSource", "utmMedium"
+            ORDER BY views DESC
+            LIMIT 20
+        `;
 
         // Source-level aggregation
         const sources = await prisma.$queryRaw<
@@ -50,16 +71,16 @@ export async function GET(request: NextRequest) {
                 views: bigint;
             }>
         >`
- SELECT
- COALESCE("utmSource", '(not set)') as utm_source,
- COUNT(*)::bigint as views
- FROM page_views
- WHERE "createdAt" >= ${since}
- AND "utmSource" IS NOT NULL
- GROUP BY "utmSource"
- ORDER BY views DESC
- LIMIT 10
- `;
+            SELECT 
+                COALESCE("utmSource", '(not set)') as utm_source,
+                COUNT(*)::bigint as views
+            FROM page_views
+            WHERE "createdAt" >= ${since} AND "createdAt" <= ${until}
+                AND "utmSource" IS NOT NULL
+            GROUP BY "utmSource"
+            ORDER BY views DESC
+            LIMIT 10
+        `;
 
         return NextResponse.json({
             period,

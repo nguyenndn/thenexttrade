@@ -13,13 +13,40 @@ export async function GET(request: NextRequest) {
     const auth = await requireAdmin();
     if (auth instanceof NextResponse) return auth;
 
+    const fromParam = request.nextUrl.searchParams.get("from");
+    const toParam = request.nextUrl.searchParams.get("to");
     const period = request.nextUrl.searchParams.get("period") || "7d";
-    const days = period === "90d" ? 90 : period === "30d" ? 30 : 7;
 
-    const since = new Date();
-    since.setDate(since.getDate() - days);
+    let since: Date;
+    let until = new Date();
+    let days = 7;
 
-    // Previous period for comparison (e.g. 7d current → 14d..7d previous)
+    if (fromParam && toParam) {
+        const parsedSince = new Date(fromParam);
+        const parsedUntil = new Date(toParam);
+        if (!isNaN(parsedSince.getTime()) && !isNaN(parsedUntil.getTime())) {
+            since = parsedSince;
+            since.setHours(0, 0, 0, 0);
+            until = new Date(parsedUntil);
+            until.setHours(23, 59, 59, 999);
+            days = Math.max(
+                1,
+                Math.round(
+                    (until.getTime() - since.getTime()) / (1000 * 60 * 60 * 24)
+                )
+            );
+        } else {
+            days = period === "90d" ? 90 : period === "30d" ? 30 : 7;
+            since = new Date();
+            since.setDate(since.getDate() - days);
+        }
+    } else {
+        days = period === "90d" ? 90 : period === "30d" ? 30 : 7;
+        since = new Date();
+        since.setDate(since.getDate() - days);
+    }
+
+    // Previous period for comparison (same duration immediately preceding since)
     const prevEnd = new Date(since);
     const prevStart = new Date(since);
     prevStart.setDate(prevStart.getDate() - days);
@@ -44,14 +71,14 @@ export async function GET(request: NextRequest) {
         ] = await Promise.all([
             // Total pageviews
             prisma.pageView.count({
-                where: { createdAt: { gte: since } },
+                where: { createdAt: { gte: since, lte: until } },
             }),
 
             // Unique visitors (distinct sessionId)
             prisma.pageView
                 .groupBy({
                     by: ["sessionId"],
-                    where: { createdAt: { gte: since } },
+                    where: { createdAt: { gte: since, lte: until } },
                 })
                 .then((r) => r.length),
 
@@ -79,7 +106,10 @@ export async function GET(request: NextRequest) {
             // Top countries
             prisma.pageView.groupBy({
                 by: ["country"],
-                where: { createdAt: { gte: since }, country: { not: null } },
+                where: {
+                    createdAt: { gte: since, lte: until },
+                    country: { not: null },
+                },
                 _count: { _all: true },
                 orderBy: { _count: { country: "desc" } },
                 take: 20,
@@ -98,7 +128,7 @@ export async function GET(request: NextRequest) {
             // Top pages
             prisma.pageView.groupBy({
                 by: ["pathname"],
-                where: { createdAt: { gte: since } },
+                where: { createdAt: { gte: since, lte: until } },
                 _count: { _all: true },
                 orderBy: { _count: { pathname: "desc" } },
                 take: 15,
@@ -108,7 +138,7 @@ export async function GET(request: NextRequest) {
             prisma.pageView.groupBy({
                 by: ["referrer"],
                 where: {
-                    createdAt: { gte: since },
+                    createdAt: { gte: since, lte: until },
                     referrer: { not: null },
                 },
                 _count: { _all: true },
@@ -119,14 +149,20 @@ export async function GET(request: NextRequest) {
             // Device breakdown
             prisma.pageView.groupBy({
                 by: ["device"],
-                where: { createdAt: { gte: since }, device: { not: null } },
+                where: {
+                    createdAt: { gte: since, lte: until },
+                    device: { not: null },
+                },
                 _count: { _all: true },
             }),
 
             // Browser breakdown
             prisma.pageView.groupBy({
                 by: ["browser"],
-                where: { createdAt: { gte: since }, browser: { not: null } },
+                where: {
+                    createdAt: { gte: since, lte: until },
+                    browser: { not: null },
+                },
                 _count: { _all: true },
                 orderBy: { _count: { browser: "desc" } },
                 take: 8,
@@ -134,12 +170,12 @@ export async function GET(request: NextRequest) {
 
             // Daily pageview trend
             prisma.$queryRaw<Array<{ date: string; count: bigint }>>`
- SELECT DATE("createdAt" AT TIME ZONE 'UTC') as date, COUNT(*)::bigint as count
- FROM page_views
- WHERE "createdAt" >= ${since}
- GROUP BY DATE("createdAt" AT TIME ZONE 'UTC')
- ORDER BY date ASC
- `,
+                SELECT DATE("createdAt" AT TIME ZONE 'UTC') as date, COUNT(*)::bigint as count
+                FROM page_views
+                WHERE "createdAt" >= ${since} AND "createdAt" <= ${until}
+                GROUP BY DATE("createdAt" AT TIME ZONE 'UTC')
+                ORDER BY date ASC
+            `,
         ]);
 
         // Fill missing days in trend
@@ -153,11 +189,16 @@ export async function GET(request: NextRequest) {
         });
 
         const trend = [];
-        for (let i = days - 1; i >= 0; i--) {
-            const d = new Date();
-            d.setDate(d.getDate() - i);
-            const dateStr = d.toISOString().split("T")[0];
+        const startDay = new Date(since);
+        startDay.setHours(0, 0, 0, 0);
+        const endDay = new Date(until);
+        endDay.setHours(0, 0, 0, 0);
+
+        const curr = new Date(startDay);
+        while (curr <= endDay) {
+            const dateStr = curr.toISOString().split("T")[0];
             trend.push({ date: dateStr, views: trendMap.get(dateStr) || 0 });
+            curr.setDate(curr.getDate() + 1);
         }
 
         // Calculate trend percentages

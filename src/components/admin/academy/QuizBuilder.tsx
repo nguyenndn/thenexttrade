@@ -128,6 +128,7 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                 <div className="flex items-center gap-4">
                     <Link
                         href={finalBackLink}
+                        aria-label="Back to Academy"
                         className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full text-gray-600"
                     >
                         <ArrowLeft size={20} />
@@ -140,8 +141,9 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                             <Button
                                 variant="ghost"
                                 size="icon"
+                                aria-label="Edit quiz settings"
                                 onClick={() => setIsSettingsModalOpen(true)}
-                                className="p-1.5 h-auto w-auto text-gray-500 hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
+                                className="p-1.5 h-auto w-auto text-gray-500 hover:text-primary hover:bg-primary/10 rounded-xl transition-all"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -159,7 +161,7 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                             </Button>
                         </div>
                         <p className="text-gray-600 dark:text-gray-300 mt-1 text-sm">
-                            {quiz.description || "No description"} �{" "}
+                            {quiz.description || "No description"} ·{" "}
                             {questions.length} Questions
                         </p>
                     </div>

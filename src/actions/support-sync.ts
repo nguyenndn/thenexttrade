@@ -3,20 +3,6 @@
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { revalidatePath } from "next/cache";
-import { isVipEligibleBroker } from "@/lib/pro-access";
-
-/**
- * Calculate the next upcoming Saturday at 10:00:00 UTC
- */
-function getNextSaturdayBatch(): Date {
-    const now = new Date();
-    const result = new Date(now);
-    const dayOfWeek = result.getUTCDay(); // 0 = Sun, 6 = Sat
-    const daysUntilSaturday = (6 - dayOfWeek + 7) % 7 || 7;
-    result.setUTCDate(result.getUTCDate() + daysUntilSaturday);
-    result.setUTCHours(10, 0, 0, 0);
-    return result;
-}
 
 export interface CreateSupportSyncInput {
     broker: string;
@@ -36,13 +22,6 @@ export async function createSupportSyncTicket(input: CreateSupportSyncInput) {
         return { success: false, error: "Broker and Account Number are required." };
     }
 
-    if (!isVipEligibleBroker(input.broker)) {
-        return {
-            success: false,
-            error: "Selected broker is not currently eligible for VIP Partner Sync (Vantage, Exness, VTMarkets, Ultima Markets).",
-        };
-    }
-
     // Check if there is already an active pending ticket for this account
     const existing = await prisma.supportSyncTicket.findFirst({
         where: {
@@ -59,8 +38,6 @@ export async function createSupportSyncTicket(input: CreateSupportSyncInput) {
         };
     }
 
-    const scheduledFor = getNextSaturdayBatch();
-
     const ticket = await prisma.supportSyncTicket.create({
         data: {
             userId: user.id,
@@ -69,12 +46,13 @@ export async function createSupportSyncTicket(input: CreateSupportSyncInput) {
             accountNumber: input.accountNumber.trim(),
             server: input.server?.trim() || null,
             notes: input.notes?.trim() || null,
-            scheduledFor,
+            scheduledFor: null,
             status: "PENDING",
         },
     });
 
     revalidatePath("/dashboard/accounts");
+    revalidatePath("/admin/ib/sync-requests");
     return { success: true, ticket };
 }
 
@@ -82,6 +60,9 @@ export async function getUserSupportSyncTickets() {
     const user = await getAuthUser();
     if (!user) return [];
 
+    // Cancelled tickets are hard-deleted by cancelSupportSyncTicket(), so there is
+    // nothing to sweep here. This function stays read-only — never write from a
+    // read path (a write here would fire on every page load).
     return prisma.supportSyncTicket.findMany({
         where: { userId: user.id },
         orderBy: { createdAt: "desc" },
@@ -100,18 +81,19 @@ export async function cancelSupportSyncTicket(ticketId: string) {
     }
 
     const ticket = await prisma.supportSyncTicket.findFirst({
-        where: { id: ticketId, userId: user.id, status: "PENDING" },
+        where: { id: ticketId, userId: user.id },
     });
 
     if (!ticket) {
-        return { success: false, error: "Ticket not found or already processed." };
+        return { success: false, error: "Ticket not found or already deleted." };
     }
 
-    await prisma.supportSyncTicket.update({
+    // Hard delete the record directly from database
+    await prisma.supportSyncTicket.delete({
         where: { id: ticketId },
-        data: { status: "CANCELLED" },
     });
 
     revalidatePath("/dashboard/accounts");
+    revalidatePath("/admin/ib/sync-requests");
     return { success: true };
 }

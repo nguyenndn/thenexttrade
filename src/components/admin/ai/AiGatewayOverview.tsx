@@ -2,16 +2,12 @@
 
 import {
     Activity,
-    ServerCrash,
-    Cpu,
-    ArrowUpRight,
     BarChart3,
     CheckCircle2,
     XCircle,
     Clock,
     Coins,
 } from "lucide-react";
-import Link from "next/link";
 
 export function AiGatewayOverview({ stats }: { stats: any }) {
     const successCount =
@@ -88,63 +84,6 @@ export function AiGatewayOverview({ stats }: { stats: any }) {
                 </div>
             </div>
 
-            {/* Quick Links */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Link
-                    href="/admin/ai/providers"
-                    className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow group"
-                >
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                            <Cpu className="w-5 h-5" />
-                        </div>
-                        <ArrowUpRight className="w-5 h-5 text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" />
-                    </div>
-                    <h3 className="text-gray-900 dark:text-white font-semibold mb-1">
-                        Providers & Models
-                    </h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
-                        Manage API keys and model limits
-                    </p>
-                </Link>
-
-                <Link
-                    href="/admin/ai/routes"
-                    className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow group"
-                >
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-500">
-                            <ServerCrash className="w-5 h-5" />
-                        </div>
-                        <ArrowUpRight className="w-5 h-5 text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" />
-                    </div>
-                    <h3 className="text-gray-900 dark:text-white font-semibold mb-1">
-                        Routing Policies
-                    </h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
-                        Configure fallback chains
-                    </p>
-                </Link>
-
-                <Link
-                    href="/admin/ai/requests"
-                    className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow group"
-                >
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-500">
-                            <Activity className="w-5 h-5" />
-                        </div>
-                        <ArrowUpRight className="w-5 h-5 text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" />
-                    </div>
-                    <h3 className="text-gray-900 dark:text-white font-semibold mb-1">
-                        Requests Explorer
-                    </h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
-                        View logs, attempts, and costs
-                    </p>
-                </Link>
-            </div>
-
             {/* Provider Health */}
             <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm">
                 <h3 className="text-gray-900 dark:text-white font-semibold mb-4">
@@ -164,7 +103,7 @@ export function AiGatewayOverview({ stats }: { stats: any }) {
                                     <Badge
                                         text="Healthy"
                                         icon={
-                                            <CheckCircle2 className="w-3 h-3 mr-1" />
+                                            <CheckCircle2 className="w-3 h-3" />
                                         }
                                         color="green"
                                     />
@@ -172,7 +111,7 @@ export function AiGatewayOverview({ stats }: { stats: any }) {
                                     <Badge
                                         text="Degraded"
                                         icon={
-                                            <Activity className="w-3 h-3 mr-1" />
+                                            <Activity className="w-3 h-3" />
                                         }
                                         color="yellow"
                                     />
@@ -180,7 +119,7 @@ export function AiGatewayOverview({ stats }: { stats: any }) {
                                     <Badge
                                         text="Unknown"
                                         icon={
-                                            <XCircle className="w-3 h-3 mr-1" />
+                                            <XCircle className="w-3 h-3" />
                                         }
                                         color="gray"
                                     />
@@ -209,14 +148,14 @@ function Badge({
     color: "green" | "yellow" | "red" | "gray";
 }) {
     const colors = {
-        green: "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-500",
-        yellow: "bg-yellow-100 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-500",
-        red: "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-500",
-        gray: "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400",
+        green: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+        yellow: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+        red: "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20",
+        gray: "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400 border-transparent",
     };
     return (
         <span
-            className={`inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium ${colors[color]}`}
+            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold border ${colors[color]}`}
         >
             {icon}
             {text}

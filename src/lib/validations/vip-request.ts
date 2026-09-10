@@ -204,6 +204,7 @@ export const vipRequestSchema = z
         fullName: z.string().max(100).optional(),
         country: z.string().max(100).optional(),
         screenshotUrl: z.string().url().max(500).optional().or(z.literal("")),
+        server: z.string().max(100).optional(),
     })
     .superRefine((data, ctx) => {
         const info = BROKER_INFO[data.broker];

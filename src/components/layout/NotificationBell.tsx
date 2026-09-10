@@ -3,12 +3,10 @@
 import { useState, useMemo } from "react";
 import {
     Bell,
-    Trophy,
-    Zap,
-    PieChart,
     Check,
     Inbox,
-    ShieldCheck,
+    Lightbulb,
+    BarChart3,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
@@ -21,61 +19,18 @@ import {
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { useNotifications } from "@/hooks/useNotifications";
+import {
+    getNotificationConfig,
+    cleanNotificationTitle,
+} from "@/lib/notifications/notification-config";
 
 type TabType = "All" | "Coach" | "Reports" | "System";
 
 const TAB_CONFIG: Record<TabType, { label: string; icon: any }> = {
     All: { label: "All", icon: Inbox },
-    Coach: { label: "Coach", icon: Zap },
-    Reports: { label: "Reports", icon: PieChart },
+    Coach: { label: "Coach", icon: Lightbulb },
+    Reports: { label: "Reports", icon: BarChart3 },
     System: { label: "System", icon: Bell },
-};
-
-function cleanNotificationTitle(text: string): string {
-    if (!text) return "";
-    return text.replace(/\p{Extended_Pictographic}\s*/gu, "").trim();
-}
-
-const getNotificationIcon = (type: string) => {
-    switch (type) {
-        case "WEEKLY_REPORT":
-        case "MONTHLY_REPORT":
-        case "REPORT_NUDGE":
-            return {
-                Icon: PieChart,
-                bg: "bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/20",
-                color: "text-emerald-600 dark:text-emerald-400",
-            };
-        case "FEATURE_UPDATE":
-        case "SYNC_STALE":
-        case "NO_TRADES_NUDGE":
-        case "COACH_NUDGE":
-            return {
-                Icon: Zap,
-                bg: "bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20",
-                color: "text-amber-600 dark:text-amber-400",
-            };
-        case "MILESTONE":
-            return {
-                Icon: Trophy,
-                bg: "bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20",
-                color: "text-amber-600 dark:text-amber-400",
-            };
-        case "VIP_APPROVED":
-            return {
-                Icon: ShieldCheck,
-                bg: "bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/20",
-                color: "text-emerald-600 dark:text-emerald-400",
-            };
-        case "SYSTEM":
-        case "ONBOARDING":
-        default:
-            return {
-                Icon: Bell,
-                bg: "bg-gray-100 dark:bg-white/5 border border-gray-200/70 dark:border-white/10",
-                color: "text-gray-600 dark:text-gray-300",
-            };
-    }
 };
 
 export function NotificationBell() {
@@ -83,61 +38,43 @@ export function NotificationBell() {
     const [activeTab, setActiveTab] = useState<TabType>("All");
     const router = useRouter();
     const { notifications, unreadCount, markAsRead, isLoading } =
-        useNotifications();
+        useNotifications(20);
 
-    // Normalize notifications on client-side to dynamically resolve their UI categories
+    // Map notifications to tabs without mutating their underlying type
     const normalizedNotifications = useMemo(() => {
         return notifications.map((n) => {
-            const milestoneTitles = [
-                "Account Connected!",
-                "First Trade Logged!",
-                "First Report Ready!",
-                "10 Trades Milestone!",
-                "First Lesson Complete!",
-                "50 Trades!",
-                "Strategy Created!",
-            ];
-
             const meta = (n.metadata as Record<string, any>) || {};
-            let normalizedType = n.type;
+            let category: TabType = "System";
 
             if (
-                n.type === "FEATURE_UPDATE" &&
-                milestoneTitles.some((title) => n.title.includes(title))
-            ) {
-                normalizedType = "MILESTONE";
-            } else if (
                 [
-                    "LICENSE_APPROVED",
-                    "LICENSE_REJECTED",
-                    "LICENSE_EXPIRED",
-                    "NEW_EA_VERSION",
-                    "ANNOUNCEMENT",
-                    "MAINTENANCE",
-                    "PROMOTION",
-                    "VIP_APPROVED",
-                    "VIP_REJECTED",
-                    "FEEDBACK_RECEIVED",
+                    "WEEKLY_REPORT",
+                    "MONTHLY_REPORT",
+                    "REPORT_NUDGE",
                 ].includes(n.type)
             ) {
-                normalizedType = "SYSTEM";
+                category = "Reports";
             } else if (
-                n.type === "FEATURE_UPDATE" &&
-                (meta.actionType === "OPEN_COACH_PLAN" ||
-                    meta.signalType ||
-                    meta.insightId ||
-                    n.title.startsWith("Coach") ||
-                    n.title.includes("Pattern") ||
-                    n.title.includes("Leak Alert") ||
-                    n.title.includes("Loss Streak") ||
-                    n.title.includes("Experiment"))
+                n.type === "COACH_NUDGE" ||
+                n.type === "SYNC_STALE" ||
+                (n.type === "FEATURE_UPDATE" &&
+                    (meta.actionType === "OPEN_COACH_PLAN" ||
+                        meta.signalType ||
+                        meta.insightId ||
+                        n.title.startsWith("Coach") ||
+                        n.title.includes("Pattern") ||
+                        n.title.includes("Leak Alert") ||
+                        n.title.includes("Loss Streak") ||
+                        n.title.includes("Experiment")))
             ) {
-                normalizedType = "COACH_NUDGE";
+                category = "Coach";
+            } else {
+                category = "System";
             }
 
             return {
                 ...n,
-                type: normalizedType,
+                category,
             };
         });
     }, [notifications]);
@@ -147,28 +84,13 @@ export function NotificationBell() {
         return {
             All: normalizedNotifications.filter((n) => !n.isRead).length,
             Coach: normalizedNotifications.filter(
-                (n) =>
-                    !n.isRead &&
-                    [
-                        "FEATURE_UPDATE",
-                        "SYNC_STALE",
-                        "NO_TRADES_NUDGE",
-                        "COACH_NUDGE",
-                    ].includes(n.type)
+                (n) => !n.isRead && n.category === "Coach"
             ).length,
             Reports: normalizedNotifications.filter(
-                (n) =>
-                    !n.isRead &&
-                    [
-                        "WEEKLY_REPORT",
-                        "MONTHLY_REPORT",
-                        "REPORT_NUDGE",
-                    ].includes(n.type)
+                (n) => !n.isRead && n.category === "Reports"
             ).length,
             System: normalizedNotifications.filter(
-                (n) =>
-                    !n.isRead &&
-                    ["SYSTEM", "ONBOARDING", "MILESTONE"].includes(n.type)
+                (n) => !n.isRead && n.category === "System"
             ).length,
         };
     }, [normalizedNotifications]);
@@ -176,22 +98,7 @@ export function NotificationBell() {
     const filteredNotifications = useMemo(() => {
         return normalizedNotifications.filter((n) => {
             if (activeTab === "All") return true;
-            if (activeTab === "Coach")
-                return [
-                    "FEATURE_UPDATE",
-                    "SYNC_STALE",
-                    "NO_TRADES_NUDGE",
-                    "COACH_NUDGE",
-                ].includes(n.type);
-            if (activeTab === "Reports")
-                return [
-                    "WEEKLY_REPORT",
-                    "MONTHLY_REPORT",
-                    "REPORT_NUDGE",
-                ].includes(n.type);
-            if (activeTab === "System")
-                return ["SYSTEM", "ONBOARDING", "MILESTONE"].includes(n.type);
-            return true;
+            return n.category === activeTab;
         });
     }, [normalizedNotifications, activeTab]);
 
@@ -283,15 +190,9 @@ export function NotificationBell() {
                 </div>
 
                 {/* Notifications List */}
-                <div className="max-h-[380px] overflow-y-auto custom-scrollbar divide-y divide-dashboard/50">
+                <div className="max-h-[252px] overflow-y-auto custom-scrollbar divide-y divide-dashboard/50">
                     {filteredNotifications.length === 0 ? (
-                        <div className="p-8 flex flex-col items-center justify-center text-center">
-                            <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-gray-100 dark:bg-white/5 border border-dashboard flex items-center justify-center">
-                                <Bell
-                                    size={22}
-                                    className="text-gray-400 dark:text-gray-500"
-                                />
-                            </div>
+                        <div className="py-12 px-6 flex flex-col items-center justify-center text-center">
                             <p className="text-sm font-bold text-gray-800 dark:text-gray-200 mb-1">
                                 {isLoading ? "Loading..." : "All caught up!"}
                             </p>
@@ -302,32 +203,57 @@ export function NotificationBell() {
                     ) : (
                         <div>
                             {filteredNotifications.map((n) => {
-                                const { Icon, bg, color } = getNotificationIcon(
-                                    n.type
-                                );
+                                const {
+                                    icon: Icon,
+                                    bg,
+                                    color,
+                                } = getNotificationConfig(n.type, n.title);
                                 return (
                                     <div
                                         key={n.id}
                                         className={cn(
-                                            "group relative flex items-start gap-3.5 px-4 py-3.5 hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors cursor-pointer",
-                                            !n.isRead && "bg-amber-500/[0.025] dark:bg-amber-500/[0.03]"
+                                            "group relative flex items-center gap-3.5 px-4 py-3.5 hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors cursor-pointer",
+                                            !n.isRead &&
+                                                "bg-amber-500/[0.025] dark:bg-amber-500/[0.03]"
                                         )}
                                         onClick={() => {
                                             if (!n.isRead) markAsRead(n.id);
                                             setIsOpen(false);
-                                            const meta = (n.metadata as Record<string, any>) || {};
+                                            const meta =
+                                                (n.metadata as Record<
+                                                    string,
+                                                    any
+                                                >) || {};
                                             if (
-                                                meta.actionType === "OPEN_COACH_PLAN" ||
+                                                meta.actionType ===
+                                                    "OPEN_COACH_PLAN" ||
                                                 n.link === "#coach-plan" ||
-                                                n.link?.includes("action=coach-plan")
+                                                n.link?.includes(
+                                                    "action=coach-plan"
+                                                )
                                             ) {
                                                 window.dispatchEvent(
-                                                    new CustomEvent("open-coach-action-plan", {
-                                                        detail: { notificationId: n.id, metadata: meta },
-                                                    })
+                                                    new CustomEvent(
+                                                        "open-coach-action-plan",
+                                                        {
+                                                            detail: {
+                                                                notificationId:
+                                                                    n.id,
+                                                                metadata: meta,
+                                                            },
+                                                        }
+                                                    )
                                                 );
-                                                if (typeof window !== "undefined" && !window.location.pathname.startsWith("/dashboard")) {
-                                                    router.push("/dashboard?action=coach-plan");
+                                                if (
+                                                    typeof window !==
+                                                        "undefined" &&
+                                                    !window.location.pathname.startsWith(
+                                                        "/dashboard"
+                                                    )
+                                                ) {
+                                                    router.push(
+                                                        "/dashboard?action=coach-plan"
+                                                    );
                                                 }
                                             } else if (n.onClick) {
                                                 n.onClick();
@@ -351,12 +277,12 @@ export function NotificationBell() {
                                         {/* Left Icon */}
                                         <div
                                             className={cn(
-                                                "w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 transition-transform group-hover:scale-105",
+                                                "w-8 h-8 rounded-xl flex items-center justify-center shrink-0 self-center transition-transform group-hover:scale-105",
                                                 bg,
                                                 color
                                             )}
                                         >
-                                            <Icon size={16} strokeWidth={2} />
+                                            <Icon size={15} strokeWidth={2} />
                                         </div>
 
                                         {/* Content */}

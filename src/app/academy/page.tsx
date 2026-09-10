@@ -12,7 +12,7 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
     title: "The Trader's Ascent | TheNextTrade Academy",
     description:
-        "11 structured levels from liquidity models to risk math and execution discipline. The zero-fluff forex curriculum built for consistent funded traders.",
+        "12 structured levels from liquidity models to risk math and execution discipline. The zero-fluff forex curriculum built for consistent funded traders.",
     openGraph: {
         title: "The Trader's Ascent - Zero to Pro",
         description: "Master market structure, liquidity mechanics, and cold risk math.",
@@ -21,32 +21,47 @@ export const metadata: Metadata = {
 };
 
 export default async function AcademyPage() {
-    const basePath = "/academy";
     const user = await getAuthUser();
     const isLoggedIn = !!user;
+    const basePath = isLoggedIn ? "/dashboard/academy" : "/academy";
 
-    const levels = await prisma.level.findMany({
-        orderBy: { order: "asc" },
-        select: {
-            id: true,
-            title: true,
-            description: true,
-            order: true,
-            accessLevel: true,
-            modules: {
-                orderBy: { order: "asc" },
-                select: {
-                    id: true,
-                    title: true,
-                    lessons: {
-                        orderBy: { order: "asc" },
-                        select: { id: true, slug: true },
+    const [levels, userProgress] = await Promise.all([
+        prisma.level.findMany({
+            orderBy: { order: "asc" },
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                order: true,
+                accessLevel: true,
+                modules: {
+                    orderBy: { order: "asc" },
+                    select: {
+                        id: true,
+                        title: true,
+                        lessons: {
+                            orderBy: { order: "asc" },
+                            select: {
+                                id: true,
+                                slug: true,
+                                title: true,
+                                duration: true,
+                            },
+                        },
+                        _count: { select: { lessons: true } },
                     },
-                    _count: { select: { lessons: true } },
                 },
             },
-        },
-    });
+        }),
+        user
+            ? prisma.userProgress.findMany({
+                  where: { userId: user.id, isCompleted: true },
+                  select: { lessonId: true },
+              })
+            : Promise.resolve([]),
+    ]);
+
+    const completedLessonIds = userProgress.map((p) => p.lessonId);
 
     const totalModules = levels.reduce((s, l) => s + l.modules.length, 0);
     const totalLessons = levels.reduce(
@@ -55,7 +70,7 @@ export default async function AcademyPage() {
     );
 
     return (
-        <div className="min-h-screen flex flex-col bg-white dark:bg-transparent text-gray-700 dark:text-white">
+        <div className="min-h-screen flex flex-col bg-[#fbfaf6] dark:bg-[#0B0E14] text-gray-700 dark:text-white">
             <JsonLd
                 type="Course"
                 data={{
@@ -80,7 +95,7 @@ export default async function AcademyPage() {
             />
 
             {/* ── Hero Section ── */}
-            <section className="relative overflow-hidden bg-[linear-gradient(180deg,#fffaf0_0%,#ffffff_70%,#f8fafc_100%)] dark:bg-none dark:bg-[#0B0E14] px-6 pt-32 pb-10 sm:pb-14">
+            <section className="relative overflow-hidden bg-[linear-gradient(180deg,#fffaf0_0%,#ffffff_60%,#fbfaf6_100%)] dark:bg-none dark:bg-[#0B0E14] px-6 pt-32 pb-10 sm:pb-14">
                 {/* ─ Hero Background Layers ─ */}
                 <div
                     className="absolute inset-0 pointer-events-none"
@@ -197,7 +212,7 @@ export default async function AcademyPage() {
                         </span>
                     </h1>
                     <p className="text-lg md:text-xl mb-6 sm:mb-10 text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed lg:whitespace-nowrap">
-                        11 levels. 30+ modules. Built on market structure, liquidity mechanics, and disciplined risk math.
+                        {levels.length} levels. {totalModules} modules. Built on market structure, liquidity mechanics, and disciplined risk math.
                     </p>
 
                     <AcademyPublicCTA isLoggedIn={isLoggedIn} />
@@ -209,11 +224,12 @@ export default async function AcademyPage() {
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-400 to-transparent dark:via-amber-500/70" />
             </div>
 
-            {/* ── Tree Map ── */}
+            {/* ── Academy Tree (Visual Map with Gamified Module Quest Modal — Full-Bleed Edge-to-Edge) ── */}
             <AcademyTree
                 levels={levels as any}
                 basePath={basePath}
-                isGuest={true}
+                isGuest={!isLoggedIn}
+                completedLessonIds={completedLessonIds}
             />
 
             <SiteFooter />

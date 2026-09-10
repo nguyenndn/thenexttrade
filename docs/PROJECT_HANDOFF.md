@@ -1,6 +1,6 @@
 # Project Handoff
 
-Last reviewed: 2026-08-18
+Last reviewed: 2026-09-10
 
 This file is the practical handoff for a new developer or AI agent. It explains what the product is, which features matter, and where to work without reading every historical plan.
 
@@ -44,6 +44,9 @@ Do not replace the global platform identity with GoldScalperNinja. Treat GoldSca
 | Supporting | Public trader card | `/trader/[username]`, `/share/[id]` | Yes | Social proof and safe sharing. |
 | Retention | Edge missions, leaderboard, check-ins | `/dashboard/missions`, `/dashboard/leaderboard` | Yes, but secondary | Good retention, but should not block first value. |
 | Admin | Reports, users, IB/VIP, AI Gateway, Email Lab | `/admin/*` | Yes | Needed for operation, support, and monitoring. |
+| Admin | Behaviour segmentation | `/admin/users/behavior` | Yes | Turns telemetry into who needs help and who is worth the most. |
+| Admin | Revenue & commission rates | `/admin/trading-systems/brokers` | Yes | Commission rates are the input to every IB revenue figure. |
+| Admin | Sync operations | `/admin/ib/sync-requests` | Yes | Covers automated sync failures and the manual fallback path. |
 | Hidden/legacy | Retired sync client (previously "TNT Connect"), legacy sync copy | legacy files/APIs only | Compatibility only | Current user-facing sync path is Trade Manager EA or Manual Journal. |
 | Removed/avoid | Prop firm/funded challenge direction | removed routes/blocks | No | Not aligned with the current product direction. |
 | Removed/avoid | EA backtest/performance simulator claims | old plans only | No | We do not have validated public backtest presentation for this flow. |

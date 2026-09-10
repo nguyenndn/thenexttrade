@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { parseEATrade } from "@/lib/ea/utils";
 import { rateLimit } from "@/lib/rate-limit";
 import { resolveSyncAuth } from "@/lib/sync-auth";
+import { isCentAccount, isCentSymbol, normalizeLotSize } from "@/lib/utils/cent-account";
 import zlib from "zlib";
 
 const limiter = rateLimit({
@@ -96,6 +97,10 @@ export async function POST(request: NextRequest) {
                     platform: true,
                     autoSync: true,
                     syncOpenTrades: true,
+                    currency: true,
+                    server: true,
+                    accountType: true,
+                    broker: true,
                 },
             });
             if (existing) account = existing;
@@ -205,8 +210,11 @@ export async function POST(request: NextRequest) {
 
             if (newTrades.length > 0) {
                 // 4. Batch insert new trades in a single createMany transaction
+                const isCent = isCentAccount(account);
                 const insertData = newTrades.map((trade) => {
                     const isClosed = trade.closeTime !== null;
+                    const isTradeCent = isCent || isCentSymbol(trade.symbol);
+                    const normalizedLot = normalizeLotSize(trade.volume, isTradeCent);
                     return {
                         userId: account.userId,
                         accountId: account.id,
@@ -219,7 +227,7 @@ export async function POST(request: NextRequest) {
                         exitPrice: isClosed ? trade.closePrice : null,
                         stopLoss: trade.stopLoss || null,
                         takeProfit: trade.takeProfit || null,
-                        lotSize: trade.volume,
+                        lotSize: normalizedLot,
                         pnl: trade.profit,
                         commission: trade.commission,
                         swap: trade.swap,

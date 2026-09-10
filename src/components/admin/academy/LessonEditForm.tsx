@@ -153,6 +153,7 @@ export function LessonEditForm({
             >
                 <Button
                     variant="outline"
+                    aria-label="Delete lesson"
                     onClick={() => setIsConfirmOpen(true)}
                     disabled={isDeleting || isSubmitting}
                     className="text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-900/50 hover:bg-red-100"
@@ -242,7 +243,8 @@ export function LessonEditForm({
                                     }
                                     rows={2}
                                     maxLength={160}
-                                    className="w-full px-3 py-2 text-sm bg-blue-50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-900/30 rounded-lg text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-400 resize-none"
+                                    aria-label="Meta Description"
+                                    className="w-full px-3 py-2 text-sm bg-blue-50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-900/30 rounded-xl text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-400 resize-none"
                                 />
                             </div>
                         )}
@@ -282,13 +284,14 @@ export function LessonEditForm({
                             <div className="flex gap-2">
                                 <button
                                     type="button"
+                                    aria-label="Set status to Draft"
                                     onClick={() =>
                                         setFormData({
                                             ...formData,
                                             status: "draft",
                                         })
                                     }
-                                    className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all border ${
+                                    className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-all border ${
                                         formData.status === "draft"
                                             ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/30 text-amber-700 dark:text-amber-400"
                                             : "border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-50 dark:hover:bg-white/5"
@@ -298,13 +301,14 @@ export function LessonEditForm({
                                 </button>
                                 <button
                                     type="button"
+                                    aria-label="Set status to Published"
                                     onClick={() =>
                                         setFormData({
                                             ...formData,
                                             status: "published",
                                         })
                                     }
-                                    className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all border ${
+                                    className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-all border ${
                                         formData.status === "published"
                                             ? "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
                                             : "border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-50 dark:hover:bg-white/5"

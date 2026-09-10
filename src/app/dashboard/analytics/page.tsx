@@ -30,6 +30,7 @@ import {
 
 import { TabBar } from "@/components/ui/TabBar";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { ANALYTICS_TABS } from "@/config/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -38,13 +39,6 @@ export const metadata: Metadata = {
     description:
         "Comprehensive execution metrics, risk-reward ratios, expectancy curves, and behavioral leak analytics.",
 };
-
-const analyticsTabs = [
-    { label: "Analytics", href: "/dashboard/analytics" },
-    { label: "Reports", href: "/dashboard/reports" },
-    { label: "Mistakes", href: "/dashboard/mistakes" },
-    { label: "Intelligence", href: "/dashboard/intelligence" },
-];
 
 export default async function AnalyticsPage({
     searchParams,
@@ -122,7 +116,7 @@ export default async function AnalyticsPage({
                 )}
             </PageHeader>
             <div id="onborda-analytics-tabs" className="mb-4">
-                <TabBar tabs={analyticsTabs} />
+                <TabBar tabs={ANALYTICS_TABS} />
             </div>
             <Suspense
                 key={JSON.stringify(resolvedParams)}

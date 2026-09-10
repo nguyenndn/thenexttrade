@@ -62,22 +62,38 @@ export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge
 
     if (proAccess.loading) return null;
 
-    const resolvedAccountId = activeAccountId || proAccess.mainAccountId;
-    const activeAccount = resolvedAccountId
-        ? proAccess.accounts.find(
-              (a) => a.tradingAccountId === resolvedAccountId
-          )
+    const realAccounts = proAccess.accounts.filter(
+        (a) => a.tradingAccountId && a.tradingAccountId !== ""
+    );
+    const validAccountFromActiveId = activeAccountId
+        ? realAccounts.find((a) => a.tradingAccountId === activeAccountId)
+        : null;
+    const validMainAccount = proAccess.mainAccountId
+        ? realAccounts.find((a) => a.tradingAccountId === proAccess.mainAccountId)
         : null;
 
-    const status = activeAccount
+    const activeAccount =
+        validAccountFromActiveId ||
+        validMainAccount ||
+        realAccounts[0] ||
+        null;
+
+    const rawStatus = activeAccount
         ? activeAccount.status
         : proAccess.status || "NONE";
-    const isPro = activeAccount ? activeAccount.isPro : proAccess.isPro;
+
+    const hasNoPartnerAccounts =
+        proAccess.activityInfo?.reason ===
+            "No trading accounts linked to supported partner brokers." ||
+        (realAccounts.length > 0 &&
+            realAccounts.every((a) => a.status === "NONE"));
+
+    const currentStatus =
+        hasNoPartnerAccounts || rawStatus === "NONE" ? "NONE" : rawStatus;
+    const isPro = currentStatus === "NONE" ? false : (activeAccount ? activeAccount.isPro : proAccess.isPro);
     const expiresAt = activeAccount
         ? activeAccount.expiresAt
         : proAccess.expiresAt;
-
-    const currentStatus = status || "NONE";
 
     // Brand-new / no-data users: hide only the "Free Plan" upgrade nudge.
     // Real Pro statuses (ACTIVE/GRACE/REVOKED/EXPIRED) always render so the user's

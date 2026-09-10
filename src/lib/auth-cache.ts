@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { AuthUser } from "@/lib/auth-types";
@@ -11,9 +12,35 @@ export const getAuthUser = cache(async (): Promise<AuthUser | null> => {
 
     if (!user) return null;
 
+    let effectiveUserId = user.id;
+    let isImpersonated = false;
+
+    try {
+        const cookieStore = await cookies();
+        const impersonatedId = cookieStore.get("impersonate_user_id")?.value;
+        if (impersonatedId && impersonatedId !== user.id) {
+            const adminCheck = await prisma.profile.findUnique({
+                where: { userId: user.id },
+                select: { role: true },
+            });
+            if (adminCheck?.role === "ADMIN") {
+                const targetExists = await prisma.user.findUnique({
+                    where: { id: impersonatedId },
+                    select: { id: true },
+                });
+                if (targetExists) {
+                    effectiveUserId = impersonatedId;
+                    isImpersonated = true;
+                }
+            }
+        }
+    } catch {
+        // Safe fallback if cookies() is inaccessible
+    }
+
     // Additional user data from Prisma (Optimized fetch)
     const userData = await prisma.user.findUnique({
-        where: { id: user.id },
+        where: { id: effectiveUserId },
         select: {
             id: true,
             name: true,
@@ -44,6 +71,8 @@ export const getAuthUser = cache(async (): Promise<AuthUser | null> => {
     // spread userData but override profile to include flattened fields
     return {
         ...userData,
+        isImpersonated,
+        originalAdminId: isImpersonated ? user.id : undefined,
         profile: userData.profile
             ? {
                   ...userData.profile,

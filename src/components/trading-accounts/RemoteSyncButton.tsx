@@ -178,10 +178,10 @@ export function RemoteSyncButton({
                     size={variant === "icon" ? "icon" : "sm"}
                     className={
                         variant === "premium"
-                            ? "flex h-8 min-w-[92px] items-center justify-center gap-1.5 rounded-lg border border-dashboard bg-white px-3.5 text-[11px] font-black text-gray-950 shadow-sm transition-all hover:bg-gray-50 hover:text-gray-950 dark:bg-white/5 dark:text-gray-100 dark:hover:bg-white/10 dark:hover:text-white"
+                            ? "flex h-8 min-w-[92px] items-center justify-center gap-1.5 rounded-xl border border-dashboard bg-white px-3.5 text-[11px] font-black text-gray-950 shadow-sm transition-all hover:bg-gray-50 hover:text-gray-950 dark:bg-white/5 dark:text-gray-100 dark:hover:bg-white/10 dark:hover:text-white"
                             : variant === "icon"
-                              ? "h-8 w-8 text-gray-600"
-                              : "gap-2"
+                              ? "h-8 w-8 text-gray-600 rounded-xl"
+                              : "gap-2 rounded-xl"
                     }
                     title={
                         !isConnected

@@ -128,3 +128,148 @@ export async function deleteEABroker(id: string) {
         return { success: false, error: "Failed to delete broker" };
     }
 }
+
+// ==========================================
+// BROKER COMMISSION RATE ACTIONS (Doc #3 Step 1 & 4)
+// ==========================================
+
+export async function getBrokerCommissionRates() {
+    try {
+        await requireAdminAuth();
+        const rates = await prisma.brokerCommissionRate.findMany({
+            include: {
+                broker: {
+                    select: { id: true, name: true, slug: true, color: true, logo: true },
+                },
+            },
+            orderBy: [{ broker: { name: "asc" } }, { symbol: "asc" }],
+        });
+        return { success: true, data: rates };
+    } catch (error) {
+        console.error("Failed to fetch commission rates:", error);
+        return { success: false, error: "Failed to fetch rates", data: [] };
+    }
+}
+
+export async function upsertBrokerCommissionRate(data: {
+    id?: string;
+    brokerId: string;
+    symbol: string;
+    commissionPerLot: number;
+    currency?: string;
+    effectiveFrom?: string | Date;
+}) {
+    try {
+        const sessionUser = await requireAdminAuth();
+        const upperSymbol = data.symbol.trim().toUpperCase();
+        const rateNum = Number(data.commissionPerLot);
+
+        if (isNaN(rateNum) || rateNum < 0) {
+            return { success: false, error: "Commission per lot must be a non-negative number" };
+        }
+        if (!data.brokerId) {
+            return { success: false, error: "Broker is required" };
+        }
+        if (!upperSymbol) {
+            return { success: false, error: "Symbol is required" };
+        }
+
+        let result;
+        if (data.id) {
+            result = await prisma.brokerCommissionRate.update({
+                where: { id: data.id },
+                data: {
+                    brokerId: data.brokerId,
+                    symbol: upperSymbol,
+                    commissionPerLot: rateNum,
+                    currency: data.currency || "USD",
+                    effectiveFrom: data.effectiveFrom ? new Date(data.effectiveFrom) : undefined,
+                },
+                include: {
+                    broker: { select: { id: true, name: true, slug: true, color: true, logo: true } },
+                },
+            });
+
+            await prisma.auditLog.create({
+                data: {
+                    adminId: sessionUser.id,
+                    action: "UPDATE_COMMISSION_RATE",
+                    targetType: "BROKER_COMMISSION_RATE",
+                    targetId: result.id,
+                    details: { brokerId: data.brokerId, symbol: upperSymbol, commissionPerLot: rateNum },
+                },
+            });
+        } else {
+            result = await prisma.brokerCommissionRate.create({
+                data: {
+                    brokerId: data.brokerId,
+                    symbol: upperSymbol,
+                    commissionPerLot: rateNum,
+                    currency: data.currency || "USD",
+                    effectiveFrom: data.effectiveFrom ? new Date(data.effectiveFrom) : new Date(),
+                },
+                include: {
+                    broker: { select: { id: true, name: true, slug: true, color: true, logo: true } },
+                },
+            });
+
+            await prisma.auditLog.create({
+                data: {
+                    adminId: sessionUser.id,
+                    action: "CREATE_COMMISSION_RATE",
+                    targetType: "BROKER_COMMISSION_RATE",
+                    targetId: result.id,
+                    details: { brokerId: data.brokerId, symbol: upperSymbol, commissionPerLot: rateNum },
+                },
+            });
+        }
+
+        revalidatePath("/admin/trading-systems/brokers");
+        revalidatePath("/admin/ib");
+        return { success: true, data: result };
+    } catch (error: any) {
+        console.error("Failed to upsert broker commission rate:", error);
+        if (error?.code === "P2002") {
+            return {
+                success: false,
+                error: "A commission rate rule for this broker and symbol already exists",
+            };
+        }
+        return { success: false, error: error?.message || "Failed to save commission rate" };
+    }
+}
+
+export async function deleteBrokerCommissionRate(id: string) {
+    try {
+        const sessionUser = await requireAdminAuth();
+        const existing = await prisma.brokerCommissionRate.findUnique({
+            where: { id },
+            include: { broker: { select: { slug: true } } },
+        });
+        if (!existing) return { success: false, error: "Rate not found" };
+
+        await prisma.brokerCommissionRate.delete({ where: { id } });
+
+        await prisma.auditLog.create({
+            data: {
+                adminId: sessionUser.id,
+                action: "DELETE_COMMISSION_RATE",
+                targetType: "BROKER_COMMISSION_RATE",
+                targetId: id,
+                details: {
+                    brokerId: existing.brokerId,
+                    brokerSlug: existing.broker?.slug,
+                    symbol: existing.symbol,
+                    commissionPerLot: existing.commissionPerLot,
+                },
+            },
+        });
+
+        revalidatePath("/admin/trading-systems/brokers");
+        revalidatePath("/admin/ib");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to delete broker commission rate:", error);
+        return { success: false, error: "Failed to delete commission rate" };
+    }
+}

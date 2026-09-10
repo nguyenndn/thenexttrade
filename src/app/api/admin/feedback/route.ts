@@ -92,3 +92,60 @@ export async function PATCH(req: Request) {
         );
     }
 }
+
+export async function DELETE(req: Request) {
+    const user = await isAdmin();
+    if (!user) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    try {
+        const body = await req.json().catch(() => ({}));
+        const { id, ids, all } = body;
+
+        if (all) {
+            const result = await prisma.feedback.deleteMany({});
+            return NextResponse.json({
+                success: true,
+                message: "All feedback requests deleted",
+                count: result.count,
+            });
+        }
+
+        if (ids && Array.isArray(ids) && ids.length > 0) {
+            const result = await prisma.feedback.deleteMany({
+                where: {
+                    id: { in: ids },
+                },
+            });
+            return NextResponse.json({
+                success: true,
+                message: `Deleted ${result.count} feedback items`,
+                count: result.count,
+            });
+        }
+
+        if (id) {
+            await prisma.feedback.delete({
+                where: { id },
+            });
+            return NextResponse.json({
+                success: true,
+                message: "Feedback deleted successfully",
+                count: 1,
+            });
+        }
+
+        return NextResponse.json(
+            { error: "Missing id, ids or all flag in request body" },
+            { status: 400 }
+        );
+    } catch (error) {
+        console.error("Failed to delete feedback:", error);
+        return NextResponse.json(
+            { error: "Failed to delete feedback" },
+            { status: 500 }
+        );
+    }
+}
+

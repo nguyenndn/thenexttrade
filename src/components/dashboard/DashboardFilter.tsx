@@ -6,7 +6,7 @@ import { DateRangePicker } from "@/components/ui/DateRangePicker";
 import { AccountSelector } from "./AccountSelector";
 import { startOfMonth, endOfMonth, format, endOfDay } from "date-fns";
 import { Button } from "@/components/ui/Button";
-import { RefreshCw, Filter } from "lucide-react";
+import { RefreshCw, Filter, X } from "lucide-react";
 import { toast } from "sonner";
 import { requestAccountSync } from "@/actions/accounts";
 import { cn } from "@/lib/utils";
@@ -221,14 +221,28 @@ export function DashboardFilter({
         setIsOpen(false);
     };
 
-    const hasActiveFilters = !!(
-        searchParams.get("direction") ||
-        searchParams.get("source") ||
-        searchParams.get("comment") ||
-        searchParams.get("magicNumber") ||
-        searchParams.get("symbol") ||
-        searchParams.get("result")
-    );
+    const activeFilterCount = [
+        searchParams.get("direction"),
+        searchParams.get("source"),
+        searchParams.get("comment"),
+        searchParams.get("magicNumber"),
+        searchParams.get("symbol"),
+        searchParams.get("result"),
+    ].filter(Boolean).length;
+
+    const hasActiveFilters = activeFilterCount > 0;
+
+    const handleOpenChange = (open: boolean) => {
+        if (open) {
+            setDirection(searchParams.get("direction") || "");
+            setSource(searchParams.get("source") || "");
+            setComment(searchParams.get("comment") || "");
+            setMagicNumber(searchParams.get("magicNumber") || "");
+            setSymbol(searchParams.get("symbol") || "");
+            setResult(searchParams.get("result") || "");
+        }
+        setIsOpen(open);
+    };
 
     return (
         <div
@@ -258,53 +272,69 @@ export function DashboardFilter({
                     />
                     <span>Sync Now</span>
                 </Button>
-                <AccountSelector
-                    currentAccountId={currentAccountId}
-                    className="flex-1 md:flex-initial min-w-[150px]"
-                />
-            </div>
 
-            {/* Date Picker & Filter Popover block */}
-            {!hideDateFilter && (
-                <div className="flex items-center gap-2 w-full md:w-auto flex-1 md:flex-initial">
-                    <DateRangePicker
-                        value={dateRange}
-                        onChange={handleDateChange}
-                        className={
-                            equalWidth ? "w-full md:flex-1" : "w-full md:w-auto"
-                        }
-                        maxDate={new Date()}
-                    />
-
-                    <Popover open={isOpen} onOpenChange={setIsOpen}>
-                        <PopoverTrigger asChild>
-                            <button
-                                className={cn(
-                                    "flex items-center justify-center w-10 h-10 border rounded-xl transition-all shadow-sm shrink-0 outline-none",
-                                    hasActiveFilters
-                                        ? "bg-amber-500 text-white border-amber-500 hover:bg-amber-600"
-                                        : "bg-white dark:bg-[#1E2028] border-gray-200 dark:border-[#382F1D] text-slate-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5"
-                                )}
-                                title="Advanced Filters"
-                            >
-                                <Filter size={16} />
-                            </button>
-                        </PopoverTrigger>
-                        <PopoverContent
-                            align="end"
-                            className="w-[300px] border border-gray-200 dark:border-[#382F1D] bg-white dark:bg-[#1C1E24] shadow-2xl rounded-2xl p-4"
+                <Popover open={isOpen} onOpenChange={handleOpenChange}>
+                    <PopoverTrigger asChild>
+                        <button
+                            className={cn(
+                                "relative flex items-center justify-center w-10 h-10 border rounded-xl transition-all shadow-sm shrink-0 outline-none select-none",
+                                hasActiveFilters
+                                    ? "bg-amber-500 text-white border-amber-500 hover:bg-amber-600 shadow-amber-500/20"
+                                    : "bg-white dark:bg-[#1E2028] border-gray-200 dark:border-[#382F1D] text-slate-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5"
+                            )}
+                            title={
+                                hasActiveFilters
+                                    ? `${activeFilterCount} active filters`
+                                    : "Advanced Filters"
+                            }
                         >
-                            <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-3">
-                                Advanced Filters
-                            </h3>
+                            <Filter size={16} />
+                            {hasActiveFilters && (
+                                <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-mono font-bold text-amber-900 bg-amber-300 rounded-full border-2 border-white dark:border-[#1E2028] shadow-sm">
+                                    {activeFilterCount}
+                                </span>
+                            )}
+                        </button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                        align="start"
+                        className="w-[330px] sm:w-[340px] border border-gray-200 dark:border-[#382F1D] bg-white dark:bg-[#1C1E24] shadow-2xl rounded-2xl p-4"
+                    >
+                        {/* Header */}
+                        <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-100 dark:border-gray-800/60">
+                            <div className="flex items-center gap-2">
+                                <h3 className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">
+                                    Advanced Filters
+                                </h3>
+                                {hasActiveFilters && (
+                                    <span className="px-2 py-0.5 text-[10px] font-mono font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 rounded-full">
+                                        {activeFilterCount} active
+                                    </span>
+                                )}
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setIsOpen(false)}
+                                aria-label="Close filters"
+                                className="w-6 h-6 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                            >
+                                <X size={15} />
+                            </button>
+                        </div>
 
-                            <div className="space-y-3">
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                handleApplyFilters();
+                            }}
+                        >
+                            <div className="space-y-3.5">
                                 {/* Direction Filter */}
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-semibold text-slate-500 dark:text-slate-400">
                                         Direction
                                     </label>
-                                    <div className="grid grid-cols-3 gap-1 bg-slate-100 dark:bg-slate-900 p-0.5 rounded-lg">
+                                    <div className="grid grid-cols-3 gap-1 bg-slate-100 dark:bg-white/5 p-1 rounded-xl">
                                         {["", "BUY", "SELL"].map((val) => (
                                             <button
                                                 key={val}
@@ -313,7 +343,7 @@ export function DashboardFilter({
                                                     setDirection(val)
                                                 }
                                                 className={cn(
-                                                    "py-1 text-xs font-bold rounded-lg transition-all outline-none",
+                                                    "py-1.5 text-xs font-bold rounded-lg transition-all outline-none select-none",
                                                     direction === val
                                                         ? "bg-white dark:bg-[#1E2028] text-amber-500 shadow-sm"
                                                         : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
@@ -330,7 +360,7 @@ export function DashboardFilter({
                                     <label className="text-xs font-semibold text-slate-500 dark:text-slate-400">
                                         Trade Outcome
                                     </label>
-                                    <div className="grid grid-cols-4 gap-1 bg-slate-100 dark:bg-slate-900 p-0.5 rounded-lg">
+                                    <div className="grid grid-cols-4 gap-1 bg-slate-100 dark:bg-white/5 p-1 rounded-xl">
                                         {[
                                             { label: "ALL", value: "" },
                                             { label: "WIN", value: "WIN" },
@@ -347,7 +377,7 @@ export function DashboardFilter({
                                                     setResult(item.value)
                                                 }
                                                 className={cn(
-                                                    "py-1 text-xs font-bold rounded-lg transition-all outline-none",
+                                                    "py-1.5 text-xs font-bold rounded-lg transition-all outline-none select-none",
                                                     result === item.value
                                                         ? "bg-white dark:bg-[#1E2028] text-amber-500 shadow-sm"
                                                         : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
@@ -359,19 +389,19 @@ export function DashboardFilter({
                                     </div>
                                 </div>
 
-                                {/* Source Filter */}
+                                {/* Trade Source Filter */}
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-semibold text-slate-500 dark:text-slate-400">
                                         Trade Source
                                     </label>
-                                    <div className="grid grid-cols-3 gap-1 bg-slate-100 dark:bg-slate-900 p-0.5 rounded-lg">
+                                    <div className="grid grid-cols-3 gap-1 bg-slate-100 dark:bg-white/5 p-1 rounded-xl">
                                         {["", "MANUAL", "AUTO"].map((val) => (
                                             <button
                                                 key={val}
                                                 type="button"
                                                 onClick={() => setSource(val)}
                                                 className={cn(
-                                                    "py-1 text-xs font-bold rounded-lg transition-all outline-none",
+                                                    "py-1.5 text-xs font-bold rounded-lg transition-all outline-none select-none",
                                                     source === val
                                                         ? "bg-white dark:bg-[#1E2028] text-amber-500 shadow-sm"
                                                         : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
@@ -391,27 +421,35 @@ export function DashboardFilter({
                                     <Input
                                         value={symbol}
                                         onChange={(e) =>
-                                            setSymbol(e.target.value)
+                                            setSymbol(
+                                                e.target.value.toUpperCase()
+                                            )
                                         }
                                         placeholder="e.g. XAUUSD"
-                                        className="h-9 rounded-lg"
+                                        className="h-9 rounded-xl font-mono uppercase text-xs"
                                     />
                                 </div>
 
                                 {/* Magic Number & Trade Comment Filter */}
-                                <div className="grid grid-cols-2 gap-3">
+                                <div className="grid grid-cols-2 gap-2.5">
                                     <div className="space-y-1.5">
                                         <label className="text-xs font-semibold text-slate-500 dark:text-slate-400">
                                             Magic Number
                                         </label>
                                         <Input
-                                            type="number"
+                                            type="text"
+                                            inputMode="numeric"
                                             value={magicNumber}
-                                            onChange={(e) =>
-                                                setMagicNumber(e.target.value)
-                                            }
+                                            onChange={(e) => {
+                                                const cleanVal =
+                                                    e.target.value.replace(
+                                                        /[^0-9]/g,
+                                                        ""
+                                                    );
+                                                setMagicNumber(cleanVal);
+                                            }}
                                             placeholder="e.g. 12345"
-                                            className="h-9 rounded-lg"
+                                            className="h-9 rounded-xl font-mono text-xs"
                                         />
                                     </div>
                                     <div className="space-y-1.5">
@@ -424,7 +462,7 @@ export function DashboardFilter({
                                                 setComment(e.target.value)
                                             }
                                             placeholder="comment..."
-                                            className="h-9 rounded-lg"
+                                            className="h-9 rounded-xl text-xs"
                                         />
                                     </div>
                                 </div>
@@ -433,23 +471,43 @@ export function DashboardFilter({
                             {/* Action Buttons */}
                             <div className="flex gap-2 mt-4 pt-3 border-t border-gray-100 dark:border-gray-800/60">
                                 <Button
+                                    type="button"
                                     onClick={handleResetFilters}
                                     variant="outline"
                                     size="sm"
-                                    className="flex-1 text-xs h-9"
+                                    className="flex-1 text-xs h-9 rounded-xl font-medium"
                                 >
                                     Reset
                                 </Button>
                                 <Button
-                                    onClick={handleApplyFilters}
+                                    type="submit"
                                     size="sm"
-                                    className="flex-1 bg-amber-500 text-white hover:bg-amber-600 text-xs h-9"
+                                    className="flex-1 bg-amber-500 text-white hover:bg-amber-600 text-xs h-9 rounded-xl font-semibold shadow-sm active:scale-95 transition-all"
                                 >
                                     Apply
                                 </Button>
                             </div>
-                        </PopoverContent>
-                    </Popover>
+                        </form>
+                    </PopoverContent>
+                </Popover>
+
+                <AccountSelector
+                    currentAccountId={currentAccountId}
+                    className="flex-1 md:flex-initial min-w-[150px]"
+                />
+            </div>
+
+            {/* Date Picker block */}
+            {!hideDateFilter && (
+                <div className="flex items-center gap-2 w-full md:w-auto flex-1 md:flex-initial">
+                    <DateRangePicker
+                        value={dateRange}
+                        onChange={handleDateChange}
+                        className={
+                            equalWidth ? "w-full md:flex-1" : "w-full md:w-auto"
+                        }
+                        maxDate={new Date()}
+                    />
                 </div>
             )}
         </div>

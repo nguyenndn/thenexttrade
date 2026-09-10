@@ -94,7 +94,7 @@ export function LessonLockedView({
                         </h3>
                         <div className="space-y-3">
                             {[
-                                "Full access to all 11 levels of the Academy",
+                                "Full access to all 12 levels of the Academy",
                                 "Edge rewards and achievement badges",
                                 "Progress tracking across all lessons",
                                 "18 professional trading tools",

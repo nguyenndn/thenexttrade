@@ -23,6 +23,8 @@ import { EmotionTrendChart } from "./EmotionTrendChart";
 import { TradingMoodHeatmap } from "./TradingMoodHeatmap";
 import { DateRangePicker } from "@/components/ui/DateRangePicker";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { TabBar } from "@/components/ui/TabBar";
+import { ANALYTICS_TABS } from "@/config/navigation";
 import { ChartEmptyState } from "@/components/ui/ChartEmptyState";
 import { EmptyStateCTAs } from "@/components/ui/EmptyStateCTAs";
 
@@ -257,6 +259,10 @@ export function PsychologyDashboard({
             >
                 <DateRangePicker value={dateRange} onChange={setDateRange} />
             </PageHeader>
+
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
+                <TabBar tabs={ANALYTICS_TABS} />
+            </div>
 
             {/* Summary Stats Row */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">

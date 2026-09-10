@@ -12,6 +12,9 @@ import {
     AlertCircle,
     ChevronDown,
     MessageSquare,
+    Trash2,
+    CheckSquare,
+    Square,
 } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
@@ -19,6 +22,7 @@ import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Button } from "@/components/ui/Button";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AnimatedStatCard } from "@/components/admin/dashboard/AnimatedStatCard";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -26,6 +30,8 @@ import {
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
+import { SPRING_SOFT } from "@/lib/animations";
 
 const fetcher = async (url: string) => {
     const res = await fetch(url);
@@ -100,6 +106,13 @@ export default function AdminFeedbackPage() {
     const [filterStatus, setFilterStatus] = useState<FilterStatus>("ALL");
     const [updatingId, setUpdatingId] = useState<string | null>(null);
 
+    // Selection & Bulk Action States
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const [deletingId, setDeletingId] = useState<string | null>(null);
+    const [isBulkConfirmOpen, setIsBulkConfirmOpen] = useState(false);
+    const [isAllConfirmOpen, setIsAllConfirmOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+
     const filtered = useMemo(() => {
         return feedbacks.filter((fb) => {
             const matchesSearch =
@@ -117,6 +130,29 @@ export default function AdminFeedbackPage() {
             return matchesSearch && matchesType && matchesStatus;
         });
     }, [feedbacks, searchQuery, filterType, filterStatus]);
+
+    const isAllSelected =
+        filtered.length > 0 && filtered.every((fb) => selectedIds.has(fb.id));
+
+    const toggleSelectAll = () => {
+        if (isAllSelected) {
+            setSelectedIds(new Set());
+        } else {
+            setSelectedIds(new Set(filtered.map((fb) => fb.id)));
+        }
+    };
+
+    const toggleSelectItem = (id: string) => {
+        setSelectedIds((prev) => {
+            const next = new Set(prev);
+            if (next.has(id)) {
+                next.delete(id);
+            } else {
+                next.add(id);
+            }
+            return next;
+        });
+    };
 
     const handleStatusChange = async (id: string, newStatus: string) => {
         setUpdatingId(id);
@@ -136,6 +172,87 @@ export default function AdminFeedbackPage() {
             toast.error("Failed to update status");
         } finally {
             setUpdatingId(null);
+        }
+    };
+
+    const handleDeleteSingle = async (id: string) => {
+        setIsDeleting(true);
+        try {
+            const res = await fetch("/api/admin/feedback", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id }),
+            });
+            const resData = await res.json();
+            if (res.ok && resData.success) {
+                toast.success("Feedback deleted successfully");
+                setSelectedIds((prev) => {
+                    const next = new Set(prev);
+                    next.delete(id);
+                    return next;
+                });
+                mutate();
+            } else {
+                toast.error(resData.error || "Failed to delete feedback");
+            }
+        } catch {
+            toast.error("Failed to delete feedback");
+        } finally {
+            setIsDeleting(false);
+            setDeletingId(null);
+        }
+    };
+
+    const handleDeleteSelected = async () => {
+        if (selectedIds.size === 0) return;
+        setIsDeleting(true);
+        try {
+            const res = await fetch("/api/admin/feedback", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ids: Array.from(selectedIds) }),
+            });
+            const resData = await res.json();
+            if (res.ok && resData.success) {
+                toast.success(
+                    `Deleted ${resData.count || selectedIds.size} feedback items`
+                );
+                setSelectedIds(new Set());
+                mutate();
+            } else {
+                toast.error(resData.error || "Failed to delete selected items");
+            }
+        } catch {
+            toast.error("Failed to delete selected items");
+        } finally {
+            setIsDeleting(false);
+            setIsBulkConfirmOpen(false);
+        }
+    };
+
+    const handleDeleteAll = async () => {
+        setIsDeleting(true);
+        try {
+            const res = await fetch("/api/admin/feedback", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ all: true }),
+            });
+            const resData = await res.json();
+            if (res.ok && resData.success) {
+                toast.success("All feedback requests deleted");
+                setSelectedIds(new Set());
+                mutate();
+            } else {
+                toast.error(
+                    resData.error || "Failed to delete feedback requests"
+                );
+            }
+        } catch {
+            toast.error("Failed to delete feedback requests");
+        } finally {
+            setIsDeleting(false);
+            setIsAllConfirmOpen(false);
         }
     };
 
@@ -180,7 +297,7 @@ export default function AdminFeedbackPage() {
                 />
             </div>
 
-            {/* Unified Toolbar: Search + Filters */}
+            {/* Unified Toolbar: Search + Filters + Actions */}
             <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col gap-4">
                 <div className="flex flex-1 gap-4 flex-col lg:flex-row justify-between w-full lg:items-center">
                     <div className="flex flex-1 gap-2 flex-col sm:flex-row w-full lg:max-w-xl">
@@ -291,7 +408,94 @@ export default function AdminFeedbackPage() {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
+
+                    {/* Delete All Button (Always available to Admin if feedbacks exist) */}
+                    {feedbacks.length > 0 && (
+                        <div className="flex items-center gap-2 shrink-0 justify-end">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setIsAllConfirmOpen(true)}
+                                disabled={isDeleting}
+                                className="text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 border-gray-200 dark:border-white/10 text-xs font-semibold gap-1.5 h-[42px] px-3.5"
+                            >
+                                <Trash2 size={14} />
+                                Delete All
+                            </Button>
+                        </div>
+                    )}
                 </div>
+
+                {/* Selection Bar & Bulk Actions */}
+                {filtered.length > 0 && (
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pt-3 border-t border-gray-100 dark:border-white/5 gap-3">
+                        <div className="flex items-center gap-3">
+                            <button
+                                type="button"
+                                onClick={toggleSelectAll}
+                                className="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:text-primary transition-colors cursor-pointer"
+                            >
+                                {isAllSelected ? (
+                                    <CheckSquare
+                                        size={18}
+                                        className="text-primary"
+                                    />
+                                ) : (
+                                    <Square
+                                        size={18}
+                                        className="text-gray-400 dark:text-gray-500"
+                                    />
+                                )}
+                                <span>
+                                    {selectedIds.size > 0
+                                        ? `${selectedIds.size} of ${filtered.length} selected`
+                                        : `Select All (${filtered.length})`}
+                                </span>
+                            </button>
+                            {selectedIds.size > 0 && (
+                                <button
+                                    type="button"
+                                    onClick={() => setSelectedIds(new Set())}
+                                    className="text-[11px] font-medium text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 underline cursor-pointer"
+                                >
+                                    Deselect all
+                                </button>
+                            )}
+                        </div>
+
+                        <AnimatePresence>
+                            {selectedIds.size > 0 && (
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    transition={SPRING_SOFT}
+                                    className="flex items-center gap-2"
+                                >
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() =>
+                                            setIsBulkConfirmOpen(true)
+                                        }
+                                        disabled={isDeleting}
+                                        className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 border-red-200 dark:border-red-500/20 text-xs font-bold gap-1.5 h-8"
+                                    >
+                                        {isDeleting ? (
+                                            <Loader2
+                                                size={14}
+                                                className="animate-spin"
+                                            />
+                                        ) : (
+                                            <Trash2 size={14} />
+                                        )}
+                                        Delete Selected ({selectedIds.size})
+                                    </Button>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                )}
             </div>
 
             {/* Loading */}
@@ -340,76 +544,103 @@ export default function AdminFeedbackPage() {
                             statusOptions.find((s) => s.value === fb.status) ||
                             statusOptions[0];
                         const StatusIcon = currentStatus.icon;
+                        const isSelected = selectedIds.has(fb.id);
 
                         return (
                             <div
                                 key={fb.id}
                                 className={cn(
-                                    "bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm",
+                                    "bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm transition-all",
                                     "border-l-4",
                                     isBug
                                         ? "border-l-red-500"
-                                        : "border-l-amber-500"
+                                        : "border-l-amber-500",
+                                    isSelected &&
+                                        "ring-1 ring-primary/40 bg-primary/[0.02]"
                                 )}
                             >
                                 <div className="flex items-start justify-between gap-4">
-                                    <div className="flex-1 min-w-0">
-                                        {/* Type + User */}
-                                        <div className="flex items-center gap-2.5 mb-2">
-                                            <div
-                                                className={cn(
-                                                    "p-1.5 rounded-lg",
-                                                    isBug
-                                                        ? "bg-red-500/10 text-red-500"
-                                                        : "bg-amber-500/10 text-amber-500"
-                                                )}
-                                            >
-                                                {isBug ? (
-                                                    <Bug size={16} />
-                                                ) : (
-                                                    <Lightbulb size={16} />
-                                                )}
-                                            </div>
-                                            <span className="text-xs font-bold uppercase tracking-wider text-gray-600">
-                                                {isBug
-                                                    ? "Bug Report"
-                                                    : "Feature Request"}
-                                            </span>
-                                            <span className="text-[11px] text-gray-500">
-                                                ·
-                                            </span>
-                                            <div className="flex items-center gap-1.5">
-                                                {fb.user.image && (
-                                                    <img
-                                                        src={fb.user.image}
-                                                        alt=""
-                                                        className="w-4 h-4 rounded-full"
-                                                    />
-                                                )}
-                                                <span className="text-xs text-gray-600 font-medium truncate">
-                                                    {fb.user.name ||
-                                                        fb.user.email ||
-                                                        "Unknown"}
+                                    <div className="flex items-start gap-3 flex-1 min-w-0">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                toggleSelectItem(fb.id)
+                                            }
+                                            className="mt-0.5 text-gray-400 hover:text-primary transition-colors cursor-pointer shrink-0"
+                                            aria-label={
+                                                isSelected
+                                                    ? "Deselect item"
+                                                    : "Select item"
+                                            }
+                                        >
+                                            {isSelected ? (
+                                                <CheckSquare
+                                                    size={18}
+                                                    className="text-primary"
+                                                />
+                                            ) : (
+                                                <Square size={18} />
+                                            )}
+                                        </button>
+
+                                        <div className="flex-1 min-w-0">
+                                            {/* Type + User */}
+                                            <div className="flex items-center gap-2.5 mb-2">
+                                                <div
+                                                    className={cn(
+                                                        "p-1.5 rounded-lg",
+                                                        isBug
+                                                            ? "bg-red-500/10 text-red-500"
+                                                            : "bg-amber-500/10 text-amber-500"
+                                                    )}
+                                                >
+                                                    {isBug ? (
+                                                        <Bug size={16} />
+                                                    ) : (
+                                                        <Lightbulb size={16} />
+                                                    )}
+                                                </div>
+                                                <span className="text-xs font-bold uppercase tracking-wider text-gray-600">
+                                                    {isBug
+                                                        ? "Bug Report"
+                                                        : "Feature Request"}
                                                 </span>
+                                                <span className="text-[11px] text-gray-500">
+                                                    ·
+                                                </span>
+                                                <div className="flex items-center gap-1.5">
+                                                    {fb.user.image && (
+                                                        <img
+                                                            src={fb.user.image}
+                                                            alt=""
+                                                            className="w-4 h-4 rounded-full"
+                                                        />
+                                                    )}
+                                                    <span className="text-xs text-gray-600 font-medium truncate">
+                                                        {fb.user.name ||
+                                                            fb.user.email ||
+                                                            "Unknown"}
+                                                    </span>
+                                                </div>
                                             </div>
+
+                                            {/* Message */}
+                                            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                                                {fb.message}
+                                            </p>
+
+                                            {/* Time */}
+                                            <p className="text-[11px] text-gray-500 mt-2">
+                                                {formatDistanceToNow(
+                                                    new Date(fb.createdAt)
+                                                )}{" "}
+                                                ago
+                                            </p>
                                         </div>
-
-                                        {/* Message */}
-                                        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                                            {fb.message}
-                                        </p>
-
-                                        {/* Time */}
-                                        <p className="text-[11px] text-gray-500 mt-2">
-                                            {formatDistanceToNow(
-                                                new Date(fb.createdAt)
-                                            )}{" "}
-                                            ago
-                                        </p>
                                     </div>
 
-                                    {/* Status Dropdown */}
-                                    <div className="shrink-0">
+                                    {/* Status Dropdown & Delete Action */}
+                                    <div className="shrink-0 flex items-center gap-2">
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button
@@ -446,6 +677,18 @@ export default function AdminFeedbackPage() {
                                                 ))}
                                             </DropdownMenuContent>
                                         </DropdownMenu>
+
+                                        <Button
+                                            variant="outline"
+                                            size="icon"
+                                            onClick={() => setDeletingId(fb.id)}
+                                            disabled={isDeleting}
+                                            className="w-8 h-8 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 border-gray-200 dark:border-white/10 rounded-lg transition-colors"
+                                            aria-label="Delete feedback"
+                                            title="Delete feedback"
+                                        >
+                                            <Trash2 size={13} />
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
@@ -453,6 +696,47 @@ export default function AdminFeedbackPage() {
                     })}
                 </div>
             )}
+
+            {/* Confirm Dialog: Single Delete */}
+            <ConfirmDialog
+                isOpen={!!deletingId}
+                title="Delete Feedback"
+                description="Are you sure you want to delete this feedback item? This action cannot be undone."
+                confirmText="Delete"
+                cancelText="Cancel"
+                variant="danger"
+                isLoading={isDeleting}
+                onConfirm={() => {
+                    if (deletingId) handleDeleteSingle(deletingId);
+                }}
+                onCancel={() => setDeletingId(null)}
+            />
+
+            {/* Confirm Dialog: Selected Bulk Delete */}
+            <ConfirmDialog
+                isOpen={isBulkConfirmOpen}
+                title="Delete Selected Feedback"
+                description={`Are you sure you want to delete ${selectedIds.size} selected feedback item${selectedIds.size > 1 ? "s" : ""}? This action cannot be undone.`}
+                confirmText={`Delete (${selectedIds.size})`}
+                cancelText="Cancel"
+                variant="danger"
+                isLoading={isDeleting}
+                onConfirm={handleDeleteSelected}
+                onCancel={() => setIsBulkConfirmOpen(false)}
+            />
+
+            {/* Confirm Dialog: Delete All */}
+            <ConfirmDialog
+                isOpen={isAllConfirmOpen}
+                title="Delete All Feedback"
+                description={`Are you sure you want to permanently delete all ${feedbacks.length} feedback requests? This action cannot be undone.`}
+                confirmText="Delete All"
+                cancelText="Cancel"
+                variant="danger"
+                isLoading={isDeleting}
+                onConfirm={handleDeleteAll}
+                onCancel={() => setIsAllConfirmOpen(false)}
+            />
         </div>
     );
 }

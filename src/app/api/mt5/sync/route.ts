@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { generateTradeHash } from "@/lib/importers";
 import { resolveSyncAuth } from "@/lib/sync-auth";
 import { rateLimit } from "@/lib/rate-limit";
+import { isCentAccount, isCentSymbol, normalizeLotSize } from "@/lib/utils/cent-account";
 
 // Allow EA to access without browser cookies.
 // Auth: X-Sync-Key / X-API-Key header must authenticate the account owner.
@@ -174,6 +175,10 @@ export async function POST(request: NextRequest) {
                     updatedCount++;
                 } else {
                     try {
+                        const isCent = isCentAccount(account);
+                        const isTradeCent = isCent || isCentSymbol(trade.symbol);
+                        const normalizedLot = normalizeLotSize(trade.lots, isTradeCent);
+
                         await prisma.journalEntry.create({
                             data: {
                                 userId,
@@ -186,7 +191,7 @@ export async function POST(request: NextRequest) {
                                 entryPrice: trade.openPrice,
                                 exitDate: isClosed ? exitDate : null,
                                 exitPrice: trade.closePrice,
-                                lotSize: trade.lots,
+                                lotSize: normalizedLot,
                                 pnl,
                                 commission: trade.commission || 0,
                                 swap: trade.swap || 0,

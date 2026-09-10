@@ -51,7 +51,7 @@ export function TradingSessionsCard({ data }: TradingSessionsCardProps) {
     const totalTrades = data.reduce((sum, s) => sum + s.trades, 0);
 
     return (
-        <div className="flex flex-col h-full w-full border-t-4 border-t-amber-500 overflow-hidden">
+        <div className="flex flex-col h-full w-full overflow-hidden">
             {/* Header */}
             <div className="px-5 pt-5 pb-3">
                 <div className="flex items-center gap-3 mb-1">

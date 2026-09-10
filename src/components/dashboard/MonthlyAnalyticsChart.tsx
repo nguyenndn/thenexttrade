@@ -91,7 +91,7 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
 
     if (!data || data.length === 0) {
         return (
-            <div className="flex flex-col w-full h-full border-t-4 border-t-blue-500 overflow-hidden items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300">
+            <div className="flex flex-col w-full h-full overflow-hidden items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300">
                 No data available
             </div>
         );
@@ -120,7 +120,7 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
     };
 
     return (
-        <div className="flex flex-col h-full w-full border-t-4 border-t-blue-500 overflow-hidden p-4">
+        <div className="flex flex-col h-full w-full overflow-hidden p-4">
             <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-2 scrollbar-hide shrink-0">
                 {years.map((year) => (
                     <Button
@@ -224,6 +224,9 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
                             dataKey="value"
                             radius={[6, 6, 0, 0]}
                             maxBarSize={36}
+                            isAnimationActive={true}
+                            animationDuration={400}
+                            animationEasing="ease-out"
                         >
                             {chartData.map((entry: any, index: number) => (
                                 <Cell

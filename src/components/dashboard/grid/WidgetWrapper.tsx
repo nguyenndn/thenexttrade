@@ -21,10 +21,10 @@ export function WidgetWrapper({
     return (
         <div
             className={cn(
-                "w-full h-full relative group rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden flex flex-col",
+                "w-full h-full relative group rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/[0.08] shadow-sm overflow-hidden flex flex-col",
                 isEditable
                     ? "ring-1 ring-amber-500/30 border-amber-500/50 dark:border-amber-400/50 shadow-md shadow-amber-500/5"
-                    : "transition-all duration-200"
+                    : "transition-[transform,box-shadow,border-color] duration-200 ease-out hover:border-gray-300 dark:hover:border-white/15"
             )}
         >
             {/* Edit Mode Overlay */}

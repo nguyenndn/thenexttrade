@@ -18,6 +18,8 @@ export type SignalType =
     | "WEAK_SYMBOL"
     | "WEAK_SESSION"
     | "RECURRING_MISTAKE"
+    // Streaks / Patterns
+    | "WIN_STREAK"
     // Edge Cases
     | "INSUFFICIENT_DATA";
 

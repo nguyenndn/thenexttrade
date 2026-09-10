@@ -115,7 +115,7 @@ export function PlCalendarHeatmap({
     const dayLabels = ["S", "M", "T", "W", "T", "F", "S"];
 
     return (
-        <div className="flex flex-col h-full justify-between border-t-4 border-t-teal-500 overflow-x-auto scrollbar-hide p-4 pb-2">
+        <div className="flex flex-col h-full justify-between overflow-x-auto scrollbar-hide p-4 pb-2">
             <div className="flex gap-1.5 w-full min-w-[320px]">
                 {/* Day of Week Headers */}
                 <div className="flex flex-col gap-1 pr-2 justify-between text-[10px] font-bold text-gray-400 dark:text-gray-600 pt-5 h-[132px]">

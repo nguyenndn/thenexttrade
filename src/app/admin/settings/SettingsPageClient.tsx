@@ -77,7 +77,7 @@ export default function SettingsPageClient({
                                 <TabsTrigger
                                     key={tab.key}
                                     value={tab.key}
-                                    className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+                                    className="px-4 py-1.5 rounded-xl text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
                                     activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
                                     activeTextClassName="!text-white"
                                 >
@@ -211,7 +211,7 @@ function ProfileSettings({ user }: { user: any }) {
             {/* ── Personal Info Card ── */}
             <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
                 <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10 flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+                    <div className="w-7 h-7 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
                         <User size={14} className="text-primary" />
                     </div>
                     <h2 className="text-sm font-semibold text-gray-700 dark:text-white">
@@ -240,7 +240,7 @@ function ProfileSettings({ user }: { user: any }) {
                         isLoading={isPending}
                         type="submit"
                     >
-                        <Save size={16} className="mr-2" /> Save Changes
+                        <Save size={16} /> Save Changes
                     </Button>
                 </div>
             </div>
@@ -255,7 +255,7 @@ function SecuritySettings() {
     return (
         <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10 flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+                <div className="w-7 h-7 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
                     <Lock size={14} className="text-primary" />
                 </div>
                 <h2 className="text-sm font-semibold text-gray-700 dark:text-white">
@@ -320,7 +320,7 @@ const SectionCard = ({
         className={`bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden flex flex-col ${className || ""}`}
     >
         <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10 flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
                 <Icon size={14} className="text-primary" />
             </div>
             <h2 className="text-sm font-semibold text-gray-700 dark:text-white">
@@ -426,9 +426,9 @@ function SystemSettings({
                                     systemAnnouncement: e.target.value,
                                 }))
                             }
-                            placeholder="e.g. Scheduled maintenance tonight at 22:00 UTC"
+                            aria-label="System announcement text"
                             rows={2}
-                            className="w-full px-4 py-3 text-sm bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40 text-gray-700 dark:text-white placeholder-gray-400 resize-none"
+                            className="w-full px-4 py-3 text-sm bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40 text-gray-700 dark:text-white resize-none"
                         />
                     </div>
                 </SectionCard>
@@ -564,7 +564,7 @@ function SystemSettings({
                     isLoading={isPending}
                     onClick={handleSave}
                 >
-                    <Save size={16} className="mr-2" /> Save Configuration
+                    <Save size={16} /> Save Configuration
                 </Button>
             </div>
         </div>

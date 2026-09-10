@@ -16,7 +16,10 @@ import {
     getAccountProAccess,
     getUserProAccess,
     isCentAccount,
+    isCentSymbol,
+    normalizeLotSize,
     normalizeUsdBalance,
+    CENT_LOT_DIVISOR,
     countTradingDaysBetween,
     subtractTradingDays,
 } from "@/lib/pro-access";
@@ -522,5 +525,125 @@ describe("Trading Days Calculation (skipping Saturday & Sunday)", () => {
         }
     });
 });
+
+describe("Cent Account Detection & Lot Size Normalization (100 Cent Lots = 1 Standard Lot)", () => {
+    it("identifies cent accounts correctly via currency, server, or accountType", () => {
+        expect(isCentAccount("USC", "Exness-Real")).toBe(true);
+        expect(isCentAccount("CENT", "Exness-Real")).toBe(true);
+        expect(isCentAccount("EU_CENT", "Exness-Real")).toBe(true);
+        expect(isCentAccount("USD", "Exness-Cent2")).toBe(true);
+        expect(isCentAccount("USD", "RoboForex-ProCent-4")).toBe(true);
+        expect(isCentAccount("USD", "Exness-Real", "CENT")).toBe(true);
+
+        // Standard accounts
+        expect(isCentAccount("USD", "Vantage-Live")).toBe(false);
+        expect(isCentAccount("EUR", "Exness-Real10")).toBe(false);
+        expect(isCentAccount(null, null)).toBe(false);
+    });
+
+    it("identifies cent symbol suffixes correctly", () => {
+        expect(isCentSymbol("XAUUSDc")).toBe(true);
+        expect(isCentSymbol("EURUSDc")).toBe(true);
+        expect(isCentSymbol("GBPUSD.c")).toBe(true);
+        expect(isCentSymbol("USDJPY_c")).toBe(true);
+
+        expect(isCentSymbol("XAUUSD")).toBe(false);
+        expect(isCentSymbol("BTCUSD")).toBe(false);
+        expect(isCentSymbol("USDC")).toBe(false);
+        expect(isCentSymbol(null)).toBe(false);
+    });
+
+    it("normalizes cent lot sizes by factor of 100 (CENT_LOT_DIVISOR)", () => {
+        expect(CENT_LOT_DIVISOR).toBe(100);
+
+        // Cent account: 100 cent lots = 1 standard lot
+        expect(normalizeLotSize(100, true)).toBe(1.0);
+        expect(normalizeLotSize(1063.65, true)).toBeCloseTo(10.6365, 4);
+        expect(normalizeLotSize(58.4, true)).toBeCloseTo(0.584, 3);
+        expect(normalizeLotSize(0.01, true)).toBe(0.0001);
+
+        // Standard account: lot size untouched
+        expect(normalizeLotSize(1.5, false)).toBe(1.5);
+        expect(normalizeLotSize(100, false)).toBe(100);
+        expect(normalizeLotSize(0, true)).toBe(0);
+    });
+
+    it("normalizes cent volume in getAccountProAccess for VIP qualification", async () => {
+        // Mock Cent account with $500 balance (50,000 cents normalized to $500)
+        (prisma.tradingAccount.findFirst as any).mockResolvedValue({
+            id: "acc-cent-1",
+            broker: "EXNESS",
+            currency: "USC",
+            server: "Exness-Cent",
+            accountType: "CENT",
+            balance: 50000,
+            fundingVerifiedAt: new Date(),
+            fundingAmount: 50000,
+            fundingLastVerifiedAt: new Date(),
+            fundingGraceUntil: null,
+        });
+
+        (prisma.proEntitlement.findUnique as any).mockResolvedValue({
+            id: "ent-cent-1",
+            status: "ACTIVE",
+            source: "IB_VERIFIED",
+            expiresAt: null,
+        });
+
+        // 100 raw Cent lots traded in 30 days -> should normalize to 1.0 standard lot
+        (prisma.journalEntry.aggregate as any).mockResolvedValue({
+            _sum: { lotSize: 100 },
+        });
+
+        (prisma.journalEntry.findFirst as any).mockResolvedValue({
+            openTime: new Date(),
+        });
+
+        const result = await getAccountProAccess("user-cent-1", "acc-cent-1");
+
+        // 1.0 standard lot is below MIN_30D_LOTS (2.0) -> policyState should be PAUSED!
+        expect(result.activityInfo?.rolling30dLots).toBe(1.0);
+        expect(result.policyState).toBe("PAUSED");
+        expect(result.isPro).toBe(false);
+    });
+
+    it("passes VIP volume qualification when cent volume reaches 200 Cent lots (2.0 Standard lots)", async () => {
+        (prisma.tradingAccount.findFirst as any).mockResolvedValue({
+            id: "acc-cent-2",
+            broker: "EXNESS",
+            currency: "USC",
+            server: "Exness-Cent",
+            accountType: "CENT",
+            balance: 50000,
+            fundingVerifiedAt: new Date(),
+            fundingAmount: 50000,
+            fundingLastVerifiedAt: new Date(),
+            fundingGraceUntil: null,
+        });
+
+        (prisma.proEntitlement.findUnique as any).mockResolvedValue({
+            id: "ent-cent-2",
+            status: "ACTIVE",
+            source: "IB_VERIFIED",
+            expiresAt: null,
+        });
+
+        // 250 raw Cent lots traded -> normalizes to 2.5 standard lots (>= 2.0 MIN_30D_LOTS)
+        (prisma.journalEntry.aggregate as any).mockResolvedValue({
+            _sum: { lotSize: 250 },
+        });
+
+        (prisma.journalEntry.findFirst as any).mockResolvedValue({
+            openTime: new Date(),
+        });
+
+        const result = await getAccountProAccess("user-cent-2", "acc-cent-2");
+
+        expect(result.activityInfo?.rolling30dLots).toBe(2.5);
+        expect(result.policyState).toBe("ACTIVE");
+        expect(result.isPro).toBe(true);
+    });
+});
+
 
 

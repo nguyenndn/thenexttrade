@@ -113,6 +113,7 @@ export interface ExpandedTraderAccount {
     isFresh: boolean;
     isDuplicate: boolean;
     totalTrades: number;
+    ibAttribution?: "CONFIRMED" | "NOT_OURS" | "UNKNOWN" | string | null;
 }
 
 export interface IbTraderRow {

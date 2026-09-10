@@ -12,8 +12,8 @@ import { Quote } from "lucide-react";
 // Motivational quotes for new users who haven't started trading yet
 const newUserQuotes = [
     {
-        text: "Every expert was once a beginner. Your journey starts now.",
-        author: "Helen Hayes",
+        text: "Capital preservation precedes capital growth. Protect your downside first.",
+        author: "Paul Tudor Jones",
     },
     {
         text: "The secret of getting ahead is getting started.",
@@ -113,13 +113,13 @@ export function GreetingHeader({
             className="flex flex-col 2xl:flex-row 2xl:items-center justify-between gap-6"
         >
             <div
-                className={`transition-opacity duration-500 ${mounted ? "opacity-100" : "opacity-0"}`}
+                className={`transition-all duration-500 ease-out ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
             >
                 <div className="flex items-center gap-2 mb-1.5">
                     {greeting.icon}
                     <h1 className="text-xl font-black text-gray-700 dark:text-white tracking-tight">
                         {greeting.text},{" "}
-                        <span className="text-primary uppercase">
+                        <span className="text-amber-500 dark:text-amber-400 uppercase">
                             {userName}
                         </span>
                     </h1>
@@ -130,7 +130,7 @@ export function GreetingHeader({
                             <Quote
                                 size={14}
                                 fill="currentColor"
-                                className="text-primary/30 shrink-0 mt-0.5"
+                                className="text-amber-500/40 dark:text-amber-400/40 shrink-0 mt-0.5"
                             />
                             <p className="text-gray-600 dark:text-gray-300 text-sm font-medium italic leading-relaxed">
                                 {quote.text}

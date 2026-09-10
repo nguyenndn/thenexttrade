@@ -12,10 +12,17 @@ import {
     Clock3,
     Cable,
     Activity,
+    ArrowRight,
+    ArrowUpRight,
+    Users,
+    LifeBuoy,
 } from "lucide-react";
 import { SyncHealthCenter } from "./SyncHealthCenter";
-import { AccountCard } from "./AccountCard";
+import { AccountTable } from "./AccountTable";
 import { AddAccountModal } from "./AddAccountModal";
+import { SyncSupportDrawer } from "./SyncSupportDrawer";
+import { getUserSupportSyncTickets } from "@/actions/support-sync";
+import { cn } from "@/lib/utils";
 import { AccountSettingsModal } from "./AccountSettingsModal";
 import { RegenerateKeyModal } from "./RegenerateKeyModal";
 import { DeleteAccountModal } from "./DeleteAccountModal";
@@ -37,6 +44,7 @@ import { useProAccess } from "@/components/pro/ProProvider";
 import { toast } from "sonner";
 import { trackEvent } from "@/lib/track";
 import { isSyncHealthCenterEnabled } from "@/lib/feature-flags";
+import { getCloudSyncStatus, cancelCloudSyncJob } from "@/actions/cloud-sync";
 
 interface TradingAccount {
     id: string;
@@ -72,6 +80,8 @@ interface TradingAccount {
     maxDailyTrades?: number | null;
     maxRiskPercent?: number | null;
     cooldownAfterLosses?: number | null;
+    hasCredentials?: boolean;
+    latestJob?: any | null;
 }
 
 interface Meta {
@@ -121,13 +131,18 @@ export function AccountListClient({
         initialMainId ?? null
     );
 
+    const MAX_FREE_ACCOUNTS = 3;
+    const isPro = proAccess.isPro;
+    const isFreeLimitReached =
+        !isPro && initialAccounts.length >= MAX_FREE_ACCOUNTS;
+
     type ModalState =
         | { type: "NONE" }
         | {
-              type: "ADD";
-              initialMode?: "chooser" | "free" | "pro" | "upgrade-pro";
-              sourceAccount?: TradingAccount;
-          }
+            type: "ADD";
+            initialMode?: "chooser" | "free" | "pro" | "upgrade-pro";
+            sourceAccount?: TradingAccount;
+        }
         | { type: "SETTINGS"; account: TradingAccount }
         | { type: "REGEN"; accountId: string }
         | { type: "DELETE"; accountId: string }
@@ -143,6 +158,168 @@ export function AccountListClient({
         SyncMethod | undefined
     >(preferredSyncMethod);
     const [wasInSyncSetup, setWasInSyncSetup] = useState(false);
+
+    // Support Sync Drawer state
+    const [supportDrawerOpen, setSupportDrawerOpen] = useState(false);
+    const [supportDrawerAccountId, setSupportDrawerAccountId] = useState<string | null>(null);
+    const [supportDrawerTab, setSupportDrawerTab] = useState<"list" | "create">("list");
+    const [userTickets, setUserTickets] = useState<any[]>([]);
+
+    const loadUserTickets = async () => {
+        try {
+            const tickets = await getUserSupportSyncTickets();
+            setUserTickets(tickets || []);
+        } catch {
+            // Ignore error
+        }
+    };
+
+    useEffect(() => {
+        loadUserTickets();
+    }, []);
+
+    const pendingSupportCount = userTickets.filter((t) => t.status === "PENDING").length;
+
+    // Track accounts actively syncing in background: accountId -> { jobId?: string; startedAt: number }
+    const [activeSyncingAccounts, setActiveSyncingAccounts] = useState<
+        Record<string, { jobId?: string; startedAt: number }>
+    >(() => {
+        const initial: Record<string, { jobId?: string; startedAt: number }> = {};
+        for (const acc of initialAccounts) {
+            if (
+                acc.latestJob &&
+                (acc.latestJob.status === "PENDING" ||
+                    acc.latestJob.status === "PROCESSING")
+            ) {
+                const created = new Date(acc.latestJob.createdAt).getTime();
+                const maxAge = acc.latestJob.status === "PENDING" ? 60000 : 120000;
+                if (Date.now() - created < maxAge) {
+                    initial[acc.id] = {
+                        jobId: acc.latestJob.id,
+                        startedAt: created,
+                    };
+                }
+            }
+        }
+        return initial;
+    });
+
+    const handleSyncStarted = (accountId: string, jobId?: string) => {
+        setActiveSyncingAccounts((prev) => ({
+            ...prev,
+            [accountId]: { jobId, startedAt: Date.now() },
+        }));
+    };
+
+    // Polling active background sync jobs every 3 seconds
+    useEffect(() => {
+        const accountIds = Object.keys(activeSyncingAccounts);
+        if (accountIds.length === 0) return;
+
+        const interval = setInterval(async () => {
+            for (const accountId of accountIds) {
+                const syncInfo = activeSyncingAccounts[accountId];
+                if (!syncInfo) continue;
+
+                const targetAccount = initialAccounts.find(
+                    (a) => a.id === accountId
+                );
+                const accLabel = targetAccount?.accountNumber
+                    ? `#${targetAccount.accountNumber}`
+                    : targetAccount?.name || "Account";
+
+                // Hard safety net: 90 seconds timeout
+                if (Date.now() - syncInfo.startedAt > 90000) {
+                    toast.error(`Cloud Sync Timed Out: ${accLabel}`, {
+                        description:
+                            "The cloud worker did not complete the sync in time. Please verify credentials or request Sync Support.",
+                        action: {
+                            label: "Sync Support",
+                            onClick: () => {
+                                setSupportDrawerAccountId(accountId);
+                                setSupportDrawerTab("create");
+                                setSupportDrawerOpen(true);
+                            },
+                        },
+                        duration: 8000,
+                    });
+
+                    // Proactively mark job failed in background
+                    cancelCloudSyncJob(accountId, "Cloud sync timed out after 90s with no worker response.").catch(() => { });
+
+                    setActiveSyncingAccounts((prev) => {
+                        const next = { ...prev };
+                        delete next[accountId];
+                        return next;
+                    });
+
+                    startTransition(() => {
+                        router.refresh();
+                    });
+                    continue;
+                }
+
+                try {
+                    const res = await getCloudSyncStatus(accountId);
+                    if (!res.success || !res.latestJob) continue;
+
+                    if (res.latestJob.status === "COMPLETED") {
+                        toast.success(
+                            `Cloud Sync Completed: ${accLabel} synced successfully!`,
+                            {
+                                description:
+                                    res.latestJob.message ||
+                                    `Imported ${res.latestJob.dealsReceived || 0} deals.`,
+                            }
+                        );
+                        setActiveSyncingAccounts((prev) => {
+                            const next = { ...prev };
+                            delete next[accountId];
+                            return next;
+                        });
+                        startTransition(() => {
+                            router.refresh();
+                        });
+                    } else if (res.latestJob.status === "FAILED") {
+                        const isTimeout = res.latestJob.errorCode === "JOB_TIMEOUT";
+                        toast.error(
+                            isTimeout
+                                ? `Cloud Sync Timed Out: ${accLabel}`
+                                : `Cloud Sync Failed: ${accLabel}`,
+                            {
+                                description:
+                                    res.latestJob.errorMessage ||
+                                    res.latestJob.message ||
+                                    "Failed to sync trade history.",
+                                action: {
+                                    label: "Sync Support",
+                                    onClick: () => {
+                                        setSupportDrawerAccountId(accountId);
+                                        setSupportDrawerTab("create");
+                                        setSupportDrawerOpen(true);
+                                    },
+                                },
+                                duration: 8000,
+                            }
+                        );
+                        setActiveSyncingAccounts((prev) => {
+                            const next = { ...prev };
+                            delete next[accountId];
+                            return next;
+                        });
+                        startTransition(() => {
+                            router.refresh();
+                        });
+                    }
+                } catch {
+                    // Network error during poll, retry next interval
+                }
+            }
+        }, 3000);
+
+        return () => clearInterval(interval);
+    }, [activeSyncingAccounts, initialAccounts, router]);
+
     // Consumes each query-param trigger exactly once. history.replaceState does
     // NOT refresh useSearchParams in the App Router, so without this guard the
     // stale ?setup=sync/?action=add param would re-fire this effect on every
@@ -212,6 +389,19 @@ export function AccountListClient({
 
         if ((isAddAction || isProIntent) && activeModal.type === "NONE") {
             handledParamsRef.current = paramsKey;
+            if (isAddAction && !isProIntent && isFreeLimitReached) {
+                toast.info(
+                    "Free tier is limited to 3 connected accounts. Upgrade to Partner Pro for unlimited accounts."
+                );
+                setActiveModal({ type: "FREE_VS_PRO" });
+                const newParams = new URLSearchParams(searchParams.toString());
+                newParams.delete("action");
+                const newUrl = newParams.toString()
+                    ? `?${newParams.toString()}`
+                    : window.location.pathname;
+                router.replace(newUrl, { scroll: false });
+                return;
+            }
             const sourceAccountId = searchParams.get("sourceAccountId");
             let initialMode: "chooser" | "pro" | "upgrade-pro" = isProIntent
                 ? "pro"
@@ -262,14 +452,7 @@ export function AccountListClient({
         (sum, acc) => sum + (acc.balance || 0),
         0
     );
-    const totalEquity = initialAccounts.reduce(
-        (sum, acc) => sum + (acc.equity || 0),
-        0
-    );
     const totalConnected = initialAccounts.length;
-    const activeSyncs = initialAccounts.filter(
-        (acc) => acc.isConnected && acc.status === "ACTIVE"
-    ).length;
 
     const formatCurrency = (val: number | null | undefined) => {
         if (val === null || val === undefined) return "$0.00";
@@ -286,7 +469,7 @@ export function AccountListClient({
             {/* Page Header */}
             <PageHeader
                 title="Account Hub"
-                description="Connect and manage MT5 accounts, sync trades, and unlock Pro benefits."
+                description="Connect and manage MT5 accounts."
             >
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto mt-4 sm:mt-0">
                     <Button
@@ -341,10 +524,40 @@ export function AccountListClient({
                         Free vs Pro
                     </Button>
                     <Button
+                        variant="outline"
+                        size="smd"
+                        onClick={() => {
+                            setSupportDrawerAccountId(null);
+                            setSupportDrawerTab(userTickets.length > 0 ? "list" : "create");
+                            setSupportDrawerOpen(true);
+                        }}
+                        className={cn(
+                            "flex items-center justify-center gap-2 border-dashboard bg-white dark:bg-white/[0.04] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08] flex-1 sm:flex-none shadow-sm font-semibold transition-all",
+                            pendingSupportCount > 0 && "border-amber-500/40 bg-amber-50/60 dark:bg-amber-500/10 text-amber-800 dark:text-amber-300"
+                        )}
+                    >
+                        <LifeBuoy size={14} className={cn("text-amber-500", pendingSupportCount > 0 && "animate-pulse")} />
+                        <span>Sync Support</span>
+                        {pendingSupportCount > 0 && (
+                            <span className="ml-0.5 px-1.5 py-0.2 rounded-full bg-amber-500 text-white text-[10px] font-black leading-none">
+                                {pendingSupportCount}
+                            </span>
+                        )}
+                    </Button>
+                    <Button
                         id="onborda-add-account"
                         variant="primary"
                         size="smd"
-                        onClick={() => setActiveModal({ type: "ADD" })}
+                        onClick={() => {
+                            if (isFreeLimitReached) {
+                                toast.info(
+                                    "Free tier is limited to 3 connected accounts. Upgrade to Partner Pro for unlimited accounts."
+                                );
+                                setActiveModal({ type: "FREE_VS_PRO" });
+                                return;
+                            }
+                            setActiveModal({ type: "ADD" });
+                        }}
                         className="flex items-center justify-center gap-2 shadow-lg shadow-primary/25 flex-1 sm:flex-none font-bold"
                     >
                         <Plus size={16} />
@@ -374,7 +587,7 @@ export function AccountListClient({
                             No Trading Accounts Linked
                         </h3>
                         <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-6">
-                            Connect your MT5 account to track execution telemetry and sync trade history, or apply for Partner Pro to unlock EA downloads and advanced risk analytics.
+                            Connect your MT5 account to track execution telemetry and sync trade history, or apply for Partner Pro to enable EA downloads and advanced risk analytics.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-3 justify-center w-full sm:w-auto">
                             <Button
@@ -413,258 +626,161 @@ export function AccountListClient({
                     </div>
                 </div>
             ) : (
-                <div className="flex flex-col lg:flex-row gap-6 w-full items-stretch mt-6">
-                    {/* Left Column: Accounts and summary stats (72%) */}
-                    <div className="flex-1 lg:max-w-[72%] space-y-6">
-                        {/* KPI Stats Summary Cards */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            {/* Card 1: Total Balance */}
-                            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-[#382F1D] rounded-2xl p-4 shadow-sm flex items-center gap-4">
-                                <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
-                                    <Wallet className="w-5 h-5" />
-                                </div>
-                                <div className="min-w-0">
-                                    <span className="text-[11px] font-bold text-gray-455 dark:text-slate-500 uppercase tracking-wider block">
-                                        Total Balance
-                                    </span>
-                                    <span className="text-lg font-black text-gray-900 dark:text-white block truncate">
-                                        {formatCurrency(totalBalance)}
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* Card 2: Total Equity */}
-                            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-[#382F1D] rounded-2xl p-4 shadow-sm flex items-center gap-4">
-                                <div className="w-10 h-10 rounded-xl bg-cyan-50 dark:bg-cyan-500/10 flex items-center justify-center text-cyan-600 dark:text-cyan-400 shrink-0">
-                                    <Activity className="w-5 h-5" />
-                                </div>
-                                <div className="min-w-0">
-                                    <span className="text-[11px] font-bold text-gray-455 dark:text-slate-500 uppercase tracking-wider block">
-                                        Total Equity
-                                    </span>
-                                    <span className="text-lg font-black text-gray-900 dark:text-white block truncate">
-                                        {formatCurrency(totalEquity)}
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* Card 3: Active Synchronization */}
-                            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-[#382F1D] rounded-2xl p-4 shadow-sm flex items-center gap-4">
-                                <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
-                                    <Cable className="w-5 h-5" />
-                                </div>
-                                <div className="min-w-0">
-                                    <span className="text-[11px] font-bold text-gray-455 dark:text-slate-500 uppercase tracking-wider block">
-                                        Sync Status
-                                    </span>
-                                    <span className="text-lg font-black text-gray-900 dark:text-white block truncate">
-                                        {activeSyncs} / {totalConnected}{" "}
-                                        Connected
-                                    </span>
-                                </div>
-                            </div>
+                <div className="space-y-5 w-full mt-6">
+                    {/* Financial Telemetry Strip */}
+                    <div className="flex flex-wrap items-center justify-between gap-4 p-4 sm:px-6 rounded-2xl bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] shadow-sm">
+                        <div>
+                            <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 block mb-0.5">
+                                Total Balance
+                            </span>
+                            <span className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white tabular-nums tracking-tight">
+                                {formatCurrency(totalBalance)}
+                            </span>
                         </div>
 
-                        {/* Account Grid */}
-                        <div
-                            id="onborda-account-grid"
-                            className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6"
-                        >
-                            {initialAccounts.map((account) => (
-                                <div
-                                    key={account.id}
-                                    className="min-w-0 h-full"
-                                >
-                                    <AccountCard
-                                        account={account}
-                                        isMain={account.id === mainAccountId}
-                                        onSetMain={async (id) => {
-                                            setMainAccountId(id); // optimistic
-                                            const result =
-                                                await setMainAccount(id);
-                                            if (result.error) {
-                                                setMainAccountId(mainAccountId); // rollback
-                                                toast.error(result.error);
-                                            } else {
-                                                toast.success(
-                                                    "Main account updated"
-                                                );
-                                                // Update cookie so next nav link uses new main account
-                                                document.cookie = `last_account_id=${id};path=/;max-age=31536000;samesite=lax`;
-                                                // Immediately refresh sidebar Pro badge
-                                                proAccess.refetch();
-                                            }
-                                        }}
-                                        onUpdate={() => {
-                                            startTransition(() => {
-                                                router.refresh();
-                                            });
-                                        }}
-                                        onDelete={(id) =>
-                                            setActiveModal({
-                                                type: "DELETE",
-                                                accountId: id,
-                                            })
-                                        }
-                                        onSettings={(acc) =>
-                                            setActiveModal({
-                                                type: "SETTINGS",
-                                                account: acc,
-                                            })
-                                        }
-                                        onUnlockPro={(acc) =>
-                                            setActiveModal({
-                                                type: "ADD",
-                                                initialMode: "upgrade-pro",
-                                                sourceAccount: acc,
-                                            })
-                                        }
-                                        preferredSyncMethod={
-                                            preferredSyncMethod
-                                        }
-                                        onOpenSyncSetup={(method) => {
-                                            setDefaultSyncMethod(method);
-                                            setActiveModal({
-                                                type: "SYNC_SETUP",
-                                            });
-                                        }}
-                                    />
+                        <div className="flex items-center gap-3 ml-auto sm:ml-0">
+                            {isPro ? (
+                                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-amber-500/30 bg-amber-500/5 dark:bg-amber-500/10 text-xs shadow-sm">
+                                    <Crown className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                                    <span className="font-bold text-gray-900 dark:text-white tabular-nums">
+                                        {totalConnected} {totalConnected === 1 ? "Account" : "Accounts"}
+                                    </span>
+                                    <span className="text-gray-300 dark:text-white/20">·</span>
+                                    <span className="font-extrabold text-amber-600 dark:text-amber-400 uppercase tracking-wider text-[10px]">
+                                        Unlimited Pro
+                                    </span>
                                 </div>
-                            ))}
+                            ) : isFreeLimitReached ? (
+                                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-amber-500/40 bg-amber-500/10 dark:border-amber-500/30 dark:bg-amber-500/10 text-xs shadow-sm">
+                                    <Users className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
+                                    <span className="font-bold text-gray-900 dark:text-white tabular-nums">
+                                        {totalConnected}/{MAX_FREE_ACCOUNTS} Accounts
+                                    </span>
+                                    <span className="text-amber-300 dark:text-amber-500/40">·</span>
+                                    <span className="text-amber-700 dark:text-amber-300 font-bold text-[11px]">
+                                        Free Limit
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={() => setActiveModal({ type: "FREE_VS_PRO" })}
+                                        className="ml-1 inline-flex items-center gap-0.5 text-[11px] font-black text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 underline underline-offset-2 transition-colors cursor-pointer"
+                                    >
+                                        Upgrade <ArrowUpRight className="w-3 h-3" />
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-dashboard/80 bg-gray-50/80 dark:bg-white/[0.03] dark:border-white/10 text-xs shadow-sm">
+                                    <Users className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 shrink-0" />
+                                    <span className="font-bold text-gray-900 dark:text-white tabular-nums">
+                                        {totalConnected}/{MAX_FREE_ACCOUNTS} Accounts
+                                    </span>
+                                    <span className="text-gray-300 dark:text-white/20">·</span>
+                                    <span className="text-gray-500 dark:text-gray-400 font-medium text-[11px]">
+                                        Free Tier
+                                    </span>
+                                </div>
+                            )}
                         </div>
-
-                        {/* Pagination */}
-                        {meta && (
-                            <div className="mt-8">
-                                <PaginationControl
-                                    currentPage={meta.page}
-                                    totalPages={meta.totalPages}
-                                    pageSize={meta.limit}
-                                    totalItems={meta.total}
-                                    onPageChange={(p) =>
-                                        router.push(
-                                            `/dashboard/accounts?page=${p}&limit=${meta.limit}`
-                                        )
-                                    }
-                                    onPageSizeChange={(l) =>
-                                        router.push(
-                                            `/dashboard/accounts?page=1&limit=${l}`
-                                        )
-                                    }
-                                    itemName="accounts"
-                                />
-                            </div>
-                        )}
                     </div>
 
-                    {/* Right Column: Connection Guide & Pro Status Sidebar (28%) */}
-                    <div className="w-full lg:w-[28%] shrink-0 space-y-6 flex flex-col justify-start">
-                        {/* Card 1: Connection Guide */}
-                        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-[#382F1D] rounded-2xl p-5 shadow-sm space-y-4">
-                            <div className="flex items-center gap-2 pb-1 border-b border-dashboard dark:border-gray-800">
-                                <Cable className="w-5 h-5 text-cyan-500" />
-                                <h4 className="text-sm font-black text-gray-900 dark:text-white">
-                                    Connection Guide
-                                </h4>
-                            </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                                Synchronize your MT5 accounts using our unified
-                                MT5 trade management overlay:
-                            </p>
-                            <div className="space-y-3">
-                                <div className="p-3.5 rounded-xl bg-cyan-500/5 border border-cyan-500/10 space-y-2">
-                                    <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400 block">
-                                        Trade Manager (Expert Advisor)
-                                    </span>
-                                    <span className="text-[11px] text-gray-500 dark:text-gray-400 leading-normal block">
-                                        Our unified MT5 overlay. Handles
-                                        execution, trend matrix, and real-time
-                                        trade synchronization directly from your
-                                        MT5 terminal.
-                                    </span>
-                                    <div className="pt-1 flex flex-col gap-2">
-                                        <Link
-                                            href="/trading-systems/trade-manager"
-                                            className="text-[11px] font-black text-cyan-600 dark:text-cyan-400 hover:underline inline-flex items-center gap-1"
-                                        >
-                                            View Trade Manager Details &rarr;
-                                        </Link>
-                                        <a
-                                            href="/downloads/TheNextTrade_TradeSync.ex5"
-                                            download
-                                            className="text-[11px] font-bold text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:underline inline-flex items-center gap-1"
-                                        >
-                                            Download Trade Manager EA (.ex5)
-                                            &rarr;
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {/* Professional Trading Table */}
+                    <AccountTable
+                        accounts={initialAccounts}
+                        mainAccountId={mainAccountId}
+                        onSetMain={async (id) => {
+                            setMainAccountId(id); // optimistic
+                            const result = await setMainAccount(id);
+                            if (result.error) {
+                                setMainAccountId(mainAccountId); // rollback
+                                toast.error(result.error);
+                            } else {
+                                toast.success("Main account updated");
+                                document.cookie = `last_account_id=${id};path=/;max-age=31536000;samesite=lax`;
+                                proAccess.refetch();
+                            }
+                        }}
+                        onUpdate={() => {
+                            startTransition(() => {
+                                router.refresh();
+                            });
+                        }}
+                        onDelete={(id) =>
+                            setActiveModal({
+                                type: "DELETE",
+                                accountId: id,
+                            })
+                        }
+                        onSettings={(acc) =>
+                            setActiveModal({
+                                type: "SETTINGS",
+                                account: acc,
+                            })
+                        }
+                        onUnlockPro={(acc) =>
+                            setActiveModal({
+                                type: "ADD",
+                                initialMode: "upgrade-pro",
+                                sourceAccount: acc,
+                            })
+                        }
+                        preferredSyncMethod={preferredSyncMethod}
+                        activeSyncingAccounts={activeSyncingAccounts}
+                        onSyncStarted={handleSyncStarted}
+                        onRequestSupport={(id) => {
+                            setSupportDrawerAccountId(id);
+                            setSupportDrawerTab("create");
+                            setSupportDrawerOpen(true);
+                        }}
+                        userTickets={userTickets}
+                        onOpenSyncSetup={(method) => {
+                            setDefaultSyncMethod(method);
+                            setActiveModal({
+                                type: "SYNC_SETUP",
+                            });
+                        }}
+                    />
 
-                        {/* Card 2: Partner Pro Access */}
-                        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-[#382F1D] rounded-2xl p-5 shadow-sm space-y-4">
-                            <div className="flex items-center gap-2 pb-1 border-b border-dashboard dark:border-gray-800">
-                                <Crown className="w-5 h-5 text-amber-500" />
-                                <h4 className="text-sm font-black text-gray-900 dark:text-white">
-                                    Partner Pro Access
-                                </h4>
-                            </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                                Open an account with our supported brokers to
-                                unlock EA downloads, VIP tools, and premium
-                                features:
-                            </p>
-                            <div className="space-y-2 text-xs font-semibold text-gray-700 dark:text-gray-300">
-                                <div className="flex items-center justify-between p-2 rounded-lg bg-gray-50 dark:bg-white/5">
-                                    <span>EA downloads</span>
-                                    <span className="text-emerald-600 dark:text-emerald-400">
-                                        Included
-                                    </span>
-                                </div>
-                                <div className="flex items-center justify-between p-2 rounded-lg bg-gray-50 dark:bg-white/5">
-                                    <span>Discipline Coach & Telemetry</span>
-                                    <span className="text-emerald-600 dark:text-emerald-400">
-                                        Included
-                                    </span>
-                                </div>
-                                <div className="flex items-center justify-between p-2 rounded-lg bg-gray-50 dark:bg-white/5">
-                                    <span>Edge Leak Detector</span>
-                                    <span className="text-emerald-600 dark:text-emerald-400">
-                                        Included
-                                    </span>
-                                </div>
-                            </div>
-                            <Button
-                                onClick={() =>
-                                    setActiveModal({ type: "FREE_VS_PRO" })
+                    {/* Pagination */}
+                    {meta && (
+                        <div className="mt-6">
+                            <PaginationControl
+                                currentPage={meta.page}
+                                totalPages={meta.totalPages}
+                                pageSize={meta.limit}
+                                totalItems={meta.total}
+                                onPageChange={(p) =>
+                                    router.push(
+                                        `/dashboard/accounts?page=${p}&limit=${meta.limit}`
+                                    )
                                 }
-                                variant="outline"
-                                className="w-full h-9 rounded-xl text-xs font-bold border-amber-500/30 text-amber-600 dark:text-amber-400 bg-amber-500/5 hover:bg-amber-500/10 transition-all"
-                            >
-                                Compare Plans & Benefits
-                            </Button>
+                                onPageSizeChange={(l) =>
+                                    router.push(
+                                        `/dashboard/accounts?page=1&limit=${l}`
+                                    )
+                                }
+                                itemName="accounts"
+                            />
                         </div>
-                    </div>
+                    )}
                 </div>
             )}
 
             {/* Settings Modal */}
             <AnimatePresence>
-            {activeModal.type === "SETTINGS" && (
-                <AccountSettingsModal
-                    isOpen={true}
-                    account={activeModal.account}
-                    onClose={() => setActiveModal({ type: "NONE" })}
-                    onUpdate={() => router.refresh()}
-                    onDelete={() => {
-                        setActiveModal({
-                            type: "DELETE",
-                            accountId: activeModal.account.id,
-                        });
-                    }}
-                />
-            )}
+                {activeModal.type === "SETTINGS" && (
+                    <AccountSettingsModal
+                        isOpen={true}
+                        account={activeModal.account}
+                        onClose={() => setActiveModal({ type: "NONE" })}
+                        onUpdate={() => router.refresh()}
+                        onDelete={() => {
+                            setActiveModal({
+                                type: "DELETE",
+                                accountId: activeModal.account.id,
+                            });
+                        }}
+                    />
+                )}
             </AnimatePresence>
 
             {/* Add Modal */}
@@ -679,17 +795,25 @@ export function AccountListClient({
                     // not), letting us tell the two flows apart.
                     const isFreeAccount =
                         !!_account && "platform" in _account;
+                    const hasCloudSync = Boolean(_account?.hasCloudSync);
                     // upgradeToPartnerPro always returns isNewAccount:false —
                     // the account already existed, so this was a Pro upgrade
                     // request, not a new account. "Account added" would be
                     // misleading there.
                     const isProUpgrade =
                         !!_account && _account.isNewAccount === false;
+
                     if (wasInSyncSetup) {
                         setWasInSyncSetup(false);
                         setActiveModal({ type: "SYNC_SETUP" });
                         toast.success(
                             "Account added successfully! Returning to Sync Wizard..."
+                        );
+                    } else if (isFreeAccount && hasCloudSync) {
+                        // User activated Cloud Sync during account creation - no EA wizard needed
+                        setActiveModal({ type: "NONE" });
+                        toast.success(
+                            "Account added and automated Cloud Sync queued!"
                         );
                     } else if (isFreeAccount && defaultSyncMethod !== "MANUAL") {
                         // Free account added from the chooser with an
@@ -759,6 +883,13 @@ export function AccountListClient({
                 accounts={initialAccounts}
                 defaultMethod={defaultSyncMethod}
                 onOpenAddAccount={(method) => {
+                    if (isFreeLimitReached) {
+                        toast.info(
+                            "Free tier is limited to 3 connected accounts. Upgrade to Partner Pro for unlimited accounts."
+                        );
+                        setActiveModal({ type: "FREE_VS_PRO" });
+                        return;
+                    }
                     setWasInSyncSetup(true);
                     setDefaultSyncMethod(method);
                     setActiveModal({ type: "ADD", initialMode: "free" });
@@ -781,7 +912,7 @@ export function AccountListClient({
                             </DialogTitle>
                             <DialogDescription className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                                 Free accounts can track and sync trades. Partner
-                                Pro unlocks premium downloads, VIP access, and
+                                Pro enables premium downloads, VIP access, and
                                 advanced trading intelligence for eligible
                                 accounts.
                             </DialogDescription>
@@ -789,166 +920,140 @@ export function AccountListClient({
                     </div>
 
                     <div className="max-h-[70vh] overflow-auto">
-                        <table className="w-full min-w-[640px] text-sm text-left">
+                        <table className="w-full text-sm text-left">
                             <thead className="bg-gray-50 dark:bg-white/[0.04] sticky top-0 border-b border-dashboard dark:border-white/[0.08]">
                                 <tr>
-                                    <th className="px-6 py-4 font-semibold text-gray-900 dark:text-gray-100">
+                                    <th className="w-1/2 px-6 py-4 font-semibold text-gray-900 dark:text-gray-100">
                                         Feature
                                     </th>
-                                    <th className="px-6 py-4 font-semibold text-gray-900 dark:text-gray-100">
+                                    <th className="w-1/4 px-6 py-4 font-semibold text-gray-900 dark:text-gray-100 whitespace-nowrap">
                                         Free
                                     </th>
-                                    <th className="px-6 py-4 font-semibold text-gray-900 dark:text-gray-100">
-                                        Pro
-                                    </th>
-                                    <th className="px-6 py-4 font-semibold text-gray-900 dark:text-gray-100">
-                                        URL
+                                    <th className="w-1/4 px-6 py-4 font-semibold text-amber-600 dark:text-amber-400 whitespace-nowrap bg-amber-500/[0.04] dark:bg-amber-500/[0.08]">
+                                        <div className="flex items-center gap-1.5">
+                                            <Crown className="w-4 h-4 text-amber-500" />
+                                            <span>Partner Pro</span>
+                                        </div>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-dashboard dark:divide-white/[0.06]">
                                 {[
                                     {
+                                        name: "Connected MT5 accounts",
+                                        free: "Up to 3 accounts",
+                                        pro: "Unlimited",
+                                    },
+                                    {
                                         name: "Account tracking",
                                         free: "Included",
                                         pro: "Included",
-                                        url: "/dashboard/accounts",
-                                        label: "/dashboard/accounts",
                                     },
                                     {
                                         name: "Trade sync",
                                         free: "Included",
                                         pro: "Included",
-                                        url: "/dashboard/accounts",
-                                        label: "/dashboard/accounts",
                                     },
                                     {
                                         name: "Trade Manager EA download",
                                         free: "Included",
                                         pro: "Included",
-                                        url: "/trading-systems/trade-manager",
-                                        label: "Trade Manager Page",
                                     },
                                     {
                                         name: "EA downloads",
                                         free: "Locked",
                                         pro: "Included",
-                                        url: "/dashboard/trading-systems",
-                                        label: "/dashboard/trading-systems",
                                     },
                                     {
                                         name: "Indicator downloads",
                                         free: "Locked",
                                         pro: "Included",
-                                        url: "/dashboard/trading-systems",
-                                        label: "/dashboard/trading-systems",
                                     },
                                     {
                                         name: "Discipline Radar / Risk Assessment",
                                         free: "Locked",
                                         pro: "Included",
-                                        url: "/dashboard/intelligence",
-                                        label: "/dashboard/intelligence",
                                     },
                                     {
                                         name: "Edge Leak Detector",
                                         free: "Locked",
                                         pro: "Included",
-                                        url: "/dashboard/intelligence",
-                                        label: "/dashboard/intelligence",
                                     },
                                     {
                                         name: "Rule Violation Tracker",
                                         free: "Locked",
                                         pro: "Included",
-                                        url: "/dashboard/intelligence",
-                                        label: "/dashboard/intelligence",
                                     },
                                     {
                                         name: "VIP community & priority support",
                                         free: "Locked",
                                         pro: "Included",
-                                        url: "/dashboard/trading-systems?tab=VIP",
-                                        label: "/dashboard/trading-systems?tab=VIP",
                                     },
                                     {
                                         name: "Partner Pro eligibility review",
                                         free: "Eligibility review",
                                         pro: "Verified",
-                                        url: "/dashboard/accounts?action=add&intent=unlock-pro",
-                                        label: "/dashboard/accounts?action=add&intent=unlock-pro",
                                     },
                                 ].map((row, i) => (
                                     <tr
                                         key={i}
                                         className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02]"
                                     >
-                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">
+                                        <td className="w-1/2 px-6 py-4 font-medium text-gray-900 dark:text-gray-200">
                                             {row.name}
                                         </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2">
+                                        <td className="w-1/4 px-6 py-4 whitespace-nowrap">
+                                            <div className="flex items-center gap-2 whitespace-nowrap">
+                                                {row.free === "Up to 3 accounts" && (
+                                                    <Users className="w-4 h-4 text-gray-400 shrink-0" />
+                                                )}
                                                 {row.free === "Included" && (
-                                                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                                                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                                                 )}
                                                 {row.free === "Locked" && (
-                                                    <Lock className="w-4 h-4 text-gray-400" />
+                                                    <Lock className="w-4 h-4 text-gray-400 shrink-0" />
                                                 )}
                                                 {row.free ===
                                                     "Eligibility review" && (
-                                                    <Clock3 className="w-4 h-4 text-amber-500" />
-                                                )}
+                                                        <Clock3 className="w-4 h-4 text-amber-500 shrink-0" />
+                                                    )}
                                                 <span
                                                     className={
                                                         row.free === "Included"
-                                                            ? "text-emerald-700 dark:text-emerald-400"
+                                                            ? "text-emerald-700 dark:text-emerald-400 font-medium"
                                                             : row.free ===
                                                                 "Locked"
-                                                              ? "text-gray-500"
-                                                              : "text-amber-700 dark:text-amber-400"
+                                                                ? "text-gray-500 font-medium"
+                                                                : row.free ===
+                                                                    "Up to 3 accounts"
+                                                                    ? "text-gray-900 dark:text-gray-200 font-semibold"
+                                                                    : "text-amber-700 dark:text-amber-400 font-medium"
                                                     }
                                                 >
                                                     {row.free}
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2">
+                                        <td className="w-1/4 px-6 py-4 whitespace-nowrap bg-amber-500/[0.02] dark:bg-amber-500/[0.04]">
+                                            <div className="flex items-center gap-2 whitespace-nowrap">
                                                 {row.pro === "Included" && (
-                                                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                                                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                                                 )}
-                                                {row.pro === "Verified" && (
-                                                    <Crown className="w-4 h-4 text-emerald-500" />
-                                                )}
-                                                <span className="text-emerald-700 dark:text-emerald-400">
+                                                {(row.pro === "Verified" ||
+                                                    row.pro === "Unlimited") && (
+                                                        <Crown className="w-4 h-4 text-amber-500 shrink-0" />
+                                                    )}
+                                                <span
+                                                    className={
+                                                        row.pro === "Verified" ||
+                                                            row.pro === "Unlimited"
+                                                            ? "text-amber-600 dark:text-amber-400 font-bold"
+                                                            : "text-emerald-700 dark:text-emerald-400 font-medium"
+                                                    }
+                                                >
                                                     {row.pro}
                                                 </span>
                                             </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {row.url.startsWith(
-                                                "/downloads"
-                                            ) ? (
-                                                <a
-                                                    href={row.url}
-                                                    download
-                                                    className="text-primary hover:underline"
-                                                >
-                                                    {row.label}
-                                                </a>
-                                            ) : (
-                                                <Link
-                                                    href={row.url}
-                                                    onClick={() =>
-                                                        setActiveModal({
-                                                            type: "NONE",
-                                                        })
-                                                    }
-                                                    className="text-primary hover:underline"
-                                                >
-                                                    {row.label}
-                                                </Link>
-                                            )}
                                         </td>
                                     </tr>
                                 ))}
@@ -1009,6 +1114,27 @@ export function AccountListClient({
                             </div>
                         </div>
                     </div>
+
+                    <div className="p-4 px-6 bg-gray-50 dark:bg-white/[0.01] border-t border-dashboard dark:border-white/[0.08] flex items-center justify-between">
+                        <Button
+                            variant="outline"
+                            onClick={() => setActiveModal({ type: "NONE" })}
+                            className="rounded-xl font-bold h-11 px-5"
+                        >
+                            Close
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                setActiveModal({ type: "NONE" });
+                                router.push(
+                                    "/dashboard/accounts?action=add&intent=unlock-pro"
+                                );
+                            }}
+                            className="rounded-xl font-bold h-11 px-6 bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-500/20 flex items-center gap-2"
+                        >
+                            Unlock Partner Pro <ArrowRight size={14} />
+                        </Button>
+                    </div>
                 </DialogContent>
             </Dialog>
 
@@ -1028,6 +1154,17 @@ export function AccountListClient({
                         setActiveModal({ type: "SYNC_SETUP" });
                     }
                 }}
+            />
+
+            {/* Sync Support Slide-over Drawer */}
+            <SyncSupportDrawer
+                isOpen={supportDrawerOpen}
+                onClose={() => setSupportDrawerOpen(false)}
+                accounts={initialAccounts}
+                tickets={userTickets}
+                onRefreshTickets={loadUserTickets}
+                initialAccountId={supportDrawerAccountId}
+                defaultTab={supportDrawerTab}
             />
         </div>
     );

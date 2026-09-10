@@ -11,7 +11,26 @@ export default async function AcademyPage() {
                 select: { modules: true },
             },
             modules: {
-                select: { id: true },
+                orderBy: { order: "asc" },
+                include: {
+                    _count: {
+                        select: { lessons: true },
+                    },
+                    quiz: {
+                        select: { id: true },
+                    },
+                    lessons: {
+                        orderBy: { order: "asc" },
+                        select: {
+                            id: true,
+                            title: true,
+                            slug: true,
+                            order: true,
+                            status: true,
+                            duration: true,
+                        },
+                    },
+                },
             },
         },
     });
@@ -22,3 +41,4 @@ export default async function AcademyPage() {
         </div>
     );
 }
+

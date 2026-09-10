@@ -3,6 +3,10 @@
 
 import { prisma } from "@/lib/prisma";
 import type { ProStatus, ProSource } from "@prisma/client";
+import {
+    isCentAccount,
+    normalizeLotSize,
+} from "@/lib/utils/cent-account";
 
 // ============================================================================
 // CONSTANTS (Official Parameters from docs/VIP-MEMBERSHIP-AND-TRIAL-SPEC.md)
@@ -154,18 +158,13 @@ export function isVipEligibleBroker(broker: string | null | undefined): boolean 
     return VIP_ELIGIBLE_BROKERS.includes(normalizeBrokerKey(broker));
 }
 
-export function isCentAccount(currency?: string | null, server?: string | null): boolean {
-    const cur = String(currency || "").toUpperCase();
-    const srv = String(server || "").toLowerCase();
-    return cur.includes("CENT") || cur === "USC" || srv.includes("cent");
-}
-
-export function normalizeUsdBalance(balance: number, currency?: string | null, server?: string | null): number {
-    if (isCentAccount(currency, server)) {
-        return balance / 100;
-    }
-    return balance;
-}
+export {
+    isCentAccount,
+    isCentSymbol,
+    normalizeLotSize,
+    normalizeUsdBalance,
+    CENT_LOT_DIVISOR,
+} from "@/lib/utils/cent-account";
 
 // ============================================================================
 // ACCOUNT-LEVEL PRO ACCESS — use for account-specific features
@@ -187,6 +186,9 @@ export async function getAccountProAccess(
             id: true,
             broker: true,
             balance: true,
+            currency: true,
+            server: true,
+            accountType: true,
             fundingVerifiedAt: true,
             fundingAmount: true,
             fundingLastVerifiedAt: true,
@@ -292,7 +294,9 @@ export async function getAccountProAccess(
         }),
     ]);
 
-    const rolling30dLots = isEligibleBrokerAccount ? (volumeAgg._sum.lotSize ?? 0) : 0;
+    const isCent = isCentAccount(account.currency, account.server, account.accountType);
+    const rawLots = volumeAgg._sum.lotSize ?? 0;
+    const rolling30dLots = isEligibleBrokerAccount ? normalizeLotSize(rawLots, isCent) : 0;
     const lastTradeAt = latestTrade?.exitDate ?? latestTrade?.entryDate ?? null;
     const daysSinceLastTrade = lastTradeAt
         ? countTradingDaysBetween(lastTradeAt, now)
@@ -384,6 +388,9 @@ export async function getUserProAccess(
                         name: true,
                         broker: true,
                         balance: true,
+                        currency: true,
+                        server: true,
+                        accountType: true,
                         fundingVerifiedAt: true,
                         fundingAmount: true,
                         fundingLastVerifiedAt: true,
@@ -400,6 +407,9 @@ export async function getUserProAccess(
                 name: true,
                 broker: true,
                 balance: true,
+                currency: true,
+                server: true,
+                accountType: true,
                 fundingVerifiedAt: true,
                 fundingAmount: true,
                 fundingLastVerifiedAt: true,
@@ -462,7 +472,37 @@ export async function getUserProAccess(
             : null,
     ]);
 
-    const totalRolling30dLots = volumeAgg._sum.lotSize ?? 0;
+    let totalRolling30dLots = 0;
+    if (eligibleAccountIds.length > 0) {
+        const hasAnyCentAccount = allTradingAccounts.some((ta) =>
+            isCentAccount(ta.currency, ta.server, ta.accountType)
+        );
+
+        if (!hasAnyCentAccount) {
+            totalRolling30dLots = volumeAgg._sum.lotSize ?? 0;
+        } else {
+            const volumeByAccount = await prisma.journalEntry.groupBy({
+                by: ["accountId"],
+                where: {
+                    userId,
+                    accountId: { in: eligibleAccountIds },
+                    status: "CLOSED",
+                    syncSource: { in: VALID_SYNC_SOURCES },
+                    OR: [
+                        { exitDate: { gte: period30dStart } },
+                        { exitDate: null, entryDate: { gte: period30dStart } },
+                    ],
+                },
+                _sum: { lotSize: true },
+            });
+
+            for (const item of volumeByAccount) {
+                const acc = allTradingAccounts.find((a) => a.id === item.accountId);
+                const isCent = isCentAccount(acc?.currency, acc?.server, acc?.accountType);
+                totalRolling30dLots += normalizeLotSize(item._sum.lotSize ?? 0, isCent);
+            }
+        }
+    }
     const lastTradeAt = latestTrade?.exitDate ?? latestTrade?.entryDate ?? null;
     const daysSinceLastTrade = lastTradeAt
         ? countTradingDaysBetween(lastTradeAt, now)
@@ -573,12 +613,12 @@ export async function getUserProAccess(
     let aggregatePolicyState: PolicyState = "ACTIVE";
     let policyReason: string | undefined;
 
-    if (!hasAnyEntitlement) {
-        aggregatePolicyState = "PAUSED";
-        policyReason = "No active VIP entitlement or trial.";
-    } else if (eligibleAccountIds.length === 0) {
-        aggregatePolicyState = "PAUSED";
-        policyReason = "No trading accounts linked to supported partner brokers.";
+    if (!hasAnyEntitlement || eligibleAccountIds.length === 0) {
+        aggregatePolicyState = "ACTIVE";
+        policyReason =
+            eligibleAccountIds.length === 0 && hasAnyEntitlement
+                ? "No trading accounts linked to supported partner brokers."
+                : undefined;
     } else if (fundingExpired) {
         aggregatePolicyState = "PAUSED";
         policyReason = "Funding verification has expired. Please top up $300 to maintain VIP.";
@@ -596,13 +636,16 @@ export async function getUserProAccess(
         policyReason = "Account balance check is in grace period.";
     }
 
-    const effectiveIsPro = hasAnyEntitlement && aggregatePolicyState !== "PAUSED";
+    const effectiveIsPro =
+        hasAnyEntitlement &&
+        eligibleAccountIds.length > 0 &&
+        aggregatePolicyState !== "PAUSED";
 
     // Determine aggregate DB status
     let aggregateStatus: ProStatus;
     const proStatuses = accounts.filter((a) => a.status !== "NONE");
 
-    if (proStatuses.length === 0) {
+    if (proStatuses.length === 0 || eligibleAccountIds.length === 0) {
         aggregateStatus = "NONE";
     } else if (hasAnyEntitlement) {
         aggregateStatus = "ACTIVE";

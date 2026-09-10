@@ -32,7 +32,7 @@ export function DailyWinRateChart({
 }: DailyWinRateChartProps) {
     if (!data || data.length === 0) {
         return (
-            <div className="flex flex-col w-full h-full border-t-4 border-t-emerald-500 overflow-hidden items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300">
+            <div className="flex flex-col w-full h-full overflow-hidden items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300">
                 No data available
             </div>
         );
@@ -99,7 +99,7 @@ export function DailyWinRateChart({
         data.length > 60 ? 6 : data.length > 30 ? 3 : data.length > 14 ? 1 : 0;
 
     return (
-        <div className="flex flex-col h-full w-full border-t-4 border-t-emerald-500 overflow-hidden p-4">
+        <div className="flex flex-col h-full w-full overflow-hidden p-4">
             <ChartContainer
                 height="100%"
                 minHeight={100}
@@ -258,6 +258,9 @@ export function DailyWinRateChart({
                             dataKey="winRate"
                             radius={[4, 4, 0, 0]}
                             maxBarSize={28}
+                            isAnimationActive={true}
+                            animationDuration={400}
+                            animationEasing="ease-out"
                         >
                             {data.map((entry, index) => {
                                 const selected = isSelected(entry.date);

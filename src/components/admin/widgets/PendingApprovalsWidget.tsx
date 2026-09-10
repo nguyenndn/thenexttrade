@@ -61,11 +61,11 @@ export function PendingApprovalsWidget({
                 {approvals.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-10 text-gray-500">
                         <CheckCircle2 className="w-10 h-10 mb-3 text-emerald-500 opacity-50" />
-                        <p className="font-medium text-gray-700 dark:text-gray-300">
-                            All caught up!
+                        <p className="font-bold text-gray-700 dark:text-gray-300">
+                            Zero Pending Actions
                         </p>
-                        <p className="text-xs mt-1">
-                            No pending approvals at the moment.
+                        <p className="text-xs text-gray-500 mt-1">
+                            All trader access requests reviewed.
                         </p>
                     </div>
                 ) : (

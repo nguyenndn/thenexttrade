@@ -10,7 +10,6 @@ import {
     FileText,
     List,
     Users,
-    Activity,
     Tag,
     MessageSquare,
     Bot,
@@ -36,6 +35,7 @@ import {
     FileBarChart,
     Database,
     Mail,
+    CloudSync,
 } from "lucide-react";
 
 export interface PublicMenuItem {
@@ -44,6 +44,19 @@ export interface PublicMenuItem {
     href: string;
     type: "link";
 }
+
+export interface AnalyticsTabItem {
+    label: string;
+    href: string;
+}
+
+export const ANALYTICS_TABS: AnalyticsTabItem[] = [
+    { label: "Analytics", href: "/dashboard/analytics" },
+    { label: "Psychology", href: "/dashboard/psychology" },
+    { label: "Mistakes", href: "/dashboard/mistakes" },
+    { label: "Reports", href: "/dashboard/reports" },
+    { label: "Intelligence", href: "/dashboard/intelligence" },
+];
 
 export const menuItems: PublicMenuItem[] = [
     {
@@ -132,12 +145,6 @@ export const dashboardMenuItems = [
         icon: BarChart3,
         requiresTradeData: true,
     },
-    {
-        name: "Psychology",
-        href: "/dashboard/psychology",
-        icon: Activity,
-        requiresTradeData: true,
-    },
 
     // --- RESOURCES ---
     {
@@ -216,6 +223,8 @@ export const adminMenuItems = [
             { name: "IB Overview", href: "/admin/ib" },
             { name: "VIP Pipeline", href: "/admin/ib/pipeline" },
             { name: "Trader Monitor (CRM)", href: "/admin/ib/traders" },
+            { name: "Trader Behavior", href: "/admin/users/behavior" },
+            { name: "Sync Requests", href: "/admin/ib/sync-requests" },
         ],
     },
 
@@ -227,6 +236,7 @@ export const adminMenuItems = [
         items: [
             { name: "Trading Systems", href: "/admin/trading-systems" },
             { name: "Users", href: "/admin/users" },
+            { name: "Broadcasts", href: "/admin/notifications" },
             { name: "Feedback", href: "/admin/feedback" },
             { name: "Settings", href: "/admin/settings" },
             { name: "Email Lab", href: "/admin/email-lab" },
@@ -269,11 +279,6 @@ export const dashboardMenuGroups = [
                 name: "Analytics Hub",
                 href: "/dashboard/analytics",
                 icon: BarChart3,
-            },
-            {
-                name: "Psychology",
-                href: "/dashboard/psychology",
-                icon: Activity,
             },
         ],
     },
@@ -349,6 +354,11 @@ export const adminMenuGroups = [
                 name: "Trader Monitor",
                 href: "/admin/ib/traders",
                 icon: UserCheck,
+            },
+            {
+                name: "Sync Requests",
+                href: "/admin/ib/sync-requests",
+                icon: CloudSync,
             },
             { name: "Users", href: "/admin/users", icon: Users },
         ],

@@ -22,7 +22,7 @@ interface BalanceGrowthChartProps {
 export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
     if (!data || data.length === 0) {
         return (
-            <div className="flex flex-col h-full w-full border-t-4 border-t-sky-500 overflow-hidden items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300">
+            <div className="flex flex-col h-full w-full overflow-hidden items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300">
                 No data available
             </div>
         );
@@ -68,7 +68,7 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
     });
 
     return (
-        <div className="flex flex-col h-full w-full border-t-4 border-t-sky-500 overflow-hidden p-4">
+        <div className="flex flex-col h-full w-full overflow-hidden p-4">
             <ChartContainer
                 height="100%"
                 minHeight={100}
@@ -173,6 +173,9 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
                             strokeWidth={2.5}
                             fillOpacity={1}
                             fill="url(#colorBalance)"
+                            isAnimationActive={true}
+                            animationDuration={400}
+                            animationEasing="ease-out"
                         />
                     </AreaChart>
                 </ResponsiveContainer>

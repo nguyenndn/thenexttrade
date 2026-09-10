@@ -213,7 +213,9 @@ export async function POST(request: NextRequest) {
                     : {}),
 
                 // Auto-collect info (Spec 1.1)
-                ...(broker ? { broker: detectedBroker || broker } : {}),
+                ...(detectedBroker || broker
+                    ? { broker: detectedBroker || broker }
+                    : {}),
                 ...(server ? { server } : {}),
                 ...(currency ? { currency } : {}),
                 ...(leverage ? { leverage: String(leverage) } : {}),

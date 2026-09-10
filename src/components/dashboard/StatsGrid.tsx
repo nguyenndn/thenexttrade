@@ -1,12 +1,7 @@
 "use client";
 
-import { Info, Target, TrendingUp, ShieldAlert } from "lucide-react";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Target, TrendingUp, ShieldAlert } from "lucide-react";
+import { NumberTicker } from "@/components/ui/NumberTicker";
 
 interface StatsGridProps {
     data: {
@@ -21,7 +16,12 @@ export function StatsGrid({ data, vertical = false }: StatsGridProps) {
     const stats = [
         {
             label: "Profit Factor",
-            value: data.profitFactor.toFixed(2),
+            value: (
+                <NumberTicker
+                    value={data.profitFactor}
+                    decimals={2}
+                />
+            ),
             desc: "Gross Profit / Gross Loss",
             color: "text-blue-500",
             bg: "bg-blue-50 dark:bg-blue-500/10",
@@ -29,7 +29,13 @@ export function StatsGrid({ data, vertical = false }: StatsGridProps) {
         },
         {
             label: "Avg Win",
-            value: `$${data.avgWin.toFixed(2)}`,
+            value: (
+                <NumberTicker
+                    value={data.avgWin}
+                    prefix="$"
+                    decimals={2}
+                />
+            ),
             desc: "Average profit per winning trade",
             color: "text-green-500",
             bg: "bg-green-50 dark:bg-green-500/10",
@@ -37,7 +43,13 @@ export function StatsGrid({ data, vertical = false }: StatsGridProps) {
         },
         {
             label: "Avg Loss",
-            value: `$${data.avgLoss.toFixed(2)}`,
+            value: (
+                <NumberTicker
+                    value={Math.abs(data.avgLoss)}
+                    prefix="-$"
+                    decimals={2}
+                />
+            ),
             desc: "Average loss per losing trade",
             color: "text-red-500",
             bg: "bg-red-50 dark:bg-red-500/10",
@@ -55,16 +67,10 @@ export function StatsGrid({ data, vertical = false }: StatsGridProps) {
         >
             {stats.map((stat, i) => {
                 const Icon = stat.icon;
-                const borderColor =
-                    i === 0
-                        ? "border-t-blue-500"
-                        : i === 1
-                          ? "border-t-green-500"
-                          : "border-t-red-500";
                 return (
                     <div
                         key={i}
-                        className={`bg-white dark:bg-[#0B0E14] p-5 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow border-t-4 ${borderColor}`}
+                        className="bg-white dark:bg-[#1E2028] p-5 rounded-2xl border border-dashboard shadow-sm hover:shadow-md transition-[box-shadow,transform] duration-200 ease-out hover:-translate-y-0.5"
                     >
                         <div className="flex items-center gap-3 mb-3">
                             <div className={`p-3 rounded-xl ${stat.bg}`}>

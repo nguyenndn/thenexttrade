@@ -13,6 +13,7 @@ import { RuleViolationTracker } from "@/components/pro/RuleViolationTracker";
 import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
 import { TabBar } from "@/components/ui/TabBar";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { ANALYTICS_TABS } from "@/config/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -20,13 +21,6 @@ export const metadata: Metadata = {
     title: "Trading Intelligence & Leak Radar | TheNextTrade",
     description: "Execution leak radar, discipline scoring, and behavioral pattern detection from your trade telemetry.",
 };
-
-const analyticsTabs = [
-    { label: "Analytics", href: "/dashboard/analytics" },
-    { label: "Reports", href: "/dashboard/reports" },
-    { label: "Mistakes", href: "/dashboard/mistakes" },
-    { label: "Intelligence", href: "/dashboard/intelligence" },
-];
 
 export default async function IntelligencePage({
     searchParams,
@@ -108,7 +102,7 @@ export default async function IntelligencePage({
                 )}
             </PageHeader>
             <div className="mb-4">
-                <TabBar tabs={analyticsTabs} />
+                <TabBar tabs={ANALYTICS_TABS} />
             </div>
             <Suspense
                 key={JSON.stringify(resolvedParams)}

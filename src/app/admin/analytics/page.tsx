@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
     RefreshCw,
     Download,
@@ -8,7 +9,9 @@ import {
     FileText,
     Users,
     MousePointerClick,
+    Clock,
 } from "lucide-react";
+import { format, subDays } from "date-fns";
 import { AnalyticsSummary } from "@/components/admin/analytics/AnalyticsSummary";
 import { PageviewTrend } from "@/components/admin/analytics/PageviewTrend";
 import { GeoPanel } from "@/components/admin/analytics/GeoPanel";
@@ -21,6 +24,7 @@ import { EventsPanel } from "@/components/admin/analytics/EventsPanel";
 import { RecentVisitorsPanel } from "@/components/admin/analytics/RecentVisitorsPanel";
 import { CampaignPanel } from "@/components/admin/analytics/CampaignPanel";
 import { Button } from "@/components/ui/Button";
+import { DateRangePicker } from "@/components/ui/DateRangePicker";
 import { exportCSV } from "@/lib/export-csv";
 import type {
     AnalyticsData,
@@ -36,14 +40,55 @@ const TABS = [
 
 type TabId = (typeof TABS)[number]["id"];
 
-const PERIODS = [
-    { value: "7d", label: "7 Days" },
-    { value: "30d", label: "30 Days" },
-    { value: "90d", label: "90 Days" },
-] as const;
-
 export default function AnalyticsDashboard() {
-    const [period, setPeriod] = useState<"7d" | "30d" | "90d">("7d");
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
+    const fromParam = searchParams.get("from");
+    const toParam = searchParams.get("to");
+
+    const [dateRange, setDateRange] = useState<{ start: Date; end: Date }>(() => {
+        if (fromParam && toParam) {
+            const start = new Date(fromParam);
+            const end = new Date(toParam);
+            if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+                return { start, end };
+            }
+        }
+        return {
+            start: subDays(new Date(), 7),
+            end: new Date(),
+        };
+    });
+
+    useEffect(() => {
+        if (fromParam && toParam) {
+            const start = new Date(fromParam);
+            const end = new Date(toParam);
+            if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+                setDateRange((prev) => {
+                    if (
+                        prev.start.getTime() === start.getTime() &&
+                        prev.end.getTime() === end.getTime()
+                    ) {
+                        return prev;
+                    }
+                    return { start, end };
+                });
+            }
+        }
+    }, [fromParam, toParam]);
+
+    const handleDateRangeChange = (newRange: { start: Date; end: Date }) => {
+        setDateRange(newRange);
+        const fromStr = format(newRange.start, "yyyy-MM-dd");
+        const toStr = format(newRange.end, "yyyy-MM-dd");
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("from", fromStr);
+        params.set("to", toStr);
+        router.push(`/admin/analytics?${params.toString()}`);
+    };
+
     const [tab, setTab] = useState<TabId>("overview");
     const [data, setData] = useState<AnalyticsData | null>(null);
     const [eventsData, setEventsData] = useState<EventsData | null>(null);
@@ -63,10 +108,14 @@ export default function AnalyticsDashboard() {
     const fetchData = useCallback(async () => {
         setLoading(true);
         try {
+            const fromStr = format(dateRange.start, "yyyy-MM-dd");
+            const toStr = format(dateRange.end, "yyyy-MM-dd");
             const [aRes, eRes, cRes] = await Promise.all([
-                fetch(`/api/admin/analytics?period=${period}`),
-                fetch(`/api/admin/analytics/events?period=${period}`),
-                fetch(`/api/admin/analytics/campaigns?period=${period}`),
+                fetch(`/api/admin/analytics?from=${fromStr}&to=${toStr}`),
+                fetch(`/api/admin/analytics/events?from=${fromStr}&to=${toStr}`),
+                fetch(
+                    `/api/admin/analytics/campaigns?from=${fromStr}&to=${toStr}`
+                ),
             ]);
             if (aRes.ok) {
                 const d = await aRes.json();
@@ -84,7 +133,7 @@ export default function AnalyticsDashboard() {
         } finally {
             setLoading(false);
         }
-    }, [period]);
+    }, [dateRange]);
 
     useEffect(() => {
         fetchData();
@@ -109,16 +158,27 @@ export default function AnalyticsDashboard() {
     // Export handlers
     const handleExportPageviews = () => {
         if (!data?.trend) return;
+        const fromStr = format(dateRange.start, "yyyy-MM-dd");
+        const toStr = format(dateRange.end, "yyyy-MM-dd");
         exportCSV(
             data.trend.map((d) => ({ date: d.date, views: d.views })),
-            `pageviews_${period}`
+            `pageviews_${fromStr}_to_${toStr}`
         );
     };
 
     const handleExportTopPages = () => {
         if (!data?.topPages) return;
-        exportCSV(data.topPages, `top_pages_${period}`);
+        const fromStr = format(dateRange.start, "yyyy-MM-dd");
+        const toStr = format(dateRange.end, "yyyy-MM-dd");
+        exportCSV(data.topPages, `top_pages_${fromStr}_to_${toStr}`);
     };
+
+    const asOfTimestamp = new Date().toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+
+    const displayRangeLabel = `${format(dateRange.start, "MMM dd, yyyy")} - ${format(dateRange.end, "MMM dd, yyyy")}`;
 
     return (
         <Tabs
@@ -127,8 +187,8 @@ export default function AnalyticsDashboard() {
             tabsId="admin-analytics"
         >
             <div className="space-y-6 pb-10">
-                {/* Header with Title + Real-time badge */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                {/* Header with Title + Real-time badge + Elevated DateRangePicker */}
+                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                     <div className="flex items-center gap-4">
                         <div className="w-1 self-stretch min-h-[40px] rounded-full bg-gradient-to-b from-primary via-emerald-400 to-teal-500 shrink-0" />
                         <div>
@@ -150,38 +210,38 @@ export default function AnalyticsDashboard() {
                             </p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                        {/* Period pills */}
-                        <div className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-1 shadow-sm">
-                            {PERIODS.map((p) => (
-                                <button
-                                    key={p.value}
-                                    onClick={() =>
-                                        setPeriod(p.value as typeof period)
-                                    }
-                                    className={`rounded-lg px-4 py-2 text-xs font-black transition-colors ${
-                                        period === p.value
-                                            ? "bg-primary text-white shadow-sm"
-                                            : "text-gray-500 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
-                                    }`}
-                                >
-                                    {p.label}
-                                </button>
-                            ))}
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full lg:w-auto">
+                        <div className="hidden xl:flex items-center gap-2 text-xs font-bold text-gray-400">
+                            <Clock size={13} /> Updated as of{" "}
+                            <span className="font-mono text-gray-700 dark:text-gray-300">
+                                {asOfTimestamp}
+                            </span>
+                            <span className="text-gray-300 dark:text-gray-600">
+                                ·
+                            </span>
+                            <span className="text-gray-500 dark:text-gray-400 capitalize">
+                                {displayRangeLabel}
+                            </span>
                         </div>
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={fetchData}
-                            disabled={loading}
-                            aria-label="Refresh data"
-                            className="rounded-xl"
-                        >
-                            <RefreshCw
-                                size={16}
-                                className={loading ? "animate-spin" : ""}
+                        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                            <DateRangePicker
+                                value={dateRange}
+                                onChange={handleDateRangeChange}
                             />
-                        </Button>
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={fetchData}
+                                disabled={loading}
+                                aria-label="Refresh data"
+                                className="rounded-xl shrink-0"
+                            >
+                                <RefreshCw
+                                    size={16}
+                                    className={loading ? "animate-spin" : ""}
+                                />
+                            </Button>
+                        </div>
                     </div>
                 </div>
 
@@ -192,7 +252,7 @@ export default function AnalyticsDashboard() {
                             <TabsTrigger
                                 key={t.id}
                                 value={t.id}
-                                className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+                                className="px-4 py-1.5 rounded-xl text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
                                 activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
                                 activeTextClassName="!text-white"
                             >
@@ -217,7 +277,7 @@ export default function AnalyticsDashboard() {
                             <PageviewTrend data={data.trend} />
                             <button
                                 onClick={handleExportPageviews}
-                                className="absolute top-5 right-5 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                                className="absolute top-5 right-5 p-1.5 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                                 title="Export CSV"
                                 aria-label="Export pageviews as CSV"
                             >
@@ -229,7 +289,7 @@ export default function AnalyticsDashboard() {
                                 <TopPagesPanel pages={data.topPages} />
                                 <button
                                     onClick={handleExportTopPages}
-                                    className="absolute top-5 right-5 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                                    className="absolute top-5 right-5 p-1.5 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                                     title="Export CSV"
                                     aria-label="Export top pages as CSV"
                                 >

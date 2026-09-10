@@ -332,16 +332,24 @@ export function TradeSyncWizard({
                                             lightweight TradeSync EA.
                                         </p>
                                     </div>
-                                    <div className="pt-4 mt-auto">
-                                        <a
-                                            href="/downloads/TheNextTrade_TradeSync.ex5"
-                                            download
-                                            onClick={(e) => e.stopPropagation()}
-                                            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition-colors shadow-sm shadow-amber-500/20"
+                                    <div className="pt-4 mt-auto flex items-center justify-between">
+                                        <span
+                                            className={cn(
+                                                "text-xs font-bold transition-colors inline-flex items-center gap-1",
+                                                syncMethod === "EA_SYNC"
+                                                    ? "text-amber-600 dark:text-amber-400"
+                                                    : "text-gray-400 dark:text-gray-500 group-hover:text-amber-500"
+                                            )}
                                         >
-                                            <Download size={13} />
-                                            Download EA (.ex5)
-                                        </a>
+                                            {syncMethod === "EA_SYNC" ? (
+                                                <>
+                                                    <CheckCircle2 size={13} />
+                                                    Selected
+                                                </>
+                                            ) : (
+                                                "Select Option"
+                                            )}
+                                        </span>
                                     </div>
                                 </div>
 
@@ -351,7 +359,7 @@ export function TradeSyncWizard({
                                     className={cn(
                                         "relative rounded-xl border-2 p-5 cursor-pointer transition-all duration-200 group flex flex-col justify-between h-56",
                                         syncMethod === "MANUAL"
-                                            ? "border-primary bg-primary/[0.02] dark:bg-primary/[0.04] shadow-lg shadow-primary/5"
+                                            ? "border-amber-500 bg-amber-500/[0.03] dark:bg-amber-500/[0.05] shadow-lg shadow-amber-500/5"
                                             : "border-dashboard bg-transparent hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.01]"
                                     )}
                                 >
@@ -372,34 +380,26 @@ export function TradeSyncWizard({
                                             later anytime.
                                         </p>
                                     </div>
-                                    <div className="pt-4 mt-auto">
-                                        <span className="text-xs text-gray-400 dark:text-gray-500 font-bold group-hover:text-primary transition-colors">
-                                            Select Option
+                                    <div className="pt-4 mt-auto flex items-center justify-between">
+                                        <span
+                                            className={cn(
+                                                "text-xs font-bold transition-colors inline-flex items-center gap-1",
+                                                syncMethod === "MANUAL"
+                                                    ? "text-amber-600 dark:text-amber-400"
+                                                    : "text-gray-400 dark:text-gray-500 group-hover:text-amber-500"
+                                            )}
+                                        >
+                                            {syncMethod === "MANUAL" ? (
+                                                <>
+                                                    <CheckCircle2 size={13} />
+                                                    Selected
+                                                </>
+                                            ) : (
+                                                "Select Option"
+                                            )}
                                         </span>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="flex justify-end pt-4 gap-3">
-                                <Button
-                                    variant="outline"
-                                    onClick={onClose}
-                                    className="rounded-xl h-11 px-6"
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    className="rounded-xl h-11 px-6 bg-primary text-white shadow-md shadow-primary/20 hover:bg-primary/90 gap-2"
-                                    onClick={() => {
-                                        if (syncMethod === "MANUAL") {
-                                            onClose();
-                                            onOpenAddAccount?.("MANUAL");
-                                        } else {
-                                            setStep(2);
-                                        }
-                                    }}
-                                >
-                                    Continue <ArrowRight className="w-4 h-4" />
-                                </Button>
                             </div>
                         </div>
                     )}
@@ -940,47 +940,50 @@ export function TradeSyncWizard({
 
                 {/* Footer Controls */}
                 <div className="flex justify-between items-center p-6 border-t border-dashboard bg-gray-50/50 dark:bg-white/[0.01]">
-                    {/* Back Button */}
+                    {/* Back / Cancel Button */}
                     {step > 1 ? (
                         <Button
                             variant="outline"
                             onClick={handleBack}
-                            className="flex items-center gap-1.5"
+                            className="rounded-xl h-11 px-5 flex items-center gap-1.5 font-bold"
                         >
                             <ArrowLeft size={14} />
                             Back
                         </Button>
                     ) : (
-                        <div />
+                        <Button
+                            variant="outline"
+                            onClick={onClose}
+                            className="rounded-xl h-11 px-5 font-bold"
+                        >
+                            Cancel
+                        </Button>
                     )}
 
-                    {/* Next / Finish Button */}
+                    {/* Next / Continue / Finish Button */}
                     {syncMethod === "MANUAL" && step === 1 ? (
-                        <Link href="/dashboard/journal?action=log-trade">
-                            <Button
-                                variant="primary"
-                                onClick={() => {
-                                    onClose();
-                                    setStep(1);
-                                }}
-                                className="font-bold flex items-center gap-1.5"
-                            >
-                                <PenLine size={14} />
-                                Go to Journal
-                            </Button>
-                        </Link>
+                        <Button
+                            onClick={() => {
+                                onClose();
+                                if (onOpenAddAccount) {
+                                    onOpenAddAccount("MANUAL");
+                                } else {
+                                    window.location.href = "/dashboard/journal?action=log-trade";
+                                }
+                            }}
+                            className="h-11 px-6 rounded-xl font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-500/20 flex items-center gap-2"
+                        >
+                            Continue <ArrowRight size={14} />
+                        </Button>
                     ) : (
                         <Button
-                            variant={
-                                step === 3 || step === 4 ? "primary" : "outline"
-                            }
                             disabled={step === 3 && !isConfirmed}
                             onClick={handleNext}
                             className={cn(
-                                "flex items-center gap-1.5",
-                                step >= 3
-                                    ? "bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-500/25 border-none"
-                                    : "hover:border-primary hover:text-primary"
+                                "h-11 px-6 rounded-xl font-bold flex items-center gap-2 transition-all",
+                                step === 3 && !isConfirmed
+                                    ? "opacity-50 cursor-not-allowed bg-gray-200 dark:bg-white/10 text-gray-400"
+                                    : "bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-500/20"
                             )}
                         >
                             {step === 4

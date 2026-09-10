@@ -114,3 +114,59 @@ export async function sendUserNotification(
         return { success: false, error: "Internal error" };
     }
 }
+
+/** Update IB attribution for a trading account (Doc #3 Step 2) */
+export async function updateTradingAccountIbAttribution(
+    accountId: string,
+    ibAttribution: "CONFIRMED" | "NOT_OURS" | "UNKNOWN",
+    userId?: string
+) {
+    try {
+        const { isAuthorized, user: admin } = await checkAdmin();
+        if (!isAuthorized || !admin) {
+            return { success: false, error: "Unauthorized" };
+        }
+
+        const account = await prisma.tradingAccount.findUnique({
+            where: { id: accountId },
+        });
+        if (!account) {
+            return { success: false, error: "Trading account not found" };
+        }
+
+        const updated = await prisma.tradingAccount.update({
+            where: { id: accountId },
+            data: {
+                ibAttribution,
+                ibAttributionSource: "MANUAL",
+                ibAttributionAt: new Date(),
+                ibAttributionBy: admin.id,
+            },
+        });
+
+        await prisma.auditLog.create({
+            data: {
+                adminId: admin.id,
+                action: "UPDATE_IB_ATTRIBUTION",
+                targetType: "TradingAccount",
+                targetId: accountId,
+                details: {
+                    previous: account.ibAttribution,
+                    next: ibAttribution,
+                    accountNumber: account.accountNumber,
+                    broker: account.broker,
+                },
+            },
+        });
+
+        if (userId || account.userId) {
+            revalidatePath(`/admin/users/${userId || account.userId}`);
+        }
+        revalidatePath("/admin/ib/traders");
+        revalidatePath("/admin/ib");
+        return { success: true, data: updated };
+    } catch (error) {
+        console.error("updateTradingAccountIbAttribution error:", error);
+        return { success: false, error: "Failed to update IB attribution" };
+    }
+}

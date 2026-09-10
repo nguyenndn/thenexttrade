@@ -1,0 +1,118 @@
+{
+  "version": "2026.2",
+  "updatedAt": "2026-09-08T11:34:00Z",
+  "description": "Pre-bundled broker servers and access points for TheNextTrade Cloud Sync Worker (Global Top Brokers)",
+  "serversDat": {
+    "file": "servers.dat",
+    "bytes": 1200436,
+    "sha256": "24b9d127fe9efd14923d36965174a97e6b0988a09aafeb70301599deca76b042"
+  },
+  "baseReady": {
+    "STARTRADERFinancial-Demo": true,
+    "STARTRADERFinancial-Live 6": true,
+    "Exness-MT5Real20": true,
+    "Exness-MT5Real25": true,
+    "Exness-MT5Real36": true,
+    "Exness-MT5Trial14": true,
+    "Exness-MT5Trial17": true,
+    "TradeMaxGlobal-Live": true,
+    "UltimaMarkets-Live 1": true,
+    "VTMarkets-Demo": true,
+    "VantageInternational-Demo": true,
+    "VantageMarkets-Live": true,
+    "ICMarketsSC-MT5": true,
+    "XMGlobal-MT5": true,
+    "RoboForex-Pro": true,
+    "RoboForex-ECN": true,
+    "Tickmill-Live": true,
+    "FBS-Real": true,
+    "FPMarkets-Live": true,
+    "Pepperstone-Demo": true
+  },
+  "brokers": {
+    "STARTRADER": [
+      "STARTRADERFinancial-Demo",
+      "STARTRADERFinancial-Live 6"
+    ],
+    "Exness": [
+      "Exness-MT5Real20",
+      "Exness-MT5Real25",
+      "Exness-MT5Real36",
+      "Exness-MT5Trial14",
+      "Exness-MT5Trial17"
+    ],
+    "Vantage": [
+      "VantageMarkets-Live",
+      "VantageInternational-Demo"
+    ],
+    "VTMarkets": [
+      "VTMarkets-Demo"
+    ],
+    "TradeMax": [
+      "TradeMaxGlobal-Live"
+    ],
+    "UltimaMarkets": [
+      "UltimaMarkets-Live 1"
+    ],
+    "ICMarkets": [
+      "ICMarketsSC-MT5",
+      "ICMarkets-MT5-2",
+      "ICMarketsInternational",
+      "ICMarketsEU-MT5"
+    ],
+    "XM": [
+      "XMGlobal-MT5",
+      "XMGlobal-Demo"
+    ],
+    "RoboForex": [
+      "RoboForex-Pro",
+      "RoboForex-ECN"
+    ],
+    "Tickmill": [
+      "Tickmill-Live"
+    ],
+    "FBS": [
+      "FBS-Real"
+    ],
+    "FPMarkets": [
+      "FPMarkets-Live"
+    ],
+    "Pepperstone": [
+      "Pepperstone-Demo",
+      "Pepperstone-MT5"
+    ],
+    "Admirals": [
+      "Admirals-Live",
+      "Admirals-Demo"
+    ]
+  },
+  "servers": [
+    "STARTRADERFinancial-Demo",
+    "STARTRADERFinancial-Live 6",
+    "Exness-MT5Real20",
+    "Exness-MT5Real25",
+    "Exness-MT5Real36",
+    "Exness-MT5Trial14",
+    "Exness-MT5Trial17",
+    "TradeMaxGlobal-Live",
+    "UltimaMarkets-Live 1",
+    "VTMarkets-Demo",
+    "VantageInternational-Demo",
+    "VantageMarkets-Live",
+    "ICMarketsSC-MT5",
+    "ICMarkets-MT5-2",
+    "ICMarketsInternational",
+    "ICMarketsEU-MT5",
+    "XMGlobal-MT5",
+    "XMGlobal-Demo",
+    "RoboForex-Pro",
+    "RoboForex-ECN",
+    "Tickmill-Live",
+    "FBS-Real",
+    "FPMarkets-Live",
+    "Pepperstone-Demo",
+    "Pepperstone-MT5",
+    "Admirals-Live",
+    "Admirals-Demo"
+  ]
+}

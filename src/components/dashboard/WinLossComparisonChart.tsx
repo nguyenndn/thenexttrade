@@ -25,7 +25,7 @@ export function WinLossComparisonChart({
 
     if (!hasData) {
         return (
-            <div className="w-full h-full min-h-[180px] flex flex-col border-t-4 border-t-red-500 overflow-hidden items-center justify-center font-medium text-sm text-gray-500 dark:text-gray-400">
+            <div className="w-full h-full min-h-[180px] flex flex-col overflow-hidden items-center justify-center font-medium text-sm text-gray-500 dark:text-gray-400">
                 No trade data available
             </div>
         );
@@ -37,7 +37,7 @@ export function WinLossComparisonChart({
     ];
 
     return (
-        <div className="flex flex-col h-full justify-between border-t-4 border-t-red-500 overflow-hidden p-4 pb-2">
+        <div className="flex flex-col h-full justify-between overflow-hidden p-4 pb-2">
             <ChartContainer
                 height="100%"
                 minHeight={100}
@@ -102,6 +102,9 @@ export function WinLossComparisonChart({
                             dataKey="value"
                             radius={[6, 6, 0, 0]}
                             maxBarSize={45}
+                            isAnimationActive={true}
+                            animationDuration={400}
+                            animationEasing="ease-out"
                         >
                             {chartData.map((entry, index) => (
                                 <Cell

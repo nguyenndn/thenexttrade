@@ -78,7 +78,7 @@ const SEVERITY_RANK: Record<string, number> = {
 };
 
 // 2. Fetch all active activation signals for stuck traders, filtering out dismissed items
-export async function getAdminActivationSignals(): Promise<{
+export async function getAdminActivationSignals(signalTypes?: string[]): Promise<{
     success: boolean;
     data?: AdminActivationSignalItem[];
     error?: string;
@@ -89,7 +89,7 @@ export async function getAdminActivationSignals(): Promise<{
     }
 
     try {
-        const activationSignalTypes = [
+        const defaultActivationTypes = [
             "NO_ACCOUNT",
             "ACCOUNT_NEVER_SYNCED",
             "SYNC_STALE",
@@ -98,11 +98,13 @@ export async function getAdminActivationSignals(): Promise<{
             "NO_LESSON_STARTED",
         ];
 
-        // Fetch all active trader signals of activation type
+        const targetTypes = signalTypes && signalTypes.length > 0 ? signalTypes : defaultActivationTypes;
+
+        // Fetch all active trader signals of target type
         const signals = await prisma.traderSignal.findMany({
             where: {
                 status: "ACTIVE",
-                signalType: { in: activationSignalTypes },
+                signalType: { in: targetTypes },
             },
             include: {
                 user: {

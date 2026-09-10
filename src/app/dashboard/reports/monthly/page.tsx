@@ -5,6 +5,7 @@ import { getReports } from "@/actions/reports";
 import { ReportView } from "@/components/reports/ReportView";
 import { TabBar } from "@/components/ui/TabBar";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { ANALYTICS_TABS } from "@/config/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -13,13 +14,6 @@ export const metadata: Metadata = {
     description:
         "Review your monthly trading performance and long-term progress",
 };
-
-const analyticsTabs = [
-    { label: "Analytics", href: "/dashboard/analytics" },
-    { label: "Reports", href: "/dashboard/reports" },
-    { label: "Mistakes", href: "/dashboard/mistakes" },
-    { label: "Intelligence", href: "/dashboard/intelligence" },
-];
 
 export default async function MonthlyReviewPage() {
     const user = await getAuthUser();
@@ -34,7 +28,7 @@ export default async function MonthlyReviewPage() {
                 description="Your automated monthly trading report — big picture performance trends."
             />
             <div className="mb-4">
-                <TabBar tabs={analyticsTabs} />
+                <TabBar tabs={ANALYTICS_TABS} />
             </div>
 
             <ReportView reports={reports as any} total={total} type="monthly" />

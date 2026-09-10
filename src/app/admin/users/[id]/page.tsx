@@ -22,12 +22,22 @@ import { UserVipProTab } from "./UserVipProTab";
 import { UserIbPerformanceTab } from "./UserIbPerformanceTab";
 import { UserOverviewTab } from "./UserOverviewTab";
 import { UserDetailTabsWrapper } from "./UserDetailTabsWrapper";
+import { UserJournalTab } from "./UserJournalTab";
+import { UserTradePlansTab } from "./UserTradePlansTab";
+import { UserRulesGoalsTab } from "./UserRulesGoalsTab";
+import { UserGrowthCoachTab } from "./UserGrowthCoachTab";
+import { UserReportsNotesTab } from "./UserReportsNotesTab";
 import {
     computeCapitalBreakdown,
     isDemoTradingAccount,
     isLiveCapitalAccount,
 } from "@/lib/admin/ib/capital.server";
 import { requireAdminPageAccess } from "@/lib/admin/auth.server";
+import { UserNarrativeSummary } from "@/components/admin/users/UserNarrativeSummary";
+import { classifyUser } from "@/lib/admin/behavior/classify.server";
+import { computeTraderSignals } from "@/lib/coach/signal-engine.server";
+import { BehaviorClassification } from "@/lib/admin/behavior/types";
+import { AccountIbAttributionBadge } from "@/components/admin/users/AccountIbAttributionBadge";
 
 export const dynamic = "force-dynamic";
 
@@ -83,6 +93,10 @@ export default async function UserDetailPage({
                     lastSync: true,
                     totalTrades: true,
                     syncSource: true,
+                    ibAttribution: true,
+                    ibAttributionSource: true,
+                    ibAttributionAt: true,
+                    ibAttributionBy: true,
                     createdAt: true,
                 },
             },
@@ -92,15 +106,56 @@ export default async function UserDetailPage({
                 include: { product: { select: { name: true, type: true } } },
             },
             journalEntries: {
-                take: 5,
-                orderBy: { createdAt: "desc" },
+                take: 100,
+                orderBy: { entryDate: "desc" },
                 select: {
                     id: true,
                     symbol: true,
                     type: true,
+                    entryPrice: true,
+                    exitPrice: true,
+                    stopLoss: true,
+                    takeProfit: true,
+                    lotSize: true,
                     pnl: true,
+                    status: true,
+                    entryDate: true,
+                    exitDate: true,
+                    notes: true,
+                    images: true,
+                    result: true,
+                    strategy: true,
+                    confidenceLevel: true,
+                    emotionBefore: true,
+                    emotionAfter: true,
+                    notesPsychology: true,
+                    mistakes: true,
                     createdAt: true,
-                    account: { select: { name: true } },
+                    account: {
+                        select: {
+                            id: true,
+                            name: true,
+                            broker: true,
+                        },
+                    },
+                    tradePlan: {
+                        select: {
+                            id: true,
+                            setupName: true,
+                            status: true,
+                        },
+                    },
+                    ruleChecks: {
+                        select: {
+                            id: true,
+                            status: true,
+                            tradingRule: {
+                                select: {
+                                    title: true,
+                                },
+                            },
+                        },
+                    },
                 },
             },
             progress: {
@@ -171,6 +226,93 @@ export default async function UserDetailPage({
             tradingReports: {
                 orderBy: { periodEnd: "desc" },
             },
+            tradePlans: {
+                take: 100,
+                orderBy: { plannedAt: "desc" },
+                include: {
+                    account: { select: { id: true, name: true, broker: true } },
+                    journalEntry: {
+                        select: {
+                            id: true,
+                            entryPrice: true,
+                            exitPrice: true,
+                            lotSize: true,
+                            pnl: true,
+                            status: true,
+                            result: true,
+                            entryDate: true,
+                            exitDate: true,
+                        },
+                    },
+                },
+            },
+            strategies: {
+                orderBy: { createdAt: "desc" },
+                include: {
+                    _count: { select: { tradingRules: true } },
+                },
+            },
+            tradingRules: {
+                orderBy: { sortOrder: "asc" },
+                include: {
+                    strategy: { select: { id: true, name: true } },
+                    account: { select: { id: true, name: true, broker: true } },
+                    _count: { select: { checks: true } },
+                },
+            },
+            traderGoals: {
+                orderBy: { startsAt: "desc" },
+                include: {
+                    account: { select: { id: true, name: true, broker: true } },
+                },
+            },
+            ruleChecks: {
+                take: 50,
+                orderBy: { checkedAt: "desc" },
+                include: {
+                    tradingRule: {
+                        select: {
+                            id: true,
+                            title: true,
+                            severity: true,
+                            category: true,
+                        },
+                    },
+                    journalEntry: {
+                        select: {
+                            id: true,
+                            symbol: true,
+                            type: true,
+                            pnl: true,
+                            entryDate: true,
+                        },
+                    },
+                },
+            },
+            improvementExperiments: {
+                orderBy: { createdAt: "desc" },
+            },
+            coachActionPlans: {
+                orderBy: { createdAt: "desc" },
+                include: {
+                    items: { orderBy: { position: "asc" } },
+                },
+            },
+            missionProgress: {
+                orderBy: { createdAt: "desc" },
+            },
+            edgeEvents: {
+                take: 50,
+                orderBy: { createdAt: "desc" },
+            },
+            tradingDayNotes: {
+                take: 50,
+                orderBy: { date: "desc" },
+            },
+            insightSnapshots: {
+                take: 30,
+                orderBy: { createdAt: "desc" },
+            },
             _count: {
                 select: {
                     progress: true,
@@ -187,6 +329,13 @@ export default async function UserDetailPage({
                     ibLeads: true,
                     ibActivitySnapshots: true,
                     tradingReports: true,
+                    tradePlans: true,
+                    strategies: true,
+                    tradingRules: true,
+                    traderGoals: true,
+                    improvementExperiments: true,
+                    coachActionPlans: true,
+                    tradingDayNotes: true,
                 },
             },
         },
@@ -226,6 +375,31 @@ export default async function UserDetailPage({
     const isSyncCurrent = latestRealAccountSignal
         ? Date.now() - latestRealAccountSignal.getTime() <= 24 * 60 * 60 * 1000
         : false;
+
+    // Safe executive narrative summary calculation (Doc #4)
+    let narrativeClassification: BehaviorClassification | null = null;
+    try {
+        const signals = await computeTraderSignals(user.id, { persist: false });
+        narrativeClassification = classifyUser({
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                createdAt: user.createdAt,
+            },
+            tradingAccounts: user.tradingAccounts,
+            journalEntries: user.journalEntries,
+            totalJournalCount: user._count.journalEntries,
+            activeSignals: signals.map((s) => ({
+                signalType: s.signalType,
+                severity: s.severity,
+                title: s.title,
+                summary: s.summary,
+            })),
+        });
+    } catch (err) {
+        console.error("Failed to compute narrative classification for user detail:", err);
+    }
 
     return (
         <div className="space-y-6 pb-20">
@@ -486,14 +660,22 @@ export default async function UserDetailPage({
                                                 </p>
                                             </div>
                                         </div>
-                                        <div className="shrink-0 text-right">
-                                            <p className="text-sm font-black text-gray-700 dark:text-white">
-                                                $
-                                                {acc.balance?.toFixed(2) ||
-                                                    "0.00"}
-                                            </p>
+                                        <div className="shrink-0 text-right flex flex-col items-end gap-1">
+                                            <div className="flex items-center gap-2">
+                                                <AccountIbAttributionBadge
+                                                    accountId={acc.id}
+                                                    initialAttribution={acc.ibAttribution}
+                                                    userId={user.id}
+                                                    accountNumber={acc.accountNumber}
+                                                />
+                                                <p className="text-sm font-black text-gray-700 dark:text-white">
+                                                    $
+                                                    {acc.balance?.toFixed(2) ||
+                                                        "0.00"}
+                                                </p>
+                                            </div>
                                             <span
-                                                className={`inline-block mt-0.5 text-[11px] font-bold uppercase tracking-wider ${
+                                                className={`inline-block text-[11px] font-bold uppercase tracking-wider ${
                                                     acc.status === "CONNECTED"
                                                         ? "text-green-500"
                                                         : "text-gray-500"
@@ -569,6 +751,7 @@ export default async function UserDetailPage({
                 </div>
 
                 <div className="min-w-0">
+                    <UserNarrativeSummary classification={narrativeClassification} />
                     <UserDetailTabsWrapper
                         overviewContent={
                             <UserOverviewTab user={serializedUser} />
@@ -577,6 +760,47 @@ export default async function UserDetailPage({
                         ibPerformanceContent={
                             <UserIbPerformanceTab user={serializedUser} />
                         }
+                        journalContent={
+                            <UserJournalTab
+                                entries={serializedUser.journalEntries || []}
+                                totalCount={user._count.journalEntries}
+                            />
+                        }
+                        tradePlansContent={
+                            <UserTradePlansTab
+                                plans={serializedUser.tradePlans || []}
+                                strategies={serializedUser.strategies || []}
+                            />
+                        }
+                        rulesGoalsContent={
+                            <UserRulesGoalsTab
+                                rules={serializedUser.tradingRules || []}
+                                goals={serializedUser.traderGoals || []}
+                                ruleChecks={serializedUser.ruleChecks || []}
+                            />
+                        }
+                        growthCoachContent={
+                            <UserGrowthCoachTab
+                                missionProgress={serializedUser.missionProgress || []}
+                                edgeEvents={serializedUser.edgeEvents || []}
+                                experiments={serializedUser.improvementExperiments || []}
+                                coachPlans={serializedUser.coachActionPlans || []}
+                            />
+                        }
+                        reportsNotesContent={
+                            <UserReportsNotesTab
+                                reports={serializedUser.tradingReports || []}
+                                dayNotes={serializedUser.tradingDayNotes || []}
+                                insights={serializedUser.insightSnapshots || []}
+                            />
+                        }
+                        counts={{
+                            journal: user._count.journalEntries,
+                            plans: (user._count.tradePlans || 0) + (user._count.strategies || 0),
+                            rules: (user._count.tradingRules || 0) + (user._count.traderGoals || 0),
+                            growth: (user._count.improvementExperiments || 0) + (user._count.coachActionPlans || 0),
+                            reports: (user._count.tradingReports || 0) + (user._count.tradingDayNotes || 0),
+                        }}
                     />
                 </div>
             </div>

@@ -27,15 +27,10 @@ export default async function EmailLabPage() {
         redirect("/dashboard");
     }
 
-    // 2. Security switch
-    if (process.env.ENABLE_EMAIL_TEST_PAGE !== "true") {
-        notFound();
-    }
-
-    // 3. Safe environment configs to pass to client
-    const defaultRecipient = process.env.EMAIL_TEST_TO || "";
+    // Safe environment configs to pass to client
+    const defaultRecipient = process.env.EMAIL_TEST_TO || user.email || "";
     const allowCustomRecipient =
-        process.env.EMAIL_TEST_ALLOW_CUSTOM_TO === "true";
+        process.env.EMAIL_TEST_ALLOW_CUSTOM_TO !== "false";
 
     return (
         <div className="w-full max-w-full py-6 pr-6">

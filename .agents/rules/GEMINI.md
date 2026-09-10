@@ -98,6 +98,19 @@ Before modifying any file:
    - ✅ Honest trader empathy: "no magic indicators", "cold risk math", "hard lessons from blown accounts".
    - ✅ Brand name consistency: **TheNextTrade** only (never use old name "Breek" in user-facing copy).
 
+### 🎨 UI & UX Invariants (MANDATORY)
+1. **Banned Generic Placeholders:**
+   - ❌ CẤM placeholder ví dụ chung chung (`e.g. 200`, `e.g. Primary Scalping`, `placeholder="Enter..."`).
+   - ✅ Dùng Label rõ ràng và Helper Text. Chỉ dùng placeholder khi có syntax mask/format đặc thù.
+2. **Prefix Color Swatch Pattern:**
+   - ❌ CẤM tạo section riêng chiếm 2 hàng 20-30 nút màu gây phình modal.
+   - ✅ Nhúng trực tiếp nút swatch `[ 🟢 ▾ ]` vào prop `prefix` của `PremiumInput` (kèm `Popover` bảng màu tự đóng khi chọn).
+3. **2x2 Matrix Specs Card:**
+   - ✅ Các bộ thông số kỹ thuật (Account #, Broker, Server, Platform) luôn đóng gói thành card lưới 2 hàng x 2 cột có `divide-x/y`, label trên value dưới, chống tràn chuỗi dài.
+4. **Clean Telemetry Status:**
+   - ❌ CẤM nhãn chữ cứng `Live (EA)` trong table data cells.
+   - ✅ Dùng chấm trạng thái phát xung (pulsing green dot) + timestamp tương đối (`formatDistanceToNow`) kèm tooltip.
+
 ---
 
 ## 5. SOCRATIC GATE

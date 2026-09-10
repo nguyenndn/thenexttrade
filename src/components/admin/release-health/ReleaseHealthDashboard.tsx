@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FileText, Users, BarChart3, Zap, Activity } from "lucide-react";
+import { Users, BarChart3, Zap, Activity } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import type { ReleaseHealthData } from "@/lib/admin/release-health.server";
 
@@ -16,9 +16,12 @@ function HealthIndicator({ status }: { status: "green" | "amber" | "red" }) {
         red: "bg-red-500",
     };
     return (
-        <div
-            className={`w-2.5 h-2.5 rounded-full ${colors[status]} shrink-0`}
-        />
+        <span className="relative flex h-2.5 w-2.5 shrink-0">
+            {status === "green" && (
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+            )}
+            <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${colors[status]}`} />
+        </span>
     );
 }
 
@@ -36,22 +39,24 @@ function HealthCard({
     href?: string;
 }) {
     return (
-        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-5">
-            <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2.5">
-                    <div className="p-2 bg-gray-100 dark:bg-white/5 rounded-lg">
-                        <Icon
-                            size={16}
-                            className="text-gray-600 dark:text-gray-400"
-                        />
+        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-5 flex flex-col justify-between">
+            <div>
+                <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2.5">
+                        <div className="p-2 bg-gray-100 dark:bg-white/5 rounded-xl">
+                            <Icon
+                                size={16}
+                                className="text-gray-600 dark:text-gray-400"
+                            />
+                        </div>
+                        <h3 className="text-sm font-bold text-gray-800 dark:text-white">
+                            {title}
+                        </h3>
                     </div>
-                    <h3 className="text-sm font-bold text-gray-800 dark:text-white">
-                        {title}
-                    </h3>
+                    <HealthIndicator status={status} />
                 </div>
-                <HealthIndicator status={status} />
+                <div className="space-y-2">{children}</div>
             </div>
-            <div className="space-y-2">{children}</div>
             {href && (
                 <Link
                     href={href}
@@ -89,7 +94,7 @@ function FunnelRow({
     label,
     count,
     rate,
-    total,
+    total: _total,
 }: {
     label: string;
     count: number;
@@ -270,7 +275,7 @@ export function ReleaseHealthDashboard({ data }: Props) {
                         <TabsList className="shrink-0">
                             <TabsTrigger
                                 value="all"
-                                className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+                                className="px-4 py-1.5 rounded-xl text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
                                 activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
                                 activeTextClassName="!text-white"
                             >
@@ -278,7 +283,7 @@ export function ReleaseHealthDashboard({ data }: Props) {
                             </TabsTrigger>
                             <TabsTrigger
                                 value="activation"
-                                className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+                                className="px-4 py-1.5 rounded-xl text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
                                 activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
                                 activeTextClassName="!text-white"
                             >
@@ -286,7 +291,7 @@ export function ReleaseHealthDashboard({ data }: Props) {
                             </TabsTrigger>
                             <TabsTrigger
                                 value="ops"
-                                className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+                                className="px-4 py-1.5 rounded-xl text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
                                 activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
                                 activeTextClassName="!text-white"
                             >
@@ -304,7 +309,7 @@ export function ReleaseHealthDashboard({ data }: Props) {
                 </div>
 
                 <TabsContent value="all" className="mt-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         {accountSyncCard}
                         {weeklyReviewsCard}
                         {newUsersCard}

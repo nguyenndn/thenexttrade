@@ -1,6 +1,6 @@
 import "server-only";
 import type { ReportPeriod, AdminReportsData } from "./types";
-import { getDateRange } from "./date-range";
+import { getDateRange, type ReportFilterInput } from "./date-range";
 import { getNorthStarReport } from "./north-star.server";
 import { getActionQueueReport } from "./action-queue.server";
 import { getAlertReport } from "./alerts.server";
@@ -13,9 +13,9 @@ import { getDataQualityReport } from "./data-quality.server";
 import { getBusinessHealthReport } from "./business-health.server";
 
 export async function getAdminReportsData(
-    period: ReportPeriod
+    periodOrFilter?: ReportPeriod | ReportFilterInput
 ): Promise<AdminReportsData> {
-    const range = getDateRange(period);
+    const range = getDateRange(periodOrFilter || "30d");
 
     const [
         actionQueue,
@@ -42,7 +42,8 @@ export async function getAdminReportsData(
     ]);
 
     return {
-        period,
+        period: range.period,
+        range,
         generatedAt: new Date().toISOString(),
         actionQueue,
         northStar,
