@@ -176,7 +176,8 @@ export function DropdownMenuContent({
     React.useEffect(() => {
         if (isOpen && triggerRef.current) {
             const updatePosition = () => {
-                const triggerRect = triggerRef.current!.getBoundingClientRect();
+                if (!triggerRef.current) return;
+                const triggerRect = triggerRef.current.getBoundingClientRect();
 
                 let top = triggerRect.bottom + 4;
                 let left = triggerRect.left;
@@ -207,11 +208,12 @@ export function DropdownMenuContent({
             };
 
             updatePosition();
-            setTimeout(updatePosition, 0);
+            const frameId = requestAnimationFrame(updatePosition);
 
             window.addEventListener("resize", updatePosition);
             window.addEventListener("scroll", updatePosition, true);
             return () => {
+                cancelAnimationFrame(frameId);
                 window.removeEventListener("resize", updatePosition);
                 window.removeEventListener("scroll", updatePosition, true);
             };
@@ -219,6 +221,11 @@ export function DropdownMenuContent({
     }, [isOpen, triggerRef, align]);
 
     if (!mounted) return null;
+
+    const currentTriggerWidth = triggerRef.current
+        ? triggerRef.current.getBoundingClientRect().width
+        : position.width;
+    const effectiveWidth = position.width || currentTriggerWidth || 0;
 
     return createPortal(
         <AnimatePresence>
@@ -236,9 +243,17 @@ export function DropdownMenuContent({
                     {...props}
                     style={{
                         ...externalStyle,
+                        ["--radix-dropdown-menu-trigger-width" as any]:
+                            effectiveWidth > 0
+                                ? `${effectiveWidth}px`
+                                : undefined,
                         top: `${position.top}px`,
                         left: `${position.left}px`,
-                        minWidth: `${position.width}px`,
+                        minWidth:
+                            effectiveWidth > 0
+                                ? `${effectiveWidth}px`
+                                : undefined,
+                        maxWidth: "calc(100vw - 16px)",
                         transformOrigin: "top",
                     }}
                 >

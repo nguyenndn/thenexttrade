@@ -42,6 +42,7 @@ import {
 } from "@/actions/cloud-sync";
 import { ServerCombobox } from "@/components/trading-accounts/ServerCombobox";
 import { detectBroker } from "@/lib/ea/broker-detection";
+import { formatSyncErrorMessage } from "@/lib/sync/sync-source";
 import {
     BROKER_INFO,
     SupportedBroker,
@@ -95,7 +96,7 @@ export function CloudSyncModal({
     const [hasCredentials, setHasCredentials] = useState(initialHasCredentials);
     const [isEditingPassword, setIsEditingPassword] = useState(!initialHasCredentials);
     const [latestJob, setLatestJob] = useState<any>(account.latestJob || null);
-    const [jobWaitSeconds, setJobWaitSeconds] = useState(0);
+    const [_jobWaitSeconds, setJobWaitSeconds] = useState(0);
     const [server, setServer] = useState(account.server || "");
     const [broker, setBroker] = useState<string | null>(account.broker || null);
     const [isEditingServer, setIsEditingServer] = useState(!account.server);
@@ -224,10 +225,7 @@ export function CloudSyncModal({
                         );
                         onUpdated?.();
                     } else {
-                        toast.error(
-                            res.latestJob.errorMessage ||
-                                "Cloud sync failed. Please check server or investor password."
-                        );
+                        toast.error(formatSyncErrorMessage(res.latestJob));
                     }
                 }
             }
@@ -363,7 +361,7 @@ export function CloudSyncModal({
                             <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-2">
                                     <span className="font-bold text-[11px] uppercase tracking-wider text-rose-600 dark:text-rose-400">
-                                        {latestJob.errorCode === "JOB_TIMEOUT" ? "Sync Timed Out" : "Sync Failed"}
+                                        Sync Failed
                                     </span>
                                     {latestJob.createdAt && (
                                         <span className="text-[10px] text-rose-500/80 font-normal">
@@ -372,7 +370,7 @@ export function CloudSyncModal({
                                     )}
                                 </div>
                                 <p className="text-[11px] leading-relaxed mt-0.5 text-rose-600/90 dark:text-rose-300/90">
-                                    {latestJob.errorMessage || latestJob.message || "The sync worker was unable to complete this request."}
+                                    {formatSyncErrorMessage(latestJob)}
                                 </p>
                             </div>
                         </div>
@@ -456,7 +454,7 @@ export function CloudSyncModal({
                                         setServer(account.server || "");
                                         setBroker(account.broker || null);
                                     }}
-                                    className="h-5 px-1.5 text-[10px] text-gray-500 hover:text-gray-700 dark:hover:text-white rounded-lg"
+                                    className="h-5 px-2 text-[10px] text-gray-500 hover:text-gray-700 dark:hover:text-white rounded-xl"
                                 >
                                     Cancel
                                 </Button>
@@ -506,7 +504,7 @@ export function CloudSyncModal({
                                                 setIsEditingPassword(false);
                                                 setPassword("");
                                             }}
-                                            className="h-6 px-2 text-[11px] text-gray-500 hover:text-gray-700 dark:hover:text-white rounded-lg"
+                                            className="h-6 px-2 text-[11px] text-gray-500 hover:text-gray-700 dark:hover:text-white rounded-xl"
                                         >
                                             Cancel
                                         </Button>
@@ -609,7 +607,7 @@ export function CloudSyncModal({
                 {/* Manual Sync Support Request Trigger */}
                 <div className="mt-2.5 flex items-center justify-between rounded-xl border border-gray-200/80 bg-gray-50/60 px-3 py-2 text-xs dark:border-white/5 dark:bg-white/[0.02]">
                     <span className="text-[11px] text-gray-500 dark:text-gray-400">
-                        Sync failing or connection timeout?
+                        Sync failing or need assistance?
                     </span>
                     <button
                         type="button"

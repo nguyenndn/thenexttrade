@@ -32,7 +32,7 @@ import { toast } from "sonner";
 import { trackEvent } from "@/lib/track";
 import { cn } from "@/lib/utils";
 import type { SyncMethod } from "@/lib/onboarding/first-session.server";
-import { normalizeSyncSource } from "@/lib/sync/sync-source";
+import { normalizeSyncSource, formatSyncErrorMessage } from "@/lib/sync/sync-source";
 
 // Compute the sync method label for each account.
 // Uses syncSource as the primary source of truth (set by the API on each sync).
@@ -247,9 +247,8 @@ export function AccountCard({
             ) {
                 return (
                     <Button
-                        variant="ghost"
                         onClick={() => onUnlockPro(account)}
-                        className="flex h-8 min-w-[92px] items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 text-[11px] font-black text-white shadow-sm shadow-amber-500/20 transition-all hover:from-amber-600 hover:to-orange-600 hover:text-white"
+                        className="flex h-8 min-w-[92px] items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 text-[11px] font-black text-white shadow-sm shadow-amber-500/20 transition-all hover:from-amber-600 hover:to-orange-600 hover:text-white border-0"
                         title="Apply for Pro"
                         aria-label="Activate Pro tier"
                     >
@@ -263,9 +262,8 @@ export function AccountCard({
         if (elig.canRequest && onUnlockPro) {
             return (
                 <Button
-                    variant="ghost"
                     onClick={() => onUnlockPro(account)}
-                    className="flex h-8 min-w-[92px] items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 text-[11px] font-black text-white shadow-sm shadow-amber-500/20 transition-all hover:from-amber-600 hover:to-orange-600 hover:text-white"
+                    className="flex h-8 min-w-[92px] items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 text-[11px] font-black text-white shadow-sm shadow-amber-500/20 transition-all hover:from-amber-600 hover:to-orange-600 hover:text-white border-0"
                     title={elig.status === "REJECTED" ? "Re-apply for Pro" : "Apply for Pro"}
                     aria-label={elig.status === "REJECTED" ? "Re-apply for Pro access" : "Activate Pro tier"}
                 >
@@ -318,13 +316,13 @@ export function AccountCard({
                             type="button"
                             onClick={() => setIsCloudSyncOpen(true)}
                             className="inline-flex items-center gap-1.5 text-[9px] font-bold px-2 py-[3px] rounded-xl border whitespace-nowrap bg-rose-500/10 text-rose-700 border-rose-300 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/30 shadow-sm hover:bg-rose-500/20 transition-colors cursor-pointer"
-                            title={latestJob?.errorMessage || latestJob?.message || "Latest sync attempt timed out or failed. Click to retry."}
+                            title={formatSyncErrorMessage(latestJob)}
                         >
                             <span className="relative flex h-1.5 w-1.5 shrink-0">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
                                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-rose-500" />
                             </span>
-                            {latestJob?.errorCode === "JOB_TIMEOUT" ? "Sync Timeout" : "Sync Failed"}
+                            Sync Failed
                         </button>
                     ) : syncMethod.variant !== "none" ? (
                         <span
@@ -644,7 +642,6 @@ export function AccountCard({
                                     </Link>
                                 ) : (
                                     <Button
-                                        variant="ghost"
                                         onClick={() => {
                                             trackEvent(
                                                 "account_card_sync_first_trades_clicked",
@@ -660,7 +657,7 @@ export function AccountCard({
                                                 preferredSyncMethod
                                             );
                                         }}
-                                        className="flex h-8 items-center justify-center gap-1.5 rounded-xl bg-primary px-3.5 text-[11px] font-black text-white shadow-sm shadow-primary/20 transition-all hover:bg-primary/90 hover:text-white group/link"
+                                        className="flex h-8 items-center justify-center gap-1.5 rounded-xl bg-primary px-3.5 text-[11px] font-black text-white shadow-sm shadow-primary/20 transition-all hover:bg-primary/90 hover:text-white group/link border-0"
                                         aria-label="Sync first trades"
                                     >
                                         {preferredSyncMethod === "EA_SYNC" ? (

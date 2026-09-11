@@ -20,7 +20,9 @@ import {
     AlertTriangle,
     Trash2,
     ChevronDown,
+    Check,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import {
     DropdownMenu,
@@ -731,23 +733,56 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                         type="button"
                                         className="w-full justify-between px-3 py-2.5 h-auto text-sm font-normal rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-gray-700 dark:text-white"
                                     >
-                                        {selectedAccountId === "user-level"
-                                            ? "Global (User-level access)"
-                                            : user.tradingAccounts.find(a => a.id === selectedAccountId)
-                                            ? `${user.tradingAccounts.find(a => a.id === selectedAccountId)?.broker} · #${user.tradingAccounts.find(a => a.id === selectedAccountId)?.accountNumber}`
-                                            : "Select Target Account"}
-                                        <ChevronDown size={16} className="opacity-60" />
+                                        <span className="truncate pr-2">
+                                            {selectedAccountId === "user-level"
+                                                ? "Global (User-level access)"
+                                                : user.tradingAccounts.find(a => a.id === selectedAccountId)
+                                                ? `${user.tradingAccounts.find(a => a.id === selectedAccountId)?.broker} · #${user.tradingAccounts.find(a => a.id === selectedAccountId)?.accountNumber}`
+                                                : "Select Target Account"}
+                                        </span>
+                                        <ChevronDown size={16} className="opacity-60 shrink-0" />
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="start" className="w-full min-w-[240px]">
-                                    <DropdownMenuItem onClick={() => setSelectedAccountId("user-level")}>
-                                        Global (User-level access)
+                                <DropdownMenuContent
+                                    align="start"
+                                    className="w-[--radix-dropdown-menu-trigger-width] max-h-60 overflow-y-auto rounded-xl p-1.5 shadow-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]"
+                                >
+                                    <DropdownMenuItem
+                                        onClick={() => setSelectedAccountId("user-level")}
+                                        className={cn(
+                                            "flex items-center justify-between gap-2 px-3 py-2 text-xs rounded-lg transition-colors cursor-pointer",
+                                            selectedAccountId === "user-level"
+                                                ? "bg-primary/10 text-primary font-semibold"
+                                                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5"
+                                        )}
+                                    >
+                                        <span className="truncate">Global (User-level access)</span>
+                                        {selectedAccountId === "user-level" && (
+                                            <Check size={14} className="text-primary shrink-0" />
+                                        )}
                                     </DropdownMenuItem>
-                                    {user.tradingAccounts.map((acc) => (
-                                        <DropdownMenuItem key={acc.id} onClick={() => setSelectedAccountId(acc.id)}>
-                                            {acc.broker} · #{acc.accountNumber} ({acc.name || "Unnamed"})
-                                        </DropdownMenuItem>
-                                    ))}
+                                    {user.tradingAccounts.map((acc) => {
+                                        const isSelected = selectedAccountId === acc.id;
+                                        return (
+                                            <DropdownMenuItem
+                                                key={acc.id}
+                                                onClick={() => setSelectedAccountId(acc.id)}
+                                                className={cn(
+                                                    "flex items-center justify-between gap-2 px-3 py-2 text-xs rounded-lg transition-colors cursor-pointer",
+                                                    isSelected
+                                                        ? "bg-primary/10 text-primary font-semibold"
+                                                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5"
+                                                )}
+                                            >
+                                                <span className="truncate">
+                                                    {acc.broker} · #{acc.accountNumber} {acc.name ? `(${acc.name})` : ""}
+                                                </span>
+                                                {isSelected && (
+                                                    <Check size={14} className="text-primary shrink-0" />
+                                                )}
+                                            </DropdownMenuItem>
+                                        );
+                                    })}
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </div>

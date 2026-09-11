@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { CloudSyncModal } from "./CloudSyncModal";
 import { cn } from "@/lib/utils";
-import { normalizeSyncSource } from "@/lib/sync/sync-source";
+import { normalizeSyncSource, formatSyncErrorMessage } from "@/lib/sync/sync-source";
 import type { SyncMethod } from "@/lib/onboarding/first-session.server";
 
 interface AccountTableProps {
@@ -301,7 +301,7 @@ export function AccountTable({
                                                 type="button"
                                                 onClick={() => setCloudSyncAccount(account)}
                                                 className="group/failed flex flex-col gap-0.5 text-left cursor-pointer"
-                                                title={latestJob?.errorMessage || latestJob?.message || "Latest sync attempt timed out or failed. Click to retry."}
+                                                title={formatSyncErrorMessage(latestJob)}
                                             >
                                                 <div className="flex items-center gap-1.5">
                                                     <span className="relative flex h-2 w-2 shrink-0">
@@ -309,7 +309,7 @@ export function AccountTable({
                                                         <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500" />
                                                     </span>
                                                     <span className="text-xs font-bold text-rose-600 dark:text-rose-400 group-hover/failed:underline flex items-center gap-1">
-                                                        {latestJob?.errorCode === "JOB_TIMEOUT" ? "Sync Timeout" : "Sync Failed"}
+                                                        Sync Failed
                                                     </span>
                                                 </div>
                                                 <span className="text-[10px] font-medium text-gray-400 dark:text-gray-500 pl-3.5">
@@ -389,9 +389,9 @@ export function AccountTable({
                                                 variant="outline"
                                                 size="sm"
                                                 onClick={() => onUnlockPro(account)}
-                                                className="h-7 px-2.5 text-[10px] font-black rounded-xl border-amber-500/40 text-amber-600 dark:text-amber-400 bg-amber-500/5 hover:bg-amber-500/15 transition-all shadow-sm"
+                                                className="h-7 px-2.5 text-[10px] font-black rounded-xl border-amber-500/40 text-amber-600 dark:text-amber-400 bg-amber-500/5 hover:bg-amber-500/15 transition-all shadow-sm gap-1.5"
                                             >
-                                                <Crown size={10} className="mr-1 text-amber-500" />
+                                                <Crown size={10} className="text-amber-500" />
                                                 {account.eligibility.status === "REJECTED" ? "Re-apply" : "Unlock Pro"}
                                             </Button>
                                         ) : account.eligibility?.status === "REJECTED" ? (

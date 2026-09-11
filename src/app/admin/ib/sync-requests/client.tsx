@@ -670,10 +670,10 @@ export function SyncRequestsClient({
                                                                     variant="outline"
                                                                     disabled={actionLoadingId === item.id}
                                                                     onClick={() => handleRetry(item.id)}
-                                                                    className="h-8 px-3 rounded-xl text-xs font-bold text-primary hover:text-primary/80"
+                                                                    className="h-8 px-3 rounded-xl text-xs font-bold text-primary hover:text-primary/80 gap-1.5"
                                                                 >
                                                                     <RefreshCw
-                                                                        className={`h-3 w-3 mr-1 ${
+                                                                        className={`h-3 w-3 ${
                                                                             actionLoadingId === item.id ? "animate-spin" : ""
                                                                         }`}
                                                                     />
@@ -820,12 +820,12 @@ export function SyncRequestsClient({
                                     variant="primary"
                                     disabled={actionLoadingId === deleteTargetJob.id}
                                     onClick={() => handleDelete(deleteTargetJob.id)}
-                                    className="bg-rose-600 hover:bg-rose-500 text-white font-bold"
+                                    className="bg-rose-600 hover:bg-rose-500 text-white font-bold gap-2"
                                 >
                                     {actionLoadingId === deleteTargetJob.id ? (
-                                        <RefreshCw className="h-4 w-4 animate-spin mr-1" />
+                                        <RefreshCw className="h-4 w-4 animate-spin" />
                                     ) : (
-                                        <Trash2 className="h-4 w-4 mr-1" />
+                                        <Trash2 className="h-4 w-4" />
                                     )}
                                     Delete Request
                                 </Button>
@@ -885,12 +885,12 @@ export function SyncRequestsClient({
                                     variant="primary"
                                     disabled={isBulkDeleting}
                                     onClick={handleBulkDelete}
-                                    className="bg-rose-600 hover:bg-rose-500 text-white font-bold"
+                                    className="bg-rose-600 hover:bg-rose-500 text-white font-bold gap-2"
                                 >
                                     {isBulkDeleting ? (
-                                        <RefreshCw className="h-4 w-4 animate-spin mr-1" />
+                                        <RefreshCw className="h-4 w-4 animate-spin" />
                                     ) : (
-                                        <Trash2 className="h-4 w-4 mr-1" />
+                                        <Trash2 className="h-4 w-4" />
                                     )}
                                     Delete {selectedIds.size} {selectedIds.size === 1 ? "Request" : "Requests"}
                                 </Button>

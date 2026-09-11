@@ -158,9 +158,7 @@ export async function getTradingAccounts(page = 1, limit = 12) {
             const isPending = latestJob.status === "PENDING";
             const STALE_THRESHOLD_MS = isPending ? 60 * 1000 : 120 * 1000;
             if (ageMs > STALE_THRESHOLD_MS) {
-                const timeoutMsg = isPending
-                    ? "Sync timed out: No worker available to pick up request. Click Sync to try again or request Support Sync."
-                    : "Sync timed out during processing. Click Sync to try again.";
+                const timeoutMsg = "Unable to sync trade history. Please try again or request sync support.";
 
                 // Persist FAILED state to database so it doesn't linger
                 prisma.mt5ImportJob

@@ -125,9 +125,8 @@ export async function triggerCloudSync(
                 data: {
                     status: "FAILED",
                     errorCode: "JOB_TIMEOUT",
-                    errorMessage: isPending
-                        ? "Sync request timed out waiting for worker pickup. Click Sync to try again or request Support Sync."
-                        : "Previous sync request timed out during processing. Click Sync to try again.",
+                    errorMessage:
+                        "Unable to sync trade history. Please try again or request sync support.",
                     completedAt: new Date(),
                 },
             });
@@ -236,9 +235,8 @@ export async function getCloudSyncStatus(accountId: string) {
         const isPending = latestJob.status === "PENDING";
         const STALE_THRESHOLD_MS = isPending ? 60 * 1000 : 120 * 1000;
         if (ageMs > STALE_THRESHOLD_MS) {
-            const timeoutReason = isPending
-                ? "Sync timed out: No background worker was available to pick up this request. Click Sync to retry or request manual Support Sync."
-                : "Sync timed out during processing. The MT5 connection may have stalled. Click Sync to retry.";
+            const timeoutReason =
+                "Unable to sync trade history. Please try again or request sync support.";
 
             await prisma.mt5ImportJob.update({
                 where: { id: latestJob.id },

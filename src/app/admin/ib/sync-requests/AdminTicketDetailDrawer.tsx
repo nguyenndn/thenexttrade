@@ -412,18 +412,18 @@ export function AdminTicketDetailDrawer({
                                         setFailReason("");
                                         setIsFailDialogOpen(true);
                                     }}
-                                    className="rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10"
+                                    className="rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10 gap-1.5"
                                 >
-                                    <X size={14} className="mr-1" />
+                                    <X size={14} />
                                     Mark Failed
                                 </Button>
                                 <Button
                                     variant="primary"
                                     onClick={handleResolve}
                                     isLoading={isResolving}
-                                    className="rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs"
+                                    className="rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs gap-1.5"
                                 >
-                                    <Check size={14} className="mr-1" />
+                                    <Check size={14} />
                                     Mark Synced
                                 </Button>
                             </div>

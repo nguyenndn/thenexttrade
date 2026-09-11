@@ -22,6 +22,7 @@ import { AccountTable } from "./AccountTable";
 import { AddAccountModal } from "./AddAccountModal";
 import { SyncSupportDrawer } from "./SyncSupportDrawer";
 import { getUserSupportSyncTickets } from "@/actions/support-sync";
+import { formatSyncErrorMessage } from "@/lib/sync/sync-source";
 import { cn } from "@/lib/utils";
 import { AccountSettingsModal } from "./AccountSettingsModal";
 import { RegenerateKeyModal } from "./RegenerateKeyModal";
@@ -230,9 +231,9 @@ export function AccountListClient({
 
                 // Hard safety net: 90 seconds timeout
                 if (Date.now() - syncInfo.startedAt > 90000) {
-                    toast.error(`Cloud Sync Timed Out: ${accLabel}`, {
+                    toast.error(`Cloud Sync Failed: ${accLabel}`, {
                         description:
-                            "The cloud worker did not complete the sync in time. Please verify credentials or request Sync Support.",
+                            "Unable to sync trade history. Please try again or request sync support.",
                         action: {
                             label: "Sync Support",
                             onClick: () => {
@@ -281,16 +282,8 @@ export function AccountListClient({
                             router.refresh();
                         });
                     } else if (res.latestJob.status === "FAILED") {
-                        const isTimeout = res.latestJob.errorCode === "JOB_TIMEOUT";
-                        toast.error(
-                            isTimeout
-                                ? `Cloud Sync Timed Out: ${accLabel}`
-                                : `Cloud Sync Failed: ${accLabel}`,
-                            {
-                                description:
-                                    res.latestJob.errorMessage ||
-                                    res.latestJob.message ||
-                                    "Failed to sync trade history.",
+                        toast.error(`Cloud Sync Failed: ${accLabel}`, {
+                            description: formatSyncErrorMessage(res.latestJob),
                                 action: {
                                     label: "Sync Support",
                                     onClick: () => {
