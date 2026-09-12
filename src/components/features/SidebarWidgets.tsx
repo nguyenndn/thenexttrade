@@ -41,14 +41,14 @@ async function RecentPostsWidget() {
     const articles = await getRecentPosts();
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl shadow-sm border border-dashboard overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-2xl shadow-sm border border-dashboard overflow-hidden">
             {/* Accent top stripe */}
-            <div className="h-1 bg-gradient-to-r from-primary to-cyan-400" />
+            <div className="h-1 bg-gradient-to-r from-gold to-amber-500" />
 
             <div className="p-5">
                 {/* Header with accent bar */}
                 <div className="flex items-center justify-between mb-5">
-                    <h3 className="font-bold text-gray-700 dark:text-white text-base relative pl-3 before:content-[''] before:absolute before:left-0 before:top-0.5 before:bottom-0.5 before:w-1 before:bg-primary before:rounded-full">
+                    <h3 className="font-bold text-gray-700 dark:text-white text-base relative pl-3 before:content-[''] before:absolute before:left-0 before:top-0.5 before:bottom-0.5 before:w-1 before:bg-gold before:rounded-full">
                         Recent Posts
                     </h3>
                 </div>
@@ -61,7 +61,7 @@ async function RecentPostsWidget() {
                             href={`/articles/${article.slug}`}
                             className="flex gap-3 group items-center p-2 -mx-2 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                         >
-                            <div className="relative w-14 h-14 overflow-hidden rounded-full border-2 border-dashboard group-hover:border-primary transition-all shrink-0 shadow-sm">
+                            <div className="relative w-14 h-14 overflow-hidden rounded-full border-2 border-dashboard group-hover:border-gold transition-all shrink-0 shadow-sm">
                                 {article.thumbnail ? (
                                     <SafeImage
                                         src={article.thumbnail}
@@ -76,7 +76,7 @@ async function RecentPostsWidget() {
                                 )}
                             </div>
                             <div className="flex-1 min-w-0">
-                                <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200 group-hover:text-primary transition-colors leading-snug line-clamp-2">
+                                <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200 group-hover:text-gold transition-colors leading-snug line-clamp-2">
                                     {article.title}
                                 </h4>
                                 <span className="text-xs text-gray-500 mt-1 block">
@@ -104,7 +104,7 @@ async function TagCloudWidget() {
 
     return (
         <div className="mb-8">
-            <h3 className="font-bold text-gray-700 dark:text-white mb-6 relative pl-3 before:content-[''] before:absolute before:left-0 before:top-1 before:bottom-1 before:w-1 before:bg-blue-500 before:rounded-full">
+            <h3 className="font-bold text-gray-700 dark:text-white mb-6 relative pl-3 before:content-[''] before:absolute before:left-0 before:top-1 before:bottom-1 before:w-1 before:bg-gold before:rounded-full">
                 Tag Cloud
             </h3>
             <div className="flex flex-wrap gap-2">
@@ -112,14 +112,11 @@ async function TagCloudWidget() {
                     <Link
                         key={tag.id}
                         href={`/knowledge?tag=${tag.slug}`}
-                        className={`text-xs font-bold px-3 py-1.5 rounded-full text-white transition-opacity hover:opacity-80 block
- ${
-     i % 3 === 0
-         ? "bg-[#FF2E5B] shadow-[#FF2E5B]/20"
-         : i % 3 === 1
-           ? "bg-primary shadow-primary/20"
-           : "bg-[#673AB7] shadow-[#673AB7]/20"
- } shadow-lg`}
+                        className={`text-xs font-bold px-3 py-1.5 rounded-full transition-all duration-300 hover:scale-105 block border ${
+                            i % 3 === 0
+                                ? "bg-gradient-to-r from-gold to-amber-600 border-gold/40 text-white shadow-md shadow-gold/20"
+                                : "bg-white/70 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:border-gold/40 hover:text-gold hover:bg-white"
+                        }`}
                     >
                         #{tag.name}
                     </Link>
@@ -134,7 +131,7 @@ async function CategoriesWidget() {
 
     return (
         <div className="mb-8">
-            <h3 className="font-bold text-gray-700 dark:text-white mb-6 relative pl-3 before:content-[''] before:absolute before:left-0 before:top-1 before:bottom-1 before:w-1 before:bg-purple-500 before:rounded-full">
+            <h3 className="font-bold text-gray-700 dark:text-white mb-6 relative pl-3 before:content-[''] before:absolute before:left-0 before:top-1 before:bottom-1 before:w-1 before:bg-gold before:rounded-full">
                 Categories
             </h3>
             <ul className="space-y-2">
@@ -144,10 +141,10 @@ async function CategoriesWidget() {
                             href={`/knowledge?category=${cat.slug}`}
                             className="flex justify-between items-center group"
                         >
-                            <span className="text-sm font-medium text-gray-600 dark:text-gray-500 group-hover:text-primary transition-colors">
+                            <span className="text-sm font-medium text-gray-600 dark:text-gray-500 group-hover:text-gold transition-colors">
                                 {cat.name}
                             </span>
-                            <span className="text-xs font-bold bg-gray-100 dark:bg-white/10 text-gray-600 px-2 py-0.5 rounded-full group-hover:bg-primary group-hover:text-white transition-colors">
+                            <span className="text-xs font-bold bg-gray-100 dark:bg-white/10 text-gray-600 px-2 py-0.5 rounded-full group-hover:bg-gold group-hover:text-white transition-colors">
                                 {cat._count.articles}
                             </span>
                         </Link>
@@ -174,24 +171,19 @@ function TopBrokersWidget() {
     if (brokers.length === 0) return null;
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl shadow-sm border border-dashboard overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-2xl shadow-sm border border-dashboard overflow-hidden">
             {/* Accent top stripe */}
-            <div className="h-1 bg-gradient-to-r from-primary to-cyan-400" />
+            <div className="h-1 bg-gradient-to-r from-gold to-amber-500" />
 
             <div className="p-5">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-5">
-                    <h3 className="font-bold text-gray-700 dark:text-white text-base relative pl-3 before:content-[''] before:absolute before:left-0 before:top-0.5 before:bottom-0.5 before:w-1 before:bg-primary before:rounded-full">
+                    <h3 className="font-bold text-gray-700 dark:text-white text-base relative pl-3 before:content-[''] before:absolute before:left-0 before:top-0.5 before:bottom-0.5 before:w-1 before:bg-gold before:rounded-full">
                         Top Brokers
                     </h3>
                     <Link
                         href="/brokers"
-                        className={buttonVariants({
-                            variant: "primary",
-                            size: "sm",
-                            className:
-                                "items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-bold shrink-0 whitespace-nowrap shadow-sm shadow-primary/20",
-                        })}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-bold shrink-0 whitespace-nowrap bg-gold/10 hover:bg-gold hover:text-white border border-gold/20 text-gold transition-all duration-200 shadow-sm shadow-gold/10"
                     >
                         Compare All <ArrowRight size={12} />
                     </Link>
@@ -231,7 +223,7 @@ function TopBrokersWidget() {
                                             )}
                                         </div>
                                         <div className="min-w-0">
-                                            <h4 className="text-sm font-bold text-gray-700 dark:text-white leading-tight truncate group-hover:text-primary transition-colors">
+                                            <h4 className="text-sm font-bold text-gray-700 dark:text-white leading-tight truncate group-hover:text-gold transition-colors">
                                                 {broker.name}
                                             </h4>
                                         </div>
@@ -320,12 +312,7 @@ function TopBrokersWidget() {
                                         href={broker.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className={buttonVariants({
-                                            variant: "primary",
-                                            size: "sm",
-                                            className:
-                                                "flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-gradient-to-r from-primary to-teal-500 text-[11px] hover:opacity-90 shadow-sm shadow-primary/20 hover:shadow-primary/30",
-                                        })}
+                                        className="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl bg-gradient-to-r from-gold to-amber-600 text-white text-[11px] font-bold hover:brightness-110 shadow-sm shadow-gold/20 transition-all"
                                     >
                                         Open Account
                                         <ArrowRight size={11} />
@@ -346,7 +333,7 @@ function TopBrokersWidget() {
 
 export default function SidebarWidgets() {
     return (
-        <div className="space-y-8 sticky top-24">
+        <div className="space-y-6">
             <RecentPostsWidget />
             <TopBrokersWidget />
             <TagCloudWidget />

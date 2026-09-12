@@ -97,8 +97,8 @@ export const Pagination = ({ totalPages }: PaginationProps) => {
                                             : "outline",
                                     className: `w-9 h-9 p-0 flex items-center justify-center rounded-xl font-bold text-xs transition-all border-white/20 ${
                                         page === currentPage
-                                            ? "bg-primary text-white shadow-lg shadow-primary/30"
-                                            : "text-gray-600 dark:text-gray-500 hover:bg-white/60 dark:hover:bg-white/10"
+                                            ? "!bg-gold !text-white shadow-md shadow-gold/25 !border-gold"
+                                            : "text-gray-600 dark:text-gray-400 hover:bg-white/60 dark:hover:bg-white/10 hover:text-gold"
                                     }`,
                                 })}
                                 aria-label={`Page ${page}`}

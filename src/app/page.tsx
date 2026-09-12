@@ -196,12 +196,7 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                 <HomeTrustMetrics metrics={trustMetrics} />
             </FadeIn>
 
-            {/* 2b. Choose Your Path (Goal Router) */}
-            <FadeIn delay={0.1} direction="up">
-                <StartByGoalSection isLoggedIn={isLoggedIn} />
-            </FadeIn>
-
-            {/* 3. Product Proof & Workflow */}
+            {/* 3. Product Proof & Workflow (Connect -> Analyze -> Improve) */}
             <FadeIn delay={0.1} direction="up">
                 <TradeJournalPreviewSection isLoggedIn={isLoggedIn} />
             </FadeIn>
@@ -211,7 +206,22 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                 <SpreadsheetComparisonSection isLoggedIn={isLoggedIn} />
             </FadeIn>
 
-            {/* 5. Academy Support Section */}
+            {/* 5. The 4-Step Edge Protocol (Narrative Bridge to Fix Journal Leaks) */}
+            <FadeIn delay={0.1} direction="up">
+                <StartByGoalSection isLoggedIn={isLoggedIn} />
+            </FadeIn>
+
+            {/* STEP 01 / 04 · Pre-Trade Risk Math (18 Web Forex Tools) */}
+            <FadeIn delay={0.1} direction="up">
+                <WebForexTools />
+            </FadeIn>
+
+            {/* STEP 02 / 04 · Execution & Discipline (MT5 Trading Systems & EAs) */}
+            <FadeIn delay={0.1} direction="up">
+                <MT5TeaserCTA isLoggedIn={isLoggedIn} />
+            </FadeIn>
+
+            {/* STEP 03 / 04 · Institutional Knowledge (12-Level Academy Curriculum) */}
             <div
                 id="academy-preview"
                 className="relative overflow-hidden bg-white dark:bg-transparent border-t border-dashboard"
@@ -223,6 +233,7 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                     <FadeIn delay={0.1} direction="up">
                         <HomeSectionHeading
                             align="center"
+                            eyebrow="STEP 03 / 04 · INSTITUTIONAL KNOWLEDGE"
                             title="From market novice to funded master"
                             highlight="funded master"
                             description="A structured 12-level progression from foundations to institutional execution: market structure, liquidity mechanics, and cold risk math."
@@ -252,24 +263,13 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                 </section>
             </div>
 
-            {/* 6. Web Forex Tools (Top 3 Priority Calculators) */}
-            <FadeIn delay={0.1} direction="up">
-                <WebForexTools />
-            </FadeIn>
-
-            {/* 7. Broker Rankings Comparison (CFD & Crypto) */}
-            <FadeIn delay={0.1} direction="up">
-                <BrokerRankingsSection />
-            </FadeIn>
-
-            {/* 7b. Broker-Funded Zero-Fee Membership Breakdown */}
+            {/* STEP 04 / 04 · Zero-Fee Capital Preservation (Broker-Funded Sponsorship & Rankings) */}
             <FadeIn delay={0.1} direction="up">
                 <BrokerFundedMembershipSection isLoggedIn={isLoggedIn} />
             </FadeIn>
 
-            {/* 7c. MT5 Trading Systems Teaser CTA */}
             <FadeIn delay={0.1} direction="up">
-                <MT5TeaserCTA isLoggedIn={isLoggedIn} />
+                <BrokerRankingsSection />
             </FadeIn>
 
             {/* 8. Reviews Section */}

@@ -50,28 +50,32 @@ export function BreadcrumbShareButtons({
     };
 
     return (
-        <div className="flex items-center gap-2 shrink-0 rounded-lg px-3 py-1.5">
-            <span className="text-sm text-white font-semibold">Share:</span>
+        <div className="flex items-center gap-2 shrink-0">
+            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 hidden sm:inline">
+                Share:
+            </span>
             <Button
-                variant="ghost"
+                variant="outline"
+                size="icon"
                 onClick={handleShare}
-                className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/30 text-white transition-colors p-0"
+                className="w-8 h-8 rounded-xl border-dashboard dark:border-white/10 text-gray-600 dark:text-gray-300 hover:text-gold hover:border-gold transition-colors p-0"
                 title="Share via Social"
                 aria-label="Share via Social"
             >
-                <Share2 size={14} />
+                <Share2 size={13} />
             </Button>
             <Button
-                variant="ghost"
+                variant="outline"
+                size="icon"
                 onClick={handleCopy}
-                className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/30 text-white transition-colors p-0"
+                className="w-8 h-8 rounded-xl border-dashboard dark:border-white/10 text-gray-600 dark:text-gray-300 hover:text-gold hover:border-gold transition-colors p-0"
                 title="Copy Link"
                 aria-label="Copy Link"
             >
                 {copied ? (
-                    <Check size={14} className="text-white" />
+                    <Check size={13} className="text-gold" />
                 ) : (
-                    <LinkIcon size={14} />
+                    <LinkIcon size={13} />
                 )}
             </Button>
         </div>

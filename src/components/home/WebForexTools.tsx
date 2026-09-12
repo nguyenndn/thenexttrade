@@ -44,7 +44,7 @@ const VISUAL_TOOLS = [
 
 export function WebForexTools() {
     return (
-        <div className="relative overflow-hidden border-t border-dashboard bg-gray-50/50 dark:bg-transparent">
+        <div id="tools-preview" className="relative overflow-hidden border-t border-dashboard bg-gray-50/50 dark:bg-transparent">
             {/* Dot pattern bg - same as Quote/Reviews section but Gold themed */}
             <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2] pointer-events-none" />
 
@@ -53,8 +53,10 @@ export function WebForexTools() {
                     <div className="mb-8 flex flex-col items-center">
                         <HomeSectionHeading
                             align="center"
-                            title="Trading Tools"
-                            highlight="Tools"
+                            eyebrow="STEP 01 / 04 · PRE-TRADE RISK MATH"
+                            title="Calculate your risk parameters before entering"
+                            highlight="risk parameters"
+                            description="Amateur traders guess their position size; institutional traders calculate it. Model lot size, pip values, and drawdown odds before taking execution."
                             icon={Wrench}
                         />
                         <div className="mt-3">

@@ -24,7 +24,7 @@ export default function ReadingProgressBar() {
     return (
         <div
             style={{ transform: `translateX(${progress - 100}%)` }}
-            className="fixed top-0 left-0 h-1 w-full bg-primary z-[100] transition-transform duration-150 ease-out"
+            className="fixed top-0 left-0 h-1 w-full bg-gradient-to-r from-gold to-amber-500 shadow-sm shadow-gold/30 z-[100] transition-transform duration-150 ease-out"
         />
     );
 }

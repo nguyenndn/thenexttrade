@@ -188,7 +188,7 @@ export default function SocialShare({
                 <div className="w-6 h-[1px] bg-gray-100 dark:bg-white/10 my-1"></div>
                 <button
                     onClick={copyToClipboard}
-                    className="text-gray-500 hover:text-primary hover:scale-125 transition-transform"
+                    className="text-gray-500 hover:text-gold hover:scale-125 transition-transform"
                     title="Copy Link"
                     aria-label="Copy Link"
                 >
@@ -196,7 +196,7 @@ export default function SocialShare({
                         <Check
                             size={20}
                             strokeWidth={3}
-                            className="text-primary"
+                            className="text-gold"
                         />
                     ) : (
                         <LinkIcon size={20} strokeWidth={2.5} />
@@ -210,8 +210,8 @@ export default function SocialShare({
                             disabled={isToggling}
                             className={`relative hover:scale-125 transition-all duration-300 disabled:opacity-70 ${
                                 voted
-                                    ? "text-primary"
-                                    : "text-gray-500 hover:text-primary"
+                                    ? "text-gold"
+                                    : "text-gray-500 hover:text-gold"
                             }`}
                             title={
                                 voted ? "Remove your vote" : "Mark as helpful"
@@ -223,13 +223,13 @@ export default function SocialShare({
                             <ThumbsUp
                                 size={20}
                                 strokeWidth={2.5}
-                                className={voted ? "fill-primary" : ""}
+                                className={voted ? "fill-gold" : ""}
                             />
                             {voteCount > 0 && (
                                 <span
                                     className={`absolute -top-2 -right-2.5 text-[9px] font-black tabular-nums min-w-[16px] h-4 flex items-center justify-center rounded-full px-1 ${
                                         voted
-                                            ? "bg-primary text-white"
+                                            ? "bg-gold text-white"
                                             : "bg-gray-200 dark:bg-white/15 text-gray-600 dark:text-gray-300"
                                     }`}
                                 >
@@ -244,17 +244,17 @@ export default function SocialShare({
     }
 
     return (
-        <div className="flex flex-col gap-4">
-            <h4 className="font-bold text-gray-700 dark:text-white text-xs uppercase tracking-widest text-center">
-                Share this
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-white dark:bg-white/[0.02] border border-dashboard">
+            <h4 className="font-bold text-gray-700 dark:text-white text-xs uppercase tracking-widest text-center sm:text-left">
+                Share this article
             </h4>
-            <div className="flex justify-center gap-2">
-                {/* Horizontal Layout (Existing) */}
+            <div className="flex items-center justify-center gap-2">
+                {/* Horizontal Layout */}
                 <a
                     href={shareLinks.facebook}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 flex items-center justify-center border border-dashboard dark:border-slate-700 hover:bg-[#3b5998] hover:text-white hover:border-[#3b5998] text-gray-500 transition-all rounded-full"
+                    className="w-9 h-9 flex items-center justify-center border border-dashboard dark:border-white/10 hover:bg-[#3b5998] hover:text-white hover:border-[#3b5998] text-gray-500 transition-all rounded-xl"
                     title="Share on Facebook"
                     aria-label="Share on Facebook"
                 >
@@ -264,7 +264,7 @@ export default function SocialShare({
                     href={shareLinks.x}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 flex items-center justify-center border border-dashboard dark:border-slate-700 hover:bg-black hover:text-white hover:border-black text-gray-500 transition-all rounded-full"
+                    className="w-9 h-9 flex items-center justify-center border border-dashboard dark:border-white/10 hover:bg-black hover:text-white hover:border-black text-gray-500 transition-all rounded-xl"
                     title="Share on X"
                     aria-label="Share on X"
                 >
@@ -274,7 +274,7 @@ export default function SocialShare({
                     href={shareLinks.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 flex items-center justify-center border border-dashboard dark:border-slate-700 hover:bg-[#0077b5] hover:text-white hover:border-[#0077b5] text-gray-500 transition-all rounded-full"
+                    className="w-9 h-9 flex items-center justify-center border border-dashboard dark:border-white/10 hover:bg-[#0077b5] hover:text-white hover:border-[#0077b5] text-gray-500 transition-all rounded-xl"
                     title="Share on LinkedIn"
                     aria-label="Share on LinkedIn"
                 >
@@ -284,33 +284,33 @@ export default function SocialShare({
                     href={shareLinks.telegram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 flex items-center justify-center border border-dashboard dark:border-slate-700 hover:bg-[#0088cc] hover:text-white hover:border-[#0088cc] text-gray-500 transition-all rounded-full"
+                    className="w-9 h-9 flex items-center justify-center border border-dashboard dark:border-white/10 hover:bg-[#0088cc] hover:text-white hover:border-[#0088cc] text-gray-500 transition-all rounded-xl"
                     title="Share on Telegram"
                     aria-label="Share on Telegram"
                 >
-                    <Send size={16} className="-ml-0.5" />
+                    <Send size={15} className="-ml-0.5" />
                 </a>
                 <a
                     href={shareLinks.pinterest}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 flex items-center justify-center border border-dashboard dark:border-slate-700 hover:bg-[#E60023] hover:text-white hover:border-[#E60023] text-gray-500 transition-all rounded-full"
+                    className="w-9 h-9 flex items-center justify-center border border-dashboard dark:border-white/10 hover:bg-[#E60023] hover:text-white hover:border-[#E60023] text-gray-500 transition-all rounded-xl"
                     title="Share on Pinterest"
                     aria-label="Share on Pinterest"
                 >
                     <PinterestIcon size={14} />
                 </a>
                 <Button
-                    variant="ghost"
+                    variant="outline"
                     size="icon"
                     onClick={copyToClipboard}
-                    className="w-10 h-10 flex items-center justify-center border border-dashboard dark:border-slate-700 hover:bg-gray-800 hover:text-white hover:border-gray-800 dark:hover:bg-white dark:hover:text-black transition-all rounded-full"
+                    className="w-9 h-9 flex items-center justify-center border-dashboard dark:border-white/10 hover:border-gold hover:text-gold transition-all rounded-xl p-0"
                     aria-label="Copy Link"
                 >
                     {copied ? (
-                        <Check size={16} className="text-green-500" />
+                        <Check size={15} className="text-gold" />
                     ) : (
-                        <LinkIcon size={16} />
+                        <LinkIcon size={15} />
                     )}
                 </Button>
             </div>

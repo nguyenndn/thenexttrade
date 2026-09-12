@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
-import { SendHorizontal, Loader2, User, Mail, ShieldCheck } from "lucide-react";
+import { SendHorizontal } from "lucide-react";
 import { toast } from "sonner";
 
 const schema = z.object({
@@ -96,129 +96,117 @@ export function CommentForm({
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {/* Premium User Information Bar */}
-            {userName && (
-                <div className="flex items-center justify-between pb-3 mb-2 border-b border-dashboard">
-                    <div className="flex items-center gap-3">
-                        <div className="relative w-8 h-8 rounded-full overflow-hidden ring-2 ring-primary/20 dark:ring-primary/30 p-0.5 bg-gray-100 dark:bg-white/5 flex-shrink-0">
-                            {userImage ? (
-                                <Image
-                                    src={userImage}
-                                    alt={userName}
-                                    fill
-                                    className="object-cover rounded-full"
-                                />
-                            ) : (
-                                <div className="w-full h-full flex items-center justify-center text-primary font-bold text-xs bg-primary/10 rounded-full">
-                                    {userName.charAt(0).toUpperCase()}
-                                </div>
-                            )}
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+            <div className="bg-white dark:bg-[#12141c] border border-dashboard rounded-2xl shadow-sm focus-within:border-gold/50 focus-within:ring-2 focus-within:ring-gold/15 transition-all duration-200 overflow-hidden">
+                {/* Header Bar: User Identity & Character Counter */}
+                {userName && (
+                    <div className="flex items-center justify-between px-4 sm:px-5 py-3 bg-slate-50/80 dark:bg-white/[0.02] border-b border-dashboard">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                            <div className="relative w-7 h-7 rounded-full overflow-hidden ring-1 ring-gold/40 bg-gray-100 dark:bg-white/10 shrink-0">
+                                {userImage ? (
+                                    <Image
+                                        src={userImage}
+                                        alt={userName}
+                                        fill
+                                        className="object-cover rounded-full"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-gold font-bold text-xs bg-gold/10">
+                                        {userName.charAt(0).toUpperCase()}
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex items-center gap-2 min-w-0">
+                                <span className="text-xs font-bold text-gray-800 dark:text-gray-200 truncate">
+                                    {userName}
+                                </span>
+                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-semibold shrink-0">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                    <span>Verified Trader</span>
+                                </span>
+                            </div>
                         </div>
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                            <span className="text-xs text-gray-400 dark:text-gray-500">
-                                Posting as
+
+                        <span className="text-[11px] font-mono text-gray-400 dark:text-gray-500 shrink-0">
+                            {contentVal.length} / 2000
+                        </span>
+                    </div>
+                )}
+
+                {/* Textarea: Seamless inside card without double borders */}
+                <div className="p-4 sm:p-5">
+                    <textarea
+                        {...register("content")}
+                        className="w-full min-h-[90px] sm:min-h-[110px] bg-transparent border-0 resize-none outline-none focus:ring-0 text-sm text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 leading-relaxed"
+                        placeholder={
+                            parentId
+                                ? placeholder
+                                : "Share your trading perspective, risk analysis, or ask a question..."
+                        }
+                        autoFocus={autoFocus}
+                        disabled={isLoading}
+                        onKeyDown={(e) => {
+                            if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                                e.preventDefault();
+                                handleSubmit(onSubmit)();
+                            }
+                        }}
+                    />
+                </div>
+
+                {/* Integrated Action Toolbar */}
+                <div className="flex items-center justify-between px-4 sm:px-5 py-3 bg-slate-50/50 dark:bg-white/[0.015] border-t border-dashboard">
+                    <div className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500">
+                        <span className="hidden sm:inline font-medium text-[11px]">
+                            Press
+                        </span>
+                        <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono bg-white dark:bg-white/5 border border-dashboard rounded-md text-gray-500">
+                            Ctrl + Enter
+                        </kbd>
+                        <span className="hidden sm:inline text-[11px]">
+                            to submit
+                        </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        {onCancel && (
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="smd"
+                                onClick={onCancel}
+                                disabled={isLoading}
+                            >
+                                Cancel
+                            </Button>
+                        )}
+
+                        <Button
+                            type="submit"
+                            variant="gold"
+                            size="smd"
+                            disabled={isLoading || contentVal.trim().length < 2}
+                            isLoading={isLoading}
+                        >
+                            <span>
+                                {parentId ? "Reply" : "Post Comment"}
                             </span>
-                            <span className="text-xs font-bold text-gray-800 dark:text-gray-200">
-                                {userName}
-                            </span>
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 text-[9px] uppercase font-extrabold tracking-wider border border-emerald-500/20">
-                                <ShieldCheck
-                                    size={10}
+                            {!isLoading && (
+                                <SendHorizontal
+                                    size={14}
                                     className="stroke-[2.5]"
                                 />
-                                Authorized
-                            </span>
-                        </div>
+                            )}
+                        </Button>
                     </div>
-                </div>
-            )}
-
-            <div className="relative group">
-                <textarea
-                    {...register("content")}
-                    className="w-full min-h-[120px] p-5 rounded-2xl bg-white dark:bg-[#12141c] border border-dashboard focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all resize-none outline-none text-gray-700 dark:text-gray-100 placeholder:text-gray-500 text-[14px] leading-relaxed shadow-inner"
-                    placeholder={
-                        parentId
-                            ? placeholder
-                            : "Share your thoughts, analyze trends, or join the discussion..."
-                    }
-                    autoFocus={autoFocus}
-                    disabled={isLoading}
-                />
-
-                {/* Character count floating tag */}
-                <div className="absolute bottom-4 right-4 text-[10px] font-mono text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-[#161822] px-2 py-1 rounded-lg border border-dashboard">
-                    {contentVal.length} / 2000
                 </div>
             </div>
 
-            {/* Render guest Name & Email inputs ONLY if they are not logged in and parentId is absent */}
-            {!userName && !parentId && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="relative">
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 dark:text-gray-500 pointer-events-none">
-                            <User size={16} />
-                        </span>
-                        <input
-                            type="text"
-                            placeholder="Your Name"
-                            disabled
-                            className="w-full pl-11 pr-5 py-3 rounded-2xl bg-gray-50 dark:bg-[#12141c]/50 border border-dashboard outline-none text-gray-400 dark:text-gray-500 placeholder:text-gray-500 text-[14px] cursor-not-allowed"
-                            value="Authenticated Session Required"
-                        />
-                    </div>
-                    <div className="relative">
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 dark:text-gray-500 pointer-events-none">
-                            <Mail size={16} />
-                        </span>
-                        <input
-                            type="email"
-                            placeholder="Your Email Address"
-                            disabled
-                            className="w-full pl-11 pr-5 py-3 rounded-2xl bg-gray-50 dark:bg-[#12141c]/50 border border-dashboard outline-none text-gray-400 dark:text-gray-500 placeholder:text-gray-500 text-[14px] cursor-not-allowed"
-                            value="Registered Accounts Only"
-                        />
-                    </div>
-                </div>
-            )}
-
             {errors.content && (
-                <p className="text-red-500 text-xs font-semibold px-2">
+                <p className="mt-2 text-red-500 text-xs font-semibold px-1">
                     {errors.content.message}
                 </p>
             )}
-
-            <div className="flex items-center justify-end gap-3 pt-2">
-                {onCancel && (
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        onClick={onCancel}
-                        className="text-xs font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 px-4 py-2 h-auto hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-all duration-200"
-                    >
-                        Cancel
-                    </Button>
-                )}
-
-                <Button
-                    type="submit"
-                    disabled={isLoading || contentVal.trim().length < 2}
-                    className="rounded-full px-6 py-2.5 bg-primary hover:bg-[#00B078] disabled:bg-gray-100 disabled:dark:bg-white/5 disabled:text-gray-400 disabled:dark:text-gray-600 disabled:shadow-none text-white font-bold text-xs shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
-                >
-                    {isLoading ? (
-                        <Loader2 className="animate-spin" size={14} />
-                    ) : (
-                        <>
-                            <span>{parentId ? "Reply" : "Post Comment"}</span>
-                            <SendHorizontal
-                                size={13}
-                                className="stroke-[2.5]"
-                            />
-                        </>
-                    )}
-                </Button>
-            </div>
         </form>
     );
 }

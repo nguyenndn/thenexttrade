@@ -130,7 +130,7 @@ export default async function RiskManagementPage() {
     });
 
     return (
-        <div className="min-h-screen bg-[#F7F4EC] dark:bg-transparent text-gray-700 dark:text-gray-300 relative overflow-hidden transition-colors duration-300">
+        <div className="min-h-screen bg-slate-50 dark:bg-transparent text-gray-700 dark:text-gray-300 relative overflow-hidden transition-colors duration-300">
             {/* Ambient gold radial glow top */}
             <div className="absolute top-0 left-0 right-0 h-[600px] bg-gradient-to-b from-amber-500/[0.06] via-amber-500/[0.01] to-transparent pointer-events-none" />
 
@@ -198,14 +198,14 @@ export default async function RiskManagementPage() {
                             {/* Column Left: Staggered Content */}
                             <div className="md:col-span-7 lg:col-span-8 text-left space-y-4">
                                 {/* Capsule Category Badge */}
-                                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-black uppercase tracking-widest">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold/10 border border-gold/20 text-gold text-xs font-black uppercase tracking-widest">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
                                     <span>Pillar Guide</span>
                                 </div>
 
                                 {/* Title with icon backdrop */}
                                 <div className="flex items-center gap-2.5 sm:gap-3">
-                                    <div className="p-2.5 bg-red-500/10 text-red-500 border border-red-500/20 rounded-xl shadow-sm shrink-0">
+                                    <div className="p-2.5 bg-gold/10 text-gold border border-gold/20 rounded-xl shadow-sm shrink-0">
                                         <Shield
                                             size={22}
                                             className="stroke-[2.5]"
@@ -213,7 +213,7 @@ export default async function RiskManagementPage() {
                                     </div>
                                     <h1 className="text-[20px] sm:text-3xl md:text-5xl font-black text-slate-800 dark:text-white tracking-tight leading-none font-heading">
                                         Forex{" "}
-                                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-amber-500">
+                                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold to-amber-500">
                                             Risk Management
                                         </span>
                                     </h1>
@@ -386,7 +386,7 @@ export default async function RiskManagementPage() {
                             className={buttonVariants({
                                 variant: "primary",
                                 className:
-                                    "items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-bold shadow-lg shadow-amber-500/20 hover:shadow-amber-600/30 hover:scale-[1.02]",
+                                    "items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-gold to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black shadow-lg shadow-gold/20 hover:shadow-gold/30 hover:scale-[1.02]",
                             })}
                         >
                             <BookOpen size={18} className="stroke-[2.5]" />

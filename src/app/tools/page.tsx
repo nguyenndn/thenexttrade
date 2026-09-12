@@ -1,5 +1,5 @@
 import { ToolsPageShell } from "@/components/tools/ToolsPageShell";
-import { Wrench, CheckCircle2, Compass, ArrowRight } from "lucide-react";
+import { CheckCircle2, Compass, ArrowRight } from "lucide-react";
 import { ALL_TOOLS } from "@/config/tools-data";
 import { ToolsGrid } from "@/components/tools/ToolsGrid";
 import Link from "next/link";
@@ -38,12 +38,6 @@ export default function ToolsPage() {
         <ToolsPageShell maxWidth="max-w-6xl">
             {/* Hero */}
             <div className="text-center mb-6 relative">
-                {/* Eyebrow */}
-                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-gold/10 border border-gold/20 text-gold font-black text-xs uppercase tracking-wider mb-6">
-                    <Wrench size={14} />
-                    <span>Trader&apos;s Toolkit</span>
-                </div>
-
                 {/* H1 Title */}
                 <h1 className="text-4xl md:text-6xl font-black font-heading text-gray-800 dark:text-white mb-6 leading-tight tracking-tight">
                     Professional{" "}

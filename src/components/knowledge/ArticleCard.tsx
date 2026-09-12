@@ -23,7 +23,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
     return (
         <Link
             href={`/articles/${article.slug}`}
-            className="group relative bg-white/80 dark:bg-[#131622]/60 border border-amber-500/15 dark:border-white/[0.06] hover:border-amber-500/35 dark:hover:border-gold/30 rounded-2xl p-2 shadow-sm hover:shadow-[0_12px_30px_rgba(245,158,11,0.03)] dark:hover:shadow-[0_12px_30px_rgba(245,158,11,0.01)] transition-all duration-300 flex flex-col backdrop-blur-md"
+            className="group relative bg-white/80 dark:bg-[#131622]/60 border border-gold/15 dark:border-white/10 hover:border-gold/40 dark:hover:border-gold/30 rounded-2xl p-2 shadow-sm hover:shadow-[0_12px_30px_rgba(245,158,11,0.06)] dark:hover:shadow-[0_12px_30px_rgba(245,158,11,0.02)] transition-all duration-300 flex flex-col backdrop-blur-md"
         >
             {/* Thumbnail */}
             <div className="relative aspect-[16/9] rounded-xl overflow-hidden bg-gray-900">
@@ -40,7 +40,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
                         <BookOpen size={48} opacity={0.5} />
                     </div>
                 )}
-                <div className="absolute top-2 left-2 bg-gradient-to-r from-primary to-[#00A570] shadow-lg shadow-black/20 px-3 py-1.5 rounded-lg text-xs font-black text-white uppercase tracking-wide">
+                <div className="absolute top-2 left-2 bg-gradient-to-r from-gold to-amber-600 shadow-lg shadow-black/20 px-3 py-1.5 rounded-lg text-xs font-black text-white uppercase tracking-wide">
                     {article.category?.name || "General"}
                 </div>
                 {/* Read Time Badge */}
@@ -54,7 +54,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
 
             {/* Content */}
             <div className="px-2 pt-3 pb-1 flex flex-col flex-1">
-                <h3 className="mt-1 mb-2 text-base font-extrabold text-gray-700 dark:text-white leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                <h3 className="mt-1 mb-2 text-base font-extrabold text-gray-800 dark:text-white leading-snug group-hover:text-gold transition-colors line-clamp-2">
                     {article.title}
                 </h3>
 
@@ -95,7 +95,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
                                 <Flame
                                     size={15}
                                     strokeWidth={2.5}
-                                    className="text-primary"
+                                    className="text-amber-500 dark:text-gold"
                                 />
                                 {article.views}
                             </span>
@@ -105,7 +105,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
                                 <MessageCircle
                                     size={15}
                                     strokeWidth={2.5}
-                                    className="text-primary"
+                                    className="text-amber-500 dark:text-gold"
                                 />
                                 {article._count.comments}
                             </span>
@@ -116,7 +116,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
                                     <ThumbsUp
                                         size={15}
                                         strokeWidth={2.5}
-                                        className="text-primary"
+                                        className="text-amber-500 dark:text-gold"
                                     />
                                     {article._count.votes}
                                 </span>

@@ -407,6 +407,11 @@ textarea,
     white-space: nowrap;
 }
 
+/* Ensure the first element inside article content sits flush to top without excessive prose margin */
+.article-content > :first-child {
+    margin-top: 0 !important;
+}
+
 /* ===== Academy Lesson Footer (Action Step + Next Lesson) ===== */
 .lesson-footer-compact .lesson-footer {
     margin-top: 1.5rem;

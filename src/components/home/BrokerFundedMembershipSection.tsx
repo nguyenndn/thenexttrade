@@ -26,7 +26,7 @@ export function BrokerFundedMembershipSection({
     isLoggedIn = false,
 }: BrokerFundedMembershipSectionProps) {
     return (
-        <section className="relative overflow-hidden bg-white dark:bg-transparent py-8 sm:py-12 border-t border-dashboard">
+        <section id="sponsorship-preview" className="relative overflow-hidden bg-white dark:bg-transparent py-8 sm:py-12 border-t border-dashboard">
             {/* Grid Pattern Background - matching Academy */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gold/5 via-transparent to-transparent dark:from-gold/[0.03] dark:via-transparent dark:to-transparent pointer-events-none" />

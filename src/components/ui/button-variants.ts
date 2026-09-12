@@ -4,6 +4,7 @@ export type ButtonVariant =
     | "primary"
     | "secondary"
     | "accent"
+    | "gold"
     | "ghost"
     | "link"
     | "outline"
@@ -24,6 +25,8 @@ export function buttonVariants({
     const variants: Record<ButtonVariant, string> = {
         primary:
             "bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25",
+        gold:
+            "bg-gold hover:bg-amber-600 text-white shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 focus-visible:ring-gold/50 disabled:bg-none disabled:bg-gray-100 disabled:text-gray-400 dark:disabled:bg-white/5 dark:disabled:text-gray-500 disabled:shadow-none disabled:opacity-100",
         secondary:
             "bg-[#2F80ED] hover:bg-[#2563EB] text-white shadow-lg shadow-blue-500/30",
         accent: "bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg shadow-cyan-500/30",

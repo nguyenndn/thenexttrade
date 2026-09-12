@@ -41,10 +41,10 @@ export function CommentList({
         return (
             <div className="flex flex-col items-center justify-center text-center py-14 px-6 border-2 border-dashed border-dashboard rounded-3xl bg-gray-50/20 dark:bg-[#0b0d14]/20 relative overflow-hidden transition-all duration-300">
                 {/* Glowing subtle circles in empty state */}
-                <div className="absolute w-36 h-36 bg-primary/5 rounded-full blur-2xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+                <div className="absolute w-36 h-36 bg-gold/5 rounded-full blur-2xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
 
                 <div className="relative z-10 flex flex-col items-center">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-primary/10 to-emerald-500/10 dark:from-primary/20 dark:to-emerald-500/20 border border-primary/20 dark:border-primary/30 flex items-center justify-center mb-5 text-primary shadow-[0_4px_20px_rgba(16,185,129,0.06)] animate-bounce duration-1000">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-gold/10 to-amber-500/10 dark:from-gold/20 dark:to-amber-500/20 border border-gold/20 dark:border-gold/30 flex items-center justify-center mb-5 text-gold shadow-[0_4px_20px_rgba(202,138,4,0.06)] animate-bounce duration-1000">
                         <MessageSquareCode size={24} className="stroke-[2]" />
                     </div>
 
@@ -123,10 +123,10 @@ function CommentItem({
     return (
         <div className="flex gap-4 group/item relative">
             {/* Visual indicator bar on hover */}
-            <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-primary/0 group-hover/item:bg-primary/20 dark:group-hover/item:bg-primary/40 -ml-4 rounded-full transition-all duration-300" />
+            <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gold/0 group-hover/item:bg-gold/30 dark:group-hover/item:bg-gold/40 -ml-4 rounded-full transition-all duration-300" />
 
             <div className="flex-shrink-0">
-                <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-[#161822] overflow-hidden relative border border-dashboard/50 ring-2 ring-primary/0 group-hover/item:ring-primary/20 dark:group-hover/item:ring-primary/30 p-0.5 transition-all duration-300 hover:scale-105">
+                <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-[#161822] overflow-hidden relative border border-dashboard/50 ring-2 ring-gold/0 group-hover/item:ring-gold/30 dark:group-hover/item:ring-gold/40 p-0.5 transition-all duration-300 hover:scale-105">
                     {comment.user.image ? (
                         <Image
                             src={comment.user.image}
@@ -135,7 +135,7 @@ function CommentItem({
                             className="object-cover rounded-full"
                         />
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center text-primary font-bold text-sm bg-primary/10 rounded-full">
+                        <div className="w-full h-full flex items-center justify-center text-gold font-bold text-sm bg-gold/10 rounded-full">
                             {comment.user.name?.charAt(0).toUpperCase() || "U"}
                         </div>
                     )}
@@ -145,11 +145,11 @@ function CommentItem({
             <div className="flex-1">
                 {/* Header detail */}
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1.5">
-                    <span className="font-bold text-sm text-gray-800 dark:text-gray-100 hover:text-primary transition-colors font-sans cursor-pointer">
+                    <span className="font-bold text-sm text-gray-800 dark:text-gray-100 hover:text-gold transition-colors font-sans cursor-pointer">
                         {comment.user.name || "Anonymous User"}
                     </span>
                     {comment.user.id === currentUser?.id && (
-                        <span className="inline-flex items-center px-1.5 py-0.2 bg-primary/10 text-primary text-[8px] uppercase font-black rounded-lg tracking-wider border border-primary/15">
+                        <span className="inline-flex items-center px-1.5 py-0.2 bg-gold/10 text-gold text-[8px] uppercase font-black rounded-lg tracking-wider border border-gold/20">
                             You
                         </span>
                     )}
@@ -171,7 +171,7 @@ function CommentItem({
                     <Button
                         variant="ghost"
                         onClick={() => setIsReplying(!isReplying)}
-                        className="flex items-center gap-1.5 h-auto px-2.5 py-1 text-xs font-bold text-gray-400 hover:text-primary hover:bg-primary/5 rounded-full transition-all duration-200"
+                        className="flex items-center gap-1.5 h-auto px-2.5 py-1 text-xs font-bold text-gray-400 hover:text-gold hover:bg-gold/10 rounded-full transition-all duration-200"
                     >
                         <Reply size={12} className="stroke-[2.5]" />
                         Reply
@@ -191,7 +191,7 @@ function CommentItem({
                 </div>
 
                 {isReplying && (
-                    <div className="mt-4 pl-4 border-l-2 border-primary/20 bg-gray-50/30 dark:bg-white/[0.01] p-4 rounded-xl shadow-inner animate-in slide-in-from-top-2 fade-in duration-300">
+                    <div className="mt-4 pl-4 border-l-2 border-gold/30 bg-gray-50/30 dark:bg-white/[0.01] p-4 rounded-xl shadow-inner animate-in slide-in-from-top-2 fade-in duration-300">
                         <CommentForm
                             articleId={articleId}
                             parentId={comment.id}

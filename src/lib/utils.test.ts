@@ -6,6 +6,7 @@ import {
     parseBrokerNumber,
     parseLocalEndOfDay,
     parseLocalStartOfDay,
+    splitArticleTitle,
 } from "./utils";
 
 describe("cn utility", () => {
@@ -93,5 +94,51 @@ describe("parseBrokerNumber", () => {
         expect(parseBrokerNumber("")).toBeNull();
         expect(parseBrokerNumber("abc")).toBeNull();
         expect(parseBrokerNumber("1.2.3")).toBeNull();
+    });
+});
+
+describe("splitArticleTitle", () => {
+    it("splits titles with em-dash correctly", () => {
+        const result = splitArticleTitle(
+            "TradingView vs MetaTrader comparison — Which Platform Actually Fits Your Trading Style?"
+        );
+        expect(result.mainTitle).toBe("TradingView vs MetaTrader comparison");
+        expect(result.subtitle).toBe(
+            "Which Platform Actually Fits Your Trading Style?"
+        );
+    });
+
+    it("splits titles with colon correctly", () => {
+        const result = splitArticleTitle(
+            "Forex 66 Trillion: Why the Market’s Massive Size is Your Biggest Edge (and Trap)"
+        );
+        expect(result.mainTitle).toBe("Forex 66 Trillion");
+        expect(result.subtitle).toBe(
+            "Why the Market’s Massive Size is Your Biggest Edge (and Trap)"
+        );
+    });
+
+    it("splits titles with hyphen correctly", () => {
+        const result = splitArticleTitle(
+            "Best Forex Indicators - 3 That Actually Work"
+        );
+        expect(result.mainTitle).toBe("Best Forex Indicators");
+        expect(result.subtitle).toBe("3 That Actually Work");
+    });
+
+    it("handles simple titles with no separator", () => {
+        const result = splitArticleTitle(
+            "Understanding Margin and Leverage in Forex"
+        );
+        expect(result.mainTitle).toBe(
+            "Understanding Margin and Leverage in Forex"
+        );
+        expect(result.subtitle).toBeUndefined();
+    });
+
+    it("handles empty or null inputs gracefully", () => {
+        expect(splitArticleTitle("")).toEqual({ mainTitle: "" });
+        expect(splitArticleTitle(null)).toEqual({ mainTitle: "" });
+        expect(splitArticleTitle(undefined)).toEqual({ mainTitle: "" });
     });
 });

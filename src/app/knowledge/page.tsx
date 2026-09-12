@@ -133,7 +133,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
             {/* Wrapper for Content that needs Firefly Background */}
             <div className="relative overflow-hidden">
                 {/* Background Effects */}
-                <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2] pointer-events-none"></div>
+                <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold)/0.15)_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.25] dark:opacity-[0.15] pointer-events-none"></div>
                 <FireflyBackground />
 
                 <PublicHeader />
@@ -141,35 +141,37 @@ export default async function LibraryPage(props: LibraryPageProps) {
                 {/* Hero Section - Glass Effect */}
                 <div className="pt-32 pb-10 sm:pb-6 relative z-10">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-10">
-                            <div className="flex-1 text-center md:text-left">
-                                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/20 text-primary font-bold text-xs uppercase tracking-wider mb-6 shadow-lg">
-                                    <BookOpen size={16} />
+                        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 lg:gap-10">
+                            <div className="w-full lg:flex-1 text-left">
+                                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold/10 border border-gold/20 text-gold font-black text-xs uppercase tracking-wider mb-6 shadow-sm">
+                                    <BookOpen size={15} />
                                     <span>Knowledge Base</span>
                                 </div>
-                                <h1 className="text-4xl md:text-6xl font-bold font-heading text-gray-700 dark:text-white mb-6 leading-tight">
+                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-heading text-gray-800 dark:text-white mb-6 leading-tight tracking-tight">
                                     Trading{" "}
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-teal-400">
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold to-amber-500">
                                         Library
                                     </span>
                                 </h1>
-                                <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed mb-8">
+                                <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed mb-6 lg:mb-8 font-semibold">
                                     Battle-tested documentation on execution models, risk management mathematics, session dynamics, and behavioral psychology.
                                 </p>
 
-                                {/* Search Component */}
-                                <SearchInput />
+                                {/* Search Component - fullwidth on tablet/mobile, max-w-md on desktop lg */}
+                                <div className="w-full max-w-none lg:max-w-md mb-2 lg:mb-0">
+                                    <SearchInput className="w-full" />
+                                </div>
                             </div>
 
                             {/* Top Categories Pills - Glass */}
-                            <div className="flex flex-wrap justify-center md:justify-end gap-3 max-w-lg">
+                            <div className="flex flex-wrap justify-start lg:justify-end gap-2.5 w-full lg:max-w-lg">
                                 {categories.map((cat) => (
                                     <Link
                                         key={cat.id}
                                         href={`/knowledge?category=${cat.slug}`}
-                                        className={`px-5 py-2.5 rounded-xl backdrop-blur-md border cursor-pointer text-sm font-bold transition-all duration-300 shadow-sm hover:shadow-md ${categorySlug === cat.slug
-                                            ? "bg-gradient-to-r from-amber-500 to-yellow-500 dark:from-amber-500/90 dark:to-yellow-500/90 border-amber-500 text-white shadow-md shadow-amber-500/20 dark:shadow-amber-500/10"
-                                            : "bg-white/40 dark:bg-white/5 border-amber-500/20 dark:border-amber-500/10 text-gray-700 dark:text-gray-200 hover:bg-white/60 dark:hover:bg-white/10 hover:border-amber-500/45 dark:hover:border-amber-500/35 hover:shadow-md hover:shadow-amber-500/[0.03]"
+                                        className={`px-4 py-2 rounded-xl backdrop-blur-md border cursor-pointer text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-sm hover:shadow-md ${categorySlug === cat.slug
+                                            ? "bg-gradient-to-r from-gold to-amber-600 border-gold/40 text-white shadow-md shadow-gold/20"
+                                            : "bg-white/60 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-white/10 hover:border-gold/35 hover:text-gold hover:shadow-md hover:shadow-gold/[0.05]"
                                             }`}
                                     >
                                         {cat.name}
@@ -243,12 +245,12 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                     <Link
                                         key={chip.key}
                                         href={chipHref}
-                                        className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] ${isActive
-                                            ? "bg-primary text-white shadow-md shadow-primary/20"
-                                            : "bg-white/80 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-dashboard hover:border-primary hover:text-primary backdrop-blur-md shadow-sm"
+                                        className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] ${isActive
+                                            ? "bg-gradient-to-r from-gold to-amber-600 border border-gold/40 text-white shadow-md shadow-gold/20"
+                                            : "bg-white/80 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-gold/40 hover:text-gold backdrop-blur-md shadow-sm"
                                             }`}
                                     >
-                                        <chip.icon size={14} />
+                                        <chip.icon size={13} />
                                         {chip.label}
                                     </Link>
                                 );

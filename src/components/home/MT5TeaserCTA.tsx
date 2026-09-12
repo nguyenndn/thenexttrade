@@ -67,7 +67,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
         : "/auth/signup?next=/dashboard/accounts&source=automated_execution_cta";
 
     return (
-        <div className="relative w-full overflow-hidden border-t border-dashboard bg-gray-50/50 dark:bg-transparent">
+        <div id="systems-preview" className="relative w-full overflow-hidden border-t border-dashboard bg-gray-50/50 dark:bg-transparent">
             {/* Dot pattern bg */}
             <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2] pointer-events-none" />
 
@@ -166,14 +166,20 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                         {/* Left Column: Product Promise, Trust, CTAs */}
                         <div className="space-y-6">
                             <div>
+                                {/* Step Eyebrow Badge */}
+                                <div className="mb-2.5 inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.25em] text-amber-600 dark:text-gold/90 select-none">
+                                    <Bot size={11} strokeWidth={2.8} className="opacity-80" />
+                                    <span>STEP 02 / 04 · EXECUTION &amp; DISCIPLINE</span>
+                                </div>
+
                                 {/* Main Title */}
                                 <h2 className="text-2xl sm:text-3xl font-black text-gray-800 dark:text-white leading-tight tracking-tight">
-                                    Tired of Watching Charts All Day?
+                                    Automate Execution &amp; Eliminate Emotional Errors
                                 </h2>
 
                                 {/* Description */}
                                 <p className="mt-3 text-sm text-gray-600 dark:text-gray-400 font-semibold leading-relaxed">
-                                    Deploy GoldScalperNinja, GSN Trade Manager, and Phoenix Grid. Tested algorithms with hard-coded risk management, free through our partner broker path.
+                                    Most trading leaks happen during trade management. Deploy GoldScalperNinja, GSN Trade Manager, and Phoenix Grid to enforce hard-coded stop-loss rules, automated break-even, and trailing defense directly on MT5.
                                 </p>
                             </div>
 

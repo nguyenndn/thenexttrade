@@ -78,7 +78,7 @@ export default async function RelatedArticlesBottom({
 
     return (
         <div className="mt-8 pt-8 border-t border-dashboard">
-            <h3 className="text-xl font-black text-gray-700 dark:text-white mb-6 tracking-tight text-center relative inline-block pl-3 before:content-[''] before:absolute before:left-0 before:top-0.5 before:bottom-0.5 before:w-1 before:bg-primary before:rounded-full mx-auto block w-fit">
+            <h3 className="text-xl font-black text-gray-700 dark:text-white mb-6 tracking-tight text-center relative inline-block pl-3 before:content-[''] before:absolute before:left-0 before:top-0.5 before:bottom-0.5 before:w-1 before:bg-gold before:rounded-full mx-auto block w-fit">
                 You Might Also Like
             </h3>
 
@@ -106,7 +106,7 @@ export default async function RelatedArticlesBottom({
                         </div>
 
                         <div className="p-4">
-                            <h4 className="font-bold text-sm text-gray-700 dark:text-gray-100 leading-snug group-hover:text-primary transition-colors mb-2 line-clamp-2">
+                            <h4 className="font-bold text-sm text-gray-700 dark:text-gray-100 leading-snug group-hover:text-gold transition-colors mb-2 line-clamp-2">
                                 {article.title}
                             </h4>
                             <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-gray-500">

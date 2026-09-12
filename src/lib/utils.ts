@@ -292,3 +292,44 @@ export function utcTime(
             return `${hh}:${mm}`;
     }
 }
+
+/**
+ * Splits an article title into a punchy mainTitle and an editorial subtitle.
+ * Handles common SEO title patterns with " — ", " – ", " - ", or ": ".
+ */
+export function splitArticleTitle(fullTitle?: string | null): {
+    mainTitle: string;
+    subtitle?: string;
+} {
+    if (!fullTitle) return { mainTitle: "" };
+
+    const trimmed = fullTitle.trim();
+
+    // 1. Check for dash separators with surrounding spaces: " — ", " – ", " - "
+    const dashMatch = trimmed.match(/^(.*?)\s+(?:—|–|-)\s+(.*)$/);
+    if (dashMatch && dashMatch[1] && dashMatch[2]) {
+        const p1 = dashMatch[1].trim();
+        const p2 = dashMatch[2].trim();
+        if (p1.length >= 3 && p2.length >= 3) {
+            return {
+                mainTitle: p1,
+                subtitle: p2,
+            };
+        }
+    }
+
+    // 2. Check for colon separator ": "
+    const colonIndex = trimmed.indexOf(":");
+    if (colonIndex > 0 && colonIndex < trimmed.length - 2) {
+        const p1 = trimmed.slice(0, colonIndex).trim();
+        const p2 = trimmed.slice(colonIndex + 1).trim();
+        if (p1.length >= 3 && p2.length >= 3) {
+            return {
+                mainTitle: p1,
+                subtitle: p2,
+            };
+        }
+    }
+
+    return { mainTitle: trimmed };
+}
