@@ -712,12 +712,12 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                 Minimum Required Balance:
                             </p>
                             <p className="text-5xl font-black text-[#00C888] tracking-tight">
-                                $200
+                                $300
                             </p>
                         </div>
 
                         <p className="text-sm text-center text-gray-600 dark:text-gray-300 mb-8 max-w-[280px] mx-auto leading-relaxed">
-                            A minimum balance of $200 is required to use the EA
+                            A minimum balance of $300 is required to use the EA
                             effectively.
                         </p>
 
@@ -731,7 +731,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                 className="flex-1 whitespace-nowrap px-2 font-bold"
                             >
                                 <XCircle size={16} className="mr-1.5" />
-                                <span>Why do I need $200?</span>
+                                <span>Why do I need $300?</span>
                             </Button>
                             <Button
                                 type="button"
@@ -789,7 +789,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                         </h3>
 
                         <p className="text-sm text-center text-gray-600 dark:text-gray-300 mb-8 px-4 leading-relaxed max-w-[300px] mx-auto">
-                            Please fund your account with at least $200 before
+                            Please fund your account with at least $300 before
                             submitting your MT5 account for EA access.
                         </p>
 

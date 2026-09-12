@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isDisposableEmail } from "./disposable-email";
 
 export const passwordSchema = z
     .string()
@@ -24,7 +25,16 @@ export const authSchema = z.object({
 
 export const signupSchema = z
     .object({
-        email: z.string().trim().toLowerCase().email().max(254),
+        email: z
+            .string()
+            .trim()
+            .toLowerCase()
+            .email()
+            .max(254)
+            .refine((val) => !isDisposableEmail(val), {
+                message:
+                    "Disposable or temporary email addresses are not allowed. Please use a permanent email address.",
+            }),
         password: passwordSchema,
         confirm: z.string(),
         fullName: z.string().trim().min(2).max(80),

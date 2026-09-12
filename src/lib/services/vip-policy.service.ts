@@ -5,6 +5,8 @@ import {
     FUNDING_GRACE_DAYS,
     FUNDING_MIN_BALANCE,
 } from "@/lib/pro-access";
+import { NotificationType, NotificationPriority } from "@prisma/client";
+import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 
 export interface VipPolicyRunResult {
     scannedCount: number;
@@ -133,6 +135,20 @@ export async function runVipPolicyReconciliation(): Promise<VipPolicyRunResult> 
                                 }`,
                             },
                         });
+
+                        await prisma.notification.create({
+                            data: {
+                                userId: account.userId,
+                                type: NotificationType.LICENSE_EXPIRED,
+                                title: "VIP Access Expired",
+                                message: isFundingExpired
+                                    ? "Your VIP access has expired because account funding fell below the $300 minimum. Top up to reactivate."
+                                    : `Your VIP access has expired due to ${inactivityDays} trading days of inactivity. Trade actively to restore VIP status.`,
+                                priority: NotificationPriority.HIGH,
+                                link: NOTIFICATION_ROUTES.VIP_ACCOUNTS,
+                            },
+                        });
+
                         result.expiredCount++;
                     }
                 }

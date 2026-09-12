@@ -6,7 +6,7 @@ export function PreviewConnectView() {
     return (
         <div className="h-full flex flex-col justify-between gap-2 animate-in fade-in duration-300">
             {/* Live Connection Banner */}
-            <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 dark:bg-emerald-500/[0.06] flex items-center justify-between">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 dark:bg-emerald-500/[0.06] flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-2">
                     <div className="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                         <Cpu size={15} />
@@ -29,8 +29,8 @@ export function PreviewConnectView() {
             </div>
 
             {/* Live Auto-Synced Executions */}
-            <div className="p-2.5 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/10 shadow-sm">
-                <div className="flex items-center justify-between mb-1.5">
+            <div className="p-2.5 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/10 shadow-sm flex-1 flex flex-col justify-center">
+                <div className="flex items-center justify-between mb-1.5 shrink-0">
                     <div className="flex items-center gap-1.5">
                         <Zap size={11} className="text-gold" />
                         <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider">
@@ -42,7 +42,7 @@ export function PreviewConnectView() {
                     </span>
                 </div>
 
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                     {/* Execution 1 */}
                     <div className="p-1.5 sm:p-2 rounded-lg bg-gray-50/80 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -112,7 +112,7 @@ export function PreviewConnectView() {
             </div>
 
             {/* Sync summary bar */}
-            <div className="px-2.5 py-1.5 rounded-xl bg-gold/[0.08] dark:bg-gold/[0.04] border border-gold/20 flex items-center justify-between text-[10px]">
+            <div className="px-2.5 py-1.5 rounded-xl bg-gold/[0.08] dark:bg-gold/[0.04] border border-gold/20 flex items-center justify-between text-[10px] shrink-0">
                 <span className="text-gray-600 dark:text-gray-300 font-medium">
                     MT5 Chart / VPS Auto Heartbeat
                 </span>

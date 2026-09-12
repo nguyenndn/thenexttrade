@@ -53,9 +53,8 @@ export function WebForexTools() {
                     <div className="mb-8 flex flex-col items-center">
                         <HomeSectionHeading
                             align="center"
-                            title="Institutional Risk Calculators"
-                            highlight="Risk Calculators"
-                            description="Know your exact dollar risk and pip valuation before entering the market. 100% free, zero signup."
+                            title="Trading Tools"
+                            highlight="Tools"
                             icon={Wrench}
                         />
                         <div className="mt-3">

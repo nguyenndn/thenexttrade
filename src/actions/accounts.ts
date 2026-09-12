@@ -32,7 +32,7 @@ export async function getTradingAccounts(page = 1, limit = 12) {
     const safeLimit = Number.isInteger(limit) && limit > 0 ? limit : 12;
     const skip = (safePage - 1) * safeLimit;
 
-    const [accounts, total] = await Promise.all([
+    const [accounts, total, globalEntitlement] = await Promise.all([
         prisma.tradingAccount.findMany({
             where: { userId: user.id },
             // Default account first so "accounts[0]" (used to auto-set the
@@ -102,6 +102,14 @@ export async function getTradingAccounts(page = 1, limit = 12) {
             take: limit,
         }),
         prisma.tradingAccount.count({ where: { userId: user.id } }),
+        prisma.proEntitlement.findFirst({
+            where: {
+                userId: user.id,
+                tradingAccountId: null,
+                status: { in: ["ACTIVE", "GRACE"] },
+            },
+            select: { status: true, source: true, expiresAt: true },
+        }),
     ]);
 
     // Fetch eligibility for all accounts
@@ -109,18 +117,18 @@ export async function getTradingAccounts(page = 1, limit = 12) {
 
     // Enrich with connection + Pro/EA/VIP status + eligibility
     const accountsWithStatus = accounts.map((acc) => {
-        const proEntitlement = acc.proEntitlement;
+        const effectiveEntitlement = acc.proEntitlement || globalEntitlement;
         // Treat expired GRACE as EXPIRED here instead of reading the raw status,
         // so the account list doesn't keep reporting "GRACE / Pro / EA INCLUDED"
         // after the grace window passes (mirrors getAccountProAccess auto-expire).
-        const rawProStatus = proEntitlement?.status || "NONE";
+        const rawProStatus = effectiveEntitlement?.status || "NONE";
         const proExpired =
             rawProStatus === "GRACE" &&
-            proEntitlement?.expiresAt &&
-            new Date(proEntitlement.expiresAt).getTime() <= Date.now();
+            effectiveEntitlement?.expiresAt &&
+            new Date(effectiveEntitlement.expiresAt).getTime() <= Date.now();
         const proStatus = proExpired ? "EXPIRED" : rawProStatus;
-        const proSource = proEntitlement?.source || null;
-        const proExpiresAt = proEntitlement?.expiresAt?.toISOString() || null;
+        const proSource = effectiveEntitlement?.source || null;
+        const proExpiresAt = effectiveEntitlement?.expiresAt?.toISOString() || null;
         const vipStatus = acc.vipRequests?.[0]?.status || null;
         const isPro = proStatus === "ACTIVE" || proStatus === "GRACE";
         const eaAccess: "INCLUDED" | "NOT_INCLUDED" = isPro

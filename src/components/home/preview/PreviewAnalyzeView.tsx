@@ -6,7 +6,7 @@ export function PreviewAnalyzeView() {
     return (
         <div className="h-full flex flex-col justify-between gap-2 animate-in fade-in duration-300">
             {/* Top 3 KPI Cards */}
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-2 shrink-0">
                 <div className="p-2 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/10 shadow-sm">
                     <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider block">
                         Net P/L
@@ -34,8 +34,8 @@ export function PreviewAnalyzeView() {
             </div>
 
             {/* Equity Curve Area */}
-            <div className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/10 shadow-sm">
-                <div className="flex items-center justify-between mb-1">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/10 shadow-sm flex-1 flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-1 shrink-0">
                     <div className="flex items-center gap-1.5">
                         <BarChart3 size={11} className="text-gold" />
                         <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider">
@@ -47,7 +47,7 @@ export function PreviewAnalyzeView() {
                     </span>
                 </div>
 
-                <div className="h-16 sm:h-20 w-full relative mt-1 flex items-end">
+                <div className="h-16 sm:h-20 flex-1 w-full relative mt-1 flex items-end">
                     <svg
                         className="w-full h-full overflow-visible"
                         viewBox="0 0 300 100"
@@ -92,7 +92,7 @@ export function PreviewAnalyzeView() {
             </div>
 
             {/* Session Breakdown Mini Bar */}
-            <div className="px-2.5 py-1.5 rounded-xl bg-gray-50/80 dark:bg-white/[0.02] border border-gray-200/50 dark:border-white/5 flex items-center justify-between text-[10px]">
+            <div className="px-2.5 py-1.5 rounded-xl bg-gray-50/80 dark:bg-white/[0.02] border border-gray-200/50 dark:border-white/5 flex items-center justify-between text-[10px] shrink-0">
                 <div className="flex items-center gap-3">
                     <span className="text-gray-500 font-bold uppercase">Sessions:</span>
                     <span className="font-bold text-gray-800 dark:text-gray-200">

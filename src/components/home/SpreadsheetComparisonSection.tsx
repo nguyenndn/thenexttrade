@@ -64,7 +64,7 @@ const essenceCards: EssenceCard[] = [
     {
         icon: PlugZap,
         label: "Zero Manual Entry",
-        copy: "Live MT5 EA streams trades in real time. No more manual Excel copy-pasting.",
+        copy: "Live MT5 EA streams entries, exits, and slippage automatically. No manual CSV exports or ticket copy-pasting.",
         animate: { y: [0, -2.5, 0] },
         transition: { duration: 2.2, repeat: Infinity, ease: "easeInOut" },
     },
@@ -78,7 +78,7 @@ const essenceCards: EssenceCard[] = [
     {
         icon: BookOpenCheck,
         label: "Surgical Academy",
-        copy: "Curated lessons targeting the exact technical or psychological leak costing you money.",
+        copy: "Targeted playbooks mapped to your live execution leaks: news spikes, widened stop-losses, and premature exits.",
         animate: { rotate: [-3, 3, -3], y: [0, -1.5, 0] },
         transition: { duration: 3, repeat: Infinity, ease: "easeInOut" },
     },

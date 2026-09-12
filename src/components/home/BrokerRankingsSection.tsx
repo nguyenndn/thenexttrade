@@ -113,9 +113,8 @@ export function BrokerRankingsSection() {
             <section className="py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <HomeSectionHeading
                     align="center"
-                    title="Verified Infrastructure & Broker Partners"
-                    highlight="Broker Partners"
-                    description="Tight raw spreads, fast MT5 execution, and regulated custody. Connect to unlock TheNextTrade VIP for free."
+                    title="Partner Brokers"
+                    highlight="Brokers"
                     className="mb-6"
                 />
 

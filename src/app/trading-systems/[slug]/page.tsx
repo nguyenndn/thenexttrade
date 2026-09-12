@@ -1,5 +1,5 @@
 import React from "react";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { getSystemBySlug } from "@/config/trading-systems-data";
 import { TradingSystemsPageShell } from "@/components/trading-systems/TradingSystemsPageShell";
@@ -19,7 +19,7 @@ import {
     ChevronDown,
 } from "lucide-react";
 import DOMPurify from "isomorphic-dompurify";
-import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import type { Metadata } from "next";
 
 interface PageProps {
@@ -30,7 +30,16 @@ export async function generateMetadata({
     params,
 }: PageProps): Promise<Metadata> {
     const { slug } = await params;
-    const system = getSystemBySlug(slug);
+    let system = getSystemBySlug(slug);
+
+    if (!system) {
+        const productById = await prisma.eAProduct.findUnique({
+            where: { id: slug },
+        }).catch(() => null);
+        if (productById?.slug) {
+            system = getSystemBySlug(productById.slug);
+        }
+    }
 
     if (!system) {
         return {
@@ -46,9 +55,15 @@ export async function generateMetadata({
 
 export default async function TradingSystemDetailPage({ params }: PageProps) {
     const { slug } = await params;
-    const system = getSystemBySlug(slug);
+    let system = getSystemBySlug(slug);
 
     if (!system) {
+        const productById = await prisma.eAProduct.findUnique({
+            where: { id: slug },
+        }).catch(() => null);
+        if (productById?.slug) {
+            redirect(`/trading-systems/${productById.slug}`);
+        }
         notFound();
     }
 
@@ -91,7 +106,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
             </div>
 
             {/* Header Panel */}
-            <div className="relative rounded-3xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#111318]/50 p-6 md:p-8 shadow-sm mb-8 overflow-hidden">
+            <div className="relative rounded-3xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 md:p-8 shadow-sm mb-8 overflow-hidden">
                 {/* Ambient background glow inside header */}
                 <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-72 h-72 bg-gold/5 dark:bg-gold/[0.03] rounded-full blur-3xl pointer-events-none" />
 
@@ -121,11 +136,11 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                 <span>MT5 Verified</span>
                             </span>
                         </div>
-                        <h1 className="text-2xl md:text-4xl font-black font-heading text-gray-800 dark:text-white leading-tight">
+                        <h1 className="text-2xl md:text-3xl lg:text-4xl font-black font-heading text-gray-800 dark:text-white leading-tight">
                             {system.title}
                         </h1>
                         <div
-                            className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-black prose-a:text-primary prose-img:rounded-xl"
+                            className="mt-3.5 prose prose-sm dark:prose-invert max-w-none text-xs sm:text-[13px] leading-relaxed text-gray-600 dark:text-gray-300 prose-p:my-2 prose-p:text-xs sm:prose-p:text-[13px] prose-p:leading-relaxed prose-headings:font-black prose-strong:font-bold prose-a:text-primary prose-img:rounded-xl"
                             dangerouslySetInnerHTML={{
                                 __html: DOMPurify.sanitize(
                                     system.longDescription
@@ -193,7 +208,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
 
             {/* Recommended VPS Block */}
             {system.slug !== "trade-manager" && (
-                <div className="mb-8 rounded-3xl border border-emerald-500/15 dark:border-emerald-500/10 bg-white/80 dark:bg-[#111318]/50 p-6 md:p-8 shadow-sm backdrop-blur-md relative overflow-hidden">
+                <div className="mb-8 rounded-3xl border border-emerald-500/15 dark:border-emerald-500/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 md:p-8 shadow-sm backdrop-blur-md relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 dark:bg-emerald-500/[0.02] rounded-full blur-2xl pointer-events-none" />
 
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
@@ -219,13 +234,15 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                 href="https://www.fxvm.net"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="block w-full"
+                                className={buttonVariants({
+                                    variant: "primary",
+                                    className:
+                                        "w-full min-h-11 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs shadow-lg shadow-emerald-500/15 transition-all flex items-center justify-center gap-2",
+                                })}
                             >
-                                <Button className="w-full min-h-11 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs shadow-lg shadow-emerald-500/15 transition-all flex items-center justify-center gap-2">
-                                    <Server size={14} />
-                                    Get a VPS
-                                    <span className="font-bold">&rarr;</span>
-                                </Button>
+                                <Server size={14} />
+                                Get a VPS
+                                <span className="font-bold">&rarr;</span>
                             </a>
                         </div>
                     </div>
@@ -286,35 +303,38 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                     </div>
                                     <Link
                                         href="/dashboard/accounts"
-                                        className="block w-full"
+                                        className={buttonVariants({
+                                            variant: "primary",
+                                            className:
+                                                "w-full min-h-11 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-xs shadow-md transition-all flex items-center justify-center gap-2",
+                                        })}
                                     >
-                                        <Button className="w-full min-h-11 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-xs shadow-md transition-all flex items-center justify-center gap-2">
-                                            <KeyRound size={14} />
-                                            Verify Partner Eligibility
-                                        </Button>
+                                        <KeyRound size={14} />
+                                        Verify Partner Eligibility
                                     </Link>
                                 </div>
                             ) : (
                                 <div className="flex flex-col gap-3">
                                     <Link
                                         href="/auth/signup?next=/dashboard/accounts&source=trading_systems"
-                                        className="block w-full"
+                                        className={buttonVariants({
+                                            variant: "primary",
+                                            className:
+                                                "w-full min-h-11 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-xs shadow-md transition-all flex items-center justify-center gap-2",
+                                        })}
                                     >
-                                        <Button className="w-full min-h-11 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-xs shadow-md transition-all flex items-center justify-center gap-2">
-                                            <UserPlus size={14} />
-                                            Sign Up for Eligibility
-                                        </Button>
+                                        <UserPlus size={14} />
+                                        Sign Up for Eligibility
                                     </Link>
                                     <Link
                                         href="/auth/login?next=/dashboard/accounts"
-                                        className="block w-full"
+                                        className={buttonVariants({
+                                            variant: "outline",
+                                            className:
+                                                "w-full min-h-11 rounded-xl bg-white/90 dark:bg-white/[0.03] border border-gold/30 dark:border-gold/20 text-gray-800 dark:text-gray-200 font-black text-xs transition-all flex items-center justify-center gap-2",
+                                        })}
                                     >
-                                        <Button
-                                            variant="outline"
-                                            className="w-full min-h-11 rounded-xl bg-white/90 dark:bg-white/[0.03] border border-gold/30 dark:border-gold/20 text-gray-800 dark:text-gray-200 font-black text-xs transition-all flex items-center justify-center gap-2"
-                                        >
-                                            Sign In
-                                        </Button>
+                                        Sign In
                                     </Link>
                                 </div>
                             )}
@@ -360,7 +380,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                 </div>
 
                 {/* FAQ */}
-                <div className="rounded-3xl border border-gray-200 dark:border-white/10 bg-white/60 dark:bg-[#111318]/30 p-6 shadow-sm">
+                <div className="rounded-3xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 shadow-sm">
                     <h3 className="text-base font-black text-gray-800 dark:text-white mb-4 uppercase tracking-wider flex items-center gap-2">
                         <HelpCircle size={16} className="text-gold" />
                         Frequently Asked Questions

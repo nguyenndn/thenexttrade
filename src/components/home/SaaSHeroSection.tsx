@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, ArrowDown } from "lucide-react";
+import { ArrowRight, ArrowDown, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { DynamicFirefly } from "@/components/ui/DynamicFirefly";
 
@@ -153,6 +153,16 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                             />
                         </Button>
                     </a>
+                </div>
+
+                {/* Trust & Compatibility Strip */}
+                <div className="mt-5 sm:mt-6 flex flex-wrap items-center justify-center gap-2 text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 animate-in fade-in duration-1000">
+                    <span className="inline-flex items-center gap-1.5 text-gray-700 dark:text-gray-300">
+                        <ShieldCheck size={14} className="text-emerald-500 shrink-0" />
+                        Zero Front-Running
+                    </span>
+                    <span className="text-gray-400 dark:text-gray-600">·</span>
+                    <span>Personal & Funded Accounts Supported</span>
                 </div>
             </section>
 

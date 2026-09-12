@@ -47,7 +47,7 @@ export function TradingSystemsParamsTable({
     };
 
     return (
-        <div className="rounded-3xl border border-gray-200 dark:border-white/10 bg-white/60 dark:bg-[#111318]/30 p-6 shadow-sm overflow-hidden flex flex-col gap-5">
+        <div className="rounded-3xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 shadow-sm overflow-hidden flex flex-col gap-5">
             {/* Table Header Action Row */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <h3 className="text-base font-black text-gray-800 dark:text-white uppercase tracking-wider flex items-center gap-2 shrink-0">

@@ -227,6 +227,18 @@ export default function OnboardingClient({
             }
             trackEvent("onboarding_completed", { syncMethod });
 
+            // Check if user came with a Partner Broker signup intent
+            try {
+                const savedIntent = localStorage.getItem("tnt_signup_intent");
+                if (savedIntent === "BROKER_FUNDED" || savedIntent === "partner_pro") {
+                    localStorage.removeItem("tnt_signup_intent");
+                    router.push("/dashboard/accounts?action=add&intent=BROKER_FUNDED&mode=pro");
+                    return;
+                }
+            } catch {
+                // Ignore storage error
+            }
+
             // Redirect based on sync method
             if (syncMethod === "EA_SYNC") {
                 router.push("/dashboard/accounts?setup=sync&method=ea");
@@ -254,6 +266,19 @@ export default function OnboardingClient({
                 setError(result.error);
                 return;
             }
+
+            // Check if user came with a Partner Broker signup intent
+            try {
+                const savedIntent = localStorage.getItem("tnt_signup_intent");
+                if (savedIntent === "BROKER_FUNDED" || savedIntent === "partner_pro") {
+                    localStorage.removeItem("tnt_signup_intent");
+                    router.push("/dashboard/accounts?action=add&intent=BROKER_FUNDED&mode=pro");
+                    return;
+                }
+            } catch {
+                // Ignore storage error
+            }
+
             router.push("/dashboard");
         } catch {
             setError("Failed to skip. Please try again.");

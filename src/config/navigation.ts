@@ -222,7 +222,7 @@ export const adminMenuItems = [
         items: [
             { name: "IB Overview", href: "/admin/ib" },
             { name: "VIP Pipeline", href: "/admin/ib/pipeline" },
-            { name: "Trader Monitor (CRM)", href: "/admin/ib/traders" },
+            { name: "Trader Monitor", href: "/admin/ib/traders" },
             { name: "Trader Behavior", href: "/admin/users/behavior" },
             { name: "Sync Requests", href: "/admin/ib/sync-requests" },
         ],

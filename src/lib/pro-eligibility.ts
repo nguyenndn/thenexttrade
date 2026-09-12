@@ -89,7 +89,11 @@ function normalizeBrokerKey(value: string | null | undefined): string {
 
 export async function getAccountProEligibility(
     accountId: string,
-    userId: string
+    userId: string,
+    cachedContext?: {
+        globalEntitlement?: { id: string; status: string } | null;
+        activeBrokers?: Array<{ name: string; slug: string; isVipEligible: boolean }>;
+    }
 ): Promise<ProEligibilityResult> {
     const account = await prisma.tradingAccount.findFirst({
         where: { id: accountId, userId },
@@ -112,7 +116,7 @@ export async function getAccountProEligibility(
         return buildResult("MISSING_ACCOUNT_INFO", false);
     }
 
-    // 1. Active ProEntitlement
+    // 1. Active ProEntitlement on account
     if (
         account.proEntitlement &&
         (account.proEntitlement.status === "ACTIVE" ||
@@ -120,6 +124,29 @@ export async function getAccountProEligibility(
     ) {
         return buildResult("PRO_ACTIVE", true, {
             proEntitlementId: account.proEntitlement.id,
+        });
+    }
+
+    // 1b. Active ProEntitlement at user/global level
+    const globalEntitlement =
+        cachedContext?.globalEntitlement !== undefined
+            ? cachedContext.globalEntitlement
+            : await prisma.proEntitlement.findFirst({
+                  where: {
+                      userId,
+                      tradingAccountId: null,
+                      status: { in: ["ACTIVE", "GRACE"] },
+                  },
+                  select: { id: true, status: true },
+              });
+
+    if (
+        globalEntitlement &&
+        (globalEntitlement.status === "ACTIVE" ||
+            globalEntitlement.status === "GRACE")
+    ) {
+        return buildResult("PRO_ACTIVE", true, {
+            proEntitlementId: globalEntitlement.id,
         });
     }
 
@@ -147,10 +174,12 @@ export async function getAccountProEligibility(
     // 5. Check broker eligibility via EABroker table
     const accountBrokerKey = normalizeBrokerKey(account.broker);
 
-    const activeBrokers = await prisma.eABroker.findMany({
-        where: { isActive: true },
-        select: { name: true, slug: true, isVipEligible: true },
-    });
+    const activeBrokers =
+        cachedContext?.activeBrokers ??
+        (await prisma.eABroker.findMany({
+            where: { isActive: true },
+            select: { name: true, slug: true, isVipEligible: true },
+        }));
 
     const matchedBroker = activeBrokers.find((broker) => {
         const keys = [
@@ -175,17 +204,36 @@ export async function getAccountProEligibility(
 export async function getAccountsProEligibility(
     userId: string
 ): Promise<Record<string, ProEligibilityResult>> {
-    const accounts = await prisma.tradingAccount.findMany({
-        where: { userId },
-        select: { id: true },
-    });
+    const [accounts, globalEntitlement, activeBrokers] = await Promise.all([
+        prisma.tradingAccount.findMany({
+            where: { userId },
+            select: { id: true },
+        }),
+        prisma.proEntitlement.findFirst({
+            where: {
+                userId,
+                tradingAccountId: null,
+                status: { in: ["ACTIVE", "GRACE"] },
+            },
+            select: { id: true, status: true },
+        }),
+        prisma.eABroker.findMany({
+            where: { isActive: true },
+            select: { name: true, slug: true, isVipEligible: true },
+        }),
+    ]);
 
     const results: Record<string, ProEligibilityResult> = {};
+    const cachedContext = { globalEntitlement, activeBrokers };
 
     // Process in parallel for performance
     await Promise.all(
         accounts.map(async (acc) => {
-            results[acc.id] = await getAccountProEligibility(acc.id, userId);
+            results[acc.id] = await getAccountProEligibility(
+                acc.id,
+                userId,
+                cachedContext
+            );
         })
     );
 

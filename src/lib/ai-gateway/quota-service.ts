@@ -3,7 +3,19 @@ import { prisma } from "@/lib/prisma";
 import { getUserProAccess } from "@/lib/pro-access";
 
 const PRO_LIMIT = 50;
+const TRIAL_LIMIT = 20;
 const FREE_LIMIT = 10;
+
+function getDailyLimitForUser(proAccess: {
+    isPro: boolean;
+    status?: string;
+    trialInfo?: { isTrial?: boolean } | null;
+}): number {
+    if (proAccess.status === "TRIAL" || proAccess.trialInfo?.isTrial) {
+        return TRIAL_LIMIT;
+    }
+    return proAccess.isPro ? PRO_LIMIT : FREE_LIMIT;
+}
 
 // A request left in an in-flight state past this age is considered orphaned
 // (the process died or crashed between reserveAiRequest and the gateway's
@@ -88,7 +100,7 @@ export async function sweepStaleAiRequests(
 
 export async function getUserQuotaUsage(userId: string) {
     const proAccess = await getUserProAccess(userId);
-    const dailyLimit = proAccess.isPro ? PRO_LIMIT : FREE_LIMIT;
+    const dailyLimit = getDailyLimitForUser(proAccess);
     const usedToday = await countConsumedRequests(prisma, userId);
     return {
         isPro: proAccess.isPro,
@@ -113,7 +125,7 @@ export interface ReserveAiRequestInput {
 
 export async function reserveAiRequest(input: ReserveAiRequestInput) {
     const proAccess = await getUserProAccess(input.userId);
-    const dailyLimit = proAccess.isPro ? PRO_LIMIT : FREE_LIMIT;
+    const dailyLimit = getDailyLimitForUser(proAccess);
 
     return prisma.$transaction(
         async (tx) => {

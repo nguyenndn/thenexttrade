@@ -112,34 +112,36 @@ export function TradingSystemsTabbedGuide({ primaryCtaUrl }: TabbedGuideProps) {
                         tabsId="trading-systems-guide-tabs"
                         className="w-full sm:w-auto"
                     >
-                        <TabsList className="bg-gray-50/75 dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 rounded-xl p-1 gap-1 w-full flex-col sm:flex-row sm:w-auto">
-                            {[
-                                {
-                                    id: "access",
-                                    label: "1. Access Path",
-                                    icon: KeyRound,
-                                },
-                                {
-                                    id: "install",
-                                    label: "2. Install on MT5",
-                                    icon: Wrench,
-                                },
-                            ].map((tab) => {
-                                const IconComp = tab.icon;
-                                return (
-                                    <TabsTrigger
-                                        key={tab.id}
-                                        value={tab.id}
-                                        className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border border-transparent hover:border-gray-200/50 dark:hover:border-white/10 w-full sm:w-auto justify-center"
-                                        activeIndicatorClassName="!bg-gold shadow-md border-0"
-                                        activeTextClassName="!text-white"
-                                    >
-                                        <IconComp size={12} />
-                                        <span>{tab.label}</span>
-                                    </TabsTrigger>
-                                );
-                            })}
-                        </TabsList>
+                        <div className="overflow-x-auto scrollbar-hide flex w-full sm:w-auto">
+                            <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1 gap-1 w-full sm:w-auto shrink-0 flex">
+                                {[
+                                    {
+                                        id: "access",
+                                        label: "1. Access Path",
+                                        icon: KeyRound,
+                                    },
+                                    {
+                                        id: "install",
+                                        label: "2. Install on MT5",
+                                        icon: Wrench,
+                                    },
+                                ].map((tab) => {
+                                    const IconComp = tab.icon;
+                                    return (
+                                        <TabsTrigger
+                                            key={tab.id}
+                                            value={tab.id}
+                                            className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10 flex-1 sm:flex-none justify-center gap-1.5"
+                                            activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md border-0"
+                                            activeTextClassName="!text-white"
+                                        >
+                                            <IconComp size={12} />
+                                            <span>{tab.label}</span>
+                                        </TabsTrigger>
+                                    );
+                                })}
+                            </TabsList>
+                        </div>
                     </Tabs>
                 </div>
             </div>
@@ -170,7 +172,7 @@ export function TradingSystemsTabbedGuide({ primaryCtaUrl }: TabbedGuideProps) {
                                     </span>
                                 )}
                                 <span className="text-2xl font-black text-gold/20">
-                                    0{item.step}
+                                    {item.step}
                                 </span>
                             </div>
                             <div className="relative z-10">

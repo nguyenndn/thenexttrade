@@ -55,9 +55,17 @@ export default function SignupPage() {
         "appearance-none h-5 w-5 rounded-lg border border-amber-900/20 bg-white checked:bg-amber-500 checked:border-amber-500 dark:bg-black/20 dark:border-white/20 dark:checked:bg-amber-400 dark:checked:border-amber-400 checked:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%2F%3E%3C%2Fsvg%3E')] bg-[length:70%] bg-center bg-no-repeat transition-all cursor-pointer shrink-0 mt-0.5";
 
     useEffect(() => {
-        setReferralCode(
-            new URLSearchParams(window.location.search).get("ref")?.trim() || ""
-        );
+        const search = new URLSearchParams(window.location.search);
+        setReferralCode(search.get("ref")?.trim() || "");
+
+        const intentParam = search.get("intent")?.trim();
+        if (intentParam) {
+            try {
+                localStorage.setItem("tnt_signup_intent", intentParam);
+            } catch {
+                // Ignore storage error
+            }
+        }
 
         let cancelled = false;
 

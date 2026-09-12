@@ -60,9 +60,8 @@ export async function updateProfile(formData: FormData) {
 
     // 3. User Sync & Update (Avatar)
     const dbUser = await prisma.user.upsert({
-        where: { email: user.email! },
+        where: { id: user.id },
         update: {
-            id: user.id,
             name:
                 user.user_metadata?.full_name ||
                 user.user_metadata?.first_name ||

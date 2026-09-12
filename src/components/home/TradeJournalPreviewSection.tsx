@@ -209,15 +209,15 @@ export function TradeJournalPreviewSection({
                         </div>
                     </div>
 
-                    {/* Right Column: Interactive Live Cockpit Console (STRICT FIXED HEIGHT) */}
-                    <div className="lg:col-span-7">
-                        <div className="relative p-3.5 sm:p-4 rounded-3xl border border-gold/25 dark:border-gold/15 bg-white/90 dark:bg-[#111318] shadow-[0_20px_50px_rgba(15,23,42,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.45)] backdrop-blur-md overflow-hidden">
+                    {/* Right Column: Interactive Live Cockpit Console (Equal Height with Left Column) */}
+                    <div className="lg:col-span-7 flex flex-col h-full">
+                        <div className="relative p-3.5 sm:p-4 rounded-3xl border border-gold/25 dark:border-gold/15 bg-white/90 dark:bg-[#111318] shadow-[0_20px_50px_rgba(15,23,42,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.45)] backdrop-blur-md overflow-hidden flex flex-col justify-between h-full">
                             {/* Subtle Ambient Decorative Glows */}
                             <div className="absolute -top-12 -left-12 w-48 h-48 bg-gold/15 dark:bg-gold/5 rounded-full blur-3xl pointer-events-none" />
                             <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
                             {/* App Window Header Bar */}
-                            <div className="flex items-center justify-between gap-1.5 sm:gap-2 px-1.5 py-1 border-b border-gray-200/80 dark:border-white/10 mb-2.5">
+                            <div className="flex items-center justify-between gap-1.5 sm:gap-2 px-1.5 py-1 border-b border-gray-200/80 dark:border-white/10 mb-2.5 shrink-0">
                                 <div className="flex items-center gap-1.5 shrink-0">
                                     <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
                                     <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
@@ -250,14 +250,14 @@ export function TradeJournalPreviewSection({
                             </div>
 
                             {/* Interactive Screens Body */}
-                            <div className="min-h-[215px] sm:h-[220px] flex flex-col justify-between overflow-hidden">
+                            <div className="flex-1 flex flex-col justify-between overflow-hidden min-h-[220px]">
                                 {activeStep === 0 && <PreviewConnectView />}
                                 {activeStep === 1 && <PreviewAnalyzeView />}
                                 {activeStep === 2 && <PreviewImproveView />}
                             </div>
 
                             {/* Cockpit Status Bar Footer */}
-                            <div className="mt-2.5 pt-2 border-t border-gray-100 dark:border-white/5 flex items-center justify-between text-[10px] text-gray-400">
+                            <div className="mt-2.5 pt-2 border-t border-gray-100 dark:border-white/5 flex items-center justify-between text-[10px] text-gray-400 shrink-0">
                                 <span className="font-mono text-[9px]">
                                     app.thenexttrade.com
                                 </span>

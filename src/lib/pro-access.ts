@@ -200,7 +200,7 @@ export async function getAccountProAccess(
         return { isPro: false, status: "NONE", source: null, expiresAt: null };
     }
 
-    const entitlement = await prisma.proEntitlement.findUnique({
+    let entitlement = await prisma.proEntitlement.findUnique({
         where: { tradingAccountId },
         select: {
             id: true,
@@ -210,6 +210,30 @@ export async function getAccountProAccess(
         },
     });
 
+    // If no active/grace account-level entitlement, check for global user-level entitlement
+    if (
+        !entitlement ||
+        (entitlement.status !== "ACTIVE" && entitlement.status !== "GRACE")
+    ) {
+        const globalEntitlement = await prisma.proEntitlement.findFirst({
+            where: {
+                userId,
+                tradingAccountId: null,
+                status: { in: ["ACTIVE", "GRACE"] },
+            },
+            select: {
+                id: true,
+                status: true,
+                source: true,
+                expiresAt: true,
+            },
+            orderBy: { createdAt: "desc" },
+        });
+        if (globalEntitlement) {
+            entitlement = globalEntitlement;
+        }
+    }
+
     // Auto-expire grace period in entitlement
     if (
         entitlement?.status === "GRACE" &&
@@ -217,7 +241,7 @@ export async function getAccountProAccess(
         now > entitlement.expiresAt
     ) {
         await prisma.proEntitlement.update({
-            where: { tradingAccountId },
+            where: { id: entitlement.id },
             data: { status: "EXPIRED" },
         });
         entitlement.status = "EXPIRED";

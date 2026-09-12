@@ -20,8 +20,8 @@ export function AboutUsSection() {
                     <div className="flex flex-col lg:flex-row lg:items-center gap-8 xl:gap-12 justify-between">
                         {/* Left Column: Story text and header */}
                         <div className="flex-1 min-w-0">
-                            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gray-900 dark:text-white leading-tight">
-                                Built from the tuition I paid the market,
+                            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gray-900 dark:text-white leading-tight [text-wrap:balance]">
+                                Hard lessons from blown accounts,
                                 <span className="block text-amber-500 dark:text-gold">
                                     engineered to protect your capital.
                                 </span>

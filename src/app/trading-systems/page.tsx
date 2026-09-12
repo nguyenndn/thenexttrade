@@ -23,7 +23,7 @@ import { TRADING_SYSTEMS_DATA } from "@/config/trading-systems-data";
 export const metadata: Metadata = {
     title: "MT5 Trading Systems & Expert Advisors | TheNextTrade",
     description:
-        "Institutional MetaTrader 5 Expert Advisors and trade management tools. Unlock EA GoldScalperNinja, GSN Phoenix Grid, and Trade Manager with an eligible partner account.",
+        "Professional MetaTrader 5 Expert Advisors and trade management tools. Unlock EA GoldScalperNinja, GSN Phoenix Grid, and Trade Manager with an eligible partner account.",
     alternates: {
         canonical: "/trading-systems",
     },
@@ -109,7 +109,7 @@ const SETUP_OPERATION_FAQS = [
     },
     {
         question: "What is the recommended minimum account balance?",
-        answer: "We recommend a minimum balance of $500–$1,000 for Standard or Raw Spread accounts to allow proper 1–2% risk management. For Cent or Micro accounts, you can safely start with as little as $50–$100.",
+        answer: "To qualify for partner unlock and maintain healthy 1–2% position risk, an initial deposit of $300 USD is required on standard or cent accounts. This provides the necessary margin cushion to handle sequence recovery and drawdown management safely.",
     },
     {
         question: "Can I run these Expert Advisors on MT5 Mobile (iOS / Android)?",
@@ -132,7 +132,7 @@ const SETUP_OPERATION_FAQS = [
 const LICENSING_RISK_FAQS = [
     {
         question: "How does the 100% free ($0) partner unlock model work?",
-        answer: "You can unlock full access to all our MT5 Expert Advisors and Trade Manager by opening or linking an account with one of our verified broker partners (e.g., Exness, XM, IC Markets). Once your partner account is verified, license keys and download links are automatically generated in your dashboard with zero upfront fees.",
+        answer: "You can unlock full access to all our MT5 Expert Advisors and Trade Manager by opening or linking an account with one of our verified broker partners (Exness, Vantage, VT Markets, or Ultima Markets). Once your partner account with a minimum deposit of $300 USD is verified, license keys and download links are automatically activated in your dashboard with zero subscription fees.",
     },
     {
         question: "Is my trading capital safe? Does TheNextTrade hold my funds?",
@@ -344,7 +344,7 @@ export default async function TradingSystemsIndexPage() {
                                             Auto Risk & SL Protection
                                         </span>
                                     </div>
-                                    <span className="text-[9px] font-mono font-black text-emerald-750 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md">
+                                    <span className="text-[9px] font-mono font-black text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-lg">
                                         ENABLED
                                     </span>
                                 </div>
@@ -392,7 +392,7 @@ export default async function TradingSystemsIndexPage() {
                         return (
                             <article
                                 key={system.slug}
-                                className={`group relative flex flex-col justify-between overflow-hidden rounded-[2rem] border bg-gradient-to-b ${system.accentClass} p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-gold/[0.04] bg-white dark:bg-[#111318]/60`}
+                                className={`group relative flex flex-col justify-between overflow-hidden rounded-[2rem] border bg-gradient-to-b ${system.accentClass} p-7 transition-all duration-300 hover:shadow-xl hover:shadow-gold/[0.04] bg-white dark:bg-[#1E2028]/60`}
                             >
                                 <div className="space-y-5">
                                     <div className="flex items-center justify-between">
@@ -450,7 +450,7 @@ export default async function TradingSystemsIndexPage() {
                                     </div>
                                 </div>
 
-                                <div className="mt-7 pt-4 border-t border-gray-100 dark:border-white/5">
+                                <div className="mt-7 pt-4 border-t border-gray-200 dark:border-white/10">
                                     <div className="flex flex-col gap-2">
                                         <Link
                                             href={primaryCtaUrl}

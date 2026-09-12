@@ -391,6 +391,48 @@ describe("TC-05 to TC-14: Account Pro Access & Activity Policy Engine", () => {
         expect(result.policyState).toBe("PAUSED");
         expect(result.fundingInfo?.expired).toBe(true);
     });
+
+    it("TC-11b: recognizes global user-level ProEntitlement when account has no specific entitlement", async () => {
+        const now = new Date("2026-09-02T12:00:00Z");
+        const twoDaysAgo = subtractTradingDays(now, 2);
+
+        (prisma.tradingAccount.findFirst as any).mockResolvedValue({
+            id: "acc-global",
+            broker: "Vantage",
+            balance: 500,
+            fundingVerifiedAt: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000),
+            fundingAmount: 500,
+            fundingLastVerifiedAt: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000),
+            fundingGraceUntil: null,
+        });
+
+        // No account-specific entitlement
+        (prisma.proEntitlement.findUnique as any).mockResolvedValue(null);
+
+        // Active user-level global entitlement
+        (prisma.proEntitlement.findFirst as any).mockResolvedValue({
+            id: "ent-global",
+            status: "ACTIVE",
+            source: "MANUAL_ADMIN",
+            expiresAt: null,
+        });
+
+        (prisma.journalEntry.aggregate as any).mockResolvedValue({
+            _sum: { lotSize: 3.0 },
+        });
+
+        (prisma.journalEntry.findFirst as any).mockResolvedValue({
+            exitDate: twoDaysAgo,
+            entryDate: twoDaysAgo,
+        });
+
+        const result = await getAccountProAccess("user-1", "acc-global", now);
+
+        expect(result.isPro).toBe(true);
+        expect(result.status).toBe("ACTIVE");
+        expect(result.source).toBe("MANUAL_ADMIN");
+        expect(result.policyState).toBe("ACTIVE");
+    });
 });
 
 describe("TC-12 to TC-15: Anti-Bypass & Security Safeguards", () => {

@@ -323,11 +323,15 @@ export function AccountListClient({
     useEffect(() => {
         const action = searchParams.get("action");
         const intent = searchParams.get("intent");
+        const mode = searchParams.get("mode");
         const setup = searchParams.get("setup");
         const method = searchParams.get("method");
         const health = searchParams.get("health");
-        const isProIntent = intent === "unlock-pro";
-        const isAddAction = action === "add";
+        const isPartnerProCreation =
+            intent === "BROKER_FUNDED" || mode === "pro";
+        const isProIntent =
+            intent === "unlock-pro" || isPartnerProCreation;
+        const isAddAction = action === "add" || action === "add-account";
         const isSyncSetup = setup === "sync";
         const isSyncHealth = health === "sync";
 
@@ -410,7 +414,12 @@ export function AccountListClient({
             // this page (e.g. navigated from another page, or paginated
             // off-page). Without this the user dead-ends in the generic pro
             // flow instead of the prefilled upgrade form.
-            if (!sourceAccount && isProIntent && initialAccounts.length > 0) {
+            if (
+                !sourceAccount &&
+                isProIntent &&
+                initialAccounts.length > 0 &&
+                !isPartnerProCreation
+            ) {
                 sourceAccount =
                     initialAccounts.find((a) => a.id === mainAccountId) ||
                     initialAccounts[0];
@@ -425,6 +434,7 @@ export function AccountListClient({
             const newParams = new URLSearchParams(searchParams.toString());
             newParams.delete("action");
             newParams.delete("intent");
+            newParams.delete("mode");
             newParams.delete("sourceAccountId");
             const newUrl = newParams.toString()
                 ? `?${newParams.toString()}`

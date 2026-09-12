@@ -69,6 +69,22 @@ describe("Quota Service", () => {
         expect(res.remainingToday).toBe(0);
     });
 
+    it("limits requests to 20 per day for trial users", async () => {
+        (getUserProAccess as any).mockResolvedValue({
+            isPro: true,
+            status: "TRIAL",
+            trialInfo: { isTrial: true },
+        });
+        (prisma.aiRequest.count as any).mockResolvedValue(15);
+
+        const res = await checkUserQuota("user-trial");
+        expect(res.hasQuota).toBe(true);
+        expect(res.isPro).toBe(true);
+        expect(res.dailyLimit).toBe(20);
+        expect(res.usedToday).toBe(15);
+        expect(res.remainingToday).toBe(5);
+    });
+
     it("counts only requests that consumed quota", async () => {
         (getUserProAccess as any).mockResolvedValue({ isPro: false });
         (prisma.aiRequest.count as any).mockResolvedValue(0);

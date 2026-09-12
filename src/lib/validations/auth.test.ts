@@ -167,5 +167,27 @@ describe("signupSchema", () => {
         });
         expect(result.success).toBe(false);
     });
+
+    it("rejects disposable or temporary email addresses", () => {
+        const disposableEmails = [
+            "user@mailinator.com",
+            "bot@tempmail.com",
+            "spammer@10minutemail.com",
+            "throwaway@guerrillamail.com",
+            "test@trashmail.com",
+        ];
+        disposableEmails.forEach((email) => {
+            const result = signupSchema.safeParse({
+                ...validSignup,
+                email,
+            });
+            expect(result.success).toBe(false);
+            if (!result.success) {
+                expect(result.error.issues[0]?.message).toContain(
+                    "Disposable or temporary email addresses are not allowed"
+                );
+            }
+        });
+    });
 });
 

@@ -131,6 +131,25 @@ export async function createPartnerProAccount(
             isNewAccount = true;
         }
 
+        // Block redundant requests when the account (or a user-level grant)
+        // already has an ACTIVE/GRACE entitlement.
+        const existingPro = await prisma.proEntitlement.findFirst({
+            where: {
+                userId: user.id,
+                status: { in: ["ACTIVE", "GRACE"] },
+                OR: [
+                    { tradingAccountId },
+                    { tradingAccountId: null },
+                ],
+            },
+            select: { status: true },
+        });
+        if (existingPro) {
+            return {
+                error: `This account already has ${existingPro.status.toLowerCase()} Pro access. No further upgrade request is needed.`,
+            };
+        }
+
         // Block duplicate pending VipRequest for same tradingAccountId
         const existingRequest = await prisma.vipRequest.findFirst({
             where: {
