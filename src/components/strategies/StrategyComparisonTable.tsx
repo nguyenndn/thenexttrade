@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
-import { ArrowUp, ArrowDown, Minus } from "lucide-react";
+import Link from "next/link";
+import { ArrowUp, ArrowDown, Minus, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ChartEmptyState } from "@/components/ui/ChartEmptyState";
 
@@ -31,7 +32,7 @@ export function StrategyComparisonTable({
     const maxPnL = Math.max(...data.map((d) => Math.abs(d.totalPnL)), 1);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard overflow-hidden shadow-sm">
+        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard overflow-hidden shadow-sm">
             <div className="px-6 py-4 border-b border-dashboard">
                 <h3 className="font-bold text-gray-700 dark:text-white text-lg">
                     Strategy Comparison
@@ -71,9 +72,14 @@ export function StrategyComparisonTable({
                                                 backgroundColor: item.color,
                                             }}
                                         />
-                                        <span className="font-bold text-gray-700 dark:text-white">
-                                            {item.strategy}
-                                        </span>
+                                        <Link
+                                            href={`/dashboard/journal?strategy=${encodeURIComponent(item.strategy)}`}
+                                            className="font-bold text-gray-700 dark:text-white hover:text-primary transition-colors flex items-center gap-1.5 group/link"
+                                            title={`View ${item.strategy} trades in Journal`}
+                                        >
+                                            <span>{item.strategy}</span>
+                                            <ExternalLink size={12} className="opacity-0 group-hover/link:opacity-100 transition-opacity text-primary" />
+                                        </Link>
                                     </div>
                                 </td>
 

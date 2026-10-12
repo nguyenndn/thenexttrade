@@ -28,7 +28,7 @@ VERY IMPORTANT: ALWAYS RUN COMMANDS WITH GITBASH
 | **SIMPLE CODE**  | Fix/add/change → Inline edit                    |
 | **COMPLEX CODE** | Build/create/refactor → Plan first, then code   |
 | **DESIGN/UI**    | UI/page/dashboard → Apply `frontend-specialist` |
-| **SLASH CMD**    | `/audit`, `/debug`, etc. → Follow workflow      |
+| **SLASH CMD**    | `/audit`, `/debug`, etc. → Execute corresponding Skill |
 
 ---
 
@@ -49,8 +49,8 @@ Before ANY code or design response:
 | **Performance**            | `performance-optimizer`| performance-profiling         |
 | **SEO**                    | `seo-specialist`       | seo-fundamentals              |
 | **Debugging**              | `debugger`             | systematic-debugging          |
-| **Multi-domain / Complex** | `orchestrator`         | brainstorming, plan-writing   |
-| **Planning / Architecture**| `project-planner`      | plan-writing                  |
+| **Multi-domain / Complex** | `orchestrator`         | brainstorming, plan           |
+| **Planning / Architecture**| `project-planner`      | plan                          |
 
 > If user mentions `@agent` explicitly, use that agent.
 
@@ -110,6 +110,13 @@ Before modifying any file:
 4. **Clean Telemetry Status:**
    - ❌ CẤM nhãn chữ cứng `Live (EA)` trong table data cells.
    - ✅ Dùng chấm trạng thái phát xung (pulsing green dot) + timestamp tương đối (`formatDistanceToNow`) kèm tooltip.
+
+### 🧠 Autonomous Sequential Thinking (MCP)
+- **Tự chủ kích hoạt tool `sequentialthinking` khi gặp:**
+  - **COMPLEX CODE / Architecture / Refactoring:** Thiết kế luồng dữ liệu mới, server actions phức tạp, schema migrations.
+  - **Systematic Debugging:** Lỗi race conditions, hydration mismatch, memory leak, bugs khó tái hiện.
+  - **Thuật toán Forex/EA:** Tính toán margin, drawdown radar, trailing grid, xử lý tick/candle telemetry.
+- **Không kích hoạt khi:** Task UI đơn giản (đổi chữ, tinh chỉnh CSS/padding, copy edit) hoặc câu hỏi ngắn để đảm bảo tốc độ phản hồi nhanh.
 
 ---
 
@@ -171,8 +178,8 @@ npx tsc --noEmit    → 0 errors
 | `verify_all.py`   | `.agents/scripts/verify_all.py`   | Comprehensive verify |
 | `auto_preview.py` | `.agents/scripts/auto_preview.py` | Auto preview         |
 
-### Workflows
-Key workflows: `/audit`, `/push_code`, `/debug`, `/optimize`, `/qa`, `/code_review`
+### Slash Commands (Skills)
+Key commands: `/audit`, `/push_code`, `/debug`, `/optimize`, `/qa`, `/code_review`, `/dev`
 
 ---
 
@@ -182,6 +189,6 @@ Key workflows: `/audit`, `/push_code`, `/debug`, `/optimize`, `/qa`, `/code_revi
 `orchestrator` · `project-planner` · `frontend-specialist` · `backend-specialist` · `database-architect` · `security-auditor` · `seo-specialist` · `debugger` · `performance-optimizer` · `product-manager` · `documentation-writer` · `explorer-agent` · `code-archaeologist`
 
 ### Key Skills
-`clean-code` · `brainstorming` · `frontend-design` · `tailwind-patterns` · `react-best-practices` · `plan-writing` · `testing-patterns` · `systematic-debugging` · `vulnerability-scanner` · `seo-fundamentals` · `performance-profiling`
+`clean-code` · `brainstorming` · `frontend-design` · `tailwind-patterns` · `react-best-practices` · `plan` · `testing-patterns` · `systematic-debugging` · `vulnerability-scanner` · `seo-fundamentals` · `performance-profiling`
 
 ---

@@ -9,16 +9,13 @@ import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth-cache";
 import { getUserTradingDataState } from "@/lib/trading-data-state";
 
+import { ANALYTICS_TABS } from "@/config/navigation";
+
 export const metadata: Metadata = {
     title: "Session Analysis | TheNextTrade",
     description:
         "Analyze your trading performance by market session and time of day",
 };
-
-const journalTabs = [
-    { label: "Trades", href: "/dashboard/journal" },
-    { label: "Sessions", href: "/dashboard/sessions" },
-];
 
 export default async function SessionAnalysisPage() {
     const user = await getAuthUser();
@@ -36,7 +33,7 @@ export default async function SessionAnalysisPage() {
                 description="Analyze your performance by market session."
             />
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
-                <TabBar tabs={journalTabs} />
+                <TabBar tabs={ANALYTICS_TABS} />
                 {tradingDataState.hasTradeData && (
                     <DashboardFilter equalWidth />
                 )}

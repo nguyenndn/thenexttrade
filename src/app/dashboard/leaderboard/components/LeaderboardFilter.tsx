@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { HelpCircle } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import type { PeriodFilter } from "../actions";
 
@@ -36,59 +37,72 @@ export function LeaderboardFilter({
     return (
         <div className="flex flex-wrap items-center gap-2">
             {/* Period Selector */}
-            <div className="flex items-center bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-dashboard shrink-0 select-none gap-1">
+            <div className="flex items-center bg-gray-50 dark:bg-white/5 p-1 rounded-lg border border-dashboard shrink-0 select-none gap-1">
                 {PERIODS.map((p) => (
-                    <button
+                    <Button
                         key={p.value}
+                        type="button"
+                        variant="ghost"
+                        size="sm"
                         onClick={() => handleParamChange("period", p.value)}
                         className={cn(
-                            "rounded-lg px-2.5 py-1.5 text-xs font-bold transition-all duration-200 whitespace-nowrap",
+                            "rounded-lg px-2.5 py-1.5 h-auto text-xs font-bold transition-all duration-200 whitespace-nowrap",
                             currentPeriod === p.value
-                                ? "bg-gold text-white shadow-sm"
+                                ? "bg-gold text-white shadow-sm hover:bg-gold"
                                 : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5"
                         )}
                     >
                         {p.label}
-                    </button>
+                    </Button>
                 ))}
             </div>
 
             {/* SortBy Selector */}
-            <div className="flex items-center bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-dashboard shrink-0 select-none gap-1">
-                <button
+            <div className="flex items-center bg-gray-50 dark:bg-white/5 p-1 rounded-lg border border-dashboard shrink-0 select-none gap-1">
+                <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
                     onClick={() => handleParamChange("sortBy", "percentage")}
                     className={cn(
-                        "rounded-lg px-3 py-1.5 text-xs font-bold transition-all duration-200 whitespace-nowrap",
+                        "rounded-lg px-3 py-1.5 h-auto text-xs font-bold transition-all duration-200 whitespace-nowrap",
                         currentSortBy === "percentage"
-                            ? "bg-[#00C888] text-white shadow-sm"
+                            ? "bg-gold text-white shadow-sm hover:bg-gold"
                             : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5"
                     )}
                 >
                     Win Rate (%)
-                </button>
-                <button
+                </Button>
+                <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
                     onClick={() => handleParamChange("sortBy", "currency")}
                     className={cn(
-                        "rounded-lg px-3 py-1.5 text-xs font-bold transition-all duration-200 whitespace-nowrap",
+                        "rounded-lg px-3 py-1.5 h-auto text-xs font-bold transition-all duration-200 whitespace-nowrap",
                         currentSortBy === "currency"
-                            ? "bg-[#00C888] text-white shadow-sm"
+                            ? "bg-gold text-white shadow-sm hover:bg-gold"
                             : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5"
                     )}
                 >
                     Net P&L ($)
-                </button>
+                </Button>
             </div>
 
             {/* Methodology Info Button */}
             {onOpenMethodology && (
-                <button
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
                     onClick={onOpenMethodology}
-                    className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 border border-dashboard hover:bg-amber-50 dark:hover:bg-amber-500/10 text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors flex items-center gap-1.5 text-xs font-semibold"
+                    className="p-2 h-auto rounded-lg bg-gray-50 dark:bg-white/5 border border-dashboard hover:bg-amber-50 dark:hover:bg-amber-500/10 text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors flex items-center gap-1.5 text-xs font-semibold"
                     title="Methodology & Rules"
+                    aria-label="Methodology & Rules"
                 >
                     <HelpCircle size={15} />
                     <span className="hidden sm:inline">Rules</span>
-                </button>
+                </Button>
             )}
         </div>
     );

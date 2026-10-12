@@ -25,7 +25,7 @@ const CANONICAL_PRODUCTS = [
     {
         id: "gsn-phoenix-grid",
         slug: "gsn-phoenix-grid",
-        name: "GSN Phoenix Grid",
+        name: "GSN - Apex Gold Sentinel",
         description: "Automated Grid & Trend EA",
         type: "AUTO_TRADE",
     },

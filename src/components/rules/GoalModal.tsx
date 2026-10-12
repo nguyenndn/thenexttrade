@@ -104,9 +104,9 @@ export function GoalModal({ isOpen, onClose, onSuccess }: GoalModalProps) {
                             Goal Title
                         </label>
                         <PremiumInput
-                            placeholder="e.g. Journal 5 trades this week"
                             {...register("title")}
                             error={errors.title?.message}
+                            helperText="Set a concrete discipline habit (e.g. review daily losses or limit trade frequency)"
                         />
                     </div>
 
@@ -124,7 +124,7 @@ export function GoalModal({ isOpen, onClose, onSuccess }: GoalModalProps) {
                                         onValueChange={field.onChange}
                                         value={field.value}
                                     >
-                                        <SelectTrigger className="w-full h-10 px-3 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#1E2028] text-sm text-gray-800 dark:text-white focus:outline-none">
+                                        <SelectTrigger className="w-full h-10 px-3 border border-dashboard dark:border-white/10 rounded-lg bg-gray-50 dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
                                             <SelectValue placeholder="Select Goal Type" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -164,7 +164,7 @@ export function GoalModal({ isOpen, onClose, onSuccess }: GoalModalProps) {
                                         onValueChange={field.onChange}
                                         value={field.value}
                                     >
-                                        <SelectTrigger className="w-full h-10 px-3 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#1E2028] text-sm text-gray-800 dark:text-white focus:outline-none">
+                                        <SelectTrigger className="w-full h-10 px-3 border border-dashboard dark:border-white/10 rounded-lg bg-gray-50 dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
                                             <SelectValue placeholder="Select Goal Period" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -191,7 +191,6 @@ export function GoalModal({ isOpen, onClose, onSuccess }: GoalModalProps) {
                         </label>
                         <PremiumInput
                             type="number"
-                            placeholder="e.g. 5"
                             {...register("targetValue", {
                                 valueAsNumber: true,
                             })}
@@ -207,7 +206,7 @@ export function GoalModal({ isOpen, onClose, onSuccess }: GoalModalProps) {
                             size="smd"
                             onClick={onClose}
                             disabled={isPending}
-                            className="border-gray-300 dark:border-white/10 font-bold"
+                            className="font-bold"
                         >
                             Cancel
                         </Button>

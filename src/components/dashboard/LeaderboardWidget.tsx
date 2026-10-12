@@ -142,7 +142,7 @@ export async function LeaderboardWidget() {
                         myRank &&
                         !topUsers.some((u) => u.id === user.id) && (
                             <div className="mt-3 pt-3 border-t border-dashboard flex items-center justify-between">
-                                <span className="text-xs text-gray-600">
+                                <span className="text-xs text-gray-600 dark:text-gray-400">
                                     Your rank
                                 </span>
                                 <span className="text-xs font-black text-primary">

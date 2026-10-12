@@ -80,10 +80,10 @@ function SummaryCard({
     color: string;
 }) {
     return (
-        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4">
+        <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4">
             <div className="flex items-center gap-3">
                 <div
-                    className={`w-9 h-9 rounded-xl flex items-center justify-center ${color}`}
+                    className={`w-9 h-9 rounded-lg flex items-center justify-center ${color}`}
                 >
                     <Icon size={16} />
                 </div>
@@ -250,7 +250,7 @@ export function ArticleOpsDashboard({
                                 key={f.value}
                                 value={f.value}
                                 className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
-                                activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                                 activeTextClassName="!text-white"
                             >
                                 <f.icon size={15} />
@@ -262,7 +262,7 @@ export function ArticleOpsDashboard({
 
                 {/* Bulk Toolbar */}
                 {selectedIds.size > 0 && (
-                    <div className="flex flex-wrap items-center gap-3 px-4 py-2.5 bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-xl">
+                    <div className="flex flex-wrap items-center gap-3 px-4 py-2.5 bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-lg">
                         <span className="text-sm font-bold text-gray-700 dark:text-gray-200">
                             {selectedIds.size} selected
                         </span>
@@ -304,7 +304,7 @@ export function ArticleOpsDashboard({
                 )}
 
                 {/* Table */}
-                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>

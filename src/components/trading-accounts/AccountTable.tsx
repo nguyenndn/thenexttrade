@@ -122,8 +122,296 @@ export function AccountTable({
     );
 
     return (
-        <div className="w-full overflow-hidden rounded-2xl border border-dashboard/80 bg-white shadow-sm dark:border-white/[0.08] dark:bg-[#1E2028]">
-            <div className="overflow-x-auto">
+        <div className="w-full overflow-hidden rounded-lg border border-dashboard/80 bg-white shadow-sm dark:border-white/[0.08] dark:bg-[#1E2028]">
+            {/* Mobile Card View (< md) */}
+            <div className="md:hidden divide-y divide-dashboard/60 dark:divide-white/[0.04]">
+                {accounts.map((account) => {
+                    const isMain = account.id === mainAccountId;
+                    const hasSynced = !!account.lastSync;
+                    const accountType = hasSynced
+                        ? getAccountType(account.accountType, account.server)
+                        : null;
+                    const isReal = accountType === "REAL";
+                    const syncMethod = getSyncMethod(account);
+                    const isAccountSyncing = Boolean(
+                        activeSyncingAccounts?.[account.id] ||
+                        (account.latestJob &&
+                            (account.latestJob.status === "PENDING" ||
+                                account.latestJob.status === "PROCESSING") &&
+                            Date.now() - new Date(account.latestJob.createdAt).getTime() <
+                                (account.latestJob.status === "PENDING" ? 60000 : 120000))
+                    );
+                    const latestJob = account.latestJob;
+                    const isLatestSyncFailed = Boolean(
+                        !isAccountSyncing &&
+                        latestJob &&
+                        latestJob.status === "FAILED" &&
+                        Date.now() - new Date(latestJob.createdAt).getTime() < 3600000
+                    );
+                    const balance = account.balance ?? 0;
+                    const isUnderReview =
+                        account.proStatus === "PENDING" ||
+                        account.eligibility?.status === "PENDING_REVIEW";
+                    const pendingTicket =
+                        pendingTicketsByAccount[account.id] ||
+                        (account.accountNumber
+                            ? pendingTicketsByAccount[account.accountNumber]
+                            : undefined);
+                    const hasPendingSupport = Boolean(pendingTicket);
+
+                    return (
+                        <div key={`mobile-${account.id}`} className="p-4 space-y-3">
+                            {/* Card Top: Star + Name + Badges + Menu */}
+                            <div className="flex items-start justify-between gap-2">
+                                <div className="flex items-start gap-2.5 min-w-0">
+                                    <button
+                                        type="button"
+                                        onClick={() => onSetMain(account.id)}
+                                        aria-label={isMain ? "Current main account" : "Set as main account"}
+                                        className="mt-0.5 p-1 -ml-1 text-gray-400 hover:text-amber-500 transition-colors"
+                                    >
+                                        <Star
+                                            size={16}
+                                            className={cn(
+                                                "transition-transform",
+                                                isMain
+                                                    ? "fill-amber-500 text-amber-500 scale-110"
+                                                    : "fill-transparent"
+                                            )}
+                                        />
+                                    </button>
+                                    <div className="min-w-0">
+                                        <div className="flex items-center gap-1.5 flex-wrap">
+                                            <span className="text-sm font-bold text-gray-900 dark:text-white truncate">
+                                                {account.name}
+                                            </span>
+                                            {isMain && (
+                                                <span className="px-1.5 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                                    MAIN
+                                                </span>
+                                            )}
+                                            {accountType && (
+                                                <span
+                                                    className={cn(
+                                                        "px-1.5 py-0.2 rounded-lg text-[9px] font-black uppercase tracking-wider border",
+                                                        isReal
+                                                            ? "bg-emerald-100 text-emerald-700 border-emerald-300 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/30"
+                                                            : "bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-500/15 dark:text-blue-400 dark:border-blue-500/30"
+                                                    )}
+                                                >
+                                                    {accountType}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 font-mono mt-0.5">
+                                            <span>#{account.accountNumber || "—"}</span>
+                                            {account.useForLeaderboard && (
+                                                <Trophy size={12} className="text-yellow-500 shrink-0" />
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <button
+                                            type="button"
+                                            aria-label="Account options"
+                                            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                        >
+                                            <MoreVertical size={16} />
+                                        </button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent
+                                        align="end"
+                                        className="w-50 p-1.5 rounded-lg border-dashboard shadow-xl bg-white dark:bg-[#1E2028] z-[100]"
+                                    >
+                                        <DropdownMenuItem
+                                            onClick={() => onSettings(account)}
+                                            className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5"
+                                        >
+                                            <Settings size={15} />
+                                            <span>Account Settings</span>
+                                        </DropdownMenuItem>
+
+                                        {onRequestSupport && (
+                                            <DropdownMenuItem
+                                                onClick={() => onRequestSupport(account.id)}
+                                                className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5"
+                                            >
+                                                <LifeBuoy size={15} className="text-amber-500" />
+                                                <span>{hasPendingSupport ? "View Support Ticket" : "Sync Support"}</span>
+                                            </DropdownMenuItem>
+                                        )}
+
+                                        {isAccountSyncing && (
+                                            <DropdownMenuItem
+                                                onClick={async () => {
+                                                    try {
+                                                        await cancelCloudSyncJob(account.id, "Sync stopped by user.");
+                                                        toast.info("Sync stopped.");
+                                                        onUpdate();
+                                                    } catch (err: any) {
+                                                        toast.error(err?.message || "Failed to stop sync.");
+                                                    }
+                                                }}
+                                                className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg text-rose-600 dark:text-rose-400"
+                                            >
+                                                <X size={15} />
+                                                <span>Cancel Sync</span>
+                                            </DropdownMenuItem>
+                                        )}
+
+                                        <div className="h-px bg-gray-100 dark:bg-white/5 my-1" />
+
+                                        {isReal && (
+                                            <DropdownMenuItem
+                                                onClick={async () => {
+                                                    try {
+                                                        const res = await fetch(
+                                                            `/api/trading-accounts/${account.id}/leaderboard`,
+                                                            { method: "POST" }
+                                                        );
+                                                        const data = await res.json();
+                                                        if (!res.ok) throw new Error(data.error);
+                                                        toast.success(
+                                                            data.useForLeaderboard
+                                                                ? "Account set for leaderboard!"
+                                                                : "Account removed from leaderboard"
+                                                        );
+                                                        onUpdate();
+                                                    } catch (e: any) {
+                                                        toast.error(e.message || "Failed to update");
+                                                    }
+                                                }}
+                                                className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5"
+                                            >
+                                                <Trophy
+                                                    size={15}
+                                                    className={account.useForLeaderboard ? "text-yellow-500" : "text-gray-500"}
+                                                />
+                                                <span>
+                                                    {account.useForLeaderboard
+                                                        ? "Remove from Leaderboard"
+                                                        : "Use for Leaderboard"}
+                                                </span>
+                                            </DropdownMenuItem>
+                                        )}
+
+                                        <DropdownMenuItem
+                                            onClick={() => onDelete(account.id)}
+                                            className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10"
+                                        >
+                                            <Trash2 size={15} />
+                                            <span>Delete Account</span>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </div>
+
+                            {/* 2x2 Matrix Specs Card */}
+                            <div className="grid grid-cols-2 rounded-lg border border-dashboard/80 dark:border-white/[0.08] bg-gray-50/50 dark:bg-white/[0.02] divide-x divide-y divide-dashboard/60 dark:divide-white/[0.05] overflow-hidden text-xs">
+                                <div className="p-2.5">
+                                    <span className="text-[10px] uppercase font-bold text-gray-400 block mb-0.5">Server</span>
+                                    <span className="font-bold text-gray-800 dark:text-gray-200 truncate block" title={account.server || "Server Unknown"}>
+                                        {account.server || "—"}
+                                    </span>
+                                </div>
+                                <div className="p-2.5">
+                                    <span className="text-[10px] uppercase font-bold text-gray-400 block mb-0.5">Broker</span>
+                                    <span className="font-bold text-gray-800 dark:text-gray-200 truncate block">
+                                        {account.broker || "MetaTrader 5"}
+                                    </span>
+                                </div>
+                                <div className="p-2.5">
+                                    <span className="text-[10px] uppercase font-bold text-gray-400 block mb-0.5">Balance</span>
+                                    <span className="font-bold text-gray-900 dark:text-white tabular-nums">
+                                        ${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    </span>
+                                </div>
+                                <div className="p-2.5">
+                                    <span className="text-[10px] uppercase font-bold text-gray-400 block mb-0.5">Telemetry</span>
+                                    <div className="flex items-center gap-1.5 truncate">
+                                        {isAccountSyncing ? (
+                                            <>
+                                                <RefreshCw className="h-3 w-3 animate-spin text-amber-500 shrink-0" />
+                                                <span className="text-amber-600 dark:text-amber-400 font-bold">Syncing...</span>
+                                            </>
+                                        ) : isLatestSyncFailed ? (
+                                            <span className="text-rose-600 dark:text-rose-400 font-bold">Failed</span>
+                                        ) : syncMethod.variant === "ea" ? (
+                                            <>
+                                                <span className="relative flex h-2 w-2 shrink-0">
+                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                                                </span>
+                                                <span className="text-gray-700 dark:text-gray-300 font-semibold truncate">
+                                                    {account.lastSync
+                                                        ? formatDistanceToNow(new Date(account.lastSync), {
+                                                              addSuffix: true,
+                                                              locale: enUS,
+                                                          })
+                                                        : "Live"}
+                                                </span>
+                                            </>
+                                        ) : (
+                                            <span className="text-gray-400 font-medium">Offline</span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Card Bottom: Pro Tier + Actions */}
+                            <div className="flex items-center justify-between gap-2 pt-1">
+                                <div>
+                                    {account.proStatus === "ACTIVE" || account.eligibility?.status === "PRO_ACTIVE" ? (
+                                        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-emerald-500/30 bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
+                                            <Crown size={10} className="text-emerald-500" /> Pro
+                                        </span>
+                                    ) : isUnderReview ? (
+                                        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-amber-500/30 bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
+                                            <Clock size={10} className="text-amber-500" /> Reviewing
+                                        </span>
+                                    ) : account.eligibility?.canRequest && onUnlockPro ? (
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => onUnlockPro(account)}
+                                            className="h-7 px-2 text-[10px] font-black rounded-lg border-amber-500/40 text-amber-600 dark:text-amber-400 bg-amber-500/5 hover:bg-amber-500/15"
+                                        >
+                                            <Crown size={10} className="text-amber-500" /> Unlock Pro
+                                        </Button>
+                                    ) : (
+                                        <span className="text-xs text-gray-400 font-medium">Standard</span>
+                                    )}
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    <Link
+                                        href={`/dashboard?accountId=${account.id}`}
+                                        className="text-xs font-bold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white px-2 py-1 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                                    >
+                                        Dashboard
+                                    </Link>
+                                    <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={() => setCloudSyncAccount(account)}
+                                        disabled={isAccountSyncing}
+                                        className="h-7 px-2.5 text-xs font-bold rounded-lg gap-1"
+                                    >
+                                        <RefreshCw size={12} className={cn(isAccountSyncing && "animate-spin")} />
+                                        <span>{isLatestSyncFailed ? "Retry" : "Sync"}</span>
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+
+            {/* Desktop Table View (>= md) */}
+            <div className="hidden md:block overflow-x-auto">
                 <table className="w-full border-collapse text-left">
                     <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 dark:text-gray-400 font-bold tracking-wider border-b border-dashboard">
                         <tr>
@@ -207,7 +495,7 @@ export function AccountTable({
                                             <div className="min-w-0">
                                                 <div className="flex items-center gap-1.5">
                                                     <span
-                                                        className="text-sm font-bold text-gray-900 group-hover:text-primary dark:text-white transition-colors truncate block"
+                                                        className="text-sm font-bold text-gray-900 group-hover:text-gold dark:text-white dark:group-hover:text-amber-400 transition-colors truncate block"
                                                         title={account.name}
                                                     >
                                                         {account.name}
@@ -221,7 +509,7 @@ export function AccountTable({
                                                         </span>
                                                     )}
                                                     {isMain && (
-                                                        <span className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 shrink-0">
+                                                        <span className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 shrink-0">
                                                             MAIN
                                                         </span>
                                                     )}
@@ -355,7 +643,7 @@ export function AccountTable({
                                                 {onOpenSyncSetup ? (
                                                     <button
                                                         onClick={() => onOpenSyncSetup(preferredSyncMethod)}
-                                                        className="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1"
+                                                        className="text-xs font-semibold text-gold dark:text-amber-400 hover:underline inline-flex items-center gap-1"
                                                         title="Connect Cloud Sync or EA Trade Manager"
                                                     >
                                                         <Cable size={12} /> Connect
@@ -389,7 +677,7 @@ export function AccountTable({
                                                 variant="outline"
                                                 size="sm"
                                                 onClick={() => onUnlockPro(account)}
-                                                className="h-7 px-2.5 text-[10px] font-black rounded-xl border-amber-500/40 text-amber-600 dark:text-amber-400 bg-amber-500/5 hover:bg-amber-500/15 transition-all shadow-sm gap-1.5"
+                                                className="h-7 px-2.5 text-[10px] font-black rounded-lg border-amber-500/40 text-amber-600 dark:text-amber-400 bg-amber-500/5 hover:bg-amber-500/15 transition-all shadow-sm gap-1.5"
                                             >
                                                 <Crown size={10} className="text-amber-500" />
                                                 {account.eligibility.status === "REJECTED" ? "Re-apply" : "Unlock Pro"}
@@ -434,7 +722,7 @@ export function AccountTable({
                                                         "text-xs font-bold transition-colors cursor-pointer",
                                                         isLatestSyncFailed
                                                             ? "text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300"
-                                                            : "text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
+                                                            : "text-gold hover:text-amber-500 dark:text-amber-400 dark:hover:text-amber-300"
                                                     )}
                                                     title={isLatestSyncFailed ? "Sync failed - click to retry" : "Cloud Sync"}
                                                 >
@@ -454,11 +742,11 @@ export function AccountTable({
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent
                                                     align="end"
-                                                    className="w-50 p-1.5 rounded-xl border-dashboard shadow-xl bg-white dark:bg-[#1E2028] z-[100]"
+                                                    className="w-50 p-1.5 rounded-lg border-dashboard shadow-xl bg-white dark:bg-[#1E2028] z-[100]"
                                                 >
                                                     <DropdownMenuItem
                                                         onClick={() => onSettings(account)}
-                                                        className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors"
+                                                        className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors"
                                                     >
                                                         <Settings size={15} className="text-gray-500" />
                                                         <span>Account Settings</span>
@@ -467,7 +755,7 @@ export function AccountTable({
                                                     <DropdownMenuItem
                                                         onClick={() => onSetMain(account.id)}
                                                         disabled={isMain}
-                                                        className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                     >
                                                         <Star
                                                             size={15}
@@ -479,7 +767,7 @@ export function AccountTable({
                                                     {onRequestSupport && (
                                                         <DropdownMenuItem
                                                             onClick={() => onRequestSupport(account.id)}
-                                                            className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors"
+                                                            className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors"
                                                         >
                                                             <LifeBuoy size={15} className="text-amber-500" />
                                                             <span>{hasPendingSupport ? "View Support Ticket" : "Sync Support"}</span>
@@ -497,7 +785,7 @@ export function AccountTable({
                                                                     toast.error(err?.message || "Failed to stop sync.");
                                                                 }
                                                             }}
-                                                            className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-xl text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors"
+                                                            className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors"
                                                         >
                                                             <X size={15} />
                                                             <span>Cancel Sync</span>
@@ -526,7 +814,7 @@ export function AccountTable({
                                                                     toast.error(e.message || "Failed to update");
                                                                 }
                                                             }}
-                                                            className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors"
+                                                            className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors"
                                                         >
                                                             <Trophy
                                                                 size={15}
@@ -545,7 +833,7 @@ export function AccountTable({
 
                                                     <DropdownMenuItem
                                                         onClick={() => onDelete(account.id)}
-                                                        className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 focus:bg-red-50 dark:focus:bg-red-500/10 focus:text-red-600 transition-colors"
+                                                        className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 focus:bg-red-50 dark:focus:bg-red-500/10 focus:text-red-600 transition-colors"
                                                     >
                                                         <Trash2 size={15} />
                                                         <span>Delete Account</span>

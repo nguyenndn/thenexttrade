@@ -46,6 +46,8 @@ export async function GET(request: NextRequest) {
             select: {
                 id: true,
                 pnl: true,
+                commission: true,
+                swap: true,
                 result: true,
                 entryDate: true,
                 lotSize: true,
@@ -55,6 +57,9 @@ export async function GET(request: NextRequest) {
                 followedPlan: true,
             },
         });
+
+        const getNetPnl = (t: any) =>
+            (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
 
         // Calculate emotion before stats
         const emotionBeforeMap = new Map<
@@ -68,7 +73,7 @@ export async function GET(request: NextRequest) {
                 losses: 0,
                 pnl: 0,
             };
-            current.pnl += trade.pnl || 0;
+            current.pnl += getNetPnl(trade);
             if (trade.result === "WIN") current.wins++;
             if (trade.result === "LOSS") current.losses++;
             emotionBeforeMap.set(trade.emotionBefore, current);
@@ -103,7 +108,7 @@ export async function GET(request: NextRequest) {
                 losses: 0,
                 pnl: 0,
             };
-            current.pnl += trade.pnl || 0;
+            current.pnl += getNetPnl(trade);
             if (trade.result === "WIN") current.wins++;
             if (trade.result === "LOSS") current.losses++;
             emotionAfterMap.set(trade.emotionAfter, current);
@@ -137,7 +142,7 @@ export async function GET(request: NextRequest) {
                 pnl: 0,
             };
             current.total++;
-            current.pnl += trade.pnl || 0;
+            current.pnl += getNetPnl(trade);
             if (trade.result === "WIN") current.wins++;
             confidenceMap.set(trade.confidenceLevel, current);
         }
@@ -164,7 +169,7 @@ export async function GET(request: NextRequest) {
                               followed.length) *
                           100
                         : 0,
-                totalPnL: followed.reduce((sum, t) => sum + (t.pnl || 0), 0),
+                totalPnL: followed.reduce((sum, t) => sum + getNetPnl(t), 0),
             },
             notFollowed: {
                 count: notFollowed.length,
@@ -175,7 +180,7 @@ export async function GET(request: NextRequest) {
                               notFollowed.length) *
                           100
                         : 0,
-                totalPnL: notFollowed.reduce((sum, t) => sum + (t.pnl || 0), 0),
+                totalPnL: notFollowed.reduce((sum, t) => sum + getNetPnl(t), 0),
             },
         };
 
@@ -196,10 +201,10 @@ export async function GET(request: NextRequest) {
             const currentTrade = trades[i];
 
             if (prevTrade.result === "LOSS") {
-                afterLossPnL += currentTrade.pnl || 0;
+                afterLossPnL += getNetPnl(currentTrade);
                 afterLossCount++;
             } else if (prevTrade.result === "WIN") {
-                afterWinPnL += currentTrade.pnl || 0;
+                afterWinPnL += getNetPnl(currentTrade);
                 afterWinCount++;
             }
         }
@@ -331,7 +336,7 @@ export async function GET(request: NextRequest) {
             }
             const week = weekMap.get(key)!;
             week.total++;
-            week.pnl += trade.pnl || 0;
+            week.pnl += getNetPnl(trade);
             if (trade.result === "WIN") week.wins++;
             if (trade.emotionBefore) {
                 week.emotions.set(

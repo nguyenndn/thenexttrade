@@ -68,7 +68,7 @@ export function MistakeCostChart({ data }: MistakeCostChartProps) {
                             if (active && payload && payload.length) {
                                 const data = payload[0].payload;
                                 return (
-                                    <div className="bg-[#1E2028]/95 backdrop-blur-md p-4 rounded-xl border border-dashboard dark:border-white/[0.08] shadow-xl">
+                                    <div className="bg-[#1E2028]/95 backdrop-blur-md p-4 rounded-lg border border-dashboard dark:border-white/[0.08] shadow-xl">
                                         <p className="font-black text-white mb-2 tracking-tight flex items-center gap-2">
                                             <span className="text-xl bg-white/10 w-8 h-8 rounded-lg flex items-center justify-center">
                                                 {data.emoji}

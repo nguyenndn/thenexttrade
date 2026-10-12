@@ -34,7 +34,7 @@ export function LessonLockedView({
             <main className="pt-28 pb-20">
                 <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center">
                     {/* Lock icon */}
-                    <div className="w-20 h-20 mx-auto mb-8 rounded-2xl bg-gradient-to-br from-gray-200 to-gray-300 dark:from-white/10 dark:to-white/5 flex items-center justify-center">
+                    <div className="w-20 h-20 mx-auto mb-8 rounded-lg bg-gradient-to-br from-gray-200 to-gray-300 dark:from-white/10 dark:to-white/5 flex items-center justify-center">
                         <Lock
                             size={32}
                             className="text-gray-600 dark:text-gray-300"
@@ -69,18 +69,19 @@ export function LessonLockedView({
                             href="/auth/signup"
                             className={buttonVariants({
                                 variant: "primary",
+                                size: "smd",
                                 className:
-                                    "px-8 py-3.5 rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white font-bold text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105",
+                                    "gap-2 font-bold shadow-md shadow-amber-500/25",
                             })}
                         >
-                            <GraduationCap size={18} />
+                            <GraduationCap size={15} />
                             <span>Sign Up Free to Unlock</span>
                         </Link>
                         <p className="text-xs text-gray-500">
                             Already have an account?{" "}
                             <Link
                                 href="/auth/login"
-                                className="text-primary hover:underline font-bold"
+                                className="text-gold hover:underline font-bold"
                             >
                                 Log in
                             </Link>
@@ -88,7 +89,7 @@ export function LessonLockedView({
                     </div>
 
                     {/* What you get */}
-                    <div className="mt-16 bg-gray-50 dark:bg-white/5 rounded-2xl border border-dashboard p-6 text-left">
+                    <div className="mt-16 bg-gray-50 dark:bg-white/5 rounded-lg border border-dashboard p-6 text-left">
                         <h3 className="font-bold text-sm uppercase tracking-wider text-gray-500 mb-4">
                             Free Account Includes
                         </h3>

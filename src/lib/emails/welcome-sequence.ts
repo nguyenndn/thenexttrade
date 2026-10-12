@@ -1,15 +1,12 @@
 /**
- * Welcome Email Foundation
+ * Welcome Email Templates
  *
- * This module defines the welcome email sequence for new users.
- * Currently exports templates only — actual sending requires configuring
- * an email provider (Resend, Postmark, SendGrid, etc.)
+ * Defines the welcome email sequence for new users (D0, D1, D3).
+ * Actual sending is handled by:
+ *   - D0: onboarding.server.ts (on completion)
+ *   - D1/D3: activation-reminders cron job
  *
- * To activate:
- * 1. Install your email provider SDK (e.g. `npm install resend`)
- * 2. Add RESEND_API_KEY to .env
- * 3. Implement the sendEmail() function below
- * 4. Wire triggers into onboarding completion and cron jobs
+ * Both use sendEmail() from email.service.ts (Resend SMTP).
  */
 
 export interface WelcomeEmailTemplate {
@@ -26,6 +23,7 @@ export interface WelcomeEmailTemplate {
         ctaHref: string;
     };
 }
+
 
 /**
  * D0: Sent immediately after registration completes
@@ -83,36 +81,3 @@ export const WELCOME_EMAIL_D3: WelcomeEmailTemplate = {
         ctaHref: "/dashboard/accounts?setup=sync",
     },
 };
-
-export const WELCOME_EMAIL_SEQUENCE = [
-    WELCOME_EMAIL_D0,
-    WELCOME_EMAIL_D1,
-    WELCOME_EMAIL_D3,
-];
-
-/**
- * Placeholder for email sending.
- * Replace this with your actual email provider implementation.
- *
- * Example with Resend:
- * ```
- * import { Resend } from 'resend';
- * const resend = new Resend(process.env.RESEND_API_KEY);
- *
- * export async function sendEmail(to: string, template: WelcomeEmailTemplate) {
- * await resend.emails.send({
- * from: 'TheNextTrade <noreply@thenexttrade.com>',
- * to,
- * subject: template.subject,
- * html: renderEmailTemplate(template), // Your HTML template renderer
- * });
- * }
- * ```
- */
-export async function sendWelcomeEmail(
-    _to: string,
-    _template: WelcomeEmailTemplate
-): Promise<void> {
-    // TODO: Implement when email provider is configured
-    console.log(`[EMAIL] Would send "${_template.subject}" to ${_to}`);
-}

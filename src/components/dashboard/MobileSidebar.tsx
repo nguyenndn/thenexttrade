@@ -20,9 +20,9 @@ import { signout } from "@/app/auth/actions";
 // Section label mapping - matches desktop Sidebar.tsx exactly
 const userSectionNames: Record<string, string> = {
     Dashboard: "OPERATIONS",
-    "Trading Journal": "EXECUTION",
-    "Analytics Hub": "REVIEW",
-    Academy: "RESOURCES",
+    "Trading Journal": "PLAYBOOK & EXECUTION",
+    "Analytics Hub": "PERFORMANCE",
+    Academy: "GROWTH",
 };
 
 const adminSectionNames: Record<string, string> = {
@@ -64,13 +64,14 @@ function MobileSidebarItem({
         <div>
             {hasSubItems ? (
                 <div>
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={() => setIsExpanded(!isExpanded)}
                         className={cn(
-                            "flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm nav-menu-text transition-colors mb-0.5 text-left select-none relative",
+                            "flex items-center justify-start gap-3 w-full px-3 py-2.5 h-auto rounded-lg text-sm nav-menu-text transition-colors mb-0.5 text-left select-none relative font-normal hover:bg-gray-100 dark:hover:bg-white/5",
                             isChildActive
-                                ? "text-amber-600 dark:text-amber-400 font-bold"
-                                : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5"
+                                ? "text-amber-600 dark:text-amber-400 font-bold bg-transparent"
+                                : "text-gray-600 dark:text-gray-300"
                         )}
                     >
                         {Icon && (
@@ -93,7 +94,7 @@ function MobileSidebarItem({
                                     : "transform -rotate-90"
                             )}
                         />
-                    </button>
+                    </Button>
                     {isExpanded && (
                         <div className="relative pl-3 pr-3 py-1 flex flex-col gap-1">
                             <div className="absolute left-[21px] top-0 bottom-4 w-px bg-gray-200 dark:bg-white/10" />
@@ -131,7 +132,7 @@ function MobileSidebarItem({
                     href={item.href}
                     onClick={onClose}
                     className={cn(
-                        "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm nav-menu-text transition-colors mb-0.5",
+                        "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text transition-colors mb-0.5",
                         isActive
                             ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold"
                             : "text-gray-600 dark:text-gray-550 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-700 dark:hover:text-white"
@@ -227,14 +228,12 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
                     {(() => {
                         // Map child tab routes to parent menu items
                         const childRouteMap: Record<string, string> = {
-                            "/dashboard/sessions": "/dashboard/journal",
-                            "/dashboard/psychology": "/dashboard/analytics",
+                            "/dashboard/sessions": "/dashboard/analytics",
+                            "/dashboard/intelligence": "/dashboard/analytics",
                             "/dashboard/reports": "/dashboard/analytics",
                             "/dashboard/reports/weekly": "/dashboard/analytics",
                             "/dashboard/reports/monthly":
                                 "/dashboard/analytics",
-                            "/dashboard/mistakes": "/dashboard/analytics",
-                            "/dashboard/intelligence": "/dashboard/analytics",
                         };
                         const effectivePath =
                             childRouteMap[pathname] || pathname;
@@ -312,7 +311,7 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
                             onClose();
                             signout();
                         }}
-                        className="flex items-center gap-3 w-full px-3 py-2.5 h-auto rounded-xl text-gray-600 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left justify-start nav-menu-text text-sm"
+                        className="flex items-center gap-3 w-full px-3 py-2.5 h-auto rounded-lg text-gray-600 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left justify-start nav-menu-text text-sm"
                     >
                         <LogOut size={18} className="shrink-0" />
                         <span>Logout</span>

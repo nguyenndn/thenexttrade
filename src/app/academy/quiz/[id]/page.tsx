@@ -121,7 +121,7 @@ export default function QuizRunnerPage() {
     if (results) {
         return (
             <div className="min-h-screen bg-gray-50 dark:bg-transparent flex items-center justify-center p-4">
-                <div className="bg-white dark:bg-[#151925] rounded-xl p-8 max-w-md w-full text-center shadow-xl border border-dashboard space-y-6">
+                <div className="bg-white dark:bg-[#151925] rounded-lg p-8 max-w-md w-full text-center shadow-xl border border-dashboard space-y-6">
                     <div
                         className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto ${results.passed ? "bg-green-100 text-green-500" : "bg-red-100 text-red-500"}`}
                     >
@@ -151,7 +151,7 @@ export default function QuizRunnerPage() {
                             className={buttonVariants({
                                 variant: "outline",
                                 className:
-                                    "flex-1 py-2.5 rounded-xl border border-dashboard font-bold hover:bg-gray-100 dark:hover:bg-white/5",
+                                    "flex-1 py-2.5 rounded-lg border border-dashboard font-bold hover:bg-gray-100 dark:hover:bg-white/5",
                             })}
                         >
                             Back to Course
@@ -164,7 +164,7 @@ export default function QuizRunnerPage() {
                                     setResults(null);
                                     setCurrentQuestionIndex(0);
                                 }}
-                                className="flex-1 rounded-xl"
+                                className="flex-1 rounded-lg"
                             >
                                 Try Again
                             </Button>
@@ -226,16 +226,16 @@ export default function QuizRunnerPage() {
                                             handleSelectOption(opt.id);
                                         }
                                     }}
-                                    className={`w-full text-left p-6 rounded-xl border-2 transition-all flex items-center justify-between cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                                    className={`w-full text-left p-6 rounded-lg border-2 transition-all flex items-center justify-between cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-gold ${
                                         isActive
-                                            ? "border-primary bg-primary/5 shadow-lg shadow-primary/10"
+                                            ? "border-gold bg-gold/5 shadow-lg shadow-amber-500/10"
                                             : "border-dashboard bg-white dark:bg-[#151925] hover:border-dashboard dark:hover:border-white/10"
                                     }`}
                                 >
                                     <span
                                         className={
                                             isActive
-                                                ? "font-bold text-primary dark:text-primary"
+                                                ? "font-bold text-gold dark:text-gold"
                                                 : "font-medium"
                                         }
                                     >
@@ -258,7 +258,7 @@ export default function QuizRunnerPage() {
                         size="md"
                         onClick={handleNext}
                         disabled={!isSelected || submitting}
-                        className="group font-bold rounded-xl flex items-center gap-2 transition-all shadow-xl disabled:shadow-none"
+                        className="group font-bold rounded-lg flex items-center gap-2 transition-all shadow-xl disabled:shadow-none"
                     >
                         {submitting ? (
                             <Loader2 className="animate-spin" />

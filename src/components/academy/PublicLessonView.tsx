@@ -100,7 +100,7 @@ export function PublicLessonView({
             <main className="pt-28 pb-20">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Breadcrumb */}
-                    <nav className="flex items-center gap-2 text-sm font-medium bg-[#00C888]/80 dark:bg-[#00C888]/15 rounded-xl px-5 py-3 mb-8 shadow-sm border border-[#00C888]/20 overflow-x-auto whitespace-nowrap scrollbar-hide">
+                    <nav className="flex items-center gap-2 text-sm font-medium bg-[#00C888]/80 dark:bg-[#00C888]/15 rounded-lg px-5 py-3 mb-8 shadow-sm border border-[#00C888]/20 overflow-x-auto whitespace-nowrap scrollbar-hide">
                         <BookOpen
                             size={14}
                             className="text-white/70 dark:text-gray-500 shrink-0"
@@ -164,14 +164,14 @@ export function PublicLessonView({
                         className={`relative ${isPremiumLocked ? "max-h-[36rem] overflow-hidden mb-0" : ""}`}
                     >
                         <article
-                            className="p-6 lg:p-8 prose prose-base dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-h2:text-xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-dashboard dark:prose-h2:border-white/5 prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3 prose-p:leading-relaxed prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-semibold prose-img:rounded-xl prose-img:shadow-md prose-img:mx-auto prose-blockquote:border-l-primary prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-white/5 prose-blockquote:rounded-r-xl prose-blockquote:py-1 prose-blockquote:px-2 prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-strong:text-gray-700 dark:prose-strong:text-white prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:rounded-xl prose-pre:p-5 prose-pre:text-sm prose-pre:leading-relaxed prose-pre:overflow-x-auto prose-code:bg-gray-100 dark:prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm prose-code:font-semibold prose-code:text-gray-800 dark:prose-code:text-gray-200 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-gray-100 [&_pre_code]:font-mono [&_table]:block [&_table]:w-max [&_table]:max-w-full [&_table]:overflow-x-auto [&_table]:whitespace-nowrap [&_table]:border-collapse [&_th]:bg-gray-50 dark:[&_th]:bg-white/5 [&_th]:px-4 [&_th]:py-2 [&_th]:text-left [&_th]:font-bold [&_th]:border [&_th]:border-dashboard dark:[&_th]:border-white/10 [&_td]:px-4 [&_td]:py-2 [&_td]:border [&_td]:border-dashboard dark:[&_td]:border-white/10 [&_figure]:text-center [&_figure]:my-8 [&_figcaption]:text-center [&_figcaption]:italic [&_figcaption]:text-sm [&_figcaption]:text-gray-500 dark:[&_figcaption]:text-gray-400 [&_figcaption]:mt-3"
+                            className="p-6 lg:p-8 prose prose-base dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-h2:text-xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-dashboard dark:prose-h2:border-white/5 prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3 prose-p:leading-relaxed prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-semibold prose-img:rounded-lg prose-img:shadow-md prose-img:mx-auto prose-blockquote:border-l-primary prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-white/5 prose-blockquote:rounded-r-lg prose-blockquote:py-1 prose-blockquote:px-2 prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-strong:text-gray-700 dark:prose-strong:text-white prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:rounded-lg prose-pre:p-5 prose-pre:text-sm prose-pre:leading-relaxed prose-pre:overflow-x-auto prose-code:bg-gray-100 dark:prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm prose-code:font-semibold prose-code:text-gray-800 dark:prose-code:text-gray-200 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-gray-100 [&_pre_code]:font-mono [&_table]:block [&_table]:w-max [&_table]:max-w-full [&_table]:overflow-x-auto [&_table]:whitespace-nowrap [&_table]:border-collapse [&_th]:bg-gray-50 dark:[&_th]:bg-white/5 [&_th]:px-4 [&_th]:py-2 [&_th]:text-left [&_th]:font-bold [&_th]:border [&_th]:border-dashboard dark:[&_th]:border-white/10 [&_td]:px-4 [&_td]:py-2 [&_td]:border [&_td]:border-dashboard dark:[&_td]:border-white/10 [&_figure]:text-center [&_figure]:my-8 [&_figcaption]:text-center [&_figcaption]:italic [&_figcaption]:text-sm [&_figcaption]:text-gray-500 dark:[&_figcaption]:text-gray-400 [&_figcaption]:mt-3"
                             dangerouslySetInnerHTML={{
                                 __html: DOMPurify.sanitize(lesson.content),
                             }}
                         />
                         {/* References & Sources */}
                         {lesson.sourceUrls && lesson.sourceUrls.length > 0 && (
-                            <div className="mt-8 p-6 bg-slate-50 dark:bg-white/[0.015] border border-dashboard rounded-2xl mb-12">
+                            <div className="mt-8 p-6 bg-slate-50 dark:bg-white/[0.015] border border-dashboard rounded-lg mb-12">
                                 <h4 className="text-xs font-bold text-gray-800 dark:text-white flex items-center gap-2 mb-4 uppercase tracking-wider">
                                     <BookOpen
                                         size={14}
@@ -219,9 +219,9 @@ export function PublicLessonView({
                     </div>
 
                     {isPremiumLocked && (
-                        <div className="bg-gradient-to-br from-gray-50 to-white dark:from-white/5 dark:to-transparent border border-dashboard rounded-3xl p-8 mb-12 text-center shadow-2xl relative z-10 mt-[-4rem]">
-                            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-primary/20 to-cyan-500/20 flex items-center justify-center border border-primary/20 shadow-[0_0_20px_rgba(var(--primary),0.2)]">
-                                <Lock size={28} className="text-primary" />
+                        <div className="bg-gradient-to-br from-gray-50 to-white dark:from-white/5 dark:to-transparent border border-dashboard rounded-lg p-8 mb-12 text-center shadow-2xl relative z-10 mt-[-4rem]">
+                            <div className="w-16 h-16 mx-auto mb-6 rounded-lg bg-gradient-to-br from-gold/20 to-amber-500/20 flex items-center justify-center border border-gold/20 shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+                                <Lock size={28} className="text-gold" />
                             </div>
                             <h3 className="font-black text-2xl mb-3 tracking-tight">
                                 Unlock Professional Material
@@ -237,7 +237,7 @@ export function PublicLessonView({
                                 className={buttonVariants({
                                     variant: "primary",
                                     className:
-                                        "px-8 py-3.5 rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white font-bold text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105",
+                                        "px-8 py-3.5 rounded-full bg-gold hover:bg-amber-600 text-white font-bold text-base shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-105",
                                 })}
                             >
                                 <GraduationCap size={18} />
@@ -247,7 +247,7 @@ export function PublicLessonView({
                                 Already a member?{" "}
                                 <Link
                                     href="/auth/login"
-                                    className="text-primary hover:underline font-bold transition-colors"
+                                    className="text-gold hover:underline font-bold transition-colors"
                                 >
                                     Log in here
                                 </Link>
@@ -257,9 +257,9 @@ export function PublicLessonView({
 
                     {/* Standard CTA Banner (only if not locked) */}
                     {!isPremiumLocked && (
-                        <div className="bg-gradient-to-r from-primary/10 to-cyan-500/10 dark:from-primary/20 dark:to-cyan-500/20 border border-primary/20 rounded-2xl p-6 md:p-8 mb-12 text-center">
+                        <div className="bg-gradient-to-r from-gold/10 to-amber-500/10 dark:from-gold/20 dark:to-amber-500/20 border border-gold/20 rounded-lg p-6 md:p-8 mb-12 text-center">
                             <div className="flex items-center justify-center gap-2 mb-3">
-                                <UserPlus size={20} className="text-primary" />
+                                <UserPlus size={20} className="text-gold" />
                                 <h3 className="font-bold text-lg">
                                     Track Your Progress
                                 </h3>
@@ -273,7 +273,7 @@ export function PublicLessonView({
                                 className={buttonVariants({
                                     variant: "primary",
                                     className:
-                                        "px-6 py-3 rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105",
+                                        "px-6 py-3 rounded-full bg-gold hover:bg-amber-600 text-white font-bold shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-105",
                                 })}
                             >
                                 Create Free Account
@@ -290,7 +290,7 @@ export function PublicLessonView({
                                     className={buttonVariants({
                                         variant: "ghost",
                                         className:
-                                            "group flex items-center gap-3 px-5 py-3 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 max-w-[45%]",
+                                            "group flex items-center gap-3 px-5 py-3 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 max-w-[45%]",
                                     })}
                                 >
                                     <ChevronLeft
@@ -315,7 +315,7 @@ export function PublicLessonView({
                                     className={buttonVariants({
                                         variant: "ghost",
                                         className:
-                                            "group flex items-center gap-3 px-5 py-3 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 max-w-[45%]",
+                                            "group flex items-center gap-3 px-5 py-3 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 max-w-[45%]",
                                     })}
                                 >
                                     <div className="text-right min-w-0">
@@ -337,7 +337,7 @@ export function PublicLessonView({
                                     className={buttonVariants({
                                         variant: "ghost",
                                         className:
-                                            "flex items-center gap-2 px-5 py-3 rounded-xl bg-primary/10 text-primary font-bold hover:bg-primary/20",
+                                            "flex items-center gap-2 px-5 py-3 rounded-lg bg-primary/10 text-primary font-bold hover:bg-primary/20",
                                     })}
                                 >
                                     <span>Sign up to continue</span>
@@ -361,7 +361,7 @@ export function PublicLessonView({
                                     <Link
                                         key={l.id}
                                         href={`/academy/lesson/${l.slug}`}
-                                        className={`flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-colors ${
+                                        className={`flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-colors ${
                                             l.id === lesson.id
                                                 ? "bg-primary/10 text-primary font-bold"
                                                 : "hover:bg-gray-100 dark:hover:bg-white/5"

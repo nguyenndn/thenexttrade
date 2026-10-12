@@ -233,7 +233,12 @@ export async function POST(request: NextRequest) {
                         swap: trade.swap,
                         status: isClosed ? ("CLOSED" as const) : ("OPEN" as const),
                         result: isClosed
-                            ? classifyTradeResult({ pnl: trade.profit })
+                            ? classifyTradeResult({
+                                  pnl:
+                                      (trade.profit || 0) +
+                                      (trade.commission || 0) +
+                                      (trade.swap || 0),
+                              })
                             : null,
                         externalTicket: trade.ticket,
                         syncSource: "EA_SYNC",
@@ -265,7 +270,12 @@ export async function POST(request: NextRequest) {
                         pnl: trade.profit,
                         commission: trade.commission,
                         swap: trade.swap,
-                        result: classifyTradeResult({ pnl: trade.profit }),
+                        result: classifyTradeResult({
+                            pnl:
+                                (trade.profit || 0) +
+                                (trade.commission || 0) +
+                                (trade.swap || 0),
+                        }),
                         syncedAt: new Date(),
                     },
                 });

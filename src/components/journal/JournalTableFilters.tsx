@@ -48,10 +48,10 @@ export function JournalTableFilters({
     onLogTrade,
 }: JournalTableFiltersProps) {
     return (
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-white dark:bg-[#1E2028] p-4 rounded-xl shadow-sm border border-dashboard">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-white dark:bg-[#1E2028] p-4 rounded-lg shadow-sm border border-dashboard">
             <div className="flex flex-col md:flex-row items-center gap-4 flex-1">
                 {/* Search */}
-                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-transparent focus-within:border-primary transition-colors w-full md:w-56">
+                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-lg border border-transparent focus-within:border-gold focus-within:ring-2 focus-within:ring-amber-500/20 transition-all w-full md:w-56">
                     <Search size={18} className="text-gray-500" />
                     <input
                         type="text"
@@ -76,7 +76,7 @@ export function JournalTableFilters({
                                 className="flex items-center gap-2 text-xs font-medium text-gray-700 dark:text-gray-300"
                             >
                                 Type:{" "}
-                                <span className="text-primary">
+                                <span className="text-gold dark:text-amber-400 font-semibold">
                                     {filterType === "ALL" ? "All" : filterType}
                                 </span>
                                 <ChevronDown size={14} />
@@ -104,7 +104,7 @@ export function JournalTableFilters({
                                     className="flex items-center gap-2 text-xs font-medium text-gray-700 dark:text-gray-300"
                                 >
                                     Tag:{" "}
-                                    <span className="text-primary">
+                                    <span className="text-gold dark:text-amber-400 font-semibold">
                                         {filterTag === "ALL"
                                             ? "All"
                                             : filterTag}
@@ -145,10 +145,10 @@ export function JournalTableFilters({
                                 <span
                                     className={
                                         filterResult === "WIN"
-                                            ? "text-primary"
+                                            ? "text-emerald-500 font-semibold"
                                             : filterResult === "LOSS"
-                                              ? "text-red-500"
-                                              : "text-primary"
+                                              ? "text-red-500 font-semibold"
+                                              : "text-gold dark:text-amber-400 font-semibold"
                                     }
                                 >
                                     {filterResult === "ALL"
@@ -190,7 +190,7 @@ export function JournalTableFilters({
                                     className="flex items-center gap-2 text-xs font-medium text-gray-700 dark:text-gray-300"
                                 >
                                     Strategy:{" "}
-                                    <span className="text-primary truncate max-w-[80px]">
+                                    <span className="text-gold dark:text-amber-400 font-semibold truncate max-w-[80px]">
                                         {filterStrategy || "All"}
                                     </span>
                                     <ChevronDown size={14} />

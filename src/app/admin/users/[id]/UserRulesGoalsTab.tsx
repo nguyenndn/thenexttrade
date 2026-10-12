@@ -154,7 +154,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
         <div className="space-y-6">
             {/* Top KPI Cards */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <ShieldCheck size={14} className="text-primary" /> Active Rules
                     </div>
@@ -166,7 +166,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <CheckCircle2 size={14} className="text-emerald-500" /> Compliance Rate
                     </div>
@@ -178,7 +178,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <AlertTriangle size={14} className="text-rose-500" /> Rule Violations
                     </div>
@@ -190,7 +190,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <Target size={14} className="text-blue-500" /> Active Goals
                     </div>
@@ -205,7 +205,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
 
             {/* Sub-Section Navigation & Filters */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex rounded-xl border border-gray-200 bg-[#F1F3F5] p-1 dark:border-white/10 dark:bg-[#1A1D27] w-fit">
+                <div className="flex rounded-lg border border-gray-200 bg-[#F1F3F5] p-1 dark:border-white/10 dark:bg-[#1A1D27] w-fit">
                     <button
                         type="button"
                         onClick={() => setActiveSection("rules")}
@@ -261,7 +261,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                     </div>
 
                     {activeSection === "rules" && ruleCategories.length > 1 && (
-                        <div className="flex items-center gap-1 overflow-x-auto rounded-xl border border-gray-200 bg-white p-1 dark:border-white/10 dark:bg-[#151925]">
+                        <div className="flex items-center gap-1 overflow-x-auto rounded-lg border border-gray-200 bg-white p-1 dark:border-white/10 dark:bg-[#151925]">
                             {ruleCategories.slice(0, 4).map((cat) => (
                                 <button
                                     key={cat}
@@ -284,7 +284,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
 
             {/* Section 1: Trading Rules */}
             {activeSection === "rules" && (
-                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <ShieldCheck size={16} className="text-primary" /> Configured Trading Rules ({filteredRules.length})
@@ -302,7 +302,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                                     <div className="flex items-start gap-3 min-w-0">
                                         <div
                                             className={cn(
-                                                "p-2.5 rounded-xl shrink-0 mt-0.5",
+                                                "p-2.5 rounded-lg shrink-0 mt-0.5",
                                                 rule.severity === "CRITICAL"
                                                     ? "bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300"
                                                     : rule.severity === "HIGH"
@@ -320,7 +320,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                                                 </h4>
                                                 <span
                                                     className={cn(
-                                                        "text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider",
+                                                        "text-[10px] font-bold px-2 py-0.5 rounded-lg uppercase tracking-wider",
                                                         rule.severity === "CRITICAL"
                                                             ? "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300"
                                                             : rule.severity === "HIGH"
@@ -330,12 +330,12 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                                                 >
                                                     {rule.severity}
                                                 </span>
-                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 uppercase">
+                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 uppercase">
                                                     {rule.category}
                                                 </span>
                                                 <span
                                                     className={cn(
-                                                        "text-[10px] font-bold px-2 py-0.5 rounded-md uppercase",
+                                                        "text-[10px] font-bold px-2 py-0.5 rounded-lg uppercase",
                                                         rule.isActive
                                                             ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300"
                                                             : "bg-gray-100 text-gray-500 dark:bg-white/10"
@@ -367,7 +367,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                                         variant="outline"
                                         size="sm"
                                         onClick={() => setSelectedRule(rule)}
-                                        className="rounded-xl shrink-0 self-end sm:self-center gap-1.5 text-xs font-semibold"
+                                        className="rounded-lg shrink-0 self-end sm:self-center gap-1.5 text-xs font-semibold"
                                     >
                                         <Eye size={14} /> View Rule
                                     </Button>
@@ -384,7 +384,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
 
             {/* Section 2: Behavior Goals */}
             {activeSection === "goals" && (
-                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <Target size={16} className="text-blue-500" /> Trader Behavior Goals ({filteredGoals.length})
@@ -397,7 +397,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                             {filteredGoals.map((goal) => (
                                 <div
                                     key={goal.id}
-                                    className="rounded-xl border border-gray-200 bg-gray-50/40 p-4 transition-all hover:border-gray-300 dark:border-white/10 dark:bg-[#1A1D27] dark:hover:border-white/20 flex flex-col justify-between"
+                                    className="rounded-lg border border-gray-200 bg-gray-50/40 p-4 transition-all hover:border-gray-300 dark:border-white/10 dark:bg-[#1A1D27] dark:hover:border-white/20 flex flex-col justify-between"
                                 >
                                     <div>
                                         <div className="flex items-center justify-between gap-2">
@@ -406,7 +406,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                                             </h4>
                                             <span
                                                 className={cn(
-                                                    "text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider shrink-0",
+                                                    "text-[10px] font-bold px-2 py-0.5 rounded-lg uppercase tracking-wider shrink-0",
                                                     goal.status === "ACTIVE"
                                                         ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300"
                                                         : goal.status === "COMPLETED"
@@ -419,7 +419,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                                         </div>
 
                                         {/* 2x2 Matrix Card */}
-                                        <div className="mt-3 rounded-xl border border-gray-200 bg-white dark:border-white/10 dark:bg-[#151925] divide-y divide-gray-200 dark:divide-white/10 text-xs">
+                                        <div className="mt-3 rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-[#151925] divide-y divide-gray-200 dark:divide-white/10 text-xs">
                                             <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/10">
                                                 <div className="p-2.5">
                                                     <span className="block text-[10px] font-semibold text-gray-400 uppercase">Goal Type</span>
@@ -477,7 +477,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
 
             {/* Section 3: Rule Check Telemetry Log */}
             {activeSection === "checks" && (
-                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <Activity size={16} className="text-emerald-500" /> Trade-Level Rule Verification Log ({filteredChecks.length})
@@ -510,7 +510,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                                                 </span>
                                                 <span
                                                     className={cn(
-                                                        "text-[10px] font-bold px-1.5 py-0.5 rounded uppercase",
+                                                        "text-[10px] font-bold px-1.5 py-0.5 rounded-lg uppercase",
                                                         check.status === "PASSED"
                                                             ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300"
                                                             : check.status === "VIOLATED"
@@ -549,7 +549,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
             {/* Rule Detail Modal */}
             {selectedRule && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <h3 className="text-lg font-black text-gray-900 dark:text-white">
@@ -563,7 +563,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setSelectedRule(null)}
-                                className="rounded-xl p-2"
+                                className="rounded-lg p-2"
                                 aria-label="Close modal"
                             >
                                 <X size={18} />
@@ -574,20 +574,20 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                             {selectedRule.description && (
                                 <div>
                                     <span className="font-bold text-gray-400 uppercase tracking-wider block">Rule Description & Constraint</span>
-                                    <p className="mt-1 text-gray-800 dark:text-gray-200 leading-relaxed bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-200 dark:border-white/10">
+                                    <p className="mt-1 text-gray-800 dark:text-gray-200 leading-relaxed bg-gray-50 dark:bg-white/5 p-3 rounded-lg border border-gray-200 dark:border-white/10">
                                         {selectedRule.description}
                                     </p>
                                 </div>
                             )}
 
                             <div className="grid grid-cols-2 gap-3">
-                                <div className="p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
+                                <div className="p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
                                     <span className="block text-[10px] font-bold text-gray-400 uppercase">Status</span>
                                     <span className={cn("font-bold mt-1 block", selectedRule.isActive ? "text-emerald-500" : "text-gray-500")}>
                                         {selectedRule.isActive ? "Enforced & Active" : "Disabled / Inactive"}
                                     </span>
                                 </div>
-                                <div className="p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
+                                <div className="p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
                                     <span className="block text-[10px] font-bold text-gray-400 uppercase">Linked Strategy</span>
                                     <span className="font-bold text-gray-800 dark:text-gray-200 mt-1 block truncate">
                                         {selectedRule.strategy?.name || "Global Account Rule"}
@@ -597,7 +597,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                         </div>
 
                         <div className="mt-6 flex justify-end border-t border-gray-200 pt-4 dark:border-white/10">
-                            <Button variant="outline" onClick={() => setSelectedRule(null)} className="rounded-xl">
+                            <Button variant="outline" onClick={() => setSelectedRule(null)} className="rounded-lg">
                                 Close
                             </Button>
                         </div>
@@ -608,7 +608,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
             {/* Goal Detail Modal */}
             {selectedGoal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <h3 className="text-lg font-black text-gray-900 dark:text-white">
@@ -622,7 +622,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setSelectedGoal(null)}
-                                className="rounded-xl p-2"
+                                className="rounded-lg p-2"
                                 aria-label="Close modal"
                             >
                                 <X size={18} />
@@ -630,7 +630,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                         </div>
 
                         <div className="mt-4 space-y-3 text-xs">
-                            <div className="p-3 rounded-xl border border-blue-100 bg-blue-50/50 dark:border-blue-900/30 dark:bg-blue-950/20">
+                            <div className="p-3 rounded-lg border border-blue-100 bg-blue-50/50 dark:border-blue-900/30 dark:bg-blue-950/20">
                                 <span className="font-bold text-blue-700 dark:text-blue-300 block">Target Criteria</span>
                                 <p className="mt-1 text-gray-800 dark:text-gray-200 font-semibold">
                                     {selectedGoal.targetValue !== null ? `Target Threshold: ${selectedGoal.targetValue}` : "Qualitative Goal"}
@@ -646,7 +646,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                         </div>
 
                         <div className="mt-6 flex justify-end border-t border-gray-200 pt-4 dark:border-white/10">
-                            <Button variant="outline" onClick={() => setSelectedGoal(null)} className="rounded-xl">
+                            <Button variant="outline" onClick={() => setSelectedGoal(null)} className="rounded-lg">
                                 Close
                             </Button>
                         </div>

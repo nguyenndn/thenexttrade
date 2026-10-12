@@ -37,7 +37,7 @@ export function PendingLicensesList({
 
     if (licenses.length === 0) {
         return (
-            <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10">
+            <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-lg border-2 border-dashed border-gray-200 dark:border-white/10">
                 <Check className="mx-auto text-gray-300 mb-4" size={48} />
                 <h3 className="text-lg font-medium text-gray-700 dark:text-white">
                     All caught up!
@@ -111,7 +111,7 @@ export function PendingLicensesList({
                                 <Button
                                     onClick={() => handleAction(req, "APPROVE")}
                                     variant="primary"
-                                    className="flex-1 md:flex-none shadow-lg shadow-primary/30"
+                                    className="flex-1 md:flex-none shadow-lg shadow-amber-500/30"
                                 >
                                     <Check size={18} className="mr-2" />
                                     Approve

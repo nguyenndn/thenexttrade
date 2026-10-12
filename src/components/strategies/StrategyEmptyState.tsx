@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/Button";
 
 export function StrategyEmptyState({ onAdd }: { onAdd: () => void }) {
     return (
-        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-8">
+        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border-2 border-dashed border-dashboard mt-8">
             {/* Animated Target Icon */}
             <div className="relative w-20 h-20 mb-6 mx-auto">
                 {/* Glow ring */}
@@ -15,11 +15,11 @@ export function StrategyEmptyState({ onAdd }: { onAdd: () => void }) {
                         className="text-gray-500 dark:text-gray-300 animate-[spin-slow_8s_linear_infinite]"
                     />
                     {/* Crosshair pulse ring */}
-                    <div className="absolute inset-2 rounded-full border-2 border-dashed border-primary/20 dark:border-primary/10 animate-[spin-reverse_12s_linear_infinite]" />
+                    <div className="absolute inset-2 rounded-full border-2 border-dashed border-amber-500/20 dark:border-amber-500/10 animate-[spin-reverse_12s_linear_infinite]" />
                     {/* Sparkle dots */}
-                    <div className="absolute -top-2 left-3 w-1.5 h-1.5 rounded-full bg-primary/40 animate-[sparkle-1_2.5s_ease-in-out_infinite_1.2s]" />
-                    <div className="absolute -bottom-1 -right-1 w-1 h-1 rounded-full bg-primary/30 animate-[sparkle-2_3s_ease-in-out_infinite_0.8s]" />
-                    <div className="absolute top-0 -right-2 w-1 h-1 rounded-full bg-primary/25 animate-[sparkle-3_2s_ease-in-out_infinite_1.5s]" />
+                    <div className="absolute -top-2 left-3 w-1.5 h-1.5 rounded-full bg-amber-500/40 animate-[sparkle-1_2.5s_ease-in-out_infinite_1.2s]" />
+                    <div className="absolute -bottom-1 -right-1 w-1 h-1 rounded-full bg-amber-500/30 animate-[sparkle-2_3s_ease-in-out_infinite_0.8s]" />
+                    <div className="absolute top-0 -right-2 w-1 h-1 rounded-full bg-amber-500/25 animate-[sparkle-3_2s_ease-in-out_infinite_1.5s]" />
                 </div>
             </div>
 
@@ -38,7 +38,7 @@ export function StrategyEmptyState({ onAdd }: { onAdd: () => void }) {
                 <a href="/dashboard/academy">
                     <Button
                         variant="outline"
-                        className="gap-2 px-5 h-10 text-sm font-bold rounded-xl border-dashboard hover:border-primary/30 hover:bg-primary/5 transition-all duration-300"
+                        className="gap-2 px-5 h-10 text-sm font-bold rounded-lg border-dashboard hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-gold dark:hover:text-amber-400 transition-all duration-300"
                     >
                         <GraduationCap size={16} />
                         Start Academy

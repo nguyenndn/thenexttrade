@@ -112,7 +112,7 @@ export function CorrelationMatrix() {
                             {period === p.value && (
                                 <motion.div
                                     layoutId="activePeriod"
-                                    className="absolute inset-0 bg-primary rounded-lg shadow-sm shadow-primary/20 -z-10"
+                                    className="absolute inset-0 bg-gold rounded-lg shadow-sm shadow-amber-500/20 -z-10"
                                     transition={{
                                         type: "spring",
                                         bounce: 0.2,
@@ -129,7 +129,7 @@ export function CorrelationMatrix() {
                     size="sm"
                     onClick={fetchCorrelation}
                     disabled={loading}
-                    className="px-4 py-2 rounded-lg shadow-sm shadow-primary/20"
+                    className="px-4 py-2 rounded-lg shadow-sm shadow-amber-500/20"
                 >
                     <RefreshCw
                         size={14}
@@ -243,7 +243,7 @@ export function CorrelationMatrix() {
                             <span>Weak +</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <div className="w-4 h-4 rounded-fullbg-slate-200 dark:bg-slate-700/50 border border-slate-300" />
+                            <div className="w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700/50 border border-gray-200" />
                             <span>None</span>
                         </div>
                         <div className="flex items-center gap-1.5">

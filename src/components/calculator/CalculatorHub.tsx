@@ -75,7 +75,7 @@ export function CalculatorHub() {
     return (
         <Tabs defaultValue="position-size" className="space-y-8">
             {/* Tabs */}
-            <div className="w-full relative overflow-hidden rounded-xl">
+            <div className="w-full relative overflow-hidden rounded-lg">
                 {/* 
  We override TabsList default 'w-fit' with 'w-full' to ensure it takes full layout width.
  And we force grid on mobile and tablet to preserve the previous look but with animations. 

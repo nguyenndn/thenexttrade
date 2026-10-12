@@ -9,7 +9,7 @@ describe("BrokerFundedMembershipSection", () => {
 
         // Verify key messaging
         expect(html).toContain("You never pay us");
-        expect(html).toContain("Your $300 stays 100% yours");
+        expect(html).toContain("Your $200 stays 100% yours");
         expect(html).toContain("Typical Trading Course");
         expect(html).toContain("TheNextTrade Ecosystem");
         expect(html).toContain("You fund your own account");

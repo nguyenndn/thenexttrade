@@ -57,7 +57,7 @@ describe("TC-00: VIP & Trial Constants & Whitelists", () => {
         expect(MIN_30D_LOTS).toBe(2.0);
         expect(INACTIVITY_WARNING_DAYS).toBe(7);
         expect(INACTIVITY_PAUSE_DAYS).toBe(14);
-        expect(FUNDING_MIN_BALANCE).toBe(300);
+        expect(FUNDING_MIN_BALANCE).toBe(200);
         expect(FUNDING_GRACE_DAYS).toBe(7);
         expect(FUNDING_RECHECK_DAYS).toBe(30);
         expect(VALID_SYNC_SOURCES).toEqual(["EA_SYNC", "EA_HISTORY", "SUPPORT_SYNC"]);
@@ -201,13 +201,13 @@ describe("TC-05 to TC-14: Account Pro Access & Activity Policy Engine", () => {
 
         const result = await getAccountProAccess("user-1", "acc-1", now);
 
-        expect(result.isPro).toBe(true); // Still Pro while in warned state
+        expect(result.isPro).toBe(true);
         expect(result.status).toBe("ACTIVE");
-        expect(result.policyState).toBe("WARNED");
+        expect(result.policyState).toBe("ACTIVE");
         expect(result.activityInfo?.daysSinceLastTrade).toBe(8);
     });
 
-    it("TC-07: Inactivity Pause when no trades for 15 trading days (>14 trading days) -> policyState = PAUSED, isPro = false", async () => {
+    it("TC-07: Account remains ACTIVE even with 15 trading days without trades (funded account stays active)", async () => {
         const now = new Date("2026-09-02T12:00:00Z"); // Wednesday (trading day)
         const fifteenDaysAgo = subtractTradingDays(now, 15);
 
@@ -239,12 +239,12 @@ describe("TC-05 to TC-14: Account Pro Access & Activity Policy Engine", () => {
 
         const result = await getAccountProAccess("user-1", "acc-1", now);
 
-        expect(result.isPro).toBe(false); // PAUSED means effective Pro is false
-        expect(result.policyState).toBe("PAUSED");
+        expect(result.isPro).toBe(true);
+        expect(result.policyState).toBe("ACTIVE");
         expect(result.activityInfo?.daysSinceLastTrade).toBe(15);
     });
 
-    it("TC-08: Volume Under Requirement (< 2.0 lots in 30 days) -> policyState = PAUSED, isPro = false", async () => {
+    it("TC-08: Account remains ACTIVE even with volume < 2.0 lots (no volume quota required)", async () => {
         const now = new Date();
         const oneDayAgo = new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000);
 
@@ -266,7 +266,7 @@ describe("TC-05 to TC-14: Account Pro Access & Activity Policy Engine", () => {
         });
 
         (prisma.journalEntry.aggregate as any).mockResolvedValue({
-            _sum: { lotSize: 1.2 }, // Only 1.2 lots < 2.0 lots
+            _sum: { lotSize: 1.2 }, // Only 1.2 lots
         });
 
         (prisma.journalEntry.findFirst as any).mockResolvedValue({
@@ -276,8 +276,8 @@ describe("TC-05 to TC-14: Account Pro Access & Activity Policy Engine", () => {
 
         const result = await getAccountProAccess("user-1", "acc-1");
 
-        expect(result.isPro).toBe(false);
-        expect(result.policyState).toBe("PAUSED");
+        expect(result.isPro).toBe(true);
+        expect(result.policyState).toBe("ACTIVE");
         expect(result.activityInfo?.rolling30dLots).toBe(1.2);
     });
 
@@ -317,16 +317,16 @@ describe("TC-05 to TC-14: Account Pro Access & Activity Policy Engine", () => {
         expect(result.activityInfo?.rolling30dLots).toBe(0); // non-partner lots ignored
     });
 
-    it("TC-10: 30-day Periodic Funding Check in Grace (balance < $300) -> policyState = WARNED", async () => {
+    it("TC-10: 30-day Periodic Funding Check in Grace (balance < $200) -> policyState = WARNED", async () => {
         const now = new Date();
         const futureGrace = new Date(now.getTime() + 4 * 24 * 60 * 60 * 1000); // 4 days remaining
 
         (prisma.tradingAccount.findFirst as any).mockResolvedValue({
             id: "acc-1",
             broker: "Vantage",
-            balance: 200,
+            balance: 150,
             fundingVerifiedAt: new Date(now.getTime() - 35 * 24 * 60 * 60 * 1000),
-            fundingAmount: 300,
+            fundingAmount: 200,
             fundingLastVerifiedAt: new Date(now.getTime() - 35 * 24 * 60 * 60 * 1000),
             fundingGraceUntil: futureGrace,
         });
@@ -445,11 +445,11 @@ describe("TC-12 to TC-15: Anti-Bypass & Security Safeguards", () => {
         expect(isCentAccount("EU_CENT", "VTMarkets-Cent")).toBe(true);
         expect(isCentAccount("USD", "Vantage-Live")).toBe(false);
 
-        // 300 USC ($3 USD) -> normalized to $3 (fails $300 threshold)
-        expect(normalizeUsdBalance(300, "USC", "Exness-Cent")).toBe(3);
+        // 200 USC ($2 USD) -> normalized to $2 (fails $200 threshold)
+        expect(normalizeUsdBalance(200, "USC", "Exness-Cent")).toBe(2);
 
-        // 30,000 USC ($300 USD) -> normalized to $300 (passes $300 threshold)
-        expect(normalizeUsdBalance(30000, "USC", "Exness-Cent")).toBe(300);
+        // 20,000 USC ($200 USD) -> normalized to $200 (passes $200 threshold)
+        expect(normalizeUsdBalance(20000, "USC", "Exness-Cent")).toBe(200);
 
         // Standard USD account -> unchanged
         expect(normalizeUsdBalance(500, "USD", "Vantage-Live")).toBe(500);
@@ -484,9 +484,9 @@ describe("TC-12 to TC-15: Anti-Bypass & Security Safeguards", () => {
 
         const result = await getAccountProAccess("user-1", "acc-1");
 
-        expect(result.isPro).toBe(false);
-        expect(result.policyState).toBe("PAUSED");
         expect(result.activityInfo?.rolling30dLots).toBe(0);
+        expect(result.isPro).toBe(true);
+        expect(result.policyState).toBe("ACTIVE");
     });
 
     it("TC-14: Anti-Bypass: Manual web entries (syncSource: MANUAL) excluded from volume", async () => {
@@ -518,8 +518,9 @@ describe("TC-12 to TC-15: Anti-Bypass & Security Safeguards", () => {
 
         const result = await getAccountProAccess("user-1", "acc-1");
 
-        expect(result.isPro).toBe(false);
-        expect(result.policyState).toBe("PAUSED");
+        expect(result.activityInfo?.rolling30dLots).toBe(0);
+        expect(result.isPro).toBe(true);
+        expect(result.policyState).toBe("ACTIVE");
     });
 });
 
@@ -643,10 +644,10 @@ describe("Cent Account Detection & Lot Size Normalization (100 Cent Lots = 1 Sta
 
         const result = await getAccountProAccess("user-cent-1", "acc-cent-1");
 
-        // 1.0 standard lot is below MIN_30D_LOTS (2.0) -> policyState should be PAUSED!
+        // 100 raw Cent lots traded in 30 days -> should normalize to 1.0 standard lot
         expect(result.activityInfo?.rolling30dLots).toBe(1.0);
-        expect(result.policyState).toBe("PAUSED");
-        expect(result.isPro).toBe(false);
+        expect(result.policyState).toBe("ACTIVE");
+        expect(result.isPro).toBe(true);
     });
 
     it("passes VIP volume qualification when cent volume reaches 200 Cent lots (2.0 Standard lots)", async () => {

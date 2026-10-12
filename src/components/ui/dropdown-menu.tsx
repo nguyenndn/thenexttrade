@@ -237,7 +237,7 @@ export function DropdownMenuContent({
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={SPRING_SOFT}
                     className={cn(
-                        "fixed z-[200] min-w-[8rem] overflow-hidden rounded-md border border-dashboard bg-white p-1 text-gray-950 shadow-md dark:bg-[#1E2028] dark:text-gray-50",
+                        "fixed z-[200] min-w-[8rem] overflow-hidden rounded-lg border border-dashboard bg-white p-1 text-gray-950 shadow-md dark:bg-[#1E2028] dark:text-gray-50",
                         className
                     )}
                     {...props}
@@ -282,7 +282,7 @@ export function DropdownMenuItem({
         <Button
             variant="ghost"
             className={cn(
-                "relative flex w-full h-auto cursor-default font-normal justify-start select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-gray-100 hover:text-gray-700 focus:bg-gray-100 focus:text-gray-700 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:hover:bg-white/10 dark:hover:text-gray-50 dark:focus:bg-white/10 dark:focus:text-gray-50",
+                "relative flex w-full h-auto cursor-default font-normal justify-start select-none items-center rounded-lg px-2 py-1.5 text-sm outline-none transition-colors hover:bg-gray-100 hover:text-gray-700 focus:bg-gray-100 focus:text-gray-700 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:hover:bg-white/10 dark:hover:text-gray-50 dark:focus:bg-white/10 dark:focus:text-gray-50",
                 inset && "pl-8",
                 className
             )}
@@ -345,7 +345,7 @@ export function DropdownMenuCheckboxItem({
         <Button
             variant="ghost"
             className={cn(
-                "relative flex w-full h-auto cursor-default font-normal justify-start select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors hover:bg-gray-100 hover:text-gray-700 focus:bg-gray-100 focus:text-gray-700 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:hover:bg-white/10 dark:hover:text-gray-50 dark:focus:bg-white/10 dark:focus:text-gray-50",
+                "relative flex w-full h-auto cursor-default font-normal justify-start select-none items-center rounded-lg py-1.5 pl-8 pr-2 text-sm outline-none transition-colors hover:bg-gray-100 hover:text-gray-700 focus:bg-gray-100 focus:text-gray-700 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:hover:bg-white/10 dark:hover:text-gray-50 dark:focus:bg-white/10 dark:focus:text-gray-50",
                 className
             )}
             onClick={(e) => {

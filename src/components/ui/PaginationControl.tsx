@@ -99,7 +99,7 @@ export const PaginationControl = ({
                                     onClick={() => onPageSizeChange(size)}
                                     className={
                                         pageSize === size
-                                            ? "bg-primary/10 text-primary font-bold"
+                                            ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold"
                                             : ""
                                     }
                                 >
@@ -129,13 +129,13 @@ export const PaginationControl = ({
                             <Button
                                 key={idx}
                                 variant={
-                                    p === currentPage ? "primary" : "ghost"
+                                    p === currentPage ? "gold" : "ghost"
                                 }
                                 onClick={() => onPageChange(p)}
                                 className={`w-9 h-9 px-0 sm:px-3 sm:w-auto font-bold text-sm ${
                                     p === currentPage
-                                        ? "shadow-md shadow-[#00C888]/20"
-                                        : "text-gray-600 dark:text-gray-500"
+                                        ? "shadow-md shadow-amber-500/20"
+                                        : "text-gray-600 dark:text-gray-500 hover:text-amber-500"
                                 }`}
                             >
                                 {p}

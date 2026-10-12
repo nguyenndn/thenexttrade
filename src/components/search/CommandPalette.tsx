@@ -201,7 +201,7 @@ export function CommandPalette({
                 className="absolute left-1/2 top-[30%] w-full max-w-[640px] px-4"
             >
                 <Command
-                    className="rounded-xl border border-dashboard dark:border-gray-800 bg-white dark:bg-[#1E2028] shadow-2xl overflow-hidden"
+                    className="rounded-lg border border-dashboard dark:border-gray-800 bg-white dark:bg-[#1E2028] shadow-2xl overflow-hidden"
                     shouldFilter={true}
                     filter={customFilter}
                 >

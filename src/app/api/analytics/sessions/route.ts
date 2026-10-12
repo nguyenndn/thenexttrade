@@ -84,6 +84,8 @@ export async function GET(request: NextRequest) {
             select: {
                 id: true,
                 pnl: true,
+                commission: true,
+                swap: true,
                 status: true, // Assuming result/status is available
                 exitPrice: true, // Check if win/loss is determined by status or pnl
                 entryDate: true,
@@ -92,13 +94,25 @@ export async function GET(request: NextRequest) {
         });
 
         // Calculate session for trades without session field
-        const tradesWithSession = trades.map((trade) => ({
-            ...trade,
-            session: trade.tradingSession || detectSession(trade.entryDate),
-            // Determine Win/Loss based on PnL if not explicit
-            isWin: trade.pnl !== null && trade.pnl > 0,
-            isLoss: trade.pnl !== null && trade.pnl <= 0, // Treat 0 as loss or break-even? keeping simple for now
-        }));
+        const tradesWithSession = trades.map((trade) => {
+            const netPnl =
+                trade.pnl !== null
+                    ? Number(
+                          (
+                              trade.pnl +
+                              (trade.commission || 0) +
+                              (trade.swap || 0)
+                          ).toFixed(2)
+                      )
+                    : null;
+            return {
+                ...trade,
+                netPnl,
+                session: trade.tradingSession || detectSession(trade.entryDate),
+                isWin: netPnl !== null && netPnl > 0,
+                isLoss: netPnl !== null && netPnl <= 0,
+            };
+        });
 
         // Group by session
         const sessionMap = new Map<
@@ -121,7 +135,7 @@ export async function GET(request: NextRequest) {
                 totalPnL: 0,
             };
 
-            const pnl = trade.pnl || 0;
+            const pnl = trade.netPnl || 0;
             current.totalPnL += pnl;
 
             if (trade.isWin) {
@@ -170,7 +184,7 @@ export async function GET(request: NextRequest) {
             const current = hourMap.get(hour) || { wins: 0, total: 0, pnl: 0 };
 
             current.total++;
-            current.pnl += trade.pnl || 0;
+            current.pnl += trade.netPnl || 0;
             if (trade.isWin) current.wins++;
 
             hourMap.set(hour, current);
@@ -242,7 +256,7 @@ export async function GET(request: NextRequest) {
             text: string;
         }[] = [];
 
-        // 1. Phân tích Session tốt nhất
+        // 1. Analyze best session
         if (bestSession) {
             const best = sessionStats.find((s) => s.session === bestSession);
             if (best) {
@@ -265,7 +279,7 @@ export async function GET(request: NextRequest) {
             }
         }
 
-        // 2. Phân tích Session tệ nhất
+        // 2. Analyze worst session
         if (worstSession && worstSession !== bestSession) {
             const worst = sessionStats.find((s) => s.session === worstSession);
             if (worst) {
@@ -283,7 +297,7 @@ export async function GET(request: NextRequest) {
             }
         }
 
-        // 3. Phân tích Khung giờ
+        // 3. Analyze hourly performance
         if (bestHour !== null && worstHour !== null && bestHour !== worstHour) {
             const bHour = fullHourlyStats.find((h) => h.hour === bestHour);
             const wHour = fullHourlyStats.find((h) => h.hour === worstHour);
@@ -302,7 +316,7 @@ export async function GET(request: NextRequest) {
             }
         }
 
-        // 4. Fallback nếu Data chưa đủ cấu thành Insight sâu sắc
+        // 4. Fallback if data is insufficient for deep insights
         if (recommendations.length === 0 && sessionStats.length > 0) {
             recommendations.push({
                 type: "neutral",

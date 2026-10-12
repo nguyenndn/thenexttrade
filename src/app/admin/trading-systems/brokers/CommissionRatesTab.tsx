@@ -10,6 +10,13 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/Dialog";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { toast } from "sonner";
@@ -141,10 +148,10 @@ export function CommissionRatesTab({
     return (
         <div className="space-y-4">
             {/* Header / Actions Bar */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]">
                 <div>
                     <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        <DollarSign size={16} className="text-primary" />
+                        <DollarSign size={16} className="text-gold" />
                         Commission Rate Table
                     </h3>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
@@ -155,7 +162,7 @@ export function CommissionRatesTab({
                     variant="primary"
                     size="sm"
                     onClick={openCreateModal}
-                    className="shadow-md shadow-primary/20 shrink-0"
+                    className="shadow-md shadow-amber-500/20 shrink-0"
                 >
                     <Plus size={15} strokeWidth={2.5} />
                     Add Commission Rate
@@ -163,7 +170,7 @@ export function CommissionRatesTab({
             </div>
 
             {/* Rates Table */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden overflow-x-auto shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden overflow-x-auto shadow-sm">
                 <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-white/5 text-left">
                         <tr>
@@ -208,7 +215,7 @@ export function CommissionRatesTab({
                                         </div>
                                     </td>
                                     <td className="p-4">
-                                        <span className={`px-2 py-0.5 rounded-md text-xs font-mono font-bold ${
+                                        <span className={`px-2 py-0.5 rounded-lg text-xs font-mono font-bold ${
                                             isWildcard
                                                 ? "bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20"
                                                 : "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20"
@@ -280,17 +287,18 @@ export function CommissionRatesTab({
                             <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
                                 Select Partner Broker
                             </label>
-                            <select
-                                value={brokerId}
-                                onChange={(e) => setBrokerId(e.target.value)}
-                                className="w-full h-10 px-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] text-sm text-gray-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-primary/40"
-                            >
-                                {availableBrokers.map((b) => (
-                                    <option key={b.id} value={b.id}>
-                                        {b.name} ({b.slug})
-                                    </option>
-                                ))}
-                            </select>
+                            <Select value={brokerId} onValueChange={setBrokerId}>
+                                <SelectTrigger className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] text-sm text-gray-900 dark:text-white">
+                                    <SelectValue placeholder="Select broker" />
+                                </SelectTrigger>
+                                <SelectContent className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925]">
+                                    {availableBrokers.map((b) => (
+                                        <SelectItem key={b.id} value={b.id} className="rounded-lg text-sm">
+                                            {b.name} ({b.slug})
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
 
                         <div>

@@ -46,10 +46,10 @@ export default function SignupPage() {
         "h-12 bg-white/80 border-amber-900/10 text-slate-900 text-sm sm:text-base py-3 placeholder:text-slate-400 focus:bg-white focus:border-amber-400 focus:ring-amber-300/30 dark:bg-black/20 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-black/25 dark:focus:border-amber-300/60 dark:focus:ring-amber-300/20 transition-colors";
 
     const primaryButtonClassName =
-        "w-full h-12 sm:h-14 rounded-xl border-none bg-[linear-gradient(135deg,#F8D46B_0%,#D99A26_45%,#8A5A13_100%)] text-sm sm:text-base font-black text-white shadow-[0_18px_36px_rgba(217,154,38,0.32)] hover:shadow-[0_20px_44px_rgba(217,154,38,0.42)] active:scale-[0.99] transition-transform";
+        "w-full h-12 sm:h-14 rounded-lg border-none bg-[linear-gradient(135deg,#F8D46B_0%,#D99A26_45%,#8A5A13_100%)] text-sm sm:text-base font-black text-white shadow-[0_18px_36px_rgba(217,154,38,0.32)] hover:shadow-[0_20px_44px_rgba(217,154,38,0.42)] active:scale-[0.99] transition-transform";
 
     const secondaryButtonClassName =
-        "w-full h-12 sm:h-14 rounded-xl border-amber-900/10 bg-white/70 text-sm sm:text-base font-bold text-slate-700 hover:border-amber-400/50 hover:bg-white dark:bg-white/[0.06] dark:text-slate-200 dark:hover:border-amber-300/40 active:scale-[0.99] transition-transform";
+        "w-full h-12 sm:h-14 rounded-lg border-amber-900/10 bg-white/70 text-sm sm:text-base font-bold text-slate-700 hover:border-amber-400/50 hover:bg-white dark:bg-white/[0.06] dark:text-slate-200 dark:hover:border-amber-300/40 active:scale-[0.99] transition-transform";
 
     const checkboxClassName =
         "appearance-none h-5 w-5 rounded-lg border border-amber-900/20 bg-white checked:bg-amber-500 checked:border-amber-500 dark:bg-black/20 dark:border-white/20 dark:checked:bg-amber-400 dark:checked:border-amber-400 checked:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%2F%3E%3C%2Fsvg%3E')] bg-[length:70%] bg-center bg-no-repeat transition-all cursor-pointer shrink-0 mt-0.5";
@@ -206,7 +206,7 @@ export default function SignupPage() {
     };
 
     return (
-        <div className="w-full max-w-[440px] sm:max-w-[480px] mx-auto rounded-2xl border border-amber-900/10 bg-white/85 p-5 sm:p-7 md:p-8 shadow-[0_28px_90px_rgba(88,64,27,0.18)] backdrop-blur-xl transition-colors duration-300 dark:border-amber-300/15 dark:bg-[#11100C]/90 dark:shadow-[0_28px_90px_rgba(0,0,0,0.45)]">
+        <div className="w-full max-w-[440px] sm:max-w-[480px] mx-auto rounded-lg border border-amber-900/10 bg-white/85 p-5 sm:p-7 md:p-8 shadow-[0_28px_90px_rgba(88,64,27,0.18)] backdrop-blur-xl transition-colors duration-300 dark:border-amber-300/15 dark:bg-[#11100C]/90 dark:shadow-[0_28px_90px_rgba(0,0,0,0.45)]">
             <div className="flex justify-center mb-5 sm:mb-6">
                 <Logo />
             </div>
@@ -333,7 +333,7 @@ export default function SignupPage() {
                             className={inputClassName}
                         />
 
-                        <div className="flex items-start gap-2.5 sm:gap-3 rounded-xl border border-amber-900/10 bg-[#FBF6EA] p-3.5 sm:p-4 dark:bg-white/[0.04]">
+                        <div className="flex items-start gap-2.5 sm:gap-3 rounded-lg border border-amber-900/10 bg-[#FBF6EA] p-3.5 sm:p-4 dark:bg-white/[0.04]">
                             <input
                                 type="checkbox"
                                 className={checkboxClassName}

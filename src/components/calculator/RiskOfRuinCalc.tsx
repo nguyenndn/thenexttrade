@@ -183,7 +183,7 @@ export function RiskOfRuinCalc() {
             <div className="space-y-4">
                 <div
                     className={cn(
-                        "border p-6 rounded-2xl text-center shadow-lg",
+                        "border p-6 rounded-lg text-center shadow-lg",
                         risk.bg
                     )}
                 >

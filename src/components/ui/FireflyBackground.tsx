@@ -10,14 +10,14 @@ interface FireflyBackgroundProps {
 }
 
 const colorStyles = {
-    primary: "bg-primary shadow-[0_0_8px_rgba(0,200,136,0.8)]",
+    primary: "bg-amber-400 dark:bg-gold shadow-[0_0_10px_rgba(245,158,11,0.85)]",
     gold: "bg-amber-400 dark:bg-gold shadow-[0_0_10px_rgba(245,158,11,0.85)]",
     cyan: "bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)]",
 };
 
 export const FireflyBackground = ({
     count = 40,
-    color = "primary",
+    color = "gold",
     className = "",
 }: FireflyBackgroundProps) => {
     const [fireflies, setFireflies] = useState<

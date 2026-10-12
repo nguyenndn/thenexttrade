@@ -55,6 +55,8 @@ export async function getFirstInsightPayload(
         where: { userId },
         select: {
             pnl: true,
+            commission: true,
+            swap: true,
             symbol: true,
             tradingSession: true,
             result: true,
@@ -91,8 +93,8 @@ export async function getFirstInsightPayload(
 
     // Fact 2: Net P/L (if pnl values exist)
     const pnlList = entries
-        .map((e) => e.pnl)
-        .filter((p): p is number => p !== null);
+        .filter((e) => e.pnl !== null)
+        .map((e) => (e.pnl || 0) + (e.commission || 0) + (e.swap || 0));
     if (pnlList.length > 0) {
         const netPnL = pnlList.reduce((acc, p) => acc + p, 0);
         const sign = netPnL >= 0 ? "+" : "";

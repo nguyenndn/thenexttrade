@@ -1,4 +1,10 @@
 import { logSecurityEvent, SECURITY_EVENT_TYPES } from "@/lib/security-logger";
+import { Redis } from "@upstash/redis";
+
+// =============================================================================
+// Auth Rate Limiter — Distributed via Upstash Redis
+// Falls back to in-memory Map when Redis is not configured (local dev).
+// =============================================================================
 
 type AuthRateLimitAction =
     | "login"
@@ -24,44 +30,106 @@ const limits: Record<AuthRateLimitAction, RateLimitRule> = {
     verify_2fa: { limit: 5, windowMs: 10 * 60 * 1000 },
 };
 
-const store = new Map<string, { count: number; resetAt: number }>();
+// In-memory fallback store
+const memoryStore = new Map<string, { count: number; resetAt: number }>();
+
+// Lazily resolved Redis client
+let _redis: Redis | null | undefined;
+function getRedis(): Redis | null {
+    if (_redis !== undefined) return _redis;
+    const url = process.env.UPSTASH_REDIS_REST_URL;
+    const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+    _redis = url && token ? new Redis({ url, token }) : null;
+    return _redis;
+}
 
 export function normalizeEmail(email: string) {
     return email.trim().toLowerCase();
 }
 
 /**
- * Checks if the action is rate limited.
+ * Check if an auth action is rate-limited using Redis (distributed) or
+ * in-memory Map (local dev fallback).
  * @returns true if blocked, false if allowed.
  */
+async function checkWithRedis(
+    redis: Redis,
+    keysToVerify: string[],
+    rule: RateLimitRule
+): Promise<boolean> {
+    const windowSec = Math.max(1, Math.ceil(rule.windowMs / 1000));
+
+    for (const key of keysToVerify) {
+        const redisKey = `auth_rl:${key}`;
+        const results = await redis
+            .pipeline()
+            .incr(redisKey)
+            .expire(redisKey, windowSec)
+            .exec<[number, number]>();
+
+        const currentCount = results[0];
+        if (currentCount > rule.limit) {
+            return true; // blocked
+        }
+    }
+    return false;
+}
+
+function checkWithMemory(
+    keysToVerify: string[],
+    rule: RateLimitRule
+): boolean {
+    const now = Date.now();
+
+    // First pass: check if any key is already blocked
+    for (const key of keysToVerify) {
+        const record = memoryStore.get(key);
+        if (record && now < record.resetAt && record.count >= rule.limit) {
+            return true; // blocked
+        }
+    }
+
+    // Second pass: increment counters
+    for (const key of keysToVerify) {
+        const record = memoryStore.get(key);
+        if (record && now < record.resetAt) {
+            record.count += 1;
+        } else {
+            memoryStore.set(key, {
+                count: 1,
+                resetAt: now + rule.windowMs,
+            });
+        }
+    }
+
+    // Probabilistic cleanup
+    if (Math.random() < 0.05) {
+        for (const [k, v] of memoryStore.entries()) {
+            if (now > v.resetAt) {
+                memoryStore.delete(k);
+            }
+        }
+    }
+
+    return false;
+}
+
 export async function checkAuthRateLimit(
     action: AuthRateLimitAction,
     ip: string,
     email?: string
 ): Promise<boolean> {
-    const now = Date.now();
     const rule = limits[action];
 
-    const keysToVerify: string[] = [];
-    keysToVerify.push(`${action}:ip:${ip}`);
-
+    const keysToVerify: string[] = [`${action}:ip:${ip}`];
     if (email) {
-        const normalized = normalizeEmail(email);
-        keysToVerify.push(`${action}:email:${normalized}`);
+        keysToVerify.push(`${action}:email:${normalizeEmail(email)}`);
     }
 
-    let isBlocked = false;
-
-    // First pass: Check if any key is already blocked
-    for (const key of keysToVerify) {
-        const record = store.get(key);
-        if (record && now < record.resetAt) {
-            if (record.count >= rule.limit) {
-                isBlocked = true;
-                break;
-            }
-        }
-    }
+    const redis = getRedis();
+    const isBlocked = redis
+        ? await checkWithRedis(redis, keysToVerify, rule)
+        : checkWithMemory(keysToVerify, rule);
 
     if (isBlocked) {
         const maskedEmail = email
@@ -73,30 +141,7 @@ export async function checkAuthRateLimit(
             path: `/auth/actions/${action}`,
             detail: `Rate limit hit for ${action}. Email: ${maskedEmail}`,
         }).catch(() => {});
-        return true;
     }
 
-    // Second pass: Increment counters
-    for (const key of keysToVerify) {
-        const record = store.get(key);
-        if (record && now < record.resetAt) {
-            record.count += 1;
-        } else {
-            store.set(key, {
-                count: 1,
-                resetAt: now + rule.windowMs,
-            });
-        }
-    }
-
-    // Periodically cleanup the store
-    if (Math.random() < 0.05) {
-        for (const [k, v] of store.entries()) {
-            if (now > v.resetAt) {
-                store.delete(k);
-            }
-        }
-    }
-
-    return false;
+    return isBlocked;
 }

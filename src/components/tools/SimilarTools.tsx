@@ -15,7 +15,7 @@ export function SimilarTools({ tools }: SimilarToolsProps) {
                 <Link
                     key={tool.slug}
                     href={`/tools/${tool.slug}`}
-                    className="group flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-[#151925] border border-dashboard hover:border-primary/50 dark:hover:border-primary/30 transition-all duration-200 hover:shadow-md"
+                    className="group flex items-center gap-4 p-4 rounded-lg bg-white dark:bg-[#151925] border border-dashboard hover:border-primary/50 dark:hover:border-primary/30 transition-all duration-200 hover:shadow-md"
                 >
                     <div
                         className={`w-10 h-10 rounded-lg ${tool.iconBg} flex items-center justify-center shrink-0`}

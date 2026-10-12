@@ -17,3 +17,16 @@ export function AdminButtonSizeProvider({
         </ButtonSizeContext.Provider>
     );
 }
+
+export function DashboardButtonSizeProvider({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    return (
+        <ButtonSizeContext.Provider value="smd">
+            {children}
+        </ButtonSizeContext.Provider>
+    );
+}
+

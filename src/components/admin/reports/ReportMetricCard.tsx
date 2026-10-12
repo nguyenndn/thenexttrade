@@ -40,14 +40,14 @@ export function ReportMetricCard({
     const content = (
         <div
             className={cn(
-                "rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default",
+                "rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default",
                 href && "hover:border-primary/40 cursor-pointer"
             )}
         >
             <div className="flex items-center gap-3">
                 <div
                     className={cn(
-                        "w-9 h-9 shrink-0 rounded-xl flex items-center justify-center bg-gradient-to-br text-white shadow-xs",
+                        "w-9 h-9 shrink-0 rounded-lg flex items-center justify-center bg-gradient-to-br text-white shadow-xs",
                         bgGradient
                     )}
                 >

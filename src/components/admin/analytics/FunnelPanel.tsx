@@ -42,7 +42,7 @@ export function FunnelPanel({ funnel }: Props) {
     const hasData = funnel && funnel.visitors > 0;
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
+        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5">
             <div className="flex items-center gap-2 mb-4">
                 <Filter className="w-4 h-4 text-indigo-500" />
                 <h2 className="text-sm font-bold text-gray-900 dark:text-white">
@@ -88,7 +88,7 @@ export function FunnelPanel({ funnel }: Props) {
                                     </div>
                                 )}
                                 <div
-                                    className="rounded-xl p-4 text-center transition-all hover:scale-[1.01]"
+                                    className="rounded-lg p-4 text-center transition-all hover:scale-[1.01]"
                                     style={{
                                         backgroundColor: `${stage.color}15`,
                                         borderLeft: `3px solid ${stage.color}`,

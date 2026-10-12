@@ -27,9 +27,9 @@ export default async function MaintenancePage() {
     }
 
     return (
-        <div className="min-h-screen relative flex items-center justify-center bg-[#F8FAFC] overflow-hidden selection:bg-[#00C888]/20 font-sans">
+        <div className="min-h-screen relative flex items-center justify-center bg-[#F8FAFC] overflow-hidden selection:bg-amber-500/20 font-sans">
             {/* Premium Light Background Gradient */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#00C888]/10 via-white/50 to-[#F8FAFC] z-0"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-500/10 via-white/50 to-[#F8FAFC] z-0"></div>
 
             {/* Grid Pattern overlay - Light mode */}
             <div
@@ -44,21 +44,21 @@ export default async function MaintenancePage() {
 
             {/* Main Content Container (Glassmorphism Light) */}
             <div className="relative z-10 max-w-lg w-full mx-4">
-                <div className="backdrop-blur-xl bg-white/70 border border-white rounded-[32px] p-8 sm:p-12 text-center shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05),0_0_60px_-15px_rgba(0,200,136,0.15)] relative overflow-hidden">
+                <div className="backdrop-blur-xl bg-white/70 border border-white rounded-lg p-8 sm:p-12 text-center shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05),0_0_60px_-15px_rgba(245,158,11,0.15)] relative overflow-hidden">
                     {/* Inner glowing orbs */}
                     <div
-                        className="absolute -top-32 -left-32 w-64 h-64 bg-[#00C888] rounded-full mix-blend-multiply filter blur-[100px] opacity-10 animate-pulse"
+                        className="absolute -top-32 -left-32 w-64 h-64 bg-amber-500 rounded-full mix-blend-multiply filter blur-[100px] opacity-10 animate-pulse"
                         style={{ animationDuration: "4s" }}
                     ></div>
                     <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-blue-400 rounded-full mix-blend-multiply filter blur-[100px] opacity-10"></div>
 
                     {/* Animated Icon Group */}
                     <div className="relative mx-auto w-[100px] h-[100px] mb-8 group">
-                        <div className="absolute inset-0 bg-[#00C888]/20 rounded-3xl animate-pulse blur-xl group-hover:bg-[#00C888]/30 transition-all duration-500"></div>
-                        <div className="relative w-full h-full bg-white border border-dashboard rounded-3xl flex items-center justify-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md">
+                        <div className="absolute inset-0 bg-amber-500/20 rounded-lg animate-pulse blur-xl group-hover:bg-amber-500/30 transition-all duration-500"></div>
+                        <div className="relative w-full h-full bg-white border border-dashboard rounded-lg flex items-center justify-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md">
                             <Cog
                                 size={44}
-                                className="text-[#00C888] animate-[spin_4s_linear_infinite]"
+                                className="text-amber-500 animate-[spin_4s_linear_infinite]"
                                 strokeWidth={2}
                             />
                             <div className="absolute bottom-2 right-2 bg-white rounded-full p-1 border border-dashboard shadow-md">
@@ -72,12 +72,12 @@ export default async function MaintenancePage() {
                     </div>
 
                     {/* Status Badge */}
-                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#00C888]/10 border border-[#00C888]/20 mb-6 backdrop-blur-sm shadow-sm">
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 mb-6 backdrop-blur-sm shadow-sm">
                         <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00C888] opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00C888]"></span>
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
                         </span>
-                        <span className="text-xs font-bold text-[#00C888] uppercase tracking-wider">
+                        <span className="text-xs font-bold text-amber-500 uppercase tracking-wider">
                             System Upgrade
                         </span>
                     </div>
@@ -98,7 +98,7 @@ export default async function MaintenancePage() {
                             Need immediate assistance?{" "}
                             <a
                                 href="mailto:support@thenexttrade.com"
-                                className="text-slate-900 font-bold hover:text-[#00C888] transition-colors decoration-[#00C888]/40 underline underline-offset-4"
+                                className="text-slate-900 font-bold hover:text-amber-500 transition-colors decoration-amber-500/40 underline underline-offset-4"
                             >
                                 Contact Support
                             </a>

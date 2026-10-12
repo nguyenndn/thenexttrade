@@ -140,7 +140,7 @@ export function QuestionModal({
                     </label>
                     <textarea
                         {...register("text")}
-                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[80px] resize-none"
+                        className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[80px] resize-none"
                         placeholder="What is the maximum leverage in forex trading?"
                     />
                     {errors.text && (
@@ -189,7 +189,7 @@ export function QuestionModal({
                                         {...register(
                                             `options.${index}.text` as const
                                         )}
-                                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
+                                        className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
                                         placeholder={`Option ${index + 1}`}
                                     />
                                     {errors.options?.[index]?.text && (
@@ -226,7 +226,7 @@ export function QuestionModal({
                         variant="outline"
                         size="smd"
                         onClick={() => append({ text: "", isCorrect: false })}
-                        className="w-full border border-dashed border-gray-300 hover:border-primary hover:text-primary hover:bg-primary/5 transition-colors"
+                        className="w-full border border-dashed border-gray-200 dark:border-white/10 hover:border-primary hover:text-primary hover:bg-primary/5 transition-colors"
                     >
                         <Plus size={16} className="mr-2" />
                         Add Option
@@ -249,7 +249,7 @@ export function QuestionModal({
                         variant="primary"
                         size="smd"
                         isLoading={isLoading}
-                        className="bg-primary hover:bg-[#00b078] text-white border-none shadow-lg shadow-primary/30 font-bold px-6"
+                        className="bg-gold hover:bg-amber-600 text-white border-none shadow-md shadow-amber-500/20 font-bold px-6"
                     >
                         Save Question
                     </Button>

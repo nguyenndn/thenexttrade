@@ -18,7 +18,7 @@ export function DataQualityPanel({ data }: Props) {
     return (
         <ReportSection title="Data Quality">
             <div className="flex items-center gap-4 mb-5">
-                <div className="w-16 h-16 rounded-xl bg-gray-50 dark:bg-white/5 flex items-center justify-center">
+                <div className="w-16 h-16 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center">
                     <span
                         className={cn(
                             "text-2xl font-black tabular-nums",

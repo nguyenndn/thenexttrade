@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/auth-cache";
 import {
     getLeaderboard,
     getLeaderboardSidebarData,
@@ -52,10 +52,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
     }
 
     const type = rawType as LeaderboardType;
-    const supabase = await createClient();
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getAuthUser();
 
     // For mystats, fetch XP leaderboard data to get rank info
     const fetchType = type === "mystats" ? "xp" : type;
@@ -69,10 +66,10 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
                   rank: leaderboard.myRank.rank,
                   userId: user.id,
                   name:
-                      user.user_metadata?.full_name ||
+                      user.name ||
                       user.email?.split("@")[0] ||
                       "You",
-                  avatar: user.user_metadata?.avatar_url || null,
+                  avatar: user.image || null,
                   tier: getTier(leaderboard.myRank.tierProgress.current.minXp),
                   value: leaderboard.myRank.value,
                   label:
@@ -124,11 +121,11 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
                         <MyStatsView
                             myRank={leaderboard.myRank}
                             userName={
-                                user?.user_metadata?.full_name ||
+                                user?.name ||
                                 user?.email?.split("@")[0] ||
                                 undefined
                             }
-                            userAvatar={user?.user_metadata?.avatar_url || null}
+                            userAvatar={user?.image || null}
                         />
                     ) : (
                         <LeaderboardContent

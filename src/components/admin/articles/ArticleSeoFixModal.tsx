@@ -119,12 +119,12 @@ export function ArticleSeoFixModal({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-2xl flex flex-col"
+                className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-2xl flex flex-col"
             >
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] sticky top-0 z-10 shrink-0">
                     <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center">
+                        <div className="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center">
                             <WandSparkles size={18} className="text-blue-500" />
                         </div>
                         <div>
@@ -192,8 +192,8 @@ export function ArticleSeoFixModal({
                                         metaTitle: e.target.value,
                                     })
                                 }
-                                className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-                                placeholder="Enter meta title..."
+                                className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                                
                             />
                         </div>
 
@@ -218,8 +218,8 @@ export function ArticleSeoFixModal({
                                     })
                                 }
                                 rows={3}
-                                className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none"
-                                placeholder="Enter meta description..."
+                                className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none"
+                                
                             />
                         </div>
 
@@ -245,7 +245,7 @@ export function ArticleSeoFixModal({
                                             focusKeyword: e.target.value,
                                         })
                                     }
-                                    className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                                    className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                                     placeholder="focus keyword"
                                 />
                             </div>
@@ -316,14 +316,14 @@ export function ArticleSeoFixModal({
                                     })
                                 }
                                 rows={3}
-                                className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none"
-                                placeholder="Enter a brief excerpt..."
+                                className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none"
+                                
                             />
                         </div>
                     </div>
                 </div>
 
-                <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] rounded-b-2xl shrink-0">
+                <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] rounded-b-lg shrink-0">
                     <Button
                         variant="outline"
                         size="smd"

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { Trophy, Medal } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import { TopMedalStrip } from "./TopMedalStrip";
 import { LeaderboardTable } from "./LeaderboardTable";
 import { UserProfileCard } from "./UserProfileCard";
@@ -45,7 +46,7 @@ export function LeaderboardContent({
     return (
         <div className="space-y-6">
             {/* Top Performers Section */}
-            <div className="bg-white dark:bg-[#151925] rounded-2xl border border-dashboard shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-5 py-4 border-b border-dashboard">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-yellow-50 dark:bg-yellow-500/10 flex items-center justify-center">
@@ -82,28 +83,32 @@ export function LeaderboardContent({
             </div>
 
             {/* Rankings Table Section */}
-            <div className="bg-white dark:bg-[#151925] rounded-2xl border border-dashboard shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                 <div className="flex items-center justify-between px-6 py-4 border-b border-dashboard flex-wrap gap-3">
                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center">
-                            <Medal size={16} className="text-emerald-500" />
+                        <div className="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center">
+                            <Medal size={16} className="text-amber-500" />
                         </div>
                         <div>
                             <h3 className="text-sm font-bold text-gray-700 dark:text-white">
                                 {TAB_TITLES[type] || "Rankings"}
                             </h3>
-                            <p className="text-xs text-gray-500">
-                                All participants with min. 10 closed trades ({period})
-                            </p>
+                            {type === "trading" && (
+                                <p className="text-xs text-gray-500">
+                                    All participants with min. 10 closed trades ({period})
+                                </p>
+                            )}
                         </div>
                     </div>
                     {type !== "trading" && (
-                        <button
+                        <Button
+                            variant="outline"
+                            size="sm"
                             onClick={() => setIsMethodologyOpen(true)}
-                            className="text-xs text-gray-400 hover:text-amber-500 font-semibold transition-colors"
+                            className="text-xs h-7 px-2.5 font-semibold"
                         >
                             Methodology & Rules
-                        </button>
+                        </Button>
                     )}
                 </div>
                 <div className="p-0">

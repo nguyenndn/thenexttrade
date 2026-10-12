@@ -10,15 +10,15 @@ export default function Loading() {
                     </div>
                     <div className="h-5 w-64 bg-gray-100 dark:bg-white/5 rounded-lg ml-4" />
                 </div>
-                <div className="h-10 w-32 bg-gray-200 dark:bg-white/10 rounded-xl" />
+                <div className="h-10 w-32 bg-gray-200 dark:bg-white/10 rounded-lg" />
             </div>
 
             {/* Table Skeleton */}
-            <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden">
+            <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden">
                 {/* Toolbar */}
                 <div className="p-6 border-b border-gray-200 dark:border-white/10 flex gap-4">
-                    <div className="h-10 flex-1 bg-gray-50 dark:bg-white/5 rounded-xl" />
-                    <div className="h-10 w-32 bg-gray-50 dark:bg-white/5 rounded-xl" />
+                    <div className="h-10 flex-1 bg-gray-50 dark:bg-white/5 rounded-lg" />
+                    <div className="h-10 w-32 bg-gray-50 dark:bg-white/5 rounded-lg" />
                 </div>
 
                 {/* Table Header */}

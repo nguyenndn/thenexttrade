@@ -72,6 +72,9 @@ interface JournalEntry {
     followedPlan?: boolean | null;
     playbookGrade?: string | null;
     playbookComplianceScore?: number | null;
+    commission?: number | null;
+    swap?: number | null;
+    grossProfit?: number | null;
 }
 
 interface TradeDetailSheetProps {
@@ -183,13 +186,14 @@ export function TradeDetailSheet({
                         </div>
                         <div className="flex items-center gap-2">
                             <Button
+                                size="smd"
                                 onClick={() => setShowShareModal(true)}
-                                className="bg-gradient-to-r from-primary to-emerald-400 hover:from-[#00a872] hover:to-emerald-500 text-white shadow-lg shadow-primary/30 rounded-xl px-5 font-bold flex items-center gap-2 transition-all border-none h-10"
+                                className="bg-gold hover:bg-amber-600 text-white shadow-md shadow-amber-500/25 rounded-lg font-bold flex items-center gap-1.5 transition-all border-none"
                             >
-                                <Share2 size={18} strokeWidth={2.5} />
+                                <Share2 size={15} strokeWidth={2.5} />
                                 Share
                             </Button>
-                            <SheetClose className="rounded-xl h-10 w-10 p-0 border border-dashboard bg-white dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center text-gray-600 dark:text-white transition-colors">
+                            <SheetClose className="rounded-lg h-10 w-10 p-0 border border-dashboard bg-white dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center text-gray-600 dark:text-white transition-colors">
                                 <X size={20} />
                             </SheetClose>
                         </div>
@@ -198,7 +202,7 @@ export function TradeDetailSheet({
 
                 <div className="p-6 space-y-5">
                     {/* Hero Card - Premium Glass/Glow Effect */}
-                    <div className="relative bg-white dark:bg-[#1E2028] rounded-xl p-6 md:p-8 shadow-xl border border-dashboard overflow-hidden group">
+                    <div className="relative bg-white dark:bg-[#1E2028] rounded-lg p-6 md:p-8 shadow-xl border border-dashboard overflow-hidden group">
                         {/* Decorative Glow */}
                         <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none group-hover:bg-blue-500/20 transition-all duration-700"></div>
 
@@ -211,7 +215,7 @@ export function TradeDetailSheet({
                                     onClick={onPrev}
                                     disabled={!hasPrev}
                                     aria-label="Previous Trade"
-                                    className="h-10 w-10 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105 active:scale-95"
+                                    className="h-10 w-10 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105 active:scale-95"
                                 >
                                     <ArrowLeft size={18} strokeWidth={2} />
                                 </Button>
@@ -282,7 +286,7 @@ export function TradeDetailSheet({
                                     size="icon"
                                     onClick={onNext}
                                     disabled={!hasNext}
-                                    className="h-10 w-10 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105 active:scale-95"
+                                    className="h-10 w-10 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105 active:scale-95"
                                 >
                                     <ArrowRight size={18} strokeWidth={2} />
                                 </Button>
@@ -295,7 +299,7 @@ export function TradeDetailSheet({
                             <TabsTrigger
                                 value="metrics"
                                 className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
-                                activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                                 activeTextClassName="!text-white"
                             >
                                 <BarChart3 size={16} />
@@ -304,7 +308,7 @@ export function TradeDetailSheet({
                             <TabsTrigger
                                 value="tags"
                                 className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
-                                activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                                 activeTextClassName="!text-white"
                             >
                                 <Tag size={16} />
@@ -314,7 +318,7 @@ export function TradeDetailSheet({
                                 <TabsTrigger
                                     value="comparison"
                                     className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
-                                    activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                    activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                                     activeTextClassName="!text-white"
                                 >
                                     <Scale size={16} />
@@ -324,7 +328,7 @@ export function TradeDetailSheet({
                             <TabsTrigger
                                 value="ai-insights"
                                 className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
-                                activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                                 activeTextClassName="!text-white"
                             >
                                 <Brain size={16} />
@@ -338,7 +342,7 @@ export function TradeDetailSheet({
                             className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2"
                         >
                             {activeCoachPlan ? (
-                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-6 shadow-xl pt-2">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard p-6 shadow-xl pt-2">
                                     <h3 className="text-xs font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-4 flex items-center gap-2">
                                         <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
                                         Trader's Current Focus
@@ -346,7 +350,7 @@ export function TradeDetailSheet({
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {(activeCoachPlan.keepDoing?.length ??
                                             0) > 0 && (
-                                            <div className="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl">
+                                            <div className="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-lg">
                                                 <h4 className="text-sm font-bold text-emerald-700 dark:text-emerald-400 mb-3 flex items-center gap-2">
                                                     What's Working
                                                 </h4>
@@ -357,7 +361,7 @@ export function TradeDetailSheet({
                                         )}
                                         {(activeCoachPlan.fixNext?.length ??
                                             0) > 0 && (
-                                            <div className="p-4 bg-red-500/5 border border-red-500/20 rounded-xl">
+                                            <div className="p-4 bg-red-500/5 border border-red-500/20 rounded-lg">
                                                 <h4 className="text-sm font-bold text-red-700 dark:text-red-400 mb-3 flex items-center gap-2">
                                                     Needs Fix
                                                 </h4>
@@ -369,7 +373,7 @@ export function TradeDetailSheet({
                                     </div>
                                 </div>
                             ) : (
-                                <div className="p-8 text-center text-gray-500 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-xl">
+                                <div className="p-8 text-center text-gray-500 bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-xl">
                                     <Brain
                                         size={48}
                                         className="mx-auto mb-4 opacity-20 text-gray-400"
@@ -397,7 +401,7 @@ export function TradeDetailSheet({
                                     Performance Summary
                                 </h3>
 
-                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-xl relative overflow-hidden group">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-xl relative overflow-hidden group">
                                     {/* Ambient Glow based on Result */}
                                     <div
                                         className={cn(
@@ -421,7 +425,7 @@ export function TradeDetailSheet({
                                                     Execution Timeline
                                                 </h4>
                                                 <div className="space-y-4">
-                                                    <div className="flex justify-between items-center bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-xl border border-dashboard">
+                                                    <div className="flex justify-between items-center bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-lg border border-dashboard">
                                                         <span className="text-xs text-gray-600 font-bold uppercase tracking-wider">
                                                             Volume
                                                         </span>
@@ -429,7 +433,7 @@ export function TradeDetailSheet({
                                                             {entry.lotSize} Lots
                                                         </span>
                                                     </div>
-                                                    <div className="flex justify-between items-center bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-xl border border-dashboard">
+                                                    <div className="flex justify-between items-center bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-lg border border-dashboard">
                                                         <span className="text-xs text-gray-600 font-bold uppercase tracking-wider">
                                                             Open
                                                         </span>
@@ -440,7 +444,7 @@ export function TradeDetailSheet({
                                                             )}
                                                         </span>
                                                     </div>
-                                                    <div className="flex justify-between items-center bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-xl border border-dashboard">
+                                                    <div className="flex justify-between items-center bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-lg border border-dashboard">
                                                         <span className="text-xs text-gray-600 font-bold uppercase tracking-wider">
                                                             Close
                                                         </span>
@@ -466,28 +470,54 @@ export function TradeDetailSheet({
                                                     Transaction Fees
                                                 </h4>
                                                 <div className="grid grid-cols-3 gap-3">
-                                                    <div className="bg-gray-50 dark:bg-black/20 p-3 rounded-xl border border-dashboard flex flex-col items-center justify-center text-center">
+                                                    <div className="bg-gray-50 dark:bg-black/20 p-3 rounded-lg border border-dashboard flex flex-col items-center justify-center text-center">
                                                         <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">
                                                             Commission
                                                         </span>
-                                                        <span className="text-xs font-black text-gray-700 dark:text-white font-mono">
-                                                            0.00
+                                                        <span
+                                                            className={cn(
+                                                                "text-xs font-black font-mono",
+                                                                (entry.commission || 0) < 0
+                                                                    ? "text-red-500"
+                                                                    : "text-gray-700 dark:text-white"
+                                                            )}
+                                                        >
+                                                            {entry.commission != null
+                                                                ? `${entry.commission < 0 ? "-" : ""}$${Math.abs(entry.commission).toFixed(2)}`
+                                                                : "$0.00"}
                                                         </span>
                                                     </div>
-                                                    <div className="bg-gray-50 dark:bg-black/20 p-3 rounded-xl border border-dashboard flex flex-col items-center justify-center text-center">
+                                                    <div className="bg-gray-50 dark:bg-black/20 p-3 rounded-lg border border-dashboard flex flex-col items-center justify-center text-center">
                                                         <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">
                                                             Swap
                                                         </span>
-                                                        <span className="text-xs font-black text-gray-700 dark:text-white font-mono">
-                                                            0.00
+                                                        <span
+                                                            className={cn(
+                                                                "text-xs font-black font-mono",
+                                                                (entry.swap || 0) < 0
+                                                                    ? "text-red-500"
+                                                                    : "text-gray-700 dark:text-white"
+                                                            )}
+                                                        >
+                                                            {entry.swap != null
+                                                                ? `${entry.swap < 0 ? "-" : ""}$${Math.abs(entry.swap).toFixed(2)}`
+                                                                : "$0.00"}
                                                         </span>
                                                     </div>
-                                                    <div className="bg-gray-50 dark:bg-black/20 p-3 rounded-xl border border-dashboard flex flex-col items-center justify-center text-center">
+                                                    <div className="bg-gray-50 dark:bg-black/20 p-3 rounded-lg border border-dashboard flex flex-col items-center justify-center text-center">
                                                         <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">
-                                                            Fee
+                                                            Total Fees
                                                         </span>
-                                                        <span className="text-xs font-black text-gray-700 dark:text-white font-mono">
-                                                            0.00
+                                                        <span
+                                                            className={cn(
+                                                                "text-xs font-black font-mono",
+                                                                ((entry.commission || 0) + (entry.swap || 0)) < 0
+                                                                    ? "text-red-500"
+                                                                    : "text-gray-700 dark:text-white"
+                                                            )}
+                                                        >
+                                                            {((entry.commission || 0) + (entry.swap || 0)) < 0 ? "-" : ""}
+                                                            ${Math.abs((entry.commission || 0) + (entry.swap || 0)).toFixed(2)}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -510,7 +540,7 @@ export function TradeDetailSheet({
                                                     Price Execution
                                                 </h4>
                                                 <div className="grid grid-cols-2 gap-4">
-                                                    <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-dashboard shadow-sm">
+                                                    <div className="bg-white dark:bg-[#1E2028] p-4 rounded-lg border border-dashboard shadow-sm">
                                                         <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1 block">
                                                             Entry Price
                                                         </span>
@@ -518,7 +548,7 @@ export function TradeDetailSheet({
                                                             {entry.entryPrice}
                                                         </span>
                                                     </div>
-                                                    <div className="relative bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-dashboard shadow-sm">
+                                                    <div className="relative bg-white dark:bg-[#1E2028] p-4 rounded-lg border border-dashboard shadow-sm">
                                                         <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1 flex items-center justify-between">
                                                             Exit Price
                                                             {isTPHit && (
@@ -546,7 +576,7 @@ export function TradeDetailSheet({
                                                                 "---"}
                                                         </span>
                                                     </div>
-                                                    <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-dashboard shadow-sm opacity-80">
+                                                    <div className="bg-white dark:bg-[#1E2028] p-4 rounded-lg border border-dashboard shadow-sm opacity-80">
                                                         <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1 block">
                                                             Stop Loss
                                                         </span>
@@ -555,7 +585,7 @@ export function TradeDetailSheet({
                                                                 "---"}
                                                         </span>
                                                     </div>
-                                                    <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-dashboard shadow-sm opacity-80">
+                                                    <div className="bg-white dark:bg-[#1E2028] p-4 rounded-lg border border-dashboard shadow-sm opacity-80">
                                                         <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1 block">
                                                             Take Profit
                                                         </span>
@@ -568,7 +598,7 @@ export function TradeDetailSheet({
                                             </div>
 
                                             {/* Trade Results Hub */}
-                                            <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-inner relative overflow-hidden">
+                                            <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-inner relative overflow-hidden">
                                                 <div
                                                     className={cn(
                                                         "absolute inset-0 opacity-[0.03] pattern-diagonal-lines pattern-size-4 pattern-bg-white",
@@ -594,12 +624,19 @@ export function TradeDetailSheet({
                                                         <span
                                                             className={cn(
                                                                 "text-xl font-black font-mono",
-                                                                pnlColor
+                                                                (entry.grossProfit ?? (entry.pnl != null ? entry.pnl - (entry.commission || 0) - (entry.swap || 0) : 0)) >= 0
+                                                                    ? "text-green-500"
+                                                                    : "text-red-500"
                                                             )}
                                                         >
-                                                            {entry.pnl?.toFixed(
-                                                                2
-                                                            ) || "0.00"}
+                                                            {Number(
+                                                                entry.grossProfit ??
+                                                                    (entry.pnl != null
+                                                                        ? entry.pnl -
+                                                                          (entry.commission || 0) -
+                                                                          (entry.swap || 0)
+                                                                        : 0)
+                                                            ).toFixed(2)}
                                                         </span>
                                                     </div>
                                                     <div>
@@ -645,7 +682,7 @@ export function TradeDetailSheet({
                                                                 ) || "0.00"}
                                                             </span>
                                                             {isWin && (
-                                                                <span className="bg-green-500/10 text-green-500 p-2 rounded-xl animate-bounce shadow-lg shadow-green-500/20">
+                                                                <span className="bg-green-500/10 text-green-500 p-2 rounded-lg animate-bounce shadow-lg shadow-green-500/20">
                                                                     <TrendingUp
                                                                         size={
                                                                             20
@@ -674,9 +711,9 @@ export function TradeDetailSheet({
                                     Trade Analysis
                                 </h3>
 
-                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-xl p-5 space-y-5">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-xl p-5 space-y-5">
                                     {/* Market Context - Economic Events */}
-                                    <div className="bg-amber-50/50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-200/50 dark:border-amber-500/20">
+                                    <div className="bg-amber-50/50 dark:bg-amber-500/5 p-4 rounded-lg border border-amber-200/50 dark:border-amber-500/20">
                                         <h4 className="text-[10px] font-black text-amber-700 dark:text-amber-400 uppercase tracking-widest mb-3 flex items-center gap-2">
                                             <Calendar size={13} className="text-amber-500" />
                                             Market Context (Economic Calendar)
@@ -708,7 +745,7 @@ export function TradeDetailSheet({
                                     </div>
 
                                     {/* Strategy / Playbook Benchmark Panel */}
-                                    <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-xl border border-dashboard space-y-3">
+                                    <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-lg border border-dashboard space-y-3">
                                         <div className="flex items-center justify-between flex-wrap gap-2">
                                             <div className="flex items-center gap-2">
                                                 {currentStrategy?.isPlaybook ? (
@@ -752,7 +789,7 @@ export function TradeDetailSheet({
                                                 </span>
 
                                                 {currentStrategy?.setupType && (
-                                                    <span className="px-2 py-0.5 rounded-md bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 text-xs font-bold">
+                                                    <span className="px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 text-xs font-bold">
                                                         {currentStrategy.setupType}
                                                     </span>
                                                 )}
@@ -818,7 +855,7 @@ export function TradeDetailSheet({
                                         (entry as any).exitReason) && (
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             {(entry as any).entryReason && (
-                                                <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-xl border border-dashboard">
+                                                <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-lg border border-dashboard">
                                                     <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-2">
                                                         <MessageSquare
                                                             size={12}
@@ -835,7 +872,7 @@ export function TradeDetailSheet({
                                                 </div>
                                             )}
                                             {(entry as any).exitReason && (
-                                                <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-xl border border-dashboard">
+                                                <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-lg border border-dashboard">
                                                     <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-2">
                                                         <MessageSquare
                                                             size={12}
@@ -855,7 +892,7 @@ export function TradeDetailSheet({
                                     )}
 
                                     {/* Psychological State - Full Width */}
-                                    <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-xl border border-dashboard relative overflow-hidden">
+                                    <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-lg border border-dashboard relative overflow-hidden">
                                         <div className="absolute -bottom-6 -right-6 text-purple-500/5 -rotate-12 pointer-events-none">
                                             <Brain size={120} strokeWidth={1} />
                                         </div>
@@ -874,7 +911,7 @@ export function TradeDetailSheet({
                                                     <div className="flex flex-wrap gap-2">
                                                         {(entry as any)
                                                             .emotionBefore && (
-                                                            <span className="px-4 py-2 bg-purple-500/10 text-purple-500 rounded-xl text-xs font-black uppercase tracking-wider border border-purple-500/20">
+                                                            <span className="px-4 py-2 bg-purple-500/10 text-purple-500 rounded-lg text-xs font-black uppercase tracking-wider border border-purple-500/20">
                                                                 Before:{" "}
                                                                 {
                                                                     (
@@ -886,7 +923,7 @@ export function TradeDetailSheet({
                                                         )}
                                                         {(entry as any)
                                                             .emotionAfter && (
-                                                            <span className="px-4 py-2 bg-indigo-500/10 text-indigo-500 rounded-xl text-xs font-black uppercase tracking-wider border border-indigo-500/20">
+                                                            <span className="px-4 py-2 bg-indigo-500/10 text-indigo-500 rounded-lg text-xs font-black uppercase tracking-wider border border-indigo-500/20">
                                                                 After:{" "}
                                                                 {
                                                                     (
@@ -898,7 +935,7 @@ export function TradeDetailSheet({
                                                         )}
                                                         {(entry as any)
                                                             .confidenceLevel && (
-                                                            <span className="px-4 py-2 bg-amber-500/10 text-amber-600 rounded-xl text-xs font-black uppercase tracking-wider border border-amber-500/20">
+                                                            <span className="px-4 py-2 bg-amber-500/10 text-amber-600 rounded-lg text-xs font-black uppercase tracking-wider border border-amber-500/20">
                                                                 Confidence:{" "}
                                                                 {
                                                                     (
@@ -916,7 +953,7 @@ export function TradeDetailSheet({
                                                                 .followedPlan !==
                                                                 undefined && (
                                                                 <span
-                                                                    className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border ${
+                                                                    className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider border ${
                                                                         (
                                                                             entry as any
                                                                         )
@@ -971,7 +1008,7 @@ export function TradeDetailSheet({
                                                 entry.tags.map((tag) => (
                                                     <span
                                                         key={tag}
-                                                        className="px-4 py-2 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl text-xs font-bold uppercase tracking-wider border border-dashboard hover:bg-gray-200 dark:hover:bg-white/10 transition-colors cursor-default"
+                                                        className="px-4 py-2 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-lg text-xs font-bold uppercase tracking-wider border border-dashboard hover:bg-gray-200 dark:hover:bg-white/10 transition-colors cursor-default"
                                                     >
                                                         {tag}
                                                     </span>
@@ -1011,7 +1048,7 @@ export function TradeDetailSheet({
                                                                 key={
                                                                     mistakeCode
                                                                 }
-                                                                className="px-5 py-2.5 bg-red-500/10 text-red-500 rounded-xl text-xs font-black uppercase tracking-wider border border-red-500/20 flex items-center gap-2"
+                                                                className="px-5 py-2.5 bg-red-500/10 text-red-500 rounded-lg text-xs font-black uppercase tracking-wider border border-red-500/20 flex items-center gap-2"
                                                             >
                                                                 {mistake ? (
                                                                     <>
@@ -1034,7 +1071,7 @@ export function TradeDetailSheet({
                                                     }
                                                 )
                                             ) : (
-                                                <div className="w-full p-4 border border-primary/20 bg-primary/5 rounded-xl flex items-center justify-center gap-3">
+                                                <div className="w-full p-4 border border-primary/20 bg-primary/5 rounded-lg flex items-center justify-center gap-3">
                                                     <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center">
                                                         <Medal size={20} />
                                                     </div>
@@ -1072,7 +1109,7 @@ export function TradeDetailSheet({
 
                     {/* Screenshots - Always visible at bottom */}
                     {entry.images && entry.images.length > 0 && (
-                        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard">
+                        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard">
                             <h4 className="text-xs font-bold text-gray-600 uppercase tracking-widest mb-4 flex items-center gap-2">
                                 <div className="w-1.5 h-3 bg-pink-500 rounded-full"></div>
                                 Trade Screenshots

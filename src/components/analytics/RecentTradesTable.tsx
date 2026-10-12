@@ -41,7 +41,7 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
     };
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow group">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow group">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                     <div className="w-1.5 h-6 bg-[#00C888] rounded-full"></div>
@@ -62,7 +62,7 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
                     No trades to display
                 </div>
             ) : (
-                <div className="overflow-x-auto rounded-xl border border-dashboard">
+                <div className="overflow-x-auto rounded-lg border border-dashboard">
                     <table className="w-full text-left text-sm">
                         <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider border-b border-dashboard">
                             <tr>
@@ -115,7 +115,10 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
                                         }`}
                                     >
                                         {trade.pnl >= 0 ? "+" : ""}$
-                                        {trade.pnl.toLocaleString()}
+                                        {trade.pnl.toLocaleString(undefined, {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2,
+                                        })}
                                     </td>
                                 </tr>
                             ))}

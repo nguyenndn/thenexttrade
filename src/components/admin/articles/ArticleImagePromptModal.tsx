@@ -46,7 +46,7 @@ function PromptBlock({
     path: string;
 }) {
     return (
-        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 space-y-3">
+        <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 space-y-3">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <ImageIcon size={14} className="text-gold" />
@@ -102,12 +102,12 @@ export function ArticleImagePromptModal({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-2xl"
+                className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-2xl"
             >
                 {/* Header */}
                 <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]">
                     <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-gold/10 flex items-center justify-center">
+                        <div className="w-9 h-9 rounded-lg bg-gold/10 flex items-center justify-center">
                             <Wand2 size={18} className="text-gold" />
                         </div>
                         <div>

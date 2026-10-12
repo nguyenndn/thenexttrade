@@ -87,7 +87,7 @@ export function QuickActions({
                         variant="ghost"
                         size="sm"
                         onClick={() => setShowRoleModal(true)}
-                        className="h-10 min-w-0 justify-center whitespace-nowrap rounded-xl border border-gray-200 dark:border-white/10 bg-white px-3 text-xs font-bold text-gray-700 hover:bg-gray-50 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
+                        className="h-10 min-w-0 justify-center whitespace-nowrap rounded-lg border border-gray-200 dark:border-white/10 bg-white px-3 text-xs font-bold text-gray-700 hover:bg-gray-50 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
                     >
                         <Pencil size={14} className="mr-1.5 shrink-0" />
                         <span className="whitespace-nowrap">Edit Role</span>
@@ -96,7 +96,7 @@ export function QuickActions({
                         variant="ghost"
                         size="sm"
                         onClick={() => setShowResetConfirm(true)}
-                        className="h-10 min-w-0 justify-center whitespace-nowrap rounded-xl border border-gray-200 dark:border-white/10 bg-white px-3 text-xs font-bold text-gray-700 hover:bg-gray-50 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
+                        className="h-10 min-w-0 justify-center whitespace-nowrap rounded-lg border border-gray-200 dark:border-white/10 bg-white px-3 text-xs font-bold text-gray-700 hover:bg-gray-50 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
                     >
                         <KeyRound size={14} className="mr-1.5 shrink-0" />
                         <span className="whitespace-nowrap">
@@ -107,7 +107,7 @@ export function QuickActions({
                         variant="ghost"
                         size="sm"
                         onClick={() => setShowNotifyModal(true)}
-                        className="h-10 min-w-0 justify-center whitespace-nowrap rounded-xl border border-gray-200 dark:border-white/10 bg-white px-3 text-xs font-bold text-gray-700 hover:bg-gray-50 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
+                        className="h-10 min-w-0 justify-center whitespace-nowrap rounded-lg border border-gray-200 dark:border-white/10 bg-white px-3 text-xs font-bold text-gray-700 hover:bg-gray-50 border-gray-200 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
                     >
                         <Bell size={14} className="mr-1.5 shrink-0" />
                         <span className="whitespace-nowrap">Notify</span>
@@ -156,7 +156,7 @@ export function QuickActions({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative bg-white dark:bg-[#1E2028] rounded-xl w-full max-w-md mx-4 border border-gray-200 dark:border-white/10 shadow-2xl"
+                        className="relative bg-white dark:bg-[#1E2028] rounded-lg w-full max-w-md mx-4 border border-gray-200 dark:border-white/10 shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-white/10">
@@ -168,7 +168,7 @@ export function QuickActions({
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => setShowNotifyModal(false)}
-                                className="h-8 w-8 rounded-xl"
+                                className="h-8 w-8 rounded-lg"
                                 aria-label="Close notification modal"
                             >
                                 <X size={18} className="text-gray-500" />
@@ -186,7 +186,7 @@ export function QuickActions({
                                         setNotifyTitle(e.target.value)
                                     }
                                     placeholder="Notification title..."
-                                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
+                                    className="w-full px-3 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
                                 />
                             </div>
                             <div>
@@ -200,7 +200,7 @@ export function QuickActions({
                                     }
                                     placeholder="Write your message..."
                                     rows={3}
-                                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors resize-none"
+                                    className="w-full px-3 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors resize-none"
                                 />
                             </div>
                         </div>
@@ -208,7 +208,7 @@ export function QuickActions({
                             <Button
                                 variant="outline"
                                 onClick={() => setShowNotifyModal(false)}
-                                className="flex-1 rounded-xl"
+                                className="flex-1 rounded-lg"
                             >
                                 Cancel
                             </Button>
@@ -220,7 +220,7 @@ export function QuickActions({
                                     !notifyMessage.trim() ||
                                     loading === "notify"
                                 }
-                                className="flex-1 rounded-xl"
+                                className="flex-1 rounded-lg"
                             >
                                 {loading === "notify" ? (
                                     <Loader2

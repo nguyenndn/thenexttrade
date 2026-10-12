@@ -235,7 +235,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
             >
                 <Button
                     onClick={() => setIsCreateModuleOpen(true)}
-                    className="flex items-center gap-2 shadow-lg shadow-primary/30"
+                    className="flex items-center gap-2 shadow-lg shadow-amber-500/30"
                 >
                     <Plus size={18} strokeWidth={2.5} /> Add Module
                 </Button>
@@ -243,7 +243,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
 
             {/* Stats Bar */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 p-4 flex items-center gap-3">
+                <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 p-4 flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-cyan-50 dark:bg-cyan-500/10 flex items-center justify-center text-cyan-500">
                         <Layers size={20} />
                     </div>
@@ -254,7 +254,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                         <p className="text-xs text-gray-600">Modules</p>
                     </div>
                 </div>
-                <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 p-4 flex items-center gap-3">
+                <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 p-4 flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-500">
                         <FileText size={20} />
                     </div>
@@ -265,7 +265,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                         <p className="text-xs text-gray-600">Lessons</p>
                     </div>
                 </div>
-                <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 p-4 flex items-center gap-3">
+                <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 p-4 flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-500">
                         <Clock size={20} />
                     </div>
@@ -281,7 +281,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
             {/* Modules Accordion */}
             <div className="space-y-4">
                 {level.modules.length === 0 ? (
-                    <div className="text-center py-20 bg-white dark:bg-[#151925] rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10">
+                    <div className="text-center py-20 bg-white dark:bg-[#151925] rounded-lg border-2 border-dashed border-gray-200 dark:border-white/10">
                         <Layers
                             size={48}
                             className="mx-auto text-gray-300 dark:text-gray-700 mb-4"
@@ -303,7 +303,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                     level.modules.map((module, mIndex) => (
                         <div
                             key={module.id}
-                            className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden"
+                            className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden"
                         >
                             {/* Module Header */}
                             <div

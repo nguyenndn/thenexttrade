@@ -27,6 +27,8 @@ const journalEntrySchema = z.object({
     status: z.enum(["OPEN", "CLOSED"]).default("OPEN"),
     result: z.enum(["WIN", "LOSS", "BREAK_EVEN"]).optional().nullable(),
     pnl: z.number().optional().nullable(),
+    commission: z.number().optional().nullable(),
+    swap: z.number().optional().nullable(),
     notes: z.string().optional(),
     entryReason: z.string().optional().nullable(),
     exitReason: z.string().optional().nullable(),
@@ -241,7 +243,7 @@ export async function GET(request: Request) {
                 prisma.journalEntry.count({ where }),
                 prisma.journalEntry.aggregate({
                     where: { ...where, status: "CLOSED" },
-                    _sum: { pnl: true },
+                    _sum: { pnl: true, commission: true, swap: true },
                 }),
                 prisma.journalEntry.count({
                     where: { ...where, status: "CLOSED", result: "WIN" },
@@ -256,7 +258,10 @@ export async function GET(request: Request) {
 
         const totalClosed = winCount + lossCount + breakEvenCount;
         const winRate = totalClosed > 0 ? (winCount / totalClosed) * 100 : 0;
-        const totalPnL = pnlStat._sum.pnl || 0;
+        const totalPnL =
+            (pnlStat._sum.pnl || 0) +
+            (pnlStat._sum.commission || 0) +
+            (pnlStat._sum.swap || 0);
 
         return NextResponse.json({
             data: entries,

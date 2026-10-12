@@ -56,7 +56,7 @@ export function ReportRankedList({
                         <div
                             key={idx}
                             className={cn(
-                                "flex items-center gap-3 px-3 py-2 rounded-xl transition-colors",
+                                "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
                                 item.href
                                     ? "hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer"
                                     : ""

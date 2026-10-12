@@ -180,7 +180,7 @@ export function ImportQuestionsModal({
                                             onClick={() =>
                                                 handleQuizSelect(quiz)
                                             }
-                                            className="w-full flex items-center justify-between p-4 h-auto rounded-xl border border-gray-200 dark:border-white/10 hover:border-primary hover:bg-primary/5 transition-all group text-left"
+                                            className="w-full flex items-center justify-between p-4 h-auto rounded-lg border border-gray-200 dark:border-white/10 hover:border-primary hover:bg-primary/5 transition-all group text-left"
                                         >
                                             <div className="flex flex-col items-start text-left">
                                                 <h4 className="font-bold text-gray-700 dark:text-white text-base">
@@ -238,7 +238,7 @@ export function ImportQuestionsModal({
                                                     toggleQuestion(q.id)
                                                 }
                                                 className={cn(
-                                                    "cursor-pointer p-5 rounded-xl border transition-all flex gap-4 text-left group",
+                                                    "cursor-pointer p-5 rounded-lg border transition-all flex gap-4 text-left group",
                                                     isSelected
                                                         ? "border-primary bg-primary/5"
                                                         : "border-gray-200 dark:border-white/10 hover:border-primary/50 hover:shadow-md"
@@ -249,7 +249,7 @@ export function ImportQuestionsModal({
                                                         "w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-colors",
                                                         isSelected
                                                             ? "bg-primary border-primary"
-                                                            : "border-gray-300 dark:border-gray-600 group-hover:border-primary"
+                                                            : "border-gray-200 dark:border-white/10 group-hover:border-primary"
                                                     )}
                                                 >
                                                     {isSelected && (
@@ -318,7 +318,7 @@ export function ImportQuestionsModal({
                                         selectedQuestionIds.size === 0 ||
                                         isLoading
                                     }
-                                    className="font-bold bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="font-bold bg-gold hover:bg-amber-600 text-white shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all flex items-center gap-2 border-none disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {isLoading && (
                                         <Loader2

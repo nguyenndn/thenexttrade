@@ -126,7 +126,7 @@ export function EADashboardClient({
                 tabsId="ea-dashboard-tabs"
             >
                 <div className="overflow-x-auto scrollbar-hide pb-2 flex">
-                    <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1 gap-1 shrink-0">
+                    <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-1 gap-1 shrink-0">
                         {[
                             { id: "overview", label: "Overview" },
                             { id: "pending", label: "Pending Review" },
@@ -136,7 +136,7 @@ export function EADashboardClient({
                                 key={t.id}
                                 value={t.id}
                                 className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10 transition-colors"
-                                activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                                 activeTextClassName="!text-white"
                             >
                                 {t.label}
@@ -196,7 +196,7 @@ export function EADashboardClient({
                         <div className="lg:col-span-7 space-y-6">
                             {/* Management Shortcuts */}
                             <AnimatedSection delay={0.2}>
-                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm p-5">
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-2">
                                             <Zap className="text-amber-500" size={16} />
@@ -208,10 +208,10 @@ export function EADashboardClient({
                                             <Link
                                                 key={action.href}
                                                 href={action.href}
-                                                className={`group p-4 rounded-xl bg-gray-50/70 dark:bg-white/[0.03] border border-gray-200/60 dark:border-white/10 ${action.borderColor} hover:bg-white dark:hover:bg-white/[0.06] hover:shadow-md transition-all flex items-start gap-3.5`}
+                                                className={`group p-4 rounded-lg bg-gray-50/70 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 ${action.borderColor} hover:bg-white dark:hover:bg-white/[0.06] hover:shadow-md transition-all flex items-start gap-3.5`}
                                             >
                                                 <div
-                                                    className={`p-3 rounded-xl ${action.bgColor} ${action.textColor} group-hover:scale-110 transition-transform shrink-0`}
+                                                    className={`p-3 rounded-lg ${action.bgColor} ${action.textColor} group-hover:scale-110 transition-transform shrink-0`}
                                                 >
                                                     <action.icon size={20} />
                                                 </div>
@@ -237,7 +237,7 @@ export function EADashboardClient({
 
                             {/* Pending License Queue Widget */}
                             <AnimatedSection delay={0.3}>
-                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm p-6">
                                     <div className="flex items-center justify-between mb-4">
                                         <div>
                                             <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
@@ -249,14 +249,14 @@ export function EADashboardClient({
                                             </p>
                                         </div>
                                         <Link href="/admin/trading-systems/accounts/pending">
-                                            <Button variant="outline" size="sm" className="text-xs font-bold rounded-xl">
+                                            <Button variant="outline" size="sm" className="text-xs font-bold rounded-lg">
                                                 Manage All ({recentPending.length})
                                             </Button>
                                         </Link>
                                     </div>
 
                                     {recentPending.length === 0 ? (
-                                        <div className="text-center py-10 px-4 border border-dashed border-gray-200 dark:border-white/10 rounded-xl bg-gray-50/50 dark:bg-white/[0.02]">
+                                        <div className="text-center py-10 px-4 border border-dashed border-gray-200 dark:border-white/10 rounded-lg bg-gray-50/50 dark:bg-white/[0.02]">
                                             <CheckCircle2 size={36} className="mx-auto mb-2 text-emerald-500/70" />
                                             <p className="text-sm font-bold text-gray-800 dark:text-white">
                                                 Queue is Empty
@@ -270,10 +270,10 @@ export function EADashboardClient({
                                             {recentPending.slice(0, 4).map((license) => (
                                                 <div
                                                     key={license.id}
-                                                    className="flex items-center justify-between p-3.5 rounded-xl bg-gray-50/80 dark:bg-white/[0.03] border border-gray-200/60 dark:border-white/10 hover:border-amber-500/30 transition-all"
+                                                    className="flex items-center justify-between p-3.5 rounded-lg bg-gray-50/80 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 hover:border-amber-500/30 transition-all"
                                                 >
                                                     <div className="flex items-center gap-3.5">
-                                                        <div className="p-2 bg-white dark:bg-[#151925] rounded-xl shadow-sm border border-gray-200/50 dark:border-white/10 shrink-0">
+                                                        <div className="p-2 bg-white dark:bg-[#151925] rounded-lg shadow-sm border border-gray-200 dark:border-white/10 shrink-0">
                                                             <BrokerLogo broker={license.broker} size={32} />
                                                         </div>
                                                         <div className="min-w-0">
@@ -303,7 +303,7 @@ export function EADashboardClient({
                         <div className="lg:col-span-5 space-y-6">
                             {/* Active Licenses by Broker */}
                             <AnimatedSection delay={0.2}>
-                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm p-6">
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-2">
                                             <Briefcase className="text-emerald-500" size={16} />
@@ -318,7 +318,7 @@ export function EADashboardClient({
                                     </div>
 
                                     {brokerStats.length === 0 ? (
-                                        <div className="text-center py-6 text-gray-500 dark:text-gray-400 border border-dashed border-gray-200 dark:border-white/10 rounded-xl">
+                                        <div className="text-center py-6 text-gray-500 dark:text-gray-400 border border-dashed border-gray-200 dark:border-white/10 rounded-lg">
                                             <p className="text-xs font-medium">No active license breakdown yet</p>
                                         </div>
                                     ) : (
@@ -356,7 +356,7 @@ export function EADashboardClient({
 
                             {/* Recent Activity Feed */}
                             <AnimatedSection delay={0.3}>
-                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm p-6">
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-2">
                                             <Activity className="text-blue-500" size={16} />
@@ -371,7 +371,7 @@ export function EADashboardClient({
                                     </div>
 
                                     {recentActivity.length === 0 ? (
-                                        <div className="text-center py-8 text-gray-500 dark:text-gray-400 border border-dashed border-gray-200 dark:border-white/10 rounded-xl">
+                                        <div className="text-center py-8 text-gray-500 dark:text-gray-400 border border-dashed border-gray-200 dark:border-white/10 rounded-lg">
                                             <CheckCircle2 size={28} className="mx-auto mb-2 text-emerald-500/50" />
                                             <p className="text-xs font-medium">No recent license decisions</p>
                                         </div>
@@ -380,7 +380,7 @@ export function EADashboardClient({
                                             {recentActivity.slice(0, 5).map((item) => (
                                                 <div
                                                     key={item.id}
-                                                    className="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50/50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10"
+                                                    className="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50/50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10"
                                                 >
                                                     <div
                                                         className={`p-1.5 rounded-lg shrink-0 ${
@@ -428,7 +428,7 @@ export function EADashboardClient({
                     className="mt-6 space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300"
                 >
                     <AnimatedSection delay={0.1}>
-                        <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm">
+                        <div className="bg-white dark:bg-[#1E2028] rounded-lg p-6 border border-gray-200 dark:border-white/10 shadow-sm">
                             <div className="flex items-center justify-between mb-6">
                                 <div>
                                     <h2 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
@@ -441,7 +441,7 @@ export function EADashboardClient({
                                 </div>
                                 <Link
                                     href="/admin/trading-systems/accounts/pending"
-                                    className="text-xs font-bold text-primary flex items-center gap-1 bg-primary/10 hover:bg-primary/20 px-3.5 py-2 rounded-xl transition-colors"
+                                    className="text-xs font-bold text-primary flex items-center gap-1 bg-primary/10 hover:bg-primary/20 px-3.5 py-2 rounded-lg transition-colors"
                                 >
                                     Manage Queue <ArrowRight size={14} />
                                 </Link>
@@ -449,7 +449,7 @@ export function EADashboardClient({
 
                             <div className="space-y-3">
                                 {recentPending.length === 0 ? (
-                                    <div className="text-center py-16 text-gray-500 dark:text-gray-400 border border-dashed border-gray-200 dark:border-white/10 rounded-xl">
+                                    <div className="text-center py-16 text-gray-500 dark:text-gray-400 border border-dashed border-gray-200 dark:border-white/10 rounded-lg">
                                         <CheckCircle
                                             size={44}
                                             className="mx-auto mb-3 text-emerald-500/70"
@@ -465,10 +465,10 @@ export function EADashboardClient({
                                     recentPending.map((license) => (
                                         <div
                                             key={license.id}
-                                            className="flex items-center justify-between p-4 rounded-xl bg-gray-50/80 dark:bg-white/[0.03] border border-gray-200/60 dark:border-white/10 hover:border-amber-500/30 transition-all"
+                                            className="flex items-center justify-between p-4 rounded-lg bg-gray-50/80 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 hover:border-amber-500/30 transition-all"
                                         >
                                             <div className="flex items-center gap-4">
-                                                <div className="p-2.5 bg-white dark:bg-[#151925] rounded-xl shadow-sm border border-gray-200/50 dark:border-white/10">
+                                                <div className="p-2.5 bg-white dark:bg-[#151925] rounded-lg shadow-sm border border-gray-200 dark:border-white/10">
                                                     <BrokerLogo
                                                         broker={license.broker}
                                                         size={36}
@@ -506,7 +506,7 @@ export function EADashboardClient({
                     className="mt-6 space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300"
                 >
                     <AnimatedSection delay={0.1}>
-                        <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm">
+                        <div className="bg-white dark:bg-[#1E2028] rounded-lg p-6 border border-gray-200 dark:border-white/10 shadow-sm">
                             <h2 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
                                 <Briefcase className="text-primary" size={18} />
                                 Active Licenses Distribution by Broker
@@ -514,7 +514,7 @@ export function EADashboardClient({
 
                             <div className="space-y-5">
                                 {brokerStats.length === 0 ? (
-                                    <div className="text-center py-16 text-gray-500 dark:text-gray-400 border border-dashed border-gray-200 dark:border-white/10 rounded-xl">
+                                    <div className="text-center py-16 text-gray-500 dark:text-gray-400 border border-dashed border-gray-200 dark:border-white/10 rounded-lg">
                                         <p className="text-sm font-medium">
                                             No active broker license data available yet.
                                         </p>
@@ -531,7 +531,7 @@ export function EADashboardClient({
                                             >
                                                 <div className="flex justify-between items-center text-sm">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="p-1.5 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200/60 dark:border-white/10">
+                                                        <div className="p-1.5 bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10">
                                                             <BrokerLogo
                                                                 broker={stat.broker}
                                                                 size={28}

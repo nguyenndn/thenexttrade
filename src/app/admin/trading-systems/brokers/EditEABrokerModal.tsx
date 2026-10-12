@@ -133,7 +133,7 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
             </Button>
 
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="bg-white dark:bg-[#1E2028] rounded-xl border-0 dark:border border-gray-200 dark:border-white/10 max-w-md">
+                <DialogContent className="bg-white dark:bg-[#1E2028] rounded-2xl border-0 dark:border border-gray-200 dark:border-white/10 max-w-md">
                     <DialogHeader>
                         <DialogTitle className="text-xl font-bold text-gray-700 dark:text-white">
                             Edit Broker
@@ -175,7 +175,7 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
                             label="IB Code / Number"
                             value={ibCode}
                             onChange={(e) => setIBCode(e.target.value)}
-                            placeholder="e.g. 14647313"
+                            helperText="Partner affiliate code"
                         />
 
                         <div className="grid grid-cols-2 gap-4">
@@ -195,7 +195,7 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
                         </div>
 
                         {/* Active Toggle */}
-                        <div className="flex items-center justify-between py-3 px-4 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
+                        <div className="flex items-center justify-between py-3 px-4 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
                             <div className="flex items-center gap-2">
                                 <Power
                                     size={16}
@@ -249,7 +249,7 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
                             variant="primary"
                             onClick={handleSave}
                             disabled={saving || deleting}
-                            className="bg-primary hover:bg-[#00B078] text-white"
+                            className="bg-gold hover:bg-amber-600 text-white border-none shadow-md shadow-amber-500/20"
                         >
                             {saving && (
                                 <Loader2

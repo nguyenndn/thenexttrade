@@ -73,19 +73,19 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 20, scale: 0.95 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-24 right-6 z-[9998] w-[calc(100vw-2rem)] sm:w-[380px] max-h-[calc(100vh-140px)] bg-white dark:bg-[#1E2028] rounded-2xl shadow-2xl shadow-black/20 border border-dashboard flex flex-col overflow-hidden"
+            className="fixed bottom-24 right-6 z-[9998] w-[calc(100vw-2rem)] sm:w-[380px] max-h-[calc(100vh-140px)] bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl shadow-black/20 border border-dashboard flex flex-col overflow-hidden"
         >
             {/* Header */}
-            <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between bg-gradient-to-r from-primary/5 to-transparent">
+            <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between bg-gradient-to-r from-amber-500/10 to-transparent">
                 <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
-                        <Send size={16} className="text-primary" />
+                    <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+                        <Send size={16} className="text-gold dark:text-amber-400" />
                     </div>
                     <div>
                         <h3 className="text-sm font-bold text-gray-700 dark:text-white">
                             Feedback & Support
                         </h3>
-                        <p className="text-[11px] text-gray-600">
+                        <p className="text-[11px] text-gray-600 dark:text-gray-400">
                             Help us improve your experience
                         </p>
                     </div>
@@ -112,14 +112,14 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
                             stiffness: 300,
                             damping: 20,
                         }}
-                        className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4"
+                        className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-4 shadow-sm shadow-amber-500/10"
                     >
-                        <CheckCircle size={32} className="text-primary" />
+                        <CheckCircle size={32} className="text-gold dark:text-amber-400" />
                     </motion.div>
                     <h4 className="text-base font-bold text-gray-700 dark:text-white">
                         Thank you!
                     </h4>
-                    <p className="text-sm text-gray-600 mt-1 text-center">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 text-center">
                         Your feedback has been submitted successfully.
                     </p>
                 </div>
@@ -132,11 +132,13 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
                                 const Icon = t.icon;
                                 const isActive = activeType === t.key;
                                 return (
-                                    <button
+                                    <Button
+                                        variant="ghost"
                                         key={t.key}
+                                        type="button"
                                         onClick={() => setActiveType(t.key)}
                                         className={cn(
-                                            "flex flex-col items-start gap-1.5 p-3.5 rounded-xl border-2 transition-all text-left",
+                                            "flex flex-col items-start gap-1.5 p-3.5 h-auto rounded-lg border-2 transition-all text-left font-normal",
                                             isActive
                                                 ? t.activeBg
                                                 : "border-dashboard hover:border-dashboard dark:hover:border-white/20 bg-gray-50/50 dark:bg-white/5"
@@ -155,12 +157,12 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
                                                 "text-xs font-bold",
                                                 isActive
                                                     ? "text-gray-700 dark:text-white"
-                                                    : "text-gray-600"
+                                                    : "text-gray-600 dark:text-gray-400"
                                             )}
                                         >
                                             {t.label}
                                         </span>
-                                    </button>
+                                    </Button>
                                 );
                             })}
                         </div>
@@ -183,7 +185,8 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
                                     : "Describe the feature you'd like to see..."
                             }
                             rows={5}
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-[#141721] border border-dashboard rounded-xl text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary resize-none transition-all"
+                            maxLength={1000}
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-[#151925] border border-dashboard rounded-lg text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500/25 focus:border-gold resize-none transition-all"
                         />
                         <p className="text-[11px] text-gray-500 mt-1.5 pl-0.5">
                             {message.length}/1000 characters

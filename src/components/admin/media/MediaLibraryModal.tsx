@@ -192,7 +192,7 @@ export function MediaLibraryModal({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="relative z-10 bg-white dark:bg-[#151925] w-full max-w-5xl h-[85vh] rounded-xl shadow-2xl flex flex-col overflow-hidden cursor-default"
+                className="relative z-10 bg-white dark:bg-[#151925] w-full max-w-5xl h-[85vh] rounded-lg shadow-2xl flex flex-col overflow-hidden cursor-default"
             >
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/10">
@@ -215,14 +215,14 @@ export function MediaLibraryModal({
                     <Button
                         variant="ghost"
                         onClick={() => setActiveTab("upload")}
-                        className={`pb-3 border-b-2 rounded-none h-auto transition-colors ${activeTab === "upload" ? "border-primary text-primary hover:bg-transparent" : "border-transparent text-gray-600 hover:bg-transparent"}`}
+                        className={`pb-3 border-b-2 rounded-none h-auto transition-colors ${activeTab === "upload" ? "border-gold text-gold hover:bg-transparent" : "border-transparent text-gray-600 hover:bg-transparent"}`}
                     >
                         Upload Files
                     </Button>
                     <Button
                         variant="ghost"
                         onClick={() => setActiveTab("library")}
-                        className={`pb-3 border-b-2 rounded-none h-auto transition-colors ${activeTab === "library" ? "border-primary text-primary hover:bg-transparent" : "border-transparent text-gray-600 hover:bg-transparent"}`}
+                        className={`pb-3 border-b-2 rounded-none h-auto transition-colors ${activeTab === "library" ? "border-gold text-gold hover:bg-transparent" : "border-transparent text-gray-600 hover:bg-transparent"}`}
                     >
                         Media Library
                     </Button>
@@ -232,7 +232,7 @@ export function MediaLibraryModal({
                     {/* Main Content Area */}
                     <div className="flex-1 flex flex-col p-4 overflow-y-auto">
                         {activeTab === "upload" && (
-                            <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 rounded-xl m-4 bg-gray-50 dark:bg-black/20">
+                            <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 rounded-lg m-4 bg-gray-50 dark:bg-black/20">
                                 <div className="text-center space-y-4">
                                     <div className="w-16 h-16 bg-gray-200 dark:bg-white/10 rounded-full flex items-center justify-center mx-auto text-gray-500">
                                         <Upload size={32} />
@@ -245,7 +245,7 @@ export function MediaLibraryModal({
                                             or click to browse
                                         </p>
                                     </div>
-                                    <label className="inline-flex items-center gap-2 px-6 py-2 bg-primary hover:bg-[#00a872] text-white font-bold rounded-xl cursor-pointer transition-all">
+                                    <label className="inline-flex items-center gap-2 px-6 py-2 bg-gold hover:bg-amber-600 text-white font-bold rounded-lg cursor-pointer shadow-md shadow-amber-500/20 transition-all">
                                         {isUploading ? (
                                             <Loader2
                                                 size={18}
@@ -299,7 +299,7 @@ export function MediaLibraryModal({
                                                 onClick={() =>
                                                     setSelectedMedia(item)
                                                 }
-                                                className={`group relative aspect-square bg-gray-100 dark:bg-white/5 rounded-xl overflow-hidden cursor-pointer border-2 transition-all ${selectedMedia?.id === item.id ? "border-primary ring-2 ring-primary/20" : "border-transparent hover:border-gray-200 dark:border-white/10"}`}
+                                                className={`group relative aspect-square bg-gray-100 dark:bg-white/5 rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${selectedMedia?.id === item.id ? "border-primary ring-2 ring-primary/20" : "border-transparent hover:border-gray-200 dark:border-white/10"}`}
                                             >
                                                 <img
                                                     src={
@@ -375,7 +375,7 @@ export function MediaLibraryModal({
                                         onChange={(e) =>
                                             handleUpdate("alt", e.target.value)
                                         }
-                                        className="w-full p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500"
+                                        className="w-full p-2.5 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500"
                                         placeholder="Describe this image..."
                                     />
                                     <p className="text-[10px] text-gray-500 mt-1">
@@ -396,7 +396,7 @@ export function MediaLibraryModal({
                                                 e.target.value
                                             )
                                         }
-                                        className="w-full p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 resize-none"
+                                        className="w-full p-2.5 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 resize-none"
                                         placeholder="Add a caption for this image..."
                                     />
                                 </div>
@@ -410,14 +410,14 @@ export function MediaLibraryModal({
                                             selectedMedia
                                         )
                                     }
-                                    className="w-full py-2.5 h-auto bg-primary hover:bg-[#00a872] text-white font-bold rounded-xl text-sm transition-all"
+                                    className="w-full py-2.5 h-auto bg-gold hover:bg-amber-600 text-white font-bold rounded-lg text-sm shadow-md shadow-amber-500/20 transition-all border-none"
                                 >
                                     Insert Media
                                 </Button>
                                 <Button
                                     variant="ghost"
                                     onClick={confirmDelete}
-                                    className="w-full py-2.5 h-auto text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 text-xs font-bold rounded-xl transition-all"
+                                    className="w-full py-2.5 h-auto text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 text-xs font-bold rounded-lg transition-all"
                                 >
                                     Delete Permanently
                                 </Button>

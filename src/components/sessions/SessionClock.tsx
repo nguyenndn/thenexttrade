@@ -69,7 +69,7 @@ export function SessionClock({ data }: SessionClockProps) {
     ];
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm h-full transition-shadow hover:shadow-md">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm h-full transition-shadow hover:shadow-md">
             <div className="flex justify-between items-start mb-6">
                 <div>
                     <h3 className="font-bold text-gray-700 dark:text-white mb-2">
@@ -95,7 +95,7 @@ export function SessionClock({ data }: SessionClockProps) {
                     return (
                         <div
                             key={session.id}
-                            className={`p-4 rounded-xl border transition-all ${
+                            className={`p-4 rounded-lg border transition-all ${
                                 isActive
                                     ? "bg-gray-50 dark:bg-white/5 border-dashboard ring-1 ring-primary/20"
                                     : "border-transparent hover:bg-gray-50 dark:hover:bg-white/5"

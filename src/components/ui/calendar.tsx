@@ -28,8 +28,8 @@ function Calendar({
                 caption_label: "text-sm font-semibold text-gray-700",
                 nav: "flex items-center gap-1",
                 button_previous:
-                    "p-1 hover:bg-gray-100 rounded-md text-gray-600",
-                button_next: "p-1 hover:bg-gray-100 rounded-md text-gray-600",
+                    "p-1 hover:bg-gray-100 rounded-lg text-gray-600",
+                button_next: "p-1 hover:bg-gray-100 rounded-lg text-gray-600",
                 chevron: "fill-gray-400 h-4 w-4",
                 weekdays: "flex",
                 weekday: "text-gray-500 text-xs font-medium w-9 text-center",

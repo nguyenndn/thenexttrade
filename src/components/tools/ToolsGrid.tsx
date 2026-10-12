@@ -84,11 +84,11 @@ function ToolCard({ tool }: { tool: ToolData }) {
     return (
         <Link
             href={`/tools/${tool.slug}`}
-            className="group relative flex flex-col p-2.5 rounded-2xl bg-white/80 dark:bg-[#151925]/80 shadow-sm hover:shadow-md hover:border-gold/35 transition-all duration-300 border border-gray-200/60 dark:border-white/10 overflow-hidden h-full backdrop-blur-sm"
+            className="group relative flex flex-col p-2.5 rounded-lg bg-white/80 dark:bg-[#151925]/80 shadow-sm hover:shadow-md hover:border-gold/35 transition-all duration-300 border border-gray-200 dark:border-white/10 overflow-hidden h-full backdrop-blur-sm"
         >
             {/* Visual Preview Half - Warmer surface */}
             {Mock && (
-                <div className="rounded-xl overflow-hidden bg-gradient-to-br from-white to-gold/[0.035] dark:from-white/[0.01] dark:to-gold/[0.015] border border-gray-200 dark:border-white/10 mb-3">
+                <div className="rounded-lg overflow-hidden bg-gray-50/70 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 mb-3">
                     <Mock />
                 </div>
             )}
@@ -135,9 +135,7 @@ function ToolSection({
     return (
         <div>
             <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-3">
-                <div
-                    className={`w-1 h-6 rounded-full bg-gradient-to-b ${accentGradient}`}
-                />
+                <div className="w-1 h-5 rounded-full bg-gold shrink-0" />
                 {title}
                 <span className="text-xs text-gray-500 font-normal">
                     ({tools.length} tools)
@@ -228,7 +226,7 @@ export function ToolsGrid() {
         <div className="space-y-10">
             {/* Search Bar (Simple but professional) */}
             <div className="max-w-md mx-auto mb-10">
-                <div className="relative flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl focus-within:border-gold focus-within:ring-1 focus-within:ring-gold/30 transition-all shadow-sm">
+                <div className="relative flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg focus-within:border-gold focus-within:ring-1 focus-within:ring-gold/30 transition-all shadow-sm">
                     <Search
                         size={18}
                         className="text-slate-400 dark:text-slate-500 shrink-0"
@@ -267,7 +265,7 @@ export function ToolsGrid() {
             <Tabs value={activeTab} onValueChange={setActiveTab}>
                 {/* TabsList sits outside the search block */}
                 <div className="mb-10 overflow-x-auto scrollbar-hide flex sm:justify-center">
-                    <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0">
+                    <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-1.5 gap-1 shrink-0">
                         {TABS.map((tab) => {
                             const Icon = tab.icon;
                             return (
@@ -275,8 +273,8 @@ export function ToolsGrid() {
                                     key={tab.id}
                                     value={tab.id}
                                     className="px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
-                                    activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md border-0"
-                                    activeTextClassName="!text-white"
+                                    activeIndicatorClassName="!bg-gold shadow-sm border-0"
+                                    activeTextClassName="!text-white font-bold"
                                 >
                                     <Icon size={15} className="shrink-0" />
                                     <span>{tab.name}</span>
@@ -289,13 +287,13 @@ export function ToolsGrid() {
                 {/* TabsContent list */}
                 {filteredTools.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-                        <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800/40 flex items-center justify-center mb-4 text-slate-400 border border-slate-200/60 dark:border-white/5">
+                        <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center mb-4 text-gray-400 dark:text-gray-400 border border-gray-200 dark:border-white/10">
                             <Search size={24} />
                         </div>
                         <h3 className="text-base font-bold text-gray-800 dark:text-white mb-1">
                             No tools found
                         </h3>
-                        <p className="text-xs text-gray-500 dark:text-slate-400 max-w-xs mb-4 font-semibold">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 max-w-xs mb-4 font-semibold">
                             We couldn't find any tools matching "{searchQuery}".
                             Try adjusting your keywords.
                         </p>
@@ -315,7 +313,7 @@ export function ToolsGrid() {
                             className={buttonVariants({
                                 variant: "primary",
                                 className:
-                                    "px-5 py-2.5 bg-gold hover:bg-gold/95 text-white font-bold text-xs rounded-xl shadow-md transition-all duration-300",
+                                    "px-5 py-2.5 bg-gold hover:bg-gold/95 text-white font-bold text-xs rounded-lg shadow-md transition-all duration-300",
                             })}
                         >
                             Clear Search

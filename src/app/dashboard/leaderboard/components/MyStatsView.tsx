@@ -87,8 +87,8 @@ export function MyStatsView({
 }: MyStatsViewProps) {
     if (!myRank) {
         return (
-            <div className="bg-white dark:bg-[#1E2028] rounded-2xl border border-dashboard shadow-sm p-12 text-center max-w-3xl mx-auto">
-                <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-cyan-500/10 text-cyan-500 mb-5 ring-4 ring-cyan-500/5">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-12 text-center max-w-3xl mx-auto">
+                <div className="inline-flex items-center justify-center p-4 rounded-lg bg-cyan-500/10 text-cyan-500 mb-5 ring-4 ring-cyan-500/5">
                     <Target size={32} />
                 </div>
                 <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-3">
@@ -117,7 +117,7 @@ export function MyStatsView({
 
     return (
         <div>
-            <div className="bg-white dark:bg-[#1E2028] rounded-2xl border border-dashboard shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                 {/* ═══════════════════════════════════════════════════════════ */}
                 {/* PROFILE HERO */}
                 {/* ═══════════════════════════════════════════════════════════ */}
@@ -125,7 +125,7 @@ export function MyStatsView({
                     <div className="flex items-center gap-6">
                         {/* Avatar */}
                         <div className="relative shrink-0">
-                            <div className="w-20 h-20 rounded-2xl flex items-center justify-center font-bold text-2xl text-white bg-gray-400 dark:bg-gray-600 overflow-hidden ring-4 ring-white dark:ring-[#1E2028] shadow-lg">
+                            <div className="w-20 h-20 rounded-lg flex items-center justify-center font-bold text-2xl text-white bg-gray-400 dark:bg-gray-600 overflow-hidden ring-4 ring-white dark:ring-[#1E2028] shadow-lg">
                                 {userAvatar ? (
                                     // eslint-disable-next-line @next/next/no-img-element
                                     <img
@@ -312,7 +312,7 @@ function BadgeItem({ badge }: { badge: UserBadgeInfo }) {
     const colors = BADGE_COLORS[badge.code] || {
         bg: "bg-gray-100 dark:bg-white/5",
         ring: "ring-gray-200 dark:ring-white/10",
-        text: "text-gray-600",
+        text: "text-gray-600 dark:text-gray-400",
     };
 
     const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
@@ -335,7 +335,7 @@ function BadgeItem({ badge }: { badge: UserBadgeInfo }) {
     return (
         <div
             className={cn(
-                "flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all select-none",
+                "flex flex-col items-center gap-1.5 p-3 rounded-lg transition-all select-none",
                 isEarned
                     ? cn(
                           colors.bg,

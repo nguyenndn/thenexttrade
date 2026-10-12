@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import {
     updatePassword,
     getTwoFactorStatus,
-} from "@/app/dashboard/settings/account/actions";
+} from "@/app/dashboard/settings/security/actions";
 import { TwoFactorSetup } from "./TwoFactorSetup";
 import { ActiveSessionsList } from "./ActiveSessionsList";
 import { Button } from "@/components/ui/Button";
@@ -26,10 +26,10 @@ export function SecuritySettings() {
     return (
         <div className="w-full space-y-5">
             {/* ── Security Header Card ── */}
-            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm p-5">
+            <div className="bg-white dark:bg-[#0B0E14] rounded-lg border border-dashboard shadow-sm p-5">
                 <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+                        <div className="w-12 h-12 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center flex-shrink-0">
                             <Shield size={24} className="text-blue-500" />
                         </div>
                         <div>
@@ -55,7 +55,7 @@ export function SecuritySettings() {
             </div>
 
             {/* ── Change Password Card ── */}
-            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#0B0E14] rounded-lg border border-dashboard shadow-sm overflow-hidden">
                 <div className="px-6 py-4 border-b border-dashboard flex items-center gap-2.5">
                     <div className="w-7 h-7 rounded-lg bg-blue-500/10 dark:bg-blue-500/20 flex items-center justify-center">
                         <Key size={14} className="text-blue-500" />
@@ -126,7 +126,7 @@ export function SecuritySettings() {
                                                 ? 6
                                                 : undefined
                                         }
-                                        className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-[#151925] border border-dashboard rounded-xl text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                                        className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-[#151925] border border-dashboard rounded-lg text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                                         placeholder="••••••••"
                                     />
                                 </div>
@@ -149,7 +149,7 @@ export function SecuritySettings() {
             </div>
 
             {/* ── Two-Factor Authentication Card ── */}
-            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#0B0E14] rounded-lg border border-dashboard shadow-sm overflow-hidden">
                 <div className="px-6 py-4 border-b border-dashboard flex items-center gap-2.5">
                     <div className="w-7 h-7 rounded-lg bg-orange-500/10 dark:bg-orange-500/20 flex items-center justify-center">
                         <Shield size={14} className="text-orange-500" />
@@ -172,7 +172,7 @@ export function SecuritySettings() {
             </div>
 
             {/* ── Active Sessions Card ── */}
-            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#0B0E14] rounded-lg border border-dashboard shadow-sm overflow-hidden">
                 <div className="px-6 py-4 border-b border-dashboard flex items-center gap-2.5">
                     <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
                         <Monitor size={14} className="text-primary" />

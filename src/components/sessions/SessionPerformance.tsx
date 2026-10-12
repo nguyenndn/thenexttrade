@@ -25,7 +25,7 @@ interface SessionPerformanceProps {
 
 export function SessionPerformance({ data }: SessionPerformanceProps) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm h-full flex flex-col transition-shadow hover:shadow-md">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm h-full flex flex-col transition-shadow hover:shadow-md">
             <h3 className="font-bold text-gray-700 dark:text-white mb-2">
                 P&L by Session
             </h3>
@@ -64,7 +64,7 @@ export function SessionPerformance({ data }: SessionPerformanceProps) {
                                 if (active && payload && payload.length) {
                                     const data = payload[0].payload;
                                     return (
-                                        <div className="bg-[#1F2937] text-gray-100 p-3 rounded-xl border border-white/10 shadow-xl text-xs">
+                                        <div className="bg-[#1F2937] text-gray-100 p-3 rounded-lg border border-white/10 shadow-xl text-xs">
                                             <p className="font-bold mb-1 text-sm">
                                                 {data.displayName}
                                             </p>

@@ -137,12 +137,12 @@ export default function AuthLayout({
                             return (
                                 <div
                                     key={feature.title}
-                                    className="group relative rounded-2xl border border-amber-900/10 bg-white/75 p-4.5 sm:p-5 shadow-[0_4px_20px_rgba(88,64,27,0.04)] backdrop-blur-md transition-all duration-300 hover:border-amber-500/30 hover:bg-white/90 hover:shadow-md dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-white/20 dark:hover:bg-white/[0.06]"
+                                    className="group relative rounded-lg border border-amber-900/10 bg-white/75 p-4.5 sm:p-5 shadow-[0_4px_20px_rgba(88,64,27,0.04)] backdrop-blur-md transition-all duration-300 hover:border-amber-500/30 hover:bg-white/90 hover:shadow-md dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-white/20 dark:hover:bg-white/[0.06]"
                                 >
                                     <div className="flex items-start gap-4">
                                         {/* Icon node */}
                                         <div
-                                            className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${feature.iconBg} transition-transform duration-300 group-hover:scale-105`}
+                                            className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border ${feature.iconBg} transition-transform duration-300 group-hover:scale-105`}
                                         >
                                             <Icon
                                                 size={20}
@@ -185,7 +185,7 @@ export default function AuthLayout({
                     </div>
 
                     {/* Bottom: Also included */}
-                    <div className="mt-5 rounded-2xl border border-amber-900/10 bg-white/60 p-4 backdrop-blur-md dark:border-white/10 dark:bg-white/[0.03]">
+                    <div className="mt-5 rounded-lg border border-amber-900/10 bg-white/60 p-4 backdrop-blur-md dark:border-white/10 dark:bg-white/[0.03]">
                         <div className="flex items-center justify-between mb-2.5">
                             <span className="text-[11px] font-black uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
                                 Included with your workspace
@@ -200,7 +200,7 @@ export default function AuthLayout({
                                 return (
                                     <div
                                         key={item.label}
-                                        className="flex flex-col gap-0.5 rounded-xl bg-slate-900/[0.03] dark:bg-white/[0.03] p-2.5 transition-colors hover:bg-slate-900/[0.05] dark:hover:bg-white/[0.06]"
+                                        className="flex flex-col gap-0.5 rounded-lg bg-slate-900/[0.03] dark:bg-white/[0.03] p-2.5 transition-colors hover:bg-slate-900/[0.05] dark:hover:bg-white/[0.06]"
                                     >
                                         <div className="flex items-center gap-1.5">
                                             <Icon

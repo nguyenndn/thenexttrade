@@ -14,32 +14,32 @@ export default function Loading() {
                     {[...Array(5)].map((_, i) => (
                         <div
                             key={i}
-                            className="h-10 w-full bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10"
+                            className="h-10 w-full bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10"
                         />
                     ))}
                 </div>
 
                 {/* Form Area */}
                 <div className="lg:col-span-3 space-y-6">
-                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 p-8 space-y-6">
+                    <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 p-8 space-y-6">
                         <div className="h-6 w-48 bg-gray-200 dark:bg-white/10 rounded-lg mb-6" />
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {[...Array(4)].map((_, i) => (
                                 <div key={i} className="space-y-2">
                                     <div className="h-4 w-24 bg-gray-200 dark:bg-white/10 rounded-lg" />
-                                    <div className="h-12 w-full bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10" />
+                                    <div className="h-12 w-full bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10" />
                                 </div>
                             ))}
                         </div>
 
                         <div className="space-y-2">
                             <div className="h-4 w-32 bg-gray-200 dark:bg-white/10 rounded-lg" />
-                            <div className="h-32 w-full bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10" />
+                            <div className="h-32 w-full bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10" />
                         </div>
 
                         <div className="flex justify-end pt-4">
-                            <div className="h-12 w-32 bg-gray-200 dark:bg-white/10 rounded-xl" />
+                            <div className="h-12 w-32 bg-gray-200 dark:bg-white/10 rounded-lg" />
                         </div>
                     </div>
                 </div>

@@ -26,7 +26,7 @@ export default function TaxonomyPage() {
                             })
                         );
                     }}
-                    className="flex items-center gap-2 px-6 py-2.5 font-bold shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0 transition-all"
+                    className="flex items-center gap-2 px-6 py-2.5 font-bold shadow-lg shadow-amber-500/30 active:scale-95 active:translate-y-0 transition-all"
                 >
                     <Plus size={18} strokeWidth={2.5} /> Add New
                 </Button>
@@ -42,7 +42,7 @@ export default function TaxonomyPage() {
                         <TabsTrigger
                             value="categories"
                             className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
-                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                            activeIndicatorClassName="!bg-gradient-to-r from-amber-500 to-amber-600 shadow-md shadow-amber-500/20 border-0"
                             activeTextClassName="!text-white"
                         >
                             <FolderTree size={15} />
@@ -51,7 +51,7 @@ export default function TaxonomyPage() {
                         <TabsTrigger
                             value="tags"
                             className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
-                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                            activeIndicatorClassName="!bg-gradient-to-r from-amber-500 to-amber-600 shadow-md shadow-amber-500/20 border-0"
                             activeTextClassName="!text-white"
                         >
                             <Tag size={15} />

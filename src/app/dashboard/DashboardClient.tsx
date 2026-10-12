@@ -26,16 +26,21 @@ import { FirstSessionLauncher } from "@/components/onboarding/FirstSessionLaunch
 import { FirstSyncSuccessModal } from "@/components/onboarding/FirstSyncSuccessModal";
 import { ExperimentResult } from "@/components/experiments/ExperimentResult";
 import { ExperimentProgress } from "@/components/experiments/ExperimentProgress";
+import { MilestoneToaster } from "@/components/dashboard/MilestoneToaster";
 import {
     celebrateFirstSyncAction,
     markFirstInsightViewedAction,
 } from "@/actions/first-session-onboarding";
+import { useSampleMode } from "@/components/providers/SampleModeProvider";
+import { SAMPLE_DASHBOARD_DATA } from "@/lib/sample-data/mock-sample-data";
+import { SampleModeBanner } from "@/components/dashboard/SampleModeBanner";
 import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 // Static imports for above-fold charts (always visible — no skeleton needed)
 import { BalanceGrowthChart } from "@/components/dashboard/BalanceGrowthChart";
@@ -43,7 +48,7 @@ import { DailyWinRateChart } from "@/components/dashboard/DailyWinRateChart";
 
 // Lazy load below-fold chart components — only loaded when user scrolls to them
 const ChartSkeleton = () => (
-    <div className="h-[280px] bg-gray-100 dark:bg-white/5 animate-pulse rounded-xl" />
+    <div className="h-[280px] bg-gray-100 dark:bg-white/5 animate-pulse rounded-lg" />
 );
 const ProfitDistributionChart = dynamic(
     () =>
@@ -107,13 +112,15 @@ function HelpTooltip({ content }: { content: string }) {
         <TooltipProvider delayDuration={150}>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         type="button"
-                        className="inline-flex h-4 w-4 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 dark:hover:bg-white/10 dark:hover:text-gray-200"
+                        className="h-4 w-4 rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 dark:hover:bg-white/10 dark:hover:text-gray-200 p-0"
                         aria-label="Explain this metric"
                     >
                         <HelpCircle size={13} />
-                    </button>
+                    </Button>
                 </TooltipTrigger>
                 <TooltipContent
                     side="top"
@@ -130,6 +137,14 @@ function HelpTooltip({ content }: { content: string }) {
 import type { DashboardPageData } from "./dashboard-data.server";
 
 export default function DashboardClient(data: DashboardPageData) {
+    const { isSampleMode } = useSampleMode();
+    const effectiveData: DashboardPageData = isSampleMode
+        ? {
+              ...SAMPLE_DASHBOARD_DATA,
+              userName: data.userName || "Trader",
+          }
+        : data;
+
     const {
         userName = "Trader",
         hasGlobalTrades,
@@ -160,12 +175,13 @@ export default function DashboardClient(data: DashboardPageData) {
         weeklyReviewEligibility,
         suppress,
         initialDashboards,
-    } = data;
+    } = effectiveData;
     const { theme } = useTheme();
     const isDark = theme === "dark";
 
     // Use canonical growthViewModel.nextAction as single source for coach action
-    const actualNextBestAction = data.growthViewModel?.nextAction || nextBestAction;
+    const actualNextBestAction =
+        effectiveData.growthViewModel?.nextAction || nextBestAction;
 
     // Modal State
     const [selectedTrade, setSelectedTrade] = useState<any>(null);
@@ -194,7 +210,7 @@ export default function DashboardClient(data: DashboardPageData) {
     };
 
     const handleTradeClick = (id: string) => {
-        const trade = recentTrades.find((t) => t.id === id);
+        const trade = (recentTrades || []).find((t: any) => t.id === id);
         if (trade) {
             setSelectedTrade(trade);
             setShowTradeModal(true);
@@ -224,13 +240,9 @@ export default function DashboardClient(data: DashboardPageData) {
         }
     }, [firstSessionState]);
 
-    // Detect "brand new user" — no trades at all globally in database
-    const hasNoData = !hasGlobalTrades;
+    // Detect "brand new user" — no trades at all globally in database (unless in sample mode)
+    const hasNoData = isSampleMode ? false : !hasGlobalTrades;
 
-    // The old `NO_ACCOUNT` branch was dead: getNextBestAction returns id
-    // "connect_account" for that stage, and hasNoData already suppresses the
-    // nudge for any user with no trades at all.
-    const shouldSuppressCoachNudge = hasNoData;
 
     const shouldHideActivationChecklistForPrimaryReview =
         weeklyReviewEligibility?.ready &&
@@ -255,6 +267,19 @@ export default function DashboardClient(data: DashboardPageData) {
                 entry={selectedTrade}
             />
 
+            {/* DATA_BUILDING milestone celebrations (5/10/15 trades) */}
+            {effectiveData.growthViewModel?.maturity && (
+                <MilestoneToaster
+                    tradeCount={
+                        effectiveData.growthViewModel.maturity
+                            .usableClosedTradeCount
+                    }
+                    maturityStage={
+                        effectiveData.growthViewModel.maturity.stage
+                    }
+                />
+            )}
+
             {/* First Sync Success Modal */}
             <FirstSyncSuccessModal
                 open={showSyncSuccess}
@@ -273,19 +298,32 @@ export default function DashboardClient(data: DashboardPageData) {
             </div>
 
             <div className="mt-4 space-y-4 lg:mt-5 lg:space-y-5">
+                {/* Sample Mode Active Banner */}
+                <SampleModeBanner />
+
                 {/* Active Experiment Banner */}
-                {data.growthViewModel?.activeExperiment && (
+                {effectiveData.growthViewModel?.activeExperiment && (
                     <div className="mb-4">
-                        <ExperimentProgress experiment={data.growthViewModel.activeExperiment} />
+                        <ExperimentProgress
+                            experiment={
+                                effectiveData.growthViewModel.activeExperiment
+                            }
+                        />
                     </div>
                 )}
 
                 {/* Completed Experiment Result Card */}
-                {!data.growthViewModel?.activeExperiment && data.growthViewModel?.completedExperiment && (
-                    <div className="mb-4">
-                        <ExperimentResult experiment={data.growthViewModel.completedExperiment} />
-                    </div>
-                )}
+                {!effectiveData.growthViewModel?.activeExperiment &&
+                    effectiveData.growthViewModel?.completedExperiment && (
+                        <div className="mb-4">
+                            <ExperimentResult
+                                experiment={
+                                    effectiveData.growthViewModel
+                                        .completedExperiment
+                                }
+                            />
+                        </div>
+                    )}
 
                 {/* Mobile Pro Status Banner — hide only the Free-Plan nudge for brand-new
                     users (no trade data). Real Pro statuses (ACTIVE/GRACE/REVOKED/EXPIRED)
@@ -339,7 +377,7 @@ export default function DashboardClient(data: DashboardPageData) {
 
                         <DashboardManager
                             initialDashboards={initialDashboards}
-                            data={data}
+                            data={effectiveData}
                             onTradeClick={handleTradeClick}
                             onAddTrade={handleAddTrade}
                             currentAccountId={currentAccountId}

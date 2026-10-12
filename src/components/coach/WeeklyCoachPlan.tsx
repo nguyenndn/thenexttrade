@@ -83,7 +83,7 @@ export function WeeklyCoachPlan({ plan }: WeeklyCoachPlanProps) {
     };
 
     return (
-        <div className="relative overflow-hidden rounded-2xl border border-amber-500/20 dark:border-gold/15 bg-gradient-to-br from-amber-500/[0.04] via-transparent to-transparent dark:from-gold/[0.02] dark:to-transparent backdrop-blur-md p-6 space-y-6 shadow-sm">
+        <div className="relative overflow-hidden rounded-lg border border-amber-500/20 dark:border-gold/15 bg-gradient-to-br from-amber-500/[0.04] via-transparent to-transparent dark:from-gold/[0.02] dark:to-transparent backdrop-blur-md p-6 space-y-6 shadow-sm">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="space-y-1">
@@ -108,7 +108,7 @@ export function WeeklyCoachPlan({ plan }: WeeklyCoachPlanProps) {
             {/* Keep Doing & Fix Next side-by-side blocks */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {plan.keepDoing && (
-                    <div className="p-4 bg-emerald-500/[0.03] dark:bg-emerald-500/[0.01] border border-emerald-500/15 rounded-xl space-y-2">
+                    <div className="p-4 bg-emerald-500/[0.03] dark:bg-emerald-500/[0.01] border border-emerald-500/15 rounded-lg space-y-2">
                         <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-extrabold text-xs uppercase tracking-wide">
                             <Award size={16} />
                             <span>Keep Doing (Edge Strengths)</span>
@@ -120,7 +120,7 @@ export function WeeklyCoachPlan({ plan }: WeeklyCoachPlanProps) {
                 )}
 
                 {plan.fixNext && (
-                    <div className="p-4 bg-amber-500/[0.03] dark:bg-gold/[0.01] border border-amber-500/15 dark:border-gold/10 rounded-xl space-y-2">
+                    <div className="p-4 bg-amber-500/[0.03] dark:bg-gold/[0.01] border border-amber-500/15 dark:border-gold/10 rounded-lg space-y-2">
                         <div className="flex items-center gap-2 text-amber-600 dark:text-gold font-extrabold text-xs uppercase tracking-wide">
                             <ShieldAlert size={16} />
                             <span>Fix Next (Edge Leaks)</span>
@@ -145,7 +145,7 @@ export function WeeklyCoachPlan({ plan }: WeeklyCoachPlanProps) {
                         return (
                             <div
                                 key={action.id || idx}
-                                className={`w-full text-left flex items-start gap-3 p-3 border rounded-xl transition-all duration-300 ${
+                                className={`w-full text-left flex items-start gap-3 p-3 border rounded-lg transition-all duration-300 ${
                                     isChecked
                                         ? "bg-gray-50/50 dark:bg-white/[0.01] border-dashboard opacity-60"
                                         : "bg-white dark:bg-[#151925] border-dashboard hover:border-amber-500/30 dark:hover:border-gold/30 hover:shadow-sm"

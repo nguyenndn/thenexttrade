@@ -209,7 +209,7 @@ describe("Email Templates & Builder Service", () => {
         expect(html).toContain("View Account Status");
     });
 
-    it("renders VIP Funding Grace email with $300 balance reminder & deadline", () => {
+    it("renders VIP Funding Grace email with $200 balance reminder & deadline", () => {
         const data = getSampleVipFundingGraceData();
         const html = buildVipFundingGraceEmailHtml(data);
 

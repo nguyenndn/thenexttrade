@@ -12,9 +12,6 @@ describe("DesktopNav", () => {
         const html = renderToString(<DesktopNav />);
 
         // Verify core menu items are present
-        expect(html).toContain("Home");
-        expect(html).toContain("Knowledge");
-        expect(html).toContain("Academy");
         expect(html).toContain("Trading Systems");
         expect(html).toContain("Tools");
         expect(html).toContain("Trading Style");

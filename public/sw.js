@@ -35,7 +35,7 @@ self.addEventListener('fetch', (event) => {
   // Skip non-GET and extension requests
   if (request.method !== 'GET') return;
   if (request.url.includes('/api/')) return; // Never cache API calls
-  if (request.url.includes('_next/static/webpack') || request.url.includes('hot-update')) return; // Never cache HMR chunks
+  if (request.url.includes('/_next/')) return; // Never cache Next.js chunks or HMR
 
   // Navigation requests — network first, fallback to cache
   if (request.mode === 'navigate') {

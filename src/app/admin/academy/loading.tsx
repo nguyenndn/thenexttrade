@@ -10,7 +10,7 @@ export default function Loading() {
                     </div>
                     <div className="h-5 w-64 bg-gray-100 dark:bg-white/5 rounded-lg ml-4" />
                 </div>
-                <div className="h-10 w-32 bg-gray-200 dark:bg-white/10 rounded-xl" />
+                <div className="h-10 w-32 bg-gray-200 dark:bg-white/10 rounded-lg" />
             </div>
 
             {/* Level Grid Skeleton */}
@@ -18,10 +18,10 @@ export default function Loading() {
                 {[...Array(6)].map((_, i) => (
                     <div
                         key={i}
-                        className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm"
+                        className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-6 shadow-sm"
                     >
                         <div className="flex justify-between items-start mb-4">
-                            <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/5" />
+                            <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-white/5" />
                             <div className="h-8 w-8 rounded-lg bg-gray-100 dark:bg-white/5" />
                         </div>
                         <div className="space-y-3 mb-6">

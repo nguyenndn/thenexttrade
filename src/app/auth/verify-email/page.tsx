@@ -88,7 +88,7 @@ function VerifyEmailForm() {
     if (!email) return null; // Prevent rendering if redirecting
 
     return (
-        <div className="w-full max-w-[480px] mx-auto bg-white dark:bg-[#1E2028] p-8 rounded-xl border border-dashboard shadow-xl transition-colors duration-300">
+        <div className="w-full max-w-[480px] mx-auto bg-white dark:bg-[#1E2028] p-8 rounded-lg border border-dashboard shadow-xl transition-colors duration-300">
             <div className="flex justify-center mb-6">
                 <Logo />
             </div>
@@ -129,7 +129,7 @@ function VerifyEmailForm() {
                             setOtp(e.target.value.replace(/[^0-9]/g, ""))
                         } // Only allow numbers
                         placeholder="••••••••"
-                        className="w-full text-center tracking-[0.5em] sm:tracking-[1em] font-mono text-2xl sm:text-3xl h-16 bg-gray-50 dark:bg-[#0B0E14] border-dashboard text-gray-700 dark:text-white focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary focus:ring-1 focus:ring-primary rounded-xl transition-all"
+                        className="w-full text-center tracking-[0.5em] sm:tracking-[1em] font-mono text-2xl sm:text-3xl h-16 bg-gray-50 dark:bg-[#0B0E14] border-dashboard text-gray-700 dark:text-white focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary focus:ring-1 focus:ring-primary rounded-lg transition-all"
                         required
                         autoComplete="one-time-code"
                     />
@@ -137,7 +137,7 @@ function VerifyEmailForm() {
 
                 <Button
                     type="submit"
-                    className="w-full h-14 bg-primary text-white hover:bg-[#00b078] dark:bg-primary dark:text-white dark:hover:bg-[#00b078] font-bold text-base border-none rounded-xl shadow-md transition-all shadow-primary/20 flex items-center justify-center gap-2"
+                    className="w-full h-14 bg-gold text-white hover:bg-amber-600 font-bold text-base border-none rounded-lg shadow-md transition-all shadow-amber-500/20 flex items-center justify-center gap-2"
                     isLoading={loading}
                     disabled={otp.length !== 8 || loading}
                 >
@@ -158,7 +158,7 @@ function VerifyEmailForm() {
                         className={`font-bold flex items-center gap-1 transition-colors p-0 h-auto ${
                             timer > 0
                                 ? "text-gray-500 cursor-not-allowed hover:no-underline"
-                                : "text-primary hover:text-[#00b078] hover:no-underline"
+                                : "text-gold hover:text-amber-500 hover:no-underline"
                         }`}
                     >
                         {resendLoading ? (

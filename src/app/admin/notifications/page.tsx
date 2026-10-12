@@ -31,14 +31,14 @@ export default async function AdminNotificationsPage() {
                 description="Send announcements to all users."
             >
                 <Link href="/admin/notifications/create">
-                    <Button variant="primary" className="shadow-primary/30">
+                    <Button variant="primary" className="shadow-amber-500/30">
                         <Plus size={18} />
                         New Broadcast
                     </Button>
                 </Link>
             </AdminPageHeader>
 
-            <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                 {broadcasts.length === 0 ? (
                     <div className="p-12 text-center text-gray-600">
                         <Megaphone

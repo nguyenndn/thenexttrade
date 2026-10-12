@@ -298,7 +298,7 @@ function resolveTemplateContent(templateId: EmailLabTemplateId): {
         case "vip_funding_grace": {
             const data = getSampleVipFundingGraceData();
             return {
-                subject: "Action required: Top up to $300 within 7 days to maintain VIP",
+                subject: "Action required: Top up to $200 within 7 days to maintain VIP",
                 html: buildVipFundingGraceEmailHtml(data),
             };
         }

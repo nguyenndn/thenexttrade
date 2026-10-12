@@ -148,7 +148,7 @@ export function AdminNotificationBell() {
             </PopoverTrigger>
 
             <PopoverContent
-                className="w-[calc(100vw-2rem)] max-w-96 p-0 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-xl overflow-hidden"
+                className="w-[calc(100vw-2rem)] max-w-96 p-0 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-xl overflow-hidden"
                 align="end"
             >
                 <div className="p-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
@@ -176,7 +176,7 @@ export function AdminNotificationBell() {
                     >
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3 min-w-0">
-                                <div className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+                                <div className="w-9 h-9 rounded-lg bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
                                     <Crown size={18} />
                                 </div>
                                 <div className="min-w-0">
@@ -214,7 +214,7 @@ export function AdminNotificationBell() {
                     >
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3 min-w-0">
-                                <div className="w-9 h-9 rounded-xl bg-orange-100 dark:bg-orange-500/20 flex items-center justify-center text-orange-600 dark:text-orange-400 shrink-0">
+                                <div className="w-9 h-9 rounded-lg bg-orange-100 dark:bg-orange-500/20 flex items-center justify-center text-orange-600 dark:text-orange-400 shrink-0">
                                     <KeyRound size={18} />
                                 </div>
                                 <div className="min-w-0">

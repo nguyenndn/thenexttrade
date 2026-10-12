@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
-import crypto from "crypto";
+import { normalizeSyncApiKey } from "@/lib/utils/api-key";
 
 const limiter = rateLimit({
     uniqueTokenPerInterval: 500,
@@ -15,9 +15,10 @@ const limiter = rateLimit({
  */
 export async function POST(request: NextRequest) {
     try {
-        const syncApiKey =
+        const rawApiKey =
             request.headers.get("X-Sync-Key") ||
             request.headers.get("X-API-Key");
+        const syncApiKey = normalizeSyncApiKey(rawApiKey);
         if (!syncApiKey) {
             return NextResponse.json(
                 { error: "Missing sync API key" },
@@ -36,7 +37,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Find user by syncApiKey
-        const user = await prisma.user.findUnique({
+        let user = await prisma.user.findUnique({
             where: { syncApiKey },
             select: {
                 id: true,
@@ -63,6 +64,36 @@ export async function POST(request: NextRequest) {
                 },
             },
         });
+
+        if (!user && rawApiKey && rawApiKey.trim() !== syncApiKey) {
+            user = await prisma.user.findUnique({
+                where: { syncApiKey: rawApiKey.trim() },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    tradingAccounts: {
+                        select: {
+                            id: true,
+                            name: true,
+                            accountNumber: true,
+                            broker: true,
+                            server: true,
+                            platform: true,
+                            currency: true,
+                            balance: true,
+                            equity: true,
+                            autoSync: true,
+                            syncSource: true,
+                            syncOpenTrades: true,
+                            status: true,
+                            lastSync: true,
+                            resyncRequest: true,
+                        },
+                    },
+                },
+            });
+        }
 
         if (!user) {
             return NextResponse.json(

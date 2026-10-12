@@ -117,7 +117,7 @@ export function LevelUpModal() {
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative z-10 w-full max-w-md bg-[#0D111A] border border-amber-500/30 rounded-2xl shadow-2xl shadow-amber-500/10 overflow-hidden p-8 text-center"
+                        className="relative z-10 w-full max-w-md bg-[#0D111A] border border-amber-500/30 rounded-lg shadow-2xl shadow-amber-500/10 overflow-hidden p-8 text-center"
                     >
                 {/* Glowing Auroras */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-amber-500/10 rounded-full blur-[90px] pointer-events-none" />
@@ -133,43 +133,38 @@ export function LevelUpModal() {
                 </Button>
 
                 {/* Level Up Badge Crown */}
-                <div className="relative inline-flex items-center justify-center p-5 rounded-full bg-gradient-to-br from-amber-400/20 to-amber-600/10 border border-amber-500/30 text-amber-400 mb-6 animate-bounce">
-                    <div className="absolute inset-0 rounded-full bg-amber-500/10 blur-xl animate-pulse" />
-                    <Trophy size={40} className="relative z-10" />
+                <div className="relative inline-flex items-center justify-center p-5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-500 mb-6">
+                    <Trophy size={36} className="relative z-10" />
                 </div>
 
                 {/* Title */}
-                <h2 className="text-3xl font-black bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 bg-clip-text text-transparent uppercase tracking-wider mb-2 animate-pulse">
-                    LEVEL UP!
+                <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-wider mb-2">
+                    Level Up
                 </h2>
-                <p className="text-sm font-bold text-emerald-400 uppercase tracking-widest mb-6">
+                <p className="text-sm font-bold text-emerald-500 uppercase tracking-widest mb-6">
                     {data?.message || "New Level Unlocked"}
                 </p>
 
                 {/* Level Display */}
-                <div className="py-5 px-6 rounded-2xl bg-white/[0.02] border border-white/5 mb-8 relative group overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="py-5 px-6 rounded-lg bg-white/[0.02] border border-white/5 mb-8 relative group overflow-hidden">
                     <p className="text-xs font-black text-gray-500 uppercase tracking-widest mb-1">
                         Edge Level
                     </p>
                     <div className="flex items-center justify-center gap-2">
-                        <span className="text-5xl font-black text-white tracking-tight">
+                        <span className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">
                             PRO TRADER
                         </span>
                     </div>
-                    <div className="flex justify-center items-center gap-1.5 mt-3 text-xs font-bold text-amber-400 bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-500/20 w-fit mx-auto">
-                        <Zap size={12} className="fill-amber-400" />
+                    <div className="flex justify-center items-center gap-1.5 mt-3 text-xs font-bold text-amber-500 bg-amber-500/10 px-3 py-1.5 rounded-lg border border-amber-500/20 w-fit mx-auto">
+                        <Zap size={12} className="fill-amber-500" />
                         <span>+{data?.xp} Edge Points Awarded</span>
                     </div>
                 </div>
 
                 {/* Badge reward alert if any */}
                 {data?.badge && (
-                    <div className="mb-6 p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-400 font-bold text-xs flex items-center justify-center gap-2">
-                        <Trophy
-                            size={14}
-                            className="animate-spin duration-3000"
-                        />
+                    <div className="mb-6 p-4 rounded-lg border border-emerald-500/20 bg-emerald-500/10 text-emerald-400 font-bold text-xs flex items-center justify-center gap-2">
+                        <Trophy size={14} />
                         <span>
                             New Badge Unlocked: &quot;{data.badge}&quot;
                         </span>
@@ -178,10 +173,12 @@ export function LevelUpModal() {
 
                 {/* Keep Going CTA */}
                 <Button
+                    size="smd"
+                    variant="gold"
                     onClick={() => setIsOpen(false)}
-                    className="w-full h-12 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-white font-black rounded-xl text-base shadow-lg shadow-amber-500/20 border-0 active:scale-95 transition-all"
+                    className="w-full text-xs font-black uppercase tracking-wider"
                 >
-                    KEEP CONQUERING
+                    Continue Trading
                 </Button>
                 </motion.div>
                 </motion.div>

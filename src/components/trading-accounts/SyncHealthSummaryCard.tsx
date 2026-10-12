@@ -44,8 +44,8 @@ export function SyncHealthSummaryCard({ summary }: SyncHealthSummaryCardProps) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Total Card */}
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] shadow-sm">
-                <div className="p-3 rounded-xl bg-amber-500/10 text-amber-500">
+            <div className="flex items-center gap-4 p-4 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] shadow-sm">
+                <div className="p-3 rounded-lg bg-amber-500/10 text-amber-500">
                     <Activity size={20} />
                 </div>
                 <div>
@@ -64,10 +64,10 @@ export function SyncHealthSummaryCard({ summary }: SyncHealthSummaryCardProps) {
                 return (
                     <div
                         key={idx}
-                        className={`flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] shadow-sm`}
+                        className={`flex items-center gap-4 p-4 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] shadow-sm`}
                     >
                         <div
-                            className={`p-3 rounded-xl ${item.bgColor} ${item.color}`}
+                            className={`p-3 rounded-lg ${item.bgColor} ${item.color}`}
                         >
                             <Icon size={20} />
                         </div>

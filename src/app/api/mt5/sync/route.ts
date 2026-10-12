@@ -117,11 +117,11 @@ export async function POST(request: NextRequest) {
                 if (isNaN(entryDate.getTime())) continue;
 
                 // Calculate PnL (Net) — guard missing fields against NaN
-                const pnl =
-                    (trade.profit || 0) +
-                    (trade.commission || 0) +
-                    (trade.swap || 0);
-                if (!Number.isFinite(pnl)) continue;
+                const profit = trade.profit || 0;
+                const commission = trade.commission || 0;
+                const swap = trade.swap || 0;
+                const netPnl = profit + commission + swap;
+                if (!Number.isFinite(profit)) continue;
 
                 // Heuristic for "Open" trade from MT5 report: close time is 0/1970
                 const isClosed =
@@ -133,8 +133,8 @@ export async function POST(request: NextRequest) {
 
                 let result: "WIN" | "LOSS" | "BREAK_EVEN" | null = null;
                 if (isClosed) {
-                    if (pnl > 0.01) result = "WIN";
-                    else if (pnl < -0.01) result = "LOSS";
+                    if (netPnl > 0.01) result = "WIN";
+                    else if (netPnl < -0.01) result = "LOSS";
                     else result = "BREAK_EVEN";
                 }
 
@@ -161,11 +161,11 @@ export async function POST(request: NextRequest) {
                         data: {
                             exitDate: isClosed ? exitDate : null,
                             exitPrice: trade.closePrice,
-                            pnl,
+                            pnl: profit,
                             status,
                             result,
-                            commission: trade.commission || 0,
-                            swap: trade.swap || 0,
+                            commission,
+                            swap,
                             // Update SL/TP if changed
                             stopLoss: trade.sl,
                             takeProfit: trade.tp,
@@ -192,9 +192,9 @@ export async function POST(request: NextRequest) {
                                 exitDate: isClosed ? exitDate : null,
                                 exitPrice: trade.closePrice,
                                 lotSize: normalizedLot,
-                                pnl,
-                                commission: trade.commission || 0,
-                                swap: trade.swap || 0,
+                                pnl: profit,
+                                commission,
+                                swap,
                                 stopLoss: trade.sl,
                                 takeProfit: trade.tp,
                                 status,

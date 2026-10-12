@@ -227,7 +227,7 @@ export default async function EADashboardPage() {
                 description="Overview of license requests, EA products and system performance."
             >
                 <Link href="/admin/trading-systems/create">
-                    <Button variant="primary" className="shadow-primary/30">
+                    <Button variant="primary" className="shadow-amber-500/30">
                         <Bot size={18} aria-hidden="true" /> New Product
                     </Button>
                 </Link>

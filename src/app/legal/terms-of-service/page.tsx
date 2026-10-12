@@ -20,7 +20,7 @@ export default function TermsOfServicePage() {
     return (
         <>
             <div className="max-w-3xl mx-auto text-center space-y-6 mb-20 mt-12">
-                <div className="inline-flex items-center justify-center p-3 rounded-xl bg-indigo-500/10 text-indigo-500 mb-2 ring-4 ring-indigo-500/5 animate-in fade-in zoom-in slide-in-from-bottom-4 duration-500">
+                <div className="inline-flex items-center justify-center p-3 rounded-lg bg-indigo-500/10 text-indigo-500 mb-2 ring-4 ring-indigo-500/5 animate-in fade-in zoom-in slide-in-from-bottom-4 duration-500">
                     <Scale size={40} strokeWidth={1.5} />
                 </div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-700 dark:text-white leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700">
@@ -36,8 +36,8 @@ export default function TermsOfServicePage() {
             </div>
 
             <div className="max-w-4xl mx-auto">
-                <div className="bg-white/95 dark:bg-white/[0.055] border border-dashboard dark:border-white/10 rounded-xl p-8 md:p-14 shadow-xl prose dark:prose-invert prose-headings:text-gray-700 dark:prose-headings:text-white prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-strong:text-gray-700 dark:prose-strong:text-white max-w-none transition-colors duration-300 backdrop-blur-md">
-                    <div className="bg-red-50 dark:bg-red-500/5 border border-red-500/20 p-6 sm:p-8 my-8 rounded-xl shadow-sm">
+                <div className="bg-white/95 dark:bg-white/[0.055] border border-dashboard dark:border-white/10 rounded-lg p-8 md:p-14 shadow-xl prose dark:prose-invert prose-headings:text-gray-700 dark:prose-headings:text-white prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-strong:text-gray-700 dark:prose-strong:text-white max-w-none transition-colors duration-300 backdrop-blur-md">
+                    <div className="bg-red-50 dark:bg-red-500/5 border border-red-500/20 p-6 sm:p-8 my-8 rounded-lg shadow-sm">
                         <h3 className="text-red-700 dark:text-red-400 mt-0 font-bold uppercase tracking-wider text-sm flex items-center gap-2">
                             High Risk Warning
                         </h3>
@@ -207,9 +207,8 @@ export default function TermsOfServicePage() {
                         <strong>Email:</strong> support@thenexttrade.com
                     </p>
 
-                    <div className="mt-8 p-4 bg-gray-50 dark:bg-[#151925] rounded-xl text-sm text-gray-600 dark:text-gray-300 italic text-center border border-dashboard">
-                        Thank you for choosing TheNextTrade. Trade smart, manage
-                        your risk, and master the markets. ??
+                    <div className="mt-8 p-4 bg-gray-50 dark:bg-[#151925] rounded-lg text-sm text-gray-600 dark:text-gray-300 italic text-center border border-dashboard">
+                        Questions? Email support@thenexttrade.com.
                     </div>
                 </div>
             </div>

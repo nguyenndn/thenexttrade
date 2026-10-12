@@ -57,6 +57,8 @@ export async function GET(request: NextRequest) {
             select: {
                 strategy: true,
                 pnl: true,
+                commission: true,
+                swap: true,
                 result: true,
             },
         });
@@ -84,15 +86,18 @@ export async function GET(request: NextRequest) {
                 totalPnL: 0,
             };
 
-            const pnl = trade.pnl || 0;
+            const pnl =
+                (trade.pnl || 0) +
+                (trade.commission || 0) +
+                (trade.swap || 0);
             current.totalPnL += pnl;
 
             if (trade.result === "WIN") {
                 current.wins++;
-                current.grossProfit += pnl;
+                if (pnl > 0) current.grossProfit += pnl;
             } else if (trade.result === "LOSS") {
                 current.losses++;
-                current.grossLoss += Math.abs(pnl);
+                if (pnl < 0) current.grossLoss += Math.abs(pnl);
             }
 
             strategyMap.set(trade.strategy, current);

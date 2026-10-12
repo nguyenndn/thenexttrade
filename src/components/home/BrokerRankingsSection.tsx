@@ -76,6 +76,13 @@ export function BrokerRankingsSection() {
             ...item,
         }));
 
+    const totalActiveBrokers = (partnersData.brokers.items as any[]).filter(
+        (item) => item.active !== false
+    ).length;
+    const totalActiveCrypto = (partnersData.cryptoExchanges.items as any[]).filter(
+        (item) => item.active !== false
+    ).length;
+
     const cryptoExchanges: UnifiedItem[] = (
         partnersData.cryptoExchanges.items as CryptoItem[]
     )
@@ -126,7 +133,7 @@ export function BrokerRankingsSection() {
                     className="w-full"
                 >
                     <div className="mb-6 overflow-x-auto scrollbar-hide flex justify-center">
-                        <TabsList className="bg-gray-50 dark:bg-white/5 border border-dashboard rounded-xl p-1.5 gap-1 shrink-0">
+                        <TabsList className="bg-gray-50 dark:bg-white/5 border border-dashboard rounded-lg p-1.5 gap-1 shrink-0">
                             <TabsTrigger
                                 value="brokers"
                                 className="px-4 py-2 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
@@ -154,10 +161,10 @@ export function BrokerRankingsSection() {
                     {activeItems.map((item, idx) => (
                         <div key={item.name} className="h-full">
                             {/* Desktop Card (PC: lg+) — 100% original design as in user screenshot */}
-                            <div className="hidden lg:flex relative flex-col justify-between p-5 rounded-2xl bg-white dark:bg-card border border-gray-200/80 dark:border-white/10 hover:border-gold dark:hover:border-gold/60 shadow-sm hover:shadow-xl hover:shadow-gold/5 transition-all duration-300 group overflow-hidden h-full">
+                            <div className="hidden lg:flex relative flex-col justify-between p-5 rounded-lg bg-white dark:bg-card border border-gray-200 dark:border-white/10 hover:border-gold dark:hover:border-gold/60 shadow-sm hover:shadow-xl hover:shadow-gold/5 transition-all duration-300 group overflow-hidden h-full">
                                 {/* Top Badge for #1 */}
                                 {idx === 0 && (
-                                    <div className="absolute top-0 right-0 px-3 py-1 rounded-bl-xl bg-gradient-to-r from-amber-500 to-gold text-white text-[10px] font-black uppercase tracking-wider shadow-sm flex items-center gap-1 z-10">
+                                    <div className="absolute top-0 right-0 px-3 py-1 rounded-bl-lg bg-gradient-to-r from-amber-500 to-gold text-white text-[10px] font-black uppercase tracking-wider shadow-sm flex items-center gap-1 z-10">
                                         <Award size={11} />{" "}
                                         {activeTab === "brokers"
                                             ? "Editor's Choice"
@@ -167,7 +174,7 @@ export function BrokerRankingsSection() {
 
                                 {/* Brand Identity */}
                                 <div className="flex items-center gap-3 mb-4 pt-2">
-                                    <div className="w-11 h-11 rounded-xl bg-white border border-gray-200/80 dark:border-white/10 flex items-center justify-center shrink-0 overflow-hidden p-1.5 shadow-sm group-hover:scale-105 transition-transform duration-300">
+                                    <div className="w-11 h-11 rounded-lg bg-white border border-gray-200 dark:border-white/10 flex items-center justify-center shrink-0 overflow-hidden p-1.5 shadow-sm group-hover:scale-105 transition-transform duration-300">
                                         {item.logo ? (
                                             <Image
                                                 src={item.logo}
@@ -206,7 +213,7 @@ export function BrokerRankingsSection() {
                                 {/* Metrics & Features */}
                                 <div>
                                     {/* Key Metrics Strip - Single Line */}
-                                    <div className="flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-gray-50/80 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 mb-3.5 text-xs">
+                                    <div className="flex items-center justify-between gap-2 px-3 py-1.5 rounded-lg bg-gray-50/80 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 mb-3.5 text-xs">
                                         {activeTab === "brokers" ? (
                                             <>
                                                 <div className="flex items-center gap-1.5 min-w-0">
@@ -282,9 +289,10 @@ export function BrokerRankingsSection() {
                                                 : undefined
                                         }
                                         className={buttonVariants({
-                                            variant: "primary",
+                                            variant: "gold",
+                                            size: "smd",
                                             className:
-                                                "flex-1 min-h-9 px-3 py-2 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-xs shadow-sm hover:shadow-md justify-center gap-1 whitespace-nowrap",
+                                                "flex-1 font-black shadow-sm hover:shadow-md justify-center gap-1 whitespace-nowrap",
                                         })}
                                     >
                                         {activeTab === "brokers"
@@ -300,8 +308,9 @@ export function BrokerRankingsSection() {
                                         }
                                         className={buttonVariants({
                                             variant: "outline",
+                                            size: "smd",
                                             className:
-                                                "min-h-9 px-3 py-2 rounded-xl text-xs font-bold text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white justify-center whitespace-nowrap",
+                                                "font-bold text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white justify-center whitespace-nowrap",
                                         })}
                                     >
                                         Review
@@ -310,10 +319,10 @@ export function BrokerRankingsSection() {
                             </div>
 
                             {/* Tablet & Mobile Card (< lg) — Horizontal layout on tablet, vertical on mobile */}
-                            <div className="flex lg:hidden relative flex-col md:flex-row justify-between p-5 rounded-2xl bg-white dark:bg-card border border-gray-200/80 dark:border-white/10 hover:border-gold dark:hover:border-gold/60 shadow-sm hover:shadow-xl hover:shadow-gold/5 transition-all duration-300 group overflow-hidden md:items-center md:gap-4 h-full">
+                            <div className="flex lg:hidden relative flex-col md:flex-row justify-between p-5 rounded-lg bg-white dark:bg-card border border-gray-200 dark:border-white/10 hover:border-gold dark:hover:border-gold/60 shadow-sm hover:shadow-xl hover:shadow-gold/5 transition-all duration-300 group overflow-hidden md:items-center md:gap-4 h-full">
                                 {/* Top Badge for #1 */}
                                 {idx === 0 && (
-                                    <div className="absolute top-0 right-0 md:left-0 md:right-auto px-3 py-1 rounded-bl-xl md:rounded-bl-none md:rounded-br-xl bg-gradient-to-r from-amber-500 to-gold text-white text-[10px] font-black uppercase tracking-wider shadow-sm flex items-center gap-1 z-10">
+                                    <div className="absolute top-0 right-0 md:left-0 md:right-auto px-3 py-1 rounded-bl-lg md:rounded-bl-none md:rounded-br-lg bg-gradient-to-r from-amber-500 to-gold text-white text-[10px] font-black uppercase tracking-wider shadow-sm flex items-center gap-1 z-10">
                                         <Award size={11} />{" "}
                                         {activeTab === "brokers"
                                             ? "Editor's Choice"
@@ -323,7 +332,7 @@ export function BrokerRankingsSection() {
 
                                 {/* Left: Brand Identity */}
                                 <div className="flex items-center gap-3 mb-4 md:mb-0 md:w-56 shrink-0 pt-2 md:pt-0">
-                                    <div className="w-11 h-11 md:w-12 md:h-12 rounded-xl bg-white border border-gray-200/80 dark:border-white/10 flex items-center justify-center shrink-0 overflow-hidden p-1.5 shadow-sm group-hover:scale-105 transition-transform duration-300">
+                                    <div className="w-11 h-11 md:w-12 md:h-12 rounded-lg bg-white border border-gray-200 dark:border-white/10 flex items-center justify-center shrink-0 overflow-hidden p-1.5 shadow-sm group-hover:scale-105 transition-transform duration-300">
                                         {item.logo ? (
                                             <Image
                                                 src={item.logo}
@@ -362,7 +371,7 @@ export function BrokerRankingsSection() {
                                 {/* Middle: Metrics & Features */}
                                 <div className="flex-1 min-w-0 md:px-2 w-full md:w-auto">
                                     {/* Key Metrics Strip */}
-                                    <div className="flex items-center justify-between gap-1.5 px-3 py-1.5 rounded-xl bg-gray-50/80 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 mb-2.5 text-xs">
+                                    <div className="flex items-center justify-between gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50/80 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 mb-2.5 text-xs">
                                         {activeTab === "brokers" ? (
                                             <>
                                                 <div className="flex items-center gap-1.5 shrink-0">
@@ -438,9 +447,10 @@ export function BrokerRankingsSection() {
                                                 : undefined
                                         }
                                         className={buttonVariants({
-                                            variant: "primary",
+                                            variant: "gold",
+                                            size: "smd",
                                             className:
-                                                "flex-1 md:w-full min-h-9.5 px-3.5 py-2 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-xs sm:text-sm shadow-sm hover:shadow-md justify-center gap-1.5 whitespace-nowrap",
+                                                "flex-1 md:w-full font-black shadow-sm hover:shadow-md justify-center gap-1.5 whitespace-nowrap",
                                         })}
                                     >
                                         {activeTab === "brokers"
@@ -456,8 +466,9 @@ export function BrokerRankingsSection() {
                                         }
                                         className={buttonVariants({
                                             variant: "outline",
+                                            size: "smd",
                                             className:
-                                                "min-h-9.5 w-auto shrink-0 md:w-full px-4 py-2 rounded-xl text-xs font-bold text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white justify-center whitespace-nowrap",
+                                                "w-auto shrink-0 md:w-full font-bold text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white justify-center whitespace-nowrap",
                                         })}
                                     >
                                         Review
@@ -480,8 +491,8 @@ export function BrokerRankingsSection() {
                     >
                         <span>
                             {activeTab === "brokers"
-                                ? `Compare all ${partnersData.brokers.items.length} brokers`
-                                : `Compare all ${partnersData.cryptoExchanges.items.length} crypto exchanges`}
+                                ? `Compare all ${totalActiveBrokers} brokers`
+                                : `Compare all ${totalActiveCrypto} crypto exchanges`}
                         </span>
                         <ArrowRight
                             size={13}

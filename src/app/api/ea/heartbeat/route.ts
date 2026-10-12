@@ -178,7 +178,7 @@ export async function POST(request: NextRequest) {
         // Security: Telemetry / heartbeat from EA client must NOT automatically grant PRO entitlements
         // or set fundingVerifiedAt (prevents client-side privilege escalation).
         // Only record telemetry (fundingLastVerifiedAt) or clear grace period if already verified.
-        if (isRealAccount && isEligibleBroker && effectiveUsdBalance !== undefined && effectiveUsdBalance >= 300) {
+        if (isRealAccount && isEligibleBroker && effectiveUsdBalance !== undefined && effectiveUsdBalance >= 200) {
             if (currentAccount?.fundingVerifiedAt) {
                 fundingUpdate = {
                     fundingLastVerifiedAt: new Date(),
@@ -230,10 +230,29 @@ export async function POST(request: NextRequest) {
             },
         });
 
+        // Check $200 minimum requirement on REAL accounts
+        if (isRealAccount && effectiveUsdBalance !== undefined && effectiveUsdBalance < 200) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: "INSUFFICIENT_BALANCE",
+                    code: "BALANCE_TOO_LOW",
+                    message: "Tài khoản cần tối thiểu $200 để kết nối TheNextTrade VIP.",
+                    currentBalance: effectiveUsdBalance,
+                    minBalanceRequired: 200,
+                    autoSync: false,
+                    serverTime: new Date().toISOString(),
+                },
+                { status: 403 }
+            );
+        }
+
         return NextResponse.json({
             success: true,
             autoSync: account.autoSync,
             serverTime: new Date().toISOString(),
+            balanceEligible: true,
+            minBalanceRequired: 200,
         });
     } catch (error) {
         console.error("EA heartbeat error:", error);

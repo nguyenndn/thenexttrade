@@ -43,9 +43,13 @@ export function LeaderboardRow({
                 <span
                     className={cn(
                         "font-black text-sm",
-                        entry.rank <= 3
-                            ? "text-primary"
-                            : "text-gray-600 dark:text-gray-300"
+                        entry.rank === 1
+                            ? "text-amber-500 dark:text-gold"
+                            : entry.rank === 2
+                              ? "text-slate-500 dark:text-slate-300"
+                              : entry.rank === 3
+                                ? "text-orange-500 dark:text-orange-400"
+                                : "text-gray-600 dark:text-gray-300"
                     )}
                 >
                     #{entry.rank}

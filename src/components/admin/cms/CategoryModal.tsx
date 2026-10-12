@@ -123,7 +123,7 @@ export function CategoryModal({
                     </label>
                     <input
                         {...register("name")}
-                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
+                        className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
                         placeholder="Market Analysis"
                     />
                     {errors.name && (
@@ -142,7 +142,7 @@ export function CategoryModal({
                     </label>
                     <input
                         {...register("slug")}
-                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
+                        className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
                         placeholder="market-analysis"
                     />
                     {errors.slug && (
@@ -161,7 +161,7 @@ export function CategoryModal({
                     </label>
                     <textarea
                         {...register("description")}
-                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[100px] resize-none"
+                        className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[100px] resize-none"
                         placeholder="Describe this category..."
                     />
                 </div>
@@ -181,7 +181,7 @@ export function CategoryModal({
                         variant="primary"
                         size="smd"
                         isLoading={isSubmitting}
-                        className="shadow-lg shadow-primary/30 px-6 font-bold"
+                        className="shadow-lg shadow-amber-500/30 px-6 font-bold"
                     >
                         {category ? "Save Changes" : "Create Category"}
                     </Button>

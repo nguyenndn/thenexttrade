@@ -275,10 +275,6 @@ export async function analyzeCognitiveBiases(accountId?: string) {
         | undefined;
 
     if (cachedData && cachedData.cacheKey === currentCacheKey) {
-        console.log(
-            "[AI Cognitive Bias Profiler] - Serving cached profile for key:",
-            currentCacheKey
-        );
         return {
             success: true,
             biases: cachedData.biases,
@@ -304,6 +300,8 @@ export async function analyzeCognitiveBiases(accountId?: string) {
             select: {
                 id: true,
                 pnl: true,
+                commission: true,
+                swap: true,
                 result: true,
                 entryDate: true,
                 exitDate: true,
@@ -349,7 +347,11 @@ export async function analyzeCognitiveBiases(accountId?: string) {
 
         for (let i = 0; i < sortedTrades.length; i++) {
             const t = sortedTrades[i];
-            totalPnL += t.pnl || 0;
+            const netTradePnl =
+                (t.pnl || 0) +
+                (t.commission || 0) +
+                (t.swap || 0);
+            totalPnL += netTradePnl;
             if (t.result === "WIN") wins++;
             if (t.result === "LOSS") losses++;
 

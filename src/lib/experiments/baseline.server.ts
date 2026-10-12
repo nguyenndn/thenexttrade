@@ -17,6 +17,8 @@ export async function captureExperimentBaseline(
         select: {
             result: true,
             pnl: true,
+            commission: true,
+            swap: true,
             entryDate: true,
             exitDate: true,
         },
@@ -29,7 +31,11 @@ export async function captureExperimentBaseline(
     
     const decisiveCount = wins + losses;
     const winRate = decisiveCount > 0 ? Math.round((wins / decisiveCount) * 100) : 0;
-    const netPnL = trades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+    const netPnL = trades.reduce(
+        (sum, t) =>
+            sum + (t.pnl || 0) + (t.commission || 0) + (t.swap || 0),
+        0
+    );
     const avgPnL = sampleSize > 0 ? Math.round((netPnL / sampleSize) * 100) / 100 : 0;
 
     const periodStart = trades[trades.length - 1]?.entryDate?.toISOString() || new Date().toISOString();

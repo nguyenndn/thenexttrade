@@ -100,7 +100,7 @@ export default async function CertificatesPage() {
             {allLevelsCompleted && (
                 <div className="relative">
                     {/* Glow backdrop */}
-                    <div className="absolute -inset-2 bg-gradient-to-r from-yellow-400/20 via-amber-400/10 to-yellow-400/20 rounded-2xl blur-xl pointer-events-none" />
+                    <div className="absolute -inset-2 bg-gradient-to-r from-amber-400/15 to-yellow-400/15 rounded-lg blur-xl pointer-events-none" />
                     <div className="relative">
                         <div className="flex items-center gap-2 mb-2">
                             <Crown size={16} className="text-yellow-500" />
@@ -127,7 +127,7 @@ export default async function CertificatesPage() {
 
             {/* Not yet completed — locked master card teaser */}
             {!allLevelsCompleted && (
-                <div className="relative rounded-xl border-2 border-dashed border-yellow-400/30 bg-gradient-to-r from-yellow-400/5 to-amber-400/5 p-6 flex items-center gap-4">
+                <div className="relative rounded-lg border-2 border-dashed border-yellow-400/30 bg-gradient-to-r from-yellow-400/5 to-amber-400/5 p-6 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-yellow-400/10 flex items-center justify-center flex-shrink-0">
                         <Lock size={20} className="text-yellow-500/50" />
                     </div>
@@ -183,7 +183,7 @@ export default async function CertificatesPage() {
             <div className="text-center pt-4">
                 <Link
                     href="/dashboard/academy"
-                    className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-gray-600 dark:text-gray-300 bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl shadow-sm hover:border-primary hover:text-primary transition-colors"
+                    className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-gray-600 dark:text-gray-300 bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg shadow-sm hover:border-primary hover:text-primary transition-colors"
                 >
                     <GraduationCap size={16} />
                     Back to Academy

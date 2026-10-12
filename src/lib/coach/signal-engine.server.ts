@@ -105,7 +105,7 @@ export async function computeTraderSignals(
             severity: "HIGH",
             title: "Sync or log your first trade",
             summary:
-                "Start tracking your journey. Sync your MT5 history or manually log your first trade today.",
+                "Start your trade telemetry. Sync your MT5 history or log your first execution today.",
             actionLabel: "Log First Trade",
             actionHref: "/dashboard/journal",
         });

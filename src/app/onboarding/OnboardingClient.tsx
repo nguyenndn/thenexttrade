@@ -227,12 +227,17 @@ export default function OnboardingClient({
             }
             trackEvent("onboarding_completed", { syncMethod });
 
-            // Check if user came with a Partner Broker signup intent
+            // Check if user came with a Partner Broker signup intent or Trading Style intent
             try {
                 const savedIntent = localStorage.getItem("tnt_signup_intent");
                 if (savedIntent === "BROKER_FUNDED" || savedIntent === "partner_pro") {
                     localStorage.removeItem("tnt_signup_intent");
                     router.push("/dashboard/accounts?action=add&intent=BROKER_FUNDED&mode=pro");
+                    return;
+                }
+                if (savedIntent === "trading_style") {
+                    localStorage.removeItem("tnt_signup_intent");
+                    router.push("/dashboard/settings/trading-style");
                     return;
                 }
             } catch {
@@ -267,12 +272,17 @@ export default function OnboardingClient({
                 return;
             }
 
-            // Check if user came with a Partner Broker signup intent
+            // Check if user came with a Partner Broker signup intent or Trading Style intent
             try {
                 const savedIntent = localStorage.getItem("tnt_signup_intent");
                 if (savedIntent === "BROKER_FUNDED" || savedIntent === "partner_pro") {
                     localStorage.removeItem("tnt_signup_intent");
                     router.push("/dashboard/accounts?action=add&intent=BROKER_FUNDED&mode=pro");
+                    return;
+                }
+                if (savedIntent === "trading_style") {
+                    localStorage.removeItem("tnt_signup_intent");
+                    router.push("/dashboard/settings/trading-style");
                     return;
                 }
             } catch {
@@ -321,7 +331,7 @@ export default function OnboardingClient({
             </div>
 
             {/* Premium glassmorphic card container */}
-            <div className="w-full max-w-lg bg-white/85 dark:bg-[#11100C]/95 border border-amber-900/10 dark:border-amber-300/15 rounded-2xl shadow-[0_28px_90px_rgba(88,64,27,0.15)] dark:shadow-[0_28px_90px_rgba(0,0,0,0.45)] backdrop-blur-xl transition-all duration-300 overflow-hidden relative z-10">
+            <div className="w-full max-w-lg bg-white/85 dark:bg-[#11100C]/95 border border-amber-900/10 dark:border-amber-300/15 rounded-lg shadow-[0_28px_90px_rgba(88,64,27,0.15)] dark:shadow-[0_28px_90px_rgba(0,0,0,0.45)] backdrop-blur-xl transition-all duration-300 overflow-hidden relative z-10">
                 {/* Gold progress bar */}
                 <div className="h-1.5 bg-amber-900/10 dark:bg-white/[0.08]">
                     <div
@@ -376,13 +386,13 @@ export default function OnboardingClient({
                                 className="space-y-5"
                             >
                                 {error && (
-                                    <div className="p-3 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm text-center font-bold">
+                                    <div className="p-3 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm text-center font-bold">
                                         {error}
                                     </div>
                                 )}
 
                                 {/* User Identity Row */}
-                                <div className="flex items-center gap-3 p-3.5 rounded-xl border border-amber-950/10 bg-slate-500/5 dark:bg-white/[0.02]">
+                                <div className="flex items-center gap-3 p-3.5 rounded-lg border border-amber-950/10 bg-slate-500/5 dark:bg-white/[0.02]">
                                     <div className="w-9 h-9 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center font-black text-sm shrink-0 border border-amber-500/20">
                                         {initialData.fullName
                                             ? initialData.fullName[0].toUpperCase()
@@ -466,7 +476,7 @@ export default function OnboardingClient({
                                         required
                                         defaultValue={initialData.username}
                                         placeholder="@username"
-                                        className="w-full h-11 px-4 bg-white/50 dark:bg-black/20 border border-amber-900/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:bg-white dark:focus:bg-black/25 focus:border-amber-400 dark:focus:border-amber-300/60 focus:ring-1 focus:ring-amber-300/30 dark:focus:ring-amber-300/20 transition-all rounded-xl focus:outline-none"
+                                        className="w-full h-11 px-4 bg-white/50 dark:bg-black/20 border border-amber-900/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:bg-white dark:focus:bg-black/25 focus:border-amber-400 dark:focus:border-amber-300/60 focus:ring-1 focus:ring-amber-300/30 dark:focus:ring-amber-300/20 transition-all rounded-lg focus:outline-none"
                                     />
                                 </div>
 
@@ -502,15 +512,14 @@ export default function OnboardingClient({
                                         id="bio"
                                         rows={2}
                                         defaultValue={initialData.bio}
-                                        placeholder="Tell us about your trading journey..."
-                                        className="w-full px-4 py-3 bg-white/50 dark:bg-black/20 border border-amber-900/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:bg-white dark:focus:bg-black/25 focus:border-amber-400 dark:focus:border-amber-300/60 focus:ring-1 focus:ring-amber-300/30 dark:focus:ring-amber-300/20 transition-all rounded-xl resize-none focus:outline-none"
+                                        className="w-full px-4 py-3 bg-white/50 dark:bg-black/20 border border-amber-900/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:bg-white dark:focus:bg-black/25 focus:border-amber-400 dark:focus:border-amber-300/60 focus:ring-1 focus:ring-amber-300/30 dark:focus:ring-amber-300/20 transition-all rounded-lg resize-none focus:outline-none"
                                     />
                                 </div>
 
                                 <Button
                                     type="submit"
                                     disabled={isLoading}
-                                    className="w-full h-12 rounded-xl border-none bg-[linear-gradient(135deg,#F8D46B_0%,#D99A26_45%,#8A5A13_100%)] text-base font-black text-white shadow-[0_6px_20px_rgba(217,154,38,0.25)] hover:shadow-[0_8px_24px_rgba(217,154,38,0.35)] transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                    className="w-full h-12 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
                                 >
                                     Continue
                                     <ArrowRight size={16} />
@@ -542,7 +551,7 @@ export default function OnboardingClient({
                                             type="button"
                                             onClick={() => setTradingGoal(g.id)}
                                             className={cn(
-                                                "w-full flex items-center gap-4 p-4 rounded-xl border-2 text-left transition-all duration-200",
+                                                "w-full flex items-center gap-4 p-4 rounded-lg border-2 text-left transition-all duration-200",
                                                 tradingGoal === g.id
                                                     ? "border-amber-500 bg-amber-500/5 dark:bg-amber-500/10 shadow-sm shadow-amber-500/10"
                                                     : "border-amber-900/10 hover:border-amber-500/35 dark:hover:border-amber-500/25 bg-white/30 dark:bg-white/[0.01]"
@@ -582,7 +591,7 @@ export default function OnboardingClient({
                                     variant="outline"
                                     type="button"
                                     onClick={() => setStep(1)}
-                                    className="flex items-center gap-1.5 border-amber-900/10 text-slate-600 dark:text-slate-300 hover:bg-amber-500/10 hover:text-slate-900 dark:hover:text-white rounded-xl font-extrabold"
+                                    className="flex items-center gap-1.5 border-amber-900/10 text-slate-600 dark:text-slate-300 hover:bg-amber-500/10 hover:text-slate-900 dark:hover:text-white rounded-lg font-extrabold"
                                 >
                                     <ArrowLeft size={14} />
                                     Back
@@ -591,7 +600,7 @@ export default function OnboardingClient({
                                     type="button"
                                     onClick={handleStep2Submit}
                                     disabled={!tradingGoal || isLoading}
-                                    className="flex-1 h-12 rounded-xl border-none bg-[linear-gradient(135deg,#F8D46B_0%,#D99A26_45%,#8A5A13_100%)] text-base font-black text-white shadow-[0_6px_20px_rgba(217,154,38,0.25)] hover:shadow-[0_8px_24px_rgba(217,154,38,0.35)] transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                    className="flex-1 h-12 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
                                 >
                                     Continue
                                     <ArrowRight size={16} />
@@ -620,7 +629,7 @@ export default function OnboardingClient({
                                     type="button"
                                     onClick={() => setSyncMethod("EA_SYNC")}
                                     className={cn(
-                                        "w-full rounded-xl border-2 p-4 text-left transition-all duration-200 relative block",
+                                        "w-full rounded-lg border-2 p-4 text-left transition-all duration-200 relative block",
                                         syncMethod === "EA_SYNC"
                                             ? "border-amber-500 bg-amber-500/5 dark:bg-amber-500/10 shadow-sm shadow-amber-500/10"
                                             : "border-amber-900/10 hover:border-amber-500/35 dark:hover:border-amber-500/25 bg-white/30 dark:bg-white/[0.01]"
@@ -651,7 +660,7 @@ export default function OnboardingClient({
                                     type="button"
                                     onClick={() => setSyncMethod("MANUAL")}
                                     className={cn(
-                                        "w-full rounded-xl border-2 p-4 text-left transition-all duration-200 relative block",
+                                        "w-full rounded-lg border-2 p-4 text-left transition-all duration-200 relative block",
                                         syncMethod === "MANUAL"
                                             ? "border-amber-500 bg-amber-500/5 dark:bg-amber-500/10 shadow-sm shadow-amber-500/10"
                                             : "border-amber-900/10 hover:border-amber-500/35 dark:hover:border-amber-500/25 bg-white/30 dark:bg-white/[0.01]"
@@ -676,7 +685,7 @@ export default function OnboardingClient({
                             </div>
 
                             {isMobile && syncMethod === "EA_SYNC" && (
-                                <div className="mb-6 p-4 rounded-xl border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 space-y-3 animate-in slide-in-from-top duration-300">
+                                <div className="mb-6 p-4 rounded-lg border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 space-y-3 animate-in slide-in-from-top duration-300">
                                     <div className="flex gap-2.5 items-start">
                                         <Monitor
                                             size={18}
@@ -754,7 +763,7 @@ export default function OnboardingClient({
                                     variant="outline"
                                     type="button"
                                     onClick={() => setStep(2)}
-                                    className="flex items-center gap-1.5 border-amber-900/10 text-slate-600 dark:text-slate-300 hover:bg-amber-500/10 hover:text-slate-900 dark:hover:text-white rounded-xl font-extrabold"
+                                    className="flex items-center gap-1.5 border-amber-900/10 text-slate-600 dark:text-slate-300 hover:bg-amber-500/10 hover:text-slate-900 dark:hover:text-white rounded-lg font-extrabold"
                                 >
                                     <ArrowLeft size={14} />
                                     Back
@@ -763,7 +772,7 @@ export default function OnboardingClient({
                                     type="button"
                                     onClick={handleStep3Submit}
                                     disabled={isLoading}
-                                    className="flex-1 h-12 rounded-xl border-none bg-[linear-gradient(135deg,#F8D46B_0%,#D99A26_45%,#8A5A13_100%)] text-base font-black text-white shadow-[0_6px_20px_rgba(217,154,38,0.25)] hover:shadow-[0_8px_24px_rgba(217,154,38,0.35)] transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                    className="flex-1 h-12 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
                                 >
                                     Continue
                                     <ArrowRight size={16} />
@@ -818,7 +827,7 @@ export default function OnboardingClient({
                                 ].map((f, i) => (
                                     <div
                                         key={i}
-                                        className="flex items-center gap-2.5 p-3 rounded-xl border border-amber-900/10 bg-white/60 dark:bg-white/[0.02]"
+                                        className="flex items-center gap-2.5 p-3 rounded-lg border border-amber-900/10 bg-white/60 dark:bg-white/[0.02]"
                                     >
                                         <f.icon
                                             size={16}
@@ -836,7 +845,7 @@ export default function OnboardingClient({
                                 type="button"
                                 onClick={handleComplete}
                                 disabled={isLoading}
-                                className="w-full h-12 rounded-xl border-none bg-[linear-gradient(135deg,#F8D46B_0%,#D99A26_45%,#8A5A13_100%)] text-base font-black text-white shadow-[0_6px_20px_rgba(217,154,38,0.25)] hover:shadow-[0_8px_24px_rgba(217,154,38,0.35)] transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 mb-3"
+                                className="w-full h-12 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 mb-3"
                             >
                                 {isLoading ? (
                                     <Loader2

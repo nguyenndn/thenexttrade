@@ -114,7 +114,7 @@ export function ArchetypeCard({
                     </h4>
                     <Link
                         href={archetype.keystone.href}
-                        className="group block rounded-xl border border-amber-500/40 bg-gradient-to-br from-amber-500/[0.09] to-orange-500/[0.06] p-4 transition-all hover:border-amber-500/60 hover:shadow-lg hover:shadow-amber-500/10"
+                        className="group block rounded-lg border border-amber-500/30 bg-amber-500/[0.04] hover:bg-amber-500/[0.07] p-4 transition-all hover:border-amber-500/50 hover:shadow-sm"
                     >
                         <div className="flex items-start justify-between gap-3">
                             <div>
@@ -137,7 +137,7 @@ export function ArchetypeCard({
                             <li key={m.label}>
                                 <Link
                                     href={m.href}
-                                    className="group flex items-start gap-3 rounded-xl border border-slate-200/80 bg-white/70 px-3.5 py-3 transition-all hover:border-amber-500/40 hover:bg-amber-500/[0.04] dark:border-white/[0.06] dark:bg-white/[0.03]"
+                                    className="group flex items-start gap-3 rounded-lg border border-gray-200 bg-white/70 backdrop-blur-sm px-3.5 py-3 transition-all hover:border-amber-500/40 hover:bg-amber-500/[0.04] dark:border-white/10 dark:bg-white/[0.03]"
                                 >
                                     <ArrowRight
                                         size={14}

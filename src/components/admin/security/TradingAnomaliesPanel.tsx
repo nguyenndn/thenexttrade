@@ -30,7 +30,7 @@ export function TradingAnomaliesPanel({ events }: Props) {
         .slice(0, 5);
 
     return (
-        <div className="bg-white/50 dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 backdrop-blur-sm shadow-sm">
+        <div className="bg-white/50 dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-5 backdrop-blur-sm shadow-sm">
             <div className="flex items-center gap-2 mb-4">
                 <Activity className="w-4 h-4 text-rose-500" />
                 <h2 className="text-sm font-bold text-gray-900 dark:text-white">
@@ -43,7 +43,7 @@ export function TradingAnomaliesPanel({ events }: Props) {
                     anomalies.map((anomaly, i) => (
                         <div
                             key={i}
-                            className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10"
+                            className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10"
                         >
                             <div className="mt-0.5">
                                 {anomaly.type === "EA_SPAM" ? (

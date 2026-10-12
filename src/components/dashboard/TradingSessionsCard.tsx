@@ -93,7 +93,7 @@ export function TradingSessionsCard({ data }: TradingSessionsCardProps) {
                             return (
                                 <div
                                     key={session.session}
-                                    className={`relative rounded-xl p-3 transition-all ${
+                                    className={`relative rounded-lg p-3 transition-all ${
                                         isBest
                                             ? "bg-gradient-to-r from-primary/5 to-emerald-500/5 border border-primary/20 dark:from-primary/10 dark:to-emerald-500/10"
                                             : "bg-gray-50 dark:bg-white/[0.03] border border-transparent"

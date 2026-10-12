@@ -102,7 +102,7 @@ export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge
 
     if (currentStatus === "ACTIVE") {
         return (
-            <div className="md:hidden mb-3 flex items-center gap-2 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-3 py-2">
+            <div className="md:hidden mb-3 flex items-center gap-2 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-3 py-2">
                 <Crown className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
                     VIP Active
@@ -116,7 +116,7 @@ export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge
 
     if (currentStatus === "GRACE") {
         return (
-            <div className="md:hidden mb-3 flex items-center gap-2 rounded-xl bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 px-3 py-2">
+            <div className="md:hidden mb-3 flex items-center gap-2 rounded-lg bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 px-3 py-2">
                 <Timer className="h-4 w-4 text-purple-600 dark:text-purple-400 shrink-0" />
                 <div className="flex-1 min-w-0">
                     <span className="text-xs font-bold text-purple-700 dark:text-purple-400">
@@ -144,7 +144,7 @@ export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge
 
     if (currentStatus === "REVOKED") {
         return (
-            <div className="md:hidden mb-3 flex items-center gap-2 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 px-3 py-2">
+            <div className="md:hidden mb-3 flex items-center gap-2 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 px-3 py-2">
                 <Shield className="h-4 w-4 text-red-600 dark:text-red-400 shrink-0" />
                 <span className="text-xs font-bold text-red-700 dark:text-red-400 flex-1">
                     VIP Revoked
@@ -158,7 +158,7 @@ export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge
 
     if (currentStatus === "EXPIRED") {
         return (
-            <div className="md:hidden mb-3 flex items-center gap-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 px-3 py-2">
+            <div className="md:hidden mb-3 flex items-center gap-2 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 px-3 py-2">
                 <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
                 <span className="text-xs font-bold text-amber-700 dark:text-amber-400 flex-1">
                     VIP Expired
@@ -176,7 +176,7 @@ export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge
     // NONE - show upgrade nudge (compact)
     if (!isPro) {
         return (
-            <div className="md:hidden mb-3 flex items-center gap-2 rounded-xl bg-gray-50 dark:bg-white/5 border border-dashboard px-3 py-2">
+            <div className="md:hidden mb-3 flex items-center gap-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-dashboard px-3 py-2">
                 <Crown className="h-4 w-4 text-gray-400 dark:text-gray-500 shrink-0" />
                 <span className="text-xs text-gray-500 dark:text-gray-400 flex-1">
                     Free Plan

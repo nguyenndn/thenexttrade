@@ -28,7 +28,7 @@ export function EmptyState({
                 className
             )}
         >
-            <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-xl flex items-center justify-center mb-4">
+            <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-lg flex items-center justify-center mb-4">
                 <Icon
                     size={32}
                     className="text-gray-600 dark:text-gray-300 opacity-80"

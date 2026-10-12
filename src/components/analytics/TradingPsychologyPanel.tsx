@@ -23,7 +23,7 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5">
-                    <div className="p-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400">
+                    <div className="p-2 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400">
                         <Brain className="w-5 h-5" />
                     </div>
                     <div>
@@ -40,7 +40,7 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* 1. Disposition Effect Card */}
-                <div className="p-5 rounded-2xl bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4">
+                <div className="p-5 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                             <Clock className="w-4 h-4 text-cyan-500" />
@@ -72,13 +72,13 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                         </div>
                     </div>
 
-                    <p className="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-white/[0.04] p-2.5 rounded-xl border border-dashboard dark:border-white/[0.06]">
+                    <p className="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-white/[0.04] p-2.5 rounded-lg border border-dashboard dark:border-white/[0.06]">
                         {disposition.insight}
                     </p>
                 </div>
 
                 {/* 2. Tilt & Revenge Trading Vulnerability Card */}
-                <div className="p-5 rounded-2xl bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4">
+                <div className="p-5 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                             <Flame className="w-4 h-4 text-amber-500" />
@@ -114,13 +114,13 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                         </div>
                     </div>
 
-                    <p className="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-white/[0.04] p-2.5 rounded-xl border border-dashboard dark:border-white/[0.06]">
+                    <p className="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-white/[0.04] p-2.5 rounded-lg border border-dashboard dark:border-white/[0.06]">
                         {tilt.insight}
                     </p>
                 </div>
 
                 {/* 3. Optimal Risk-Reward Simulator Card */}
-                <div className="p-5 rounded-2xl bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4">
+                <div className="p-5 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                             <Target className="w-4 h-4 text-emerald-500" />
@@ -135,7 +135,7 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                         {rrOptimizer.map((opt) => (
                             <div
                                 key={opt.targetRR}
-                                className={`flex justify-between items-center p-2 rounded-xl border ${
+                                className={`flex justify-between items-center p-2 rounded-lg border ${
                                     opt.isOptimal
                                         ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-500/30 font-bold"
                                         : "bg-slate-50 dark:bg-white/[0.04] border-dashboard dark:border-white/[0.06] text-slate-600 dark:text-slate-400"

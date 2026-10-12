@@ -141,7 +141,7 @@ function PeriodComparison({
     ];
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-6">
+        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm p-6">
             <div className="flex items-center gap-2.5 mb-5">
                 <div className="p-2 rounded-lg bg-indigo-500/10">
                     <Activity size={18} className="text-indigo-500" />
@@ -158,7 +158,7 @@ function PeriodComparison({
                 {cards.map((card) => (
                     <div
                         key={card.label}
-                        className={`text-center p-4 rounded-xl bg-gray-50 dark:bg-white/[0.03] border-t-[3px] ${card.accent} ${
+                        className={`text-center p-4 rounded-lg bg-gray-50 dark:bg-white/[0.03] border-t-[3px] ${card.accent} ${
                             card.label === "Strengths"
                                 ? "col-span-2 sm:col-span-1"
                                 : ""
@@ -212,7 +212,7 @@ function ScoreHistoryChart({ data }: { data: ScoreHistoryPoint[] }) {
     };
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5">
+        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm p-5">
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                     <div className="p-1.5 rounded-lg bg-violet-500/10">
@@ -329,7 +329,7 @@ function ScoreHistoryChart({ data }: { data: ScoreHistoryPoint[] }) {
                                         weekLabel: string;
                                     };
                                     return (
-                                        <div className="bg-white dark:bg-[#1E2028] p-3 border border-dashboard rounded-xl shadow-xl">
+                                        <div className="bg-white dark:bg-[#1E2028] p-3 border border-dashboard rounded-lg shadow-xl">
                                             <p className="text-[11px] font-bold text-gray-500 uppercase mb-1">
                                                 Week of {d.weekLabel}
                                             </p>
@@ -476,7 +476,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
               : "No significant behavioral risks detected. Keep it up.";
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm overflow-hidden">
             <div className="p-4 sm:p-6">
                 {/* Responsive grid: 1 col → 2 col → 3 col */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
@@ -649,7 +649,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
 function EmptyState({ totalTrades }: { totalTrades: number }) {
     const progress = Math.min(100, (totalTrades / 30) * 100);
     return (
-        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-8">
+        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border-2 border-dashed border-dashboard mt-8">
             {/* Animated Brain Icon */}
             <div className="relative w-20 h-20 mb-6 mx-auto">
                 <div className="absolute inset-0 rounded-full bg-cyan-500/10 dark:bg-cyan-500/5 animate-[intel-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
@@ -693,7 +693,7 @@ function EmptyState({ totalTrades }: { totalTrades: number }) {
             </div>
             <Link
                 href="/dashboard/journal"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-bold rounded-xl hover:opacity-90 transition-opacity"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-gold hover:bg-amber-600 text-white text-sm font-bold rounded-lg shadow-md shadow-amber-500/20 transition-all"
             >
                 Log a Trade <ChevronRight size={16} />
             </Link>
@@ -826,7 +826,7 @@ export function IntelligenceDashboard({
 
             {/* Insights Grid — Issues + Strengths removed to avoid duplication with EdgeLeakDetector */}
             {data.issues.length === 0 && data.strengths.length === 0 && (
-                <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-dashboard shadow-sm text-center">
+                <div className="bg-white dark:bg-[#1E2028] rounded-lg p-8 border border-dashboard shadow-sm text-center">
                     <Activity size={24} className="text-primary mx-auto mb-3" />
                     <p className="text-gray-600 dark:text-gray-300">
                         No significant patterns detected yet.

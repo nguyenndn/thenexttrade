@@ -16,7 +16,7 @@ export function ProfitLossMock() {
 
     return (
         <div
-            className="h-44 w-full bg-[#f4faf8] dark:bg-slate-900/80 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/60 dark:border-white/10 select-none cursor-pointer"
+            className="h-44 w-full bg-[#f4faf8] dark:bg-slate-900/80 rounded-lg p-4 flex flex-col justify-between relative overflow-hidden border border-gray-200 dark:border-white/10 select-none cursor-pointer"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
@@ -53,8 +53,8 @@ export function ProfitLossMock() {
             </div>
 
             {/* Trade Parameters List */}
-            <div className="grid grid-cols-3 gap-1 z-10 border-t border-slate-100 dark:border-white/10 pt-3 text-center text-[7px] font-bold text-slate-500 dark:text-slate-400 font-mono">
-                <div className="bg-slate-100/80 dark:bg-white/[0.04] border border-slate-200/40 dark:border-white/10 rounded-lg p-1">
+            <div className="grid grid-cols-3 gap-1 z-10 border-t border-gray-100 dark:border-white/10 pt-3 text-center text-[7px] font-bold text-slate-500 dark:text-slate-400 font-mono">
+                <div className="bg-slate-100/80 dark:bg-white/[0.04] border border-gray-200 dark:border-white/10 rounded-lg p-1">
                     <span className="block text-slate-400 dark:text-slate-400 uppercase text-[6px]">
                         Entry
                     </span>
@@ -62,7 +62,7 @@ export function ProfitLossMock() {
                         1.1000
                     </span>
                 </div>
-                <div className="bg-slate-100/80 dark:bg-white/[0.04] border border-slate-200/40 dark:border-white/10 rounded-lg p-1">
+                <div className="bg-slate-100/80 dark:bg-white/[0.04] border border-gray-200 dark:border-white/10 rounded-lg p-1">
                     <span className="block text-slate-400 dark:text-slate-400 uppercase text-[6px]">
                         Exit Target
                     </span>
@@ -70,7 +70,7 @@ export function ProfitLossMock() {
                         {isLong ? "1.1080" : "1.0960"}
                     </span>
                 </div>
-                <div className="bg-slate-100/80 dark:bg-white/[0.04] border border-slate-200/40 dark:border-white/10 rounded-lg p-1">
+                <div className="bg-slate-100/80 dark:bg-white/[0.04] border border-gray-200 dark:border-white/10 rounded-lg p-1">
                     <span className="block text-slate-400 dark:text-slate-400 uppercase text-[6px]">
                         Volume
                     </span>

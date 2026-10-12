@@ -11,7 +11,7 @@ export function EdgeInfoContent() {
     return (
         <div className="space-y-8 text-gray-700 dark:text-gray-300">
             {/* Introduction */}
-            <section className="bg-white dark:bg-[#15171E] p-6 sm:p-8 rounded-2xl border border-dashboard dark:border-gray-800 shadow-sm">
+            <section className="bg-white dark:bg-[#15171E] p-6 sm:p-8 rounded-lg border border-dashboard dark:border-gray-800 shadow-sm">
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-4">
                     <Target className="text-amber-500 shrink-0" />
                     What Is Edge?
@@ -75,7 +75,7 @@ export function EdgeInfoContent() {
                     ].map((tier) => (
                         <div
                             key={tier.name}
-                            className="p-3 sm:p-4 rounded-xl border border-dashboard dark:border-gray-800 flex flex-col items-center justify-center text-center bg-white dark:bg-[#15171E] shadow-sm"
+                            className="p-3 sm:p-4 rounded-lg border border-dashboard dark:border-gray-800 flex flex-col items-center justify-center text-center bg-white dark:bg-[#15171E] shadow-sm"
                         >
                             <div
                                 className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full ${tier.bg} flex items-center justify-center mb-2 sm:mb-3 shrink-0`}
@@ -102,7 +102,7 @@ export function EdgeInfoContent() {
                         <CheckCircle2 className="text-emerald-500 shrink-0" />
                         How You Earn Edge
                     </h2>
-                    <ul className="space-y-3 bg-white dark:bg-[#15171E] p-5 sm:p-6 rounded-xl border border-dashboard dark:border-gray-800 shadow-sm flex-1 text-sm sm:text-base">
+                    <ul className="space-y-3 bg-white dark:bg-[#15171E] p-5 sm:p-6 rounded-lg border border-dashboard dark:border-gray-800 shadow-sm flex-1 text-sm sm:text-base">
                         <li className="flex items-start gap-3">
                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 shrink-0" />
                             <span>
@@ -140,7 +140,7 @@ export function EdgeInfoContent() {
                         <XCircle className="text-red-500 shrink-0" />
                         What Edge Does Not Reward
                     </h2>
-                    <ul className="space-y-3 bg-white dark:bg-[#15171E] p-5 sm:p-6 rounded-xl border border-dashboard dark:border-gray-800 shadow-sm flex-1 text-sm sm:text-base">
+                    <ul className="space-y-3 bg-white dark:bg-[#15171E] p-5 sm:p-6 rounded-lg border border-dashboard dark:border-gray-800 shadow-sm flex-1 text-sm sm:text-base">
                         <li className="flex items-start gap-3">
                             <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2 shrink-0" />
                             <span>
@@ -167,7 +167,7 @@ export function EdgeInfoContent() {
             </div>
 
             {/* Fair Use Rules */}
-            <section className="bg-gray-50 dark:bg-gray-800/30 p-5 sm:p-6 rounded-xl border border-dashboard dark:border-gray-800">
+            <section className="bg-gray-50 dark:bg-gray-800/30 p-5 sm:p-6 rounded-lg border border-dashboard dark:border-gray-800">
                 <h2 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-3">
                     <ShieldCheck className="text-primary shrink-0" />
                     Fair Use Rules
@@ -182,7 +182,7 @@ export function EdgeInfoContent() {
             </section>
 
             {/* Legal Disclaimer */}
-            <section className="bg-amber-50 dark:bg-amber-900/10 p-5 sm:p-6 rounded-xl border border-amber-200 dark:border-amber-900/30">
+            <section className="bg-amber-50 dark:bg-amber-900/10 p-5 sm:p-6 rounded-lg border border-amber-200 dark:border-amber-900/30">
                 <h2 className="text-base sm:text-lg font-bold text-amber-900 dark:text-amber-500 flex items-center gap-2 mb-3">
                     <AlertTriangle className="text-amber-600 dark:text-amber-500 shrink-0" />
                     Important Disclaimer

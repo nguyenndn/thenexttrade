@@ -29,13 +29,11 @@ export function StreakCalendarGrid() {
         async function loadData() {
             try {
                 const res = await getStreakGridData();
-                if ("error" in res) {
-                    console.error(res.error);
-                } else {
+                if (!("error" in res)) {
                     setData(res);
                 }
-            } catch (err) {
-                console.error("Failed to load streak grid data", err);
+            } catch {
+                // fail gracefully with empty state
             } finally {
                 setIsLoading(false);
             }
@@ -45,7 +43,7 @@ export function StreakCalendarGrid() {
 
     if (isLoading) {
         return (
-            <div className="rounded-2xl border border-dashboard dark:border-white/[0.08] bg-white dark:bg-[#1E2028] p-6 flex flex-col items-center justify-center min-h-[220px]">
+            <div className="rounded-xl border border-dashboard dark:border-white/[0.08] bg-white dark:bg-[#1E2028] p-6 flex flex-col items-center justify-center min-h-[220px]">
                 <Loader2 className="animate-spin text-amber-500" size={32} />
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-medium">
                     Loading streak history...
@@ -79,7 +77,7 @@ export function StreakCalendarGrid() {
     const totalTradeDays = trades.length;
 
     return (
-        <div className="rounded-2xl border border-dashboard dark:border-white/[0.08] bg-white dark:bg-[#1E2028] p-6 shadow-sm hover:shadow-md transition-all duration-300">
+        <div className="rounded-xl border border-dashboard dark:border-white/[0.08] bg-white dark:bg-[#1E2028] p-6 shadow-sm hover:shadow-md transition-all duration-300">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div>
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
@@ -95,7 +93,7 @@ export function StreakCalendarGrid() {
                 </div>
 
                 {/* Mini stats */}
-                <div className="flex items-center gap-6 text-xs font-semibold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-white/5 px-4 py-2.5 rounded-xl border border-dashboard dark:border-white/[0.08]">
+                <div className="flex items-center gap-6 text-xs font-semibold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-white/5 px-4 py-2.5 rounded-lg border border-dashboard dark:border-white/[0.08]">
                     <div className="flex items-center gap-1.5">
                         <CheckCircle className="text-amber-500" size={14} />
                         <span>

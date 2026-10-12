@@ -13,7 +13,7 @@ export function UserPageActions() {
             <Button
                 variant="primary"
                 onClick={() => setIsAddOpen(true)}
-                className="shadow-lg shadow-primary/30"
+                className="shadow-lg shadow-amber-500/30"
             >
                 <Plus size={18} strokeWidth={2.5} />
                 Add New

@@ -67,7 +67,7 @@ export function ActionQueuePanel({ data }: ActionQueuePanelProps) {
                         <div
                             key={item.id}
                             className={cn(
-                                "flex items-center gap-4 p-4 rounded-xl border transition-colors",
+                                "flex items-center gap-4 p-4 rounded-lg border transition-colors",
                                 cfg.bg,
                                 cfg.border
                             )}
@@ -93,7 +93,7 @@ export function ActionQueuePanel({ data }: ActionQueuePanelProps) {
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    className="rounded-xl text-xs shrink-0"
+                                    className="rounded-lg text-xs shrink-0"
                                 >
                                     {item.cta}
                                 </Button>

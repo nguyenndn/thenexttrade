@@ -50,7 +50,7 @@ export function AiRequestsExplorer({ requests: initialRequests }: { requests: an
                         placeholder="Search request ID, task key, or user..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-primary text-gray-900 dark:text-white"
+                        className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-primary text-gray-900 dark:text-white"
                     />
                 </div>
                 <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
@@ -79,7 +79,7 @@ export function AiRequestsExplorer({ requests: initialRequests }: { requests: an
             </div>
 
             {/* Data Table Card */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left border-collapse">
                         <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
@@ -246,7 +246,7 @@ export function AiRequestsExplorer({ requests: initialRequests }: { requests: an
                                                                                 key={
                                                                                     attempt.id
                                                                                 }
-                                                                                className="flex items-center justify-between bg-white dark:bg-[#1E2028] rounded-xl p-3 border border-gray-200 dark:border-white/10 shadow-sm"
+                                                                                className="flex items-center justify-between bg-white dark:bg-[#1E2028] rounded-lg p-3 border border-gray-200 dark:border-white/10 shadow-sm"
                                                                             >
                                                                                 <div className="flex items-center gap-3">
                                                                                     <div

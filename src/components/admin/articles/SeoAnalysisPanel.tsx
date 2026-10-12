@@ -473,7 +473,7 @@ export function SeoAnalysisPanel({
     }, [content]);
 
     return (
-        <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
+        <div className="bg-white dark:bg-[#151925] rounded-lg p-6 border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <h3 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2">
                     <Search size={20} className="text-primary" />
@@ -484,28 +484,28 @@ export function SeoAnalysisPanel({
                     <Button
                         variant="ghost"
                         onClick={() => setActiveTab("seo")}
-                        className={`px-3.5 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${activeTab === "seo" ? "bg-white text-primary shadow-sm hover:bg-white hover:text-primary" : "text-gray-600 hover:bg-gray-200"}`}
+                        className={`px-3.5 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${activeTab === "seo" ? "bg-white text-gold shadow-sm hover:bg-white hover:text-gold" : "text-gray-600 hover:bg-gray-200"}`}
                     >
                         SEO
                     </Button>
                     <Button
                         variant="ghost"
                         onClick={() => setActiveTab("readability")}
-                        className={`px-3.5 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${activeTab === "readability" ? "bg-white text-primary shadow-sm hover:bg-white hover:text-primary" : "text-gray-600 hover:bg-gray-200"}`}
+                        className={`px-3.5 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${activeTab === "readability" ? "bg-white text-gold shadow-sm hover:bg-white hover:text-gold" : "text-gray-600 hover:bg-gray-200"}`}
                     >
                         Readability
                     </Button>
                     <Button
                         variant="ghost"
                         onClick={() => setActiveTab("aiSeo")}
-                        className={`px-3.5 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${activeTab === "aiSeo" ? "bg-white text-primary shadow-sm hover:bg-white hover:text-primary" : "text-gray-600 hover:bg-gray-200"}`}
+                        className={`px-3.5 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${activeTab === "aiSeo" ? "bg-white text-gold shadow-sm hover:bg-white hover:text-gold" : "text-gray-600 hover:bg-gray-200"}`}
                     >
                         AI-SEO
                     </Button>
                     <Button
                         variant="ghost"
                         onClick={() => setActiveTab("social")}
-                        className={`px-3.5 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${activeTab === "social" ? "bg-white text-primary shadow-sm hover:bg-white hover:text-primary" : "text-gray-600 hover:bg-gray-200"}`}
+                        className={`px-3.5 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${activeTab === "social" ? "bg-white text-gold shadow-sm hover:bg-white hover:text-gold" : "text-gray-600 hover:bg-gray-200"}`}
                     >
                         Social
                     </Button>
@@ -573,7 +573,7 @@ export function SeoAnalysisPanel({
                         )}
                     </div>
                     {/* Google Preview */}
-                    <div className="bg-gray-50 dark:bg-[#0B0E14] p-4 rounded-xl border border-gray-200 dark:border-white/10">
+                    <div className="bg-gray-50 dark:bg-[#0B0E14] p-4 rounded-lg border border-gray-200 dark:border-white/10">
                         <div className="flex items-center justify-between mb-3">
                             <span className="text-xs font-bold text-gray-600 uppercase">
                                 Google Preview
@@ -734,7 +734,7 @@ export function SeoAnalysisPanel({
                                 </div>
                             ))}
                         </div>
-                        <div className="mt-6 p-4 rounded-xl bg-purple-500/[0.05] border border-purple-500/10 dark:border-purple-500/20">
+                        <div className="mt-6 p-4 rounded-lg bg-purple-500/[0.05] border border-purple-500/10 dark:border-purple-500/20">
                             <h5 className="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider flex items-center gap-1.5 mb-1.5">
                                 <Wand2 size={12} />
                                 <span>What is AI-SEO?</span>
@@ -772,7 +772,7 @@ export function SeoAnalysisPanel({
                         </Button>
                     </div>
 
-                    <div className="bg-gray-50 dark:bg-[#0B0E14] p-4 rounded-xl border border-gray-200 dark:border-white/10">
+                    <div className="bg-gray-50 dark:bg-[#0B0E14] p-4 rounded-lg border border-gray-200 dark:border-white/10">
                         {socialPlatform === "facebook" ? (
                             // Mock Facebook Preview
                             <div className="bg-white border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden max-w-[400px] mx-auto">
@@ -802,7 +802,7 @@ export function SeoAnalysisPanel({
                             </div>
                         ) : (
                             // Mock Twitter Preview
-                            <div className="bg-white border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden max-w-[400px] mx-auto">
+                            <div className="bg-white border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden max-w-[400px] mx-auto">
                                 <div className="h-[200px] bg-gray-100 flex items-center justify-center relative">
                                     {thumbnail ? (
                                         <img

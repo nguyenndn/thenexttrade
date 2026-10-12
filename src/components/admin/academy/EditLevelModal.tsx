@@ -55,7 +55,7 @@ export function EditLevelModal({
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-md bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 p-6 rounded-xl shadow-2xl">
+            <DialogContent className="max-w-md bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 p-6 rounded-2xl shadow-2xl">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-bold text-gray-700 dark:text-white">
                         Edit Level
@@ -84,7 +84,7 @@ export function EditLevelModal({
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 rows={3}
-                                className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm text-gray-700 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
+                                className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-sm text-gray-700 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
                                 placeholder="Describe this level..."
                             />
                         </div>
@@ -97,7 +97,6 @@ export function EditLevelModal({
                         size="smd"
                         onClick={onClose}
                         disabled={isLoading}
-                        className="font-bold text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5"
                     >
                         Cancel
                     </Button>
@@ -106,7 +105,7 @@ export function EditLevelModal({
                         size="smd"
                         onClick={handleSave}
                         isLoading={isLoading}
-                        className="bg-primary hover:bg-[#00a872] text-white font-bold px-6"
+                        className="bg-gold hover:bg-amber-600 text-white font-bold px-6 border-none shadow-md shadow-amber-500/20"
                     >
                         Save Changes
                     </Button>

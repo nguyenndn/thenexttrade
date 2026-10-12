@@ -16,7 +16,7 @@ export default function OfflinePage() {
         <>
             <PublicHeader />
             <main className="flex flex-col items-center justify-center min-h-[70vh] px-4 text-center">
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-cyan-500/20 flex items-center justify-center mb-6">
+                <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-primary/20 to-cyan-500/20 flex items-center justify-center mb-6">
                     <WifiOff size={36} className="text-primary" />
                 </div>
                 <h1 className="text-3xl font-black text-gray-800 dark:text-white mb-3">
@@ -32,11 +32,12 @@ export default function OfflinePage() {
                         href="/"
                         className={buttonVariants({
                             variant: "primary",
+                            size: "smd",
                             className:
-                                "px-6 py-3 rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105",
+                                "rounded-full shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-105",
                         })}
                     >
-                        <RefreshCw size={16} />
+                        <RefreshCw size={14} />
                         Try Again
                     </Link>
                 </div>

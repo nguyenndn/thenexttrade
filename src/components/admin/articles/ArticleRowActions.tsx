@@ -69,7 +69,7 @@ export function ArticleRowActions({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                     align="end"
-                    className="w-40 rounded-xl border-gray-200 dark:border-white/10"
+                    className="w-40 rounded-lg border-gray-200 dark:border-white/10"
                 >
                     <DropdownMenuItem
                         onClick={() =>

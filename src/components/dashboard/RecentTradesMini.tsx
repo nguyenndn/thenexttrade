@@ -9,6 +9,9 @@ interface Trade {
     symbol: string;
     type: string;
     pnl: number | null;
+    grossProfit?: number | null;
+    commission?: number | null;
+    swap?: number | null;
     exitDate: Date | string | null;
     lotSize?: number;
 }
@@ -111,6 +114,11 @@ export function RecentTradesMini({ trades }: RecentTradesMiniProps) {
                                             ? "text-primary"
                                             : "text-red-500"
                                     }`}
+                                    title={
+                                        trade.commission || trade.swap
+                                            ? `Net: ${formatCurrency(trade.pnl || 0)} (Gross: ${formatCurrency(trade.grossProfit ?? trade.pnl ?? 0)}, Comm: ${formatCurrency(trade.commission || 0)}, Swap: ${formatCurrency(trade.swap || 0)})`
+                                            : undefined
+                                    }
                                 >
                                     {formatCurrency(trade.pnl || 0)}
                                 </div>

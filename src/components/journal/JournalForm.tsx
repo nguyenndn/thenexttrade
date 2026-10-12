@@ -26,16 +26,8 @@ import {
 import { PlaybookLightbox } from "@/components/strategies/PlaybookLightbox";
 import { EmotionSelector } from "@/components/psychology/EmotionSelector";
 import { MistakeSelector } from "@/components/mistakes/MistakeSelector";
-import {
-    JournalTemplateSelector,
-    TEMPLATE_PROMPTS,
-    type JournalTemplateType,
-} from "./JournalTemplateSelector";
+
 import { getTradingRulesList } from "@/actions/rulebook";
-import {
-    computePlanMatchConfidence,
-    getBestPlanMatch,
-} from "@/lib/trade-plans/matching";
 
 import Link from "next/link";
 
@@ -90,35 +82,7 @@ export default function JournalForm({
     const [accounts, setAccounts] = useState<any[]>([]);
     const [showStrategyModal, setShowStrategyModal] = useState(false);
 
-    // Guided Journal Templates (P0.1)
-    const isSyncedTrade = !!initialData?.externalTicket;
-    const defaultTemplate: JournalTemplateType = isEditMode
-        ? null
-        : isSyncedTrade
-          ? "post_trade"
-          : "pre_trade";
-    const [selectedTemplate, setSelectedTemplate] =
-        useState<JournalTemplateType>(defaultTemplate);
 
-    // Get active prompts for the selected template
-    const activePrompts = useMemo(() => {
-        if (!selectedTemplate) return null;
-        return TEMPLATE_PROMPTS[selectedTemplate];
-    }, [selectedTemplate]);
-
-    // Helper to get template-aware label/placeholder for a field
-    const getFieldConfig = (
-        fieldName: string,
-        defaultLabel: string,
-        defaultPlaceholder: string
-    ) => {
-        if (!activePrompts)
-            return { label: defaultLabel, placeholder: defaultPlaceholder };
-        const prompt = activePrompts.find((p) => p.field === fieldName);
-        if (!prompt)
-            return { label: defaultLabel, placeholder: defaultPlaceholder };
-        return { label: prompt.label, placeholder: prompt.placeholder };
-    };
 
     const [formData, setFormData] = useState({
         symbol: initialData?.symbol || "",
@@ -133,7 +97,9 @@ export default function JournalForm({
             : "",
         status: initialData?.status || "OPEN",
         result: initialData?.result || "",
-        pnl: initialData?.pnl || "",
+        pnl: initialData?.pnl !== undefined && initialData?.pnl !== null ? initialData.pnl : "",
+        commission: initialData?.commission !== undefined && initialData?.commission !== null ? initialData.commission : "",
+        swap: initialData?.swap !== undefined && initialData?.swap !== null ? initialData.swap : "",
         notes: initialData?.notes || "",
         entryReason: initialData?.entryReason || "",
         exitReason: initialData?.exitReason || "",
@@ -168,13 +134,8 @@ export default function JournalForm({
             { status: "FOLLOWED" | "BROKEN" | "SKIPPED"; note: string }
         >
     >({});
-    const [activePlans, setActivePlans] = useState<any[]>([]);
-    const [selectedPlanId, setSelectedPlanId] = useState<string>(
-        initialData?.tradePlan?.id || ""
-    );
-
     useEffect(() => {
-        async function loadRulesAndPlans() {
+        async function loadRules() {
             try {
                 const activeRulesList = await getTradingRulesList();
                 setActiveRules(activeRulesList.filter((r) => r.isActive));
@@ -189,93 +150,12 @@ export default function JournalForm({
                     });
                     setRuleChecks(checksMap);
                 }
-
-                const res = await fetch("/api/trade-plans");
-                if (res.ok) {
-                    const plans = await res.json();
-                    if (Array.isArray(plans)) {
-                        setActivePlans(
-                            plans.filter(
-                                (p: any) =>
-                                    p.status === "PLANNED" ||
-                                    p.status === "ACTIVE" ||
-                                    p.id === initialData?.tradePlan?.id
-                            )
-                        );
-                    }
-                }
             } catch (err) {
-                console.error("Failed to load rules or plans", err);
+                console.error("Failed to load rules", err);
             }
         }
-        loadRulesAndPlans();
+        loadRules();
     }, [initialData]);
-
-    const [hasManuallySelectedPlan, setHasManuallySelectedPlan] =
-        useState(false);
-
-    const matchingPlansWithConfidence = useMemo(() => {
-        if (!formData.symbol) return [];
-        return activePlans
-            .filter(
-                (p: any) =>
-                    p.symbol.toUpperCase() === formData.symbol.toUpperCase()
-            )
-            .map((p) => {
-                const match = computePlanMatchConfidence(p, {
-                    symbol: formData.symbol,
-                    type: formData.type,
-                    accountId: formData.accountId,
-                    entryDate: formData.entryDate || new Date(),
-                });
-                return {
-                    plan: p,
-                    confidence: match.confidence,
-                    reason: match.reason,
-                };
-            })
-            .sort((a, b) => {
-                const order = { HIGH: 3, MEDIUM: 2, LOW: 1 };
-                return order[b.confidence] - order[a.confidence];
-            });
-    }, [
-        formData.symbol,
-        formData.type,
-        formData.accountId,
-        formData.entryDate,
-        activePlans,
-    ]);
-
-    // Reset override flag on symbol change
-    useEffect(() => {
-        setHasManuallySelectedPlan(false);
-    }, [formData.symbol]);
-
-    // Auto-matching guardrail: auto-select if high confidence match is found
-    useEffect(() => {
-        if (isEditMode || !formData.symbol || hasManuallySelectedPlan) return;
-
-        const bestMatch = getBestPlanMatch(activePlans, {
-            symbol: formData.symbol,
-            type: formData.type,
-            accountId: formData.accountId,
-            entryDate: formData.entryDate || new Date(),
-        });
-
-        if (bestMatch && bestMatch.confidence === "HIGH") {
-            setSelectedPlanId(bestMatch.plan.id);
-        } else {
-            setSelectedPlanId("");
-        }
-    }, [
-        formData.symbol,
-        formData.type,
-        formData.accountId,
-        formData.entryDate,
-        activePlans,
-        isEditMode,
-        hasManuallySelectedPlan,
-    ]);
 
     const addCustomTag = () => {
         if (!customTagInput.trim()) return;
@@ -439,7 +319,9 @@ export default function JournalForm({
                     ? parseFloat(formData.takeProfit)
                     : null,
                 lotSize: parseFloat(formData.lotSize),
-                pnl: formData.pnl ? parseFloat(formData.pnl) : null,
+                pnl: formData.pnl !== "" && formData.pnl !== null ? parseFloat(formData.pnl) : null,
+                commission: formData.commission !== "" && formData.commission !== null ? parseFloat(formData.commission) : null,
+                swap: formData.swap !== "" && formData.swap !== null ? parseFloat(formData.swap) : null,
                 result: formData.result || null,
                 strategy: formData.strategy || null,
                 accountId: formData.accountId || null,
@@ -456,12 +338,8 @@ export default function JournalForm({
                 notesPsychology: formData.notesPsychology || null,
                 // Mistakes (Phase 45)
                 mistakes: formData.mistakes || [],
-                // Rule checks & Trade plan ID
+                // Rule checks
                 ruleChecks: ruleChecksPayload,
-                tradePlanId:
-                    selectedPlanId && selectedPlanId !== "none"
-                        ? selectedPlanId
-                        : null,
             };
 
             // For synced trades, strip locked core data to prevent
@@ -475,6 +353,8 @@ export default function JournalForm({
                 delete payload.takeProfit;
                 delete payload.lotSize;
                 delete payload.pnl;
+                delete payload.commission;
+                delete payload.swap;
                 delete payload.entryDate;
                 delete payload.status;
                 delete payload.result;
@@ -531,20 +411,20 @@ export default function JournalForm({
     const isSynced = !!initialData?.externalTicket;
 
     return (
-        <div className="w-full mx-auto space-y-6">
+        <div className="w-full mx-auto space-y-4">
             {/* Header - Only show if not in modal (i.e. if onCancel is not provided, or explicit prop) 
  For now, if onCancel is provided, we assume it's a modal and hide the main header 
  */}
             {!onCancel && (
-                <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-4">
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
                         <Link
                             href="/dashboard/journal"
-                            className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors"
+                            className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors"
                         >
-                            <ArrowLeft size={20} className="text-gray-600" />
+                            <ArrowLeft size={18} className="text-gray-600" />
                         </Link>
-                        <h1 className="text-3xl font-bold text-gray-700 dark:text-white">
+                        <h1 className="text-2xl font-bold text-gray-700 dark:text-white">
                             {isEditMode ? "Edit Trade" : "Log New Trade"}
                         </h1>
                     </div>
@@ -553,16 +433,16 @@ export default function JournalForm({
 
             {isSynced && (
                 <>
-                    <div className="hidden md:flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-xl border border-blue-100 dark:border-blue-500/20 text-sm font-medium">
-                        <AlertCircle size={16} className="shrink-0" />
+                    <div className="hidden md:flex items-center gap-2 py-2 px-3 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg border border-blue-100 dark:border-blue-500/20 text-xs font-medium">
+                        <AlertCircle size={14} className="shrink-0" />
                         This trade was synced from MT5. Core data is locked. You
                         can edit notes and psychology.
                     </div>
-                    <div className="md:hidden flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-xl border border-blue-100 dark:border-blue-500/20 text-sm font-medium">
-                        <AlertCircle size={16} className="shrink-0 mt-0.5" />
-                        <div className="flex flex-col gap-1">
+                    <div className="md:hidden flex items-start gap-2 py-2 px-3 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg border border-blue-100 dark:border-blue-500/20 text-xs font-medium">
+                        <AlertCircle size={14} className="shrink-0 mt-0.5" />
+                        <div className="flex flex-col gap-0.5">
                             <span className="font-bold">Synced from MT5</span>
-                            <span className="font-normal opacity-90 text-xs">
+                            <span className="font-normal opacity-90 text-[11px]">
                                 For detailed strategy and chart tracking, import
                                 your trades from a desktop browser. You can
                                 still quick-review your psychology here.
@@ -572,27 +452,20 @@ export default function JournalForm({
                 </>
             )}
 
-            {/* Guided Journal Template Selector */}
-            <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-dashboard shadow-sm">
-                <JournalTemplateSelector
-                    value={selectedTemplate}
-                    onChange={setSelectedTemplate}
-                    isSynced={isSynced}
-                />
-            </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+
+            <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Main Info Card */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm space-y-6">
-                    <h3 className="text-xl font-bold text-gray-700 dark:text-white flex items-center gap-2">
-                        <div className="w-1.5 h-6 bg-primary rounded-full"></div>
+                <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-lg border border-dashboard shadow-sm space-y-4">
+                    <h3 className="text-base font-bold font-sans tracking-tight text-gray-700 dark:text-white flex items-center gap-2">
+                        <div className="w-1 h-4 bg-primary rounded-full"></div>
                         Trade Details
                     </h3>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                         {/* Account Selection */}
-                        <div className="col-span-1 md:col-span-2 space-y-2">
-                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                        <div className="col-span-1 md:col-span-2 space-y-1.5">
+                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                                 Trading Account
                             </label>
                             <Select
@@ -606,7 +479,7 @@ export default function JournalForm({
                                 disabled={isSynced || isEditMode}
                             >
                                 <SelectTrigger
-                                    className={`w-full h-[50px] px-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none font-medium transition-all ${isSynced || isEditMode ? "opacity-60 cursor-not-allowed" : ""}`}
+                                    className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none text-xs sm:text-sm font-medium transition-all ${isSynced || isEditMode ? "opacity-60 cursor-not-allowed" : ""}`}
                                 >
                                     <SelectValue placeholder="Select Account (Optional)" />
                                 </SelectTrigger>
@@ -623,60 +496,10 @@ export default function JournalForm({
                             </Select>
                         </div>
 
-                        {matchingPlansWithConfidence.length > 0 && (
-                            <div className="col-span-1 md:col-span-2 space-y-2 bg-purple-500/5 p-4 rounded-xl border border-purple-500/10">
-                                <label className="text-sm font-bold text-purple-600 dark:text-purple-400">
-                                    Link to Trade Plan
-                                </label>
-                                <Select
-                                    value={selectedPlanId || "none"}
-                                    onValueChange={(val) => {
-                                        setSelectedPlanId(
-                                            val === "none" ? "" : val
-                                        );
-                                        setHasManuallySelectedPlan(true);
-                                    }}
-                                >
-                                    <SelectTrigger className="w-full h-[50px] px-3 rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard focus:border-primary focus:outline-none font-medium text-sm">
-                                        <SelectValue placeholder="Unlinked (Select plan to link)" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="none">
-                                            Unlinked (Do not link to plan)
-                                        </SelectItem>
-                                        {matchingPlansWithConfidence.map(
-                                            ({ plan: p, confidence }) => (
-                                                <SelectItem
-                                                    key={p.id}
-                                                    value={p.id}
-                                                >
-                                                    {confidence === "HIGH" &&
-                                                        "[Recommended] "}
-                                                    {confidence === "MEDIUM" &&
-                                                        "[Suggested] "}
-                                                    {p.setupName || "Setup"} (
-                                                    {p.type}) at{" "}
-                                                    {p.plannedEntry
-                                                        ? p.plannedEntry.toFixed(
-                                                              5
-                                                          )
-                                                        : "market"}{" "}
-                                                    (Planned:{" "}
-                                                    {format(
-                                                        new Date(p.createdAt),
-                                                        "dd MMM HH:mm"
-                                                    )}
-                                                    )
-                                                </SelectItem>
-                                            )
-                                        )}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        )}
 
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                                 Pair / Symbol
                             </label>
                             <input
@@ -685,13 +508,13 @@ export default function JournalForm({
                                 onChange={handleChange}
                                 placeholder="EURUSD"
                                 disabled={isSynced}
-                                className={`w-full h-[50px] px-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none uppercase font-bold transition-all ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none uppercase font-mono font-bold tracking-wider text-xs sm:text-sm transition-all ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                                 required
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                                 Date & Time
                             </label>
                             <input
@@ -700,17 +523,17 @@ export default function JournalForm({
                                 value={formData.entryDate}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full h-[50px] px-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none font-mono text-xs sm:text-sm transition-all ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                                 required
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                                 Type
                             </label>
                             <div
-                                className={`flex bg-gray-50 dark:bg-black/20 p-1 rounded-xl border border-dashboard h-[50px] ${isSynced ? "opacity-60 pointer-events-none" : ""}`}
+                                className={`flex bg-gray-50 dark:bg-black/20 p-1 rounded-lg border border-dashboard h-10 ${isSynced ? "opacity-60 pointer-events-none" : ""}`}
                             >
                                 {["BUY", "SELL"].map((type) => (
                                     <Button
@@ -719,11 +542,11 @@ export default function JournalForm({
                                         onClick={() =>
                                             setFormData((p) => ({ ...p, type }))
                                         }
-                                        className={`flex-1 h-full text-sm font-bold transition-all rounded-lg ${
+                                        className={`flex-1 h-full text-xs font-bold transition-all rounded-lg ${
                                             formData.type === type
                                                 ? type === "BUY"
-                                                    ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30"
-                                                    : "bg-red-500 text-white shadow-lg shadow-red-500/30"
+                                                    ? "bg-blue-500 text-white shadow-md shadow-blue-500/20"
+                                                    : "bg-red-500 text-white shadow-md shadow-red-500/20"
                                                 : "bg-transparent text-gray-600 hover:bg-white dark:hover:bg-white/5"
                                         }`}
                                     >
@@ -733,8 +556,8 @@ export default function JournalForm({
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                                 Status
                             </label>
                             <Select
@@ -748,7 +571,7 @@ export default function JournalForm({
                                 disabled={isSynced}
                             >
                                 <SelectTrigger
-                                    className={`w-full h-[50px] px-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                    className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none text-xs sm:text-sm transition-all ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                                 >
                                     <SelectValue placeholder="Select Status" />
                                 </SelectTrigger>
@@ -766,15 +589,15 @@ export default function JournalForm({
                 </div>
 
                 {/* Price & Risk */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm space-y-6">
-                    <h3 className="text-xl font-bold text-gray-700 dark:text-white flex items-center gap-2">
-                        <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
+                <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-lg border border-dashboard shadow-sm space-y-4">
+                    <h3 className="text-base font-bold font-sans tracking-tight text-gray-700 dark:text-white flex items-center gap-2">
+                        <div className="w-1 h-4 bg-blue-500 rounded-full"></div>
                         Pricing & Risk
                     </h3>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                                 Entry Price
                             </label>
                             <input
@@ -784,13 +607,13 @@ export default function JournalForm({
                                 value={formData.entryPrice}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none font-mono ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none font-mono text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                                 required
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                                 Lot Size
                             </label>
                             <input
@@ -800,13 +623,13 @@ export default function JournalForm({
                                 value={formData.lotSize}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none font-mono ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none font-mono text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                                 required
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                                 Exit Price
                             </label>
                             <input
@@ -816,12 +639,12 @@ export default function JournalForm({
                                 value={formData.exitPrice}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none font-mono ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none font-mono text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-red-500">
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-red-500">
                                 Stop Loss
                             </label>
                             <input
@@ -831,12 +654,12 @@ export default function JournalForm({
                                 value={formData.stopLoss}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full p-3 rounded-xl bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/20 focus:border-red-500 focus:outline-none font-mono ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                className={`w-full h-10 px-3 rounded-lg bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/20 focus:border-red-500 focus:outline-none font-mono text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-primary">
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-primary">
                                 Take Profit
                             </label>
                             <input
@@ -846,12 +669,12 @@ export default function JournalForm({
                                 value={formData.takeProfit}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full p-3 rounded-xl bg-green-50 dark:bg-green-500/5 border border-green-100 dark:border-green-500/20 focus:border-primary focus:outline-none font-mono ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                className={`w-full h-10 px-3 rounded-lg bg-green-50 dark:bg-green-500/5 border border-green-100 dark:border-green-500/20 focus:border-primary focus:outline-none font-mono text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                                 Profit / Loss (Cash)
                             </label>
                             <input
@@ -860,32 +683,61 @@ export default function JournalForm({
                                 name="pnl"
                                 value={formData.pnl}
                                 onChange={handleChange}
-                                placeholder="Auto or Manual"
                                 disabled={isSynced}
-                                className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none font-mono font-bold ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none font-mono font-bold text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                            />
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                Commission
+                            </label>
+                            <input
+                                type="number"
+                                step="any"
+                                name="commission"
+                                value={formData.commission}
+                                onChange={handleChange}
+                                disabled={isSynced}
+                                className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none font-mono text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                            />
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                Swap
+                            </label>
+                            <input
+                                type="number"
+                                step="any"
+                                name="swap"
+                                value={formData.swap}
+                                onChange={handleChange}
+                                disabled={isSynced}
+                                className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none font-mono text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                             />
                         </div>
                     </div>
                 </div>
 
                 {/* Analysis */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm space-y-6">
-                    <h3 className="text-xl font-bold text-gray-700 dark:text-white flex items-center gap-2">
-                        <div className="w-1.5 h-6 bg-purple-500 rounded-full"></div>
+                <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-lg border border-dashboard shadow-sm space-y-4">
+                    <h3 className="text-base font-bold font-sans tracking-tight text-gray-700 dark:text-white flex items-center gap-2">
+                        <div className="w-1 h-4 bg-purple-500 rounded-full"></div>
                         Analysis & Result
                     </h3>
 
-                    <div className="space-y-6">
-                        <div className="grid grid-cols-1 gap-6">
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-1 gap-4">
                             {/* Strategy Selection */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                                     Strategy
                                 </label>
                                 {strategies.length === 0 ? (
                                     /* Empty State — no strategies yet */
-                                    <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-dashboard">
-                                        <span className="text-sm text-gray-500 flex-1">
+                                    <div className="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard">
+                                        <span className="text-xs text-gray-500 flex-1">
                                             No strategies found
                                         </span>
                                         <a
@@ -893,7 +745,7 @@ export default function JournalForm({
                                             target="_blank"
                                             className="flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
                                         >
-                                            <ExternalLink size={14} />
+                                            <ExternalLink size={13} />
                                             Create Strategy
                                         </a>
                                     </div>
@@ -905,7 +757,7 @@ export default function JournalForm({
                                                 <Button
                                                     type="button"
                                                     variant="outline"
-                                                    className="w-full justify-between p-3 h-auto rounded-xl bg-gray-50 dark:bg-black/20 border-dashboard hover:bg-gray-100 dark:hover:bg-white/5 text-sm font-medium"
+                                                    className="w-full justify-between px-3 h-10 rounded-lg bg-gray-50 dark:bg-black/20 border-dashboard hover:bg-gray-100 dark:hover:bg-white/5 text-xs sm:text-sm font-medium"
                                                 >
                                                     <span
                                                         className={`flex items-center gap-2 ${formData.strategy ? "text-gray-700 dark:text-white" : "text-gray-500"}`}
@@ -999,10 +851,10 @@ export default function JournalForm({
                                             variant="outline"
                                             onClick={fetchStrategies}
                                             aria-label="Refresh strategies"
-                                            className="p-3 w-12 h-12 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors text-gray-600 hover:text-primary"
+                                            className="p-2 w-10 h-10 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-colors text-gray-600 hover:text-primary shrink-0"
                                             title="Refresh strategies"
                                         >
-                                            <RefreshCw size={18} />
+                                            <RefreshCw size={16} />
                                         </Button>
                                     </div>
                                 )}
@@ -1055,17 +907,17 @@ export default function JournalForm({
                                     };
 
                                     return (
-                                        <div className="mt-3 p-4 rounded-xl bg-primary/5 border border-primary/20 space-y-3.5">
+                                        <div className="mt-3 p-4 rounded-lg bg-amber-500/5 border border-amber-500/20 space-y-3.5">
                                             {/* Header */}
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-2">
-                                                    <BookOpen size={16} className="text-primary" />
-                                                    <span className="text-xs font-bold text-primary uppercase tracking-wider">
+                                                    <BookOpen size={16} className="text-gold" />
+                                                    <span className="text-xs font-bold text-gold uppercase tracking-wider">
                                                         Playbook Benchmark
                                                     </span>
                                                 </div>
                                                 {selectedStrategy.setupType && (
-                                                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-primary/10 text-primary border border-primary/20">
+                                                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-amber-500/10 text-gold dark:text-amber-400 border border-amber-500/20">
                                                         {selectedStrategy.setupType}
                                                     </span>
                                                 )}
@@ -1074,41 +926,41 @@ export default function JournalForm({
                                             {/* Ideal Zones & Min RR */}
                                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
                                                 {selectedStrategy.idealEntry && (
-                                                    <div className="bg-white/60 dark:bg-white/5 p-2.5 rounded-xl border border-dashboard">
+                                                    <div className="bg-white/60 dark:bg-white/5 p-2.5 rounded-lg border border-dashboard">
                                                         <span className="text-[10px] text-gray-500 font-bold block uppercase">Ideal Entry</span>
                                                         <span className="font-semibold text-gray-700 dark:text-gray-200 line-clamp-1">{selectedStrategy.idealEntry}</span>
                                                     </div>
                                                 )}
                                                 {selectedStrategy.idealStopLoss && (
-                                                    <div className="bg-white/60 dark:bg-white/5 p-2.5 rounded-xl border border-dashboard">
+                                                    <div className="bg-white/60 dark:bg-white/5 p-2.5 rounded-lg border border-dashboard">
                                                         <span className="text-[10px] text-gray-500 font-bold block uppercase">Ideal SL</span>
                                                         <span className="font-semibold text-gray-700 dark:text-gray-200 line-clamp-1">{selectedStrategy.idealStopLoss}</span>
                                                     </div>
                                                 )}
                                                 {selectedStrategy.riskRewardMin != null && (
-                                                    <div className="bg-white/60 dark:bg-white/5 p-2.5 rounded-xl border border-dashboard">
+                                                    <div className="bg-white/60 dark:bg-white/5 p-2.5 rounded-lg border border-dashboard">
                                                         <span className="text-[10px] text-gray-500 font-bold block uppercase">Min R:R</span>
-                                                        <span className="font-bold text-primary">{selectedStrategy.riskRewardMin}:1</span>
+                                                        <span className="font-bold text-gold">{selectedStrategy.riskRewardMin}:1</span>
                                                     </div>
                                                 )}
                                             </div>
 
                                             {/* Pre-Flight Execution Checklist */}
                                             {totalRules > 0 && (
-                                                <div className="p-3 rounded-xl bg-white/70 dark:bg-white/5 border border-dashboard space-y-2.5">
+                                                <div className="p-3 rounded-lg bg-white/70 dark:bg-white/5 border border-dashboard space-y-2.5">
                                                     <div className="flex items-center justify-between">
                                                         <div className="flex items-center gap-1.5">
-                                                            <ShieldCheck size={14} className="text-primary" />
+                                                            <ShieldCheck size={14} className="text-gold" />
                                                             <span className="text-xs font-bold text-gray-700 dark:text-gray-200">
                                                                 Pre-Flight Execution Checklist
                                                             </span>
                                                         </div>
                                                         <div className="flex items-center gap-2">
-                                                            <span className="text-[11px] font-bold text-primary">
+                                                            <span className="text-[11px] font-bold text-gold">
                                                                 {checkedCount}/{totalRules} ({complianceScore}%)
                                                             </span>
                                                             <span
-                                                                className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded ${
+                                                                className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-lg ${
                                                                     complianceScore === 100
                                                                         ? "bg-emerald-500/10 text-emerald-600"
                                                                         : complianceScore >= 50
@@ -1129,12 +981,12 @@ export default function JournalForm({
                                                                 onClick={() => toggleRuleCheck(idx)}
                                                                 className={`w-full text-left p-2 rounded-lg text-xs flex items-center gap-2.5 transition-all cursor-pointer border ${
                                                                     playbookChecks[idx]
-                                                                        ? "bg-primary/10 border-primary/30 text-gray-800 dark:text-white"
+                                                                        ? "bg-amber-500/10 border-amber-500/40 text-gray-800 dark:text-white"
                                                                         : "bg-white/40 dark:bg-black/20 border-dashboard text-gray-600 dark:text-gray-400 hover:border-gray-300"
                                                                 }`}
                                                             >
                                                                 {playbookChecks[idx] ? (
-                                                                    <CheckSquare size={15} className="text-primary shrink-0" />
+                                                                    <CheckSquare size={15} className="text-gold shrink-0" />
                                                                 ) : (
                                                                     <Square size={15} className="text-gray-400 shrink-0" />
                                                                 )}
@@ -1221,16 +1073,16 @@ export default function JournalForm({
                             )}
 
                             {/* Custom Tags */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                                     Custom Tags
                                 </label>
-                                <div className="flex flex-wrap gap-2 mb-2">
+                                <div className="flex flex-wrap gap-1.5 mb-1.5">
                                     {(formData.tags || []).map(
                                         (tag: string, idx: number) => (
                                             <span
                                                 key={idx}
-                                                className="px-2 py-1 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold border border-dashboard flex items-center gap-1"
+                                                className="px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-semibold border border-dashboard flex items-center gap-1"
                                             >
                                                 {tag}
                                                 <Button
@@ -1241,9 +1093,9 @@ export default function JournalForm({
                                                         removeCustomTag(tag)
                                                     }
                                                     aria-label={`Remove tag ${tag}`}
-                                                    className="w-4 h-4 hover:bg-transparent border-transparent hover:text-red-500 p-0 text-gray-500"
+                                                    className="w-3.5 h-3.5 hover:bg-transparent border-transparent hover:text-red-500 p-0 text-gray-500"
                                                 >
-                                                    <X size={12} />
+                                                    <X size={10} />
                                                 </Button>
                                             </span>
                                         )
@@ -1263,48 +1115,35 @@ export default function JournalForm({
                                             }
                                         }}
                                         placeholder="Add custom tag (e.g. NFP, Test)..."
-                                        className="flex-1 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none"
+                                        className="flex-1 h-10 px-3 text-xs sm:text-sm rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none"
                                     />
                                     <Button
                                         type="button"
                                         variant="outline"
                                         onClick={() => addCustomTag()}
-                                        className="h-[50px] px-6 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors text-primary font-bold gap-2"
+                                        className="h-10 px-4 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-colors text-primary font-bold text-xs gap-1.5"
                                     >
-                                        Add <Plus size={20} />
+                                        Add <Plus size={16} />
                                     </Button>
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
-                                    {
-                                        getFieldConfig(
-                                            "entryReason",
-                                            "Entry Reason",
-                                            "Why did you take this trade?"
-                                        ).label
-                                    }
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                    Entry Reason
                                 </label>
                                 <textarea
                                     name="entryReason"
                                     value={formData.entryReason}
                                     onChange={handleChange}
-                                    className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none resize-none"
-                                    rows={3}
-                                    placeholder={
-                                        getFieldConfig(
-                                            "entryReason",
-                                            "Entry Reason",
-                                            "Why did you take this trade?"
-                                        ).placeholder
-                                    }
+                                    className="w-full p-2.5 text-xs sm:text-sm rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none resize-none"
+                                    rows={2}
                                 />
                             </div>
 
                             {/* Mistakes */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                                     Mistakes
                                 </label>
                                 <MistakeSelector
@@ -1321,15 +1160,15 @@ export default function JournalForm({
 
                             {/* Rulebook Compliance Checklist */}
                             {activeRules.length > 0 && (
-                                <div className="space-y-4 pt-4 border-t border-dashboard">
-                                    <h3 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2">
+                                <div className="space-y-3 pt-3 border-t border-dashboard">
+                                    <h3 className="text-sm font-bold font-sans tracking-tight text-gray-700 dark:text-white flex items-center gap-1.5">
                                         <ClipboardList
-                                            size={18}
+                                            size={16}
                                             className="text-primary"
                                         />
                                         Rulebook Compliance Checklist
                                     </h3>
-                                    <div className="space-y-3">
+                                    <div className="space-y-2.5">
                                         {activeRules.map((rule) => {
                                             const currentCheck = ruleChecks[
                                                 rule.id
@@ -1341,9 +1180,9 @@ export default function JournalForm({
                                             return (
                                                 <div
                                                     key={rule.id}
-                                                    className="p-4 rounded-xl border border-dashboard bg-gray-50/50 dark:bg-black/10 space-y-3"
+                                                    className="p-3 rounded-lg border border-dashboard bg-gray-50/50 dark:bg-black/10 space-y-2.5"
                                                 >
-                                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                                                         <div className="min-w-0 flex-1">
                                                             <div className="flex items-center gap-2">
                                                                 <span
@@ -1367,11 +1206,11 @@ export default function JournalForm({
                                                                     }
                                                                 </span>
                                                             </div>
-                                                            <h4 className="text-sm font-bold text-gray-700 dark:text-white mt-1">
+                                                            <h4 className="text-xs font-bold text-gray-700 dark:text-white mt-0.5">
                                                                 {rule.title}
                                                             </h4>
                                                             {rule.description && (
-                                                                <p className="text-xs text-gray-500 mt-0.5">
+                                                                <p className="text-[11px] text-gray-500 mt-0.5">
                                                                     {
                                                                         rule.description
                                                                     }
@@ -1379,14 +1218,14 @@ export default function JournalForm({
                                                             )}
                                                         </div>
 
-                                                        <div className="flex flex-wrap items-center gap-2">
+                                                        <div className="flex flex-wrap items-center gap-1.5">
                                                             {(
                                                                 [
                                                                     "FOLLOWED",
                                                                     "BROKEN",
                                                                     "SKIPPED",
                                                                 ] as const
-                                                            ).map((status) => (
+                                                             ).map((status) => (
                                                                 <button
                                                                     key={status}
                                                                     type="button"
@@ -1404,16 +1243,16 @@ export default function JournalForm({
                                                                             })
                                                                         )
                                                                     }
-                                                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase border transition-all ${
+                                                                    className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase border transition-all ${
                                                                         currentCheck.status ===
                                                                         status
                                                                             ? status ===
                                                                               "FOLLOWED"
-                                                                                ? "bg-emerald-500 border-emerald-500 text-white shadow-md shadow-emerald-500/10"
+                                                                                ? "bg-emerald-500 border-emerald-500 text-white shadow-sm shadow-emerald-500/10"
                                                                                 : status ===
                                                                                     "BROKEN"
-                                                                                  ? "bg-red-500 border-red-500 text-white shadow-md shadow-red-500/10"
-                                                                                  : "bg-gray-500 border-gray-500 text-white shadow-md shadow-gray-500/10"
+                                                                                  ? "bg-red-500 border-red-500 text-white shadow-sm shadow-red-500/10"
+                                                                                  : "bg-gray-500 border-gray-500 text-white shadow-sm shadow-gray-500/10"
                                                                             : "bg-white dark:bg-black/20 text-gray-500 border-dashboard hover:border-gray-400"
                                                                     }`}
                                                                 >
@@ -1462,11 +1301,11 @@ export default function JournalForm({
                                 </div>
                             )}
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                                     Exit Reason / Result
                                 </label>
-                                <div className="space-y-3">
+                                <div className="space-y-2">
                                     <div className="flex gap-2">
                                         {(
                                             [
@@ -1510,7 +1349,7 @@ export default function JournalForm({
                                                             result: res,
                                                         }))
                                                     }
-                                                    className={`flex-1 py-4 text-xs font-bold transition-all rounded-lg ${
+                                                    className={`flex-1 py-2 text-xs font-bold transition-all rounded-lg ${
                                                         isActive
                                                             ? activeColorMap[
                                                                   res
@@ -1527,15 +1366,8 @@ export default function JournalForm({
                                         name="exitReason"
                                         value={formData.exitReason}
                                         onChange={handleChange}
-                                        className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none resize-none"
+                                        className="w-full p-2.5 text-xs sm:text-sm rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none resize-none"
                                         rows={2}
-                                        placeholder={
-                                            getFieldConfig(
-                                                "exitReason",
-                                                "Exit Reason / Result",
-                                                "What happened?"
-                                            ).placeholder
-                                        }
                                     />
                                 </div>
                             </div>
@@ -1544,20 +1376,20 @@ export default function JournalForm({
                 </div>
 
                 {/* Psychology Tracking (Phase 44) */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm space-y-6">
-                    <h3 className="text-xl font-bold text-gray-700 dark:text-white flex items-center gap-2">
-                        <div className="p-1.5 bg-purple-500/10 text-purple-500 rounded-lg">
-                            <Brain size={20} />
+                <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-lg border border-dashboard shadow-sm space-y-4">
+                    <h3 className="text-base font-bold font-sans tracking-tight text-gray-700 dark:text-white flex items-center gap-2">
+                        <div className="p-1 bg-purple-500/10 text-purple-500 rounded-lg">
+                            <Brain size={16} />
                         </div>
                         Psychology Tracking
-                        <span className="text-xs font-normal text-gray-500 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-full ml-2">
+                        <span className="text-[10px] font-medium text-gray-500 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-full ml-1">
                             Optional
                         </span>
                     </h3>
 
-                    <div className="space-y-8">
+                    <div className="space-y-4">
                         {/* Emotion Before Entry */}
-                        <div className="space-y-2">
+                        <div className="space-y-1.5">
                             <EmotionSelector
                                 value={formData.emotionBefore}
                                 onChange={(value) =>
@@ -1573,7 +1405,7 @@ export default function JournalForm({
 
                         {/* Emotion After Exit */}
                         {formData.status === "CLOSED" && (
-                            <div className="space-y-2 pt-4 border-t border-dashboard">
+                            <div className="space-y-1.5 pt-3 border-t border-dashboard">
                                 <EmotionSelector
                                     value={formData.emotionAfter}
                                     onChange={(value) =>
@@ -1588,13 +1420,13 @@ export default function JournalForm({
                             </div>
                         )}
 
-                        <div className="grid md:grid-cols-2 gap-8 pt-4 border-t border-dashboard">
+                        <div className="grid md:grid-cols-2 gap-4 pt-3 border-t border-dashboard">
                             {/* Confidence Level */}
-                            <div className="space-y-3">
-                                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                                     Confidence Level (Pre-Entry)
                                 </label>
-                                <div className="flex gap-2">
+                                <div className="flex gap-1.5">
                                     {[1, 2, 3, 4, 5].map((level) => (
                                         <Button
                                             key={level}
@@ -1607,10 +1439,10 @@ export default function JournalForm({
                                                 })
                                             }
                                             className={`
- w-12 h-12 rounded-xl font-bold text-lg transition-all border p-0
+ w-9 h-9 rounded-lg font-bold text-sm transition-all border p-0
  ${
      formData.confidenceLevel === level
-         ? "bg-purple-500 text-white border-purple-500 ring-2 ring-purple-300 ring-offset-2 dark:ring-offset-gray-900 shadow-lg shadow-purple-500/20 hover:bg-purple-600 hover:text-white"
+         ? "bg-purple-500 text-white border-purple-500 ring-2 ring-purple-300 ring-offset-2 dark:ring-offset-gray-900 shadow-sm shadow-purple-500/20 hover:bg-purple-600 hover:text-white"
          : "bg-gray-50 dark:bg-black/20 text-gray-600 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-white/5 border-dashboard "
  }
  `}
@@ -1619,17 +1451,17 @@ export default function JournalForm({
                                         </Button>
                                     ))}
                                 </div>
-                                <p className="text-xs text-gray-500">
+                                <p className="text-[11px] text-gray-500">
                                     1 = Uncertain, 5 = Very Confident
                                 </p>
                             </div>
 
                             {/* Plan Adherence */}
-                            <div className="space-y-3">
-                                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                                     Did you follow your plan?
                                 </label>
-                                <div className="flex gap-3">
+                                <div className="flex gap-2">
                                     <Button
                                         type="button"
                                         variant={
@@ -1644,15 +1476,15 @@ export default function JournalForm({
                                             })
                                         }
                                         className={`
- flex-1 min-h-[50px] rounded-xl font-bold transition-all flex items-center justify-center gap-2 border
+ flex-1 h-9 rounded-lg font-bold text-xs transition-all flex items-center justify-center gap-1.5 border
  ${
      formData.followedPlan === true
-         ? "bg-green-500 text-white border-green-500 shadow-lg shadow-green-500/20 hover:bg-green-600"
+         ? "bg-green-500 text-white border-green-500 shadow-sm shadow-green-500/20 hover:bg-green-600"
          : "bg-gray-50 dark:bg-black/20 text-gray-600 dark:text-gray-500 border-dashboard hover:bg-white dark:hover:bg-white/5"
  }
  `}
                                     >
-                                        <Check size={18} />
+                                        <Check size={14} />
                                         Yes
                                     </Button>
                                     <Button
@@ -1669,15 +1501,15 @@ export default function JournalForm({
                                             })
                                         }
                                         className={`
- flex-1 min-h-[50px] rounded-xl font-bold transition-all flex items-center justify-center gap-2 border
+ flex-1 h-9 rounded-lg font-bold text-xs transition-all flex items-center justify-center gap-1.5 border
  ${
      formData.followedPlan === false
-         ? "bg-red-500 text-white border-red-500 shadow-lg shadow-red-500/20 hover:bg-red-600"
+         ? "bg-red-500 text-white border-red-500 shadow-sm shadow-red-500/20 hover:bg-red-600"
          : "bg-gray-50 dark:bg-black/20 text-gray-600 dark:text-gray-500 border-dashboard hover:bg-white dark:hover:bg-white/5"
  }
  `}
                                     >
-                                        <X size={18} />
+                                        <X size={14} />
                                         No
                                     </Button>
                                 </div>
@@ -1685,29 +1517,16 @@ export default function JournalForm({
                         </div>
 
                         {/* Psychology Notes */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
-                                {
-                                    getFieldConfig(
-                                        "notesPsychology",
-                                        "Psychology Notes",
-                                        "What thoughts influenced your decision? Any emotional triggers?"
-                                    ).label
-                                }
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                Psychology Notes
                             </label>
                             <textarea
                                 name="notesPsychology"
                                 value={formData.notesPsychology}
                                 onChange={handleChange}
-                                className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none resize-none"
-                                rows={3}
-                                placeholder={
-                                    getFieldConfig(
-                                        "notesPsychology",
-                                        "Psychology Notes",
-                                        "What thoughts influenced your decision? Any emotional triggers?"
-                                    ).placeholder
-                                }
+                                className="w-full p-2.5 text-xs sm:text-sm rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none resize-none"
+                                rows={2}
                             />
                         </div>
                     </div>
@@ -1725,21 +1544,21 @@ export default function JournalForm({
                 )}
 
                 {/* Screenshots Section — R2 File Upload */}
-                <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm space-y-6">
-                    <h3 className="text-xl font-bold text-gray-700 dark:text-white flex items-center gap-2">
-                        <div className="w-1.5 h-6 bg-pink-500 rounded-full"></div>
+                <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-lg border border-dashboard shadow-sm space-y-3.5">
+                    <h3 className="text-base font-bold font-sans tracking-tight text-gray-700 dark:text-white flex items-center gap-2">
+                        <div className="w-1 h-4 bg-pink-500 rounded-full"></div>
                         Trade Screenshots
                         <span className="text-xs font-medium text-gray-400 ml-auto">
                             {(formData.images || []).length}/2
                         </span>
                     </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         {/* Existing Images */}
                         {(formData.images || []).map(
                             (imgUrl: string, idx: number) => (
                                     <div
                                         key={idx}
-                                        className="relative aspect-video rounded-xl overflow-hidden group border border-dashboard"
+                                        className="relative aspect-video rounded-lg overflow-hidden group border border-dashboard"
                                     >
                                         <img
                                             src={imgUrl}
@@ -1767,9 +1586,9 @@ export default function JournalForm({
                                                         images: newImages,
                                                     }));
                                                 }}
-                                                className="w-10 h-10 rounded-full hover:scale-110 transition-transform shadow-lg"
+                                                className="w-8 h-8 rounded-full hover:scale-110 transition-transform shadow-lg"
                                             >
-                                                <X size={20} />
+                                                <X size={16} />
                                             </Button>
                                         </div>
                                     </div>
@@ -1780,10 +1599,10 @@ export default function JournalForm({
                         {uploadingImages > 0 && Array.from({ length: uploadingImages }).map((_, idx) => (
                             <div
                                 key={`uploading-${idx}`}
-                                className="aspect-video rounded-xl border-2 border-dashed border-primary/30 bg-primary/5 dark:bg-primary/10 flex items-center justify-center"
+                                className="aspect-video rounded-lg border-2 border-dashed border-primary/30 bg-primary/5 dark:bg-primary/10 flex items-center justify-center"
                             >
-                                <div className="flex flex-col items-center gap-2">
-                                    <Loader2 size={24} className="animate-spin text-primary" />
+                                <div className="flex flex-col items-center gap-1.5">
+                                    <Loader2 size={20} className="animate-spin text-primary" />
                                     <span className="text-xs font-medium text-primary">Uploading...</span>
                                 </div>
                             </div>
@@ -1792,7 +1611,7 @@ export default function JournalForm({
                         {/* Upload Drop Zone — hidden when 2 images reached */}
                         {(formData.images || []).length + uploadingImages < 2 && (
                             <label
-                                className="aspect-video rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-primary dark:hover:border-primary bg-gray-50 dark:bg-black/20 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all cursor-pointer flex flex-col items-center justify-center gap-2 group"
+                                className="aspect-[16/9] rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-primary dark:hover:border-primary bg-gray-50 dark:bg-black/20 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all cursor-pointer flex flex-col items-center justify-center gap-1.5 group p-3 text-center"
                                 onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add('border-primary', 'bg-primary/5'); }}
                                 onDragLeave={(e) => { e.currentTarget.classList.remove('border-primary', 'bg-primary/5'); }}
                                 onDrop={async (e) => {
@@ -1846,7 +1665,7 @@ export default function JournalForm({
                                         finally { setUploadingImages((prev) => Math.max(0, prev - 1)); }
                                     }}
                                 />
-                                <ImagePlus size={28} className="text-gray-400 dark:text-gray-500 group-hover:text-primary transition-colors" />
+                                <ImagePlus size={22} className="text-gray-400 dark:text-gray-500 group-hover:text-primary transition-colors" />
                                 <span className="text-xs font-medium text-gray-500 dark:text-gray-400 group-hover:text-primary transition-colors">
                                     Drop image or click to upload
                                 </span>
@@ -1858,14 +1677,14 @@ export default function JournalForm({
                     </div>
                 </div>
 
-                <div className="flex justify-end gap-4 pt-4 border-t border-dashboard">
+                <div className="flex justify-end gap-3 pt-3 border-t border-dashboard">
                     {onCancel ? (
                         <Button
                             type="button"
                             onClick={onCancel}
                             variant="outline"
                             size="smd"
-                            className="font-bold text-gray-600 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                            className="font-bold text-xs sm:text-sm text-gray-600 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                         >
                             Cancel
                         </Button>
@@ -1875,7 +1694,7 @@ export default function JournalForm({
                             className={buttonVariants({
                                 variant: "outline",
                                 size: "smd",
-                                className: "font-bold transition-colors",
+                                className: "font-bold text-xs sm:text-sm transition-colors",
                             })}
                         >
                             Cancel
@@ -1886,15 +1705,15 @@ export default function JournalForm({
                         variant="primary"
                         size="smd"
                         disabled={isSubmitting}
-                        className="font-bold"
+                        className="font-bold text-xs sm:text-sm"
                     >
                         {isSubmitting ? (
                             <Loader2
-                                size={16}
+                                size={15}
                                 className="animate-spin mr-1.5"
                             />
                         ) : (
-                            <Save size={16} className="mr-1.5" />
+                            <Save size={15} className="mr-1.5" />
                         )}
                         Save Trade
                     </Button>

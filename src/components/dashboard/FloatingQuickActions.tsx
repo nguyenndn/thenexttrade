@@ -136,7 +136,7 @@ export function FloatingQuickActions() {
                     variant="primary"
                     aria-label="Feedback & Support"
                     onClick={() => setIsOpen(!isOpen)}
-                    className="w-14 h-14 rounded-full !p-0 shadow-lg shadow-primary/30 flex items-center justify-center"
+                    className="w-14 h-14 rounded-full !p-0 shadow-lg shadow-amber-500/30 flex items-center justify-center"
                 >
                     <AnimatedFeedbackIcon isOpen={isOpen} />
                 </Button>

@@ -138,7 +138,7 @@ export function CertificateCard({
         const progress =
             totalQuizzes > 0 ? (passedQuizzes / totalQuizzes) * 100 : 0;
         return (
-            <div className="relative bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-6 opacity-70">
+            <div className="relative bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm p-6 opacity-70">
                 <div className="absolute top-4 right-4">
                     <Lock size={18} className="text-gray-400" />
                 </div>
@@ -193,7 +193,7 @@ export function CertificateCard({
     return (
         <>
             <div
-                className="relative rounded-xl overflow-hidden shadow-lg group select-none cursor-pointer"
+                className="relative rounded-lg overflow-hidden shadow-lg group select-none cursor-pointer"
                 style={{
                     background: `linear-gradient(to bottom right, ${gradient.from}, ${gradient.to})`,
                     transform: tilt.isHovered ? "scale(1.02)" : "scale(1)",
@@ -319,7 +319,7 @@ export function CertificateCard({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative max-w-[95vw] max-h-[90vh] overflow-auto rounded-2xl shadow-2xl"
+                        className="relative max-w-[95vw] max-h-[90vh] overflow-auto rounded-lg shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Modal header */}

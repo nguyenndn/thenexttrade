@@ -44,7 +44,6 @@ export async function GET(request: Request) {
     > | null = null;
 
     if (futureEventsCount === 0) {
-        console.log("Lazy Sync Triggered: No future events found. Syncing...");
         try {
             const { syncEconomicEvents } =
                 await import("@/lib/services/economic-calendar");

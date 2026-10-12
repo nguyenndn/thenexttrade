@@ -38,7 +38,6 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/Dialog";
-import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { setMainAccount } from "@/actions/main-account";
 import { useProAccess } from "@/components/pro/ProProvider";
@@ -549,7 +548,7 @@ export function AccountListClient({
                     </Button>
                     <Button
                         id="onborda-add-account"
-                        variant="primary"
+                        variant="gold"
                         size="smd"
                         onClick={() => {
                             if (isFreeLimitReached) {
@@ -561,7 +560,7 @@ export function AccountListClient({
                             }
                             setActiveModal({ type: "ADD" });
                         }}
-                        className="flex items-center justify-center gap-2 shadow-lg shadow-primary/25 flex-1 sm:flex-none font-bold"
+                        className="flex items-center justify-center gap-2 flex-1 sm:flex-none font-bold"
                     >
                         <Plus size={16} />
                         Add Account
@@ -575,14 +574,14 @@ export function AccountListClient({
                     {[1, 2, 3].map((i) => (
                         <div
                             key={i}
-                            className="h-64 bg-gray-100 dark:bg-gray-800 rounded-xl animate-pulse"
+                            className="h-64 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse"
                         />
                     ))}
                 </div>
             ) : initialAccounts.length === 0 ? (
-                <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-2xl border-2 border-dashed border-dashboard mt-8 shadow-sm">
+                <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border-2 border-dashed border-dashboard mt-8 shadow-sm">
                     <div className="flex flex-col items-center justify-center text-center max-w-md mx-auto px-4">
-                        <div className="w-16 h-16 mb-5 rounded-2xl bg-primary/10 dark:bg-primary/15 border border-primary/20 flex items-center justify-center text-primary shadow-sm">
+                        <div className="w-16 h-16 mb-5 rounded-lg bg-primary/10 dark:bg-primary/15 border border-primary/20 flex items-center justify-center text-primary shadow-sm">
                             <Wallet size={30} strokeWidth={1.75} />
                         </div>
 
@@ -610,7 +609,7 @@ export function AccountListClient({
                                 Free MT5 Sync
                             </Button>
                             <Button
-                                variant="primary"
+                                variant="gold"
                                 onClick={() => {
                                     trackEvent(
                                         "first_session_add_account_clicked",
@@ -631,7 +630,7 @@ export function AccountListClient({
             ) : (
                 <div className="space-y-5 w-full mt-6">
                     {/* Financial Telemetry Strip */}
-                    <div className="flex flex-wrap items-center justify-between gap-4 p-4 sm:px-6 rounded-2xl bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] shadow-sm">
+                    <div className="flex flex-wrap items-center justify-between gap-4 p-4 sm:px-6 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] shadow-sm">
                         <div>
                             <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 block mb-0.5">
                                 Total Balance
@@ -643,7 +642,7 @@ export function AccountListClient({
 
                         <div className="flex items-center gap-3 ml-auto sm:ml-0">
                             {isPro ? (
-                                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-amber-500/30 bg-amber-500/5 dark:bg-amber-500/10 text-xs shadow-sm">
+                                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg border border-amber-500/30 bg-amber-500/5 dark:bg-amber-500/10 text-xs shadow-sm">
                                     <Crown className="w-3.5 h-3.5 text-amber-500 shrink-0" />
                                     <span className="font-bold text-gray-900 dark:text-white tabular-nums">
                                         {totalConnected} {totalConnected === 1 ? "Account" : "Accounts"}
@@ -654,7 +653,7 @@ export function AccountListClient({
                                     </span>
                                 </div>
                             ) : isFreeLimitReached ? (
-                                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-amber-500/40 bg-amber-500/10 dark:border-amber-500/30 dark:bg-amber-500/10 text-xs shadow-sm">
+                                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg border border-amber-500/40 bg-amber-500/10 dark:border-amber-500/30 dark:bg-amber-500/10 text-xs shadow-sm">
                                     <Users className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
                                     <span className="font-bold text-gray-900 dark:text-white tabular-nums">
                                         {totalConnected}/{MAX_FREE_ACCOUNTS} Accounts
@@ -672,7 +671,7 @@ export function AccountListClient({
                                     </button>
                                 </div>
                             ) : (
-                                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-dashboard/80 bg-gray-50/80 dark:bg-white/[0.03] dark:border-white/10 text-xs shadow-sm">
+                                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg border border-dashboard/80 bg-gray-50/80 dark:bg-white/[0.03] dark:border-white/10 text-xs shadow-sm">
                                     <Users className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 shrink-0" />
                                     <span className="font-bold text-gray-900 dark:text-white tabular-nums">
                                         {totalConnected}/{MAX_FREE_ACCOUNTS} Accounts
@@ -1121,19 +1120,20 @@ export function AccountListClient({
                     <div className="p-4 px-6 bg-gray-50 dark:bg-white/[0.01] border-t border-dashboard dark:border-white/[0.08] flex items-center justify-between">
                         <Button
                             variant="outline"
+                            size="smd"
                             onClick={() => setActiveModal({ type: "NONE" })}
-                            className="rounded-xl font-bold h-11 px-5"
                         >
                             Close
                         </Button>
                         <Button
+                            variant="gold"
+                            size="smd"
                             onClick={() => {
                                 setActiveModal({ type: "NONE" });
                                 router.push(
                                     "/dashboard/accounts?action=add&intent=unlock-pro"
                                 );
                             }}
-                            className="rounded-xl font-bold h-11 px-6 bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-500/20 flex items-center gap-2"
                         >
                             Unlock Partner Pro <ArrowRight size={14} />
                         </Button>

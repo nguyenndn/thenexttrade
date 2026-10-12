@@ -336,7 +336,7 @@ export const ALL_TOOLS: ToolData[] = [
             "Gold and Silver support",
             "Index support",
             "Standard/mini/micro lots",
-            "Real-time calculation",
+            "Base currency auto-conversion",
             "USD-denominated results",
         ],
         faqs: [
@@ -463,7 +463,7 @@ export const ALL_TOOLS: ToolData[] = [
             "Multiple currency pairs",
             "Contract size awareness",
             "Margin requirement output",
-            "Real-time calculation",
+            "Dynamic margin preview",
         ],
         faqs: [
             {
@@ -647,7 +647,7 @@ export const ALL_TOOLS: ToolData[] = [
             heading: "What is Compound Growth?",
             paragraphs: [
                 "Compound growth means your profits generate their own profits. A 5% monthly return doesn't just add 60% per year — it compounds to 79.6% because each month's gain is calculated on an ever-growing balance.",
-                "This is the most powerful concept in trading. A $10,000 account growing at 5% monthly becomes $33,864 after 2 years without any additional deposits.",
+                "Compounding means each month's gain is calculated on the new, larger balance. A $10,000 account growing at 5% monthly becomes $33,864 after 2 years without any additional deposits.",
                 "The key is consistency. Even small consistent gains compound dramatically over time, which is why professional traders focus on steady returns rather than home-run trades.",
             ],
         },
@@ -888,7 +888,7 @@ export const ALL_TOOLS: ToolData[] = [
             paragraphs: [
                 "A Currency Converter calculates how much one currency is worth in another currency using live exchange rates.",
                 "This tool uses Yahoo Finance data to provide near real-time rates for 15+ major world currencies including USD, EUR, GBP, JPY, AUD, CAD, CHF, and more.",
-                "Whether you're planning international trades, calculating cross-currency positions, or managing multi-currency accounts, this converter gives you instant accurate conversions.",
+                "Converts between 15+ currencies using near real-time mid-market rates.",
             ],
         },
         features: [
@@ -897,7 +897,7 @@ export const ALL_TOOLS: ToolData[] = [
             "Instant swap direction",
             "Large number support",
             "Precise exchange rates",
-            "Clean simple interface",
+            "Cross-rate calculations",
         ],
         faqs: [
             {

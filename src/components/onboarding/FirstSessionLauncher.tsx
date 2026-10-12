@@ -65,10 +65,10 @@ export function FirstSessionLauncher({
     return (
         <button
             onClick={handleClick}
-            className={`w-full text-left relative overflow-hidden rounded-xl border backdrop-blur-md px-4 py-2.5 flex items-center justify-between gap-4 shadow-sm transition-all duration-300 group cursor-pointer ${
+            className={`w-full text-left relative overflow-hidden rounded-lg border backdrop-blur-md px-4 py-2.5 flex items-center justify-between gap-4 shadow-sm transition-all duration-300 group cursor-pointer ${
                 isGold
-                    ? "border-amber-500/35 dark:border-amber-500/30 bg-gradient-to-br from-amber-500/[0.08] via-amber-50/70 to-orange-500/[0.08] dark:from-amber-500/[0.06] dark:via-transparent dark:to-orange-500/[0.03] shadow-[0_4px_20px_rgba(245,158,11,0.06)] dark:shadow-[0_4px_20px_rgba(245,158,11,0.04)] hover:border-amber-500/60 dark:hover:border-gold/30 hover:shadow-[0_8px_30px_rgba(245,158,11,0.1)]"
-                    : "border-primary/20 dark:border-primary/10 bg-gradient-to-r from-primary/[0.04] to-cyan-500/[0.02] dark:from-primary/[0.02] dark:to-transparent hover:border-primary/35 hover:shadow-md"
+                    ? "border-amber-500/35 dark:border-amber-500/30 bg-amber-500/[0.04] dark:bg-amber-500/[0.04] hover:border-gold/40 hover:shadow-md"
+                    : "border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] hover:border-gold/30 hover:shadow-md"
             }`}
         >
             {/* Glowing highlight animation */}

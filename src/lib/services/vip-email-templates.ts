@@ -55,7 +55,7 @@ export function buildVipTrialEndingSoonEmailHtml(
       <div style="font-size: 13px; font-weight: 700; color: #334155; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">How to Keep VIP for Free:</div>
       <ol style="margin: 0; padding-left: 20px; font-size: 14px; color: #475569; line-height: 1.8;">
         <li>Open an account on <strong>Vantage, Exness, VTMarkets, or Ultima Markets</strong> via our partner link.</li>
-        <li>Deposit <strong>$300+</strong> on your REAL trading account.</li>
+        <li>Deposit <strong>$200+</strong> on your REAL trading account.</li>
         <li>Attach our Trade Manager EA to sync trades (or request Support-Sync concierge).</li>
       </ol>
     </div>
@@ -119,7 +119,7 @@ export function buildVipTrialEndedEmailHtml(
     <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 18px; margin: 20px 0; text-align: left;">
       <div style="font-size: 14px; font-weight: 700; color: #1e40af; margin-bottom: 8px;">🚀 Unlock VIP Pro for Free (0 Subscription Fees)</div>
       <p style="font-size: 13px; color: #1e3a8a; line-height: 1.6; margin: 0;">
-        Simply connect a REAL trading account from our partner brokers (<strong>Vantage, Exness, VTMarkets, or Ultima Markets</strong>) with a balance of $300+. Pro access unlocks immediately upon EA heartbeat.
+        Simply connect a REAL trading account from our partner brokers (<strong>Vantage, Exness, VTMarkets, or Ultima Markets</strong>) with a balance of $200+. Pro access unlocks immediately upon EA heartbeat.
       </p>
     </div>
 
@@ -268,7 +268,7 @@ export function buildVipPolicyPausedEmailHtml(
 }
 
 // ============================================================================
-// 5. VIP FUNDING GRACE PERIOD (BALANCE < $300 RECHECK)
+// 5. VIP FUNDING GRACE PERIOD (BALANCE < $200 RECHECK)
 // ============================================================================
 
 export interface VipFundingGraceEmailData {
@@ -293,14 +293,14 @@ export function buildVipFundingGraceEmailHtml(
   <div style="padding: 4px 0; text-align: center;">
     <div style="display: inline-block; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 50%; width: 56px; height: 56px; line-height: 56px; font-size: 26px; margin-bottom: 12px;">💳</div>
     <h2 style="margin: 0 0 6px 0; font-size: 22px; font-weight: 800; color: #0f172a;">Action Required: Top Up to Maintain VIP</h2>
-    <p style="margin: 0 0 20px 0; font-size: 14px; color: #64748b;">Account balance is currently below the $300 partner requirement.</p>
+    <p style="margin: 0 0 20px 0; font-size: 14px; color: #64748b;">Account balance is currently below the $200 partner requirement.</p>
 
     <div style="background: #fff7ed; border: 1px solid #fed7aa; border-radius: 12px; padding: 18px; margin: 20px 0; text-align: left;">
       <p style="font-size: 14px; color: #9a3412; line-height: 1.6; margin: 0 0 10px 0; font-weight: 600;">
         Hi ${data.userName}, during our 30-day periodic verification, account ${data.accountNumber} (${data.broker}) had a balance of $${data.currentBalance.toFixed(2)}.
       </p>
       <p style="font-size: 14px; color: #7c2d12; line-height: 1.6; margin: 0;">
-        We have initiated a <strong>${data.graceDaysRemaining}-day grace period</strong> ending on <strong>${data.graceDeadline}</strong>. Top up your account balance to $300+ to keep your verified VIP status.
+        We have initiated a <strong>${data.graceDaysRemaining}-day grace period</strong> ending on <strong>${data.graceDeadline}</strong>. Top up your account balance to $200+ to keep your verified VIP status.
       </p>
     </div>
 
@@ -333,8 +333,8 @@ export function buildVipFundingGraceEmailHtml(
   `;
 
     return buildUnifiedEmailHtml({
-        subject: "Action required: Top up to $300 within 7 days to maintain VIP",
-        preheader: `Your account balance is below $300. Top up before ${data.graceDeadline} to keep VIP active.`,
+        subject: "Action required: Top up to $200 within 7 days to maintain VIP",
+        preheader: `Your account balance is below $200. Top up before ${data.graceDeadline} to keep VIP active.`,
         bodyHtml,
         appUrl,
     });

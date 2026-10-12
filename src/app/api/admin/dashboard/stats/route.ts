@@ -52,7 +52,7 @@ export async function GET() {
             users: {
                 total: usersCount,
                 active: activeUsersCount,
-                growth: 0, // TODO: Implement growth calculation
+                growth: 0, // NOTE: Growth % requires previous-period comparison query (P2 enhancement)
             },
             articles: {
                 total: articlesCount,

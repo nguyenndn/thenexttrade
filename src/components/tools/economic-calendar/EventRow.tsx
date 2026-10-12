@@ -121,7 +121,7 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="bg-white dark:bg-[#151925] border border-gold/20 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative overflow-hidden"
+                        className="bg-white dark:bg-[#151925] border border-gold/20 rounded-lg max-w-lg w-full p-6 shadow-2xl relative overflow-hidden"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Close Button */}
@@ -149,7 +149,7 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
                         </h3>
 
                         {/* Figures */}
-                        <div className="grid grid-cols-3 gap-3 p-3 bg-gray-50 dark:bg-white/[0.02] border border-dashboard rounded-xl mb-5 text-center font-mono">
+                        <div className="grid grid-cols-3 gap-3 p-3 bg-gray-50 dark:bg-white/[0.02] border border-dashboard rounded-lg mb-5 text-center font-mono">
                             <div>
                                 <span className="text-[10px] text-gray-400 uppercase tracking-wider block font-sans font-bold">Forecast</span>
                                 <span className="text-sm font-bold text-gray-900 dark:text-white">{event.forecast || "N/A"}</span>
@@ -166,7 +166,7 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
 
                         {/* Educational Insights */}
                         {explanation ? (
-                            <div className="space-y-3 bg-gold/5 border border-gold/15 rounded-xl p-4 text-xs">
+                            <div className="space-y-3 bg-gold/5 border border-gold/15 rounded-lg p-4 text-xs">
                                 <div className="flex items-center gap-1.5 font-bold text-gold uppercase tracking-wider text-[11px]">
                                     <Lightbulb size={14} />
                                     <span>{explanation.category} Overview</span>
@@ -190,7 +190,7 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
                                 </div>
                             </div>
                         ) : (
-                            <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-dashboard rounded-xl text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                            <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-dashboard rounded-lg text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
                                 High-impact macroeconomic releases often cause sharp price volatility and slippage. Exercise caution when trading near release time.
                             </div>
                         )}

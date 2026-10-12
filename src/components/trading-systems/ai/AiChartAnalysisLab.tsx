@@ -85,14 +85,14 @@ export function AiChartAnalysisLab() {
     return (
         <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
             {/* Chart Area */}
-            <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white/70 dark:bg-[#111318]/60 overflow-hidden backdrop-blur-sm">
+            <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white/70 dark:bg-[#111318]/60 overflow-hidden backdrop-blur-sm">
                 <div className="h-[715px] lg:h-[975px]">
                     <TradingViewChart theme={chartTheme} />
                 </div>
             </div>
 
             {/* AI Analysis Panel */}
-            <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white/70 dark:bg-[#111318]/60 backdrop-blur-sm flex flex-col max-h-[975px]">
+            <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white/70 dark:bg-[#111318]/60 backdrop-blur-sm flex flex-col max-h-[975px]">
                 {/* Panel Header */}
                 <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/5 px-6 py-4">
                     <div>
@@ -103,7 +103,7 @@ export function AiChartAnalysisLab() {
                             Chart Analysis
                         </h2>
                     </div>
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gold/10">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gold/10">
                         <Wand2 size={18} className="text-gold" />
                     </div>
                 </div>
@@ -112,7 +112,7 @@ export function AiChartAnalysisLab() {
                 <div className="flex-1 overflow-y-auto p-6 space-y-5">
                     {/* Image Preview (Auto captured or uploaded) */}
                     {imagePreview && (
-                        <div className="relative rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden bg-gray-50 dark:bg-white/[0.02]">
+                        <div className="relative rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden bg-gray-50 dark:bg-white/[0.02]">
                             <img
                                 src={imagePreview}
                                 alt="Chart analyzed"
@@ -144,8 +144,8 @@ export function AiChartAnalysisLab() {
                             onChange={(e) => setPrompt(e.target.value)}
                             rows={3}
                             disabled={isPending}
-                            placeholder="E.g., Prioritize Price Action + Supply/Demand zones..."
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.03] px-3.5 py-3 text-sm text-gray-700 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold resize-none disabled:opacity-50"
+                            placeholder="Prioritize Price Action + Supply/Demand zones..."
+                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.03] px-3.5 py-3 text-sm text-gray-700 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold resize-none disabled:opacity-50"
                         />
                     </div>
 
@@ -155,7 +155,7 @@ export function AiChartAnalysisLab() {
                             variant="primary"
                             onClick={handleAnalyze}
                             disabled={isPending}
-                            className="w-full rounded-xl bg-gold px-4 py-3.5 text-xs sm:text-sm font-black uppercase tracking-wider text-white whitespace-nowrap overflow-hidden shadow-lg shadow-gold/20 hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gold"
+                            className="w-full rounded-lg bg-gold px-4 py-3.5 text-xs sm:text-sm font-black uppercase tracking-wider text-white whitespace-nowrap overflow-hidden shadow-lg shadow-gold/20 hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gold"
                         >
                             {isPending ? (
                                 <>
@@ -175,7 +175,7 @@ export function AiChartAnalysisLab() {
                                 type="button"
                                 onClick={handleClearImage}
                                 disabled={isPending}
-                                className="w-full flex items-center justify-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.03] px-4 py-2 text-xs font-bold text-gray-400 transition-all hover:text-red-500"
+                                className="w-full flex items-center justify-center gap-2 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.03] px-4 py-2 text-xs font-bold text-gray-400 transition-all hover:text-red-500"
                             >
                                 <RefreshCw size={12} />
                                 Reset to Auto Chart Snapshot

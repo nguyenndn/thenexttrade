@@ -79,6 +79,7 @@ model User {
   eaProductUsageEvents     EAProductUsageEvent[]
   insightSnapshots         TraderInsightSnapshot[]
   improvementExperiments   ImprovementExperiment[]
+  loyaltyClaims            LoyaltyClaim[]
 
   @@index([createdAt])
   @@index([email])
@@ -971,6 +972,23 @@ model Feedback {
   @@index([userId])
   @@index([status])
   @@index([type])
+}
+
+model ContactMessage {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.VarChar(255)
+  email     String   @db.VarChar(255)
+  subject   String   @db.VarChar(255)
+  message   String
+  status    String   @default("new") @db.VarChar(50)
+  notes     String?  @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("contact_messages")
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
 }
 
 model ToolView {
@@ -2065,5 +2083,76 @@ model SupportSyncTicket {
   @@index([userId])
   @@index([status, scheduledFor])
   @@map("support_sync_tickets")
+}
+
+enum LoyaltyClaimStatus {
+  PENDING
+  APPROVED
+  COMPLETED
+  REJECTED
+}
+
+enum LoyaltyRewardType {
+  SYSTEM_PERK
+  CASH
+  PHYSICAL_GIFT
+}
+
+model LoyaltyTier {
+  id              String            @id @default(cuid())
+  level           Int               @unique
+  name            String            @db.VarChar(100)
+  requiredLots    Float             @map("required_lots")
+  rewardType      LoyaltyRewardType @default(CASH) @map("reward_type")
+  rewardTitle     String            @map("reward_title") @db.VarChar(200)
+  cashAmount      Float?            @map("cash_amount")
+  perkDescription String?           @map("perk_description") @db.VarChar(500)
+  icon            String            @default("Shield") @db.VarChar(50)
+  badgeColor      String            @default("#00C888") @map("badge_color") @db.VarChar(30)
+  order           Int               @default(1)
+  isActive        Boolean           @default(true) @map("is_active")
+  createdAt       DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  claims          LoyaltyClaim[]
+
+  @@index([level])
+  @@index([requiredLots])
+  @@map("loyalty_tiers")
+}
+
+model LoyaltyClaim {
+  id              String             @id @default(cuid())
+  userId          String             @map("user_id") @db.Uuid
+  tierId          String?            @map("tier_id")
+  level           Int
+  tierName        String             @map("tier_name") @db.VarChar(100)
+  requiredLots    Float              @map("required_lots")
+  actualLots      Float              @map("actual_lots")
+  rewardType      LoyaltyRewardType  @map("reward_type")
+  rewardTitle     String             @map("reward_title") @db.VarChar(200)
+  cashAmount      Float?             @map("cash_amount")
+  
+  payoutMethod    String             @default("USDT") @map("payout_method") @db.VarChar(50)
+  network         String?            @db.VarChar(50)
+  usdtAddress     String?            @map("usdt_address") @db.VarChar(150)
+  payoutDetails   Json?              @map("payout_details")
+  
+  status          LoyaltyClaimStatus @default(PENDING)
+  adminNotes      String?            @map("admin_notes")
+  transactionRef  String?            @map("transaction_ref") @db.VarChar(150)
+  
+  claimedAt       DateTime           @default(now()) @map("claimed_at") @db.Timestamptz(6)
+  processedAt     DateTime?          @map("processed_at") @db.Timestamptz(6)
+  processedBy     String?            @map("processed_by") @db.Uuid
+  
+  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tier            LoyaltyTier?       @relation(fields: [tierId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, level])
+  @@index([userId])
+  @@index([status])
+  @@index([claimedAt])
+  @@map("loyalty_claims")
 }
 

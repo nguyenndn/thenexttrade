@@ -17,6 +17,9 @@ import { LevelUpModal } from "@/components/dashboard/LevelUpModal";
 import { MilestoneCelebrationModal } from "@/components/dashboard/MilestoneCelebrationModal";
 
 import { ImpersonationBanner } from "@/components/admin/ImpersonationBanner";
+import { DashboardButtonSizeProvider } from "@/components/providers/AdminButtonSizeProvider";
+import { SampleModeProvider } from "@/components/providers/SampleModeProvider";
+import { TradingStyleAutoSync } from "@/components/trading-style/TradingStyleAutoSync";
 
 interface DashboardLayoutClientProps {
     children: React.ReactNode;
@@ -33,12 +36,15 @@ export function DashboardLayoutClient({
     const [collapsed, setCollapsed] = useState(false);
 
     return (
-        <DashboardProvider>
-            <ProProvider initialProStatus={initialProStatus}>
-                <div
-                    className="h-screen font-sans flex flex-col overflow-hidden"
-                    style={{ backgroundColor: "var(--dashboard-bg)" }}
-                >
+        <DashboardButtonSizeProvider>
+            <DashboardProvider>
+                <ProProvider initialProStatus={initialProStatus}>
+                    <SampleModeProvider>
+                        <TradingStyleAutoSync userId={user?.id} />
+                        <div
+                            className="h-screen font-sans flex flex-col overflow-hidden"
+                            style={{ backgroundColor: "var(--dashboard-bg)" }}
+                        >
                     {/* Admin Impersonation Alert Banner */}
                     <ImpersonationBanner user={user} />
 
@@ -83,7 +89,9 @@ export function DashboardLayoutClient({
                     {/* Milestone Celebration Modal */}
                     <MilestoneCelebrationModal />
                 </div>
+                </SampleModeProvider>
             </ProProvider>
         </DashboardProvider>
+        </DashboardButtonSizeProvider>
     );
 }

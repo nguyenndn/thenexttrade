@@ -177,7 +177,7 @@ export function UserOverviewTab({ user }: UserOverviewTabProps) {
         <div className="space-y-6">
             <div className="space-y-6">
                 {/* Compact user activity summary */}
-                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-4 sm:p-6 overflow-hidden">
+                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-4 sm:p-6 overflow-hidden">
                     <h3 className="text-base font-bold text-gray-700 dark:text-white border-b border-gray-200 dark:border-white/10 pb-3 mb-4">
                         User Activity
                     </h3>
@@ -253,7 +253,7 @@ export function UserOverviewTab({ user }: UserOverviewTabProps) {
                 {/* Achievements & Admin Notes — side by side */}
                 <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
                     {/* Achievements */}
-                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden">
+                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden">
                         <div className="px-4 sm:px-6 py-3 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                             <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
                                 <Trophy size={16} className="text-amber-500" />{" "}
@@ -303,7 +303,7 @@ export function UserOverviewTab({ user }: UserOverviewTabProps) {
             {/* ---- below: free-flowing content ---- */}
             <div className="grid grid-cols-1 gap-6 xl:grid-cols-5">
                 {/* Recent account activity */}
-                <div className="xl:col-span-3 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-4 sm:p-6">
+                <div className="xl:col-span-3 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-4 sm:p-6">
                     <h3 className="text-base font-bold text-gray-700 dark:text-white border-b border-gray-200 dark:border-white/10 pb-3 mb-4">
                         Recent Account Activity
                     </h3>
@@ -347,7 +347,7 @@ export function UserOverviewTab({ user }: UserOverviewTabProps) {
                 {/* Right mini-column: Sessions — 2/5 width */}
                 <div className="xl:col-span-2">
                     {/* Recent Sessions */}
-                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden">
+                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden">
                         <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                             <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
                                 <Monitor size={16} className="text-gray-500" />{" "}

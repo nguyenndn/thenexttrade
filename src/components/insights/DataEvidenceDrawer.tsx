@@ -50,11 +50,11 @@ export function DataEvidenceDrawer({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="relative w-full max-w-lg p-6 bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-slate-800 rounded-2xl shadow-2xl space-y-5 text-slate-900 dark:text-white"
+                className="relative w-full max-w-lg p-6 bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-slate-800 rounded-lg shadow-2xl space-y-5 text-slate-900 dark:text-white"
             >
                 <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800/80 pb-4">
                     <div className="flex items-center gap-2.5">
-                        <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
+                        <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
                             <ShieldCheck className="w-5 h-5" />
                         </div>
                         <div>
@@ -73,7 +73,7 @@ export function DataEvidenceDrawer({
 
                 <div className="space-y-4">
                     {/* Score Bar */}
-                    <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-gray-200 dark:border-slate-800/80 space-y-2">
+                    <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-900/80 border border-gray-200 dark:border-slate-800/80 space-y-2">
                         <div className="flex justify-between items-center text-sm font-semibold">
                             <span className="text-slate-700 dark:text-slate-300">Confidence Score</span>
                             <span className="text-emerald-600 dark:text-emerald-400 font-bold">{confidence.score}/100 ({confidence.level})</span>
@@ -88,11 +88,11 @@ export function DataEvidenceDrawer({
 
                     {/* Facts Grid */}
                     <div className="grid grid-cols-2 gap-3 text-xs">
-                        <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-800">
+                        <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-800">
                             <span className="text-slate-500 dark:text-slate-400 block mb-1">Closed Trade Sample</span>
                             <span className="text-base font-bold text-slate-900 dark:text-white">{confidence.sampleSize} trades</span>
                         </div>
-                        <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-800">
+                        <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-800">
                             <span className="text-slate-500 dark:text-slate-400 block mb-1">Sync Freshness</span>
                             <span className="text-sm font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1">
                                 <RefreshCw className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400 inline" />
@@ -133,7 +133,7 @@ export function DataEvidenceDrawer({
                 </div>
 
                 <div className="flex justify-end pt-2">
-                    <Button variant="outline" onClick={onClose} className="rounded-xl">
+                    <Button variant="outline" onClick={onClose} className="rounded-lg">
                         Close
                     </Button>
                 </div>

@@ -41,7 +41,7 @@ export function PendingApprovalsWidget({
     approvals: PendingApproval[];
 }) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2">
                     <Clock
@@ -79,12 +79,12 @@ export function PendingApprovalsWidget({
                         >
                             <Link
                                 href={item.href}
-                                className="flex items-center justify-between group p-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors border border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                                className="flex items-center justify-between group p-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors border border-transparent hover:border-gray-200 dark:hover:border-white/10"
                             >
                                 <div className="flex items-center gap-3">
                                     <div
                                         className={cn(
-                                            "w-10 h-10 rounded-xl flex items-center justify-center shadow-sm shrink-0",
+                                            "w-10 h-10 rounded-lg flex items-center justify-center shadow-sm shrink-0",
                                             "bg-purple-50 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400 ring-1 ring-purple-500/20"
                                         )}
                                     >
@@ -94,7 +94,7 @@ export function PendingApprovalsWidget({
                                                 alt={item.user.name || "User"}
                                                 width={40}
                                                 height={40}
-                                                className="rounded-xl object-cover w-full h-full"
+                                                className="rounded-lg object-cover w-full h-full"
                                             />
                                         ) : (
                                             <ShieldCheck size={18} />
@@ -120,7 +120,7 @@ export function PendingApprovalsWidget({
                                             { addSuffix: true }
                                         )}
                                     </div>
-                                    <div className="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+                                    <div className="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center group-hover:bg-gold group-hover:text-white transition-colors">
                                         <ArrowRight size={12} />
                                     </div>
                                 </div>

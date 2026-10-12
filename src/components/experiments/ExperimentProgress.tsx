@@ -60,10 +60,10 @@ export function ExperimentProgress({ experiment }: ExperimentProgressProps) {
     const isReady = experiment.status === "READY_FOR_REVIEW" || experiment.progressPercent >= 100;
 
     return (
-        <div className="p-5 rounded-2xl bg-gradient-to-r from-emerald-50/70 via-slate-50 to-cyan-50/50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 border border-emerald-200 dark:border-emerald-500/30 shadow-xl space-y-4 text-slate-900 dark:text-white">
+        <div className="p-5 rounded-lg bg-gradient-to-r from-emerald-50/70 via-slate-50 to-cyan-50/50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 border border-emerald-200 dark:border-emerald-500/30 shadow-xl space-y-4 text-slate-900 dark:text-white">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                    <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
+                    <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
                         <Activity className="w-5 h-5" />
                     </div>
                     <div>
@@ -81,7 +81,7 @@ export function ExperimentProgress({ experiment }: ExperimentProgressProps) {
                             size="sm"
                             onClick={handleAddRule}
                             disabled={isLoading}
-                            className="text-xs gap-1 rounded-xl border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200"
+                            className="text-xs gap-1 rounded-lg border-gray-200 dark:border-slate-700 text-slate-700 dark:text-slate-200"
                         >
                             <PlusCircle className="w-3.5 h-3.5" />
                             Add Rule
@@ -92,14 +92,14 @@ export function ExperimentProgress({ experiment }: ExperimentProgressProps) {
                         size="sm"
                         onClick={handleCancel}
                         disabled={isLoading}
-                        className="text-xs border-slate-300 dark:border-slate-700 text-slate-500 hover:text-red-600 dark:text-slate-400 dark:hover:text-red-400 rounded-xl"
+                        className="text-xs border-gray-200 dark:border-slate-700 text-slate-500 hover:text-red-600 dark:text-slate-400 dark:hover:text-red-400 rounded-lg"
                     >
                         Cancel
                     </Button>
                 </div>
             </div>
 
-            <p className="text-xs text-slate-700 dark:text-slate-300 bg-white/80 dark:bg-slate-950/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800/60">
+            <p className="text-xs text-slate-700 dark:text-slate-300 bg-white/80 dark:bg-slate-950/60 p-3 rounded-lg border border-gray-200 dark:border-slate-800/60">
                 <strong className="text-slate-900 dark:text-slate-200">Instruction:</strong> {experiment.instruction}
             </p>
 
@@ -111,7 +111,7 @@ export function ExperimentProgress({ experiment }: ExperimentProgressProps) {
                         {experiment.currentTradeCount} / {experiment.targetTradeCount} trades ({experiment.progressPercent}%)
                     </span>
                 </div>
-                <div className="w-full h-3 rounded-full bg-slate-200 dark:bg-slate-950 overflow-hidden border border-slate-300 dark:border-slate-800">
+                <div className="w-full h-3 rounded-full bg-slate-200 dark:bg-slate-950 overflow-hidden border border-gray-200 dark:border-slate-800">
                     <div
                         className="h-full bg-gradient-to-r from-cyan-500 to-emerald-400 rounded-full transition-all duration-500"
                         style={{ width: `${Math.min(100, Math.max(5, experiment.progressPercent))}%` }}
@@ -130,7 +130,7 @@ export function ExperimentProgress({ experiment }: ExperimentProgressProps) {
                         size="sm"
                         onClick={handleReview}
                         disabled={isLoading}
-                        className="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold gap-1 rounded-xl"
+                        className="bg-gold hover:bg-amber-600 text-white font-bold gap-1 rounded-lg shadow-md shadow-amber-500/20 border-none"
                     >
                         Review Results
                         <ArrowRight className="w-4 h-4" />

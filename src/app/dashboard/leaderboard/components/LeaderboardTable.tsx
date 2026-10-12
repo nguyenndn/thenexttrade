@@ -63,7 +63,7 @@ export function LeaderboardTable({
     if (entries.length === 0 && !myEntry) {
         return (
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-12 text-center">
-                <div className="inline-flex items-center justify-center p-3 rounded-xl bg-cyan-500/10 text-cyan-500 mb-4 ring-4 ring-cyan-500/5">
+                <div className="inline-flex items-center justify-center p-3 rounded-lg bg-cyan-500/10 text-cyan-500 mb-4 ring-4 ring-cyan-500/5">
                     <svg
                         className="w-8 h-8"
                         fill="none"

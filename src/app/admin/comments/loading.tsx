@@ -9,7 +9,7 @@ export default function Loading() {
                         <div className="h-8 w-32 bg-gray-200 dark:bg-white/10 rounded-lg animate-pulse" />
                     </div>
                 </div>
-                <div className="h-10 w-32 bg-gray-200 dark:bg-white/10 rounded-xl animate-pulse" />
+                <div className="h-10 w-32 bg-gray-200 dark:bg-white/10 rounded-lg animate-pulse" />
             </div>
 
             {/* Comments List Skeleton */}
@@ -17,7 +17,7 @@ export default function Loading() {
                 {[...Array(5)].map((_, i) => (
                     <div
                         key={i}
-                        className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm animate-pulse"
+                        className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-6 shadow-sm animate-pulse"
                     >
                         <div className="flex justify-between items-start mb-4">
                             <div className="flex items-center gap-3">

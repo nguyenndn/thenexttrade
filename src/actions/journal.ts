@@ -17,6 +17,8 @@ const journalSchema = z.object({
     exitPrice: z.number().optional(),
     lotSize: z.number(),
     pnl: z.number().optional(),
+    commission: z.number().optional().nullable(),
+    swap: z.number().optional().nullable(),
     // magicNumber/ticket not in schema excerpt?
     entryDate: z.string().or(z.date()),
     exitDate: z.string().or(z.date()).optional(),
@@ -127,7 +129,19 @@ export async function getJournalEntries(
         orderBy = { [field]: sortOrder || "desc" };
     }
 
-    const [entries, total, pnlResult, resultsGrouped] = await Promise.all([
+    // Summary statistics (Realized P&L, completed setups, win rate) strictly
+    // reflect closed trades by default (matching MT5 History and Dashboard),
+    // unless the user explicitly filters for OPEN positions.
+    const statsWhere: any = { ...where };
+    if (status !== "OPEN") {
+        statsWhere.status = "CLOSED";
+        if (dateFilter) {
+            delete statsWhere.OR;
+            statsWhere.exitDate = dateFilter;
+        }
+    }
+
+    const [entries, total, pnlResult, resultsGrouped, statsTotal] = await Promise.all([
         prisma.journalEntry.findMany({
             where,
             orderBy,
@@ -156,14 +170,17 @@ export async function getJournalEntries(
         }),
         prisma.journalEntry.count({ where }),
         prisma.journalEntry.aggregate({
-            where,
+            where: statsWhere,
             _sum: { pnl: true, swap: true, commission: true, lotSize: true },
         }),
         prisma.journalEntry.groupBy({
             by: ["result"],
-            where,
+            where: statsWhere,
             _count: true,
         }),
+        status === "OPEN"
+            ? Promise.resolve(0)
+            : prisma.journalEntry.count({ where: statsWhere }),
     ]);
 
     let winCount = 0;
@@ -172,7 +189,7 @@ export async function getJournalEntries(
     resultsGrouped.forEach((g) => {
         if (g.result === "WIN") winCount += g._count;
         if (g.result === "LOSS") lossCount += g._count;
-        if (g.result === "BREAK_EVEN") breakEvenCount += g._count;
+        if (g.result === "BREAK_EVEN" || g.result === "BE_PLUS") breakEvenCount += g._count;
     });
     // Win rate is computed against decided (closed) trades only — OPEN
     // positions have result null and are not in the groups, so dividing by
@@ -185,18 +202,29 @@ export async function getJournalEntries(
             (pnlResult._sum.pnl || 0) +
             (pnlResult._sum.swap || 0) +
             (pnlResult._sum.commission || 0),
-        totalTrades: total,
+        totalTrades: status === "OPEN" ? total : statsTotal,
         winCount,
         lossCount,
         winRate,
         totalLots: pnlResult._sum.lotSize || 0,
+        totalCommission: pnlResult._sum.commission || 0,
     };
 
     const formattedEntries = entries.map((entry) => ({
         ...entry,
-        pnl: entry.pnl
-            ? entry.pnl + (entry.swap || 0) + (entry.commission || 0)
-            : null,
+        grossProfit: entry.pnl,
+        pnl:
+            entry.pnl != null
+                ? Number(
+                      (
+                          entry.pnl +
+                          (entry.swap || 0) +
+                          (entry.commission || 0)
+                      ).toFixed(2)
+                  )
+                : null,
+        commission: entry.commission ?? 0,
+        swap: entry.swap ?? 0,
         entryDate: entry.entryDate.toISOString(),
         exitDate: entry.exitDate?.toISOString() || null,
         createdAt: entry.createdAt.toISOString(),
@@ -535,7 +563,13 @@ export async function exportJournalEntries(filters: {
             stopLoss: entry.stopLoss || "",
             takeProfit: entry.takeProfit || "",
             lotSize: entry.lotSize,
-            pnl: entry.pnl || 0,
+            grossProfit: entry.pnl || 0,
+            commission: entry.commission || 0,
+            swap: entry.swap || 0,
+            pnl:
+                (entry.pnl || 0) +
+                (entry.commission || 0) +
+                (entry.swap || 0),
             strategy: entry.strategy || "",
             tags: entry.tags.join("; "),
             mistakes: ((entry.mistakes as string[]) || []).join("; "),
@@ -598,8 +632,8 @@ export async function getDayDetails(date: string, accountId?: string) {
         let lossCount = 0;
         let breakEvenCount = 0;
 
-        // Cần giả lập equity curve trong ngày để tìm Max Drawdown
-        // Sắp xếp trades theo thời gian đóng lệnh sớm nhất trước (ASC) để vẽ lại Curve
+        // Simulate intraday equity curve to compute Max Drawdown
+        // Sort trades by exit time ascending (ASC) to reconstruct curve
         const sortedTradesAsc = [...trades].sort((a, b) => {
             if (!a.exitDate || !b.exitDate) return 0;
             return a.exitDate.getTime() - b.exitDate.getTime();

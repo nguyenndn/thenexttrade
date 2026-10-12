@@ -87,7 +87,7 @@ export default async function RelatedArticlesBottom({
                     <Link
                         key={article.id}
                         href={`/articles/${article.slug}`}
-                        className="group bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+                        className="group bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow overflow-hidden"
                     >
                         <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-200 dark:bg-gray-800">
                             {article.thumbnail ? (

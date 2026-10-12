@@ -25,14 +25,14 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
     title: "Trading Knowledge Base — Articles, Guides & Market Analysis | TheNextTrade",
     description:
-        "Explore our premium collection of forex trading articles, in-depth market analysis, strategy guides, and trading psychology insights. Updated regularly by experienced traders.",
+        "Articles and guides on forex execution, risk management mathematics, session dynamics, and trading psychology.",
     alternates: {
         canonical: "/knowledge",
     },
     openGraph: {
         title: "Trading Knowledge Base | TheNextTrade",
         description:
-            "Deep-dive articles on forex strategies, technical analysis, and trading psychology.",
+            "Articles on forex execution, risk management mathematics, and trading psychology.",
         url: "/knowledge",
         siteName: "TheNextTrade",
         type: "website",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "Trading Knowledge Base | TheNextTrade",
         description:
-            "Deep-dive articles on forex strategies, technical analysis, and trading psychology.",
+            "Articles on forex execution, risk management mathematics, and trading psychology.",
     },
 };
 
@@ -123,7 +123,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
             },
         }),
         prisma.article.count({ where: whereCondition }),
-        prisma.category.findMany({ orderBy: { name: "asc" } }), // Lấy tất cả categories
+        prisma.category.findMany({ orderBy: { name: "asc" } }), // Fetch all categories
     ]);
 
     const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
@@ -169,7 +169,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                     <Link
                                         key={cat.id}
                                         href={`/knowledge?category=${cat.slug}`}
-                                        className={`px-4 py-2 rounded-xl backdrop-blur-md border cursor-pointer text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-sm hover:shadow-md ${categorySlug === cat.slug
+                                        className={`px-4 py-2 rounded-lg backdrop-blur-md border cursor-pointer text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-sm hover:shadow-md ${categorySlug === cat.slug
                                             ? "bg-gradient-to-r from-gold to-amber-600 border-gold/40 text-white shadow-md shadow-gold/20"
                                             : "bg-white/60 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-white/10 hover:border-gold/35 hover:text-gold hover:shadow-md hover:shadow-gold/[0.05]"
                                             }`}
@@ -202,7 +202,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    className="flex items-center gap-2 text-red-500 border-red-500/20 hover:bg-red-500/10 hover:text-red-600 transition-all rounded-xl"
+                                    className="flex items-center gap-2 text-red-500 border-red-500/20 hover:bg-red-500/10 hover:text-red-600 transition-all rounded-lg"
                                 >
                                     <X size={16} />
                                     <span>Clear Filter</span>
@@ -277,7 +277,7 @@ export default async function LibraryPage(props: LibraryPageProps) {
                             <Pagination totalPages={totalPages} />
                         </>
                     ) : (
-                        <div className="text-center py-32 rounded-xl bg-white/30 dark:bg-white/5 backdrop-blur-md border border-white/20 border-dashed">
+                        <div className="text-center py-32 rounded-lg bg-white/30 dark:bg-white/5 backdrop-blur-md border border-white/20 border-dashed">
                             <div className="inline-flex p-6 rounded-full bg-gray-50/50 dark:bg-white/5 mb-6 animate-pulse">
                                 <Search size={48} className="text-gray-500" />
                             </div>

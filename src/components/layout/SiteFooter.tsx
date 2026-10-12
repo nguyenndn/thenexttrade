@@ -17,11 +17,10 @@ export function SiteFooter() {
         <footer
             id="site-footer"
             role="contentinfo"
-            className="relative bg-slate-50 dark:bg-[#070a10] text-gray-700 dark:text-white border-t border-slate-200 dark:border-white/10 overflow-hidden transition-colors duration-300"
+            className="relative bg-slate-50 dark:bg-[#070a10] text-gray-700 dark:text-white border-t border-gray-200 dark:border-white/10 overflow-hidden transition-colors duration-300"
         >
             {/* Background Effects */}
             <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-            <div className="absolute -top-[200px] -left-[200px] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute top-[20%] right-[-100px] w-[300px] h-[300px] bg-purple-500/5 rounded-full blur-[100px] pointer-events-none" />
 
             <div className="w-full lg:max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8 relative z-10">
@@ -36,7 +35,7 @@ export function SiteFooter() {
                                 </h4>
                             </Link>
                             <p className="text-base leading-relaxed font-semibold text-gray-600 dark:text-gray-400 mb-8">
-                                Automated MT5 trade telemetry, institutional risk engines, and execution discipline for serious forex traders. Home of the <strong className="text-amber-500 font-bold">GoldScalperNinja</strong> trading community &amp; EA ecosystem.
+                                Automated MT5 trade telemetry, institutional risk engines, and execution discipline for serious forex traders. Home of the <strong className="text-amber-500 font-bold">GoldScalperNinja</strong>{" "}trading community &amp; EA ecosystem.
                             </p>
                         </div>
 
@@ -417,7 +416,7 @@ export function SiteFooter() {
                 </div>
 
                 {/* Risk Warning & Disclaimer - Horizontal Alert Box */}
-                <div className="flex gap-4 p-5 rounded-2xl border border-amber-500/10 dark:border-amber-500/5 bg-amber-500/[0.02] dark:bg-amber-500/[0.01] text-left my-6">
+                <div className="flex gap-4 p-5 rounded-lg border border-amber-500/10 dark:border-amber-500/5 bg-amber-500/[0.02] dark:bg-amber-500/[0.01] text-left my-6">
                     {/* Circular warning icon */}
                     <div className="shrink-0 flex items-center justify-center w-9 h-9 rounded-full bg-amber-500/10 dark:bg-amber-500/5 border border-amber-500/20 text-amber-600 dark:text-amber-500/90">
                         <AlertTriangle size={16} className="stroke-[2.5]" />

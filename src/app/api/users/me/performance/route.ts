@@ -61,7 +61,10 @@ export async function GET(request: Request) {
         const equityMap: Record<string, number> = {};
 
         entries.forEach((entry) => {
-            const pnl = entry.pnl || 0;
+            const pnl =
+                (entry.pnl || 0) +
+                (entry.commission || 0) +
+                (entry.swap || 0);
             netProfit += pnl;
 
             // Basic Counts

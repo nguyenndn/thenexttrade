@@ -101,7 +101,7 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
         if (!active || !payload?.length) return null;
         const d = payload[0].payload;
         return (
-            <div className="bg-white dark:bg-[#1E2028] p-3 border border-dashboard rounded-xl shadow-xl backdrop-blur-sm">
+            <div className="bg-white dark:bg-[#1E2028] p-3 border border-dashboard rounded-lg shadow-xl backdrop-blur-sm">
                 <p className="text-xs font-bold text-gray-700 dark:text-gray-100 mb-1">
                     {d.month}
                 </p>

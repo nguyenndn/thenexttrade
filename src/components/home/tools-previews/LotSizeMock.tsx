@@ -28,7 +28,7 @@ export function LotSizeMock() {
 
     return (
         <div
-            className="h-44 w-full bg-[#fdfbf7] dark:bg-slate-900/80 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/60 dark:border-white/10 select-none cursor-pointer"
+            className="h-44 w-full bg-[#fdfbf7] dark:bg-slate-900/80 rounded-lg p-4 flex flex-col justify-between relative overflow-hidden border border-gray-200 dark:border-white/10 select-none cursor-pointer"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
@@ -52,7 +52,7 @@ export function LotSizeMock() {
             </div>
 
             {/* Lower grid metrics */}
-            <div className="grid grid-cols-4 gap-1.5 z-10 border-t border-slate-100 dark:border-white/10 pt-3">
+            <div className="grid grid-cols-4 gap-1.5 z-10 border-t border-gray-200 dark:border-white/10 pt-3">
                 {/* Risk */}
                 <div className="bg-[#faf6f0] dark:bg-white/[0.04] border border-amber-200/40 dark:border-white/10 rounded-lg p-1.5 text-center flex flex-col justify-between transition-colors">
                     <span className="text-[7px] font-black text-slate-400 dark:text-slate-400 uppercase tracking-wider">

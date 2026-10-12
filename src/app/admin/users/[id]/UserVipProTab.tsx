@@ -233,7 +233,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
     return (
         <div className="space-y-6">
             {/* 1. Partner account verification */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
                 <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                     <div>
                         <h3 className="text-base font-bold text-gray-700 dark:text-white flex items-center gap-2">
@@ -506,7 +506,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
             {/* 2. Current access and management */}
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
                 {/* Left/Middle: Current access */}
-                <div className="xl:col-span-2 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm flex flex-col">
+                <div className="xl:col-span-2 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm flex flex-col">
                     <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <div>
                             <h3 className="text-base font-bold text-gray-700 dark:text-white flex items-center gap-2">
@@ -622,7 +622,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                         ent.status !== "EXPIRED" && (
                                             <div className="pt-2 flex justify-end">
                                                 {revokingId === ent.id ? (
-                                                    <div className="flex items-center gap-2 w-full max-w-md bg-red-50/50 dark:bg-red-500/5 border border-red-200 dark:border-red-500/10 p-3 rounded-xl">
+                                                    <div className="flex items-center gap-2 w-full max-w-md bg-red-50/50 dark:bg-red-500/5 border border-red-200 dark:border-red-500/10 p-3 rounded-lg">
                                                         <input
                                                             type="text"
                                                             value={revokeReason}
@@ -632,7 +632,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                                                         .value
                                                                 )
                                                             }
-                                                            placeholder="Enter revocation reason..."
+                                                            
                                                             className="flex-1 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 text-xs bg-white dark:bg-[#1E2028] text-gray-700 dark:text-white focus:outline-none"
                                                         />
                                                         <Button
@@ -714,7 +714,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                 </div>
 
                 {/* Right: Manual access form */}
-                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm">
+                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-6 shadow-sm">
                     <h3 className="text-base font-bold text-gray-700 dark:text-white flex items-center gap-2 mb-4 border-b border-gray-200 dark:border-white/10 pb-3">
                         <KeyRound size={18} className="text-primary" /> Grant
                         Product Access
@@ -731,7 +731,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                     <Button
                                         variant="outline"
                                         type="button"
-                                        className="w-full justify-between px-3 py-2.5 h-auto text-sm font-normal rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-gray-700 dark:text-white"
+                                        className="w-full justify-between px-3 py-2.5 h-auto text-sm font-normal rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-gray-700 dark:text-white"
                                     >
                                         <span className="truncate pr-2">
                                             {selectedAccountId === "user-level"
@@ -745,7 +745,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent
                                     align="start"
-                                    className="w-[--radix-dropdown-menu-trigger-width] max-h-60 overflow-y-auto rounded-xl p-1.5 shadow-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]"
+                                    className="w-[--radix-dropdown-menu-trigger-width] max-h-60 overflow-y-auto rounded-lg p-1.5 shadow-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]"
                                 >
                                     <DropdownMenuItem
                                         onClick={() => setSelectedAccountId("user-level")}
@@ -848,7 +848,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                 onChange={(e) => setGrantNote(e.target.value)}
                                 placeholder="Why is this access being granted?"
                                 rows={3}
-                                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-sm text-gray-700 dark:text-white placeholder:text-gray-400 focus:outline-none focus:border-primary/50 transition-colors resize-none"
+                                className="w-full px-3 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-sm text-gray-700 dark:text-white placeholder:text-gray-400 focus:outline-none focus:border-primary/50 transition-colors resize-none"
                             />
                         </div>
 
@@ -856,7 +856,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                             type="submit"
                             variant="primary"
                             disabled={loading === "grant-pro"}
-                            className="w-full rounded-xl py-2.5 h-auto text-xs font-bold flex items-center justify-center gap-1.5"
+                            className="w-full rounded-lg py-2.5 h-auto text-xs font-bold flex items-center justify-center gap-1.5"
                         >
                             {loading === "grant-pro" ? (
                                 <Loader2 size={14} className="animate-spin" />
@@ -888,7 +888,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative max-w-5xl max-h-[90vh] bg-white dark:bg-[#151925] rounded-xl overflow-hidden p-2 shadow-2xl cursor-default"
+                        className="relative max-w-5xl max-h-[90vh] bg-white dark:bg-[#151925] rounded-lg overflow-hidden p-2 shadow-2xl cursor-default"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <img

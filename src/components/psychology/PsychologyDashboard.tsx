@@ -155,7 +155,12 @@ export function PsychologyDashboard({
                         />
                     )}
                 </PageHeader>
-                <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-8">
+
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
+                    <TabBar tabs={ANALYTICS_TABS} />
+                </div>
+
+                <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border-2 border-dashed border-dashboard mt-8">
                     {/* Animated Brain Icon */}
                     <div className="relative w-20 h-20 mb-6 mx-auto">
                         <div className="absolute inset-0 rounded-full bg-indigo-500/10 dark:bg-indigo-500/5 animate-[psych-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
@@ -328,11 +333,11 @@ export function PsychologyDashboard({
                     return (
                         <div
                             key={stat.label}
-                            className="rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-default"
+                            className="rounded-lg border border-dashboard bg-white dark:bg-[#1E2028] p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-default"
                         >
                             <div className="flex items-center gap-3">
                                 <div
-                                    className={`w-9 h-9 shrink-0 rounded-xl flex items-center justify-center ${stat.bg} ${stat.color}`}
+                                    className={`w-9 h-9 shrink-0 rounded-lg flex items-center justify-center ${stat.bg} ${stat.color}`}
                                 >
                                     <Icon size={16} aria-hidden="true" />
                                 </div>
@@ -354,7 +359,7 @@ export function PsychologyDashboard({
 
             {/* Tilt Warning Banner */}
             {hasTiltWarning && (
-                <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl px-4 py-3 flex gap-3 items-start">
+                <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-lg px-4 py-3 flex gap-3 items-start">
                     <AlertTriangle
                         className="text-red-500 shrink-0 mt-0.5"
                         size={16}
@@ -416,7 +421,7 @@ export function PsychologyDashboard({
 
             {/* Key Insight Card */}
             {bestEmotion && (
-                <div className="bg-gradient-to-r from-primary/10 to-transparent border border-primary/20 rounded-xl px-4 py-3 flex items-center gap-3">
+                <div className="bg-gradient-to-r from-primary/10 to-transparent border border-primary/20 rounded-lg px-4 py-3 flex items-center gap-3">
                     <span className="text-[10px] uppercase tracking-widest text-primary font-black shrink-0">
                         Key Insight
                     </span>
@@ -591,14 +596,14 @@ function PsychologyLoadingSkeleton() {
     return (
         <div className="space-y-4 animate-pulse">
             <div className="h-8 bg-gray-200 dark:bg-white/5 rounded-lg w-64 mb-8" />
-            <div className="h-24 bg-gray-200 dark:bg-white/5 rounded-xl border border-dashboard" />
+            <div className="h-24 bg-gray-200 dark:bg-white/5 rounded-lg border border-dashboard" />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="h-[400px] bg-gray-200 dark:bg-white/5 rounded-xl border border-dashboard" />
-                <div className="h-[400px] bg-gray-200 dark:bg-white/5 rounded-xl border border-dashboard" />
+                <div className="h-[400px] bg-gray-200 dark:bg-white/5 rounded-lg border border-dashboard" />
+                <div className="h-[400px] bg-gray-200 dark:bg-white/5 rounded-lg border border-dashboard" />
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="h-[300px] bg-gray-200 dark:bg-white/5 rounded-xl border border-dashboard" />
-                <div className="h-[300px] bg-gray-200 dark:bg-white/5 rounded-xl border border-dashboard" />
+                <div className="h-[300px] bg-gray-200 dark:bg-white/5 rounded-lg border border-dashboard" />
+                <div className="h-[300px] bg-gray-200 dark:bg-white/5 rounded-lg border border-dashboard" />
             </div>
         </div>
     );

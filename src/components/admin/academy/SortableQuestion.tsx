@@ -37,7 +37,7 @@ export function SortableQuestion({
             ref={setNodeRef}
             style={style}
             className={clsx(
-                "bg-white dark:bg-[#1C212E] border rounded-xl p-4 shadow-sm transition-colors",
+                "bg-white dark:bg-[#1C212E] border rounded-lg p-4 shadow-sm transition-colors",
                 isDragging
                     ? "border-primary"
                     : "border-gray-200 dark:border-white/10 "

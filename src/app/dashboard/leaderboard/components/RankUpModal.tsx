@@ -201,7 +201,7 @@ export function RankUpModal({ myRank }: RankUpModalProps) {
 
                     {/* Tier change */}
                     {tierChange && (
-                        <div className="flex items-center justify-center gap-3 mb-4 py-3 px-4 rounded-xl bg-gray-50 dark:bg-white/5">
+                        <div className="flex items-center justify-center gap-3 mb-4 py-3 px-4 rounded-lg bg-gray-50 dark:bg-white/5">
                             <UserTierBadge
                                 tierName={tierChange.from}
                                 tierColor="#999"

@@ -54,10 +54,10 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
 
     return (
         <div className="space-y-5">
-            <div className="overflow-hidden rounded-xl border border-dashboard bg-white shadow-sm border-dashboard dark:bg-[#0B0E14]">
+            <div className="overflow-hidden rounded-lg border border-dashboard bg-white shadow-sm border-dashboard dark:bg-[#0B0E14]">
                 <div className="flex items-start justify-between gap-4 p-5">
                     <div className="flex items-start gap-4">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                             <Gift size={24} className="text-primary" />
                         </div>
                         <div>
@@ -85,7 +85,7 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
                         {stats.map((stat) => (
                             <div
                                 key={stat.label}
-                                className="flex items-center gap-3 rounded-xl border border-dashboard bg-gray-50 p-3 border-dashboard dark:bg-white/[0.03]"
+                                className="flex items-center gap-3 rounded-lg border border-dashboard bg-gray-50 p-3 border-dashboard dark:bg-white/[0.03]"
                             >
                                 <div
                                     className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${stat.bgColor}`}
@@ -116,14 +116,14 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
                         Your referral link
                     </p>
                     <div className="flex items-stretch gap-0">
-                        <div className="flex flex-1 items-center truncate rounded-l-xl border border-r-0 border-dashboard bg-gray-50 px-4 py-2.5 font-mono text-sm text-gray-500 border-dashboard dark:bg-[#151925]">
+                        <div className="flex flex-1 items-center truncate rounded-l-lg border border-r-0 border-dashboard bg-gray-50 px-4 py-2.5 font-mono text-sm text-gray-500 border-dashboard dark:bg-[#151925]">
                             {referralLink}
                         </div>
                         <Button
                             type="button"
                             size="smd"
                             onClick={handleCopy}
-                            className="flex items-center gap-2 rounded-l-none rounded-r-xl border-none bg-[#2F80ED] px-5 font-bold text-white transition-all hover:bg-[#2563EB] active:scale-95"
+                            className="flex items-center gap-2 rounded-l-none rounded-r-lg border-none bg-[#2F80ED] px-5 font-bold text-white transition-all hover:bg-[#2563EB] active:scale-95"
                         >
                             {copied ? (
                                 <>
@@ -139,7 +139,7 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
                 </div>
             </div>
 
-            <div className="overflow-hidden rounded-xl border border-dashboard bg-white shadow-sm border-dashboard dark:bg-[#0B0E14]">
+            <div className="overflow-hidden rounded-lg border border-dashboard bg-white shadow-sm border-dashboard dark:bg-[#0B0E14]">
                 <div className="border-b border-dashboard px-6 py-4 border-dashboard">
                     <h3 className="text-sm font-bold text-gray-700 dark:text-white">
                         Recent Referrals

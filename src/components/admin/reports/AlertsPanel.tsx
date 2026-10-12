@@ -62,7 +62,7 @@ export function AlertsPanel({ data }: AlertsPanelProps) {
                         >
                             <div
                                 className={cn(
-                                    "flex items-start gap-4 p-4 rounded-xl border transition-colors hover:opacity-80",
+                                    "flex items-start gap-4 p-4 rounded-lg border transition-colors hover:opacity-80",
                                     cfg.bg,
                                     cfg.border
                                 )}

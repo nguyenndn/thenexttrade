@@ -218,7 +218,7 @@ export function LiveMarketRates() {
                             placeholder="Search pairs..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-white/5 border border-dashboard rounded-xl text-sm font-medium text-gray-700 dark:text-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-white/5 border border-dashboard rounded-lg text-sm font-medium text-gray-700 dark:text-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                         />
                     </div>
 
@@ -235,7 +235,7 @@ export function LiveMarketRates() {
                             className={buttonVariants({
                                 variant: "outline",
                                 className:
-                                    "px-3 py-2.5 rounded-xl bg-white dark:bg-white/5 text-sm font-bold text-gray-600 dark:text-gray-300 hover:border-primary/50",
+                                    "px-3 py-2.5 rounded-lg bg-white dark:bg-white/5 text-sm font-bold text-gray-600 dark:text-gray-300 hover:border-primary/50",
                             })}
                         >
                             <RefreshCw
@@ -263,7 +263,7 @@ export function LiveMarketRates() {
                             {activeCategory === cat.id && (
                                 <motion.div
                                     layoutId="activeFilter"
-                                    className="absolute inset-0 bg-primary rounded-lg shadow-sm shadow-primary/20 -z-10"
+                                    className="absolute inset-0 bg-gold rounded-lg shadow-sm shadow-amber-500/20 -z-10"
                                     transition={{
                                         type: "spring",
                                         bounce: 0.2,
@@ -289,7 +289,7 @@ export function LiveMarketRates() {
                         <div
                             key={pair.symbol}
                             className={cn(
-                                "relative rounded-xl border p-4 transition-all hover:scale-[1.02]",
+                                "relative rounded-lg border p-4 transition-all hover:scale-[1.02]",
                                 "bg-white dark:bg-white/5",
                                 isUp
                                     ? "border-green-500/30 hover:border-green-500/50"

@@ -51,7 +51,7 @@ export function LiveMarketRatesMock() {
 
     return (
         <div
-            className="h-44 w-full bg-slate-50 dark:bg-slate-900/80 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/80 dark:border-white/10 select-none cursor-pointer"
+            className="h-44 w-full bg-slate-50 dark:bg-slate-900/80 rounded-lg p-4 flex flex-col justify-between relative overflow-hidden border border-gray-200 dark:border-white/10 select-none cursor-pointer"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
@@ -72,7 +72,7 @@ export function LiveMarketRatesMock() {
             {/* Rates Rows */}
             <div className="flex-1 flex flex-col justify-center gap-1.5 z-10 my-1 font-mono text-[9.5px] font-bold">
                 {/* Row 1 */}
-                <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/10 pb-1">
+                <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-1">
                     <span className="text-slate-600 dark:text-slate-300">EUR/USD</span>
                     <span
                         className={`px-1.5 py-0.5 rounded-lg transition-colors duration-200 ${eurusdDirection === "up" ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300" : eurusdDirection === "down" ? "bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300" : "text-slate-800 dark:text-slate-200"}`}
@@ -82,7 +82,7 @@ export function LiveMarketRatesMock() {
                 </div>
 
                 {/* Row 2 */}
-                <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/10 pb-1">
+                <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-1">
                     <span className="text-slate-600 dark:text-slate-300">XAU/USD</span>
                     <span
                         className={`px-1.5 py-0.5 rounded-lg transition-colors duration-200 ${xauusdDirection === "up" ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300" : xauusdDirection === "down" ? "bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300" : "text-slate-800 dark:text-slate-200"}`}
@@ -101,7 +101,7 @@ export function LiveMarketRatesMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-slate-100 dark:border-white/10 pt-2 font-mono">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono">
                 <span>Latency: ~12ms</span>
                 <span className={hovered ? "text-emerald-600 dark:text-emerald-400 font-bold" : ""}>
                     {hovered ? "Rates Fluctuation Active" : "Rates Frozen"}

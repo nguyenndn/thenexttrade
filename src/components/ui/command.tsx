@@ -15,7 +15,7 @@ const Command = React.forwardRef<
     <CommandPrimitive
         ref={ref}
         className={cn(
-            "flex h-full w-full flex-col overflow-hidden rounded-xl bg-white dark:bg-[#151925] text-gray-950 dark:text-gray-50",
+            "flex h-full w-full flex-col overflow-hidden rounded-lg bg-white dark:bg-[#151925] text-gray-950 dark:text-gray-50",
             className
         )}
         {...props}
@@ -49,7 +49,7 @@ const CommandInput = React.forwardRef<
         <CommandPrimitive.Input
             ref={ref}
             className={cn(
-                "flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50 dark:placeholder:text-gray-500",
+                "flex h-11 w-full rounded-lg bg-transparent py-3 text-sm outline-none placeholder:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50 dark:placeholder:text-gray-500",
                 className
             )}
             {...props}
@@ -123,7 +123,7 @@ const CommandItem = React.forwardRef<
     <CommandPrimitive.Item
         ref={ref}
         className={cn(
-            "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-gray-100 aria-selected:text-gray-700 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:aria-selected:bg-white/10 dark:aria-selected:text-gray-50",
+            "relative flex cursor-default select-none items-center rounded-lg px-2 py-1.5 text-sm outline-none aria-selected:bg-gray-100 aria-selected:text-gray-700 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:aria-selected:bg-white/10 dark:aria-selected:text-gray-50",
             className
         )}
         {...props}

@@ -234,7 +234,7 @@ export default function AnalyticsDashboard() {
                                 onClick={fetchData}
                                 disabled={loading}
                                 aria-label="Refresh data"
-                                className="rounded-xl shrink-0"
+                                className="rounded-lg shrink-0"
                             >
                                 <RefreshCw
                                     size={16}
@@ -252,8 +252,8 @@ export default function AnalyticsDashboard() {
                             <TabsTrigger
                                 key={t.id}
                                 value={t.id}
-                                className="px-4 py-1.5 rounded-xl text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
-                                activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+                                activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                                 activeTextClassName="!text-white"
                             >
                                 <t.icon size={15} />
@@ -277,7 +277,7 @@ export default function AnalyticsDashboard() {
                             <PageviewTrend data={data.trend} />
                             <button
                                 onClick={handleExportPageviews}
-                                className="absolute top-5 right-5 p-1.5 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                                className="absolute top-5 right-5 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                                 title="Export CSV"
                                 aria-label="Export pageviews as CSV"
                             >
@@ -289,7 +289,7 @@ export default function AnalyticsDashboard() {
                                 <TopPagesPanel pages={data.topPages} />
                                 <button
                                     onClick={handleExportTopPages}
-                                    className="absolute top-5 right-5 p-1.5 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                                    className="absolute top-5 right-5 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                                     title="Export CSV"
                                     aria-label="Export top pages as CSV"
                                 >
@@ -350,10 +350,10 @@ function LoadingSkeleton() {
                 {[1, 2, 3, 4].map((i) => (
                     <div
                         key={i}
-                        className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 animate-pulse"
+                        className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 animate-pulse"
                     >
                         <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 shrink-0 rounded-xl bg-gray-200 dark:bg-white/5" />
+                            <div className="w-9 h-9 shrink-0 rounded-lg bg-gray-200 dark:bg-white/5" />
                             <div className="flex-1">
                                 <div className="h-4 bg-gray-200 dark:bg-white/5 rounded-lg w-1/2 mb-2" />
                                 <div className="h-2 bg-gray-200 dark:bg-white/5 rounded-lg w-1/3" />

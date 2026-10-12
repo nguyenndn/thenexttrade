@@ -128,7 +128,7 @@ export function MetricHelp({
                         <TooltipContent
                             side={side}
                             align="center"
-                            className="max-w-[320px] bg-gray-950 px-3.5 py-3 text-white shadow-xl dark:bg-white dark:text-gray-950 rounded-xl"
+                            className="max-w-[320px] bg-gray-950 px-3.5 py-3 text-white shadow-xl dark:bg-white dark:text-gray-950 rounded-lg"
                         >
                             <MetricHelpContent
                                 metricId={metricId}
@@ -154,7 +154,7 @@ export function MetricHelp({
                     <PopoverContent
                         side={side}
                         align="center"
-                        className="w-72 bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl shadow-xl p-3.5 text-gray-700 dark:text-gray-200"
+                        className="w-72 bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg shadow-xl p-3.5 text-gray-700 dark:text-gray-200"
                     >
                         <MetricHelpContent
                             metricId={metricId}

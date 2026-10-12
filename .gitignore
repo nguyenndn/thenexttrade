@@ -69,3 +69,10 @@ public/downloads/TheNextTradeConnect.exe
 
 # local gstack reports
 .gstack/
+
+# graphify outputs
+graphify-out/
+.graphify*
+
+# scratch
+scratch/

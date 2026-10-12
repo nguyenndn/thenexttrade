@@ -63,7 +63,7 @@ export default function TableOfContents() {
     if (headings.length === 0) return null;
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-2xl shadow-sm border border-dashboard overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-lg shadow-sm border border-dashboard overflow-hidden">
             {/* Accent top stripe */}
             <div className="h-1 bg-gradient-to-r from-gold to-amber-500" />
 
@@ -88,7 +88,7 @@ export default function TableOfContents() {
  ${
      activeId === heading.id
          ? "border-gold text-gold font-bold bg-gold/10 rounded-r-lg"
-         : "border-transparent text-gray-600 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300"
+         : "border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300"
  }
  ${heading.level === 3 ? "ml-3 text-xs" : ""}
  `}

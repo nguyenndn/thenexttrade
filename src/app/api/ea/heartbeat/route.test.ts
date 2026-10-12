@@ -92,4 +92,49 @@ describe("POST /api/ea/heartbeat security", () => {
             })
         );
     });
+
+    it("rejects REAL account with balance < $200 with status 403", async () => {
+        vi.mocked(resolveSyncAuth).mockResolvedValue({
+            success: true,
+            data: {
+                user: { id: "user-123" } as any,
+                account: {
+                    id: "acct-123",
+                    accountNumber: "1001",
+                    autoSync: true,
+                } as any,
+                authMode: "LEGACY_ACCOUNT_KEY",
+            },
+        });
+
+        vi.mocked(prisma.tradingAccount.findUnique).mockResolvedValue({
+            id: "acct-123",
+            timezone: "UTC",
+            fundingVerifiedAt: null,
+            fundingGraceUntil: null,
+            broker: "Vantage Markets",
+        } as any);
+
+        vi.mocked(prisma.tradingAccount.update).mockResolvedValue({} as any);
+
+        const req = new NextRequest("http://localhost/api/ea/heartbeat", {
+            method: "POST",
+            body: JSON.stringify({
+                eaVersion: "1.0",
+                accountNumber: "1001",
+                balance: 150,
+                equity: 150,
+                accountTradeMode: "REAL",
+                broker: "Vantage",
+                server: "Vantage-Live",
+                currency: "USD",
+            }),
+        });
+
+        const res = await POST(req);
+        expect(res.status).toBe(403);
+        const data = await res.json();
+        expect(data.error).toBe("INSUFFICIENT_BALANCE");
+        expect(data.minBalanceRequired).toBe(200);
+    });
 });

@@ -86,7 +86,7 @@ export function ChartImageUploader({
 
     if (imagePreview) {
         return (
-            <div className="relative rounded-2xl border border-gray-200 dark:border-white/10 overflow-hidden bg-gray-50 dark:bg-white/[0.02]">
+            <div className="relative rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden bg-gray-50 dark:bg-white/[0.02]">
                 <img
                     src={imagePreview}
                     alt="Chart preview"
@@ -112,14 +112,14 @@ export function ChartImageUploader({
             onDrop={handleDrop}
             onPaste={handlePaste}
             tabIndex={0}
-            className={`group relative flex flex-col items-center justify-center gap-2.5 rounded-2xl border-2 border-dashed p-5 transition-all cursor-pointer ${
+            className={`group relative flex flex-col items-center justify-center gap-2.5 rounded-lg border-2 border-dashed p-5 transition-all cursor-pointer ${
                 isDragging
                     ? "border-gold bg-gold/5 scale-[1.01]"
                     : "border-gray-200 dark:border-white/10 hover:border-gold/50 hover:bg-gold/[0.02]"
             } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
             onClick={() => !disabled && inputRef.current?.click()}
         >
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold/10 text-gold">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold/10 text-gold">
                 {isDragging ? <Upload size={20} /> : <ImagePlus size={20} />}
             </div>
             <div className="text-center">

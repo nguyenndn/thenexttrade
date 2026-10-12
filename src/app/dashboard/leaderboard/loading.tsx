@@ -4,7 +4,7 @@ export default function LeaderboardLoading() {
             {/* Header skeleton */}
             <div className="flex flex-col gap-4">
                 <div className="h-10 w-80 bg-gray-200 dark:bg-white/5 rounded-lg animate-pulse" />
-                <div className="h-12 w-full max-w-md bg-gray-200 dark:bg-white/5 rounded-xl animate-pulse" />
+                <div className="h-12 w-full max-w-md bg-gray-200 dark:bg-white/5 rounded-lg animate-pulse" />
             </div>
 
             {/* Podium skeleton */}
@@ -12,14 +12,14 @@ export default function LeaderboardLoading() {
                 {[1, 2, 3].map((i) => (
                     <div
                         key={i}
-                        className="h-44 bg-gray-100 dark:bg-white/5 rounded-xl border border-dashboard animate-pulse"
+                        className="h-44 bg-gray-100 dark:bg-white/5 rounded-lg border border-dashboard animate-pulse"
                     />
                 ))}
             </div>
 
             {/* Table skeleton */}
             <div className="flex flex-col lg:flex-row gap-4">
-                <div className="flex-1 bg-gray-100 dark:bg-white/5 rounded-xl border border-dashboard animate-pulse">
+                <div className="flex-1 bg-gray-100 dark:bg-white/5 rounded-lg border border-dashboard animate-pulse">
                     <div className="space-y-0">
                         {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                             <div
@@ -30,7 +30,7 @@ export default function LeaderboardLoading() {
                     </div>
                 </div>
                 <div className="w-full lg:w-80 shrink-0">
-                    <div className="h-72 bg-gray-100 dark:bg-white/5 rounded-xl border border-dashboard animate-pulse" />
+                    <div className="h-72 bg-gray-100 dark:bg-white/5 rounded-lg border border-dashboard animate-pulse" />
                 </div>
             </div>
         </div>

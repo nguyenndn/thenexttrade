@@ -121,7 +121,7 @@ function StatCard({
 }) {
     return (
         <div
-            className={`bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 shadow-sm hover:shadow-md transition-shadow duration-200 border-t-4 ${borderColor || "border-t-transparent"}`}
+            className={`bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard p-5 shadow-sm hover:shadow-md transition-shadow duration-200 border-t-4 ${borderColor || "border-t-transparent"}`}
         >
             <div className="flex items-center gap-3 mb-3">
                 <div className={`p-2 rounded-lg ${iconBg}`}>
@@ -164,7 +164,7 @@ function BreakdownTable({
     if (!data || data.length === 0) return null;
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
             {/* Header */}
             <div className="px-5 py-4 border-b border-dashboard flex items-center gap-2.5">
                 <div className={`p-2 ${iconColor} rounded-lg`}>
@@ -205,7 +205,7 @@ function BreakdownTable({
                             {item.winRate?.toFixed(0)}%
                         </div>
                         <div
-                            className={`col-span-3 text-right font-bold text-sm ${item.pnl >= 0 ? "text-primary" : "text-red-500"}`}
+                            className={`col-span-3 text-right font-bold text-sm ${item.pnl >= 0 ? "text-emerald-500" : "text-red-500"}`}
                         >
                             {item.pnl >= 0 ? "+" : ""}${item.pnl?.toFixed(2)}
                         </div>
@@ -235,7 +235,7 @@ function PsychologySection({
     if (!hasData) return null;
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
             {/* Header */}
             <div className="px-5 py-4 border-b border-dashboard flex items-center gap-2.5">
                 <div className="p-2 rounded-lg bg-purple-500/10 text-purple-500">
@@ -357,7 +357,7 @@ function TradesList({
     if (!trades || trades.length === 0) return null;
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
             {/* Header */}
             <div className="px-5 py-4 border-b border-dashboard flex items-center gap-2.5">
                 <div className={`p-2 rounded-lg ${iconColor}`}>
@@ -409,7 +409,7 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
 
     if (reports.length === 0) {
         return (
-            <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-8">
+            <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border-2 border-dashed border-dashboard mt-8">
                 {/* Animated Calendar Icon */}
                 <div className="relative w-20 h-20 mb-6 mx-auto">
                     <div className="absolute inset-0 rounded-full bg-blue-500/10 dark:bg-blue-500/5 animate-[report-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
@@ -485,7 +485,7 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
     return (
         <div className="space-y-4">
             {/* Period Navigator */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard px-5 py-4 shadow-sm hover:shadow-md transition-shadow duration-200 flex items-center justify-between">
+            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard px-5 py-4 shadow-sm hover:shadow-md transition-shadow duration-200 flex items-center justify-between">
                 <Button
                     variant="ghost"
                     size="sm"
@@ -579,15 +579,15 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
 
             {/* Secondary Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard p-5 shadow-sm">
                     <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">
                         Avg Win
                     </p>
-                    <p className="text-lg font-black text-primary">
+                    <p className="text-lg font-black text-emerald-500">
                         +${report.avgWin.toFixed(2)}
                     </p>
                 </div>
-                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard p-5 shadow-sm">
                     <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">
                         Avg Loss
                     </p>
@@ -595,15 +595,15 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                         -${report.avgLoss.toFixed(2)}
                     </p>
                 </div>
-                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard p-5 shadow-sm">
                     <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">
                         Largest Win
                     </p>
-                    <p className="text-lg font-black text-primary">
+                    <p className="text-lg font-black text-emerald-500">
                         +${report.largestWin.toFixed(2)}
                     </p>
                 </div>
-                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard p-5 shadow-sm">
                     <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">
                         Largest Loss
                     </p>
@@ -625,7 +625,7 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                     data={report.byStrategy}
                     title="Performance by Strategy"
                     icon={Crosshair}
-                    iconColor="bg-primary/10 text-primary"
+                    iconColor="bg-amber-500/10 text-amber-500"
                 />
                 <BreakdownTable
                     data={report.bySession}
@@ -654,7 +654,7 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                     title="Best Trades"
                     icon={TrendingUp}
                     iconColor="bg-emerald-500/10 text-emerald-500"
-                    pnlColor="text-primary"
+                    pnlColor="text-emerald-500"
                 />
                 <TradesList
                     trades={report.worstTrades}

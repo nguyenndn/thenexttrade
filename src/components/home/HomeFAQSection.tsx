@@ -12,14 +12,14 @@ import Link from "next/link";
 const MEMBERSHIP_FAQS = [
     {
         question: "Is TheNextTrade really free? Why do I never pay monthly or course fees?",
-        answer: "Yes! You never pay TheNextTrade any subscription, course, or signal fees. Our core platform, calculators, and 7-day trial are 100% free with no credit card required. To keep full VIP access permanently open (AI Coach, MT5 Auto-Sync, and Academy), you simply fund your own broker account with $300. That deposit remains 100% yours in your own name, and you can trade or withdraw it anytime.",
+        answer: "Yes! You never pay TheNextTrade any subscription, course, or signal fees. Our core platform, calculators, and 7-day trial are 100% free with no credit card required. To keep full VIP access permanently open (AI Coach, MT5 Auto-Sync, and Academy), you simply fund your own broker account with $200. That deposit remains 100% yours in your own name, and you can trade or withdraw it anytime.",
     },
     {
         question: "What's the catch? How does TheNextTrade make money if VIP is free?",
-        answer: "Zero catch. We operate as an authorized Introducing Broker (IB) partner with regulated brokers (Exness, XM, IC Markets, Vantage). When you execute trades, the broker compensates us directly from their standard spread at zero added cost to you. We succeed only when you trade with strict risk management and stay profitable for the long term.",
+        answer: "Zero catch. We operate as an authorized Introducing Broker (IB) partner with regulated brokers (Exness, XM, Vantage Markets, RoboForex). When you execute trades, the broker compensates us directly from their standard spread at zero added cost to you. We succeed only when you trade with strict risk management and stay profitable for the long term.",
     },
     {
-        question: "Is my $300 deposit safe? Can I withdraw it anytime?",
+        question: "Is my $200 deposit safe? Can I withdraw it anytime?",
         answer: "Your capital is held directly in your personal account at Tier-1 regulated brokers. TheNextTrade never receives, touches, or manages your funds. You retain 100% custody and can withdraw your principal or profits at any moment without penalty.",
     },
     {
@@ -39,7 +39,7 @@ const PLATFORM_FAQS = [
     },
     {
         question: "How do I unlock the MT5 Expert Advisors for free?",
-        answer: "Our MT5 Expert Advisors (GoldScalperNinja, GSN Phoenix Grid, Trade Manager) are available for $0 upfront cost through our verified broker partner paths. Once your account qualifies, license keys and downloads appear inside your dashboard.",
+        answer: "Our MT5 Expert Advisors (GoldScalperNinja, GSN - Apex Gold Sentinel, Trade Manager) are available for $0 upfront cost through our verified broker partner paths. Once your account qualifies, license keys and downloads appear inside your dashboard.",
     },
     {
         question: "Can I connect multiple accounts or Prop Firms?",
@@ -86,11 +86,11 @@ export function HomeFAQSection() {
                         className="mb-8 sm:mb-10"
                     />
 
-                    {/* Desktop (PC lg+): 2-Column FAQ Grid — Giữ style như cũ */}
+                    {/* Desktop (PC lg+): 2-Column FAQ Grid */}
                     <div className="hidden lg:grid grid-cols-2 gap-8 lg:gap-10">
                         {/* Column 1: Membership & Broker Funding */}
                         <div>
-                            <div className="mb-5 pb-2.5 border-b border-slate-200/80 dark:border-white/10 text-center">
+                            <div className="mb-5 pb-2.5 border-b border-gray-200 dark:border-white/10 text-center">
                                 <h3 className="text-base sm:text-lg font-black text-gray-900 dark:text-white tracking-tight">
                                     About TheNextTrade
                                 </h3>
@@ -100,7 +100,7 @@ export function HomeFAQSection() {
 
                         {/* Column 2: Platform, Journal & Systems */}
                         <div>
-                            <div className="mb-5 pb-2.5 border-b border-slate-200/80 dark:border-white/10 text-center">
+                            <div className="mb-5 pb-2.5 border-b border-gray-200 dark:border-white/10 text-center">
                                 <h3 className="text-base sm:text-lg font-black text-gray-900 dark:text-white tracking-tight">
                                     Platform & Systems
                                 </h3>
@@ -109,7 +109,7 @@ export function HomeFAQSection() {
                         </div>
                     </div>
 
-                    {/* Tablet & Mobile (< lg): Category Tabs Pill Switcher — Tab chỉ xuất hiện ở tablet và mobile */}
+                    {/* Tablet & Mobile (< lg): Category Tabs Pill Switcher */}
                     <div className="block lg:hidden">
                         <Tabs
                             value={activeTab}
@@ -118,7 +118,7 @@ export function HomeFAQSection() {
                             className="w-full mb-6 sm:mb-8"
                         >
                             <div className="overflow-x-auto scrollbar-hide flex justify-center">
-                                <TabsList className="bg-gray-50 dark:bg-white/5 border border-dashboard rounded-xl p-1.5 gap-1 shrink-0">
+                                <TabsList className="bg-gray-50 dark:bg-white/5 border border-dashboard rounded-lg p-1.5 gap-1 shrink-0">
                                     <TabsTrigger
                                         value="membership"
                                         className="px-4 sm:px-5 py-2 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
@@ -128,7 +128,7 @@ export function HomeFAQSection() {
                                         <span>About TheNextTrade</span>
                                         <span
                                             className={cn(
-                                                "text-[10px] px-1.5 py-0.5 rounded-md font-mono font-bold transition-colors",
+                                                "text-[10px] px-1.5 py-0.5 rounded-lg font-mono font-bold transition-colors",
                                                 activeTab === "membership"
                                                     ? "bg-white/20 text-white"
                                                     : "bg-gray-200/70 dark:bg-white/10 text-gray-500 dark:text-gray-400"
@@ -147,7 +147,7 @@ export function HomeFAQSection() {
                                         <span>Platform & Systems</span>
                                         <span
                                             className={cn(
-                                                "text-[10px] px-1.5 py-0.5 rounded-md font-mono font-bold transition-colors",
+                                                "text-[10px] px-1.5 py-0.5 rounded-lg font-mono font-bold transition-colors",
                                                 activeTab === "platform"
                                                     ? "bg-white/20 text-white"
                                                     : "bg-gray-200/70 dark:bg-white/10 text-gray-500 dark:text-gray-400"

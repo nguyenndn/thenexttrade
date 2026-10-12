@@ -66,16 +66,17 @@ const valueCards = [
     {
         title: "Edge instead of noise",
         description:
-            "We don't just show charts. We help you make one better decision before your next setup.",
+            "This shows which of your habits cost you money, so you can fix it before your next trade.",
         icon: Target,
     },
 ];
 
 export function PublicGetStarted() {
     return (
-        <div className="relative overflow-hidden bg-[#F7F4EC] text-slate-950 dark:bg-transparent dark:text-white">
-            {/* Premium brand background exactly like /about */}
-            <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.16)_0%,rgba(255,255,255,0.72)_34%,rgba(16,185,129,0.10)_100%)] dark:bg-[linear-gradient(135deg,rgba(43,35,68,0.60)_0%,rgba(25,52,81,0.46)_48%,rgba(6,69,79,0.38)_100%)] pointer-events-none" />
+        <div className="relative overflow-hidden bg-white text-slate-950 dark:bg-transparent dark:text-white">
+            {/* Ambient Background Atmosphere & Technical Grid */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.08),transparent_75%)] dark:bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.12),transparent_75%)] pointer-events-none" />
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none" />
 
             <section className="relative z-10 px-4 pb-16 pt-28 sm:px-6 lg:px-8">
                 <div className="mx-auto max-w-[1180px]">
@@ -103,7 +104,7 @@ export function PublicGetStarted() {
                                         variant: "primary",
                                         size: "smd",
                                     }),
-                                    "w-full rounded-lg bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 border-none"
+                                    "w-full rounded-lg bg-gold hover:bg-amber-600 text-white font-black border-none"
                                 )}
                             >
                                 Open Free Workspace
@@ -195,7 +196,7 @@ export function PublicGetStarted() {
                             </div>
                         </div>
 
-                        <div className="rounded-lg border border-gold/30 bg-gradient-to-br from-amber-500/[0.06] to-gold/[0.03] dark:from-gold/[0.04] dark:to-transparent dark:bg-[#0E1118] p-6 text-slate-950 dark:text-white shadow-xl shadow-gold/5 dark:shadow-black/20">
+                        <div className="rounded-lg border border-gold/30 bg-white dark:bg-[#0E1118] p-6 text-slate-950 dark:text-white shadow-xl shadow-gold/5 dark:shadow-black/20">
                             <div className="text-xs font-black uppercase tracking-[0.18em] text-gold">
                                 Recommended path
                             </div>
@@ -229,10 +230,16 @@ export function PublicGetStarted() {
                             </div>
                             <Link
                                 href="/auth/register"
-                                className="mt-7 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-gold to-amber-500 text-white font-black px-5 py-3 text-sm transition-all duration-300 hover:from-amber-500 hover:to-amber-600 hover:scale-[1.01]"
+                                className={cn(
+                                    buttonVariants({
+                                        variant: "primary",
+                                        size: "smd",
+                                    }),
+                                    "mt-7 w-full rounded-lg bg-gold hover:bg-amber-600 text-white border-none font-black"
+                                )}
                             >
                                 Start Workspace Setup
-                                <ArrowRight size={16} />
+                                <ArrowRight size={14} className="ml-1" />
                             </Link>
                         </div>
                     </div>

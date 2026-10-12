@@ -133,7 +133,7 @@ export default async function SharePage({ params }: SharePageProps) {
             <main className="relative flex-1 container mx-auto px-4 py-6 md:py-10 flex flex-col items-center justify-center gap-6 md:gap-8">
                 {/* User Profile Section */}
                 <div className="w-full max-w-3xl animate-in fade-in slide-in-from-bottom-4 duration-700">
-                    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-emerald-500 to-teal-600 p-5 md:p-6 shadow-2xl shadow-primary/15">
+                    <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 p-5 md:p-6 shadow-2xl shadow-amber-500/15">
                         {/* Decorative elements */}
                         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl"></div>
                         <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/5 rounded-full translate-y-1/2 -translate-x-1/4 blur-2xl"></div>
@@ -194,7 +194,7 @@ export default async function SharePage({ params }: SharePageProps) {
                                     </div>
                                     <p className="text-white/85 text-sm leading-relaxed italic px-4">
                                         {sanitizedTrade.shareDescription ||
-                                            "A disciplined approach to the markets. Tracking every trade to master the craft of scalping."}
+                                            "Every trade logged, every mistake reviewed."}
                                     </p>
                                     <div className="absolute -bottom-3 -right-1 text-white/20 text-3xl font-serif leading-none">
                                         &rdquo;
@@ -220,7 +220,7 @@ export default async function SharePage({ params }: SharePageProps) {
 
                 {/* CTA Block - Premium */}
                 <div className="w-full max-w-5xl animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200">
-                    <div className="relative overflow-hidden rounded-2xl bg-white border border-dashboard p-5 md:p-8 text-center group hover:border-primary/20 transition-all duration-500 shadow-xl shadow-gray-200/50">
+                    <div className="relative overflow-hidden rounded-lg bg-white dark:bg-[#151925] border border-dashboard dark:border-white/10 p-5 md:p-8 text-center group hover:border-primary/20 transition-all duration-500 shadow-xl shadow-gray-200/50 dark:shadow-none">
                         {/* Top accent line */}
                         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[2px] bg-gradient-to-r from-transparent via-primary/60 to-transparent"></div>
                         {/* Radial glow */}
@@ -231,21 +231,20 @@ export default async function SharePage({ params }: SharePageProps) {
                                 <p className="text-primary/80 text-xs font-bold uppercase tracking-[0.2em]">
                                     Free Forever
                                 </p>
-                                <h2 className="text-2xl md:text-4xl font-black text-gray-800 tracking-tight">
+                                <h2 className="text-2xl md:text-4xl font-black text-gray-800 dark:text-white tracking-tight">
                                     Start Your Trading Journal
                                 </h2>
-                                <p className="text-gray-500 text-sm md:text-base max-w-lg mx-auto leading-relaxed">
-                                    Join traders who are mastering their
-                                    psychology and strategy with TheNextTrade.
+                                <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base max-w-lg mx-auto leading-relaxed">
+                                    Journal your trades and track your psychology with TheNextTrade.
                                 </p>
                             </div>
 
                             <Link href="/auth/signup">
-                                <Button className="h-12 md:h-14 px-8 md:px-10 rounded-xl font-bold text-base md:text-lg bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+                                <Button size="smd" className="rounded-lg font-bold bg-gold hover:bg-amber-600 text-white shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
                                     Get Started Free
                                     <ArrowRight
-                                        size={18}
-                                        className="md:w-5 md:h-5 ml-2"
+                                        size={14}
+                                        className="ml-2"
                                     />
                                 </Button>
                             </Link>

@@ -1355,8 +1355,8 @@ export function AcademyTree({
                                                                     }
                                                                     className={cn(
                                                                         "group flex items-center gap-2.5 py-2.5 px-3 rounded-lg border-2 transition-all w-full max-w-[85%] sm:max-w-xs relative z-10 text-left cursor-pointer",
-                                                                        "bg-white dark:bg-white/[0.03] border-primary/60 dark:border-primary/40",
-                                                                        "hover:border-primary dark:hover:border-primary/60 hover:shadow-md hover:shadow-primary/10",
+                                                                        "bg-white dark:bg-white/[0.03] border-gold/60 dark:border-gold/40",
+                                                                        "hover:border-gold dark:hover:border-gold/60 hover:shadow-md hover:shadow-amber-500/10",
                                                                         isEven
                                                                             ? "mx-auto md:ml-0 md:mr-auto"
                                                                             : "mx-auto md:mr-0 md:ml-auto md:flex-row-reverse"
@@ -1460,7 +1460,7 @@ export function AcademyTree({
                                                                 className={cn(
                                                                     "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs text-left cursor-pointer",
                                                                     "bg-white dark:bg-white/[0.03] border-dashboard ",
-                                                                    "hover:border-primary/50 dark:hover:border-primary/30 hover:shadow-md hover:shadow-primary/5",
+                                                                    "hover:border-gold/50 dark:hover:border-gold/30 hover:shadow-md hover:shadow-amber-500/5",
                                                                     isEven
                                                                         ? "mx-auto md:ml-0 md:mr-auto"
                                                                         : "mx-auto md:mr-0 md:ml-auto md:flex-row-reverse"
@@ -1472,7 +1472,7 @@ export function AcademyTree({
                                                                         isPremiumLevel
                                                                             ? "bg-amber-100 dark:bg-amber-500/10 text-amber-500"
                                                                             : "bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300",
-                                                                        "group-hover:bg-primary group-hover:text-white transition-colors"
+                                                                        "group-hover:bg-gold group-hover:text-white transition-colors"
                                                                     )}
                                                                 >
                                                                     {isPremiumLevel ? (
@@ -1578,7 +1578,7 @@ export function AcademyTree({
                         <motion.div
                             initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-dashboard p-3 space-y-2 min-w-[200px]"
+                            className="bg-white dark:bg-gray-900 rounded-lg shadow-2xl border border-dashboard p-3 space-y-2 min-w-[200px]"
                         >
                             <div className="flex items-center justify-between mb-1">
                                 <span className="text-xs font-bold text-gray-600 flex items-center gap-1">

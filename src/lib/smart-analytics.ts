@@ -56,7 +56,7 @@ export interface IntelligenceData {
 // ============================================================================
 // MINIMUM DATA THRESHOLD
 // ============================================================================
-const MIN_TRADES = 30;
+const MIN_TRADES = 20;
 
 // ============================================================================
 // ADDITIONAL QUERIES (not in analytics-queries.ts)

@@ -82,13 +82,13 @@ export function ProductUsersModal({
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
             <div
-                className="relative w-full max-w-4xl max-h-[90vh] flex flex-col bg-white dark:bg-[#121624] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden"
+                className="relative w-full max-w-4xl max-h-[90vh] flex flex-col bg-white dark:bg-[#121624] border border-gray-200 dark:border-white/10 rounded-lg shadow-2xl overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* ── Modal Header ── */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/75 dark:bg-[#181E32]/75">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 overflow-hidden">
+                        <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 overflow-hidden">
                             {product.thumbnail ? (
                                 <img
                                     src={product.thumbnail}
@@ -119,7 +119,7 @@ export function ProductUsersModal({
                             variant="outline"
                             size="icon"
                             onClick={onClose}
-                            className="rounded-xl h-9 w-9 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
+                            className="rounded-lg h-9 w-9 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
                             aria-label="Close"
                         >
                             <X size={18} />
@@ -139,7 +139,7 @@ export function ProductUsersModal({
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Search by name, email, account #..."
-                            className="w-full pl-9 pr-4 py-1.5 text-xs rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all placeholder:text-gray-400"
+                            className="w-full pl-9 pr-4 py-1.5 text-xs rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all placeholder:text-gray-400"
                         />
                     </div>
 
@@ -151,7 +151,7 @@ export function ProductUsersModal({
                             <Button
                                 variant="outline"
                                 size="sm"
-                                className="h-8 text-xs font-semibold rounded-xl flex items-center gap-1.5"
+                                className="h-8 text-xs font-semibold rounded-lg flex items-center gap-1.5"
                             >
                                 <span>Manage Product</span>
                                 <ExternalLink size={12} />
@@ -164,7 +164,7 @@ export function ProductUsersModal({
                 <div className="flex-1 min-h-0 overflow-y-auto">
                     {filteredUsers.length === 0 ? (
                         <div className="py-16 flex flex-col items-center justify-center text-center px-4">
-                            <div className="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 mb-3">
+                            <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 mb-3">
                                 <Users size={24} />
                             </div>
                             <h4 className="text-sm font-bold text-gray-800 dark:text-white mb-1">
@@ -196,7 +196,7 @@ export function ProductUsersModal({
                                         {/* User Column */}
                                         <td className="px-6 py-3.5">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500/20 to-orange-500/20 border border-amber-500/30 flex items-center justify-center shrink-0 overflow-hidden font-bold text-amber-600 dark:text-amber-400 text-xs shadow-sm">
+                                                <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-amber-500/20 to-orange-500/20 border border-amber-500/30 flex items-center justify-center shrink-0 overflow-hidden font-bold text-amber-600 dark:text-amber-400 text-xs shadow-sm">
                                                     {user.image ? (
                                                         <img
                                                             src={user.image}
@@ -248,7 +248,7 @@ export function ProductUsersModal({
                                                         {user.accountNumber || "—"}
                                                     </span>
                                                     {user.platform && (
-                                                        <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-mono">
+                                                        <span className="px-1.5 py-0.2 rounded-lg text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-mono">
                                                             {user.platform}
                                                         </span>
                                                     )}
@@ -320,7 +320,7 @@ export function ProductUsersModal({
                     <Button
                         variant="outline"
                         onClick={onClose}
-                        className="rounded-xl h-9 px-4 text-xs font-semibold"
+                        className="rounded-lg h-9 px-4 text-xs font-semibold"
                     >
                         Close
                     </Button>

@@ -33,7 +33,7 @@ const itemVariants = {
 
 export function RecentTradesWidget({ trades }: { trades: Trade[] }) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
             <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
                 <Clock className="w-5 h-5 text-blue-500" aria-hidden="true" />
                 Live MT5 Trade Telemetry
@@ -58,12 +58,12 @@ export function RecentTradesWidget({ trades }: { trades: Trade[] }) {
                             initial="hidden"
                             animate="visible"
                             variants={itemVariants}
-                            className="flex items-center justify-between group p-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                            className="flex items-center justify-between group p-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                         >
                             <div className="flex items-center gap-3">
                                 <div
                                     className={cn(
-                                        "w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs shadow-sm",
+                                        "w-10 h-10 rounded-lg flex items-center justify-center font-bold text-xs shadow-sm",
                                         trade.type === "BUY"
                                             ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 ring-1 ring-emerald-500/20"
                                             : "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400 ring-1 ring-red-500/20"

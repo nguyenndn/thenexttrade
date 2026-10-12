@@ -61,10 +61,10 @@ export function WidgetGrid({
     if (!mounted) {
         return (
             <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 animate-pulse min-h-[500px]">
-                <div className="h-[380px] rounded-2xl bg-gray-100 dark:bg-white/[0.03] border border-dashboard" />
-                <div className="h-[380px] rounded-2xl bg-gray-100 dark:bg-white/[0.03] border border-dashboard" />
-                <div className="h-[280px] rounded-2xl bg-gray-100 dark:bg-white/[0.03] border border-dashboard" />
-                <div className="h-[280px] rounded-2xl bg-gray-100 dark:bg-white/[0.03] border border-dashboard" />
+                <div className="h-[380px] rounded-lg bg-gray-100 dark:bg-white/[0.03] border border-dashboard" />
+                <div className="h-[380px] rounded-lg bg-gray-100 dark:bg-white/[0.03] border border-dashboard" />
+                <div className="h-[280px] rounded-lg bg-gray-100 dark:bg-white/[0.03] border border-dashboard" />
+                <div className="h-[280px] rounded-lg bg-gray-100 dark:bg-white/[0.03] border border-dashboard" />
             </div>
         );
     }

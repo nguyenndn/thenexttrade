@@ -117,7 +117,7 @@ export function BulkImagePromptModal({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 w-full max-w-4xl max-h-[85vh] flex flex-col shadow-xl"
+                className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 w-full max-w-4xl max-h-[85vh] flex flex-col shadow-xl"
             >
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10">
@@ -162,7 +162,7 @@ export function BulkImagePromptModal({
                             {prompts.map((p) => (
                                 <div
                                     key={p.articleId}
-                                    className="rounded-xl border border-gray-200 dark:border-white/10 p-4"
+                                    className="rounded-lg border border-gray-200 dark:border-white/10 p-4"
                                 >
                                     <p className="text-sm font-bold text-gray-800 dark:text-white mb-2 truncate">
                                         {p.title}

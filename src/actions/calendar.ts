@@ -43,6 +43,8 @@ export async function getCalendarPerformance(
             select: {
                 exitDate: true,
                 pnl: true,
+                commission: true,
+                swap: true,
                 result: true,
             },
         });
@@ -82,7 +84,11 @@ export async function getCalendarPerformance(
             }
 
             const dayPerf = performanceMap.get(dateStr)!;
-            dayPerf.pnl += trade.pnl || 0;
+            const netTradePnl =
+                (trade.pnl || 0) +
+                (trade.commission || 0) +
+                (trade.swap || 0);
+            dayPerf.pnl = Number((dayPerf.pnl + netTradePnl).toFixed(2));
             dayPerf.tradesCount += 1;
 
             if (trade.result === "WIN") dayPerf.wins += 1;

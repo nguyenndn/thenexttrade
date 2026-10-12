@@ -12,7 +12,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
     if (!data) return null;
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex justify-between items-center mb-6">
                 <h3 className="font-bold text-gray-700 dark:text-white text-lg">
                     Report Preview
@@ -27,9 +27,9 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
             </div>
 
             {/* Summary Card */}
-            <div className="bg-gradient-to-br from-primary/10 to-blue-500/10 p-6 rounded-xl mb-8 border border-primary/10">
+            <div className="bg-gradient-to-br from-amber-500/10 to-amber-600/5 p-6 rounded-lg mb-8 border border-amber-500/20">
                 <h4 className="text-lg font-bold text-gray-700 dark:text-white mb-6 flex items-center gap-2">
-                    <span className="w-1 h-6 bg-primary rounded-full"></span>
+                    <span className="w-1 h-6 bg-gold rounded-full"></span>
                     Performance Summary: {data.period}
                 </h4>
 
@@ -82,7 +82,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                         {data.byStrategy.slice(0, 5).map((strat: any) => (
                             <div
                                 key={strat.name}
-                                className="flex justify-between items-center p-4 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashboard"
+                                className="flex justify-between items-center p-4 bg-gray-50 dark:bg-white/5 rounded-lg border border-dashboard"
                             >
                                 <div className="flex flex-col">
                                     <span className="font-bold text-gray-700 dark:text-white text-sm">
@@ -117,7 +117,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                         {data.byPair.slice(0, 5).map((pair: any) => (
                             <div
                                 key={pair.symbol}
-                                className="flex justify-between items-center p-4 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashboard"
+                                className="flex justify-between items-center p-4 bg-gray-50 dark:bg-white/5 rounded-lg border border-dashboard"
                             >
                                 <span className="font-bold text-gray-700 dark:text-white">
                                     {pair.symbol}
@@ -144,7 +144,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                 <h4 className="font-bold text-gray-700 dark:text-white mb-4 text-sm uppercase tracking-wider text-gray-600">
                     Recent Trades
                 </h4>
-                <div className="overflow-x-auto rounded-xl border border-dashboard">
+                <div className="overflow-x-auto rounded-lg border border-dashboard">
                     <table className="w-full text-sm">
                         <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase font-bold text-gray-600">
                             <tr>

@@ -29,9 +29,9 @@ export default function Verify2FAPage() {
             {/* Background Effects */}
             <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.3] pointer-events-none"></div>
 
-            <div className="w-full max-w-[400px] p-8 rounded-xl border border-white/10 bg-[#ffffff0d] backdrop-blur-sm relative z-10 mx-4">
+            <div className="w-full max-w-[400px] p-8 rounded-lg border border-white/10 bg-[#ffffff0d] backdrop-blur-sm relative z-10 mx-4">
                 <div className="text-center mb-8">
-                    <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-6 ring-1 ring-primary/30">
+                    <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-6 ring-1 ring-primary/30">
                         <Shield size={32} className="text-primary" />
                     </div>
                     <h1 className="text-2xl font-bold text-white mb-2">
@@ -54,7 +54,7 @@ export default function Verify2FAPage() {
                             maxLength={6}
                             autoFocus
                             placeholder="000000"
-                            className="w-full h-16 text-center text-3xl font-bold tracking-[0.5em] bg-[#0B0E14] border border-white/10 rounded-xl focus:border-primary focus:ring-1 focus:ring-primary text-white placeholder:text-gray-700 transition-all outline-none"
+                            className="w-full h-16 text-center text-3xl font-bold tracking-[0.5em] bg-[#0B0E14] border border-white/10 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary text-white placeholder:text-gray-700 transition-all outline-none"
                         />
                     </div>
 
@@ -62,7 +62,7 @@ export default function Verify2FAPage() {
                         type="submit"
                         disabled={loading || code.length < 6}
                         variant="primary"
-                        className="w-full h-12 font-bold text-lg rounded-xl transition-all shadow-lg shadow-primary/20 disabled:opacity-50 flex items-center justify-center gap-2"
+                        className="w-full h-12 font-bold text-lg rounded-lg transition-all shadow-lg shadow-amber-500/20 disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                         {loading ? (
                             <Loader2 size={24} className="animate-spin" />

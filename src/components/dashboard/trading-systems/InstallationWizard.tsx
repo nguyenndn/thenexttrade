@@ -29,8 +29,8 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
             description: `Download the ${type === "MT5_EA" ? "Expert Advisor" : "Indicator"} file (.ex5) from your dashboard.`,
             icon: Download,
             content: (
-                <div className="bg-green-50 dark:bg-green-500/10 border border-green-100 dark:border-green-500/20 rounded-xl p-6">
-                    <div className="flex items-center gap-3 mb-4 text-green-700 dark:text-green-400 font-bold">
+                <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 rounded-xl p-6">
+                    <div className="flex items-center gap-3 mb-4 text-amber-700 dark:text-amber-400 font-bold">
                         <Download size={20} />
                         <span>Download from Dashboard</span>
                     </div>
@@ -58,7 +58,7 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                         the top menu, then select{" "}
                         <strong>Open Data Folder</strong>.
                     </p>
-                    <div className="bg-gray-100 dark:bg-white/5 p-4 rounded-xl font-mono text-xs text-gray-600 dark:text-gray-300">
+                    <div className="bg-gray-100 dark:bg-white/5 p-4 rounded-lg font-mono text-xs text-gray-600 dark:text-gray-300">
                         File &gt; Open Data Folder
                     </div>
                 </div>
@@ -78,7 +78,7 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                         </strong>
                         folder.
                     </p>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                         <FolderOpen size={16} />
                         <span>MQL5</span>
                         <ChevronRight size={14} />
@@ -120,10 +120,10 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                         <strong>Refresh</strong>.
                     </p>
                     <div className="bg-gray-100 dark:bg-white/5 p-3 rounded-lg flex items-center gap-3">
-                        <RefreshCw size={16} className="text-gray-600" />
+                        <RefreshCw size={16} className="text-gray-600 dark:text-gray-400" />
                         <span className="text-sm font-medium">Refresh</span>
                     </div>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                         Your new{" "}
                         {type === "MT5_EA" ? "Expert Advisor" : "Indicator"}{" "}
                         should now appear in the list!
@@ -156,13 +156,13 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                     <span className="text-sm font-bold text-gray-600 dark:text-gray-300">
                         Step {currentStep + 1} of {steps.length}
                     </span>
-                    <span className="text-xs font-bold text-primary">
+                    <span className="text-xs font-bold text-gold dark:text-amber-400">
                         {Math.round(progress)}% Complete
                     </span>
                 </div>
                 <div className="w-full h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
                     <div
-                        className="h-full bg-primary transition-all duration-500 ease-out rounded-full"
+                        className="h-full bg-gradient-to-r from-gold to-amber-500 transition-all duration-500 ease-out rounded-full"
                         style={{ width: `${progress}%` }}
                     />
                 </div>
@@ -176,7 +176,7 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                 </div>
 
                 <div className="flex-1 relative z-10">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-lg text-xs font-bold uppercase tracking-wider mb-6">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-lg text-xs font-bold uppercase tracking-wider mb-6">
                         STEP {currentStep + 1}
                     </div>
 
@@ -197,7 +197,7 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                         onClick={handlePrev}
                         disabled={currentStep === 0}
                         className={cn(
-                            "rounded-xl font-bold transition-all",
+                            "rounded-lg font-bold transition-all",
                             currentStep === 0 ? "opacity-50" : ""
                         )}
                     >
@@ -214,10 +214,10 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                         onClick={handleNext}
                         disabled={currentStep === steps.length - 1}
                         className={cn(
-                            "rounded-xl font-bold transition-all shadow-lg",
+                            "rounded-lg font-bold transition-all shadow-lg",
                             currentStep === steps.length - 1
-                                ? "bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-500/20 shadow-none"
-                                : "shadow-primary/20 hover:scale-105 active:scale-95"
+                                ? "bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-500/20 shadow-none"
+                                : "shadow-amber-500/20 hover:scale-105 active:scale-95"
                         )}
                     >
                         {currentStep === steps.length - 1 ? (
@@ -241,9 +241,9 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                         className={cn(
                             "w-2.5 h-2.5 rounded-full transition-all duration-300",
                             idx === currentStep
-                                ? "bg-primary scale-125"
+                                ? "bg-amber-500 scale-125"
                                 : idx < currentStep
-                                  ? "bg-primary"
+                                  ? "bg-amber-500"
                                   : "bg-gray-200 dark:bg-white/10"
                         )}
                     />

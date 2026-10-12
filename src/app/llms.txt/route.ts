@@ -8,7 +8,7 @@ export async function GET() {
 > Professional Forex Trading Tools, Trading Playbook & Market Analytics Platform
 
 ## About
-TheNextTrade is a forex trading platform built by professional traders and software engineers. We provide 18 free institutional-grade trading calculators, Trading Playbook Studio with Preset Setups, Automated Trade Journal with MT5 Sync, a structured 3-level Academy with 30+ lessons, real-time market data, and a comprehensive knowledge base — empowering retail traders to make data-driven, systematic decisions.
+TheNextTrade offers 18 free forex calculators, a trade journal with MT5 sync, and live market data. Built for retail traders who want repeatable decisions.
 
 ## Main Sections
 

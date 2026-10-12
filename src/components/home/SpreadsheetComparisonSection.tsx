@@ -122,9 +122,9 @@ export function SpreadsheetComparisonSection({
                             return (
                                 <div
                                     key={card.label}
-                                    className="group rounded-xl border border-gold/20 bg-white/80 dark:bg-white/[0.02] p-5 shadow-sm flex flex-col items-center text-center transition-all duration-300 hover:border-gold/50 hover:shadow-lg hover:-translate-y-1"
+                                    className="group rounded-lg border border-gold/20 bg-white/80 dark:bg-white/[0.02] p-5 shadow-sm flex flex-col items-center text-center transition-all duration-300 hover:border-gold/50 hover:shadow-lg hover:-translate-y-1"
                                 >
-                                    <div className="mb-3.5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gold/10 text-gold border border-gold/25 shadow-sm group-hover:scale-110 group-hover:bg-gold/15 group-hover:shadow-[0_0_18px_rgba(245,158,11,0.28)] transition-all duration-300">
+                                    <div className="mb-3.5 flex h-12 w-12 items-center justify-center rounded-lg bg-gold/10 text-gold border border-gold/25 shadow-sm group-hover:scale-110 group-hover:bg-gold/15 group-hover:shadow-[0_0_18px_rgba(245,158,11,0.28)] transition-all duration-300">
                                         <motion.div
                                             animate={card.animate}
                                             transition={card.transition}
@@ -147,7 +147,7 @@ export function SpreadsheetComparisonSection({
                     {/* Comparison Table */}
                     {/* Header Row (Desktop/Tablet) */}
                     <div className="hidden md:grid grid-cols-2 gap-4 mb-3">
-                        <div className="flex items-center justify-center gap-2 p-3.5 rounded-xl bg-slate-100/70 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 text-center">
+                        <div className="flex items-center justify-center gap-2 p-3.5 rounded-lg bg-slate-100/70 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 text-center">
                             <FileText
                                 size={16}
                                 className="text-slate-400 flex-shrink-0"
@@ -156,7 +156,7 @@ export function SpreadsheetComparisonSection({
                                 Excel & Manual Spreadsheets
                             </span>
                         </div>
-                        <div className="flex items-center justify-center gap-2 p-3.5 rounded-xl bg-gold/5 border border-gold/20 dark:border-gold/30 text-center">
+                        <div className="flex items-center justify-center gap-2 p-3.5 rounded-lg bg-gold/5 border border-gold/20 dark:border-gold/30 text-center">
                             <Brain
                                 size={16}
                                 className="text-gold flex-shrink-0"
@@ -174,7 +174,7 @@ export function SpreadsheetComparisonSection({
                                 key={idx}
                                 className="grid grid-cols-1 md:grid-cols-2 gap-4"
                             >
-                                <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-gray-50/50 dark:bg-white/[0.01] border border-slate-200/80 dark:border-white/10">
+                                <div className="flex items-start gap-2.5 p-3.5 rounded-lg bg-gray-50/50 dark:bg-white/[0.01] border border-gray-200 dark:border-white/10">
                                     <X
                                         size={14}
                                         className="text-slate-400 flex-shrink-0 mt-0.5"
@@ -183,7 +183,7 @@ export function SpreadsheetComparisonSection({
                                         {row.traditional}
                                     </span>
                                 </div>
-                                <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-gold/[0.02] dark:bg-gold/[0.02] border border-gold/20 dark:border-gold/25">
+                                <div className="flex items-start gap-2.5 p-3.5 rounded-lg bg-gold/[0.02] dark:bg-gold/[0.02] border border-gold/20 dark:border-gold/25">
                                     <Check
                                         size={14}
                                         className="text-emerald-500 flex-shrink-0 mt-0.5"
@@ -206,12 +206,12 @@ export function SpreadsheetComparisonSection({
                             }
                             className="w-full sm:w-auto inline-block"
                         >
-                            <Button className="w-full sm:w-auto min-h-12 px-5 sm:px-8 rounded-xl bg-gold hover:bg-amber-600 text-white font-extrabold text-sm shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all flex items-center justify-center gap-2 animate-btn-shine">
+                            <Button size="smd" className="w-full sm:w-auto px-5 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all flex items-center justify-center gap-2 animate-btn-shine">
                                 {isLoggedIn
                                     ? "Open My Journal"
                                     : "Start Free Journal"}{" "}
                                 <ArrowRight
-                                    size={16}
+                                    size={14}
                                     className="text-yellow-200"
                                 />
                             </Button>

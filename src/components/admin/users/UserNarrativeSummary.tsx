@@ -9,7 +9,7 @@ interface UserNarrativeSummaryProps {
 export function UserNarrativeSummary({ classification }: UserNarrativeSummaryProps) {
     if (!classification) {
         return (
-            <div className="rounded-xl border border-zinc-200/80 bg-white/70 p-5 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/70 shadow-xs">
+            <div className="rounded-lg border border-zinc-200/80 bg-white/70 p-5 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/70 shadow-xs">
                 <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 text-sm">
                     <Activity className="h-4 w-4" />
                     <span>Behavioral telemetry is being calculated...</span>
@@ -87,7 +87,7 @@ export function UserNarrativeSummary({ classification }: UserNarrativeSummaryPro
     return (
         <section
             aria-label="Trader behavioral summary"
-            className="mb-6 rounded-xl border border-zinc-200/80 bg-white p-5 shadow-xs transition-colors dark:border-zinc-800 dark:bg-zinc-900/90"
+            className="mb-6 rounded-lg border border-zinc-200/80 bg-white p-5 shadow-xs transition-colors dark:border-zinc-800 dark:bg-zinc-900/90"
         >
             {/* Header: Title & Pulse Status Dot */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-100 pb-3.5 dark:border-zinc-800/70">
@@ -123,7 +123,7 @@ export function UserNarrativeSummary({ classification }: UserNarrativeSummaryPro
                     {chips.map((chip, idx) => (
                         <span
                             key={idx}
-                            className={`inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-medium ${renderChipStyle(
+                            className={`inline-flex items-center rounded-lg border px-2.5 py-0.5 text-xs font-medium ${renderChipStyle(
                                 chip.variant
                             )}`}
                         >

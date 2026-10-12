@@ -138,7 +138,7 @@ export function PivotPointCalc() {
         <div className="grid lg:grid-cols-2 gap-8">
             <div className="space-y-6">
                 {/* Method Toggle */}
-                <div className="flex flex-wrap bg-gray-100 dark:bg-white/5 p-1 rounded-xl gap-1">
+                <div className="flex flex-wrap bg-gray-100 dark:bg-white/5 p-1 rounded-lg gap-1">
                     {METHODS.map((m) => (
                         <button
                             key={m.id}
@@ -155,7 +155,7 @@ export function PivotPointCalc() {
                             {inputs.method === m.id && (
                                 <motion.div
                                     layoutId="activePivotMethod"
-                                    className="absolute inset-0 bg-gradient-to-r from-primary to-teal-500 rounded-lg shadow-sm -z-10"
+                                    className="absolute inset-0 bg-gradient-to-r from-gold to-amber-600 rounded-lg shadow-sm shadow-amber-500/20 -z-10"
                                     transition={{
                                         type: "spring",
                                         bounce: 0.2,
@@ -197,7 +197,7 @@ export function PivotPointCalc() {
             </div>
 
             {/* Pivot Levels */}
-            <div className="bg-white dark:bg-white/5 rounded-xl border border-dashboard overflow-hidden">
+            <div className="bg-white dark:bg-white/5 rounded-lg border border-dashboard overflow-hidden">
                 <div className="px-4 py-3 border-b border-dashboard">
                     <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                         {METHODS.find((m) => m.id === inputs.method)?.name}{" "}

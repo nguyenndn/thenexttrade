@@ -208,7 +208,7 @@ function TimelineNode({
                 }}
             >
                 <div
-                    className={`bg-white dark:bg-[#1E2028] border ${item.borderColor} rounded-xl p-6 md:p-8 shadow-sm hover:shadow-lg transition-all duration-300 group`}
+                    className={`bg-white dark:bg-[#1E2028] border ${item.borderColor} rounded-lg p-6 md:p-8 shadow-sm hover:shadow-lg transition-all duration-300 group`}
                 >
                     <div className="flex items-center gap-3 mb-4">
                         <span
@@ -281,10 +281,10 @@ export function AboutTimeline() {
                 transition={{ duration: 0.8 }}
             >
                 <h2 className="text-3xl md:text-4xl font-black tracking-tight text-gray-700 dark:text-white">
-                    My Journey
+                    Why We Built TheNextTrade
                 </h2>
                 <p className="text-lg text-gray-600 dark:text-gray-300">
-                    Four phases that shaped everything
+                    Four phases from blown accounts to disciplined execution
                 </p>
             </motion.div>
 

@@ -111,13 +111,13 @@ export function AnalyticsLoadingSkeleton() {
                 {[...Array(5)].map((_, i) => (
                     <div
                         key={i}
-                        className="h-28 bg-gray-200 dark:bg-gray-700 rounded-xl"
+                        className="h-28 bg-gray-200 dark:bg-gray-700 rounded-lg"
                     />
                 ))}
             </div>
             <div className="grid grid-cols-2 gap-4">
-                <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-xl" />
-                <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+                <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-lg" />
+                <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-lg" />
             </div>
         </div>
     );
@@ -125,7 +125,7 @@ export function AnalyticsLoadingSkeleton() {
 
 function AnalyticsEmptyState() {
     return (
-        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-8">
+        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border-2 border-dashed border-dashboard mt-8">
             {/* Animated BarChart Icon */}
             <div className="relative w-20 h-20 mb-6 mx-auto">
                 <div className="absolute inset-0 rounded-full bg-primary/10 dark:bg-primary/5 animate-[analytics-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />

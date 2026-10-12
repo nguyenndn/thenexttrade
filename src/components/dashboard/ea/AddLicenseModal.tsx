@@ -79,7 +79,7 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
                             {["EXNESS", "VANTAGE", "VTMARKETS"].map((b) => (
                                 <label
                                     key={b}
-                                    className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${broker === b ? "border-primary bg-primary/5" : "border-dashboard hover:bg-gray-50 dark:hover:bg-white/5"}`}
+                                    className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${broker === b ? "border-primary bg-primary/5" : "border-dashboard hover:bg-gray-50 dark:hover:bg-white/5"}`}
                                 >
                                     <input
                                         type="radio"
@@ -98,7 +98,7 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
 
                     <PremiumInput
                         label="Account Number"
-                        placeholder="12345678"
+                        helperText="Enter your MT5 or MT4 live account number"
                         value={accountNumber}
                         onChange={(e) => setAccountNumber(e.target.value)}
                         required
@@ -119,7 +119,7 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
                         size="smd"
                         onClick={handleSubmit}
                         disabled={isLoading}
-                        className="bg-primary hover:bg-[#00B078] text-white font-bold shadow-lg hover:shadow-primary/25 transition-all"
+                        className="bg-gold hover:bg-amber-600 text-white font-bold shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all border-none"
                     >
                         {isLoading ? "Submitting..." : "Submit Request"}
                     </Button>

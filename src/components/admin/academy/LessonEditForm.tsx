@@ -185,7 +185,7 @@ export function LessonEditForm({
                 <Button
                     onClick={handleSubmit}
                     disabled={isSubmitting}
-                    className="flex items-center gap-2 shadow-lg shadow-primary/30"
+                    className="flex items-center gap-2 shadow-lg shadow-amber-500/30"
                 >
                     {isSubmitting ? (
                         <Loader2 size={18} className="animate-spin" />
@@ -199,7 +199,7 @@ export function LessonEditForm({
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
                 {/* Editor */}
                 <div className="lg:col-span-3 space-y-6">
-                    <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
+                    <div className="bg-white dark:bg-[#151925] rounded-lg p-6 border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
                         <input
                             type="text"
                             placeholder="Lesson Title"
@@ -244,7 +244,7 @@ export function LessonEditForm({
                                     rows={2}
                                     maxLength={160}
                                     aria-label="Meta Description"
-                                    className="w-full px-3 py-2 text-sm bg-blue-50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-900/30 rounded-xl text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-400 resize-none"
+                                    className="w-full px-3 py-2 text-sm bg-blue-50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-900/30 rounded-lg text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-400 resize-none"
                                 />
                             </div>
                         )}
@@ -260,7 +260,7 @@ export function LessonEditForm({
 
                 {/* Sidebar */}
                 <div className="lg:col-span-1 space-y-4">
-                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-4">
+                    <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm p-4">
                         <div>
                             <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
                                 Module *
@@ -276,7 +276,7 @@ export function LessonEditForm({
                     </div>
 
                     {/* Status */}
-                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-4 space-y-4">
+                    <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm p-4 space-y-4">
                         <div>
                             <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
                                 Status
@@ -291,7 +291,7 @@ export function LessonEditForm({
                                             status: "draft",
                                         })
                                     }
-                                    className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-all border ${
+                                    className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all border ${
                                         formData.status === "draft"
                                             ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/30 text-amber-700 dark:text-amber-400"
                                             : "border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-50 dark:hover:bg-white/5"
@@ -308,7 +308,7 @@ export function LessonEditForm({
                                             status: "published",
                                         })
                                     }
-                                    className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-all border ${
+                                    className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all border ${
                                         formData.status === "published"
                                             ? "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
                                             : "border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-50 dark:hover:bg-white/5"
@@ -321,7 +321,7 @@ export function LessonEditForm({
                     </div>
 
                     {/* Word Count & Reading Time */}
-                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-4">
+                    <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm p-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2 text-gray-600">
                                 <BookOpen size={14} />

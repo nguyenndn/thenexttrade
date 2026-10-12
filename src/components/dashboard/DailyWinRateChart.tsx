@@ -58,7 +58,7 @@ export function DailyWinRateChart({
             const hasData = entry.trades > 0;
             const selected = isSelected(label);
             return (
-                <div className="bg-white dark:bg-[#1E2028] p-3 border border-dashboard rounded-xl shadow-xl backdrop-blur-sm">
+                <div className="bg-white dark:bg-[#1E2028] p-3 border border-dashboard rounded-lg shadow-xl backdrop-blur-sm">
                     <p className="text-xs font-bold text-gray-700 dark:text-gray-100 mb-1.5">
                         {format(new Date(label), "MMM dd, yyyy")}
                         {selected && (

@@ -102,7 +102,7 @@ export function AcademyLevelTree({
                     return (
                         <div
                             key={level.id}
-                            className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm transition-all"
+                            className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm transition-all"
                         >
                             {/* Level Node Header */}
                             <div className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 bg-gray-50/40 dark:bg-white/[0.01]">

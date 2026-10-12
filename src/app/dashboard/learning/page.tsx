@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { BookOpen, CheckCircle, Clock, PlayCircle } from "lucide-react";
 import Link from "next/link";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 export const dynamic = "force-dynamic";
 
@@ -76,12 +77,11 @@ export default async function MyLearningPage() {
     });
 
     return (
-        <div className="space-y-4">
-            <div className="mb-4">
-                <p className="text-base text-primary font-semibold border-l-4 border-primary bg-primary/5 dark:bg-primary/10 rounded-r-lg px-4 py-2 w-fit">
-                    Track your progress and continue where you left off.
-                </p>
-            </div>
+        <div className="space-y-6">
+            <PageHeader
+                title="Learning Modules"
+                description="Track your progress and continue your trading education."
+            />
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {courses.map((course) => (
@@ -106,15 +106,15 @@ export default async function MyLearningPage() {
                             <h3 className="font-bold text-lg text-gray-700 dark:text-white mb-2 group-hover:text-[#2F80ED] transition-colors">
                                 {course.title}
                             </h3>
-                            <p className="text-gray-600 text-sm line-clamp-2 mb-4 flex-1">
+                            <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-4 flex-1">
                                 {course.description ||
-                                    "Master the forex market with this comprehensive module."}
+                                    "Structured trading psychology, execution risk, and system edge."}
                             </p>
 
                             {/* Progress Bar */}
                             <div className="space-y-2 mb-4">
                                 <div className="flex justify-between text-xs font-medium">
-                                    <span className="text-gray-600">
+                                    <span className="text-gray-600 dark:text-gray-400">
                                         {course.completedCount} /{" "}
                                         {course.totalLessons} Completed
                                     </span>
@@ -133,8 +133,8 @@ export default async function MyLearningPage() {
                             {/* Action Button */}
                             {course.nextLesson ? (
                                 <Link
-                                    href={`/academy/lesson/${course.nextLesson.slug}`} // Assuming slug routing
-                                    className="w-full py-2.5 bg-[#2F80ED] hover:bg-blue-600 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-blue-500/20"
+                                    href={`/dashboard/academy/lessons/${course.nextLesson.slug}`}
+                                    className="w-full py-2.5 bg-[#2F80ED] hover:bg-blue-600 text-white font-bold rounded-lg flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-blue-500/20"
                                 >
                                     <PlayCircle size={18} />
                                     {course.progress > 0
@@ -142,7 +142,7 @@ export default async function MyLearningPage() {
                                         : "Start Course"}
                                 </Link>
                             ) : (
-                                <div className="w-full py-2.5 bg-green-500/10 text-green-500 font-bold rounded-xl flex items-center justify-center gap-2 cursor-default">
+                                <div className="w-full py-2.5 bg-green-500/10 text-green-500 font-bold rounded-lg flex items-center justify-center gap-2 cursor-default">
                                     <CheckCircle size={18} />
                                     Completed
                                 </div>
@@ -154,7 +154,7 @@ export default async function MyLearningPage() {
 
             {courses.length === 0 && (
                 <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-dashboard">
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 dark:text-gray-400">
                         No courses available at the moment.
                     </p>
                 </div>

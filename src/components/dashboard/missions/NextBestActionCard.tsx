@@ -52,8 +52,7 @@ export function NextBestActionCard({
             } else {
                 toast.error(result.error || "Claim Failed");
             }
-        } catch (error) {
-            console.error(error);
+        } catch {
             toast.error("An unexpected error occurred.");
         } finally {
             setIsClaiming(false);
@@ -62,10 +61,10 @@ export function NextBestActionCard({
 
     if (!mission) {
         return (
-            <div className="rounded-2xl border border-dashboard dark:border-white/[0.08] bg-white dark:bg-[#1E2028] p-6 md:p-8 flex flex-col items-center justify-center text-center shadow-sm">
-                <div className="w-12 h-12 rounded-full bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center mb-4 border border-emerald-500/20">
+            <div className="rounded-xl border border-dashboard dark:border-white/[0.08] bg-white dark:bg-[#1E2028] p-6 md:p-8 flex flex-col items-center justify-center text-center shadow-sm">
+                <div className="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center mb-4 border border-amber-500/20">
                     <CheckCircle2
-                        className="text-emerald-600 dark:text-emerald-400"
+                        className="text-gold dark:text-amber-400"
                         size={24}
                     />
                 </div>
@@ -98,16 +97,16 @@ export function NextBestActionCard({
     return (
         <div
             className={cn(
-                "rounded-2xl border transition-all duration-300 relative overflow-hidden group shadow-sm hover:shadow-md",
+                "rounded-xl border transition-all duration-300 relative overflow-hidden group shadow-sm hover:shadow-md",
                 "bg-white dark:bg-[#1E2028] border-dashboard dark:border-white/[0.08]"
             )}
         >
             {/* Left vertical accent border */}
-            <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-2xl" />
+            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-gold to-amber-600 rounded-l-xl" />
 
             <div className="relative p-6 md:p-8 pl-7 md:pl-9 flex flex-col lg:flex-row lg:items-center justify-between gap-6 z-10">
                 <div className="flex-1 space-y-4">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 dark:bg-primary/15 text-primary border border-primary/20 text-[11px] font-semibold uppercase tracking-wider">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 dark:bg-amber-500/15 text-gold dark:text-amber-400 border border-amber-500/20 text-[11px] font-semibold uppercase tracking-wider">
                         <Target size={13} className="shrink-0" />
                         <span>Next Best Action</span>
                     </div>
@@ -126,7 +125,7 @@ export function NextBestActionCard({
                         <div className="flex items-center gap-3 mt-4">
                             <div className="flex-1 h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden max-w-xs border border-dashboard">
                                 <div
-                                    className="h-full bg-primary transition-all duration-500 rounded-full"
+                                    className="h-full bg-gradient-to-r from-gold to-amber-600 transition-all duration-500 rounded-full"
                                     style={{
                                         width: `${Math.min(100, Math.round((mission.progress / mission.target) * 100))}%`,
                                     }}
@@ -141,7 +140,7 @@ export function NextBestActionCard({
 
                 <div className="w-full lg:w-auto shrink-0 flex flex-col sm:flex-row items-stretch sm:items-start gap-4 pt-1">
                     {/* Reward Box */}
-                    <div className="flex items-center gap-3 px-4 rounded-xl bg-amber-500/10 dark:bg-amber-400/5 border border-amber-500/20 dark:border-amber-400/10 shrink-0 h-[44px]">
+                    <div className="flex items-center gap-3 px-4 rounded-lg bg-amber-500/10 dark:bg-amber-400/5 border border-amber-500/20 dark:border-amber-400/10 shrink-0 h-[44px]">
                         <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-amber-500 text-white shadow-sm">
                             <Zap size={14} className="shrink-0" />
                         </div>
@@ -161,7 +160,7 @@ export function NextBestActionCard({
                             <Button
                                 onClick={handleClaim}
                                 disabled={isClaiming}
-                                className="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 rounded-xl transition-all shadow-sm h-[44px]"
+                                className="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 rounded-lg transition-all shadow-sm h-[44px]"
                             >
                                 {isClaiming ? (
                                     <>
@@ -198,7 +197,7 @@ export function NextBestActionCard({
                             >
                                 <Button
                                     variant="primary"
-                                    className="w-full px-6 rounded-xl font-semibold transition-all h-[44px]"
+                                    className="w-full px-6 rounded-lg font-semibold transition-all h-[44px]"
                                 >
                                     {mission.def.ctaLabel || "Continue"}
                                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
@@ -207,7 +206,7 @@ export function NextBestActionCard({
                         )}
 
                         {isClaimable && (
-                            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">
+                            <span className="text-[10px] text-gold dark:text-amber-400 font-bold uppercase tracking-wider">
                                 Ready to claim
                             </span>
                         )}

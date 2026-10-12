@@ -358,7 +358,7 @@ export function buildEALicenseEmailHtml(data: EALicenseEmailData): string {
     </div>
 
     <p style="font-size: 15px; color: #334155; line-height: 1.6; margin-bottom: 20px;">
-      Hi ${data.userName}, your lifetime license has been generated and linked to your MT5 account. You can now download the expert advisor file and start your automated trading journey.
+      Hi ${data.userName}, your lifetime license has been generated and linked to your MT5 account. You can now download the expert advisor file and configure your algorithmic execution.
     </p>
 
     <!-- License Box (Gold Accent) -->

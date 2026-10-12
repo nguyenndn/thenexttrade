@@ -177,7 +177,7 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
 
             {/* Content Display (Grid, Table, Tree, or Empty State) */}
             {filteredLevels.length === 0 ? (
-                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-12 text-center shadow-sm">
+                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-12 text-center shadow-sm">
                     <div className="w-14 h-14 mx-auto rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 mb-4">
                         <SearchX size={26} />
                     </div>
@@ -193,7 +193,7 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
                             variant="outline"
                             size="sm"
                             onClick={resetFilters}
-                            className="gap-2 font-bold rounded-xl"
+                            className="gap-2 font-bold rounded-lg"
                         >
                             <RotateCcw size={14} />
                             <span>Reset Filters</span>
@@ -201,7 +201,7 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
                         <Button
                             size="sm"
                             onClick={() => setIsCreateModalOpen(true)}
-                            className="gap-2 font-bold rounded-xl"
+                            className="gap-2 font-bold rounded-lg"
                         >
                             <Plus size={14} />
                             <span>Add New Level</span>

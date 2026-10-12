@@ -328,7 +328,7 @@ export const ArticleList = memo(function ArticleList({
     return (
         <div className="space-y-6">
             {/* Unified Toolbar: Search + Filters + Pagination Info */}
-            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col gap-4">
+            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-4 shadow-sm flex flex-col gap-4">
                 <div className="flex flex-1 gap-4 flex-col lg:flex-row justify-between w-full lg:items-center">
                     <div className="flex flex-1 gap-2 flex-col sm:flex-row w-full lg:max-w-xl">
                         <div className="flex-1 w-full sm:max-w-md">
@@ -360,7 +360,7 @@ export const ArticleList = memo(function ArticleList({
                             </DropdownMenuTrigger>
                             <DropdownMenuContent
                                 align="end"
-                                className="w-40 rounded-xl border-gray-200 dark:border-white/10"
+                                className="w-40 rounded-lg border-gray-200 dark:border-white/10"
                             >
                                 <DropdownMenuItem
                                     onClick={() => handleFilterStatus("")}
@@ -399,7 +399,7 @@ export const ArticleList = memo(function ArticleList({
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.92, y: 4 }}
                                 transition={SPRING_SOFT}
-                                className="flex items-center gap-1.5 bg-primary/10 px-4 h-[42px] rounded-xl text-sm shrink-0"
+                                className="flex items-center gap-1.5 bg-primary/10 px-4 h-[42px] rounded-lg text-sm shrink-0"
                             >
                                 <span className="font-bold text-primary mr-2">
                                     {selectedIds.size} selected
@@ -475,7 +475,7 @@ export const ArticleList = memo(function ArticleList({
             </div>
 
             {/* Table */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -890,7 +890,7 @@ export const ArticleList = memo(function ArticleList({
                                         key={p}
                                         variant={
                                             p === currentPage
-                                                ? "primary"
+                                                ? "gold"
                                                 : "outline"
                                         }
                                         size="icon"
@@ -899,7 +899,7 @@ export const ArticleList = memo(function ArticleList({
                                         }
                                         className={`h-8 w-8 text-xs font-semibold rounded-lg ${
                                             p === currentPage
-                                                ? "shadow-sm"
+                                                ? "shadow-sm shadow-amber-500/20"
                                                 : "bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300"
                                         }`}
                                     >
@@ -943,7 +943,7 @@ export const ArticleList = memo(function ArticleList({
                 open={!!previewImage}
                 onOpenChange={(open) => !open && setPreviewImage(null)}
             >
-                <DialogContent className="max-w-4xl p-1 bg-white dark:bg-slate-900 border-gray-200 dark:border-white/10 dark:border-white/20 sm:rounded-xl shadow-2xl">
+                <DialogContent className="max-w-4xl p-1 bg-white dark:bg-slate-900 border-gray-200 dark:border-white/10 dark:border-white/20 sm:rounded-2xl shadow-2xl">
                     <DialogHeader className="sr-only">
                         <DialogTitle>Image Preview</DialogTitle>
                     </DialogHeader>

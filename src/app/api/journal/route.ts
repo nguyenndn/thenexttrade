@@ -10,6 +10,8 @@ const createEntrySchema = z.object({
     exitPrice: z.number().positive().optional(),
     lotSize: z.number().positive(),
     pnl: z.number().optional(),
+    commission: z.number().optional(),
+    swap: z.number().optional(),
     status: z.enum(["OPEN", "CLOSED"]),
     entryDate: z.string().transform((str) => new Date(str)),
     notes: z.string().optional(),

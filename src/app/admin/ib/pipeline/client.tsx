@@ -79,7 +79,7 @@ function FilterMenu({
             <span className="text-xs font-bold text-gray-400">{label}:</span>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="h-[38px] gap-1.5 rounded-xl px-3 text-xs font-bold">
+                    <Button variant="outline" className="h-[38px] gap-1.5 rounded-lg px-3 text-xs font-bold">
                         {selected.label}
                         <ChevronDown size={14} className="opacity-60" />
                     </Button>
@@ -303,7 +303,7 @@ export function VipPipelineClient({
             )}
 
             {/* Filter & Controls Bar */}
-            <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
+            <div className="bg-white dark:bg-[#1E2028] p-4 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
                 <form onSubmit={handleSearchSubmit} className="flex flex-col md:flex-row gap-3 items-center">
                     <div className="w-full md:w-96">
                         <PremiumInput
@@ -332,13 +332,13 @@ export function VipPipelineClient({
                     )}
                 </form>
 
-                 <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-gray-100 dark:border-white/5">
+                <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-gray-100 dark:border-white/5">
                     {/* Lifecycle stage filter */}
                     <div className="flex items-center gap-1.5">
                         <span className="text-xs font-bold text-gray-400">Stage:</span>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-xl">
+                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-lg">
                                     {currentParams.stage && currentParams.stage !== "ALL" ? currentParams.stage.replaceAll("_", " ") : "All Stages"}
                                     <ChevronDown size={14} className="opacity-60" />
                                 </Button>
@@ -362,7 +362,7 @@ export function VipPipelineClient({
                         <span className="text-xs font-bold text-gray-400">Product:</span>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-xl">
+                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-lg">
                                     {currentParams.product && currentParams.product !== "ALL" ? currentParams.product : "All Products"}
                                     <ChevronDown size={14} className="opacity-60" />
                                 </Button>
@@ -371,7 +371,7 @@ export function VipPipelineClient({
                                 <DropdownMenuItem onClick={() => updateFilterParams({ product: "ALL" })}>All Products</DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => updateFilterParams({ product: "goldscalperninja" })}>GoldScalperNinja</DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => updateFilterParams({ product: "trade-manager" })}>Trade Manager</DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => updateFilterParams({ product: "gsn-phoenix-grid" })}>GSN Phoenix Grid</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => updateFilterParams({ product: "gsn-phoenix-grid" })}>GSN - Apex Gold Sentinel</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
@@ -381,14 +381,14 @@ export function VipPipelineClient({
                         <span className="text-xs font-bold text-gray-400">Status:</span>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-xl">
+                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-lg">
                                     {currentParams.status === "PENDING"
                                         ? "Pending"
                                         : currentParams.status === "APPROVED"
-                                        ? "Approved"
-                                        : currentParams.status === "REJECTED"
-                                        ? "Rejected"
-                                        : "All Statuses"}
+                                            ? "Approved"
+                                            : currentParams.status === "REJECTED"
+                                                ? "Rejected"
+                                                : "All Statuses"}
                                     <ChevronDown size={14} className="opacity-60" />
                                 </Button>
                             </DropdownMenuTrigger>
@@ -414,7 +414,7 @@ export function VipPipelineClient({
                         <span className="text-xs font-bold text-gray-400">Broker:</span>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-xl">
+                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-lg">
                                     {currentParams.broker && currentParams.broker !== "ALL"
                                         ? currentParams.broker
                                         : "All Brokers"}
@@ -469,10 +469,10 @@ export function VipPipelineClient({
                             currentParams.minAgeHours === "0" && currentParams.maxAgeHours === "24"
                                 ? "FRESH"
                                 : currentParams.minAgeHours === "24" && !currentParams.maxAgeHours
-                                  ? "FOLLOW_UP"
-                                  : currentParams.minAgeHours === "72" && !currentParams.maxAgeHours
-                                    ? "OVERDUE"
-                                    : "ALL"
+                                    ? "FOLLOW_UP"
+                                    : currentParams.minAgeHours === "72" && !currentParams.maxAgeHours
+                                        ? "OVERDUE"
+                                        : "ALL"
                         }
                         options={[
                             { value: "ALL", label: "Any Request Age" },
@@ -491,7 +491,7 @@ export function VipPipelineClient({
             </div>
 
             {/* Pipeline Table */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -620,51 +620,51 @@ export function VipPipelineClient({
 
             {/* Reject Modal */}
             <AnimatePresence onExitComplete={releaseRejectLock}>
-            {rejectModalId && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    <motion.div
-                        variants={backdropVariants}
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        transition={{ type: "tween", duration: 0.2 }}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm"
-                    />
-                    <motion.div
-                        variants={panelVariants}
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        transition={SPRING_SOFT}
-                        className="relative bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-6 max-w-md w-full space-y-4 shadow-xl"
-                    >
-                        <h3 className="text-lg font-black text-gray-900 dark:text-white">
-                            Reject VIP Request
-                        </h3>
-                        <p className="text-sm text-gray-500">
-                            Please specify a reason for rejecting this request. The trader will receive a notification with this explanation.
-                        </p>
-                        <textarea
-                            value={rejectReason}
-                            onChange={(e) => setRejectReason(e.target.value)}
-                            placeholder="Reason for rejection (e.g. Account number does not match IB partner link)..."
-                            className="w-full h-24 p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                {rejectModalId && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                        <motion.div
+                            variants={backdropVariants}
+                            initial="initial"
+                            animate="animate"
+                            exit="exit"
+                            transition={{ type: "tween", duration: 0.2 }}
+                            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
                         />
-                        <div className="flex justify-end gap-2 pt-2">
-                            <Button variant="ghost" onClick={() => setRejectModalId(null)}>
-                                Cancel
-                            </Button>
-                            <Button
-                                variant="destructive"
-                                disabled={!rejectReason.trim() || isPending}
-                                onClick={() => handleReject(rejectModalId)}
-                            >
-                                Confirm Rejection
-                            </Button>
-                        </div>
-                    </motion.div>
-                </div>
-            )}
+                        <motion.div
+                            variants={panelVariants}
+                            initial="initial"
+                            animate="animate"
+                            exit="exit"
+                            transition={SPRING_SOFT}
+                            className="relative bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-6 max-w-md w-full space-y-4 shadow-xl"
+                        >
+                            <h3 className="text-lg font-black text-gray-900 dark:text-white">
+                                Reject VIP Request
+                            </h3>
+                            <p className="text-sm text-gray-500">
+                                Please specify a reason for rejecting this request. The trader will receive a notification with this explanation.
+                            </p>
+                            <textarea
+                                value={rejectReason}
+                                onChange={(e) => setRejectReason(e.target.value)}
+                                placeholder="Reason for rejection (e.g. Account number does not match IB partner link)..."
+                                className="w-full h-24 p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                            <div className="flex justify-end gap-2 pt-2">
+                                <Button variant="ghost" onClick={() => setRejectModalId(null)}>
+                                    Cancel
+                                </Button>
+                                <Button
+                                    variant="destructive"
+                                    disabled={!rejectReason.trim() || isPending}
+                                    onClick={() => handleReject(rejectModalId)}
+                                >
+                                    Confirm Rejection
+                                </Button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
             </AnimatePresence>
 
             {/* Delete Confirm Modal */}

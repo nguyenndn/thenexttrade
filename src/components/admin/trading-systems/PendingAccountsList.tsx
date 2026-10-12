@@ -35,7 +35,7 @@ export function PendingAccountsList({ licenses }: PendingAccountsListProps) {
 
     if (licenses.length === 0) {
         return (
-            <div className="text-center py-24 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10">
+            <div className="text-center py-24 bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10">
                 <CheckCircle
                     size={48}
                     className="mx-auto mb-4 text-green-500"

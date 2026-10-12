@@ -157,44 +157,6 @@
             },
             {
                 "active": true,
-                "name": "IC Markets",
-                "desc": "True ECN • Raw Spreads from 0.0",
-                "badge": "Best ECN",
-                "badgeType": "gold",
-                "logo": "/images/brokers/icmarkets.png",
-                "initials": "IC",
-                "color": "from-blue-500 to-blue-600",
-                "url": "https://icmarkets.com/?camp=75999",
-                "rating": 4.6,
-                "minDeposit": "$200",
-                "maxLeverage": "1:500",
-                "regulation": "ASIC, CySEC, FSA",
-                "features": [
-                    "Raw spreads from 0.0 pips",
-                    "Commission from $6/lot (cTrader)",
-                    "MT4, MT5 & cTrader",
-                    "Ultra-fast execution for algo traders"
-                ],
-                "review": {
-                    "summary": "IC Markets is a **true ECN broker** regulated by ASIC and CySEC. Built for **algorithmic and active traders**, it offers raw spreads from 0.0 pips with ultra-fast execution speeds.",
-                    "pros": [
-                        "True Raw ECN spreads from 0.0 pips",
-                        "ASIC & CySEC regulated — top-tier trust",
-                        "MT4, MT5 & cTrader supported",
-                        "Ultra-fast execution — ideal for algo trading",
-                        "No dealing desk intervention"
-                    ],
-                    "cons": [
-                        "Minimum deposit $200 — higher entry point",
-                        "Commission on Raw Spread accounts ($6-7/lot)",
-                        "Not available in US, Canada"
-                    ],
-                    "bestFor": "Algorithmic traders and scalpers who need **raw ECN pricing** and ultra-fast execution.",
-                    "verdict": "**4.6/5** — The go-to broker for professional ECN trading."
-                }
-            },
-            {
-                "active": true,
                 "name": "RoboForex",
                 "desc": "11,000+ Assets • 1:2000 Leverage",
                 "badge": "High Leverage",
@@ -457,82 +419,6 @@
                     ],
                     "bestFor": "Beginners and traders who want to **start small** with a highly regulated broker.",
                     "verdict": "**4.4/5** — Best entry point for new traders with solid regulation."
-                }
-            },
-            {
-                "active": true,
-                "name": "TMGM",
-                "desc": "ASIC Regulated • 11,000+ Assets",
-                "badge": null,
-                "badgeType": "green",
-                "logo": "/images/brokers/tmgm.png",
-                "initials": "TM",
-                "color": "from-blue-600 to-blue-800",
-                "url": "https://portal.tmgm.com/register?r_code=IB138164859A",
-                "rating": 4.2,
-                "minDeposit": "$100",
-                "maxLeverage": "1:1000",
-                "regulation": "ASIC, FMA, VFSC",
-                "features": [
-                    "ASIC (Australia) regulated",
-                    "11,000+ tradable instruments",
-                    "Raw spreads from 0.0 pips",
-                    "MT4, MT5 & IRESS platforms"
-                ],
-                "review": {
-                    "summary": "TMGM (TradeMax Global Markets) is an **ASIC-regulated broker** offering access to **11,000+ instruments** including forex, stocks, indices, and crypto CFDs.",
-                    "pros": [
-                        "ASIC regulated — top-tier trust",
-                        "11,000+ instruments available",
-                        "Raw spreads from 0.0 on Edge account",
-                        "MT4, MT5 & IRESS platforms",
-                        "Segregated client funds"
-                    ],
-                    "cons": [
-                        "$100 minimum deposit",
-                        "IRESS accounts need $5,000",
-                        "Commission on Edge accounts ($7/lot)"
-                    ],
-                    "bestFor": "Active traders who want **ASIC regulation** with a massive instrument selection.",
-                    "verdict": "**4.2/5** — Strong ASIC-regulated broker with impressive product range."
-                }
-            },
-            {
-                "active": true,
-                "name": "Valetax",
-                "desc": "From $1 • Up to 1:2000",
-                "badge": null,
-                "badgeType": "green",
-                "logo": "/images/brokers/valetax.png",
-                "initials": "VX",
-                "color": "from-cyan-600 to-teal-700",
-                "url": "https://ma.valetax.com/p/341140",
-                "rating": 3.8,
-                "minDeposit": "$1",
-                "maxLeverage": "1:2000",
-                "regulation": "FSC Mauritius",
-                "features": [
-                    "Start from just $1",
-                    "Leverage up to 1:2000",
-                    "6 account types available",
-                    "MT4 & MT5 platforms"
-                ],
-                "review": {
-                    "summary": "Valetax is an **accessible broker** licensed by FSC Mauritius. Offers **6 account types** starting from just $1 with leverage up to 1:2000.",
-                    "pros": [
-                        "$1 minimum deposit — ultra-accessible",
-                        "Up to 1:2000 leverage",
-                        "6 account types (Cent to PRO)",
-                        "MT4 & MT5 supported",
-                        "IB program up to 85% revenue share"
-                    ],
-                    "cons": [
-                        "Offshore regulation only (FSC Mauritius)",
-                        "Not top-tier regulatory protection",
-                        "Mixed withdrawal reviews"
-                    ],
-                    "bestFor": "Traders who want to **start with minimal capital** and high leverage on an offshore platform.",
-                    "verdict": "**3.8/5** — Budget-friendly option but exercise caution with offshore regulation."
                 }
             }
         ]

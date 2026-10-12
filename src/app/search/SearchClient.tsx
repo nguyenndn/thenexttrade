@@ -72,7 +72,7 @@ export default function SearchClient() {
             <main className="relative z-10 pt-28 pb-20 flex-1">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* ── Breadcrumb Panel ── */}
-                    <div className="flex items-center gap-2.5 text-xs font-semibold bg-white/60 dark:bg-white/[0.01] border border-amber-900/10 rounded-xl px-4 py-2.5 mb-8 w-fit shadow-sm backdrop-blur-sm">
+                    <div className="flex items-center gap-2.5 text-xs font-semibold bg-white/60 dark:bg-white/[0.01] border border-amber-900/10 rounded-lg px-4 py-2.5 mb-8 w-fit shadow-sm backdrop-blur-sm">
                         <Link
                             href="/"
                             className="text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors shrink-0 flex items-center gap-1.5"
@@ -100,7 +100,7 @@ export default function SearchClient() {
 
                             {/* Title with icon backdrop */}
                             <div className="flex items-center gap-2.5 sm:gap-3">
-                                <div className="p-2.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-xl shadow-sm shrink-0">
+                                <div className="p-2.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-lg shadow-sm shrink-0">
                                     <Search
                                         size={22}
                                         className="stroke-[2.5]"
@@ -160,11 +160,11 @@ export default function SearchClient() {
                                             <Link
                                                 key={`${result.type}-${result.id}`}
                                                 href={result.slug}
-                                                className="block bg-white/70 dark:bg-white/[0.02] p-5 rounded-2xl border border-amber-900/10 hover:border-amber-500/30 hover:bg-white/90 dark:hover:bg-[#11100C]/50 hover:shadow-lg transition-all duration-300 group"
+                                                className="block bg-white/70 dark:bg-white/[0.02] p-5 rounded-lg border border-amber-900/10 hover:border-amber-500/30 hover:bg-white/90 dark:hover:bg-[#11100C]/50 hover:shadow-lg transition-all duration-300 group"
                                             >
                                                 <div className="flex items-start gap-4">
                                                     <div
-                                                        className={`p-3 rounded-xl shrink-0 border border-white/5 ${
+                                                        className={`p-3 rounded-lg shrink-0 border border-white/5 ${
                                                             result.type ===
                                                             "article"
                                                                 ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
@@ -224,7 +224,7 @@ export default function SearchClient() {
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="text-center py-16 bg-white/70 dark:bg-white/[0.02] rounded-2xl border border-amber-900/10 shadow-sm">
+                                    <div className="text-center py-16 bg-white/70 dark:bg-white/[0.02] rounded-lg border border-amber-900/10 shadow-sm">
                                         <AlertCircle
                                             className="mx-auto text-amber-500/40 mb-4 animate-bounce"
                                             size={48}
@@ -241,7 +241,7 @@ export default function SearchClient() {
                             </>
                         ) : (
                             !query && (
-                                <div className="text-center py-20 bg-white/50 dark:bg-white/[0.01] rounded-2xl border border-dashed border-amber-900/15 text-slate-500 dark:text-gray-400 font-semibold text-sm">
+                                <div className="text-center py-20 bg-white/50 dark:bg-white/[0.01] rounded-lg border border-dashed border-amber-900/15 text-slate-500 dark:text-gray-400 font-semibold text-sm">
                                     Enter a query in the search field above to
                                     start exploring TheNextTrade tools and guides...
                                 </div>

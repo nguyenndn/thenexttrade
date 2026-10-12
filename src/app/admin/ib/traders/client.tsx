@@ -82,7 +82,7 @@ function FilterMenu({
             <span className="text-xs font-bold text-gray-400">{label}:</span>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-xl">
+                    <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-lg">
                         {selected.label}
                         <ChevronDown size={14} className="opacity-60" />
                     </Button>
@@ -344,9 +344,9 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
 
             {/* Overview KPI Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-500">
+                        <div className="p-2.5 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-500">
                             <Users size={20} />
                         </div>
                         <div>
@@ -360,9 +360,9 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                     </div>
                 </div>
 
-                <div className="p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500">
+                        <div className="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500">
                             <DollarSign size={20} />
                         </div>
                         <div>
@@ -378,9 +378,9 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                     </div>
                 </div>
 
-                <div className="p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-500">
+                        <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-500">
                             <Crown size={20} />
                         </div>
                         <div>
@@ -394,9 +394,9 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                     </div>
                 </div>
 
-                <div className="p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 rounded-xl bg-cyan-50 dark:bg-cyan-500/10 text-cyan-500">
+                        <div className="p-2.5 rounded-lg bg-cyan-50 dark:bg-cyan-500/10 text-cyan-500">
                             <Briefcase size={20} />
                         </div>
                         <div>
@@ -412,7 +412,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
             </div>
 
             {/* Filter & Controls Bar */}
-            <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
+            <div className="bg-white dark:bg-[#1E2028] p-4 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
                 <form onSubmit={handleSearchSubmit} className="flex flex-col md:flex-row gap-3 items-center">
                     <div className="w-full md:w-96">
                         <PremiumInput
@@ -447,18 +447,18 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                         <span className="text-xs font-bold text-gray-400">VIP:</span>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-xl">
+                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-lg">
                                     {currentFilters.vip === "ACTIVE"
                                         ? "Active VIP"
                                         : currentFilters.vip === "GRACE"
-                                        ? "Temporary VIP"
-                                        : currentFilters.vip === "EXPIRING"
-                                        ? "Expiring Soon (≤7d)"
-                                        : currentFilters.vip === "FREE"
-                                        ? "Free User"
-                                        : currentFilters.vip === "REVOKED"
-                                        ? "Revoked"
-                                        : "All VIP States"}
+                                            ? "Temporary VIP"
+                                            : currentFilters.vip === "EXPIRING"
+                                                ? "Expiring Soon (≤7d)"
+                                                : currentFilters.vip === "FREE"
+                                                    ? "Free User"
+                                                    : currentFilters.vip === "REVOKED"
+                                                        ? "Revoked"
+                                                        : "All VIP States"}
                                     <ChevronDown size={14} className="opacity-60" />
                                 </Button>
                             </DropdownMenuTrigger>
@@ -490,14 +490,14 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                         <span className="text-xs font-bold text-gray-400">Product:</span>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-xl">
+                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-lg">
                                     {currentFilters.product === "goldscalperninja"
                                         ? "GoldScalperNinja"
                                         : currentFilters.product === "trade-manager"
-                                        ? "Trade Manager"
-                                        : currentFilters.product === "gsn-phoenix-grid"
-                                        ? "GSN Phoenix Grid"
-                                        : "All Products"}
+                                            ? "Trade Manager"
+                                            : currentFilters.product === "gsn-phoenix-grid"
+                                                ? "GSN - Apex Gold Sentinel"
+                                                : "All Products"}
                                     <ChevronDown size={14} className="opacity-60" />
                                 </Button>
                             </DropdownMenuTrigger>
@@ -512,7 +512,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                     Trade Manager
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => updateFilterParams({ product: "gsn-phoenix-grid" })}>
-                                    GSN Phoenix Grid
+                                    GSN - Apex Gold Sentinel
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -523,14 +523,14 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                         <span className="text-xs font-bold text-gray-400">Sync Source:</span>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-xl">
+                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-lg">
                                     {currentFilters.syncSource === "EA_SYNC"
                                         ? "Trade Manager"
                                         : currentFilters.syncSource === "MANUAL"
-                                        ? "Manual Entry"
-                                        : currentFilters.syncSource === "UNKNOWN"
-                                        ? "Unknown Source"
-                                        : "All Sync Sources"}
+                                            ? "Manual Entry"
+                                            : currentFilters.syncSource === "UNKNOWN"
+                                                ? "Unknown Source"
+                                                : "All Sync Sources"}
                                     <ChevronDown size={14} className="opacity-60" />
                                 </Button>
                             </DropdownMenuTrigger>
@@ -556,16 +556,16 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                         <span className="text-xs font-bold text-gray-400">Sort By:</span>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-xl">
+                                <Button variant="outline" className="text-xs font-bold h-[38px] gap-1.5 px-3 rounded-lg">
                                     {currentFilters.sort === "CAPITAL_DESC"
                                         ? "Highest Capital"
                                         : currentFilters.sort === "EQUITY_DESC"
-                                        ? "Highest Equity"
-                                        : currentFilters.sort === "ACCOUNTS_DESC"
-                                        ? "Most Accounts"
-                                        : currentFilters.sort === "LAST_ACTIVITY_DESC"
-                                        ? "Last Activity"
-                                        : "Newest Joined"}
+                                            ? "Highest Equity"
+                                            : currentFilters.sort === "ACCOUNTS_DESC"
+                                                ? "Most Accounts"
+                                                : currentFilters.sort === "LAST_ACTIVITY_DESC"
+                                                    ? "Last Activity"
+                                                    : "Newest Joined"}
                                     <ChevronDown size={14} className="opacity-60" />
                                 </Button>
                             </DropdownMenuTrigger>
@@ -682,7 +682,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
             </div>
 
             {/* Main Trader Table */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -787,15 +787,14 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                         {trader.products.map((p) => (
                                                             <span
                                                                 key={p.productId}
-                                                                className={`px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider border ${
-                                                                    p.usageState === "ACTIVE"
+                                                                className={`px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider border ${p.usageState === "ACTIVE"
                                                                         ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20"
                                                                         : p.usageState === "RECENTLY_USED"
-                                                                        ? "bg-cyan-50 text-cyan-700 border-cyan-200 dark:bg-cyan-500/10 dark:text-cyan-300 dark:border-cyan-500/20"
-                                                                        : p.usageState === "DOWNLOADED"
-                                                                        ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/20"
-                                                                        : "bg-gray-50 text-gray-400 border-gray-200 dark:bg-white/5 dark:text-gray-500 dark:border-white/10"
-                                                                }`}
+                                                                            ? "bg-cyan-50 text-cyan-700 border-cyan-200 dark:bg-cyan-500/10 dark:text-cyan-300 dark:border-cyan-500/20"
+                                                                            : p.usageState === "DOWNLOADED"
+                                                                                ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/20"
+                                                                                : "bg-gray-50 text-gray-400 border-gray-200 dark:bg-white/5 dark:text-gray-500 dark:border-white/10"
+                                                                    }`}
                                                             >
                                                                 {p.productSlug.slice(0, 4)}: {p.usageState}
                                                             </span>
@@ -974,7 +973,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
 
             {/* Floating Bulk Action Bar */}
             {selectedUserIds.size > 0 && (
-                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 bg-gray-950/95 dark:bg-[#1A1C24]/95 backdrop-blur-md border border-gray-800 dark:border-white/10 px-5 py-3 rounded-2xl shadow-2xl text-white animate-in fade-in slide-in-from-bottom-4 duration-200">
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 bg-gray-950/95 dark:bg-[#1A1C24]/95 backdrop-blur-md border border-gray-800 dark:border-white/10 px-5 py-3 rounded-lg shadow-2xl text-white animate-in fade-in slide-in-from-bottom-4 duration-200">
                     <div className="flex items-center gap-2 pr-3 border-r border-gray-800 dark:border-white/10 text-xs font-bold">
                         <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
                         <span>
@@ -985,7 +984,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                         <Button
                             size="sm"
                             variant="outline"
-                            className="h-8 text-xs font-bold gap-1.5 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 rounded-xl"
+                            className="h-8 text-xs font-bold gap-1.5 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 rounded-lg"
                             onClick={() => {
                                 setBulkGraceDays(7);
                                 setIsBulkGraceOpen(true);
@@ -997,7 +996,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                         <Button
                             size="sm"
                             variant="outline"
-                            className="h-8 text-xs font-bold gap-1.5 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 rounded-xl"
+                            className="h-8 text-xs font-bold gap-1.5 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 rounded-lg"
                             onClick={() => {
                                 setBulkGraceDays(14);
                                 setIsBulkGraceOpen(true);
@@ -1009,7 +1008,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                         <Button
                             size="sm"
                             variant="outline"
-                            className="h-8 text-xs font-bold gap-1.5 border-blue-500/30 text-blue-400 hover:bg-blue-500/10 rounded-xl"
+                            className="h-8 text-xs font-bold gap-1.5 border-blue-500/30 text-blue-400 hover:bg-blue-500/10 rounded-lg"
                             onClick={() => setIsBulkReminderOpen(true)}
                         >
                             <BellRing size={13} />
@@ -1018,7 +1017,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                         <Button
                             size="sm"
                             variant="outline"
-                            className="h-8 text-xs text-gray-400 hover:text-white rounded-xl"
+                            className="h-8 text-xs text-gray-400 hover:text-white rounded-lg"
                             onClick={() => setSelectedUserIds(new Set())}
                         >
                             Clear

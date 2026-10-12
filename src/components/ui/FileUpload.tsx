@@ -78,7 +78,7 @@ export function FileUpload({
     return (
         <div
             className={`
- relative aspect-video rounded-xl border-2 border-dashed 
+ relative aspect-video rounded-lg border-2 border-dashed 
  flex flex-col items-center justify-center overflow-hidden
  transition-all group bg-gray-50 dark:bg-black/20
  ${value ? "border-transparent" : "border-dashboard hover:border-primary cursor-pointer"}

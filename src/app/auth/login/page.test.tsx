@@ -40,7 +40,7 @@ describe("LoginPage - Responsive Design and Interactivity", () => {
         expect(card?.className).toContain("p-5");
         expect(card?.className).toContain("sm:p-7");
         expect(card?.className).toContain("md:p-8");
-        expect(card?.className).toContain("rounded-2xl");
+        expect(card?.className).toContain("rounded-lg");
     });
 
     it("renders header with responsive typography", () => {

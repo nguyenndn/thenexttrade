@@ -5,7 +5,7 @@ import { Logo } from "@/components/ui/Logo";
 
 export default function AuthCodeErrorPage() {
     return (
-        <div className="w-full max-w-[480px] mx-auto bg-white dark:bg-[#1E2028] p-8 rounded-xl border border-dashboard shadow-xl transition-colors duration-300">
+        <div className="w-full max-w-[480px] mx-auto bg-white dark:bg-[#1E2028] p-8 rounded-lg border border-dashboard shadow-xl transition-colors duration-300">
             <div className="flex justify-center mb-6">
                 <Logo />
             </div>
@@ -29,8 +29,9 @@ export default function AuthCodeErrorPage() {
                         href="/auth/forgot-password"
                         className={buttonVariants({
                             variant: "primary",
+                            size: "smd",
                             className:
-                                "w-full bg-primary hover:opacity-90 text-white font-bold py-3.5 rounded-xl text-center text-sm",
+                                "w-full bg-gold hover:bg-amber-600 text-white font-bold rounded-lg text-center shadow-md shadow-amber-500/20",
                         })}
                     >
                         Try Resetting Password Again
@@ -39,8 +40,9 @@ export default function AuthCodeErrorPage() {
                         href="/auth/login"
                         className={buttonVariants({
                             variant: "outline",
+                            size: "smd",
                             className:
-                                "w-full bg-gray-100 dark:bg-[#0B0E14] border border-dashboard hover:bg-gray-200 dark:hover:bg-[#151925] text-gray-700 dark:text-white font-bold py-3.5 rounded-xl text-center text-sm",
+                                "w-full bg-gray-100 dark:bg-[#0B0E14] border border-dashboard hover:bg-gray-200 dark:hover:bg-[#151925] text-gray-700 dark:text-white font-bold rounded-lg text-center",
                         })}
                     >
                         Back to Login

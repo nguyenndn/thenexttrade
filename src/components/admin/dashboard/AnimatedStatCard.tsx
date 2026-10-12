@@ -124,11 +124,11 @@ export function AnimatedStatCard({
                 ease: [0.25, 0.46, 0.45, 0.94],
             }}
             whileHover={{ y: -2, transition: { duration: 0.2 } }}
-            className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default"
+            className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default"
         >
             <div className="flex items-center gap-3">
                 <div
-                    className={`w-9 h-9 shrink-0 rounded-xl flex items-center justify-center ${cs.bg} ${cs.text}`}
+                    className={`w-9 h-9 shrink-0 rounded-lg flex items-center justify-center ${cs.bg} ${cs.text}`}
                 >
                     <Icon size={16} aria-hidden="true" />
                 </div>

@@ -750,7 +750,22 @@ export async function getFullDashboardData(
         initialDashboards: userDashboards,
         dashboardData,
         chartData,
-        recentTrades,
+        recentTrades: recentTrades.map((t) => ({
+            ...t,
+            grossProfit: t.pnl,
+            pnl:
+                t.pnl != null
+                    ? Number(
+                          (
+                              t.pnl +
+                              (t.commission || 0) +
+                              (t.swap || 0)
+                          ).toFixed(2)
+                      )
+                    : null,
+            commission: t.commission || 0,
+            swap: t.swap || 0,
+        })),
         symbolPerformance,
         currentAccountId: accountId,
         monthlyAnalytics: monthly.map((m) => ({

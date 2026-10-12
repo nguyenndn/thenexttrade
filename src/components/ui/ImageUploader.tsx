@@ -56,7 +56,7 @@ export function ImageUploader({
     if (isInputVisible) {
         return (
             <div
-                className={`aspect-video rounded-xl border-2 border-dashed border-primary bg-gray-50 dark:bg-black/20 flex flex-col items-center justify-center p-4 gap-2 ${className}`}
+                className={`aspect-video rounded-lg border-2 border-dashed border-primary bg-gray-50 dark:bg-black/20 flex flex-col items-center justify-center p-4 gap-2 ${className}`}
             >
                 <p className="text-sm font-bold text-gray-700 dark:text-gray-300">
                     Paste Chart Link
@@ -96,7 +96,7 @@ export function ImageUploader({
         <div
             onClick={() => setIsInputVisible(true)}
             className={`
- relative aspect-video rounded-xl border-2 border-dashed 
+ relative aspect-video rounded-lg border-2 border-dashed 
  flex flex-col items-center justify-center cursor-pointer 
  transition-all group overflow-hidden
  ${value ? "border-transparent" : "border-dashboard hover:border-primary bg-gray-50 dark:bg-black/20"}

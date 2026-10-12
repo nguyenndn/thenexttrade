@@ -53,9 +53,8 @@ export function WebForexTools() {
                     <div className="mb-8 flex flex-col items-center">
                         <HomeSectionHeading
                             align="center"
-                            eyebrow="STEP 01 / 04 · PRE-TRADE RISK MATH"
-                            title="Calculate your risk parameters before entering"
-                            highlight="risk parameters"
+                            title="Know your risk before you enter"
+                            highlight="risk"
                             description="Amateur traders guess their position size; institutional traders calculate it. Model lot size, pip values, and drawdown odds before taking execution."
                             icon={Wrench}
                         />
@@ -90,11 +89,11 @@ export function WebForexTools() {
                                     {/* Desktop View (PC: lg+) — Exact original design as requested */}
                                     <Link
                                         href={`/tools/${tool.slug}`}
-                                        className="hidden lg:flex group relative flex-col p-2.5 rounded-xl bg-white dark:bg-card shadow-sm hover:shadow-lg hover:border-cyan-500/30 transition-all duration-300 border border-gray-200/80 dark:border-white/10 overflow-hidden h-full justify-between"
+                                        className="hidden lg:flex group relative flex-col p-2.5 rounded-lg bg-white dark:bg-card shadow-sm hover:shadow-lg hover:border-cyan-500/30 transition-all duration-300 border border-gray-200 dark:border-white/10 overflow-hidden h-full justify-between"
                                     >
                                         <div>
                                             {/* Visual Preview Half */}
-                                            <div className="rounded-xl overflow-hidden bg-transparent mb-3.5">
+                                            <div className="rounded-lg overflow-hidden bg-transparent mb-3.5">
                                                 <tool.Mock />
                                             </div>
 
@@ -131,10 +130,10 @@ export function WebForexTools() {
                                     {/* Tablet & Mobile View (< lg) — Horizontal layout on tablet, vertical on mobile */}
                                     <Link
                                         href={`/tools/${tool.slug}`}
-                                        className="flex lg:hidden group relative flex-col md:flex-row p-2.5 md:p-3.5 rounded-2xl bg-white dark:bg-card shadow-sm hover:shadow-lg hover:border-gold/40 transition-all duration-300 border border-gray-200/80 dark:border-white/10 overflow-hidden h-full justify-between items-stretch md:items-center gap-3 md:gap-6"
+                                        className="flex lg:hidden group relative flex-col md:flex-row p-2.5 md:p-3.5 rounded-lg bg-white dark:bg-card shadow-sm hover:shadow-lg hover:border-gold/40 transition-all duration-300 border border-gray-200 dark:border-white/10 overflow-hidden h-full justify-between items-stretch md:items-center gap-3 md:gap-6"
                                     >
                                         {/* Visual Preview Half */}
-                                        <div className="w-full md:w-[46%] md:max-w-xs shrink-0 rounded-xl overflow-hidden bg-transparent mb-0">
+                                        <div className="w-full md:w-[46%] md:max-w-xs shrink-0 rounded-lg overflow-hidden bg-transparent mb-0">
                                             <tool.Mock />
                                         </div>
 
@@ -186,7 +185,7 @@ export function WebForexTools() {
 
                                             {/* Bottom Action Row */}
                                             <div className="flex items-center justify-between pt-2.5 border-t border-gray-100 dark:border-white/5">
-                                                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-gold bg-gold/10 border border-gold/25 group-hover:bg-gold group-hover:text-white group-hover:border-gold transition-all duration-200">
+                                                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-gold bg-gold/10 border border-gold/25 group-hover:bg-gold group-hover:text-white group-hover:border-gold transition-all duration-200">
                                                     <span>Launch Tool</span>
                                                     <ArrowRight
                                                         size={12}

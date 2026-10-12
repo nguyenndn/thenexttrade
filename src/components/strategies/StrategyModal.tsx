@@ -9,7 +9,6 @@ import {
     Loader2,
     BookOpen,
     Trash2,
-    Sparkles,
     ChevronDown,
     Check,
 } from "lucide-react";
@@ -23,6 +22,19 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import { PremiumInput } from "@/components/ui/PremiumInput";
+import {
+    Popover,
+    PopoverTrigger,
+    PopoverContent,
+} from "@/components/ui/popover";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 interface Strategy {
     id: string;
@@ -49,10 +61,38 @@ interface StrategyModalProps {
 }
 
 const COLORS = [
-    "#00C785", "#10B981", "#3B82F6", "#0EA5E9", "#6366F1",
-    "#8B5CF6", "#A855F7", "#D946EF", "#EC4899", "#F43F5E",
-    "#EF4444", "#F97316", "#F59E0B", "#EAB308", "#84CC16",
-    "#14B8A6", "#06B6D4", "#64748B", "#475569", "#1E293B",
+    // Row 1: 15 Vibrant & Fresh Shades
+    "hsl(var(--primary))", // Primary Green
+    "#10B981", // Emerald
+    "#3B82F6", // Blue
+    "#0EA5E9", // Sky
+    "#6366F1", // Indigo
+    "#8B5CF6", // Violet
+    "#A855F7", // Purple
+    "#D946EF", // Fuchsia
+    "#EC4899", // Pink
+    "#F43F5E", // Rose
+    "#EF4444", // Red
+    "#F97316", // Orange
+    "#F59E0B", // Amber
+    "#EAB308", // Yellow
+    "#84CC16", // Lime
+    // Row 2: 15 Deep, Jewel & Pro Tech Shades
+    "#059669", // Forest Green
+    "#14B8A6", // Teal
+    "#06B6D4", // Cyan
+    "#0284C7", // Cobalt
+    "#1D4ED8", // Navy Blue
+    "#4338CA", // Deep Indigo
+    "#7C3AED", // Royal Violet
+    "#9333EA", // Deep Purple
+    "#C026D3", // Magenta Plum
+    "#BE123C", // Ruby Wine
+    "#DC2626", // Crimson
+    "#C2410C", // Rust Orange
+    "#B45309", // Bronze
+    "#64748B", // Slate
+    "#1E293B", // Midnight Zinc
 ];
 
 const SETUP_TYPES = [
@@ -92,6 +132,7 @@ export function StrategyModal({
         referenceImages: strategy?.referenceImages || [],
     });
 
+    const [colorPickerOpen, setColorPickerOpen] = useState(false);
     const [tfInput, setTfInput] = useState("");
     const [pairInput, setPairInput] = useState("");
     const [showTfSuggestions, setShowTfSuggestions] = useState(false);
@@ -257,7 +298,7 @@ export function StrategyModal({
     );
 
     const inputClasses =
-        "w-full rounded-xl border border-dashboard bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 text-gray-700 dark:text-white";
+        "w-full rounded-lg border border-dashboard bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-gold focus:ring-2 focus:ring-amber-500/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 text-gray-700 dark:text-white";
     const labelClasses = "text-sm font-bold text-gray-700 dark:text-gray-300";
 
     return (
@@ -282,7 +323,7 @@ export function StrategyModal({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className={`relative z-10 bg-white dark:bg-[#1E2028] w-full max-h-[90vh] flex flex-col rounded-xl shadow-2xl border border-dashboard ${
+                className={`relative z-10 bg-white dark:bg-[#1E2028] w-full max-h-[90vh] flex flex-col rounded-lg shadow-2xl border border-dashboard ${
                     formData.isPlaybook ? "max-w-2xl" : "max-w-lg"
                 } transition-all duration-300 overflow-hidden`}
             >
@@ -290,7 +331,7 @@ export function StrategyModal({
                 <div className="flex items-center justify-between p-5 sm:p-6 border-b border-dashboard shrink-0 bg-white dark:bg-[#1E2028]">
                     <div className="flex items-center gap-3">
                         {formData.isPlaybook && (
-                            <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                            <div className="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center text-gold">
                                 <BookOpen size={18} />
                             </div>
                         )}
@@ -316,9 +357,8 @@ export function StrategyModal({
                                     type="button"
                                     variant="outline"
                                     size="sm"
-                                    className="hidden sm:flex items-center gap-1.5 text-xs text-primary border-primary/20 hover:bg-primary/10"
+                                    className="hidden sm:flex items-center gap-1.5 text-xs text-gold dark:text-amber-400 border-amber-500/30 hover:bg-amber-500/10 font-bold"
                                 >
-                                    <Sparkles size={14} />
                                     <span>Templates</span>
                                     <ChevronDown size={12} />
                                 </Button>
@@ -368,44 +408,91 @@ export function StrategyModal({
                 >
                     {/* Basic Fields */}
                     <div className="space-y-4">
-                        <div className="space-y-2">
-                            <label htmlFor="name" className={labelClasses}>
-                                Strategy / Setup Name <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                id="name"
-                                type="text"
-                                required
-                                placeholder="e.g. London Liquidity Sweep"
-                                className={inputClasses}
-                                value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            />
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className={labelClasses}>Color Tag</label>
-                            <div className="flex gap-2.5 flex-wrap">
-                                {COLORS.map((c) => (
-                                    <button
-                                        key={c}
-                                        type="button"
-                                        onClick={() => setFormData({ ...formData, color: c })}
-                                        className={`w-7 h-7 rounded-full transition-transform flex items-center justify-center ${
-                                            formData.color === c
-                                                ? "scale-110 ring-2 ring-offset-2 ring-primary"
-                                                : "hover:scale-105 opacity-80 hover:opacity-100"
-                                        }`}
-                                        style={{ backgroundColor: c }}
-                                        aria-label={`Select color ${c}`}
+                        <PremiumInput
+                            id="name"
+                            label={formData.isPlaybook ? "Playbook Name" : "Strategy / Setup Name"}
+                            required
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            prefix={
+                                <Popover
+                                    open={colorPickerOpen}
+                                    onOpenChange={setColorPickerOpen}
+                                >
+                                    <PopoverTrigger asChild>
+                                        <button
+                                            type="button"
+                                            className="flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-gray-200/70 dark:hover:bg-white/10 transition-colors cursor-pointer group/color focus:outline-none"
+                                            title={formData.isPlaybook ? "Choose playbook color badge" : "Choose strategy color badge"}
+                                            aria-label={formData.isPlaybook ? "Choose playbook color badge" : "Choose strategy color badge"}
+                                        >
+                                            <span
+                                                className="w-4 h-4 rounded-full border border-black/15 dark:border-white/20 shadow-sm shrink-0 transition-transform group-hover/color:scale-110"
+                                                style={{
+                                                    backgroundColor: formData.color,
+                                                }}
+                                            />
+                                            <ChevronDown
+                                                size={11}
+                                                className="text-gray-400 group-hover/color:text-gray-600 dark:group-hover/color:text-gray-300 transition-colors shrink-0"
+                                            />
+                                        </button>
+                                    </PopoverTrigger>
+                                    <PopoverContent
+                                        className="w-64 p-3 bg-white dark:bg-[#1E2028] border border-dashboard shadow-2xl rounded-lg z-[150]"
+                                        align="start"
+                                        sideOffset={8}
                                     >
-                                        {formData.color === c && (
-                                            <Check size={14} className="text-white drop-shadow" />
-                                        )}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
+                                        <div className="space-y-2.5">
+                                            <div className="flex items-center justify-between pb-1.5 border-b border-dashboard">
+                                                <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                                                    {formData.isPlaybook ? "Playbook Color Badge" : "Strategy Color Badge"}
+                                                </span>
+                                                <span
+                                                    className="w-3.5 h-3.5 rounded-full border border-black/10 dark:border-white/10"
+                                                    style={{
+                                                        backgroundColor: formData.color,
+                                                    }}
+                                                />
+                                            </div>
+                                            <div className="grid grid-cols-6 gap-2 pt-0.5">
+                                                {COLORS.map((c) => (
+                                                    <button
+                                                        type="button"
+                                                        key={c}
+                                                        onClick={() => {
+                                                            setFormData((prev) => ({ ...prev, color: c }));
+                                                            setColorPickerOpen(false);
+                                                        }}
+                                                        aria-label={`Select color ${c}`}
+                                                        className={`w-7 h-7 rounded-full transition-all flex items-center justify-center cursor-pointer ${
+                                                            formData.color === c
+                                                                ? "ring-2 ring-offset-2 ring-offset-white dark:ring-offset-[#1E2028] scale-110"
+                                                                : "hover:scale-110 opacity-90 hover:opacity-100"
+                                                        }`}
+                                                        style={{
+                                                            backgroundColor: c,
+                                                            boxShadow:
+                                                                formData.color === c
+                                                                    ? `0 0 8px ${c}80`
+                                                                    : "none",
+                                                        }}
+                                                    >
+                                                        {formData.color === c && (
+                                                            <Check
+                                                                size={13}
+                                                                strokeWidth={3}
+                                                                className="text-white drop-shadow-md"
+                                                            />
+                                                        )}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </PopoverContent>
+                                </Popover>
+                            }
+                        />
 
                         <div className="space-y-2">
                             <label htmlFor="description" className={labelClasses}>
@@ -437,14 +524,14 @@ export function StrategyModal({
                     </div>
 
                     {/* Playbook Section Toggle */}
-                    <div className="border border-primary/20 rounded-xl bg-primary/[0.02] dark:bg-primary/[0.04] overflow-hidden">
-                        <div className="p-4 flex items-center justify-between border-b border-primary/10">
+                    <div className="border border-amber-500/20 rounded-lg bg-amber-500/[0.02] dark:bg-amber-500/[0.04] overflow-hidden">
+                        <div className="p-4 flex items-center justify-between border-b border-amber-500/10">
                             <div className="flex items-center gap-3">
                                 <button
                                     type="button"
                                     onClick={() => setFormData((p) => ({ ...p, isPlaybook: !p.isPlaybook }))}
                                     className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                                        formData.isPlaybook ? "bg-primary" : "bg-gray-200 dark:bg-white/20"
+                                        formData.isPlaybook ? "bg-gold" : "bg-gray-200 dark:bg-white/20"
                                     }`}
                                     role="switch"
                                     aria-checked={formData.isPlaybook}
@@ -458,7 +545,7 @@ export function StrategyModal({
                                 </button>
                                 <div>
                                     <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-1.5">
-                                        <BookOpen size={14} className="text-primary" />
+                                        <BookOpen size={14} className="text-gold dark:text-amber-400" />
                                         Enable Playbook Details
                                     </h3>
                                     <p className="text-xs text-gray-500">
@@ -478,20 +565,28 @@ export function StrategyModal({
                                     transition={{ duration: 0.25, ease: "easeInOut" }}
                                     className="overflow-hidden"
                                 >
-                                    <div className="p-4 space-y-4 border-t border-primary/10">
+                                    <div className="p-4 space-y-4 border-t border-amber-500/10">
                                         {/* Setup Type */}
                                         <div className="space-y-2">
                                             <label className={labelClasses}>Setup Type</label>
-                                            <select
-                                                className={inputClasses}
-                                                value={formData.setupType}
-                                                onChange={(e) => setFormData({ ...formData, setupType: e.target.value })}
+                                            <Select
+                                                value={formData.setupType || "none"}
+                                                onValueChange={(val) => setFormData({ ...formData, setupType: val === "none" ? "" : val })}
                                             >
-                                                <option value="">Select type...</option>
-                                                {SETUP_TYPES.map((t) => (
-                                                    <option key={t} value={t}>{t}</option>
-                                                ))}
-                                            </select>
+                                                <SelectTrigger className="w-full h-10 px-4 rounded-lg border border-dashboard bg-white dark:bg-white/5 text-sm text-gray-700 dark:text-white">
+                                                    <SelectValue placeholder="Select type..." />
+                                                </SelectTrigger>
+                                                <SelectContent className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925]">
+                                                    <SelectItem value="none" className="rounded-lg text-sm text-gray-400">
+                                                        Select type...
+                                                    </SelectItem>
+                                                    {SETUP_TYPES.map((t) => (
+                                                        <SelectItem key={t} value={t} className="rounded-lg text-sm">
+                                                            {t}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
                                         </div>
 
                                         {/* Timeframes */}
@@ -501,7 +596,7 @@ export function StrategyModal({
                                                 {formData.timeframes.map((tf) => (
                                                     <span
                                                         key={tf}
-                                                        className="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-xs font-bold flex items-center gap-1.5 border border-primary/20"
+                                                        className="px-2.5 py-1 rounded-lg bg-amber-500/10 text-gold dark:text-amber-400 text-xs font-bold flex items-center gap-1.5 border border-amber-500/20"
                                                     >
                                                         {tf}
                                                         <button
@@ -532,13 +627,13 @@ export function StrategyModal({
                                                     }}
                                                 />
                                                 {showTfSuggestions && filteredTfSuggestions.length > 0 && (
-                                                    <div className="absolute top-full mt-1 left-0 w-full bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl shadow-xl z-20 max-h-36 overflow-y-auto p-1">
+                                                    <div className="absolute top-full mt-1 left-0 w-full bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg shadow-xl z-20 max-h-36 overflow-y-auto p-1">
                                                         {filteredTfSuggestions.map((tf) => (
                                                             <button
                                                                 type="button"
                                                                 key={tf}
                                                                 onMouseDown={() => addTimeframe(tf)}
-                                                                className="w-full text-left px-3 py-1.5 text-xs font-bold hover:bg-primary/10 hover:text-primary rounded-lg transition-colors text-gray-700 dark:text-gray-300"
+                                                                className="w-full text-left px-3 py-1.5 text-xs font-bold hover:bg-amber-500/10 hover:text-gold rounded-lg transition-colors text-gray-700 dark:text-gray-300"
                                                             >
                                                                 {tf}
                                                             </button>
@@ -572,7 +667,7 @@ export function StrategyModal({
                                             <div className="relative">
                                                 <input
                                                     type="text"
-                                                    placeholder="Type or select symbol (e.g. XAUUSD, NAS100)..."
+                                                    placeholder="Search or enter symbol (XAUUSD, NAS100)..."
                                                     className={inputClasses}
                                                     value={pairInput}
                                                     onFocus={() => setShowPairSuggestions(true)}
@@ -586,7 +681,7 @@ export function StrategyModal({
                                                     }}
                                                 />
                                                 {showPairSuggestions && filteredPairSuggestions.length > 0 && (
-                                                    <div className="absolute top-full mt-1 left-0 w-full bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl shadow-xl z-20 max-h-36 overflow-y-auto p-1">
+                                                    <div className="absolute top-full mt-1 left-0 w-full bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg shadow-xl z-20 max-h-36 overflow-y-auto p-1">
                                                         {filteredPairSuggestions.map((p) => (
                                                             <button
                                                                 type="button"
@@ -693,7 +788,7 @@ export function StrategyModal({
                                                 {formData.referenceImages.map((url, idx) => (
                                                     <div
                                                         key={url}
-                                                        className="relative aspect-video rounded-xl overflow-hidden border border-dashboard group bg-black/20"
+                                                        className="relative aspect-video rounded-lg overflow-hidden border border-dashboard group bg-black/20"
                                                     >
                                                         <img
                                                             src={url}
@@ -712,8 +807,8 @@ export function StrategyModal({
                                                 ))}
 
                                                 {uploadingImage && (
-                                                    <div className="aspect-video rounded-xl border-2 border-dashed border-dashboard flex items-center justify-center bg-gray-50/50 dark:bg-white/[0.02]">
-                                                        <Loader2 size={24} className="animate-spin text-primary" />
+                                                    <div className="aspect-video rounded-lg border-2 border-dashed border-dashboard flex items-center justify-center bg-gray-50/50 dark:bg-white/[0.02]">
+                                                        <Loader2 size={24} className="animate-spin text-gold dark:text-amber-400" />
                                                     </div>
                                                 )}
 
@@ -721,13 +816,13 @@ export function StrategyModal({
                                                     <button
                                                         type="button"
                                                         onClick={() => fileInputRef.current?.click()}
-                                                        className="aspect-video rounded-xl border-2 border-dashed border-dashboard hover:border-primary/50 flex flex-col items-center justify-center cursor-pointer group transition-colors bg-gray-50/50 dark:bg-white/[0.02]"
+                                                        className="aspect-video rounded-lg border-2 border-dashed border-dashboard hover:border-amber-500/50 flex flex-col items-center justify-center cursor-pointer group transition-colors bg-gray-50/50 dark:bg-white/[0.02]"
                                                     >
                                                         <ImagePlus
                                                             size={22}
-                                                            className="text-gray-400 group-hover:text-primary transition-colors"
+                                                            className="text-gray-400 group-hover:text-gold dark:group-hover:text-amber-400 transition-colors"
                                                         />
-                                                        <span className="text-xs text-gray-400 group-hover:text-primary mt-1 font-medium transition-colors">
+                                                        <span className="text-xs text-gray-400 group-hover:text-gold dark:group-hover:text-amber-400 mt-1 font-medium transition-colors">
                                                             Upload
                                                         </span>
                                                     </button>
@@ -758,7 +853,7 @@ export function StrategyModal({
                         variant="primary"
                         size="smd"
                         isLoading={isLoading}
-                        className="font-bold shadow-md shadow-primary/20"
+                        className="font-bold shadow-md shadow-amber-500/20"
                     >
                         {formData.isPlaybook ? "Save Playbook" : "Save Strategy"}
                     </Button>

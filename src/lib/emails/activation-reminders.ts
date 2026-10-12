@@ -17,13 +17,13 @@ export function buildActivationEmailSubject(
 ): string {
     switch (type) {
         case "NO_ACCOUNT_24H":
-            return "Complete your TheNextTrade setup 🚀";
+            return "Complete your TheNextTrade setup";
         case "NO_FIRST_DATA_24H":
-            return "Dashboard is waiting: Sync your first trade 📊";
+            return "Dashboard is waiting: Sync your first trade";
         case "STILL_NO_FIRST_VALUE_72H":
-            return "Unlock your AI Trading Dashboard today ✨";
+            return "Activate your live trading analytics";
         case "MOBILE_SYNC_FALLBACK":
-            return "Finish your MT5 Auto-Sync setup on desktop 💻";
+            return "Finish your MT5 Auto-Sync setup on desktop";
     }
 }
 
@@ -68,7 +68,7 @@ export function buildActivationEmailHtml(
  <p style="text-align: center; margin: 24px 0;">
  <a href="${link}" style="${btnStyles}">Connect Your Account</a>
  </p>
- <p>Once connected, you will unlock performance charts, AI insights, and streak rewards automatically.</p>
+ <p>Once connected, your performance charts, edge analytics, and streak tracking update automatically.</p>
  `;
     } else if (type === "NO_FIRST_DATA_24H") {
         const methodDesc =
@@ -78,7 +78,7 @@ export function buildActivationEmailHtml(
 
         bodyHtml = `
  <p>Hi ${userName},</p>
- <p>Your account is successfully connected! The next step is to ${methodDesc} to unlock the full power of your dashboard.</p>
+ <p>Your account is successfully connected! The next step is to ${methodDesc} to generate your edge and risk analytics.</p>
  <p>Once your first trade is logged, we will analyze your metrics and generate your first AI performance score.</p>
  <p style="text-align: center; margin: 24px 0;">
  <a href="${link}" style="${btnStyles}">Sync/Log Your First Trade</a>
@@ -139,7 +139,7 @@ Connecting your account takes less than 60 seconds and allows you to track and a
 
 Connect Your Account: ${link}
 
-Once connected, you will unlock performance charts, AI insights, and streak rewards automatically.
+Once connected, your performance charts, edge analytics, and streak tracking update automatically.
  `;
     } else if (type === "NO_FIRST_DATA_24H") {
         const methodDesc =
@@ -150,7 +150,7 @@ Once connected, you will unlock performance charts, AI insights, and streak rewa
         return `
 Hi ${userName},
 
-Your account is successfully connected! The next step is to ${methodDesc} to unlock the full power of your dashboard.
+Your account is successfully connected! The next step is to ${methodDesc} to generate your edge and risk analytics.
 
 Sync/Log Your First Trade: ${link}
  `;

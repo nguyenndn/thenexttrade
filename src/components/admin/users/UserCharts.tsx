@@ -11,7 +11,7 @@ const UserRoleChart = dynamic(
     {
         ssr: false,
         loading: () => (
-            <div className="h-[300px] w-full bg-gray-100 dark:bg-white/5 rounded-xl animate-pulse" />
+            <div className="h-[300px] w-full bg-gray-100 dark:bg-white/5 rounded-lg animate-pulse" />
         ),
     }
 );
@@ -24,7 +24,7 @@ const UserActivityChart = dynamic(
     {
         ssr: false,
         loading: () => (
-            <div className="h-[300px] w-full bg-gray-100 dark:bg-white/5 rounded-xl animate-pulse" />
+            <div className="h-[300px] w-full bg-gray-100 dark:bg-white/5 rounded-lg animate-pulse" />
         ),
     }
 );
@@ -48,7 +48,7 @@ export function UserCharts({
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             {/* Signups Trend */}
-            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm flex flex-col justify-between">
+            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm flex flex-col justify-between">
                 <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200 mb-4">
                     User Signups Trend
                 </h3>
@@ -58,7 +58,7 @@ export function UserCharts({
             </div>
 
             {/* Role Distribution */}
-            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm flex flex-col justify-between">
+            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm flex flex-col justify-between">
                 <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200 mb-4">
                     Role Distribution
                 </h3>
@@ -68,7 +68,7 @@ export function UserCharts({
             </div>
 
             {/* Registered Users by Country */}
-            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm flex flex-col justify-between">
+            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm flex flex-col justify-between">
                 <div className="flex items-center justify-between gap-4 mb-4">
                     <div>
                         <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200">
@@ -133,7 +133,7 @@ export function UserCharts({
                         })}
                     </div>
                 ) : (
-                    <div className="flex-1 flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 dark:border-white/10 p-4 text-center">
+                    <div className="flex-1 flex flex-col items-center justify-center rounded-lg border border-dashed border-gray-200 dark:border-white/10 p-4 text-center">
                         <p className="text-xs font-semibold text-gray-600 dark:text-gray-300">
                             No country data yet
                         </p>

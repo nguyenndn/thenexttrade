@@ -115,8 +115,8 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
     return (
         <div className="flex flex-col h-full">
             {/* Toolbar Card */}
-            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col md:flex-row gap-4 mb-6">
-                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md h-[38px]">
+            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-4 shadow-sm flex flex-col md:flex-row gap-4 mb-6">
+                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md h-[38px]">
                     <Search
                         size={16}
                         className="text-gray-500"
@@ -193,7 +193,7 @@ export function AccountsTable({ licenses }: AccountsTableProps) {
             </div>
 
             {/* Data Table Card */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm flex flex-col relative w-full flex-1">
+            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm flex flex-col relative w-full flex-1">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm">
                         <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">

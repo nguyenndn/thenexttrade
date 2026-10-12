@@ -107,7 +107,7 @@ export function FirstSyncSuccessModal({
                     animate="animate"
                     exit="exit"
                     transition={SPRING_SOFT}
-                    className="relative z-10 bg-white dark:bg-[#1E2028] rounded-2xl w-full max-w-md overflow-hidden border border-dashboard shadow-2xl"
+                    className="relative z-10 bg-white dark:bg-[#1E2028] rounded-lg w-full max-w-md overflow-hidden border border-dashboard shadow-2xl"
                 >
                 {/* Close button */}
                 <button
@@ -121,13 +121,13 @@ export function FirstSyncSuccessModal({
                 {/* Celebratory header */}
                 <div className="relative px-6 pt-8 pb-4 text-center overflow-hidden">
                     {/* Background glow */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-primary/10 to-transparent dark:from-primary/10 dark:via-primary/5 pointer-events-none" />
-                    <div className="absolute top-4 left-1/2 -translate-x-1/2 w-40 h-40 bg-primary/20 rounded-full blur-[60px] pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-amber-500/5 via-amber-500/10 to-transparent dark:from-amber-500/10 dark:via-amber-500/5 pointer-events-none" />
+                    <div className="absolute top-4 left-1/2 -translate-x-1/2 w-40 h-40 bg-amber-500/20 rounded-full blur-[60px] pointer-events-none" />
 
                     <div className="relative z-10">
                         {/* Success icon */}
-                        <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-teal-400 flex items-center justify-center shadow-lg shadow-primary/30 mb-4">
-                            <CheckCircle2 size={28} className="text-white" />
+                        <div className="mx-auto w-14 h-14 rounded-lg bg-gold flex items-center justify-center shadow-md mb-4 text-slate-950">
+                            <CheckCircle2 size={28} className="text-slate-950" />
                         </div>
 
                         <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">
@@ -145,11 +145,11 @@ export function FirstSyncSuccessModal({
                     {facts.map((fact, idx) => (
                         <div
                             key={idx}
-                            className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-dashboard dark:border-slate-800"
+                            className="flex items-start gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-dashboard dark:border-slate-800"
                         >
                             <CheckCircle2
                                 size={18}
-                                className="text-primary shrink-0 mt-0.5"
+                                className="text-gold dark:text-amber-400 shrink-0 mt-0.5"
                             />
                             <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 leading-relaxed">
                                 {fact}
@@ -162,17 +162,19 @@ export function FirstSyncSuccessModal({
                 <div className="px-6 pb-6 pt-2 space-y-2">
                     <Button
                         variant="primary"
+                        size="smd"
                         onClick={handlePrimary}
-                        className="w-full h-12 font-bold shadow-lg shadow-primary/20 gap-2 text-sm"
+                        className="w-full font-bold shadow-md shadow-amber-500/20 gap-2"
                     >
                         View My First Insight
-                        <ArrowRight size={16} />
+                        <ArrowRight size={14} />
                     </Button>
 
                     <Button
                         variant="outline"
+                        size="smd"
                         onClick={handleSecondary}
-                        className="w-full h-10 gap-2 text-sm"
+                        className="w-full gap-2 font-bold"
                     >
                         <FileText size={14} />
                         Generate First Review
@@ -180,8 +182,9 @@ export function FirstSyncSuccessModal({
 
                     <Button
                         variant="ghost"
+                        size="smd"
                         onClick={handleDismiss}
-                        className="w-full h-10 gap-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                        className="w-full gap-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                     >
                         <Sun size={14} />
                         Continue to Dashboard

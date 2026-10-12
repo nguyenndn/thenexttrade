@@ -28,11 +28,11 @@ export function StatsWidget({
     };
 
     return (
-        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+        <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
             <div className="flex items-center gap-3">
                 <div
                     className={cn(
-                        "w-9 h-9 shrink-0 rounded-xl flex items-center justify-center",
+                        "w-9 h-9 shrink-0 rounded-lg flex items-center justify-center",
                         colorStyles[color]
                     )}
                 >

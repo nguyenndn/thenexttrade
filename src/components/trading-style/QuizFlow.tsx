@@ -81,37 +81,28 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
         setResult(null);
     };
 
-    // ───────────────────────── Start screen (Hình 1 layout with Gold theme) ─────────────────────────
+    // ───────────────────────── Start screen (Gold theme layout) ─────────────────────────
     if (!started) {
         return (
             <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
-                className="mx-auto max-w-3xl text-center py-6 sm:py-10"
+                className="mx-auto max-w-3xl text-center pt-0 pb-8 sm:pb-12"
             >
-                {/* Meta tagline with Gold color */}
-                <p className="text-xs sm:text-sm font-black uppercase tracking-[0.25em] text-amber-600 dark:text-gold mb-5">
-                    TRADER PROFILING · 14 QUESTIONS · ~3 MIN
-                </p>
-
                 {/* Headline with Gold gradient accent on Fix Your Leaks (2 clean lines) */}
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[64px] font-black tracking-tight text-gray-950 dark:text-white leading-[1.08]">
                     Know Your Style.
-                    <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 dark:from-amber-400 dark:via-yellow-300 dark:to-amber-500 mt-1">
+                    <span className="block text-gold mt-1">
                         Fix Your Leaks.
                     </span>
                 </h1>
 
-                {/* Original description */}
                 <p className="mx-auto mt-6 max-w-xl text-sm sm:text-base md:text-lg leading-relaxed text-gray-600 dark:text-gray-300 font-normal">
-                    Most traders don&apos;t lose because they don&apos;t know
-                    the market — they lose because they don&apos;t know
-                    themselves. Answer honestly, and get a personalised path
-                    built from your answers.
+                    Most traders lose money to their own habits, not to the market. Answer honestly to see yours.
                 </p>
 
-                {/* 3 Stats Row in Hình 1 clean columns */}
+                {/* 3 Stats Row in clean columns */}
                 <div className="mt-9 flex items-center justify-center gap-10 sm:gap-16 text-center">
                     <div>
                         <div className="text-2xl sm:text-3xl font-black text-gray-950 dark:text-white">
@@ -139,14 +130,18 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                     </div>
                 </div>
 
-                {/* Primary CTA Button with standard button size */}
-                <div className="mt-8">
+                {/* Primary Hero CTA Button (Tier 1 Hero Sizing: 48px height, Lucide Arrow, shine effect) */}
+                <div className="mt-8 sm:mt-10 flex justify-center">
                     <Button
-                        size="md"
+                        variant="gold"
                         onClick={handleStart}
-                        className="rounded-xl bg-gold hover:bg-amber-600 px-6 py-2.5 text-sm font-bold text-white shadow-md shadow-gold/20 transition-all border-none"
+                        className="group h-11 sm:h-12 px-6 sm:px-8 rounded-lg text-sm sm:text-base font-extrabold shadow-[0_8px_20px_rgba(245,158,11,0.25)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.35)] transition-all duration-300 inline-flex items-center justify-center gap-2.5 animate-btn-shine"
                     >
-                        Start the assessment →
+                        <span>Start the Assessment</span>
+                        <ArrowRight
+                            size={16}
+                            className="group-hover:translate-x-1 transition-transform duration-300 shrink-0"
+                        />
                     </Button>
                 </div>
             </motion.div>
@@ -183,9 +178,9 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                         {question.theme}
                     </span>
                 </div>
-                <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200/70 dark:bg-white/[0.06]">
+                <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-white/[0.06]">
                     <div
-                        className="h-full rounded-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-500"
+                        className="h-full rounded-full bg-gold transition-all duration-500"
                         style={{ width: `${progress}%` }}
                     />
                 </div>
@@ -198,7 +193,7 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -24 }}
                     transition={{ duration: 0.25 }}
-                    className="rounded-2xl border border-slate-200/80 bg-white/90 p-5 shadow-sm backdrop-blur-md sm:p-6 dark:border-white/[0.08] dark:bg-[#131622]/85"
+                    className="rounded-lg border border-gray-200 bg-white/80 p-5 shadow-sm backdrop-blur-sm sm:p-6 dark:border-white/10 dark:bg-[#151925]/85"
                 >
                     <h3 className="text-lg font-black leading-snug text-gray-900 dark:text-white">
                         {question.text}
@@ -212,10 +207,10 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                                     key={option.id}
                                     onClick={() => handleSelect(option.id)}
                                     className={cn(
-                                        "group flex w-full items-center justify-between gap-3 rounded-xl border px-4 py-3 text-left transition-all",
+                                        "group flex w-full items-center justify-between gap-3 rounded-lg border px-4 py-3 text-left transition-all",
                                         isSelected
                                             ? "border-amber-500/60 bg-amber-500/[0.08] shadow-sm"
-                                            : "border-slate-200/80 bg-white hover:border-amber-500/40 hover:bg-amber-500/[0.03] dark:border-white/[0.08] dark:bg-white/[0.03]",
+                                            : "border-gray-200 bg-white/60 hover:border-amber-500/40 hover:bg-amber-500/[0.03] dark:border-white/10 dark:bg-white/[0.02] backdrop-blur-sm",
                                     )}
                                 >
                                     <span
@@ -232,7 +227,7 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                                             "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors",
                                             isSelected
                                                 ? "border-amber-500 bg-amber-500 text-white"
-                                                : "border-slate-300 group-hover:border-amber-400 dark:border-white/20",
+                                                : "border-gray-300 group-hover:border-amber-400 dark:border-white/20",
                                         )}
                                     >
                                         {isSelected && (
@@ -251,7 +246,7 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                     variant="ghost"
                     onClick={handleBack}
                     disabled={index === 0}
-                    className="rounded-xl"
+                    className="rounded-lg"
                 >
                     <ArrowLeft size={15} /> Back
                 </Button>
@@ -260,7 +255,7 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                     <Button
                         onClick={handleFinish}
                         disabled={!currentSelected}
-                        className="rounded-xl bg-gold hover:bg-amber-600 font-black text-white shadow-md shadow-gold/20"
+                        className="rounded-lg bg-gold hover:bg-amber-600 font-black text-white shadow-md shadow-gold/20"
                     >
                         See my results <ArrowRight size={15} />
                     </Button>
@@ -269,7 +264,7 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                         variant="ghost"
                         onClick={() => currentSelected && handleSelect(currentSelected)}
                         disabled={!currentSelected}
-                        className="rounded-xl"
+                        className="rounded-lg"
                     >
                         Next <ArrowRight size={15} />
                     </Button>

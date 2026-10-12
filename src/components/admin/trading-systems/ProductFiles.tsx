@@ -54,7 +54,7 @@ export function ProductFiles({ product }: ProductFilesProps) {
                     Product Thumbnail
                 </label>
                 <div className="flex items-center gap-4">
-                    <div className="w-24 h-24 rounded-xl bg-gray-100 dark:bg-white/10 overflow-hidden border border-gray-200 dark:border-white/10">
+                    <div className="w-24 h-24 rounded-lg bg-gray-100 dark:bg-white/10 overflow-hidden border border-gray-200 dark:border-white/10">
                         {product.thumbnail ? (
                             <img
                                 src={product.thumbnail}
@@ -105,7 +105,7 @@ export function ProductFiles({ product }: ProductFilesProps) {
 
             {/* Current Files Info */}
             <div className="grid grid-cols-1 gap-4">
-                <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
+                <div className="p-4 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
                     <p className="font-bold text-gray-700 dark:text-gray-300 text-sm mb-1">
                         MT5 File
                     </p>

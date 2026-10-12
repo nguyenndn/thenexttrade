@@ -18,7 +18,7 @@ export function getBaseUrl(): string {
         (typeof window !== "undefined" && window.location?.origin
             ? window.location.origin
             : process.env.NODE_ENV === "development"
-              ? "http://localhost:3000"
+              ? `http://localhost:${process.env.PORT || "3500"}`
               : "https://thenexttrade.com");
 
     return rawUrl.replace(/\/+$/, "");

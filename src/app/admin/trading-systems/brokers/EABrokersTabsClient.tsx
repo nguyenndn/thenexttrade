@@ -34,7 +34,7 @@ export function EABrokersTabsClient({
     return (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <TabsList className="bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1">
+                <TabsList className="bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-1">
                     <TabsTrigger
                         value="brokers"
                         className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold"
@@ -61,7 +61,7 @@ export function EABrokersTabsClient({
                     <Link href="/admin/trading-systems/brokers/create">
                         <Button
                             variant="primary"
-                            className="shadow-lg shadow-primary/30 shrink-0"
+                            className="shadow-lg shadow-amber-500/30 shrink-0"
                         >
                             <Plus size={18} strokeWidth={2.5} />
                             Add EA Broker
@@ -72,7 +72,7 @@ export function EABrokersTabsClient({
 
             {/* TAB 1: Partner Brokers */}
             <TabsContent value="brokers" className="space-y-4 outline-hidden">
-                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden overflow-x-auto shadow-sm hover:shadow-md transition-shadow">
+                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden overflow-x-auto shadow-sm hover:shadow-md transition-shadow">
                     <table className="w-full">
                         <thead className="bg-gray-50 dark:bg-white/5 text-left">
                             <tr>

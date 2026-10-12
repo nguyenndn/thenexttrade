@@ -9,6 +9,7 @@ import { X, Bug, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { dashboardMenuGroups, adminMenuGroups } from "@/config/navigation";
 import { useFeatureFlags } from "@/lib/dashboard-context";
+import { Button } from "@/components/ui/Button";
 import { SPRING_SOFT, backdropVariants } from "@/lib/animations";
 
 export function MobileBottomTabBar() {
@@ -54,13 +55,11 @@ export function MobileBottomTabBar() {
 
         // Map child tab routes to parent
         const childRouteMap: Record<string, string> = {
-            "/dashboard/sessions": "/dashboard/journal",
-            "/dashboard/psychology": "/dashboard/analytics",
+            "/dashboard/sessions": "/dashboard/analytics",
+            "/dashboard/intelligence": "/dashboard/analytics",
             "/dashboard/reports": "/dashboard/analytics",
             "/dashboard/reports/weekly": "/dashboard/analytics",
             "/dashboard/reports/monthly": "/dashboard/analytics",
-            "/dashboard/mistakes": "/dashboard/analytics",
-            "/dashboard/intelligence": "/dashboard/analytics",
         };
         const effectivePath = childRouteMap[pathname] || pathname;
 
@@ -118,13 +117,15 @@ export function MobileBottomTabBar() {
                             <h3 className="text-sm font-bold text-gray-700 dark:text-white">
                                 {activeSheet.label}
                             </h3>
-                            <button
+                            <Button
+                                variant="ghost"
+                                size="icon"
                                 onClick={() => setOpenGroup(null)}
-                                className="p-1.5 rounded-full text-gray-500 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-300 dark:hover:bg-white/10 transition-colors"
+                                className="h-8 w-8 rounded-full text-gray-500 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-300 dark:hover:bg-white/10 transition-colors"
                                 aria-label="Close menu"
                             >
                                 <X size={18} />
-                            </button>
+                            </Button>
                         </div>
 
                         {/* Sheet Items */}
@@ -140,7 +141,7 @@ export function MobileBottomTabBar() {
                                         key={item.href}
                                         href={item.href}
                                         className={cn(
-                                            "flex items-center gap-3 px-4 py-3 rounded-xl text-sm nav-menu-text transition-colors",
+                                            "flex items-center gap-3 px-4 py-3 rounded-lg text-sm nav-menu-text transition-colors",
                                             isActive
                                                 ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold"
                                                 : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
@@ -163,7 +164,8 @@ export function MobileBottomTabBar() {
                             {activeSheet.label === "More" && !isAdmin && (
                                 <>
                                     <div className="mx-4 my-2 h-px bg-gray-100 dark:bg-white/10" />
-                                    <button
+                                    <Button
+                                        variant="ghost"
                                         onClick={() => {
                                             setOpenGroup(null);
                                             window.dispatchEvent(
@@ -173,15 +175,16 @@ export function MobileBottomTabBar() {
                                                 )
                                             );
                                         }}
-                                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm nav-menu-text text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full text-left"
+                                        className="flex items-center justify-start gap-3 px-4 py-3 h-auto rounded-lg text-sm nav-menu-text text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full text-left font-normal"
                                     >
                                         <Bug
                                             size={20}
                                             className="text-red-400"
                                         />
                                         <span>Bug Report</span>
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
                                         onClick={() => {
                                             setOpenGroup(null);
                                             window.dispatchEvent(
@@ -191,14 +194,14 @@ export function MobileBottomTabBar() {
                                                 )
                                             );
                                         }}
-                                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm nav-menu-text text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full text-left"
+                                        className="flex items-center justify-start gap-3 px-4 py-3 h-auto rounded-lg text-sm nav-menu-text text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full text-left font-normal"
                                     >
                                         <Lightbulb
                                             size={20}
                                             className="text-amber-400"
                                         />
                                         <span>Feature Request</span>
-                                    </button>
+                                    </Button>
                                 </>
                             )}
                         </div>
@@ -217,11 +220,12 @@ export function MobileBottomTabBar() {
                         const isSheetOpen = openGroup === group.label;
 
                         return (
-                            <button
+                            <Button
+                                variant="ghost"
                                 key={group.label}
                                 onClick={() => handleTabClick(group.label)}
                                 className={cn(
-                                    "flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors relative",
+                                    "flex flex-col items-center justify-center gap-1 flex-1 h-full rounded-none transition-colors relative font-normal hover:bg-transparent",
                                     isActive || isSheetOpen
                                         ? "text-amber-500 dark:text-amber-400"
                                         : "text-gray-600 dark:text-gray-300"
@@ -256,7 +260,7 @@ export function MobileBottomTabBar() {
                                     claimableCount > 0 && (
                                         <span className="absolute top-2 right-1/2 translate-x-4 w-2 h-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-[#1E2028]" />
                                     )}
-                            </button>
+                            </Button>
                         );
                     })}
                 </div>

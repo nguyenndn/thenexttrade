@@ -165,7 +165,7 @@ export function UserGrowthCoachTab({
         <div className="space-y-6">
             {/* Top KPI Cards */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <Flame size={14} className="text-amber-500" /> Total Edge XP
                     </div>
@@ -177,7 +177,7 @@ export function UserGrowthCoachTab({
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <Target size={14} className="text-emerald-500" /> Missions Cleared
                     </div>
@@ -189,7 +189,7 @@ export function UserGrowthCoachTab({
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <Sparkles size={14} className="text-purple-500" /> 10-Trade Sprints
                     </div>
@@ -201,7 +201,7 @@ export function UserGrowthCoachTab({
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <Brain size={14} className="text-blue-500" /> Coach Action Plans
                     </div>
@@ -216,7 +216,7 @@ export function UserGrowthCoachTab({
 
             {/* Sub-Section Navigation & Filters */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex rounded-xl border border-gray-200 bg-[#F1F3F5] p-1 dark:border-white/10 dark:bg-[#1A1D27] w-fit">
+                <div className="flex rounded-lg border border-gray-200 bg-[#F1F3F5] p-1 dark:border-white/10 dark:bg-[#1A1D27] w-fit">
                     <button
                         type="button"
                         onClick={() => setActiveSection("experiments")}
@@ -267,7 +267,7 @@ export function UserGrowthCoachTab({
 
             {/* Section 1: 10-Trade Experiments (GAP-6) */}
             {activeSection === "experiments" && (
-                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <Sparkles size={16} className="text-purple-500" /> Behavioral Improvement Experiments ({filteredExperiments.length})
@@ -283,7 +283,7 @@ export function UserGrowthCoachTab({
                                     className="p-4 sm:p-5 transition-colors hover:bg-gray-50/60 dark:hover:bg-white/[0.02] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
                                 >
                                     <div className="flex items-start gap-3 min-w-0">
-                                        <div className="p-2.5 rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400 shrink-0 mt-0.5">
+                                        <div className="p-2.5 rounded-lg bg-purple-50 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400 shrink-0 mt-0.5">
                                             <Sparkles size={18} />
                                         </div>
 
@@ -294,7 +294,7 @@ export function UserGrowthCoachTab({
                                                 </h4>
                                                 <span
                                                     className={cn(
-                                                        "text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider",
+                                                        "text-[10px] font-bold px-2 py-0.5 rounded-lg uppercase tracking-wider",
                                                         exp.status === "COMPLETED"
                                                             ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300"
                                                             : exp.status === "IN_PROGRESS" || exp.status === "ACTIVE"
@@ -304,7 +304,7 @@ export function UserGrowthCoachTab({
                                                 >
                                                     {exp.status}
                                                 </span>
-                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 uppercase">
+                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 uppercase">
                                                     Metric: {exp.primaryMetric}
                                                 </span>
                                             </div>
@@ -327,7 +327,7 @@ export function UserGrowthCoachTab({
                                         variant="outline"
                                         size="sm"
                                         onClick={() => setSelectedExp(exp)}
-                                        className="rounded-xl shrink-0 self-end sm:self-center gap-1.5 text-xs font-semibold"
+                                        className="rounded-lg shrink-0 self-end sm:self-center gap-1.5 text-xs font-semibold"
                                     >
                                         <Eye size={14} /> View Sprint
                                     </Button>
@@ -344,7 +344,7 @@ export function UserGrowthCoachTab({
 
             {/* Section 2: Coach Action Plans (GAP-7) */}
             {activeSection === "coach" && (
-                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <Brain size={16} className="text-blue-500" /> AI Coach Weekly Action Plans ({filteredCoachPlans.length})
@@ -360,7 +360,7 @@ export function UserGrowthCoachTab({
                                     className="p-4 sm:p-5 transition-colors hover:bg-gray-50/60 dark:hover:bg-white/[0.02] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
                                 >
                                     <div className="flex items-start gap-3 min-w-0">
-                                        <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 shrink-0 mt-0.5">
+                                        <div className="p-2.5 rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 shrink-0 mt-0.5">
                                             <Brain size={18} />
                                         </div>
 
@@ -371,7 +371,7 @@ export function UserGrowthCoachTab({
                                                 </h4>
                                                 <span
                                                     className={cn(
-                                                        "text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider",
+                                                        "text-[10px] font-bold px-2 py-0.5 rounded-lg uppercase tracking-wider",
                                                         plan.status === "ACTIVE"
                                                             ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300"
                                                             : "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400"
@@ -379,7 +379,7 @@ export function UserGrowthCoachTab({
                                                 >
                                                     {plan.status}
                                                 </span>
-                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 uppercase">
+                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 uppercase">
                                                     {plan.type}
                                                 </span>
                                             </div>
@@ -404,7 +404,7 @@ export function UserGrowthCoachTab({
                                         variant="outline"
                                         size="sm"
                                         onClick={() => setSelectedCoachPlan(plan)}
-                                        className="rounded-xl shrink-0 self-end sm:self-center gap-1.5 text-xs font-semibold"
+                                        className="rounded-lg shrink-0 self-end sm:self-center gap-1.5 text-xs font-semibold"
                                     >
                                         <Eye size={14} /> View Plan
                                     </Button>
@@ -423,7 +423,7 @@ export function UserGrowthCoachTab({
             {activeSection === "missions" && (
                 <div className="space-y-6">
                     {/* Missions Grid */}
-                    <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                    <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
                         <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                             <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                                 <Award size={16} className="text-amber-500" /> User Mission Progress ({filteredMissions.length})
@@ -439,7 +439,7 @@ export function UserGrowthCoachTab({
                                     return (
                                         <div
                                             key={mission.id}
-                                            className="rounded-xl border border-gray-200 bg-gray-50/50 p-3.5 dark:border-white/10 dark:bg-[#1A1D27] text-xs flex flex-col justify-between"
+                                            className="rounded-lg border border-gray-200 bg-gray-50/50 p-3.5 dark:border-white/10 dark:bg-[#1A1D27] text-xs flex flex-col justify-between"
                                         >
                                             <div>
                                                 <div className="flex items-center justify-between gap-1">
@@ -448,7 +448,7 @@ export function UserGrowthCoachTab({
                                                     </span>
                                                     <span
                                                         className={cn(
-                                                            "text-[9px] font-bold px-1.5 py-0.5 rounded uppercase shrink-0",
+                                                            "text-[9px] font-bold px-1.5 py-0.5 rounded-lg uppercase shrink-0",
                                                             mission.claimed
                                                                 ? "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300"
                                                                 : isDone
@@ -494,7 +494,7 @@ export function UserGrowthCoachTab({
                     </div>
 
                     {/* Edge Event Telemetry Feed */}
-                    <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                    <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
                         <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                             <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                                 <Activity size={16} className="text-emerald-500" /> Recent Edge XP Event Feed ({edgeEvents.length})
@@ -519,7 +519,7 @@ export function UserGrowthCoachTab({
                                                         {evt.eventType}
                                                     </span>
                                                     {evt.sourceType && (
-                                                        <span className="text-[10px] text-gray-500 bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded">
+                                                        <span className="text-[10px] text-gray-500 bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded-lg">
                                                             {evt.sourceType}
                                                         </span>
                                                     )}
@@ -550,7 +550,7 @@ export function UserGrowthCoachTab({
             {/* Experiment Detail Modal */}
             {selectedExp && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-lg border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <h3 className="text-lg font-black text-gray-900 dark:text-white">
@@ -564,7 +564,7 @@ export function UserGrowthCoachTab({
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setSelectedExp(null)}
-                                className="rounded-xl p-2"
+                                className="rounded-lg p-2"
                                 aria-label="Close modal"
                             >
                                 <X size={18} />
@@ -572,14 +572,14 @@ export function UserGrowthCoachTab({
                         </div>
 
                         <div className="mt-4 space-y-4 text-xs">
-                            <div className="rounded-xl border border-gray-200 bg-gray-50/50 p-4 dark:border-white/10 dark:bg-white/[0.02]">
+                            <div className="rounded-lg border border-gray-200 bg-gray-50/50 p-4 dark:border-white/10 dark:bg-white/[0.02]">
                                 <span className="font-bold text-gray-400 uppercase tracking-wider block">Hypothesis</span>
                                 <p className="mt-1 text-gray-800 dark:text-gray-200 leading-relaxed italic">
                                     "{selectedExp.hypothesis}"
                                 </p>
                             </div>
 
-                            <div className="rounded-xl border border-purple-100 bg-purple-50/50 p-4 dark:border-purple-900/30 dark:bg-purple-950/20">
+                            <div className="rounded-lg border border-purple-100 bg-purple-50/50 p-4 dark:border-purple-900/30 dark:bg-purple-950/20">
                                 <span className="font-bold text-purple-700 dark:text-purple-300 block">Instruction & Constraint</span>
                                 <p className="mt-1 text-gray-800 dark:text-gray-200 leading-relaxed">
                                     {selectedExp.instruction}
@@ -588,13 +588,13 @@ export function UserGrowthCoachTab({
 
                             {/* Baseline vs Follow-up Comparison */}
                             <div className="grid grid-cols-2 gap-3">
-                                <div className="p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
+                                <div className="p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
                                     <span className="block text-[10px] font-bold text-gray-400 uppercase">Baseline State</span>
                                     <pre className="mt-1 text-[11px] text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-sans">
                                         {JSON.stringify(selectedExp.baseline, null, 2)}
                                     </pre>
                                 </div>
-                                <div className="p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
+                                <div className="p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
                                     <span className="block text-[10px] font-bold text-gray-400 uppercase">Follow-Up Results</span>
                                     <pre className="mt-1 text-[11px] text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-sans">
                                         {selectedExp.followUp ? JSON.stringify(selectedExp.followUp, null, 2) : "In tracking (underway)"}
@@ -604,7 +604,7 @@ export function UserGrowthCoachTab({
                         </div>
 
                         <div className="mt-6 flex justify-end border-t border-gray-200 pt-4 dark:border-white/10">
-                            <Button variant="outline" onClick={() => setSelectedExp(null)} className="rounded-xl">
+                            <Button variant="outline" onClick={() => setSelectedExp(null)} className="rounded-lg">
                                 Close
                             </Button>
                         </div>
@@ -615,7 +615,7 @@ export function UserGrowthCoachTab({
             {/* Coach Plan Detail Modal */}
             {selectedCoachPlan && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-lg border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <h3 className="text-lg font-black text-gray-900 dark:text-white">
@@ -629,7 +629,7 @@ export function UserGrowthCoachTab({
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setSelectedCoachPlan(null)}
-                                className="rounded-xl p-2"
+                                className="rounded-lg p-2"
                                 aria-label="Close modal"
                             >
                                 <X size={18} />
@@ -639,20 +639,20 @@ export function UserGrowthCoachTab({
                         <div className="mt-4 space-y-4 text-xs">
                             <div>
                                 <span className="font-bold text-gray-400 uppercase tracking-wider block">Performance Summary</span>
-                                <p className="mt-1 text-gray-800 dark:text-gray-200 leading-relaxed bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-200 dark:border-white/10">
+                                <p className="mt-1 text-gray-800 dark:text-gray-200 leading-relaxed bg-gray-50 dark:bg-white/5 p-3 rounded-lg border border-gray-200 dark:border-white/10">
                                     {selectedCoachPlan.summary}
                                 </p>
                             </div>
 
                             <div className="grid grid-cols-2 gap-3">
                                 {selectedCoachPlan.keepDoing && (
-                                    <div className="p-3 rounded-xl border border-emerald-200 bg-emerald-50/50 dark:border-emerald-900/30 dark:bg-emerald-950/20">
+                                    <div className="p-3 rounded-lg border border-emerald-200 bg-emerald-50/50 dark:border-emerald-900/30 dark:bg-emerald-950/20">
                                         <span className="block text-[10px] font-bold text-emerald-700 dark:text-emerald-300 uppercase">Keep Doing</span>
                                         <p className="mt-1 text-gray-800 dark:text-gray-200">{selectedCoachPlan.keepDoing}</p>
                                     </div>
                                 )}
                                 {selectedCoachPlan.fixNext && (
-                                    <div className="p-3 rounded-xl border border-rose-200 bg-rose-50/50 dark:border-rose-900/30 dark:bg-rose-950/20">
+                                    <div className="p-3 rounded-lg border border-rose-200 bg-rose-50/50 dark:border-rose-900/30 dark:bg-rose-950/20">
                                         <span className="block text-[10px] font-bold text-rose-700 dark:text-rose-300 uppercase">Fix Next</span>
                                         <p className="mt-1 text-gray-800 dark:text-gray-200">{selectedCoachPlan.fixNext}</p>
                                     </div>
@@ -666,7 +666,7 @@ export function UserGrowthCoachTab({
                                     {selectedCoachPlan.items?.map((item) => (
                                         <div
                                             key={item.id}
-                                            className="p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] flex items-start gap-2.5"
+                                            className="p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] flex items-start gap-2.5"
                                         >
                                             <div className="mt-0.5 shrink-0">
                                                 {item.status === "DONE" ? (
@@ -690,7 +690,7 @@ export function UserGrowthCoachTab({
                         </div>
 
                         <div className="mt-6 flex justify-end border-t border-gray-200 pt-4 dark:border-white/10">
-                            <Button variant="outline" onClick={() => setSelectedCoachPlan(null)} className="rounded-xl">
+                            <Button variant="outline" onClick={() => setSelectedCoachPlan(null)} className="rounded-lg">
                                 Close
                             </Button>
                         </div>

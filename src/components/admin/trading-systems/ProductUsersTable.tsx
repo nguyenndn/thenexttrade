@@ -48,11 +48,11 @@ export function ProductUsersTable({
     };
 
     return (
-        <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 space-y-4">
+        <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-6 space-y-4">
             {/* Header & Search */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 dark:border-white/10 pb-4">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-xl bg-amber-500/10 text-amber-500">
+                    <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500">
                         <Users size={20} />
                     </div>
                     <div>
@@ -81,7 +81,7 @@ export function ProductUsersTable({
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Filter by name, email, account..."
-                            className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all placeholder:text-gray-400"
+                            className="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all placeholder:text-gray-400"
                         />
                     </div>
                 )}
@@ -90,7 +90,7 @@ export function ProductUsersTable({
             {/* Table */}
             {filteredUsers.length === 0 ? (
                 <div className="py-12 flex flex-col items-center justify-center text-center">
-                    <div className="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 mb-3">
+                    <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 mb-3">
                         <Users size={24} />
                     </div>
                     <p className="text-sm font-bold text-gray-800 dark:text-white">
@@ -123,7 +123,7 @@ export function ProductUsersTable({
                                     {/* User */}
                                     <td className="py-3 pr-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500/20 to-orange-500/20 border border-amber-500/30 flex items-center justify-center shrink-0 overflow-hidden font-bold text-amber-600 dark:text-amber-400 text-xs shadow-sm">
+                                            <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-amber-500/20 to-orange-500/20 border border-amber-500/30 flex items-center justify-center shrink-0 overflow-hidden font-bold text-amber-600 dark:text-amber-400 text-xs shadow-sm">
                                                 {user.image ? (
                                                     <img
                                                         src={user.image}

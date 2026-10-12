@@ -51,8 +51,7 @@ export async function submitAccountRequest(
 
         revalidatePath("/dashboard/trading-systems");
         return { success: true };
-    } catch (error) {
-        console.error("Submit Account Error:", error);
+    } catch {
         return { error: "Failed to submit account request." };
     }
 }
@@ -86,8 +85,7 @@ export async function cancelAccountRequest(licenseId: string) {
 
         revalidatePath("/dashboard/trading-systems");
         return { success: true };
-    } catch (error) {
-        console.error("Cancel Request Error:", error);
+    } catch {
         return { error: "Failed to cancel request." };
     }
 }
@@ -117,8 +115,7 @@ export async function removeAccount(licenseId: string) {
 
         revalidatePath("/dashboard/trading-systems");
         return { success: true };
-    } catch (error) {
-        console.error("Remove Account Error:", error);
+    } catch {
         return { error: "Failed to remove account." };
     }
 }

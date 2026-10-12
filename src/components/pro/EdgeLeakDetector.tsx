@@ -60,7 +60,7 @@ function InsightCard({
 
     return (
         <div
-            className={`rounded-xl border p-4 ${severityColors[insight.severity]}`}
+            className={`rounded-lg border p-4 ${severityColors[insight.severity]}`}
         >
             <div className="flex items-start gap-3">
                 <div
@@ -139,7 +139,7 @@ function EdgeLeakDetectorContent({
                     ))}
                 </div>
             ) : (
-                <div className="rounded-xl border border-emerald-200 dark:border-emerald-500/20 bg-emerald-50 dark:bg-emerald-500/5 p-6 text-center">
+                <div className="rounded-lg border border-emerald-200 dark:border-emerald-500/20 bg-emerald-50 dark:bg-emerald-500/5 p-6 text-center">
                     <Shield className="mx-auto h-8 w-8 text-emerald-500 dark:text-emerald-400" />
                     <p className="mt-2 text-sm text-emerald-600 dark:text-emerald-400">
                         No edge leaks detected. Keep it up!

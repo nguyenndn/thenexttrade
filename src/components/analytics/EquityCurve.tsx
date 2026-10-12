@@ -31,7 +31,7 @@ export function EquityCurve({ data }: EquityCurveProps) {
     }
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group/card">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group/card">
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary/10 rounded-lg text-primary">
@@ -187,7 +187,7 @@ export function EquityCurve({ data }: EquityCurveProps) {
                                         const pnlVal = payload[0].payload
                                             .pnl as number;
                                         return (
-                                            <div className="bg-white dark:bg-[#1E2028] p-3 border border-dashboard rounded-xl shadow-xl">
+                                            <div className="bg-white dark:bg-[#1E2028] p-3 border border-dashboard rounded-lg shadow-xl">
                                                 <p className="text-[11px] font-bold text-gray-500 uppercase mb-1">
                                                     {label}
                                                 </p>

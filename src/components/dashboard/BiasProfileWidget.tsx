@@ -90,8 +90,7 @@ export function BiasProfileWidget() {
                     recommendedLesson: res.recommendedLesson,
                 });
             }
-        } catch (e) {
-            console.error(e);
+        } catch {
             setError(
                 "Failed to load Cognitive Bias Profile. Please try again."
             );
@@ -119,7 +118,7 @@ export function BiasProfileWidget() {
     const CustomTooltip = ({ active, payload }: any) => {
         if (active && payload && payload.length) {
             return (
-                <div className="bg-[#1E2028] border border-amber-500/20 px-3 py-1.5 rounded-xl shadow-xl">
+                <div className="bg-[#1E2028] border border-amber-500/20 px-3 py-1.5 rounded-lg shadow-xl">
                     <p className="text-xs font-bold text-gray-200">
                         {payload[0].name}:{" "}
                         <span className="text-amber-500 font-extrabold">
@@ -135,7 +134,7 @@ export function BiasProfileWidget() {
     // ─── LOADING STATE ────────────────────────────────────────────────────────
     if (loading) {
         return (
-            <div className="relative overflow-hidden rounded-2xl border border-dashboard bg-white dark:bg-[#1E2028] p-6 min-h-[460px] lg:h-full flex flex-col items-center justify-center space-y-4">
+            <div className="relative overflow-hidden rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] p-6 min-h-[460px] lg:h-full flex flex-col items-center justify-center space-y-4">
                 <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
                 <div className="text-center space-y-1">
                     <p className="text-sm font-bold text-gray-700 dark:text-gray-200">
@@ -153,10 +152,10 @@ export function BiasProfileWidget() {
     // ─── PRO CONVERSION CTA STATE ──────────────────────────────────────────────
     if (isProCTA) {
         return (
-            <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#1E2028] p-6 min-h-[460px] lg:h-full flex flex-col justify-between group transition-all duration-300">
+            <div className="relative overflow-hidden rounded-xl bg-white dark:bg-[#1E2028] p-6 min-h-[460px] lg:h-full flex flex-col justify-between group transition-all duration-300">
                 {/* Gradient Border */}
-                <div className="absolute inset-0 rounded-2xl p-px pointer-events-none">
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-400/40 via-orange-500/10 to-amber-400/40 dark:from-amber-400/30 dark:via-orange-500/10 dark:to-amber-400/30" />
+                <div className="absolute inset-0 rounded-xl p-px pointer-events-none">
+                    <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-amber-400/40 via-orange-500/10 to-amber-400/40 dark:from-amber-400/30 dark:via-orange-500/10 dark:to-amber-400/30" />
                 </div>
 
                 {/* Ambient Glow */}
@@ -164,7 +163,7 @@ export function BiasProfileWidget() {
 
                 <div className="space-y-4 relative">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-xl bg-amber-500/15 border border-amber-500/30 shrink-0">
+                        <div className="p-2 rounded-lg bg-amber-500/15 border border-amber-500/30 shrink-0">
                             <Brain className="h-6 w-6 text-amber-500 animate-pulse" />
                         </div>
                         <div>
@@ -210,7 +209,10 @@ export function BiasProfileWidget() {
                         href="/dashboard/accounts?action=add&intent=unlock-pro"
                         className="w-full"
                     >
-                        <Button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-xs py-3 shadow-lg shadow-amber-500/20 flex items-center justify-center gap-1.5 rounded-xl border-none">
+                        <Button
+                            variant="primary"
+                            className="w-full py-3 text-xs font-bold flex items-center justify-center gap-1.5 rounded-lg"
+                        >
                             <Crown className="w-4 h-4" />
                             Connect Partner Broker to Activate Pro Tier
                         </Button>
@@ -227,10 +229,10 @@ export function BiasProfileWidget() {
     // ─── NOT ENOUGH DATA STATE ──────────────────────────────────────────────────
     if (!hasEnoughData) {
         return (
-            <div className="relative overflow-hidden rounded-2xl border border-dashed border-dashboard bg-white dark:bg-[#1E2028] p-6 min-h-[460px] lg:h-full flex flex-col justify-between group transition-all duration-300">
+            <div className="relative overflow-hidden rounded-xl border border-dashed border-dashboard bg-white dark:bg-[#1E2028] p-6 min-h-[460px] lg:h-full flex flex-col justify-between group transition-all duration-300">
                 <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 shrink-0">
+                        <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 shrink-0">
                             <Brain className="h-6 w-6 text-amber-500" />
                         </div>
                         <div>
@@ -262,7 +264,7 @@ export function BiasProfileWidget() {
                     <Link href="/dashboard/journal">
                         <Button
                             variant="outline"
-                            className="w-full border-amber-500/20 hover:bg-amber-500/10 text-amber-600 font-bold text-xs py-2.5 rounded-xl"
+                            className="w-full border-amber-500/20 hover:bg-amber-500/10 text-amber-600 font-bold text-xs py-2.5 rounded-lg"
                         >
                             Go to Trading Journal to Add Entries
                         </Button>
@@ -275,7 +277,7 @@ export function BiasProfileWidget() {
     // ─── ERROR STATE ────────────────────────────────────────────────────────────
     if (error || !profile) {
         return (
-            <div className="relative overflow-hidden rounded-2xl border border-red-500/20 bg-white dark:bg-[#1E2028] p-6 min-h-[460px] lg:h-full flex flex-col items-center justify-center space-y-4 text-center">
+            <div className="relative overflow-hidden rounded-xl border border-red-500/20 bg-white dark:bg-[#1E2028] p-6 min-h-[460px] lg:h-full flex flex-col items-center justify-center space-y-4 text-center">
                 <AlertCircle className="h-10 w-10 text-red-500" />
                 <div>
                     <h3 className="text-sm font-bold text-gray-800 dark:text-white">
@@ -431,7 +433,7 @@ export function BiasProfileWidget() {
                 {/* Coaching Area */}
                 <div className="space-y-2.5 mt-3">
                     {/* Assessment */}
-                    <div className="p-3 rounded-xl bg-amber-500/[0.02] dark:bg-amber-500/[0.03] border border-amber-500/10">
+                    <div className="p-3 rounded-lg bg-amber-500/[0.02] dark:bg-amber-500/[0.03] border border-amber-500/10">
                         <p className="text-[9px] font-black text-amber-500 uppercase tracking-widest">
                             Discipline Assessment:
                         </p>
@@ -441,7 +443,7 @@ export function BiasProfileWidget() {
                     </div>
 
                     {/* Action Plan */}
-                    <div className="p-3 rounded-xl bg-emerald-500/[0.02] dark:bg-emerald-500/[0.03] border border-emerald-500/10">
+                    <div className="p-3 rounded-lg bg-emerald-500/[0.02] dark:bg-emerald-500/[0.03] border border-emerald-500/10">
                         <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">
                             Mindset Action Plan:
                         </p>
@@ -456,7 +458,7 @@ export function BiasProfileWidget() {
             <div className="p-4 border-t border-dashboard bg-gray-50/50 dark:bg-white/[0.01]">
                 <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2 overflow-hidden">
-                        <div className="p-1 rounded-lg bg-primary/10 text-primary shrink-0">
+                        <div className="p-1 rounded-lg bg-amber-500/10 text-amber-500 shrink-0">
                             <BookOpen className="h-3.5 w-3.5" />
                         </div>
                         <div className="overflow-hidden">
@@ -473,7 +475,7 @@ export function BiasProfileWidget() {
                         href={profile.recommendedLesson.path}
                         className="shrink-0"
                     >
-                        <Button className="bg-primary hover:bg-[#00B078] text-white font-bold text-xs py-2 px-3 rounded-lg flex items-center gap-0.5 shadow-md shadow-primary/10 border-none">
+                        <Button className="bg-gold hover:bg-amber-600 text-white font-bold text-xs py-2 px-3 rounded-lg flex items-center gap-0.5 shadow-md shadow-amber-500/20 border-none">
                             Correct Mental Bias
                             <ChevronRight className="h-3.5 w-3.5" />
                         </Button>

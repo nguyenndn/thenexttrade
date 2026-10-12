@@ -91,7 +91,7 @@ export function GenerateReportButton({
             size="smd"
             onClick={handleGenerate}
             disabled={isPending}
-            className={`shadow-lg shadow-primary/30 ${className || ""}`}
+            className={`shadow-lg shadow-amber-500/30 ${className || ""}`}
         >
             {isPending ? (
                 <Loader2 size={16} className="animate-spin" />

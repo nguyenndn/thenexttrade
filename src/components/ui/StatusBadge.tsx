@@ -21,7 +21,7 @@ export const StatusBadge = ({ status, className = "" }: StatusBadgeProps) => {
             "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20";
     } else if (s === "UNKNOWN") {
         styles =
-            "bg-gray-200/50 text-gray-500 dark:text-gray-400 border-gray-200/50";
+            "bg-gray-200/50 text-gray-500 dark:text-gray-400 border-gray-200";
     } else if (s === "PENDING") {
         styles =
             "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20";

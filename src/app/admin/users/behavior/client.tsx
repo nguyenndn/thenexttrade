@@ -27,6 +27,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
     getBehaviorSegments,
     GetBehaviorSegmentsResult,
 } from "./actions";
@@ -134,31 +141,31 @@ export function BehaviorConsoleClient() {
         switch (group) {
             case "REGISTERED_NEVER_TRADED":
                 return (
-                    <span className="inline-flex items-center rounded-md border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-300">
+                    <span className="inline-flex items-center rounded-lg border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-300">
                         Never Synced
                     </span>
                 );
             case "LOSING_STREAK":
                 return (
-                    <span className="inline-flex items-center rounded-md border border-rose-200 bg-rose-50 px-2 py-0.5 text-xs font-semibold text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-300">
+                    <span className="inline-flex items-center rounded-lg border border-rose-200 bg-rose-50 px-2 py-0.5 text-xs font-semibold text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-300">
                         Loss Streak
                     </span>
                 );
             case "WINNING_STREAK":
                 return (
-                    <span className="inline-flex items-center rounded-md border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-300">
+                    <span className="inline-flex items-center rounded-lg border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-300">
                         Win Streak
                     </span>
                 );
             case "TRADING_WELL":
                 return (
-                    <span className="inline-flex items-center rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300">
+                    <span className="inline-flex items-center rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300">
                         Steady Trader
                     </span>
                 );
             default:
                 return (
-                    <span className="inline-flex items-center rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-xs font-medium text-zinc-600 dark:border-zinc-800 dark:bg-zinc-800/40 dark:text-zinc-400">
+                    <span className="inline-flex items-center rounded-lg border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-xs font-medium text-zinc-600 dark:border-zinc-800 dark:bg-zinc-800/40 dark:text-zinc-400">
                         Neutral
                     </span>
                 );
@@ -171,7 +178,7 @@ export function BehaviorConsoleClient() {
         <div className="space-y-6">
             {/* Top Stat Matrix Cards */}
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                <div className="rounded-xl border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+                <div className="rounded-lg border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
                             Needs Attention
@@ -184,7 +191,7 @@ export function BehaviorConsoleClient() {
                     <p className="mt-1 text-[11px] text-zinc-400">Critical & follow-up queue</p>
                 </div>
 
-                <div className="rounded-xl border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+                <div className="rounded-lg border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
                             Steady Active
@@ -197,7 +204,7 @@ export function BehaviorConsoleClient() {
                     <p className="mt-1 text-[11px] text-zinc-400">Consistent execution</p>
                 </div>
 
-                <div className="rounded-xl border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+                <div className="rounded-lg border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
                             Loss Streaks
@@ -210,7 +217,7 @@ export function BehaviorConsoleClient() {
                     <p className="mt-1 text-[11px] text-zinc-400">≥3 consecutive losses</p>
                 </div>
 
-                <div className="rounded-xl border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+                <div className="rounded-lg border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
                             Never Synced
@@ -227,7 +234,7 @@ export function BehaviorConsoleClient() {
             {/* Navigation Tabs & Search Controls */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 {/* 2 Primary Tabs */}
-                <div className="inline-flex rounded-xl border border-zinc-200/80 bg-zinc-100/80 p-1 dark:border-zinc-800 dark:bg-zinc-800/80">
+                <div className="inline-flex rounded-lg border border-zinc-200/80 bg-zinc-100/80 p-1 dark:border-zinc-800 dark:bg-zinc-800/80">
                     <button
                         type="button"
                         onClick={() => {
@@ -265,33 +272,39 @@ export function BehaviorConsoleClient() {
                             type="text"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="h-9 w-60 rounded-xl border border-zinc-200/80 bg-white pl-9 pr-3 text-xs text-zinc-900 outline-hidden focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+                            className="h-9 w-60 rounded-lg border border-zinc-200/80 bg-white pl-9 pr-3 text-xs text-zinc-900 outline-hidden focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
                             aria-label="Search traders by name or email"
                         />
                         <Search className="absolute left-3 top-2.5 h-4 w-4 text-zinc-400" />
                     </form>
 
-                    <select
+                    <Select
                         value={groupFilter}
-                        onChange={(e) => {
-                            setGroupFilter(e.target.value);
+                        onValueChange={(val) => {
+                            setGroupFilter(val);
                             setPage(1);
                         }}
-                        aria-label="Filter by behavior group"
-                        className="h-9 rounded-xl border border-zinc-200/80 bg-white px-3 text-xs font-medium text-zinc-700 outline-hidden dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300"
                     >
-                        <option value="ALL">All Groups</option>
-                        <option value="REGISTERED_NEVER_TRADED">Never Synced</option>
-                        <option value="LOSING_STREAK">Losing Streak</option>
-                        <option value="WINNING_STREAK">Winning Streak</option>
-                        <option value="TRADING_WELL">Steady Trader</option>
-                        <option value="NEUTRAL">Neutral</option>
-                    </select>
+                        <SelectTrigger
+                            aria-label="Filter by behavior group"
+                            className="h-9 rounded-lg border border-zinc-200/80 bg-white px-3 text-xs font-medium text-zinc-700 outline-hidden dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300"
+                        >
+                            <SelectValue placeholder="All Groups" />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-lg border border-zinc-200/80 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+                            <SelectItem value="ALL" className="rounded-lg text-xs">All Groups</SelectItem>
+                            <SelectItem value="REGISTERED_NEVER_TRADED" className="rounded-lg text-xs">Never Synced</SelectItem>
+                            <SelectItem value="LOSING_STREAK" className="rounded-lg text-xs">Losing Streak</SelectItem>
+                            <SelectItem value="WINNING_STREAK" className="rounded-lg text-xs">Winning Streak</SelectItem>
+                            <SelectItem value="TRADING_WELL" className="rounded-lg text-xs">Steady Trader</SelectItem>
+                            <SelectItem value="NEUTRAL" className="rounded-lg text-xs">Neutral</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
 
             {/* Table Presentation */}
-            <div className="overflow-hidden rounded-xl border border-zinc-200/80 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+            <div className="overflow-hidden rounded-lg border border-zinc-200/80 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
                 {isLoading ? (
                     <div className="flex h-64 items-center justify-center">
                         <Loader2 className="h-6 w-6 animate-spin text-zinc-400" />
@@ -467,11 +480,11 @@ export function BehaviorConsoleClient() {
                                             </td>
                                             <td className="px-3 py-3.5 align-middle">
                                                 {m.hasLiveAccount ? (
-                                                    <span className="inline-flex items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300">
+                                                    <span className="inline-flex items-center gap-1 rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300">
                                                         Live Real
                                                     </span>
                                                 ) : (
-                                                    <span className="inline-flex items-center rounded-md border border-zinc-200 bg-zinc-100 px-2 py-0.5 text-xs text-zinc-500 dark:border-zinc-800 dark:bg-zinc-800/60 dark:text-zinc-400">
+                                                    <span className="inline-flex items-center rounded-lg border border-zinc-200 bg-zinc-100 px-2 py-0.5 text-xs text-zinc-500 dark:border-zinc-800 dark:bg-zinc-800/60 dark:text-zinc-400">
                                                         Demo / None
                                                     </span>
                                                 )}
@@ -511,11 +524,11 @@ export function BehaviorConsoleClient() {
                                             </td>
                                             <td className="px-3 py-3.5 align-middle">
                                                 {m.stayedAfterLoss === true ? (
-                                                    <span className="inline-flex items-center rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300">
+                                                    <span className="inline-flex items-center rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300">
                                                         Stayed
                                                     </span>
                                                 ) : m.stayedAfterLoss === false ? (
-                                                    <span className="inline-flex items-center rounded-md border border-rose-200 bg-rose-50 px-2 py-0.5 text-xs font-medium text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-300">
+                                                    <span className="inline-flex items-center rounded-lg border border-rose-200 bg-rose-50 px-2 py-0.5 text-xs font-medium text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-300">
                                                         No Trade Since
                                                     </span>
                                                 ) : (

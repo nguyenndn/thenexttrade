@@ -16,11 +16,11 @@ export default function ComingSoonPage({
             <h1 className="text-3xl font-bold mb-4">{title}</h1>
             <p className="text-gray-600 dark:text-gray-300 max-w-md mb-8">
                 {description ||
-                    "This feature is currently under development. Check back soon for updates!"}
+                    "This tool isn't live yet — follow the Telegram channel for the ship date."}
             </p>
             <Link
                 href="/"
-                className="px-6 py-3 bg-cyan-500 text-white font-bold rounded-xl hover:bg-cyan-600 transition-colors"
+                className="px-6 py-3 bg-cyan-500 text-white font-bold rounded-lg hover:bg-cyan-600 transition-colors"
             >
                 Return Home
             </Link>

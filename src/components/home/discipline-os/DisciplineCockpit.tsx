@@ -9,15 +9,15 @@ export function DisciplineCockpit() {
     const [activeBay, setActiveBay] = useState<number | null>(null);
 
     return (
-        <div className="relative isolate overflow-hidden rounded-3xl border border-slate-200/90 dark:border-white/10 bg-slate-50/80 dark:bg-[#0c0e14]/95 backdrop-blur-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)]">
+        <div className="relative isolate overflow-hidden rounded-lg border border-gray-200 dark:border-white/10 bg-slate-50/80 dark:bg-[#0c0e14]/95 backdrop-blur-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)]">
             {/* Ambient Subtle Warm Depth */}
             <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-gold/[0.04] blur-[80px]" />
 
             {/* 1. TOP STATUS BAR */}
-            <div className="flex items-center border-b border-slate-200/80 dark:border-white/[0.08] px-5 py-3 sm:px-7 bg-white/70 dark:bg-white/[0.02]">
+            <div className="flex items-center border-b border-gray-200 dark:border-white/[0.08] px-5 py-3 sm:px-7 bg-white/70 dark:bg-white/[0.02]">
                 <div className="flex flex-wrap items-center gap-3">
                     <div className="flex items-center gap-2 text-xs font-bold text-gray-800 dark:text-gray-100 tracking-wide">
-                        <div className="w-5 h-5 rounded-md bg-gold/10 text-gold flex items-center justify-center">
+                        <div className="w-5 h-5 rounded-lg bg-gold/10 text-gold flex items-center justify-center">
                             <Target size={13} />
                         </div>
                         <span className="uppercase text-[11px] font-extrabold tracking-wider text-gray-900 dark:text-white">
@@ -25,7 +25,7 @@ export function DisciplineCockpit() {
                         </span>
                     </div>
 
-                    <span className="hidden sm:inline-block h-3.5 w-px bg-slate-300 dark:bg-white/10" />
+                    <span className="hidden sm:inline-block h-3.5 w-px bg-gray-300 dark:bg-white/10" />
 
                     <div className="flex items-center gap-2">
                         <span className="relative flex h-2 w-2">
@@ -53,7 +53,7 @@ export function DisciplineCockpit() {
             <MissionManifestoHeader />
 
             {/* 3. THE 3 FOUNDATIONAL PILLARS (CLEAN INSTITUTIONAL MANIFESTO) */}
-            <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 divide-slate-200/80 dark:divide-white/[0.08] md:divide-x">
+            <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 divide-gray-200 dark:divide-white/[0.08] md:divide-x">
                 {/* PILLAR 01: COGNITIVE FREEDOM */}
                 <div
                     onMouseEnter={() => setActiveBay(1)}
@@ -65,11 +65,11 @@ export function DisciplineCockpit() {
                     }`}
                 >
                     <div className="text-[10px] xl:text-[11px] font-extrabold uppercase tracking-wide xl:tracking-wider text-gold mb-1.5 whitespace-nowrap">
-                        Pillar 01 · Cognitive Freedom
+                        Pillar 01 · No More Manual Logging
                     </div>
 
                     <h3 className="text-base md:text-[13.5px] lg:text-[15px] xl:text-lg font-bold text-gray-900 dark:text-white mb-2 whitespace-nowrap">
-                        Eliminate Manual Friction
+                        Every Trade, Logged Automatically
                     </h3>
 
                     <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-normal">
@@ -88,11 +88,11 @@ export function DisciplineCockpit() {
                     }`}
                 >
                     <div className="text-[10px] xl:text-[11px] font-extrabold uppercase tracking-wide xl:tracking-wider text-gold mb-1.5 whitespace-nowrap">
-                        Pillar 02 · Radical Transparency
+                        Pillar 02 · It Names The Mistake
                     </div>
 
                     <h3 className="text-base md:text-[13.5px] lg:text-[15px] xl:text-lg font-bold text-gray-900 dark:text-white mb-2 whitespace-nowrap">
-                        Expose Every Hidden Leak
+                        Flags Revenge Sizing &amp; Moved Stops
                     </h3>
 
                     <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-normal">
@@ -111,35 +111,35 @@ export function DisciplineCockpit() {
                     }`}
                 >
                     <div className="text-[10px] xl:text-[11px] font-extrabold uppercase tracking-wide xl:tracking-wider text-gold mb-1.5 whitespace-nowrap">
-                        Pillar 03 · Behavioral Mastery
+                        Pillar 03 · One Fix At A Time
                     </div>
 
                     <h3 className="text-base md:text-[13.5px] lg:text-[15px] xl:text-lg font-bold text-gray-900 dark:text-white mb-2 whitespace-nowrap">
-                        10-Trade Action Cycles
+                        One Rule Per 10 Trades
                     </h3>
 
                     <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-normal">
-                        Discipline is not motivation — it is programmed behavior. We convert analytical flaws into concrete 10-trade improvement cycles to forge institutional consistency.
+                        Discipline is a routine, not motivation. We turn each flaw into a 10-trade rule to practise.
                     </p>
                 </div>
             </div>
 
             {/* 4. VALUE FLOW FOOTER */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3.5 md:gap-4 border-t border-slate-200/80 dark:border-white/[0.08] px-4 py-3 sm:px-6 lg:px-7 bg-white/70 dark:bg-white/[0.02] text-xs text-gray-600 dark:text-gray-400">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3.5 md:gap-4 border-t border-gray-200 dark:border-white/[0.08] px-4 py-3 sm:px-6 lg:px-7 bg-white/70 dark:bg-white/[0.02] text-xs text-gray-600 dark:text-gray-400">
                 <div className="flex flex-wrap items-center gap-2 sm:gap-3 lg:gap-6 font-semibold text-[11px] lg:text-xs">
                     <span className="flex items-center gap-1.5 text-gray-800 dark:text-gray-200 whitespace-nowrap">
                         <span className="w-1.5 h-1.5 rounded-full bg-gold" />
-                        1. Cognitive Freedom
+                        1. Auto-log
                     </span>
                     <ArrowRight size={12} className="text-gray-400 hidden sm:inline shrink-0" />
                     <span className="flex items-center gap-1.5 text-gray-800 dark:text-gray-200 whitespace-nowrap">
                         <span className="w-1.5 h-1.5 rounded-full bg-gold" />
-                        2. Radical Transparency
+                        2. Spot the leak
                     </span>
                     <ArrowRight size={12} className="text-gray-400 hidden sm:inline shrink-0" />
                     <span className="flex items-center gap-1.5 text-gray-800 dark:text-gray-200 whitespace-nowrap">
                         <span className="w-1.5 h-1.5 rounded-full bg-gold" />
-                        3. Behavioral Mastery
+                        3. Fix it
                     </span>
                 </div>
 
@@ -147,7 +147,7 @@ export function DisciplineCockpit() {
                     href="/auth/signup"
                     className="inline-flex items-center gap-1.5 font-bold text-gold hover:underline text-[11px] lg:text-xs whitespace-nowrap shrink-0 self-start md:self-auto"
                 >
-                    <span>Start Your Discipline Loop (Sync MT5)</span>
+                    <span>Sync My MT5 — Free</span>
                     <ArrowRight size={13} className="shrink-0" />
                 </Link>
             </div>

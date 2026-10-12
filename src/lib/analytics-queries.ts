@@ -83,9 +83,9 @@ export async function getMonthlyAnalytics(
     const result = await prisma.$queryRaw`
   SELECT 
   TO_CHAR("exitDate" AT TIME ZONE ${tz}, 'YYYY-MM') as "date",
-  SUM("pnl") as "profit",
+  SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "profit",
   COUNT(*) as "tradeCount",
-  SUM(CASE WHEN "pnl" > 0 THEN 1 ELSE 0 END) as "winCount"
+  SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount"
   FROM "JournalEntry"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'

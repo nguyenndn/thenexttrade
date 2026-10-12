@@ -1,6 +1,7 @@
 import { getAuthUser } from "@/lib/auth-cache";
 import { getUserMissions } from "@/lib/services/edge-missions.service";
 import { MissionsClient } from "@/components/dashboard/missions/MissionsClient";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -10,25 +11,18 @@ export default async function MissionsPage() {
     if (!user) redirect("/auth/login");
 
     const missions = await getUserMissions(user.id);
+    const userXp = (user as any).xp ?? 0;
 
     return (
-        <div className="space-y-4 pb-10">
-            {/* Page Header */}
-            <div className="flex items-center gap-4">
-                <div className="w-1 self-stretch min-h-[40px] rounded-full bg-primary shrink-0" />
-                <div>
-                    <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-                        Edge Missions
-                    </h1>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
-                        Structured execution milestones to eliminate behavioral leaks, sharpen risk execution, and build positive expectancy.
-                    </p>
-                </div>
-            </div>
+        <div className="space-y-6 pb-12">
+            <PageHeader
+                title="Edge Missions"
+                description="Structured execution milestones to eliminate behavioral leaks, sharpen risk execution, and build positive expectancy."
+            />
 
             <MissionsClient
                 initialMissions={missions}
-                userXp={user.profile?.xp ?? 0}
+                userXp={userXp}
             />
         </div>
     );

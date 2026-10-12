@@ -331,7 +331,7 @@ export default function SecurityDashboard() {
                                 onClick={fetchData}
                                 disabled={loading}
                                 aria-label="Refresh data"
-                                className="rounded-xl shrink-0"
+                                className="rounded-lg shrink-0"
                             >
                                 <RefreshCw
                                     size={16}
@@ -377,11 +377,11 @@ export default function SecurityDashboard() {
                         ].map((card) => (
                             <div
                                 key={card.label}
-                                className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default"
+                                className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default"
                             >
                                 <div className="flex items-center gap-3">
                                     <div
-                                        className={`w-9 h-9 shrink-0 rounded-xl flex items-center justify-center ${card.bg} ${card.color}`}
+                                        className={`w-9 h-9 shrink-0 rounded-lg flex items-center justify-center ${card.bg} ${card.color}`}
                                     >
                                         <card.icon
                                             size={16}
@@ -404,7 +404,7 @@ export default function SecurityDashboard() {
 
                 {/* Mini Trend Chart */}
                 {trend.length > 0 && (
-                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5 shadow-sm">
                         <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">
                             Events Over Time
                         </p>
@@ -442,8 +442,8 @@ export default function SecurityDashboard() {
                             <TabsTrigger
                                 key={t.id}
                                 value={t.id}
-                                className="px-4 py-1.5 rounded-xl text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
-                                activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+                                activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                                 activeTextClassName="!text-white"
                             >
                                 {t.label}
@@ -456,8 +456,8 @@ export default function SecurityDashboard() {
                 {tab === "events" && (
                     <div className="space-y-4">
                         {/* Toolbar Card */}
-                        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                            <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md">
+                        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-4 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                            <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md">
                                 <Search size={16} className="text-gray-500" />
                                 <input
                                     type="text"
@@ -482,7 +482,7 @@ export default function SecurityDashboard() {
                                 <DropdownMenuTrigger asChild>
                                     <Button
                                         variant="outline"
-                                        className="flex items-center gap-2 text-xs font-bold rounded-xl"
+                                        className="flex items-center gap-2 text-xs font-bold rounded-lg"
                                     >
                                         Type:{" "}
                                         <span className="text-primary">
@@ -530,7 +530,7 @@ export default function SecurityDashboard() {
                         </div>
 
                         {/* Data Table Card */}
-                        <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+                        <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
                             <div className="overflow-x-auto custom-scrollbar">
                                 <table className="w-full text-left border-collapse">
                                     <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
@@ -570,7 +570,7 @@ export default function SecurityDashboard() {
                                                 >
                                                     <td className="px-6 py-4">
                                                         <span
-                                                            className={`inline-flex px-2.5 py-1 text-xs font-bold rounded-xl border ${TYPE_COLORS[ev.type] || "bg-gray-100 text-gray-600"}`}
+                                                            className={`inline-flex px-2.5 py-1 text-xs font-bold rounded-lg border ${TYPE_COLORS[ev.type] || "bg-gray-100 text-gray-600"}`}
                                                         >
                                                             {ev.type.replace(
                                                                 /_/g,
@@ -612,7 +612,7 @@ export default function SecurityDashboard() {
                                             }
                                             disabled={page <= 1}
                                             aria-label="Previous page"
-                                            className="rounded-xl"
+                                            className="rounded-lg"
                                         >
                                             <ChevronLeft size={16} />
                                         </Button>
@@ -634,7 +634,7 @@ export default function SecurityDashboard() {
                                                 page >= pagination.totalPages
                                             }
                                             aria-label="Next page"
-                                            className="rounded-xl"
+                                            className="rounded-lg"
                                         >
                                             <ChevronRight size={16} />
                                         </Button>
@@ -648,7 +648,7 @@ export default function SecurityDashboard() {
                 {/* Blocked IPs Tab */}
                 {tab === "blocked" && (
                     <div className="space-y-4">
-                        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex items-center justify-between">
+                        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-4 shadow-sm flex items-center justify-between">
                             <p className="text-sm font-bold text-gray-700 dark:text-white">
                                 Blocked IPs ({blockedIPs.length})
                             </p>
@@ -667,7 +667,7 @@ export default function SecurityDashboard() {
                                 <Ban size={14} /> Block IP
                             </Button>
                         </div>
-                        <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+                        <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
                             <div className="overflow-x-auto custom-scrollbar">
                                 <table className="w-full text-left border-collapse">
                                     <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
@@ -730,7 +730,7 @@ export default function SecurityDashboard() {
                                                                     ip.id
                                                                 )
                                                             }
-                                                            className="text-emerald-600 dark:text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/10 rounded-xl"
+                                                            className="text-emerald-600 dark:text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/10 rounded-lg"
                                                         >
                                                             <Unlock size={14} />{" "}
                                                             Unblock
@@ -751,7 +751,7 @@ export default function SecurityDashboard() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
                         {/* Top Threat IPs */}
                         {topIPs.length > 0 && (
-                            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm">
+                            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5 shadow-sm">
                                 <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">
                                     Top Threat IPs
                                 </p>
@@ -807,7 +807,7 @@ export default function SecurityDashboard() {
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="relative z-10 w-full max-w-md bg-white dark:bg-[#1E2028] rounded-xl shadow-xl overflow-hidden"
+                            className="relative z-10 w-full max-w-md bg-white dark:bg-[#1E2028] rounded-lg shadow-xl overflow-hidden"
                         >
                             <div className="p-6 space-y-5">
                                 <div className="flex items-center gap-2">
@@ -834,7 +834,7 @@ export default function SecurityDashboard() {
                                                     ip: e.target.value,
                                                 }))
                                             }
-                                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                                         />
                                     </div>
                                     <div className="group">
@@ -854,7 +854,7 @@ export default function SecurityDashboard() {
                                                     reason: e.target.value,
                                                 }))
                                             }
-                                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                                         />
                                     </div>
                                     <div className="group">
@@ -874,7 +874,7 @@ export default function SecurityDashboard() {
                                                     duration: e.target.value,
                                                 }))
                                             }
-                                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                                         />
                                     </div>
                                 </div>

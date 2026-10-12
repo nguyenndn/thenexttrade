@@ -332,7 +332,7 @@ export function SyncRequestsClient({
 
             {/* Bulk Selection Bar */}
             {selectedIds.size > 0 && (
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 px-4 rounded-xl bg-primary/10 border border-primary/20 text-xs shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 px-4 rounded-lg bg-primary/10 border border-primary/20 text-xs shadow-sm">
                     <div className="flex items-center gap-2">
                         <span className="font-bold text-gray-900 dark:text-white">
                             {selectedIds.size} of {initialData.items.length} {selectedIds.size === 1 ? "request" : "requests"} selected
@@ -352,7 +352,7 @@ export function SyncRequestsClient({
                             variant="outline"
                             size="sm"
                             onClick={() => setIsBulkDeleteModalOpen(true)}
-                            className="rounded-xl text-xs font-bold text-rose-600 hover:text-rose-700 border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10 gap-1.5 h-8 px-3.5"
+                            className="rounded-lg text-xs font-bold text-rose-600 hover:text-rose-700 border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10 gap-1.5 h-8 px-3.5"
                         >
                             <Trash2 size={13} />
                             Delete Selected ({selectedIds.size})
@@ -362,7 +362,7 @@ export function SyncRequestsClient({
             )}
 
             {/* Unified Data Table Card */}
-            <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] overflow-hidden shadow-sm">
+            <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] overflow-hidden shadow-sm">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs text-gray-600 dark:text-gray-300">
                         <thead className="border-b border-gray-100 bg-gray-50/80 text-[11px] uppercase tracking-wider font-bold text-gray-500 dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-400">
@@ -625,7 +625,7 @@ export function SyncRequestsClient({
                                                                 size="sm"
                                                                 variant="outline"
                                                                 onClick={() => setSelectedSupportTicket(item)}
-                                                                className="h-8 px-3 rounded-xl text-xs font-bold text-amber-700 dark:text-amber-300 border-amber-500/30 hover:bg-amber-50 dark:hover:bg-amber-500/10 gap-1.5"
+                                                                className="h-8 px-3 rounded-lg text-xs font-bold text-amber-700 dark:text-amber-300 border-amber-500/30 hover:bg-amber-50 dark:hover:bg-amber-500/10 gap-1.5"
                                                             >
                                                                 <LifeBuoy size={12} className="text-amber-600 dark:text-amber-400" />
                                                                 Inspect &amp; Resolve
@@ -634,7 +634,7 @@ export function SyncRequestsClient({
                                                             {item.account?.id && (
                                                                 <Link
                                                                     href={`/admin/ib/traders?search=${item.account.accountNumber || ""}`}
-                                                                    className="p-2 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 inline-flex items-center transition-colors"
+                                                                    className="p-2 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 inline-flex items-center transition-colors"
                                                                     title="View in Trader Monitor"
                                                                 >
                                                                     <ExternalLink className="h-3.5 w-3.5" />
@@ -654,7 +654,7 @@ export function SyncRequestsClient({
                                                                         type: "Support Ticket",
                                                                     })
                                                                 }
-                                                                className="h-8 w-8 min-w-8 aspect-square rounded-xl text-gray-400 hover:text-rose-600 hover:border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors shrink-0"
+                                                                className="h-8 w-8 min-w-8 aspect-square rounded-lg text-gray-400 hover:text-rose-600 hover:border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors shrink-0"
                                                                 title="Delete support ticket"
                                                                 aria-label="Delete support ticket"
                                                             >
@@ -670,7 +670,7 @@ export function SyncRequestsClient({
                                                                     variant="outline"
                                                                     disabled={actionLoadingId === item.id}
                                                                     onClick={() => handleRetry(item.id)}
-                                                                    className="h-8 px-3 rounded-xl text-xs font-bold text-primary hover:text-primary/80 gap-1.5"
+                                                                    className="h-8 px-3 rounded-lg text-xs font-bold text-primary hover:text-primary/80 gap-1.5"
                                                                 >
                                                                     <RefreshCw
                                                                         className={`h-3 w-3 ${
@@ -688,7 +688,7 @@ export function SyncRequestsClient({
                                                                     variant="outline"
                                                                     disabled={actionLoadingId === item.id}
                                                                     onClick={() => handleCancel(item.id)}
-                                                                    className="h-8 px-3 rounded-xl text-xs font-bold text-rose-600 hover:text-rose-700 border-rose-500/30"
+                                                                    className="h-8 px-3 rounded-lg text-xs font-bold text-rose-600 hover:text-rose-700 border-rose-500/30"
                                                                 >
                                                                     Cancel
                                                                 </Button>
@@ -697,7 +697,7 @@ export function SyncRequestsClient({
                                                             {item.account?.id && (
                                                                 <Link
                                                                     href={`/admin/ib/traders?search=${item.account.accountNumber || ""}`}
-                                                                    className="p-2 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 inline-flex items-center transition-colors"
+                                                                    className="p-2 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 inline-flex items-center transition-colors"
                                                                     title="View in Trader Monitor"
                                                                 >
                                                                     <ExternalLink className="h-3.5 w-3.5" />
@@ -709,7 +709,7 @@ export function SyncRequestsClient({
                                                                 size="icon"
                                                                 variant="outline"
                                                                 onClick={() => setDiagnosticsJob(item)}
-                                                                className="h-8 w-8 min-w-8 aspect-square rounded-xl text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors shrink-0"
+                                                                className="h-8 w-8 min-w-8 aspect-square rounded-lg text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors shrink-0"
                                                                 title="Inspect sync request details"
                                                                 aria-label="Inspect sync request details"
                                                             >
@@ -729,7 +729,7 @@ export function SyncRequestsClient({
                                                                         type: "Cloud Sync Job",
                                                                     })
                                                                 }
-                                                                className="h-8 w-8 min-w-8 aspect-square rounded-xl text-gray-400 hover:text-rose-600 hover:border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors shrink-0"
+                                                                className="h-8 w-8 min-w-8 aspect-square rounded-lg text-gray-400 hover:text-rose-600 hover:border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors shrink-0"
                                                                 title="Delete sync request"
                                                                 aria-label="Delete sync request"
                                                             >
@@ -787,10 +787,10 @@ export function SyncRequestsClient({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4"
+                            className="w-full max-w-md rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4"
                         >
                             <div className="flex items-start gap-3">
-                                <div className="p-2.5 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 ring-1 ring-rose-500/20 shrink-0">
+                                <div className="p-2.5 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 ring-1 ring-rose-500/20 shrink-0">
                                     <Trash2 className="h-5 w-5" />
                                 </div>
                                 <div>
@@ -852,10 +852,10 @@ export function SyncRequestsClient({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4"
+                            className="w-full max-w-md rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4"
                         >
                             <div className="flex items-start gap-3">
-                                <div className="p-2.5 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 ring-1 ring-rose-500/20 shrink-0">
+                                <div className="p-2.5 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 ring-1 ring-rose-500/20 shrink-0">
                                     <Trash2 className="h-5 w-5" />
                                 </div>
                                 <div>
@@ -917,11 +917,11 @@ export function SyncRequestsClient({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="w-full max-w-xl rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-5"
+                            className="w-full max-w-xl rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-5"
                         >
                             <div className="flex items-start justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="p-2.5 rounded-xl bg-primary/10 text-primary ring-1 ring-primary/20 shrink-0">
+                                    <div className="p-2.5 rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20 shrink-0">
                                         <Terminal className="h-5 w-5" />
                                     </div>
                                     <div>
@@ -950,7 +950,7 @@ export function SyncRequestsClient({
                                 <Button
                                     variant="outline"
                                     size="icon"
-                                    className="h-8 w-8 rounded-xl"
+                                    className="h-8 w-8 rounded-lg"
                                     onClick={() => setDiagnosticsJob(null)}
                                     aria-label="Close modal"
                                 >
@@ -959,7 +959,7 @@ export function SyncRequestsClient({
                             </div>
 
                             {/* 2x2 Matrix Card */}
-                            <div className="grid grid-cols-2 divide-x divide-y divide-gray-100 dark:divide-white/5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] text-xs">
+                            <div className="grid grid-cols-2 divide-x divide-y divide-gray-100 dark:divide-white/5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] text-xs">
                                 <div className="p-3">
                                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
                                         Broker & Server
@@ -997,7 +997,7 @@ export function SyncRequestsClient({
 
                             {/* Failure Reason Alert */}
                             {diagnosticsJob.unifiedStatus === "FAILED" && (
-                                <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-700 dark:text-rose-300 space-y-1">
+                                <div className="p-3.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-xs text-rose-700 dark:text-rose-300 space-y-1">
                                     <div className="flex items-center gap-1.5 font-bold">
                                         <AlertTriangle size={14} className="shrink-0" />
                                         <span>
@@ -1017,7 +1017,7 @@ export function SyncRequestsClient({
                                 <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-1.5">
                                     Raw Request Metadata
                                 </span>
-                                <pre className="p-3 rounded-xl bg-gray-900 text-gray-200 font-mono text-[11px] overflow-x-auto max-h-48 custom-scrollbar border border-gray-800">
+                                <pre className="p-3 rounded-lg bg-gray-900 text-gray-200 font-mono text-[11px] overflow-x-auto max-h-48 custom-scrollbar border border-gray-800">
                                     {JSON.stringify(
                                         {
                                             id: diagnosticsJob.id,
@@ -1042,7 +1042,7 @@ export function SyncRequestsClient({
                                     variant="outline"
                                     size="sm"
                                     onClick={() => setDiagnosticsJob(null)}
-                                    className="rounded-xl text-xs font-bold"
+                                    className="rounded-lg text-xs font-bold"
                                 >
                                     Close
                                 </Button>
@@ -1056,7 +1056,7 @@ export function SyncRequestsClient({
                                             setDiagnosticsJob(null);
                                             await handleRetry(jobId);
                                         }}
-                                        className="rounded-xl text-xs font-bold gap-1.5"
+                                        className="rounded-lg text-xs font-bold gap-1.5"
                                     >
                                         <RefreshCw
                                             className={`h-3.5 w-3.5 ${

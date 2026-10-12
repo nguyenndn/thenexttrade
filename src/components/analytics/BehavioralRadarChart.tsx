@@ -109,7 +109,7 @@ function CustomTooltip({ active, payload }: any) {
     if (!d) return null;
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl px-3 py-2 shadow-xl">
+        <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg px-3 py-2 shadow-xl">
             <p className="text-sm font-bold text-gray-700 dark:text-white mb-0.5">
                 {d.dimension}:{" "}
                 <span style={{ color: getScoreColor(d.value) }}>{d.value}</span>
@@ -131,7 +131,7 @@ export function BehavioralRadarChart({ data }: BehavioralRadarChartProps) {
     const color = getScoreColor(avgScore);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5 min-h-[460px] lg:h-full flex flex-col justify-between">
+        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm p-5 min-h-[460px] lg:h-full flex flex-col justify-between">
             {/* Header */}
             <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2.5">

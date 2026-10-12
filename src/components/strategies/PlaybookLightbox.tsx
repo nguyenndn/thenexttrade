@@ -107,7 +107,7 @@ export function PlaybookLightbox({
                     </div>
 
                     {/* Image Area */}
-                    <div className="relative w-full aspect-video max-h-[75vh] flex items-center justify-center overflow-hidden rounded-xl bg-black/50 border border-white/10">
+                    <div className="relative w-full aspect-video max-h-[75vh] flex items-center justify-center overflow-hidden rounded-lg bg-black/50 border border-white/10">
                         <motion.img
                             key={images[currentIndex]}
                             src={images[currentIndex]}

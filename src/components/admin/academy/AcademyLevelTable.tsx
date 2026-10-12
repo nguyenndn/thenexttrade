@@ -15,7 +15,7 @@ export function AcademyLevelTable({
     onDelete,
 }: AcademyLevelTableProps) {
     return (
-        <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+        <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm">
                     <thead className="bg-gray-50/75 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-[11px] font-bold uppercase tracking-wider text-gray-400">
@@ -56,7 +56,7 @@ export function AcademyLevelTable({
                                     {/* Level & Order */}
                                     <td className="py-4 px-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500/10 to-teal-500/20 border border-cyan-500/20 flex items-center justify-center shrink-0 font-black text-cyan-600 dark:text-cyan-400 text-xs">
+                                            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-500/10 to-teal-500/20 border border-cyan-500/20 flex items-center justify-center shrink-0 font-black text-cyan-600 dark:text-cyan-400 text-xs">
                                                 {String(level.order).padStart(
                                                     2,
                                                     "0"

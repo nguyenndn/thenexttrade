@@ -171,7 +171,7 @@ export function PlCalendarHeatmap({
                                                         className={`w-[16px] h-[16px] rounded-lg transition-all cursor-pointer ${cellColor}`}
                                                     />
                                                 </TooltipTrigger>
-                                                <TooltipContent className="bg-gray-950 dark:bg-white text-white dark:text-gray-900 border-none shadow-xl rounded-xl p-2.5 text-xs font-semibold">
+                                                <TooltipContent className="bg-gray-950 dark:bg-white text-white dark:text-gray-900 border-none shadow-xl rounded-lg p-2.5 text-xs font-semibold">
                                                     <p className="font-extrabold text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">
                                                         {format(
                                                             day,

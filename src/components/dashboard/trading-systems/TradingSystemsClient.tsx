@@ -4,7 +4,6 @@ import { useSearchParams } from "next/navigation";
 import { BarChart2, Crown, Check, Clock } from "lucide-react";
 import { SystemsList } from "@/components/dashboard/trading-systems/SystemsList";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
-import { AccountSetupWidget } from "./AccountSetupWidget";
 import { CustomBotIcon } from "./SharedUI";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { VipTabSummary } from "./VipTabSummary";
@@ -76,27 +75,20 @@ export function TradingSystemsClient({
                 description="Verified execution algorithms, indicators, and institutional license controls."
             />
 
-            {/* Account Setup Progress */}
-            <AccountSetupWidget
-                hasAccount={hasAccount ?? licenses.length > 0}
-                hasApprovedLicense={hasApprovedLicense}
-                hasDownloaded={hasDownloaded}
-            />
-
             {/* Unified Tabs */}
             <Tabs defaultValue={defaultTab} className="w-full">
                 <div className="overflow-x-auto scrollbar-hide -mx-1 px-1">
-                    <TabsList className="bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-xl border border-dashboard dark:border-white/[0.08] w-auto inline-flex h-auto shrink-0">
+                    <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1 gap-1 shrink-0 w-auto inline-flex">
                         <TabsTrigger
                             value="MT5_EA"
                             className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
-                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                            activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                             activeTextClassName="!text-white"
                         >
                             <CustomBotIcon size={14} className="sm:w-4 sm:h-4" />
                             <span>Expert Advisor</span>
                             {eaCount > 0 && (
-                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-primary shadow-sm ml-1">
+                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-gold shadow-sm ml-1">
                                     {eaCount}
                                 </span>
                             )}
@@ -104,13 +96,13 @@ export function TradingSystemsClient({
                         <TabsTrigger
                             value="MT5_INDICATOR"
                             className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
-                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                            activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                             activeTextClassName="!text-white"
                         >
                             <BarChart2 size={14} className="sm:w-4 sm:h-4" />
                             <span>Indicators</span>
                             {indicatorCount > 0 && (
-                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-primary shadow-sm ml-1">
+                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-gold shadow-sm ml-1">
                                     {indicatorCount}
                                 </span>
                             )}
@@ -118,13 +110,13 @@ export function TradingSystemsClient({
                         <TabsTrigger
                             value="VIP"
                             className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
-                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                            activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                             activeTextClassName="!text-white"
                         >
                             <Crown size={14} className="sm:w-4 sm:h-4" />
                             <span>VIP</span>
                             {vipBadge && (
-                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-primary shadow-sm ml-1">
+                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-gold shadow-sm ml-1">
                                     {vipBadge}
                                 </span>
                             )}

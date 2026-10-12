@@ -92,13 +92,10 @@ export async function GET(request: Request) {
                         }
                     }
                     historicalData[pair] = returns.slice(-period);
-                    console.log(
-                        `[Correlation] ${pair}: ${closes.length} closes → ${historicalData[pair].length} returns`
-                    );
-                } catch (err: any) {
+                } catch (err: unknown) {
                     console.error(
                         `[Correlation] Failed ${pair}:`,
-                        err?.message || err
+                        err instanceof Error ? err.message : err
                     );
                     historicalData[pair] = [];
                 }

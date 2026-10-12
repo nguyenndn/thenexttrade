@@ -106,7 +106,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
             </div>
 
             {/* Header Panel */}
-            <div className="relative rounded-3xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 md:p-8 shadow-sm mb-8 overflow-hidden">
+            <div className="relative rounded-lg border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 md:p-8 shadow-sm mb-8 overflow-hidden">
                 {/* Ambient background glow inside header */}
                 <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-72 h-72 bg-gold/5 dark:bg-gold/[0.03] rounded-full blur-3xl pointer-events-none" />
 
@@ -123,7 +123,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                             </span>
 
                             {/* Version Badge */}
-                            <span className="inline-flex items-center text-[9px] font-black tracking-wider px-2.5 py-1 bg-gray-100 dark:bg-white/5 text-gray-505 dark:text-gray-400 rounded-full border border-gray-200/60 dark:border-white/10 uppercase">
+                            <span className="inline-flex items-center text-[9px] font-black tracking-wider px-2.5 py-1 bg-gray-100 dark:bg-white/5 text-gray-505 dark:text-gray-400 rounded-full border border-gray-200 dark:border-white/10 uppercase">
                                 v{displayVersion}
                             </span>
 
@@ -140,7 +140,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                             {system.title}
                         </h1>
                         <div
-                            className="mt-3.5 prose prose-sm dark:prose-invert max-w-none text-xs sm:text-[13px] leading-relaxed text-gray-600 dark:text-gray-300 prose-p:my-2 prose-p:text-xs sm:prose-p:text-[13px] prose-p:leading-relaxed prose-headings:font-black prose-strong:font-bold prose-a:text-primary prose-img:rounded-xl"
+                            className="mt-3.5 prose prose-sm dark:prose-invert max-w-none text-xs sm:text-[13px] leading-relaxed text-gray-600 dark:text-gray-300 prose-p:my-2 prose-p:text-xs sm:prose-p:text-[13px] prose-p:leading-relaxed prose-headings:font-black prose-strong:font-bold prose-a:text-primary prose-img:rounded-lg"
                             dangerouslySetInnerHTML={{
                                 __html: DOMPurify.sanitize(
                                     system.longDescription
@@ -156,7 +156,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
             </div>
 
             {/* Built for real MT5 workflow (Outside) */}
-            <div className="mb-8 rounded-3xl border border-gold/15 bg-gold/[0.02] p-6 shadow-sm relative overflow-hidden">
+            <div className="mb-8 rounded-lg border border-gold/15 bg-gold/[0.02] p-6 shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
                 <h3 className="text-xs font-black text-gold mb-5 uppercase tracking-[0.18em] flex items-center gap-2 relative z-10">
                     <Server size={14} className="stroke-[2.5]" />
@@ -166,7 +166,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                     {heroHighlights.map((item) => (
                         <div
                             key={item.title}
-                            className="rounded-2xl border border-gray-200/40 bg-white/30 dark:border-white/10 dark:bg-[#151822]/20 p-4 space-y-2.5 hover:border-gold/30 transition-all duration-300"
+                            className="rounded-lg border border-gray-200 bg-white/30 dark:border-white/10 dark:bg-[#151822]/20 p-4 space-y-2.5 hover:border-gold/30 transition-all duration-300"
                         >
                             <div className="flex items-center gap-2 text-emerald-500">
                                 <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/20">
@@ -208,13 +208,13 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
 
             {/* Recommended VPS Block */}
             {system.slug !== "trade-manager" && (
-                <div className="mb-8 rounded-3xl border border-emerald-500/15 dark:border-emerald-500/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 md:p-8 shadow-sm backdrop-blur-md relative overflow-hidden">
+                <div className="mb-8 rounded-lg border border-emerald-500/15 dark:border-emerald-500/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 md:p-8 shadow-sm backdrop-blur-md relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 dark:bg-emerald-500/[0.02] rounded-full blur-2xl pointer-events-none" />
 
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
                         <div className="max-w-2xl">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border border-emerald-500/20">
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border border-emerald-500/20">
                                     <Server size={18} />
                                 </div>
                                 <h3 className="text-sm font-black uppercase tracking-wider text-gray-800 dark:text-white">
@@ -236,8 +236,9 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                 rel="noopener noreferrer"
                                 className={buttonVariants({
                                     variant: "primary",
+                                    size: "smd",
                                     className:
-                                        "w-full min-h-11 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs shadow-lg shadow-emerald-500/15 transition-all flex items-center justify-center gap-2",
+                                        "w-full bg-gold hover:bg-amber-600 text-white font-black shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2",
                                 })}
                             >
                                 <Server size={14} />
@@ -247,8 +248,8 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                         </div>
                     </div>
 
-                    <details className="group border-t border-gray-200/50 dark:border-white/5 pt-4 mt-5 relative z-10">
-                        <summary className="flex items-center justify-between cursor-pointer list-none text-[11px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 select-none hover:text-emerald-500 transition-colors">
+                    <details className="group border-t border-gray-200 dark:border-white/5 pt-4 mt-5 relative z-10">
+                        <summary className="flex items-center justify-between cursor-pointer list-none text-[11px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 select-none hover:text-gold transition-colors">
                             <span>Don't know what a VPS is?</span>
                             <ChevronDown
                                 size={14}
@@ -270,7 +271,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
             {/* Main vertical stack */}
             <div className="space-y-8">
                 {/* Unlock License (CTA Widget Banner) */}
-                <div className="rounded-3xl border border-gold/25 dark:border-gold/15 bg-gold/[0.03] dark:bg-gold/[0.01] p-6 md:p-8 shadow-md relative overflow-hidden">
+                <div className="rounded-lg border border-gold/25 dark:border-gold/15 bg-gold/[0.03] dark:bg-gold/[0.01] p-6 md:p-8 shadow-md relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
 
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
@@ -297,16 +298,17 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                         <div className="shrink-0 min-w-[240px]">
                             {isLoggedIn ? (
                                 <div className="space-y-3">
-                                    <div className="flex items-center justify-center gap-2 p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[11px] font-bold">
+                                    <div className="flex items-center justify-center gap-2 p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[11px] font-bold">
                                         <CheckCircle size={14} />
                                         <span>You are signed in</span>
                                     </div>
                                     <Link
                                         href="/dashboard/accounts"
                                         className={buttonVariants({
-                                            variant: "primary",
+                                            variant: "gold",
+                                            size: "smd",
                                             className:
-                                                "w-full min-h-11 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-xs shadow-md transition-all flex items-center justify-center gap-2",
+                                                "w-full font-black shadow-md flex items-center justify-center gap-2",
                                         })}
                                     >
                                         <KeyRound size={14} />
@@ -318,9 +320,10 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                     <Link
                                         href="/auth/signup?next=/dashboard/accounts&source=trading_systems"
                                         className={buttonVariants({
-                                            variant: "primary",
+                                            variant: "gold",
+                                            size: "smd",
                                             className:
-                                                "w-full min-h-11 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-xs shadow-md transition-all flex items-center justify-center gap-2",
+                                                "w-full font-black shadow-md flex items-center justify-center gap-2",
                                         })}
                                     >
                                         <UserPlus size={14} />
@@ -330,8 +333,9 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                         href="/auth/login?next=/dashboard/accounts"
                                         className={buttonVariants({
                                             variant: "outline",
+                                            size: "smd",
                                             className:
-                                                "w-full min-h-11 rounded-xl bg-white/90 dark:bg-white/[0.03] border border-gold/30 dark:border-gold/20 text-gray-800 dark:text-gray-200 font-black text-xs transition-all flex items-center justify-center gap-2",
+                                                "w-full bg-white/90 dark:bg-white/[0.03] border border-gold/30 dark:border-gold/20 text-gray-800 dark:text-gray-200 font-black flex items-center justify-center gap-2",
                                         })}
                                     >
                                         Sign In
@@ -350,7 +354,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                         <div>
                             {system.slug === "goldscalperninja" && (
                                 <p>
-                                    Risk Note: EA GoldScalperNinja utilizes
+                                    Risk Note: GoldScalperNinja EA utilizes
                                     automated grid execution. Grid systems can
                                     increase market exposure quickly; ensure you
                                     configure strict daily loss limits and test
@@ -368,7 +372,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                             )}
                             {system.slug === "gsn-phoenix-grid" && (
                                 <p>
-                                    Risk Warning: GSN Phoenix Grid is an
+                                    Risk Warning: GSN - Apex Gold Sentinel is an
                                     advanced grid and hedging system designed
                                     for experienced traders only. It uses
                                     aggressive multipliers and hedging cycles
@@ -380,7 +384,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                 </div>
 
                 {/* FAQ */}
-                <div className="rounded-3xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 shadow-sm">
+                <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 shadow-sm">
                     <h3 className="text-base font-black text-gray-800 dark:text-white mb-4 uppercase tracking-wider flex items-center gap-2">
                         <HelpCircle size={16} className="text-gold" />
                         Frequently Asked Questions
@@ -390,7 +394,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                         {system.faqs.map((faq, idx) => (
                             <div
                                 key={idx}
-                                className="border-b border-gray-200/50 dark:border-white/5 last:border-0 pb-4 last:pb-0"
+                                className="border-b border-gray-200 dark:border-white/5 last:border-0 pb-4 last:pb-0"
                             >
                                 <h4 className="text-xs font-black text-gray-800 dark:text-gray-200 mb-1 flex items-start gap-2">
                                     <span className="text-gold">Q:</span>

@@ -31,7 +31,7 @@ export function EmotionPerformanceChart({
     const sortedData = [...data].sort((a, b) => b.winRate - a.winRate);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow cursor-pointer group flex flex-col h-full">
+        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow cursor-pointer group flex flex-col h-full">
             <h3 className="text-sm font-bold text-gray-700 dark:text-white mb-4">
                 {title}
             </h3>
@@ -100,7 +100,7 @@ export function EmotionPerformanceChart({
                 {sortedData.slice(0, 4).map((item) => (
                     <div
                         key={item.emotion}
-                        className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-dashboard"
+                        className="bg-gray-50 dark:bg-white/5 p-3 rounded-lg border border-dashboard"
                     >
                         <div className="text-xs text-gray-600 uppercase font-bold">
                             {item.emotion}

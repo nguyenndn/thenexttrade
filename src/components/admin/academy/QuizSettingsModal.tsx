@@ -57,7 +57,7 @@ export function QuizSettingsModal({
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-md bg-white dark:bg-[#151925] p-6 rounded-xl border border-gray-200 dark:border-white/10">
+            <DialogContent className="max-w-md bg-white dark:bg-[#151925] p-6 rounded-2xl border border-gray-200 dark:border-white/10">
                 <DialogHeader className="mb-4">
                     <DialogTitle className="text-xl font-bold">
                         Edit Quiz Details
@@ -72,7 +72,7 @@ export function QuizSettingsModal({
                         <input
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-bold"
+                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-bold"
                             placeholder="Forex Basics Final Exam"
                         />
                     </div>
@@ -87,17 +87,16 @@ export function QuizSettingsModal({
                         <textarea
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all h-24 resize-none"
+                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all h-24 resize-none"
                             placeholder="Brief description of this quiz..."
                         />
                     </div>
 
                     <div className="flex justify-end gap-3 pt-4">
                         <Button
-                            variant="ghost"
+                            variant="outline"
                             size="smd"
                             onClick={onClose}
-                            className="font-bold text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
                         >
                             Cancel
                         </Button>
@@ -106,7 +105,7 @@ export function QuizSettingsModal({
                             size="smd"
                             onClick={handleSave}
                             disabled={isLoading}
-                            className="font-bold bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25 transition-all flex items-center gap-2 disabled:opacity-50"
+                            className="font-bold bg-gold hover:bg-amber-600 text-white shadow-md shadow-amber-500/20 border-none transition-all flex items-center gap-2 disabled:opacity-50"
                         >
                             {isLoading && (
                                 <Loader2 className="animate-spin" size={14} />

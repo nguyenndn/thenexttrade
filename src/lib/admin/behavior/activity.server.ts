@@ -37,6 +37,8 @@ export async function computeUserTradingActivity(userId: string): Promise<UserTr
                 entryDate: true,
                 status: true,
                 pnl: true,
+                commission: true,
+                swap: true,
                 result: true,
                 createdAt: true,
                 syncSource: true,

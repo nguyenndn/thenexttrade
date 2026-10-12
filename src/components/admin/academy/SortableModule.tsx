@@ -63,7 +63,7 @@ export function SortableModule({
         <div ref={setNodeRef} style={style} className="mb-4">
             <div
                 className={clsx(
-                    "bg-white dark:bg-[#1C212E] border rounded-xl overflow-hidden shadow-sm transition-colors",
+                    "bg-white dark:bg-[#1C212E] border rounded-lg overflow-hidden shadow-sm transition-colors",
                     isDragging
                         ? "border-primary"
                         : "border-gray-200 dark:border-white/10 "
@@ -140,7 +140,7 @@ export function SortableModule({
                         <Button
                             variant="outline"
                             onClick={() => onAddLesson(module.id)}
-                            className="mt-4 w-full h-auto py-2.5 flex items-center justify-center gap-2 text-sm font-medium text-gray-600 border border-dashed border-gray-300 rounded-xl hover:border-primary hover:text-primary hover:bg-primary/5 transition-all group"
+                            className="mt-4 w-full h-auto py-2.5 flex items-center justify-center gap-2 text-sm font-medium text-gray-600 border border-dashed border-gray-200 dark:border-white/10 rounded-lg hover:border-primary hover:text-primary hover:bg-primary/5 transition-all group"
                         >
                             <Plus
                                 size={16}

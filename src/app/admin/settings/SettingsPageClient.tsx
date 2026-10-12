@@ -77,8 +77,8 @@ export default function SettingsPageClient({
                                 <TabsTrigger
                                     key={tab.key}
                                     value={tab.key}
-                                    className="px-4 py-1.5 rounded-xl text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
-                                    activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                    className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+                                    activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                                     activeTextClassName="!text-white"
                                 >
                                     <Icon size={15} />
@@ -97,7 +97,7 @@ export default function SettingsPageClient({
                         <SystemSettings initialConfig={initialConfig} />
                     )}
                     {activeTab === "notifications" && (
-                        <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl shadow-sm">
+                        <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg shadow-sm">
                             <div className="text-center py-20 text-gray-500">
                                 <Bell
                                     size={48}
@@ -152,7 +152,7 @@ function ProfileSettings({ user }: { user: any }) {
     return (
         <form action={handleSubmit} className="space-y-5">
             {/* ── Profile Picture Card with gradient hero ── */}
-            <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
                 {/* Gradient banner */}
                 <div className="h-32 bg-gradient-to-r from-primary/20 via-primary/10 to-transparent dark:from-primary/30 dark:via-primary/15 dark:to-transparent relative">
                     <div
@@ -168,7 +168,7 @@ function ProfileSettings({ user }: { user: any }) {
                     {/* Avatar overlapping banner */}
                     <div className="flex items-end gap-5 -mt-14 mb-4">
                         <div className="relative flex-shrink-0">
-                            <div className="w-[120px] h-[120px] rounded-xl overflow-hidden bg-gray-100 dark:bg-[#0B0E14] border-4 border-white dark:border-[#151925] shadow-lg">
+                            <div className="w-[120px] h-[120px] rounded-lg overflow-hidden bg-gray-100 dark:bg-[#0B0E14] border-4 border-white dark:border-[#151925] shadow-lg">
                                 {avatarPreview ? (
                                     <img
                                         src={avatarPreview}
@@ -209,9 +209,9 @@ function ProfileSettings({ user }: { user: any }) {
             </div>
 
             {/* ── Personal Info Card ── */}
-            <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
                 <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10 flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+                    <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
                         <User size={14} className="text-primary" />
                     </div>
                     <h2 className="text-sm font-semibold text-gray-700 dark:text-white">
@@ -253,9 +253,9 @@ function ProfileSettings({ user }: { user: any }) {
  ───────────────────────────────────────────── */
 function SecuritySettings() {
     return (
-        <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10 flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+                <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
                     <Lock size={14} className="text-primary" />
                 </div>
                 <h2 className="text-sm font-semibold text-gray-700 dark:text-white">
@@ -263,7 +263,7 @@ function SecuritySettings() {
                 </h2>
             </div>
             <div className="px-6 py-6">
-                <div className="bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-500 p-4 rounded-xl text-sm font-medium">
+                <div className="bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-500 p-4 rounded-lg text-sm font-medium">
                     Password change is currently managed via the Login provider
                     (Supabase Auth). Direct password update here requires
                     re-authentication logic which is in development.
@@ -286,7 +286,7 @@ const ToggleRow = ({
     checked: boolean;
     onChange: () => void;
 }) => (
-    <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/10">
+    <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-black/20 rounded-lg border border-gray-200 dark:border-white/10">
         <div>
             <h4 className="font-bold text-gray-700 dark:text-white text-sm">
                 {label}
@@ -317,10 +317,10 @@ const SectionCard = ({
     className?: string;
 }) => (
     <div
-        className={`bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden flex flex-col ${className || ""}`}
+        className={`bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden flex flex-col ${className || ""}`}
     >
         <div className="px-6 py-4 border-b border-gray-200 dark:border-white/10 flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
                 <Icon size={14} className="text-primary" />
             </div>
             <h2 className="text-sm font-semibold text-gray-700 dark:text-white">
@@ -428,7 +428,7 @@ function SystemSettings({
                             }
                             aria-label="System announcement text"
                             rows={2}
-                            className="w-full px-4 py-3 text-sm bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40 text-gray-700 dark:text-white resize-none"
+                            className="w-full px-4 py-3 text-sm bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/40 text-gray-700 dark:text-white resize-none"
                         />
                     </div>
                 </SectionCard>

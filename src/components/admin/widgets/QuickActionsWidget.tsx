@@ -77,10 +77,10 @@ export function QuickActionsWidget() {
                 <Link
                     key={idx}
                     href={action.href}
-                    className="flex flex-col items-center gap-2.5 p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md hover:border-primary/30 transition-all group text-center"
+                    className="flex flex-col items-center gap-2.5 p-4 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md hover:border-primary/30 transition-all group text-center"
                 >
                     <div
-                        className={`p-3 rounded-xl ${action.bgColor} ${action.textColor} group-hover:scale-110 transition-transform`}
+                        className={`p-3 rounded-lg ${action.bgColor} ${action.textColor} group-hover:scale-110 transition-transform`}
                     >
                         <action.icon size={20} aria-hidden="true" />
                     </div>

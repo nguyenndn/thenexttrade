@@ -71,7 +71,7 @@ export function CommentSection({
     return (
         <section
             id="comments"
-            className="py-12 px-6 sm:px-10 bg-white/70 dark:bg-[#12141c]/80 backdrop-blur-xl border border-dashboard rounded-3xl shadow-xl dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden transition-all duration-300"
+            className="py-12 px-6 sm:px-10 bg-white/70 dark:bg-[#12141c]/80 backdrop-blur-xl border border-dashboard rounded-lg shadow-xl dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden transition-all duration-300"
         >
             {/* Soft background glow */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-gold/5 dark:bg-gold/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
@@ -79,7 +79,7 @@ export function CommentSection({
 
             <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 pb-6 border-b border-dashboard">
                 <div className="flex items-center gap-3.5">
-                    <div className="p-3 bg-gradient-to-tr from-gold/10 to-amber-500/10 dark:from-gold/20 dark:to-amber-500/20 text-gold rounded-2xl border border-gold/20 dark:border-gold/30 shadow-[0_4px_20px_rgba(202,138,4,0.08)]">
+                    <div className="p-3 bg-gradient-to-tr from-gold/10 to-amber-500/10 dark:from-gold/20 dark:to-amber-500/20 text-gold rounded-lg border border-gold/20 dark:border-gold/30 shadow-[0_4px_20px_rgba(202,138,4,0.08)]">
                         <MessageSquare size={22} className="stroke-[2.5]" />
                     </div>
                     <div className="flex items-center gap-2">
@@ -127,7 +127,7 @@ export function CommentSection({
                         userImage={currentUser.image}
                     />
                 ) : (
-                    <div className="bg-white/80 dark:bg-[#12141c] border border-dashboard p-8 sm:p-10 rounded-2xl shadow-sm text-center flex flex-col items-center max-w-md mx-auto">
+                    <div className="bg-white/80 dark:bg-[#12141c] border border-dashboard p-8 sm:p-10 rounded-lg shadow-sm text-center flex flex-col items-center max-w-md mx-auto">
                         <div className="w-12 h-12 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center mb-4 text-gold">
                             <MessageSquare size={20} className="stroke-[2.5]" />
                         </div>

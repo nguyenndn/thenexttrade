@@ -38,7 +38,7 @@ export function TopLearnersWidget({ users }: { users: TopUser[] }) {
     const maxProgress = Math.max(...users.map((u) => u.progressCount), 1);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
             <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
                 <Trophy className="w-5 h-5 text-amber-500" aria-hidden="true" />
                 Top Learners
@@ -57,7 +57,7 @@ export function TopLearnersWidget({ users }: { users: TopUser[] }) {
                             initial="hidden"
                             animate="visible"
                             variants={itemVariants}
-                            className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                            className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                         >
                             <div className="flex-shrink-0 relative">
                                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm shadow-inner">

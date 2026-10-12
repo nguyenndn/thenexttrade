@@ -85,7 +85,7 @@ export default function CreateBroadcastPage() {
                 </p>
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] rounded-lg p-8 border border-gray-200 dark:border-white/10 shadow-sm">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div className="space-y-2">
                         <PremiumInput
@@ -103,7 +103,7 @@ export default function CreateBroadcastPage() {
                         <textarea
                             {...register("message")}
                             rows={4}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-700 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
+                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-700 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
                             placeholder="We will be performing scheduled maintenance on..."
                         />
                         {errors.message && (
@@ -120,7 +120,7 @@ export default function CreateBroadcastPage() {
                                 <DropdownMenuTrigger asChild>
                                     <Button
                                         variant="outline"
-                                        className="w-full justify-between rounded-xl border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium capitalize"
+                                        className="w-full justify-between rounded-lg border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium capitalize"
                                     >
                                         <span>{typeValue.toLowerCase()}</span>
                                         <ChevronDown
@@ -157,7 +157,7 @@ export default function CreateBroadcastPage() {
                                 <DropdownMenuTrigger asChild>
                                     <Button
                                         variant="outline"
-                                        className="w-full justify-between rounded-xl border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium capitalize"
+                                        className="w-full justify-between rounded-lg border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium capitalize"
                                     >
                                         <span>
                                             {priorityValue.toLowerCase()}
@@ -224,7 +224,7 @@ export default function CreateBroadcastPage() {
                         <Button
                             type="submit"
                             variant="primary"
-                            className="bg-primary hover:bg-[#00B078] text-white"
+                            className="bg-gold hover:bg-amber-600 text-white border-none shadow-md shadow-amber-500/20"
                             isLoading={isSubmitting}
                         >
                             <Send size={18} />

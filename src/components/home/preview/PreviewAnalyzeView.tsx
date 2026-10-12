@@ -7,7 +7,7 @@ export function PreviewAnalyzeView() {
         <div className="h-full flex flex-col justify-between gap-2 animate-in fade-in duration-300">
             {/* Top 3 KPI Cards */}
             <div className="grid grid-cols-3 gap-2 shrink-0">
-                <div className="p-2 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/10 shadow-sm">
+                <div className="p-2 rounded-lg bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 shadow-sm">
                     <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider block">
                         Net P/L
                     </span>
@@ -15,7 +15,7 @@ export function PreviewAnalyzeView() {
                         +$12,450 <TrendingUp size={11} className="hidden sm:inline" />
                     </span>
                 </div>
-                <div className="p-2 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/10 shadow-sm">
+                <div className="p-2 rounded-lg bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 shadow-sm">
                     <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider block">
                         Win Rate
                     </span>
@@ -23,7 +23,7 @@ export function PreviewAnalyzeView() {
                         64.2%
                     </span>
                 </div>
-                <div className="p-2 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/10 shadow-sm">
+                <div className="p-2 rounded-lg bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 shadow-sm">
                     <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider block">
                         Profit Factor
                     </span>
@@ -34,7 +34,7 @@ export function PreviewAnalyzeView() {
             </div>
 
             {/* Equity Curve Area */}
-            <div className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/10 shadow-sm flex-1 flex flex-col justify-between">
+            <div className="p-2 sm:p-2.5 rounded-lg bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 shadow-sm flex-1 flex flex-col justify-between">
                 <div className="flex items-center justify-between mb-1 shrink-0">
                     <div className="flex items-center gap-1.5">
                         <BarChart3 size={11} className="text-gold" />
@@ -92,7 +92,7 @@ export function PreviewAnalyzeView() {
             </div>
 
             {/* Session Breakdown Mini Bar */}
-            <div className="px-2.5 py-1.5 rounded-xl bg-gray-50/80 dark:bg-white/[0.02] border border-gray-200/50 dark:border-white/5 flex items-center justify-between text-[10px] shrink-0">
+            <div className="px-2.5 py-1.5 rounded-lg bg-gray-50/80 dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 flex items-center justify-between text-[10px] shrink-0">
                 <div className="flex items-center gap-3">
                     <span className="text-gray-500 font-bold uppercase">Sessions:</span>
                     <span className="font-bold text-gray-800 dark:text-gray-200">

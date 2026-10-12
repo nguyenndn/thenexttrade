@@ -108,14 +108,14 @@ export async function POST(request: NextRequest) {
                     exitDate && exitDate.getFullYear() > 1980
                 );
 
-                const pnl =
-                    (Number(deal.profit) || 0) +
-                    (Number(deal.commission) || 0) +
-                    (Number(deal.swap) || 0);
+                const profit = Number(deal.profit) || 0;
+                const commission = Number(deal.commission) || 0;
+                const swap = Number(deal.swap) || 0;
+                const netPnl = profit + commission + swap;
 
                 const status = isClosed ? "CLOSED" : "OPEN";
                 const result = isClosed
-                    ? classifyTradeResult({ pnl })
+                    ? classifyTradeResult({ pnl: netPnl })
                     : null;
 
                 const existing = await prisma.journalEntry.findFirst({
@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
                             exitPrice: deal.closePrice || existing.exitPrice,
                             stopLoss: typeof deal.sl === "number" ? deal.sl : existing.stopLoss,
                             takeProfit: typeof deal.tp === "number" ? deal.tp : existing.takeProfit,
-                            pnl,
+                            pnl: profit,
                             status,
                             result,
                             commission:
@@ -172,7 +172,7 @@ export async function POST(request: NextRequest) {
                             exitPrice: deal.closePrice || null,
                             stopLoss: typeof deal.sl === "number" ? deal.sl : null,
                             takeProfit: typeof deal.tp === "number" ? deal.tp : null,
-                            pnl,
+                            pnl: profit,
                             status,
                             result,
                             commission: Number(deal.commission) || 0,

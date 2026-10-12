@@ -82,7 +82,7 @@ export function ApproveLicenseModal({
 
                 <div className="space-y-6 py-4">
                     {/* Summary */}
-                    <div className="bg-gray-50 dark:bg-[#151925] p-4 rounded-xl space-y-2 text-sm">
+                    <div className="bg-gray-50 dark:bg-[#151925] p-4 rounded-lg space-y-2 text-sm">
                         <div className="flex justify-between">
                             <span className="text-gray-600">Account:</span>
                             <span className="font-bold text-gray-700 dark:text-white">
@@ -103,7 +103,7 @@ export function ApproveLicenseModal({
                         </div>
                     </div>
 
-                    <div className="p-4 bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-100 dark:border-yellow-900/20 rounded-xl flex gap-3 text-sm text-yellow-700 dark:text-yellow-400">
+                    <div className="p-4 bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-100 dark:border-yellow-900/20 rounded-lg flex gap-3 text-sm text-yellow-700 dark:text-yellow-400">
                         <Info className="shrink-0 mt-0.5" size={18} />
                         <div>
                             <p className="font-bold">Manual Sync Required</p>
@@ -163,6 +163,14 @@ export function ApproveLicenseModal({
                 </div>
 
                 <div className="flex justify-end gap-3">
+                    <Button
+                        variant="outline"
+                        size="smd"
+                        onClick={onClose}
+                        disabled={isLoading}
+                    >
+                        Cancel
+                    </Button>
                     <Button
                         variant="primary"
                         size="smd"

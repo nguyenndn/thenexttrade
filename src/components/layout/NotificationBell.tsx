@@ -120,7 +120,7 @@ export function NotificationBell() {
             </PopoverTrigger>
 
             <PopoverContent
-                className="w-[calc(100vw-2rem)] sm:w-[480px] p-0 rounded-2xl bg-white dark:bg-[#1E2028] border-dashboard shadow-2xl"
+                className="w-[calc(100vw-2rem)] sm:w-[480px] p-0 rounded-lg bg-white dark:bg-[#1E2028] border-dashboard shadow-2xl"
                 align="end"
                 sideOffset={8}
             >
@@ -148,7 +148,7 @@ export function NotificationBell() {
 
                 {/* Tabs — Segmented Control */}
                 <div className="p-2 border-b border-dashboard bg-gray-50/50 dark:bg-white/[0.01]">
-                    <div className="grid grid-cols-4 gap-1 p-1 bg-gray-100 dark:bg-white/5 rounded-xl">
+                    <div className="grid grid-cols-4 gap-1 p-1 bg-gray-100 dark:bg-white/5 rounded-lg">
                         {(Object.keys(TAB_CONFIG) as TabType[]).map((tabKey) => {
                             const tab = TAB_CONFIG[tabKey];
                             const isActive = activeTab === tabKey;
@@ -277,7 +277,7 @@ export function NotificationBell() {
                                         {/* Left Icon */}
                                         <div
                                             className={cn(
-                                                "w-8 h-8 rounded-xl flex items-center justify-center shrink-0 self-center transition-transform group-hover:scale-105",
+                                                "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 self-center transition-transform group-hover:scale-105",
                                                 bg,
                                                 color
                                             )}
@@ -320,10 +320,11 @@ export function NotificationBell() {
                 </div>
 
                 {/* Footer */}
-                <div className="p-2.5 border-t border-dashboard bg-gray-50/50 dark:bg-white/[0.01] rounded-b-2xl">
+                <div className="p-2.5 border-t border-dashboard bg-gray-50/50 dark:bg-white/[0.01] rounded-b-lg">
                     <Button
                         variant="ghost"
-                        className="w-full text-xs font-semibold text-gray-500 hover:text-amber-600 dark:text-gray-400 dark:hover:text-amber-400 hover:bg-gray-100 dark:hover:bg-white/5 justify-center h-8 rounded-xl"
+                        size="smd"
+                        className="w-full text-xs font-semibold text-gray-500 hover:text-amber-600 dark:text-gray-400 dark:hover:text-amber-400 hover:bg-gray-100 dark:hover:bg-white/5 justify-center rounded-lg"
                         onClick={() => {
                             setIsOpen(false);
                             router.push("/dashboard/notifications");

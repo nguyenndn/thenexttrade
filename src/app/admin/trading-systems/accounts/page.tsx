@@ -40,7 +40,7 @@ export default async function AllAccountsPage() {
                 description="View all EA trading accounts."
                 backHref="/admin/trading-systems"
             >
-                <span className="bg-white dark:bg-[#1E2028] text-gray-600 dark:text-gray-300 px-4 py-2 rounded-xl font-bold text-sm shadow-sm border border-gray-200 dark:border-white/10">
+                <span className="bg-white dark:bg-[#1E2028] text-gray-600 dark:text-gray-300 px-4 py-2 rounded-lg font-bold text-sm shadow-sm border border-gray-200 dark:border-white/10">
                     {licenses.length} Total
                 </span>
             </AdminPageHeader>

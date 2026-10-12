@@ -21,7 +21,7 @@ interface MT5TeaserCTAProps {
 
 const TRADING_SYSTEM_ITEMS = [
     {
-        title: "EA GoldScalperNinja",
+        title: "GoldScalperNinja EA",
         tag: "AUTOMATED EA",
         tagColor: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
         icon: Bot,
@@ -47,7 +47,7 @@ const TRADING_SYSTEM_ITEMS = [
         ],
     },
     {
-        title: "GSN Phoenix Grid",
+        title: "GSN - Apex Gold Sentinel",
         tag: "RECOVERY ENGINE",
         tagColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
         icon: Shield,
@@ -114,9 +114,9 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
 
             <section className="py-12 sm:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 {/* Main Container Card */}
-                <div className="relative max-w-7xl mx-auto rounded-3xl border border-amber-200/50 dark:border-white/10 bg-slate-50/90 dark:bg-[#0c0f16]/80 backdrop-blur-md p-5 sm:p-8 md:p-10 shadow-lg dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-gold/30 dark:hover:border-gold/20 hover:shadow-xl hover:shadow-gold/[0.01] transition-all duration-500 overflow-hidden group/card">
+                <div className="relative max-w-7xl mx-auto rounded-lg border border-amber-200/50 dark:border-white/10 bg-slate-50/90 dark:bg-[#0c0f16]/80 backdrop-blur-md p-5 sm:p-8 md:p-10 shadow-lg dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-gold/30 dark:hover:border-gold/20 hover:shadow-xl hover:shadow-gold/[0.01] transition-all duration-500 overflow-hidden group/card">
                     {/* Flowing laser border */}
-                    <svg className="absolute inset-0 w-full h-full pointer-events-none rounded-3xl">
+                    <svg className="absolute inset-0 w-full h-full pointer-events-none rounded-lg">
                         <defs>
                             <linearGradient
                                 id="laser-grad-teaser-new"
@@ -147,7 +147,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                             y="0.5"
                             width="calc(100% - 1px)"
                             height="calc(100% - 1px)"
-                            rx="23"
+                            rx="7"
                             fill="none"
                             stroke="url(#laser-grad-teaser-new)"
                             strokeWidth="1.5"
@@ -156,7 +156,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                     </svg>
 
                     {/* Technical Square Grid Background */}
-                    <div className="absolute inset-0 bg-[linear-gradient(rgba(245,158,11,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(245,158,11,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.02)_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none rounded-3xl" />
+                    <div className="absolute inset-0 bg-[linear-gradient(rgba(245,158,11,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(245,158,11,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.02)_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none rounded-lg" />
 
                     {/* Glowing Tech Mesh Backdrop */}
                     <div className="absolute -top-20 -right-20 w-80 h-80 bg-gold/[0.08] dark:bg-gold/[0.06] rounded-full blur-[80px] pointer-events-none group-hover/card:scale-110 transition-transform duration-700" />
@@ -209,10 +209,10 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                                     href="/trading-systems"
                                     className="w-full sm:w-auto group"
                                 >
-                                    <Button className="w-full sm:w-auto min-h-12 px-5 sm:px-7 rounded-xl bg-gold hover:bg-amber-600 text-white font-extrabold text-sm shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 flex items-center justify-center gap-2 animate-btn-shine whitespace-nowrap">
+                                    <Button size="smd" className="w-full sm:w-auto px-5 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 flex items-center justify-center gap-2 animate-btn-shine whitespace-nowrap">
                                         <span>Unlock Automated EAs</span>
                                         <ArrowRight
-                                            size={16}
+                                            size={14}
                                             className="group-hover:translate-x-1 transition-transform duration-300"
                                         />
                                     </Button>
@@ -224,10 +224,11 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                                 >
                                     <Button
                                         variant="outline"
-                                        className="w-full sm:w-auto min-h-12 px-5 sm:px-6 rounded-xl border border-slate-300 dark:border-white/15 hover:border-gold dark:hover:border-gold/60 bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm text-slate-700 dark:text-slate-200 hover:text-amber-600 dark:hover:text-gold font-extrabold text-sm shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
+                                        size="smd"
+                                        className="w-full sm:w-auto px-5 rounded-lg border border-gray-200 dark:border-white/15 hover:border-gold dark:hover:border-gold/60 bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm text-slate-700 dark:text-slate-200 hover:text-amber-600 dark:hover:text-gold font-extrabold shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
                                     >
                                         <HelpCircle
-                                            size={16}
+                                            size={14}
                                             className="shrink-0 text-amber-500 dark:text-gold"
                                         />
                                         <span>How Unlock Works</span>
@@ -246,12 +247,12 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                         </div>
 
                         {/* Right Column: High-Fidelity MT5 Trading Systems Suite Console (Full-width on tablet/mobile, side-by-side on desktop) */}
-                        <div className="relative w-full rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-[#11141f]/95 p-4 sm:p-5 md:p-6 shadow-xl overflow-hidden group/mockup">
+                        <div className="relative w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white/95 dark:bg-[#11141f]/95 p-4 sm:p-5 md:p-6 shadow-xl overflow-hidden group/mockup">
                             {/* Blueprint grid lines overlay */}
                             <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(156,163,175,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(156,163,175,0.05)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none" />
 
                             {/* Terminal Header Bar */}
-                            <div className="flex items-center justify-between mb-3.5 border-b border-slate-200/80 dark:border-white/10 pb-3 relative z-10">
+                            <div className="flex items-center justify-between mb-3.5 border-b border-gray-200 dark:border-white/10 pb-3 relative z-10">
                                 <div className="flex items-center gap-2">
                                     <div className="flex gap-1.5">
                                         <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
@@ -278,7 +279,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                                     return (
                                         <div
                                             key={idx}
-                                            className="p-3.5 sm:p-4 rounded-xl border border-slate-200/70 dark:border-white/[0.08] bg-slate-50/70 dark:bg-white/[0.02] hover:bg-white dark:hover:bg-white/[0.05] hover:border-gold/30 hover:shadow-sm transition-all duration-300 group/tool"
+                                            className="p-3.5 sm:p-4 rounded-lg border border-gray-200 dark:border-white/[0.08] bg-slate-50/70 dark:bg-white/[0.02] hover:bg-white dark:hover:bg-white/[0.05] hover:border-gold/30 hover:shadow-sm transition-all duration-300 group/tool"
                                         >
                                             {/* Header Row: Icon + Title + Category Tag */}
                                             <div className="flex items-center justify-between gap-2 mb-2">
@@ -293,7 +294,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                                                     </span>
                                                 </div>
                                                 <span
-                                                    className={`shrink-0 text-[8px] sm:text-[9px] font-black font-mono uppercase tracking-wider px-2 sm:px-2.5 py-0.5 rounded-md border ${item.tagColor}`}
+                                                    className={`shrink-0 text-[8px] sm:text-[9px] font-black font-mono uppercase tracking-wider px-2 sm:px-2.5 py-0.5 rounded-lg border ${item.tagColor}`}
                                                 >
                                                     {item.tag}
                                                 </span>
@@ -309,7 +310,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                                                 {item.badges.map((b, bIdx) => (
                                                     <div
                                                         key={bIdx}
-                                                        className="inline-flex sm:flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-md bg-white dark:bg-black/40 border border-slate-200/80 dark:border-white/[0.06] text-[9px] sm:text-[10px] font-mono shadow-xs text-center whitespace-nowrap"
+                                                        className="inline-flex sm:flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-lg bg-white dark:bg-black/40 border border-gray-200 dark:border-white/[0.06] text-[9px] sm:text-[10px] font-mono shadow-xs text-center whitespace-nowrap"
                                                     >
                                                         <span className="text-gray-400 font-medium">
                                                             {b.label}:
@@ -326,7 +327,7 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                             </div>
 
                             {/* Bottom Console Telemetry Strip */}
-                            <div className="mt-3.5 pt-3 border-t border-slate-200/80 dark:border-white/10 flex items-center justify-between text-[9px] sm:text-[10px] font-mono text-gray-500 dark:text-gray-400 relative z-10">
+                            <div className="mt-3.5 pt-3 border-t border-gray-200 dark:border-white/10 flex items-center justify-between text-[9px] sm:text-[10px] font-mono text-gray-500 dark:text-gray-400 relative z-10">
                                 <div className="flex items-center gap-2">
                                     <span className="flex items-center gap-1">
                                         <Activity size={11} className="text-emerald-500" />

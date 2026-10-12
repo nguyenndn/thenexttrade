@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 import {
     SPRING_SOFT,
     backdropVariants,
@@ -16,9 +17,11 @@ interface ModalProps {
     onClose: () => void;
     title: string;
     children: React.ReactNode;
+    className?: string;
+    bodyClassName?: string;
 }
 
-export function Modal({ isOpen, onClose, title, children }: ModalProps) {
+export function Modal({ isOpen, onClose, title, children, className, bodyClassName }: ModalProps) {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -69,22 +72,27 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative w-full max-w-4xl max-h-[90vh] flex flex-col rounded-xl bg-white dark:bg-[#151925] shadow-xl border border-dashboard cursor-default"
+                        className={cn(
+                            "relative w-full max-w-4xl max-h-[90vh] flex flex-col rounded-2xl bg-white dark:bg-[#151925] shadow-xl border border-dashboard cursor-default",
+                            className
+                        )}
                     >
-                        <div className="flex items-center justify-between p-6 border-b border-dashboard flex-shrink-0">
-                            <h3 className="text-xl font-bold text-gray-700 dark:text-white">
+                        <div className="flex items-center justify-between px-5 py-3.5 sm:px-6 sm:py-4 border-b border-dashboard flex-shrink-0">
+                            <h3 className="text-base sm:text-lg font-bold font-sans tracking-tight text-gray-700 dark:text-white">
                                 {title}
                             </h3>
                             <Button
                                 variant="ghost"
                                 size="icon"
                                 onClick={onClose}
-                                className="rounded-full p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-600 transition-colors"
+                                className="rounded-full w-8 h-8 p-1 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-600 transition-colors"
                             >
-                                <X size={20} />
+                                <X size={18} />
                             </Button>
                         </div>
-                        <div className="p-6 overflow-y-auto">{children}</div>
+                        <div className={cn("p-4 sm:p-5 overflow-y-auto", bodyClassName)}>
+                            {children}
+                        </div>
                     </motion.div>
                 </div>
             )}

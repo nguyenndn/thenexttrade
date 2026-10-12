@@ -39,11 +39,11 @@ function HealthCard({
     href?: string;
 }) {
     return (
-        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-5 flex flex-col justify-between">
+        <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-5 flex flex-col justify-between">
             <div>
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2.5">
-                        <div className="p-2 bg-gray-100 dark:bg-white/5 rounded-xl">
+                        <div className="p-2 bg-gray-100 dark:bg-white/5 rounded-lg">
                             <Icon
                                 size={16}
                                 className="text-gray-600 dark:text-gray-400"
@@ -275,24 +275,24 @@ export function ReleaseHealthDashboard({ data }: Props) {
                         <TabsList className="shrink-0">
                             <TabsTrigger
                                 value="all"
-                                className="px-4 py-1.5 rounded-xl text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
-                                activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+                                activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                                 activeTextClassName="!text-white"
                             >
                                 All Metrics
                             </TabsTrigger>
                             <TabsTrigger
                                 value="activation"
-                                className="px-4 py-1.5 rounded-xl text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
-                                activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+                                activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                                 activeTextClassName="!text-white"
                             >
                                 Activation & Engagement
                             </TabsTrigger>
                             <TabsTrigger
                                 value="ops"
-                                className="px-4 py-1.5 rounded-xl text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
-                                activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
+                                activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                                 activeTextClassName="!text-white"
                             >
                                 System Ops

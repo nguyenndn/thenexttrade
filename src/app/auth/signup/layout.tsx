@@ -3,7 +3,7 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
     title: "Sign Up | Create Your Trading Account",
     description:
-        "Join TheNextTradefor free. Get access to professional trading tools, forex academy, and risk management calculators.",
+        "Join TheNextTrade for free. Tools, trade journal, and risk calculators.",
     openGraph: {
         title: "Create Your Trading Account - TheNextTrade",
         description:

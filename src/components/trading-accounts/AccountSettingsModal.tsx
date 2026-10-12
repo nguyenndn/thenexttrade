@@ -219,7 +219,7 @@ export function AccountSettingsModal({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="relative z-10 bg-white dark:bg-[#1E2028] rounded-2xl w-full max-w-[540px] overflow-hidden border border-dashboard shadow-2xl flex flex-col max-h-[90vh] cursor-default"
+                className="relative z-10 bg-white dark:bg-[#1E2028] rounded-lg w-full max-w-[540px] overflow-hidden border border-dashboard shadow-2xl flex flex-col max-h-[90vh] cursor-default"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
@@ -232,7 +232,7 @@ export function AccountSettingsModal({
                         size="icon"
                         onClick={onClose}
                         aria-label="Close settings"
-                        className="w-8 h-8 rounded-xl text-gray-400 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 shrink-0"
+                        className="w-8 h-8 rounded-lg text-gray-400 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 shrink-0"
                     >
                         <X size={18} />
                     </Button>
@@ -243,6 +243,10 @@ export function AccountSettingsModal({
                     {/* General Settings */}
                     <div className="space-y-4">
                         <PremiumInput
+                            id="settings-trading-account-name"
+                            name="settings_trading_account_name"
+                            autoComplete="off"
+                            data-lpignore="true"
                             label="Account Name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
@@ -271,7 +275,7 @@ export function AccountSettingsModal({
                                         </button>
                                     </PopoverTrigger>
                                     <PopoverContent
-                                        className="w-64 p-3 bg-white dark:bg-[#1E2028] border border-dashboard shadow-2xl rounded-2xl z-[150]"
+                                        className="w-64 p-3 bg-white dark:bg-[#1E2028] border border-dashboard shadow-2xl rounded-lg z-[150]"
                                         align="start"
                                         sideOffset={8}
                                     >
@@ -335,9 +339,9 @@ export function AccountSettingsModal({
                         />
 
                         {/* Account Specs - 2 rows x 2 columns */}
-                        <div className="rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-dashboard divide-y divide-gray-200/60 dark:divide-white/5 text-xs overflow-hidden">
+                        <div className="rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-dashboard divide-y divide-gray-200 dark:divide-white/5 text-xs overflow-hidden">
                             {/* Row 1: Account Number & Broker */}
-                            <div className="grid grid-cols-2 divide-x divide-gray-200/60 dark:divide-white/5">
+                            <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/5">
                                 <div className="px-4 py-2.5 min-w-0">
                                     <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider flex items-center gap-1.5 mb-0.5">
                                         <Hash size={12} className="text-gray-400 shrink-0" />
@@ -362,7 +366,7 @@ export function AccountSettingsModal({
                             </div>
 
                             {/* Row 2: Active Server & Platform & Base */}
-                            <div className="grid grid-cols-2 divide-x divide-gray-200/60 dark:divide-white/5">
+                            <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/5">
                                 <div className="px-4 py-2.5 min-w-0">
                                     <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider flex items-center gap-1.5 mb-0.5">
                                         <Server size={12} className="text-gray-400 shrink-0" />
@@ -411,7 +415,7 @@ export function AccountSettingsModal({
                         </div>
 
                         {/* Domain Realism Notice */}
-                        <div className="p-3 rounded-xl bg-primary/5 border border-primary/15 text-xs text-gray-600 dark:text-gray-300 flex items-center gap-2.5">
+                        <div className="p-3 rounded-lg bg-primary/5 border border-primary/15 text-xs text-gray-600 dark:text-gray-300 flex items-center gap-2.5">
                             <CloudSync size={16} className="text-primary shrink-0" />
                             <p className="text-[11px] leading-relaxed">
                                 Provide your <strong>investor password (passview)</strong> to enable automated Cloud Sync.
@@ -420,7 +424,11 @@ export function AccountSettingsModal({
 
                         <div>
                             <PremiumInput
+                                id="settings-investor-password"
+                                name="settings_investor_password"
                                 type="password"
+                                autoComplete="new-password"
+                                data-lpignore="true"
                                 label="Investor Password (Passview)"
                                 value={investorPassword}
                                 onChange={(e) => setInvestorPassword(e.target.value)}
@@ -486,7 +494,7 @@ export function AccountSettingsModal({
                             </h3>
                         </div>
 
-                        <div className="p-3.5 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-dashboard flex items-start gap-3">
+                        <div className="p-3.5 bg-gray-50 dark:bg-white/[0.02] rounded-lg border border-dashboard flex items-start gap-3">
                             <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5">
                                 <Shield size={15} className="text-emerald-500" />
                             </div>
@@ -515,7 +523,7 @@ export function AccountSettingsModal({
                         variant="destructive"
                         size="smd"
                         onClick={onDelete}
-                        className="px-3.5 rounded-xl font-bold gap-1.5 text-xs"
+                        className="px-3.5 rounded-lg font-bold gap-1.5 text-xs"
                         title="Delete this account"
                     >
                         <Trash2 size={14} />
@@ -527,7 +535,7 @@ export function AccountSettingsModal({
                             variant="outline"
                             size="smd"
                             onClick={onClose}
-                            className="px-4 rounded-xl font-bold text-xs"
+                            className="px-4 rounded-lg font-bold text-xs"
                         >
                             Cancel
                         </Button>
@@ -536,7 +544,7 @@ export function AccountSettingsModal({
                             size="smd"
                             onClick={handleSave}
                             disabled={isSaving}
-                            className="px-5 rounded-xl font-bold text-xs shadow-lg shadow-primary/20 min-w-[120px]"
+                            className="px-5 rounded-lg font-bold text-xs shadow-lg shadow-amber-500/20 min-w-[120px]"
                         >
                             {isSaving ? (
                                 <>

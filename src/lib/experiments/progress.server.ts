@@ -25,6 +25,8 @@ export async function syncExperimentProgress(experimentId: string): Promise<void
             id: true,
             result: true,
             pnl: true,
+            commission: true,
+            swap: true,
             exitDate: true,
             followedPlan: true,
         },
@@ -38,7 +40,11 @@ export async function syncExperimentProgress(experimentId: string): Promise<void
     
     const decisiveCount = wins + losses;
     const winRate = decisiveCount > 0 ? Math.round((wins / decisiveCount) * 100) : null;
-    const netPnL = followUpTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+    const netPnL = followUpTrades.reduce(
+        (sum, t) =>
+            sum + (t.pnl || 0) + (t.commission || 0) + (t.swap || 0),
+        0
+    );
     const avgPnL = currentTradeCount > 0 ? Math.round((netPnL / currentTradeCount) * 100) / 100 : 0;
 
     const followUpData = {

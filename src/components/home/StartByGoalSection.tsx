@@ -24,7 +24,7 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
             chipBg: "bg-slate-100 dark:bg-white/5",
             animClass: "group-hover:scale-110 group-hover:rotate-6",
             bgClass:
-                "bg-white dark:bg-white/[0.02] border-gray-200/80 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 hover:bg-slate-50 dark:hover:bg-white/[0.04]",
+                "bg-white dark:bg-white/[0.02] border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.04]",
         },
         {
             title: "Automated Discipline",
@@ -44,7 +44,7 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
             chipBg: "bg-slate-100 dark:bg-white/5",
             animClass: "group-hover:scale-110 group-hover:-rotate-6",
             bgClass:
-                "bg-white dark:bg-white/[0.02] border-gray-200/80 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 hover:bg-slate-50 dark:hover:bg-white/[0.04]",
+                "bg-white dark:bg-white/[0.02] border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.04]",
         },
         {
             title: "Capital Sponsorship",
@@ -54,7 +54,7 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
             chipBg: "bg-slate-100 dark:bg-white/5",
             animClass: "group-hover:scale-110",
             bgClass:
-                "bg-white dark:bg-white/[0.02] border-gray-200/80 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 hover:bg-slate-50 dark:hover:bg-white/[0.04]",
+                "bg-white dark:bg-white/[0.02] border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.04]",
         },
     ];
 
@@ -66,7 +66,6 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
             <section className="py-6 sm:py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <HomeSectionHeading
                     align="center"
-                    eyebrow="THE 4-STEP EDGE PROTOCOL"
                     title="Your Journal spots the leaks. Here is how you eliminate them."
                     highlight="how you eliminate them."
                     description="Most platforms just show you where you lost money. TheNextTrade equips you with a 4-step execution stack to systematically eliminate amateur errors at zero software cost."
@@ -77,16 +76,16 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
                     {cards.map((card, idx) => (
                         <div
                             key={idx}
-                            className={`group relative flex flex-col justify-start items-center sm:items-start rounded-xl border p-5 sm:p-5 text-center sm:text-left transition-all duration-300 ${card.bgClass}`}
+                            className={`group relative flex flex-col justify-start items-center sm:items-start rounded-lg border p-5 sm:p-5 text-center sm:text-left transition-all duration-300 ${card.bgClass}`}
                         >
                             {/* Subtle inner gradient - matches TrustMetrics style */}
-                            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-transparent via-transparent to-gray-50/50 dark:to-white/[0.01] pointer-events-none" />
+                            <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-transparent via-transparent to-gray-50/50 dark:to-white/[0.01] pointer-events-none" />
 
                             <div className="relative z-10 w-full flex flex-col items-center sm:items-start">
                                 {/* Icon and Title: Stacked centered on mobile, inline on sm+ */}
                                 <div className="mb-3 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-start gap-2.5 sm:gap-3 w-full">
                                     <div
-                                        className={`shrink-0 rounded-xl p-2.5 ${card.chipBg}`}
+                                        className={`shrink-0 rounded-lg p-2.5 ${card.chipBg}`}
                                     >
                                         <span
                                             className={`${card.color} block transition-transform duration-300 ${card.animClass}`}
@@ -110,7 +109,7 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
                 </div>
 
                 {!isLoggedIn && (
-                    <div className="mt-6 sm:mt-8 p-4 sm:p-5 rounded-xl border border-gold/20 bg-gold/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+                    <div className="mt-6 sm:mt-8 p-4 sm:p-5 rounded-lg border border-gold/20 bg-gold/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
                         <div className="text-xs sm:text-sm text-gray-700 dark:text-gray-200">
                             <span className="font-bold text-amber-500 dark:text-gold">100% Free Ecosystem:</span> Every resource above is instantly unlocked when you register your free TheNextTrade account.
                         </div>

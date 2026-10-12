@@ -143,14 +143,16 @@ function CopyableField({ label, value }: { label: string; value: string }) {
                     {value}
                 </p>
             </div>
-            <button
+            <Button
                 type="button"
+                variant="ghost"
+                size="icon"
                 onClick={handleCopy}
-                className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors shrink-0 ml-2"
+                className="p-1.5 h-auto w-auto rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors shrink-0 ml-2"
                 aria-label={`Copy ${label}`}
             >
                 <Copy size={14} />
-            </button>
+            </Button>
         </div>
     );
 }
@@ -237,12 +239,12 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
-                <Button className="bg-[#00C888] hover:bg-[#00B078] text-white font-bold rounded-lg px-6 h-10 shadow-none border-none transition-colors border-0">
-                    <Plus size={16} className="mr-2" strokeWidth={3} />
-                    <span className="text-sm">Add Account</span>
+                <Button variant="gold" size="smd" className="font-bold">
+                    <Plus size={15} className="mr-1.5" strokeWidth={2.5} />
+                    <span>Add Account</span>
                 </Button>
             </DialogTrigger>
-            <DialogContent className="bg-white dark:bg-[#1A1D27] rounded-xl border-0 dark:border max-w-lg p-0 overflow-hidden shadow-2xl dark:shadow-[0_0_40px_rgba(0,0,0,0.5)]">
+            <DialogContent className="bg-white dark:bg-[#1A1D27] rounded-2xl border-0 dark:border max-w-lg p-0 overflow-hidden shadow-2xl dark:shadow-[0_0_40px_rgba(0,0,0,0.5)]">
                 {/* ===== VIEW 0.5: INSTRUCTIONS (Broker-Specific) ===== */}
                 {view === "instructions" &&
                     pendingData &&
@@ -380,8 +382,10 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                                                 instruction.emailTo
                                                             }
                                                         </span>
-                                                        <button
+                                                        <Button
                                                             type="button"
+                                                            variant="ghost"
+                                                            size="icon"
                                                             onClick={() => {
                                                                 navigator.clipboard.writeText(
                                                                     instruction.emailTo ||
@@ -391,11 +395,11 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                                                     "Email copied!"
                                                                 );
                                                             }}
-                                                            className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors ml-auto"
+                                                            className="p-1 h-auto w-auto rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors ml-auto"
                                                             aria-label="Copy email"
                                                         >
                                                             <Copy size={12} />
-                                                        </button>
+                                                        </Button>
                                                     </div>
                                                     {instruction.emailCc && (
                                                         <div className="flex items-center gap-2 text-sm">
@@ -407,8 +411,10 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                                                     instruction.emailCc
                                                                 }
                                                             </span>
-                                                            <button
+                                                            <Button
                                                                 type="button"
+                                                                variant="ghost"
+                                                                size="icon"
                                                                 onClick={() => {
                                                                     navigator.clipboard.writeText(
                                                                         instruction.emailCc ||
@@ -418,13 +424,13 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                                                         "CC email copied!"
                                                                     );
                                                                 }}
-                                                                className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors ml-auto"
+                                                                className="p-1 h-auto w-auto rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors ml-auto"
                                                                 aria-label="Copy CC email"
                                                             >
                                                                 <Copy
                                                                     size={12}
                                                                 />
-                                                            </button>
+                                                            </Button>
                                                         </div>
                                                     )}
                                                 </div>
@@ -466,7 +472,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                             {mailtoLink && (
                                                 <a
                                                     href={mailtoLink}
-                                                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold transition-colors shadow-md hover:shadow-lg"
+                                                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold transition-colors shadow-md hover:shadow-lg"
                                                 >
                                                     <Mail size={16} />
                                                     Open Email Client
@@ -673,14 +679,14 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                         {/* Progress Steps Indicator */}
                         <div className="flex items-center justify-center gap-4 mb-10">
                             <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-full bg-[#00C888] text-white flex items-center justify-center font-bold text-sm shadow-[0_0_15px_rgba(0,200,136,0.3)]">
+                                <div className="w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-sm shadow-[0_0_15px_rgba(245,158,11,0.3)]">
                                     <CheckCircle size={16} strokeWidth={3} />
                                 </div>
-                                <span className="text-sm font-bold text-[#00C888]">
+                                <span className="text-sm font-bold text-amber-500">
                                     IB
                                 </span>
                             </div>
-                            <div className="w-16 h-[2px] bg-[#00C888]" />
+                            <div className="w-16 h-[2px] bg-amber-500" />
                             <div className="flex items-center gap-2">
                                 <div className="w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-sm shadow-[0_0_15px_rgba(245,158,11,0.3)]">
                                     2
@@ -712,12 +718,12 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                 Minimum Required Balance:
                             </p>
                             <p className="text-5xl font-black text-[#00C888] tracking-tight">
-                                $300
+                                $200
                             </p>
                         </div>
 
                         <p className="text-sm text-center text-gray-600 dark:text-gray-300 mb-8 max-w-[280px] mx-auto leading-relaxed">
-                            A minimum balance of $300 is required to use the EA
+                            A minimum balance of $200 is required to use the EA
                             effectively.
                         </p>
 
@@ -731,7 +737,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                 className="flex-1 whitespace-nowrap px-2 font-bold"
                             >
                                 <XCircle size={16} className="mr-1.5" />
-                                <span>Why do I need $300?</span>
+                                <span>Why do I need $200?</span>
                             </Button>
                             <Button
                                 type="button"
@@ -789,7 +795,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                         </h3>
 
                         <p className="text-sm text-center text-gray-600 dark:text-gray-300 mb-8 px-4 leading-relaxed max-w-[300px] mx-auto">
-                            Please fund your account with at least $300 before
+                            Please fund your account with at least $200 before
                             submitting your MT5 account for EA access.
                         </p>
 
@@ -880,8 +886,8 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                             className={cn(
                                                 "group cursor-pointer rounded-xl border p-4 flex flex-col items-center gap-3 transition-all duration-300",
                                                 selectedBroker === broker.slug
-                                                    ? "border-[#00C888] bg-[#00C888]/10 ring-1 ring-[#00C888]/30 shadow-[0_0_20px_rgba(0,200,136,0.15)]"
-                                                    : "border-dashboard hover:border-[#00C888]/40 bg-gray-50 dark:bg-white/5"
+                                                    ? "border-amber-500 bg-amber-500/10 ring-1 ring-amber-500/30 shadow-[0_0_20px_rgba(245,158,11,0.15)]"
+                                                    : "border-dashboard hover:border-amber-500/40 bg-gray-50 dark:bg-white/5"
                                             )}
                                         >
                                             <div className="w-16 h-8 flex items-center justify-center">
@@ -905,7 +911,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                                     selectedBroker ===
                                                         broker.slug
                                                         ? "text-gray-700 dark:text-white"
-                                                        : "text-gray-600 dark:text-gray-600 group-hover:text-gray-800 dark:group-hover:text-gray-300"
+                                                        : "text-gray-600 dark:text-gray-400 group-hover:text-gray-800 dark:group-hover:text-gray-300"
                                                 )}
                                             >
                                                 {broker.name}
@@ -925,7 +931,6 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                 <PremiumInput
                                     label="Account Number (MT5 Only)"
                                     {...register("accountNumber")}
-                                    placeholder="Example: 8062451"
                                     icon={Wallet}
                                     error={errors.accountNumber?.message}
                                 />
@@ -962,7 +967,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                     type="submit"
                                     variant="primary"
                                     size="smd"
-                                    className="flex-1 bg-primary hover:bg-[#00B078] text-white font-bold"
+                                    className="flex-1 bg-gold hover:bg-amber-600 text-white font-bold border-none"
                                 >
                                     Next Step
                                 </Button>
@@ -984,7 +989,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                 variant="outline"
                                 type="button"
                                 onClick={() => setView("register")}
-                                className="w-full h-auto py-3 px-4 rounded-xl border-2 border-dashed border-amber-200 dark:border-amber-500/20 bg-amber-50/50 dark:bg-amber-500/5 hover:bg-amber-50 dark:hover:bg-amber-500/10 transition-all group flex flex-col items-center justify-center"
+                                className="w-full h-auto py-3 px-4 rounded-lg border-2 border-dashed border-amber-200 dark:border-amber-500/20 bg-amber-50/50 dark:bg-amber-500/5 hover:bg-amber-50 dark:hover:bg-amber-500/10 transition-all group flex flex-col items-center justify-center"
                             >
                                 <p className="text-sm font-bold text-amber-600 dark:text-amber-400 group-hover:text-amber-700 dark:group-hover:text-amber-300 transition-colors">
                                     Don&apos;t have an account yet?
@@ -1055,7 +1060,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                                                     { broker: broker.slug }
                                                 )
                                             }
-                                            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white text-[11px] font-bold tracking-wide uppercase transition-all duration-200 flex-shrink-0 shadow-[0_2px_8px_rgba(245,158,11,0.3)] hover:shadow-[0_4px_12px_rgba(245,158,11,0.4)] hover:scale-105"
+                                            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gold hover:bg-gold/90 text-black text-[11px] font-bold tracking-wide uppercase transition-colors flex-shrink-0 shadow-sm"
                                         >
                                             <ExternalLink size={14} />
                                             Register
@@ -1080,7 +1085,7 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                             variant="outline"
                             type="button"
                             onClick={() => setView("form")}
-                            className="w-full h-auto mt-4 py-3 px-4 rounded-xl border text-gray-700 dark:text-gray-300 border-dashboard hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/5 transition-all flex items-center justify-center gap-2 font-bold text-sm"
+                            className="w-full h-auto mt-4 py-3 px-4 rounded-lg border text-gray-700 dark:text-gray-300 border-dashboard hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/5 transition-all flex items-center justify-center gap-2 font-bold text-sm"
                         >
                             I already have an account
                         </Button>
@@ -1107,21 +1112,21 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                             </h2>
 
                             {/* Big Green Check Circle */}
-                            <div className="w-24 h-24 rounded-full bg-[#00C888]/10 flex items-center justify-center relative">
+                            <div className="w-24 h-24 rounded-full bg-amber-500/10 flex items-center justify-center relative">
                                 {/* Ripple effect rings */}
-                                <div className="absolute inset-0 rounded-full border-2 border-[#00C888]/20 animate-ping" />
-                                <div className="absolute inset-2 rounded-full border-2 border-[#00C888]/30 animate-pulse" />
-                                <div className="w-16 h-16 rounded-full bg-white dark:bg-[#1A1D27] border-[3px] border-[#00C888] flex items-center justify-center z-10 shadow-[0_0_20px_rgba(0,200,136,0.3)]">
+                                <div className="absolute inset-0 rounded-full border-2 border-amber-500/20 animate-ping" />
+                                <div className="absolute inset-2 rounded-full border-2 border-amber-500/30 animate-pulse" />
+                                <div className="w-16 h-16 rounded-full bg-white dark:bg-[#1A1D27] border-[3px] border-amber-500 flex items-center justify-center z-10 shadow-[0_0_20px_rgba(245,158,11,0.3)]">
                                     <CheckCircle
                                         size={36}
-                                        className="text-[#00C888]"
+                                        className="text-amber-500"
                                         strokeWidth={2.5}
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <h3 className="text-2xl font-black text-[#00C888] uppercase tracking-wide">
+                                <h3 className="text-2xl font-black text-amber-500 uppercase tracking-wide">
                                     Account Submitted!
                                 </h3>
                                 <p className="text-sm text-gray-600 dark:text-gray-300 max-w-[280px] mx-auto leading-relaxed">

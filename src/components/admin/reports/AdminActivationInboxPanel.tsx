@@ -228,7 +228,7 @@ export function AdminActivationInboxPanel() {
     return (
         <div className="space-y-6">
             {/* Header controls */}
-            <div className="flex flex-col sm:flex-row gap-4 items-center justify-between p-4 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl backdrop-blur-sm">
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-between p-4 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg backdrop-blur-sm">
                 <div className="relative w-full sm:max-w-md">
                     <Search
                         className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"
@@ -239,7 +239,7 @@ export function AdminActivationInboxPanel() {
                         placeholder="Search trader username, name, or signal content..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 text-sm bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-amber-500 dark:focus:border-amber-500/40 text-slate-800 dark:text-white"
+                        className="w-full pl-10 pr-4 py-2 text-sm bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:border-amber-500 dark:focus:border-amber-500/40 text-slate-800 dark:text-white"
                     />
                 </div>
 
@@ -248,7 +248,7 @@ export function AdminActivationInboxPanel() {
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="outline"
-                                className="w-full sm:w-[240px] justify-between rounded-xl px-3.5 py-2 text-sm bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10 text-slate-800 dark:text-white font-normal hover:bg-slate-50 dark:hover:bg-white/[0.02]"
+                                className="w-full sm:w-[240px] justify-between rounded-lg px-3.5 py-2 text-sm bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10 text-slate-800 dark:text-white font-normal hover:bg-slate-50 dark:hover:bg-white/[0.02]"
                             >
                                 <span className="truncate">
                                     {selectedStage === "ALL"
@@ -264,7 +264,7 @@ export function AdminActivationInboxPanel() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
                             align="end"
-                            className="w-[240px] rounded-xl border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-[0_10px_40px_rgba(0,0,0,0.1)] p-1.5"
+                            className="w-[240px] rounded-lg border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-[0_10px_40px_rgba(0,0,0,0.1)] p-1.5"
                         >
                             <DropdownMenuItem
                                 onClick={() => setSelectedStage("ALL")}
@@ -296,7 +296,7 @@ export function AdminActivationInboxPanel() {
                         onClick={loadInbox}
                         variant="outline"
                         size="sm"
-                        className="rounded-xl shrink-0 p-2.5 h-auto text-slate-600 border-gray-200 dark:border-white/10 dark:text-gray-400"
+                        className="rounded-lg shrink-0 p-2.5 h-auto text-slate-600 border-gray-200 dark:border-white/10 dark:text-gray-400"
                     >
                         <RefreshCw
                             size={14}
@@ -318,17 +318,17 @@ export function AdminActivationInboxPanel() {
                     </p>
                 </div>
             ) : error ? (
-                <div className="p-6 text-center border border-red-500/10 bg-red-500/5 rounded-xl">
+                <div className="p-6 text-center border border-red-500/10 bg-red-500/5 rounded-lg">
                     <p className="text-sm text-red-500 font-bold">{error}</p>
                     <Button
                         onClick={loadInbox}
-                        className="mt-3 text-xs bg-red-500 hover:bg-red-600 text-white rounded-xl"
+                        className="mt-3 text-xs bg-red-500 hover:bg-red-600 text-white rounded-lg"
                     >
                         Retry
                     </Button>
                 </div>
             ) : filteredSignals.length === 0 ? (
-                <div className="text-center py-16 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl shadow-sm">
+                <div className="text-center py-16 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg shadow-sm">
                     <CheckCircle2
                         size={44}
                         className="mx-auto text-emerald-500 mb-3 animate-pulse"
@@ -358,7 +358,7 @@ export function AdminActivationInboxPanel() {
                             <div
                                 key={sig.id}
                                 className={cn(
-                                    "p-5 rounded-xl border bg-white dark:bg-[#1E2028] shadow-sm relative overflow-hidden transition-shadow hover:shadow-md",
+                                    "p-5 rounded-lg border bg-white dark:bg-[#1E2028] shadow-sm relative overflow-hidden transition-shadow hover:shadow-md",
                                     sig.metadata.adminContactedAt
                                         ? "border-emerald-500/20 dark:border-emerald-500/10 opacity-80"
                                         : "border-gray-200 dark:border-white/10"
@@ -478,7 +478,7 @@ export function AdminActivationInboxPanel() {
 
                                     {/* Action items and notes */}
                                     <div className="w-full md:w-1/3 shrink-0 flex flex-col gap-3 justify-between">
-                                        <div className="p-3 bg-amber-500/[0.02] dark:bg-white/[0.01] border border-amber-900/[0.04] rounded-xl space-y-1">
+                                        <div className="p-3 bg-amber-500/[0.02] dark:bg-white/[0.01] border border-amber-900/[0.04] rounded-lg space-y-1">
                                             <span className="text-[9px] font-black tracking-wider uppercase text-amber-700 dark:text-amber-400/80">
                                                 Recommended Admin Action:
                                             </span>
@@ -501,7 +501,7 @@ export function AdminActivationInboxPanel() {
                                                             e.target.value,
                                                     }))
                                                 }
-                                                className="w-full text-[11px] p-2 bg-slate-50 dark:bg-[#07090f] border border-gray-200 dark:border-white/10 rounded-xl h-14 focus:outline-none focus:border-amber-500 dark:focus:border-amber-500/40 text-slate-800 dark:text-white resize-none"
+                                                className="w-full text-[11px] p-2 bg-slate-50 dark:bg-[#07090f] border border-gray-200 dark:border-white/10 rounded-lg h-14 focus:outline-none focus:border-amber-500 dark:focus:border-amber-500/40 text-slate-800 dark:text-white resize-none"
                                             />
                                         </div>
 
@@ -518,7 +518,7 @@ export function AdminActivationInboxPanel() {
                                                 }
                                                 variant="outline"
                                                 size="sm"
-                                                className="flex-1 rounded-xl text-[11px] font-bold bg-white dark:bg-transparent border-gray-200 dark:border-white/10 dark:text-gray-300 hover:border-emerald-500/30 hover:text-emerald-500 dark:hover:text-emerald-400 gap-1.5 h-8 shrink-0 shadow-sm"
+                                                className="flex-1 rounded-lg text-[11px] font-bold bg-white dark:bg-transparent border-gray-200 dark:border-white/10 dark:text-gray-300 hover:border-emerald-500/30 hover:text-emerald-500 dark:hover:text-emerald-400 gap-1.5 h-8 shrink-0 shadow-sm"
                                             >
                                                 {sig.metadata
                                                     .adminContactedAt ? (
@@ -549,7 +549,7 @@ export function AdminActivationInboxPanel() {
                                                 variant="outline"
                                                 size="sm"
                                                 className={cn(
-                                                    "rounded-xl text-[11px] font-bold h-8 px-3 shrink-0 shadow-sm transition-all border-gray-200 dark:border-white/10 gap-1 flex items-center justify-center",
+                                                    "rounded-lg text-[11px] font-bold h-8 px-3 shrink-0 shadow-sm transition-all border-gray-200 dark:border-white/10 gap-1 flex items-center justify-center",
                                                     activeNotes[sig.id] !==
                                                         sig.metadata.adminNotes
                                                         ? "bg-amber-500 hover:bg-amber-600 text-white border-transparent cursor-pointer"
@@ -574,7 +574,7 @@ export function AdminActivationInboxPanel() {
                                                 disabled={isPending}
                                                 variant="outline"
                                                 size="sm"
-                                                className="rounded-xl text-[11px] font-bold border-gray-200 dark:border-white/10 text-gray-500 hover:bg-rose-500/5 hover:border-rose-500/30 hover:text-rose-500 gap-1 h-8 px-2.5 shrink-0 shadow-sm"
+                                                className="rounded-lg text-[11px] font-bold border-gray-200 dark:border-white/10 text-gray-500 hover:bg-rose-500/5 hover:border-rose-500/30 hover:text-rose-500 gap-1 h-8 px-2.5 shrink-0 shadow-sm"
                                                 title="Snooze for 7 days"
                                             >
                                                 <EyeOff size={11} />

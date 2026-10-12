@@ -192,7 +192,7 @@ export function ProfitCalendar({
     return (
         <div
             ref={calendarRef}
-            className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group"
+            className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group"
         >
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
@@ -351,7 +351,7 @@ export function ProfitCalendar({
                                                     )
                                                 }
                                                 className={`
- min-h-[80px] p-2 rounded-xl flex flex-col items-center justify-center
+ min-h-[80px] p-2 rounded-lg flex flex-col items-center justify-center
  transition-all relative border
  ${hasTrades ? `${getColorClass(pnl)} cursor-pointer hover:brightness-95 dark:hover:brightness-110` : "bg-gray-50 dark:bg-white/5 text-gray-500 border-transparent cursor-default"}
  `}
@@ -403,7 +403,7 @@ export function ProfitCalendar({
                                     })}
 
                                     {/* Weekly Summary Cell */}
-                                    <div className="min-h-[80px] p-2 rounded-xl flex flex-col items-center justify-center bg-white dark:bg-[#1E2028] border border-dashboard relative shadow-sm hover:shadow-md transition-all">
+                                    <div className="min-h-[80px] p-2 rounded-lg flex flex-col items-center justify-center bg-white dark:bg-[#1E2028] border border-dashboard relative shadow-sm hover:shadow-md transition-all">
                                         <span
                                             className={`text-[10px] font-bold absolute top-1.5 left-2 ${weeklyPnL >= 0 ? "text-primary" : "text-red-500"}`}
                                         >

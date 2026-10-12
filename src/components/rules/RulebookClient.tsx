@@ -138,11 +138,11 @@ export function RulebookClient({
                 tabsId="rules-tabs"
             >
                 <div className="overflow-x-auto scrollbar-hide flex">
-                    <TabsList className="bg-[#F1F3F5] dark:bg-[#1A1D27] border border-dashboard rounded-xl p-1 gap-1 shrink-0">
+                    <TabsList className="bg-[#F1F3F5] dark:bg-[#1A1D27] border border-dashboard rounded-lg p-1 gap-1 shrink-0">
                         <TabsTrigger
                             value="rulebook"
                             className="rounded-lg px-3 sm:px-4 py-1.5 text-sm font-bold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 border whitespace-nowrap flex-1 text-center lg:flex-none border-transparent hover:border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0 !-inset-[1px]"
+                            activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0 !-inset-[1px]"
                             activeTextClassName="!text-white"
                         >
                             <Shield size={14} className="sm:w-4 sm:h-4" />
@@ -151,7 +151,7 @@ export function RulebookClient({
                         <TabsTrigger
                             value="goals"
                             className="rounded-lg px-3 sm:px-4 py-1.5 text-sm font-bold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 border whitespace-nowrap flex-1 text-center lg:flex-none border-transparent hover:border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0 !-inset-[1px]"
+                            activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0 !-inset-[1px]"
                             activeTextClassName="!text-white"
                         >
                             <Award size={14} className="sm:w-4 sm:h-4" />
@@ -160,7 +160,7 @@ export function RulebookClient({
                         <TabsTrigger
                             value="compliance"
                             className="rounded-lg px-3 sm:px-4 py-1.5 text-sm font-bold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 border whitespace-nowrap flex-1 text-center lg:flex-none border-transparent hover:border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0 !-inset-[1px]"
+                            activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0 !-inset-[1px]"
                             activeTextClassName="!text-white"
                         >
                             <ClipboardCheck
@@ -181,10 +181,10 @@ export function RulebookClient({
                                 key={cat.value}
                                 type="button"
                                 onClick={() => setSelectedCategory(cat.value)}
-                                className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
+                                className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
                                     selectedCategory === cat.value
-                                        ? "bg-primary/10 border-primary text-primary"
-                                        : "bg-white dark:bg-[#1E2028] border-dashboard hover:border-gray-400 text-gray-600 dark:text-gray-400"
+                                        ? "bg-amber-500/10 border-amber-500 text-gold dark:text-amber-400 font-bold"
+                                        : "bg-white dark:bg-[#1E2028] border-dashboard hover:border-amber-400/40 text-gray-600 dark:text-gray-400"
                                 }`}
                             >
                                 {cat.label}
@@ -193,8 +193,8 @@ export function RulebookClient({
                     </div>
 
                     {filteredRules.length === 0 ? (
-                        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-2xl border border-dashboard shadow-sm max-w-xl mx-auto mt-6">
-                            <div className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-500/15 flex items-center justify-center mx-auto mb-4 text-indigo-500">
+                        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm max-w-xl mx-auto mt-6">
+                            <div className="w-12 h-12 rounded-lg bg-indigo-50 dark:bg-indigo-500/15 flex items-center justify-center mx-auto mb-4 text-indigo-500">
                                 <Shield size={24} />
                             </div>
                             <h3 className="text-base font-bold text-gray-800 dark:text-white">
@@ -245,8 +245,8 @@ export function RulebookClient({
                 {/* --- GOALS TAB --- */}
                 <TabsContent value="goals">
                     {initialGoals.length === 0 ? (
-                        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-2xl border border-dashboard shadow-sm max-w-xl mx-auto">
-                            <div className="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-500/15 flex items-center justify-center mx-auto mb-4 text-amber-500">
+                        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm max-w-xl mx-auto">
+                            <div className="w-12 h-12 rounded-lg bg-amber-50 dark:bg-amber-500/15 flex items-center justify-center mx-auto mb-4 text-amber-500">
                                 <Award size={24} />
                             </div>
                             <h3 className="text-base font-bold text-gray-800 dark:text-white">
@@ -304,7 +304,7 @@ export function RulebookClient({
                             {/* Compliance Overview Grid */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Stats Table */}
-                                <div className="bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] p-5 rounded-2xl">
+                                <div className="bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] p-5 rounded-lg">
                                     <h3 className="text-sm font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                                         <BarChart2
                                             size={16}
@@ -359,7 +359,7 @@ export function RulebookClient({
                                 </div>
 
                                 {/* Focus / Advice panel */}
-                                <div className="bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] p-5 rounded-2xl flex flex-col justify-between">
+                                <div className="bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] p-5 rounded-lg flex flex-col justify-between">
                                     <div>
                                         <h3 className="text-sm font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                                             <AlertCircle
@@ -400,7 +400,7 @@ export function RulebookClient({
 
                                             return (
                                                 <div className="space-y-4">
-                                                    <div className="p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl">
+                                                    <div className="p-4 bg-amber-500/5 border border-amber-500/20 rounded-lg">
                                                         <p className="text-xs font-bold text-amber-600 dark:text-amber-400">
                                                             Biggest Leak
                                                             Identified:

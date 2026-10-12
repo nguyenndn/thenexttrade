@@ -43,6 +43,8 @@ export async function getFirstInsight(
         select: {
             symbol: true,
             pnl: true,
+            commission: true,
+            swap: true,
             tradingSession: true,
             entryReason: true,
             exitReason: true,
@@ -77,10 +79,11 @@ export async function getFirstInsight(
     // 2. Best session by P&L
     const sessionPnl = new Map<string, number>();
     for (const t of trades) {
-        if (t.tradingSession && t.pnl) {
+        if (t.tradingSession && t.pnl !== null) {
+            const net = (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
             sessionPnl.set(
                 t.tradingSession,
-                (sessionPnl.get(t.tradingSession) || 0) + t.pnl
+                (sessionPnl.get(t.tradingSession) || 0) + net
             );
         }
     }

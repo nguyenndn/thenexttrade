@@ -1,15 +1,10 @@
 "use client";
 
-import { TabBar } from "@/components/ui/TabBar";
-import { FileText, Clock } from "lucide-react";
-
 import { useState, useEffect, useMemo } from "react";
 import { Edit2, ArrowUpDown, Activity, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { utcTime, cn } from "@/lib/utils";
-import { TradePlanList } from "./TradePlanList";
-import { isTradePlansEnabled } from "@/lib/feature-flags";
 import JournalStats from "@/components/journal/JournalStats";
 import { Modal } from "@/components/ui/Modal";
 import { StrategyCell } from "@/components/journal/cells/StrategyCell";
@@ -26,6 +21,14 @@ import dynamic from "next/dynamic";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyStateCTAs } from "@/components/ui/EmptyStateCTAs";
 import { JournalTableFilters } from "@/components/journal/JournalTableFilters";
+import { useSampleMode } from "@/components/providers/SampleModeProvider";
+import {
+    SAMPLE_TRADES,
+    SAMPLE_STRATEGIES,
+    SAMPLE_TAGS,
+    SAMPLE_JOURNAL_STATS,
+} from "@/lib/sample-data/mock-sample-data";
+import { SampleModeBanner } from "@/components/dashboard/SampleModeBanner";
 import { FolderOpen } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import {
@@ -50,6 +53,7 @@ import { updateJournalEntry } from "@/actions/journal";
 const getColumnWidthClass = (colId: string) => {
     switch (colId) {
         case "pnl":
+        case "commission":
             return "w-[140px] min-w-[140px] max-w-[140px] text-right";
         case "tp":
         case "sl":
@@ -71,7 +75,7 @@ const getColumnWidthClass = (colId: string) => {
 };
 
 const getColumnAlignmentClass = (colId: string) => {
-    if (["pnl", "tp", "sl"].includes(colId)) return "justify-end pr-2";
+    if (["pnl", "tp", "sl", "commission"].includes(colId)) return "justify-end pr-2";
     if (["openTime", "closeTime", "type", "volume", "mindset"].includes(colId))
         return "justify-center whitespace-nowrap";
     return "justify-start whitespace-nowrap";
@@ -85,6 +89,9 @@ interface JournalEntry {
     symbol: string;
     type: "BUY" | "SELL";
     pnl: number | null;
+    grossProfit?: number | null;
+    commission?: number | null;
+    swap?: number | null;
     status: "OPEN" | "CLOSED";
     result: "WIN" | "LOSS" | "BREAK_EVEN" | null;
     entryPrice: number;
@@ -114,7 +121,6 @@ interface JournalListProps {
     strategies: any[];
     userTags?: string[];
     hasTradeData?: boolean;
-    initialTradePlans?: any[];
 }
 
 export default function JournalList({
@@ -124,7 +130,6 @@ export default function JournalList({
     strategies: initialStrategies,
     userTags = [],
     hasTradeData = true,
-    initialTradePlans = [],
 }: JournalListProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -141,24 +146,6 @@ export default function JournalList({
     const filterStatus = searchParams.get("status") || "ALL";
     const filterTag = searchParams.get("tag") || "ALL";
 
-    // Sub-tabs & Trade plans state
-    const [activeSubTab, setActiveSubTab] = useState<
-        "trades" | "plans" | "open" | "reviews"
-    >("trades");
-    const [tradePlans, setTradePlans] = useState<any[]>(initialTradePlans);
-
-    const refreshPlans = async () => {
-        try {
-            const res = await fetch("/api/trade-plans");
-            if (res.ok) {
-                const data = await res.json();
-                setTradePlans(data);
-            }
-        } catch (err) {
-            console.error("Failed to refresh plans", err);
-        }
-    };
-
     // Convert initial data
     const [entries, setEntries] = useState<any[]>(initialEntries);
     const [stats, setStats] = useState<any>(initialStats);
@@ -169,33 +156,18 @@ export default function JournalList({
         setStats(initialStats);
     }, [initialEntries, initialStats]);
 
-    // Sync tradePlans when initialTradePlans change
-    useEffect(() => {
-        setTradePlans(initialTradePlans);
-    }, [initialTradePlans]);
-
-    // Fallback active tab if trade plans are disabled
-    useEffect(() => {
-        if (
-            !isTradePlansEnabled() &&
-            (activeSubTab === "plans" || activeSubTab === "reviews")
-        ) {
-            setActiveSubTab("trades");
-        }
-    }, [activeSubTab]);
-
-    const strategies = initialStrategies || [];
+    const { isSampleMode } = useSampleMode();
+    const effectiveEntries = isSampleMode ? SAMPLE_TRADES : entries;
+    const effectiveStats = isSampleMode ? SAMPLE_JOURNAL_STATS : stats;
+    const strategies = isSampleMode
+        ? [...(initialStrategies || []), ...SAMPLE_STRATEGIES]
+        : (initialStrategies || []);
+    const availableUserTags = isSampleMode
+        ? Array.from(new Set([...userTags, ...SAMPLE_TAGS]))
+        : userTags;
     const [isLoading, setIsLoading] = useState(false);
 
-    const displayedEntries = useMemo(() => {
-        if (activeSubTab === "open") {
-            return entries.filter((e) => e.status === "OPEN");
-        }
-        if (activeSubTab === "reviews") {
-            return entries.filter((e) => e.tradePlan);
-        }
-        return entries;
-    }, [entries, activeSubTab]);
+    const displayedEntries = effectiveEntries;
 
     // Column Visibility State
     const [visibleColumns, setVisibleColumns] = useState<Set<string>>(
@@ -203,6 +175,7 @@ export default function JournalList({
             "symbol",
             "type",
             "volume",
+            "commission",
             "pnl",
             "strategy",
             "mindset",
@@ -222,6 +195,7 @@ export default function JournalList({
         { id: "openTime", label: "Open Time" },
         { id: "closeTime", label: "Close Time" },
         { id: "volume", label: "Volume" },
+        { id: "commission", label: "Commission" },
         { id: "pnl", label: "Net Profit" },
         { id: "tp", label: "Take Profit" },
         { id: "sl", label: "Stop Loss" },
@@ -248,6 +222,14 @@ export default function JournalList({
             try {
                 const parsed = JSON.parse(saved);
                 if (Array.isArray(parsed) && parsed.length > 0) {
+                    if (!parsed.includes("commission")) {
+                        const pnlIdx = parsed.indexOf("pnl");
+                        if (pnlIdx !== -1) {
+                            parsed.splice(pnlIdx, 0, "commission");
+                        } else {
+                            parsed.push("commission");
+                        }
+                    }
                     setVisibleColumns(new Set(parsed));
                 }
             } catch (e) {
@@ -307,12 +289,12 @@ export default function JournalList({
         const dir = searchParams.get("dir");
         if (sort === colId) {
             return dir === "asc" ? (
-                <ArrowUpDown size={14} className="text-primary rotate-180" />
+                <ArrowUpDown size={14} className="text-gold dark:text-amber-400 rotate-180 shrink-0" />
             ) : (
-                <ArrowUpDown size={14} className="text-primary" />
+                <ArrowUpDown size={14} className="text-gold dark:text-amber-400 shrink-0" />
             );
         }
-        return <ArrowUpDown size={14} className="text-gray-300 opacity-50" />;
+        return <ArrowUpDown size={14} className="text-gray-300 opacity-50 shrink-0" />;
     };
 
     // Modal State
@@ -407,23 +389,34 @@ export default function JournalList({
         }
     }, [filterSymbol]);
 
-    const journalTabs = [
-        { label: "Trades", href: "/dashboard/journal", icon: FileText },
-        { label: "Sessions", href: "/dashboard/sessions", icon: Clock },
-    ];
-
+    const availableStrategies = useMemo(() => {
+        const set = new Set<string>();
+        strategies.forEach((s: any) => {
+            const name = typeof s === "string" ? s : s?.name;
+            if (name) set.add(name);
+        });
+        entries.forEach((e: any) => {
+            if (e?.strategy) set.add(e.strategy);
+        });
+        const urlStrategy = searchParams.get("strategy");
+        if (urlStrategy) set.add(urlStrategy);
+        return Array.from(set);
+    }, [strategies, entries, searchParams]);
     return (
         <>
-            {/* Compact Header: Description + TabBar + Filters */}
+            {/* Compact Header: Description + Filters */}
             <PageHeader
                 title="Journal"
                 description="Log trade setups, review execution telemetry, and audit plan compliance."
             />
+
+            {/* Sample Mode Active Banner */}
+            <SampleModeBanner />
+
             <div
                 id="onborda-journal-filters"
-                className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4"
+                className="flex flex-col lg:flex-row lg:items-center justify-end gap-3 mb-4"
             >
-                <TabBar tabs={journalTabs} />
                 <DashboardFilter
                     currentAccountId={accountId || undefined}
                     equalWidth
@@ -431,88 +424,14 @@ export default function JournalList({
                 />
             </div>
 
-            {stats && (
+            {effectiveStats && (
                 <div id="onborda-journal-stats">
-                    <JournalStats stats={stats} />
+                    <JournalStats stats={effectiveStats} />
                 </div>
             )}
 
-            {/* Inner sub-tabs: Trades, Plans, Open, Reviews */}
-            <div className="flex border-b border-dashboard mt-6 mb-4 gap-6 text-sm font-black">
-                {(
-                    [
-                        { id: "trades", label: "Trades" },
-                        isTradePlansEnabled() && {
-                            id: "plans",
-                            label: "Trade Plans",
-                        },
-                        { id: "open", label: "Open Positions" },
-                        isTradePlansEnabled() && {
-                            id: "reviews",
-                            label: "Plan Reviews",
-                        },
-                    ].filter(Boolean) as {
-                        id: "trades" | "plans" | "open" | "reviews";
-                        label: string;
-                    }[]
-                ).map((tab) => {
-                    const isActive = activeSubTab === tab.id;
-                    return (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveSubTab(tab.id)}
-                            className={cn(
-                                "pb-3 border-b-2 transition-all relative -mb-[2px]",
-                                isActive
-                                    ? "border-primary text-primary"
-                                    : "border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                            )}
-                        >
-                            {tab.label}
-                        </button>
-                    );
-                })}
-            </div>
-
-            {activeSubTab === "plans" ? (
-                <TradePlanList
-                    plans={tradePlans}
-                    onRefresh={refreshPlans}
-                    onLogTrade={(plan) => {
-                        setEditingEntry({
-                            symbol: plan.symbol,
-                            type: plan.type || "BUY",
-                            entryPrice: plan.plannedEntry || "",
-                            stopLoss: plan.plannedStopLoss || "",
-                            takeProfit: plan.plannedTakeProfit || "",
-                            lotSize: plan.plannedLotSize || "",
-                            emotionBefore: plan.emotionBefore || null,
-                            confidenceLevel: plan.confidenceLevel || null,
-                            accountId: plan.accountId || "",
-                            tradePlan: plan,
-                            tags: plan.tags || [],
-                            notes: plan.thesis || "",
-                            tradePlanId: plan.id,
-                        } as any);
-                        setIsModalOpen(true);
-                    }}
-                    onViewActual={(journalEntryId) => {
-                        const matchingEntry = entries.find(
-                            (e) => e.id === journalEntryId
-                        );
-                        if (matchingEntry) {
-                            setSelectedDetailEntry(matchingEntry);
-                            setIsDetailOpen(true);
-                        } else {
-                            toast.error(
-                                "Trade entry not found in the current page."
-                            );
-                        }
-                    }}
-                />
-            ) : (
-                <>
-                    <JournalTableFilters
+            <div className="mt-6">
+                <JournalTableFilters
                         searchTerm={searchTerm}
                         setSearchTerm={setSearchTerm}
                         handleSearch={handleSearch}
@@ -520,14 +439,8 @@ export default function JournalList({
                         filterTag={filterTag}
                         filterResult={filterStatus}
                         filterStrategy={searchParams.get("strategy") || ""}
-                        userTags={userTags}
-                        strategies={[
-                            ...new Set(
-                                entries
-                                    .map((e: any) => e.strategy)
-                                    .filter(Boolean)
-                            ),
-                        ]}
+                        userTags={availableUserTags}
+                        strategies={availableStrategies}
                         updateParams={updateParams}
                         isColumnMenuOpen={isColumnMenuOpen}
                         setIsColumnMenuOpen={setIsColumnMenuOpen}
@@ -538,10 +451,10 @@ export default function JournalList({
                     />
 
                     {displayedEntries.length === 0 ? (
-                        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-6 shadow-sm">
+                        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border-2 border-dashed border-dashboard mt-6 shadow-sm">
                             {/* Animated Folder Icon */}
                             <div className="relative w-20 h-20 mb-6 mx-auto">
-                                <div className="absolute inset-0 rounded-full bg-primary/10 dark:bg-primary/5 animate-[journal-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
+                                <div className="absolute inset-0 rounded-full bg-amber-500/10 dark:bg-amber-500/5 animate-[journal-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
                                 <div className="relative w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center animate-[journal-float_3s_ease-in-out_infinite]">
                                     <FolderOpen
                                         size={32}
@@ -549,11 +462,11 @@ export default function JournalList({
                                         strokeWidth={1.5}
                                     />
                                     {/* Sliding paper sheet */}
-                                    <div className="absolute w-5 h-6 bg-primary/20 dark:bg-primary/10 rounded-lg border border-primary/30 top-4 left-7 animate-[journal-paper_3s_ease-in-out_infinite]" />
+                                    <div className="absolute w-5 h-6 bg-amber-500/20 dark:bg-amber-500/10 rounded-lg border border-amber-500/30 top-4 left-7 animate-[journal-paper_3s_ease-in-out_infinite]" />
                                     {/* Sparkle dots */}
-                                    <div className="absolute -top-2 left-3 w-1.5 h-1.5 rounded-full bg-primary/40 animate-[journal-sparkle_2.5s_ease-in-out_infinite_1.2s]" />
-                                    <div className="absolute -bottom-1 -right-1 w-1 h-1 rounded-full bg-primary/30 animate-[journal-sparkle_3s_ease-in-out_infinite_0.8s]" />
-                                    <div className="absolute top-0 -right-2 w-1 h-1 rounded-full bg-primary/25 animate-[journal-sparkle_2s_ease-in-out_infinite_1.5s]" />
+                                    <div className="absolute -top-2 left-3 w-1.5 h-1.5 rounded-full bg-amber-500/40 animate-[journal-sparkle_2.5s_ease-in-out_infinite_1.2s]" />
+                                    <div className="absolute -bottom-1 -right-1 w-1 h-1 rounded-full bg-amber-500/30 animate-[journal-sparkle_3s_ease-in-out_infinite_0.8s]" />
+                                    <div className="absolute top-0 -right-2 w-1 h-1 rounded-full bg-amber-500/25 animate-[journal-sparkle_2s_ease-in-out_infinite_1.5s]" />
                                 </div>
                             </div>
 
@@ -675,7 +588,7 @@ export default function JournalList({
                     ) : (
                         <div
                             id="onborda-journal-list"
-                            className="bg-white dark:bg-[#1E2028] mt-6 rounded-xl shadow-sm border border-dashboard overflow-x-auto custom-scrollbar"
+                            className="bg-white dark:bg-[#1E2028] mt-6 rounded-lg shadow-sm border border-dashboard overflow-x-auto custom-scrollbar"
                         >
                             {/* Desktop View */}
                             <div className="hidden md:block overflow-x-auto w-full">
@@ -699,6 +612,7 @@ export default function JournalList({
                                                                     "openTime",
                                                                     "closeTime",
                                                                     "volume",
+                                                                    "commission",
                                                                     "pnl",
                                                                     "tp",
                                                                     "sl",
@@ -724,7 +638,7 @@ export default function JournalList({
                                                             <div
                                                                 className={`flex items-center gap-1 w-full ${getColumnAlignmentClass(col.id)}`}
                                                             >
-                                                                {col.label}
+                                                                <span className="whitespace-nowrap">{col.label}</span>
                                                                 {[
                                                                     "date",
                                                                     "symbol",
@@ -732,6 +646,7 @@ export default function JournalList({
                                                                     "openTime",
                                                                     "closeTime",
                                                                     "volume",
+                                                                    "commission",
                                                                     "pnl",
                                                                     "tp",
                                                                     "sl",
@@ -797,7 +712,7 @@ export default function JournalList({
                                                                                     true
                                                                                 );
                                                                             }}
-                                                                            className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-dashboard flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all group/detail"
+                                                                            className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-dashboard flex items-center justify-center text-gray-400 hover:text-gold dark:hover:text-amber-400 hover:border-amber-500/30 hover:bg-amber-500/5 dark:hover:bg-amber-500/10 transition-all group/detail"
                                                                         >
                                                                             <Zap
                                                                                 size={
@@ -824,12 +739,10 @@ export default function JournalList({
                                                             ) && (
                                                                 <td
                                                                     key={col.id}
-                                                                    className={`px-6 py-4
- ${col.id === "pnl" ? "w-[140px] min-w-[140px] max-w-[140px] text-right" : col.id === "tp" || col.id === "sl" ? "w-[120px] min-w-[120px] max-w-[120px] text-right" : col.id === "strategy" || col.id === "mindset" || col.id === "customTags" || col.id === "mistakes" ? "text-left min-w-[200px]" : col.id.toLowerCase().includes("time") ? "text-center min-w-[130px]" : col.id === "type" || col.id === "volume" || col.id === "status" ? "text-center min-w-[100px]" : "text-left min-w-[120px]"}
- `}
+                                                                    className={`px-6 py-4 ${getColumnWidthClass(col.id)}`}
                                                                 >
                                                                     <div
-                                                                        className={`w-full ${col.id === "pnl" || col.id === "tp" || col.id === "sl" ? "flex justify-end pr-2" : ""}`}
+                                                                        className={`w-full ${col.id === "pnl" || col.id === "commission" || col.id === "tp" || col.id === "sl" ? "flex justify-end pr-2" : ""}`}
                                                                     >
                                                                         {col.id ===
                                                                             "date" &&
@@ -873,6 +786,23 @@ export default function JournalList({
                                                                                 )
                                                                                     .lotSize ||
                                                                                     "0.00"}
+                                                                            </span>
+                                                                        )}
+                                                                        {col.id ===
+                                                                            "commission" && (
+                                                                            <span
+                                                                                className={cn(
+                                                                                    "font-mono font-medium",
+                                                                                    (entry.commission || 0) < 0
+                                                                                        ? "text-red-500/90 dark:text-red-400/90"
+                                                                                        : "text-gray-500 dark:text-gray-400"
+                                                                                )}
+                                                                            >
+                                                                                {entry.commission != null
+                                                                                    ? (entry.commission < 0 ? "-" : "") +
+                                                                                      "$" +
+                                                                                      Math.abs(entry.commission).toFixed(2)
+                                                                                    : "$0.00"}
                                                                             </span>
                                                                         )}
                                                                         {col.id ===
@@ -972,7 +902,7 @@ export default function JournalList({
                                                                         entry
                                                                     )
                                                                 }
-                                                                className="text-gray-500 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                                                                className="text-gray-500 hover:text-gold dark:hover:text-amber-400 hover:bg-amber-500/10 rounded-lg transition-colors"
                                                             >
                                                                 <Edit2
                                                                     size={16}
@@ -997,7 +927,7 @@ export default function JournalList({
                                     displayedEntries.map((entry) => (
                                         <div
                                             key={entry.id}
-                                            className="bg-gray-50 dark:bg-white/5 p-3 sm:p-4 rounded-xl border relative transition-all duration-200 hover:shadow-md active:scale-[0.98] border-dashboard"
+                                            className="bg-gray-50 dark:bg-white/5 p-3 sm:p-4 rounded-lg border relative transition-all duration-200 hover:shadow-md active:scale-[0.98] border-dashboard"
                                         >
                                             {/* Header Row */}
                                             <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
@@ -1029,7 +959,7 @@ export default function JournalList({
                                                                         true
                                                                     );
                                                                 }}
-                                                                className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-dashboard flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all"
+                                                                className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-dashboard flex items-center justify-center text-gray-400 hover:text-gold dark:hover:text-amber-400 hover:border-amber-500/30 hover:bg-amber-500/5 dark:hover:bg-amber-500/10 transition-all"
                                                             >
                                                                 <Zap
                                                                     size={14}
@@ -1089,6 +1019,16 @@ export default function JournalList({
                                                             : "-"}
                                                     </p>
                                                 </div>
+                                                {entry.commission ? (
+                                                    <div>
+                                                        <p className="text-xs text-gray-500 mb-0.5">
+                                                            Commission
+                                                        </p>
+                                                        <p className="font-mono text-xs font-semibold text-red-500/90 dark:text-red-400/90">
+                                                            {entry.commission < 0 ? "-" : ""}${Math.abs(entry.commission).toFixed(2)}
+                                                        </p>
+                                                    </div>
+                                                ) : null}
                                             </div>
 
                                             {/* Tags & Mistakes Summary (Simulated simple view) */}
@@ -1107,7 +1047,7 @@ export default function JournalList({
                                                     onClick={() =>
                                                         handleEdit(entry)
                                                     }
-                                                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                                                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:text-gold dark:hover:text-amber-400 hover:bg-amber-500/10 rounded-lg transition-colors"
                                                 >
                                                     <Edit2 size={14} />
                                                     Edit Trade
@@ -1136,8 +1076,7 @@ export default function JournalList({
                             </div>
                         </div>
                     )}
-                </>
-            )}
+            </div>
 
             <Modal
                 isOpen={isModalOpen}

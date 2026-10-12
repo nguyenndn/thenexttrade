@@ -71,7 +71,7 @@ The product becomes confusing when acquisition pages, community, brokers, tools,
 | Intelligence/Pro analytics | Premium insight layer | Active/Pro-gated where applicable | `/dashboard/intelligence` |
 | Edge missions | Retention and habit loop | Active | `/dashboard/missions` |
 | Daily check-in | Daily engagement and Edge reward | Active expectation | `/dashboard/missions` |
-| Trading systems/downloads | Unlock and manage GoldScalperNinja, Trade Manager, and GSN Phoenix Grid | Active | `/trading-systems`, `/dashboard/trading-systems`, `/admin/trading-systems` |
+| Trading systems/downloads | Unlock and manage GoldScalperNinja, Trade Manager, and GSN - Apex Gold Sentinel | Active | `/trading-systems`, `/dashboard/trading-systems`, `/admin/trading-systems` |
 | Admin reports | System health and business reporting | Active | `/admin/reports` |
 | Admin analytics | Traffic, country, campaign, event analysis | Active | `/admin/analytics` |
 | Admin users/detail | User support and management | Active | `/admin/users` |

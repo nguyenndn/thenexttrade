@@ -39,7 +39,7 @@ const PremiumInput = React.forwardRef<HTMLInputElement, PremiumInputProps>(
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <Icon
                                 size={16}
-                                className="text-gray-500 group-focus-within:text-primary transition-colors duration-300"
+                                className="text-gray-500 group-focus-within:text-gold transition-colors duration-300"
                             />
                         </div>
                     ) : null}
@@ -49,7 +49,7 @@ const PremiumInput = React.forwardRef<HTMLInputElement, PremiumInputProps>(
                         aria-invalid={!!error}
                         aria-describedby={error ? `${id}-error` : undefined}
                         className={cn(
-                            "w-full p-2.5 rounded-xl bg-gray-50 dark:bg-[#151925] border border-dashboard text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:border-primary transition-all",
+                            "w-full p-2.5 rounded-lg bg-gray-50 dark:bg-[#151925] border border-dashboard text-sm outline-none focus-visible:ring-2 focus-visible:ring-amber-500/30 focus-visible:border-amber-500 transition-all",
                             "placeholder:text-gray-500 dark:placeholder:text-gray-600 placeholder:font-normal",
                             "text-gray-700 dark:text-white font-medium",
                             prefix ? "pl-16" : Icon ? "pl-9" : "",

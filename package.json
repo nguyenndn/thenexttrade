@@ -8,9 +8,9 @@
     "test": "tests"
   },
   "scripts": {
-    "dev": "next dev",
-    "dev:local": "npm run env:local && next dev",
-    "dev:prod": "npm run env:prod && next dev",
+    "dev": "next dev -p 3500",
+    "dev:local": "npm run env:local && next dev -p 3500",
+    "dev:prod": "npm run env:prod && next dev -p 3500",
     "build": "prisma generate && next build",
     "build:next": "next build",
     "postinstall": "prisma generate",
@@ -23,6 +23,7 @@
     "start": "next start",
     "test": "vitest",
     "lint": "npx eslint src/",
+    "lint:copy": "node scripts/lint-ai-copy.cjs",
     "type-check": "tsc --noEmit",
     "verify": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" scripts/verify-routes.ts",
     "worker": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" scripts/worker.ts",

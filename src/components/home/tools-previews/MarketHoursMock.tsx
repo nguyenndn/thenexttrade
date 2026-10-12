@@ -23,7 +23,7 @@ export function MarketHoursMock() {
     }, []);
 
     return (
-        <div className="h-44 w-full bg-slate-50 dark:bg-slate-900/80 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/80 dark:border-white/10 select-none">
+        <div className="h-44 w-full bg-slate-50 dark:bg-slate-900/80 rounded-lg p-4 flex flex-col justify-between relative overflow-hidden border border-gray-200 dark:border-white/10 select-none">
             {/* Glow effect */}
             <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-full blur-2xl pointer-events-none" />
 
@@ -114,7 +114,7 @@ export function MarketHoursMock() {
             </div>
 
             {/* Footer Info */}
-            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-slate-100 dark:border-white/10 pt-2 font-mono">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono">
                 <span>GMT+7 timezone</span>
                 <span>Auto-sync active</span>
             </div>

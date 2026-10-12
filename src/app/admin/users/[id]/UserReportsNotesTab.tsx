@@ -141,7 +141,7 @@ export function UserReportsNotesTab({
         <div className="space-y-6">
             {/* Top KPI Cards */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <BarChart3 size={14} className="text-primary" /> Generated Reports
                     </div>
@@ -153,7 +153,7 @@ export function UserReportsNotesTab({
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <DollarSign size={14} className="text-emerald-500" /> Aggregate Reported P&L
                     </div>
@@ -171,7 +171,7 @@ export function UserReportsNotesTab({
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <Percent size={14} className="text-blue-500" /> Avg Reported Win Rate
                     </div>
@@ -183,7 +183,7 @@ export function UserReportsNotesTab({
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <Calendar size={14} className="text-amber-500" /> Day Notes & Insights
                     </div>
@@ -198,7 +198,7 @@ export function UserReportsNotesTab({
 
             {/* Sub-Section Navigation & Filters */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex rounded-xl border border-gray-200 bg-[#F1F3F5] p-1 dark:border-white/10 dark:bg-[#1A1D27] w-fit">
+                <div className="flex rounded-lg border border-gray-200 bg-[#F1F3F5] p-1 dark:border-white/10 dark:bg-[#1A1D27] w-fit">
                     <button
                         type="button"
                         onClick={() => setActiveSection("reports")}
@@ -249,7 +249,7 @@ export function UserReportsNotesTab({
 
             {/* Section 1: Performance Reports (GAP-8) */}
             {activeSection === "reports" && (
-                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <BarChart3 size={16} className="text-primary" /> Generated Performance Reports ({filteredReports.length})
@@ -270,7 +270,7 @@ export function UserReportsNotesTab({
                                                 <h4 className="font-bold text-gray-900 dark:text-white text-sm">
                                                     {report.periodLabel}
                                                 </h4>
-                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-primary/10 text-primary uppercase">
+                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-primary/10 text-primary uppercase">
                                                     {report.type}
                                                 </span>
                                                 <span className="text-xs text-gray-500">
@@ -279,7 +279,7 @@ export function UserReportsNotesTab({
                                             </div>
 
                                             {/* 2x2 Matrix Card for Specs */}
-                                            <div className="mt-3 rounded-xl border border-gray-200 bg-gray-50/50 dark:border-white/10 dark:bg-[#1A1D27] divide-y divide-gray-200 dark:divide-white/10 text-xs sm:w-96">
+                                            <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50/50 dark:border-white/10 dark:bg-[#1A1D27] divide-y divide-gray-200 dark:divide-white/10 text-xs sm:w-96">
                                                 <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/10">
                                                     <div className="p-2.5">
                                                         <span className="block text-[10px] font-semibold text-gray-400 uppercase">Trades & Win Rate</span>
@@ -326,7 +326,7 @@ export function UserReportsNotesTab({
                                                 variant="outline"
                                                 size="sm"
                                                 onClick={() => setSelectedReport(report)}
-                                                className="rounded-xl gap-1.5 text-xs font-semibold"
+                                                className="rounded-lg gap-1.5 text-xs font-semibold"
                                             >
                                                 <Eye size={14} /> Inspect Report
                                             </Button>
@@ -345,7 +345,7 @@ export function UserReportsNotesTab({
 
             {/* Section 2: Trading Day Notes (GAP-10) */}
             {activeSection === "notes" && (
-                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <Calendar size={16} className="text-amber-500" /> Trading Day Notes & Reflection ({filteredNotes.length})
@@ -362,7 +362,7 @@ export function UserReportsNotesTab({
                                 >
                                     <div className="min-w-0">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300">
+                                            <span className="text-xs font-bold px-2 py-0.5 rounded-lg bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300">
                                                 {format(new Date(dn.date), "EEEE, MMM d, yyyy")}
                                             </span>
                                             <span className="text-[11px] text-gray-400">
@@ -378,7 +378,7 @@ export function UserReportsNotesTab({
                                         variant="outline"
                                         size="sm"
                                         onClick={() => setSelectedNote(dn)}
-                                        className="rounded-xl shrink-0 self-end sm:self-center gap-1.5 text-xs font-semibold"
+                                        className="rounded-lg shrink-0 self-end sm:self-center gap-1.5 text-xs font-semibold"
                                     >
                                         <Eye size={14} /> View Note
                                     </Button>
@@ -395,7 +395,7 @@ export function UserReportsNotesTab({
 
             {/* Section 3: Behavioral Insights (GAP-10) */}
             {activeSection === "insights" && (
-                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <Lightbulb size={16} className="text-amber-500" /> Algorithmic Behavioral Insights ({filteredInsights.length})
@@ -411,7 +411,7 @@ export function UserReportsNotesTab({
                                     className="p-4 sm:p-5 transition-colors hover:bg-gray-50/60 dark:hover:bg-white/[0.02] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs"
                                 >
                                     <div className="flex items-start gap-3 min-w-0">
-                                        <div className="p-2 rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400 shrink-0 mt-0.5">
+                                        <div className="p-2 rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400 shrink-0 mt-0.5">
                                             <Lightbulb size={18} />
                                         </div>
                                         <div className="min-w-0">
@@ -419,10 +419,10 @@ export function UserReportsNotesTab({
                                                 <h4 className="font-bold text-gray-900 dark:text-white text-sm">
                                                     {ins.title}
                                                 </h4>
-                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 uppercase">
+                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 uppercase">
                                                     {ins.insightType}
                                                 </span>
-                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300 uppercase">
+                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300 uppercase">
                                                     Confidence: {ins.confidence}
                                                 </span>
                                             </div>
@@ -448,7 +448,7 @@ export function UserReportsNotesTab({
             {/* Report Inspection Modal */}
             {selectedReport && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <h3 className="text-lg font-black text-gray-900 dark:text-white">
@@ -462,7 +462,7 @@ export function UserReportsNotesTab({
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setSelectedReport(null)}
-                                className="rounded-xl p-2"
+                                className="rounded-lg p-2"
                                 aria-label="Close modal"
                             >
                                 <X size={18} />
@@ -471,7 +471,7 @@ export function UserReportsNotesTab({
 
                         <div className="mt-4 space-y-4 text-xs">
                             {/* 2x2 Matrix Card */}
-                            <div className="rounded-xl border border-gray-200 dark:border-white/10 divide-y divide-gray-200 dark:divide-white/10 overflow-hidden">
+                            <div className="rounded-lg border border-gray-200 dark:border-white/10 divide-y divide-gray-200 dark:divide-white/10 overflow-hidden">
                                 <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/10 bg-gray-50/50 dark:bg-white/[0.02]">
                                     <div className="p-3">
                                         <span className="block text-[10px] font-bold text-gray-400 uppercase">Win / Loss Metrics</span>
@@ -498,7 +498,7 @@ export function UserReportsNotesTab({
 
                             {/* Top Mistakes & Emotions if available */}
                             {Boolean(selectedReport.topMistakes) && (
-                                <div className="rounded-xl border border-rose-100 bg-rose-50/50 p-4 dark:border-rose-900/30 dark:bg-rose-950/20">
+                                <div className="rounded-lg border border-rose-100 bg-rose-50/50 p-4 dark:border-rose-900/30 dark:bg-rose-950/20">
                                     <span className="font-bold text-rose-700 dark:text-rose-300 block">Top Behavioral Mistakes</span>
                                     <pre className="mt-1 text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-sans text-xs">
                                         {JSON.stringify(selectedReport.topMistakes, null, 2)}
@@ -508,7 +508,7 @@ export function UserReportsNotesTab({
                         </div>
 
                         <div className="mt-6 flex justify-end border-t border-gray-200 pt-4 dark:border-white/10">
-                            <Button variant="outline" onClick={() => setSelectedReport(null)} className="rounded-xl">
+                            <Button variant="outline" onClick={() => setSelectedReport(null)} className="rounded-lg">
                                 Close
                             </Button>
                         </div>
@@ -519,7 +519,7 @@ export function UserReportsNotesTab({
             {/* Note Full Modal */}
             {selectedNote && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <h3 className="text-lg font-black text-gray-900 dark:text-white">
@@ -531,7 +531,7 @@ export function UserReportsNotesTab({
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setSelectedNote(null)}
-                                className="rounded-xl p-2"
+                                className="rounded-lg p-2"
                                 aria-label="Close modal"
                             >
                                 <X size={18} />
@@ -539,13 +539,13 @@ export function UserReportsNotesTab({
                         </div>
 
                         <div className="mt-4">
-                            <p className="text-xs text-gray-800 dark:text-gray-200 whitespace-pre-line leading-relaxed bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-200 dark:border-white/10">
+                            <p className="text-xs text-gray-800 dark:text-gray-200 whitespace-pre-line leading-relaxed bg-gray-50 dark:bg-white/5 p-4 rounded-lg border border-gray-200 dark:border-white/10">
                                 {selectedNote.note}
                             </p>
                         </div>
 
                         <div className="mt-6 flex justify-end border-t border-gray-200 pt-4 dark:border-white/10">
-                            <Button variant="outline" onClick={() => setSelectedNote(null)} className="rounded-xl">
+                            <Button variant="outline" onClick={() => setSelectedNote(null)} className="rounded-lg">
                                 Close
                             </Button>
                         </div>

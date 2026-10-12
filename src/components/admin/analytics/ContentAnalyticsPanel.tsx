@@ -48,7 +48,7 @@ export function ContentAnalyticsPanel({
                 {[1, 2].map((i) => (
                     <div
                         key={i}
-                        className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 animate-pulse"
+                        className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5 animate-pulse"
                     >
                         <div className="h-4 bg-gray-200 dark:bg-white/5 rounded-lg w-1/4 mb-4" />
                         <div className="space-y-3">
@@ -68,7 +68,7 @@ export function ContentAnalyticsPanel({
     return (
         <div className="space-y-4">
             {/* Summary stat */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
+            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5">
                 <div className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-500/10">
                         <Eye className="w-4 h-4 text-indigo-500" />
@@ -85,7 +85,7 @@ export function ContentAnalyticsPanel({
             </div>
 
             {/* Top Articles */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
+            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5">
                 <div className="flex items-center gap-2 mb-4">
                     <FileText className="w-4 h-4 text-indigo-500" />
                     <h2 className="text-sm font-bold text-gray-900 dark:text-white">
@@ -156,7 +156,7 @@ export function ContentAnalyticsPanel({
             {/* Author & Category side by side */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Author Analytics */}
-                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
+                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5">
                     <div className="flex items-center gap-2 mb-4">
                         <User className="w-4 h-4 text-cyan-500" />
                         <h2 className="text-sm font-bold text-gray-900 dark:text-white">
@@ -194,7 +194,7 @@ export function ContentAnalyticsPanel({
                 </div>
 
                 {/* Category Analytics */}
-                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
+                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5">
                     <div className="flex items-center gap-2 mb-4">
                         <FolderOpen className="w-4 h-4 text-amber-500" />
                         <h2 className="text-sm font-bold text-gray-900 dark:text-white">

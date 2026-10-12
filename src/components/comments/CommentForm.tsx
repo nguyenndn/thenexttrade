@@ -97,7 +97,7 @@ export function CommentForm({
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-            <div className="bg-white dark:bg-[#12141c] border border-dashboard rounded-2xl shadow-sm focus-within:border-gold/50 focus-within:ring-2 focus-within:ring-gold/15 transition-all duration-200 overflow-hidden">
+            <div className="bg-white dark:bg-[#12141c] border border-dashboard rounded-lg shadow-sm focus-within:border-gold/50 focus-within:ring-2 focus-within:ring-gold/15 transition-all duration-200 overflow-hidden">
                 {/* Header Bar: User Identity & Character Counter */}
                 {userName && (
                     <div className="flex items-center justify-between px-4 sm:px-5 py-3 bg-slate-50/80 dark:bg-white/[0.02] border-b border-dashboard">
@@ -160,7 +160,7 @@ export function CommentForm({
                         <span className="hidden sm:inline font-medium text-[11px]">
                             Press
                         </span>
-                        <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono bg-white dark:bg-white/5 border border-dashboard rounded-md text-gray-500">
+                        <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono bg-white dark:bg-white/5 border border-dashboard rounded-lg text-gray-500">
                             Ctrl + Enter
                         </kbd>
                         <span className="hidden sm:inline text-[11px]">

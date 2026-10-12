@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
-import { generateApiKey } from "@/lib/utils/api-key";
-import crypto from "crypto";
+import { generateApiKey, generateSyncApiKey } from "@/lib/utils/api-key";
 
 // GET - List user's trading accounts
 export async function GET(request: NextRequest) {
@@ -117,8 +116,7 @@ export async function POST(request: NextRequest) {
         let syncApiKey = existingUser?.syncApiKey ?? null;
 
         if (!syncApiKey) {
-            const randomPart = crypto.randomBytes(24).toString("hex");
-            syncApiKey = `tnt_${randomPart}`;
+            syncApiKey = generateSyncApiKey();
             await prisma.user.update({
                 where: { id: user.id },
                 data: {

@@ -72,7 +72,7 @@ export default function CreateEABrokerPage() {
                 Back to EA Brokers
             </Link>
 
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-6 shadow-sm max-w-2xl">
+            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-6 shadow-sm max-w-2xl">
                 <h1 className="text-xl font-bold dark:text-white mb-6 flex items-center gap-2">
                     <Briefcase className="text-primary" />
                     Add EA Broker
@@ -113,7 +113,7 @@ export default function CreateEABrokerPage() {
                         label="IB Code / Number"
                         value={ibCode}
                         onChange={(e) => setIBCode(e.target.value)}
-                        placeholder="e.g. 14647313"
+                        
                     />
 
                     <div className="grid grid-cols-2 gap-4">
@@ -137,7 +137,7 @@ export default function CreateEABrokerPage() {
                             type="submit"
                             disabled={loading}
                             isLoading={loading}
-                            className="w-full md:w-auto px-8 py-3 h-auto text-base font-bold rounded-xl bg-primary hover:bg-[#00B078] text-white shadow-lg shadow-primary/25 transition-all"
+                            className="w-full md:w-auto px-8 py-3 h-auto text-base font-bold rounded-lg bg-gold hover:bg-amber-600 text-white border-none shadow-md shadow-amber-500/20 transition-all"
                         >
                             {!loading && (
                                 <Briefcase size={20} className="mr-2" />

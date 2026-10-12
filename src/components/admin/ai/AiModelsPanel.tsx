@@ -80,12 +80,12 @@ export function AiModelsPanel({
     return (
         <div className="space-y-4">
             {/* Header & Controls */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-[#1E2028] p-4 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm">
                 <div className="relative flex-1 max-w-md">
                     <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
                         placeholder="Search models by name, code or provider..."
-                        className="w-full pl-9 pr-4 py-2 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:border-primary"
+                        className="w-full pl-9 pr-4 py-2 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:border-primary"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -115,7 +115,7 @@ export function AiModelsPanel({
 
             {/* Add Custom Model Modal/Panel */}
             {isAddingCustom && (
-                <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
+                <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
                     <h4 className="text-sm font-bold text-gray-900 dark:text-white">
                         Add Custom AI Model
                     </h4>
@@ -172,8 +172,8 @@ export function AiModelsPanel({
                                 Model Code (ID)
                             </label>
                             <input
-                                placeholder="e.g. deepseek/deepseek-r1"
-                                className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-primary"
+                                
+                                className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-primary"
                                 value={customForm.modelCode}
                                 onChange={(e) => setCustomForm({ ...customForm, modelCode: e.target.value })}
                             />
@@ -183,8 +183,8 @@ export function AiModelsPanel({
                                 Display Name
                             </label>
                             <input
-                                placeholder="e.g. DeepSeek R1"
-                                className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-primary"
+                                
+                                className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-primary"
                                 value={customForm.displayName}
                                 onChange={(e) => setCustomForm({ ...customForm, displayName: e.target.value })}
                             />
@@ -195,7 +195,7 @@ export function AiModelsPanel({
                             </label>
                             <input
                                 type="number"
-                                className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-primary"
+                                className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-primary"
                                 value={customForm.contextLimit}
                                 onChange={(e) => setCustomForm({ ...customForm, contextLimit: parseInt(e.target.value) || 64000 })}
                             />
@@ -226,7 +226,7 @@ export function AiModelsPanel({
                 {filteredModels.map((model) => (
                     <div
                         key={model.id}
-                        className={`bg-white dark:bg-[#1E2028] border ${model.enabled ? "border-gray-200 dark:border-white/10" : "border-gray-100 dark:border-white/5 opacity-60"} rounded-xl p-4 shadow-sm hover:shadow-md transition-all space-y-3`}
+                        className={`bg-white dark:bg-[#1E2028] border ${model.enabled ? "border-gray-200 dark:border-white/10" : "border-gray-100 dark:border-white/5 opacity-60"} rounded-lg p-4 shadow-sm hover:shadow-md transition-all space-y-3`}
                     >
                         <div className="flex items-start justify-between">
                             <div className="flex items-center gap-3">
@@ -270,7 +270,7 @@ export function AiModelsPanel({
             </div>
 
             {filteredModels.length === 0 && (
-                <div className="text-center py-12 text-sm text-gray-500 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="text-center py-12 text-sm text-gray-500 bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm">
                     No models found matching your search.
                 </div>
             )}

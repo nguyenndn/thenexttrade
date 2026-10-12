@@ -336,7 +336,7 @@ function StepConnectAccount({
 
     return (
         <div className="space-y-3">
-            <div className="p-3.5 bg-gradient-to-br from-primary/[0.04] to-cyan-500/[0.02] border border-primary/15 rounded-xl space-y-2.5">
+            <div className="p-3.5 bg-gradient-to-br from-primary/[0.04] to-cyan-500/[0.02] border border-primary/15 rounded-lg space-y-2.5">
                 <div className="flex items-start gap-2.5">
                     <div className="p-2 bg-primary/10 rounded-lg shrink-0">
                         <Cable size={18} className="text-primary" />
@@ -356,7 +356,7 @@ function StepConnectAccount({
                         href={addHref}
                         onClick={() => onCtaClick("CONNECT_ACCOUNT", addHref)}
                     >
-                        <Button className="bg-primary hover:bg-primary/90 text-white font-extrabold text-xs h-9 px-5 rounded-xl shadow-sm shadow-primary/20 hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-1.5 border-0 group">
+                        <Button className="bg-gold hover:bg-amber-600 text-white font-extrabold text-xs h-9 px-5 rounded-lg shadow-sm shadow-amber-500/20 hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-1.5 border-0 group">
                             <span>Add Account</span>
                             <ArrowRight
                                 size={14}
@@ -372,7 +372,7 @@ function StepConnectAccount({
                 type="button"
                 onClick={handleManualClick}
                 disabled={isPending}
-                className="w-full text-left flex items-center gap-3 p-3 rounded-xl border border-dashboard hover:border-primary/30 dark:hover:border-primary/20 bg-white dark:bg-white/[0.01] transition-all duration-300 group disabled:opacity-60"
+                className="w-full text-left flex items-center gap-3 p-3 rounded-lg border border-dashboard hover:border-primary/30 dark:hover:border-primary/20 bg-white dark:bg-white/[0.01] transition-all duration-300 group disabled:opacity-60"
             >
                 <div className="p-2 bg-gray-100 dark:bg-white/5 rounded-lg shrink-0">
                     <PenLine
@@ -460,7 +460,7 @@ function StepChooseSyncMethod({
                 <button
                     key={opt.method}
                     onClick={() => onSelect(opt.method, opt.href)}
-                    className="w-full text-left flex items-start gap-3 p-3 rounded-xl border border-dashboard hover:border-primary/30 dark:hover:border-primary/20 bg-white dark:bg-white/[0.01] transition-all duration-300 group"
+                    className="w-full text-left flex items-start gap-3 p-3 rounded-lg border border-dashboard hover:border-primary/30 dark:hover:border-primary/20 bg-white dark:bg-white/[0.01] transition-all duration-300 group"
                 >
                     <div className="p-2 bg-gray-100 dark:bg-white/5 rounded-lg shrink-0 group-hover:bg-primary/10 transition-colors">
                         {React.cloneElement(
@@ -538,7 +538,7 @@ function StepBringFirstData({
 
     return (
         <div className="space-y-3">
-            <div className="p-3.5 bg-gradient-to-br from-primary/[0.04] to-cyan-500/[0.02] border border-primary/15 rounded-xl space-y-2.5">
+            <div className="p-3.5 bg-gradient-to-br from-primary/[0.04] to-cyan-500/[0.02] border border-primary/15 rounded-lg space-y-2.5">
                 <div className="flex items-center gap-2">
                     <div className="p-2 bg-primary/10 rounded-lg">{c.icon}</div>
                     <h3 className="text-sm font-black text-gray-800 dark:text-white">
@@ -552,7 +552,7 @@ function StepBringFirstData({
                     href={c.href}
                     onClick={() => onCtaClick("BRING_FIRST_DATA", c.href)}
                 >
-                    <Button className="bg-primary hover:bg-primary/90 text-white font-extrabold text-xs h-9 px-4 rounded-xl shadow-sm shadow-primary/20 hover:shadow-md active:scale-95 transition-all duration-300 flex items-center gap-1.5 border-0 group mt-1">
+                    <Button className="bg-gold hover:bg-amber-600 text-white font-extrabold text-xs h-9 px-4 rounded-lg shadow-sm shadow-amber-500/20 hover:shadow-md active:scale-95 transition-all duration-300 flex items-center gap-1.5 border-0 group mt-1">
                         <span>{c.cta}</span>
                         <ArrowRight
                             size={14}
@@ -563,7 +563,7 @@ function StepBringFirstData({
             </div>
 
             {/* Context hint */}
-            <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-dashboard">
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 dark:bg-white/[0.02] border border-dashboard">
                 <HelpCircle
                     size={14}
                     className="text-gray-400 dark:text-gray-500 shrink-0"
@@ -591,7 +591,7 @@ function StepReviewDashboard({
 }) {
     return (
         <div className="space-y-3">
-            <div className="p-4 bg-gradient-to-br from-emerald-500/[0.05] to-primary/[0.03] border border-emerald-500/15 rounded-xl space-y-3 text-center">
+            <div className="p-4 bg-gradient-to-br from-emerald-500/[0.05] to-primary/[0.03] border border-emerald-500/15 rounded-lg space-y-3 text-center">
                 <div className="w-10 h-10 mx-auto bg-emerald-500/10 rounded-full flex items-center justify-center">
                     <BarChart3 size={20} className="text-emerald-500" />
                 </div>
@@ -607,7 +607,7 @@ function StepReviewDashboard({
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
                     <Link href="/dashboard" onClick={onComplete}>
-                        <Button className="bg-primary hover:bg-primary/90 text-white font-extrabold text-xs h-9 px-5 rounded-xl shadow-sm shadow-primary/20 hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-1.5 border-0 group">
+                        <Button className="bg-gold hover:bg-amber-600 text-white font-extrabold text-xs h-9 px-5 rounded-lg shadow-sm shadow-amber-500/20 hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-1.5 border-0 group">
                             <BarChart3 size={14} />
                             <span>Open Dashboard</span>
                         </Button>
@@ -619,7 +619,7 @@ function StepReviewDashboard({
                         >
                             <Button
                                 variant="outline"
-                                className="font-extrabold text-xs h-9 px-4 rounded-xl border-dashboard hover:border-primary/30 transition-all"
+                                className="font-extrabold text-xs h-9 px-4 rounded-lg border-dashboard hover:border-primary/30 transition-all"
                             >
                                 Generate Weekly Review
                             </Button>
@@ -655,7 +655,7 @@ function StepMobileSyncFallback({
     const setupName = "Trade Manager";
     return (
         <div className="space-y-4">
-            <div className="p-4 bg-gradient-to-br from-amber-500/[0.05] to-red-500/[0.02] border border-amber-500/15 rounded-xl space-y-3">
+            <div className="p-4 bg-gradient-to-br from-amber-500/[0.05] to-red-500/[0.02] border border-amber-500/15 rounded-lg space-y-3">
                 <div className="flex items-start gap-3">
                     <div className="p-2.5 bg-amber-500/10 rounded-lg text-amber-500 shrink-0 text-lg">
                         💻
@@ -676,9 +676,10 @@ function StepMobileSyncFallback({
             <div className="space-y-2">
                 {/* Action 1: Send desktop link */}
                 <Button
+                    size="smd"
                     onClick={onSendLink}
                     disabled={isPending || linkSent}
-                    className="w-full h-11 bg-primary text-white font-extrabold text-xs rounded-xl shadow-sm flex items-center justify-center gap-2"
+                    className="w-full font-bold flex items-center justify-center gap-2"
                 >
                     {linkSent
                         ? "📩 Setup Link Sent to Email!"
@@ -688,9 +689,10 @@ function StepMobileSyncFallback({
                 {/* Action 2: Log manually */}
                 <Button
                     variant="outline"
+                    size="smd"
                     onClick={onLogManually}
                     disabled={isPending}
-                    className="w-full h-11 border-dashboard text-gray-700 dark:text-gray-300 font-extrabold text-xs rounded-xl flex items-center justify-center gap-2"
+                    className="w-full font-bold flex items-center justify-center gap-2"
                 >
                     ✍️ Log Trades Manually for Now
                 </Button>

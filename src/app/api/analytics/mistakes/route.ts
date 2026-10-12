@@ -48,6 +48,8 @@ export async function GET(request: NextRequest) {
             select: {
                 id: true,
                 pnl: true,
+                commission: true,
+                swap: true,
                 result: true,
                 mistakes: true,
             },
@@ -91,9 +93,15 @@ export async function GET(request: NextRequest) {
             }
         >();
 
+        const getNetPnl = (t: {
+            pnl: number | null;
+            commission?: number | null;
+            swap?: number | null;
+        }) => (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+
         for (const trade of tradesWithMistakes) {
             const mistakes = trade.mistakes as string[];
-            const pnl = trade.pnl || 0;
+            const pnl = getNetPnl(trade);
 
             for (const code of mistakes) {
                 const current = mistakeMap.get(code) || {
@@ -158,7 +166,7 @@ export async function GET(request: NextRequest) {
         // Simple approach: Sum of PnL of all trades that had at least one mistake.
         // NOTE: If a trade has 2 mistakes, we don't double count its PnL in the "Total Cost" metric for the user summary.
         const costOfMistakes = tradesWithMistakes.reduce(
-            (sum, t) => sum + (t.pnl || 0),
+            (sum, t) => sum + getNetPnl(t),
             0
         );
 

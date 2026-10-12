@@ -85,7 +85,7 @@ function SidebarItemComponent({
                 )}
                 <div
                     className={cn(
-                        "flex items-center gap-3 px-3 py-2.5 mx-3 rounded-xl cursor-pointer transition-all duration-300 group relative select-none overflow-hidden",
+                        "flex items-center gap-3 px-3 py-2.5 mx-3 rounded-lg cursor-pointer transition-all duration-300 group relative select-none overflow-hidden",
                         collapsed ? "justify-center px-0 mx-2" : "",
                         isActiveStyle
                             ? "text-amber-600 dark:text-amber-400 font-bold shadow-sm"
@@ -230,13 +230,11 @@ export function Sidebar({
     // Map child tab routes to their parent menu item routes
     // (These routes are accessed via TabBar but not shown in sidebar)
     const childRouteMap: Record<string, string> = {
-        "/dashboard/sessions": "/dashboard/journal",
-        "/dashboard/psychology": "/dashboard/analytics",
+        "/dashboard/sessions": "/dashboard/analytics",
+        "/dashboard/intelligence": "/dashboard/analytics",
         "/dashboard/reports": "/dashboard/analytics",
         "/dashboard/reports/weekly": "/dashboard/analytics",
         "/dashboard/reports/monthly": "/dashboard/analytics",
-        "/dashboard/mistakes": "/dashboard/analytics",
-        "/dashboard/intelligence": "/dashboard/analytics",
     };
 
     // Calculate the most specific active route using longest prefix match
@@ -307,16 +305,16 @@ export function Sidebar({
         : {
               // User Dashboard groups
               Dashboard: "OPERATIONS",
-              "Trading Journal": "EXECUTION",
-              "Analytics Hub": "REVIEW",
-              Academy: "RESOURCES",
+              "Trading Journal": "PLAYBOOK & EXECUTION",
+              "Analytics Hub": "PERFORMANCE",
+              Academy: "GROWTH",
           };
 
     return (
         <aside
             id="onborda-sidebar"
             className={cn(
-                "hidden lg:flex flex-col bg-white dark:bg-[#1E2028] border border-dashboard h-[calc(100%-1.5rem)] ml-4 mb-6 rounded-xl shadow-sm transition-all duration-300 ease-in-out z-30 shrink-0",
+                "hidden lg:flex flex-col bg-white dark:bg-[#1E2028] border border-dashboard h-[calc(100%-1.5rem)] ml-4 mb-6 rounded-lg shadow-sm transition-all duration-300 ease-in-out z-30 shrink-0",
                 isCollapsed ? "w-20" : "w-[230px]",
                 className
             )}
@@ -378,7 +376,7 @@ export function Sidebar({
                     variant="ghost"
                     onClick={() => signout()}
                     className={cn(
-                        "flex items-center gap-3 w-full px-3 py-2.5 h-auto rounded-xl text-gray-600 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left group justify-start font-normal",
+                        "flex items-center gap-3 w-full px-3 py-2.5 h-auto rounded-lg text-gray-600 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left group justify-start font-normal",
                         isCollapsed && "justify-center px-0"
                     )}
                 >

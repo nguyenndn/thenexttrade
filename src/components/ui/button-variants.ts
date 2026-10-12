@@ -21,17 +21,17 @@ export function buttonVariants({
     className?: string;
 }) {
     const baseStyles =
-        "inline-flex items-center justify-center gap-2 border border-transparent font-bold transition-all duration-300 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#0F1117] disabled:opacity-50 disabled:pointer-events-none rounded-xl";
+        "inline-flex items-center justify-center gap-2 border border-transparent font-bold transition-all duration-300 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/50 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#0F1117] disabled:opacity-50 disabled:pointer-events-none rounded-lg";
     const variants: Record<ButtonVariant, string> = {
         primary:
-            "bg-primary hover:bg-[#00B078] text-white shadow-lg hover:shadow-primary/25",
+            "bg-gold hover:bg-amber-600 text-white shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 focus-visible:ring-gold/50",
         gold:
             "bg-gold hover:bg-amber-600 text-white shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 focus-visible:ring-gold/50 disabled:bg-none disabled:bg-gray-100 disabled:text-gray-400 dark:disabled:bg-white/5 dark:disabled:text-gray-500 disabled:shadow-none disabled:opacity-100",
         secondary:
             "bg-[#2F80ED] hover:bg-[#2563EB] text-white shadow-lg shadow-blue-500/30",
         accent: "bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg shadow-cyan-500/30",
         ghost: "text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5",
-        link: "text-primary underline-offset-4 hover:underline",
+        link: "text-gold underline-offset-4 hover:underline",
         outline:
             "border-dashboard hover:border-gray-300 dark:hover:border-white/20 text-gray-700 dark:text-gray-300 bg-transparent hover:bg-gray-50 dark:hover:bg-white/5",
         destructive:

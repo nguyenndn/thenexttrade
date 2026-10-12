@@ -58,7 +58,7 @@ export function BreadcrumbShareButtons({
                 variant="outline"
                 size="icon"
                 onClick={handleShare}
-                className="w-8 h-8 rounded-xl border-dashboard dark:border-white/10 text-gray-600 dark:text-gray-300 hover:text-gold hover:border-gold transition-colors p-0"
+                className="w-8 h-8 rounded-lg border-dashboard dark:border-white/10 text-gray-600 dark:text-gray-300 hover:text-gold hover:border-gold transition-colors p-0"
                 title="Share via Social"
                 aria-label="Share via Social"
             >
@@ -68,7 +68,7 @@ export function BreadcrumbShareButtons({
                 variant="outline"
                 size="icon"
                 onClick={handleCopy}
-                className="w-8 h-8 rounded-xl border-dashboard dark:border-white/10 text-gray-600 dark:text-gray-300 hover:text-gold hover:border-gold transition-colors p-0"
+                className="w-8 h-8 rounded-lg border-dashboard dark:border-white/10 text-gray-600 dark:text-gray-300 hover:text-gold hover:border-gold transition-colors p-0"
                 title="Copy Link"
                 aria-label="Copy Link"
             >

@@ -71,7 +71,10 @@ export async function GET(request: NextRequest) {
             "Entry Price",
             "Exit Price",
             "Lot Size",
-            "PnL",
+            "Gross Profit",
+            "Commission",
+            "Swap",
+            "Net PnL",
             "Setup",
             "Mistakes",
             "Status",
@@ -82,7 +85,24 @@ export async function GET(request: NextRequest) {
             const closeTime = trade.exitDate
                 ? trade.exitDate.toISOString()
                 : "";
-            const pnl = trade.pnl !== null ? trade.pnl.toFixed(2) : "";
+            const grossProfit =
+                trade.pnl !== null ? trade.pnl.toFixed(2) : "";
+            const commission =
+                trade.commission !== null && trade.commission !== undefined
+                    ? trade.commission.toFixed(2)
+                    : "0.00";
+            const swap =
+                trade.swap !== null && trade.swap !== undefined
+                    ? trade.swap.toFixed(2)
+                    : "0.00";
+            const netPnl =
+                trade.pnl !== null
+                    ? (
+                          (trade.pnl || 0) +
+                          (trade.commission || 0) +
+                          (trade.swap || 0)
+                      ).toFixed(2)
+                    : "";
             const mistakes = Array.isArray(trade.mistakes)
                 ? trade.mistakes.join(";")
                 : "";
@@ -96,7 +116,10 @@ export async function GET(request: NextRequest) {
                 trade.entryPrice.toString(),
                 trade.exitPrice?.toString() || "",
                 trade.lotSize.toString(),
-                pnl,
+                grossProfit,
+                commission,
+                swap,
+                netPnl,
                 trade.entryReason || "",
                 mistakes,
                 trade.status,

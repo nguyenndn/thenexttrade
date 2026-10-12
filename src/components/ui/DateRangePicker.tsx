@@ -95,7 +95,7 @@ const customStaticRanges = createStaticRanges([
     {
         label: "All Time",
         range: () => ({
-            startDate: new Date(2025, 0, 1),
+            startDate: new Date(2020, 0, 1),
             endDate: endOfDay(new Date()),
         }),
     },
@@ -129,14 +129,15 @@ export function DateRangePicker({
 
     const [isMobile, setIsMobile] = useState(false);
     const [isTablet, setIsTablet] = useState(false);
+
     useEffect(() => {
-        const handleResize = () => {
+        const checkMobile = () => {
             setIsMobile(window.innerWidth < 768);
             setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
         };
-        handleResize();
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
     }, []);
 
     // Body scroll lock while the mobile full-screen modal is open.
@@ -148,24 +149,26 @@ export function DateRangePicker({
         }
     }, [isMobile, open]);
 
+    // Handle range selection
     const handleSelect = (ranges: RangeKeyDict) => {
         const selection = ranges.selection;
-        if (selection) {
+        if (selection.startDate && selection.endDate) {
             setTempRange([selection]);
         }
     };
 
+    // Apply selection
     const handleApply = () => {
-        const range = tempRange[0];
-        if (range?.startDate && range?.endDate) {
+        if (tempRange[0].startDate && tempRange[0].endDate) {
             onChange({
-                start: range.startDate,
-                end: range.endDate,
+                start: tempRange[0].startDate,
+                end: tempRange[0].endDate,
             });
         }
         setOpen(false);
     };
 
+    // Cancel selection
     const handleCancel = () => {
         setTempRange([
             {
@@ -180,7 +183,7 @@ export function DateRangePicker({
     // Format display text
     const getDisplayText = () => {
         if (!value?.start) return "Select date range";
-        if (value.start.getFullYear() === 2025) return "All Time"; // Custom display for All Time
+        if (value.start.getFullYear() <= 2020 || (value.start.getFullYear() === 2025 && value.start.getMonth() === 0 && value.start.getDate() === 1)) return "All Time"; // Custom display for All Time
         if (value.end) {
             return `${format(value.start, "MMM dd, yyyy")} - ${format(value.end, "MMM dd, yyyy")}`;
         }
@@ -219,8 +222,8 @@ export function DateRangePicker({
                     }
                     .mobile-drp .rdrStaticRange:hover,
                     .mobile-drp .rdrStaticRangeSelected {
-                        background-color: #ecfdf5 !important;
-                        border-color: #00c888 !important;
+                        background-color: #fef3c7 !important;
+                        border-color: #f59e0b !important;
                     }
                     .mobile-drp .rdrStaticRangeLabel {
                         color: #374151 !important;
@@ -230,7 +233,7 @@ export function DateRangePicker({
                         background-color: transparent !important;
                     }
                     .mobile-drp .rdrStaticRangeSelected .rdrStaticRangeLabel {
-                        color: #00c888 !important;
+                        color: #f59e0b !important;
                     }
                     .mobile-drp .rdrInputRanges {
                         display: none !important;
@@ -265,8 +268,15 @@ export function DateRangePicker({
                     .dark .mobile-drp .rdrStaticRange {
                         border-color: rgba(255, 255, 255, 0.1) !important;
                     }
+                    .dark .mobile-drp .rdrStaticRangeSelected {
+                        background-color: rgba(245, 158, 11, 0.15) !important;
+                        border-color: rgba(245, 158, 11, 0.3) !important;
+                    }
                     .dark .mobile-drp .rdrStaticRangeLabel {
                         color: #d1d5db !important;
+                    }
+                    .dark .mobile-drp .rdrStaticRangeSelected .rdrStaticRangeLabel {
+                        color: #fbbf24 !important;
                     }
                     .dark .mobile-drp .rdrMonthName,
                     .dark .mobile-drp .rdrWeekDay,
@@ -288,11 +298,11 @@ export function DateRangePicker({
                     id="date"
                     onClick={() => setOpen(true)}
                     className={cn(
-                        "flex items-center justify-start h-10 gap-2 px-3 text-sm font-normal text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
+                        "flex items-center justify-start h-10 gap-2 px-3 text-sm font-normal text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
                         !value && "text-gray-600"
                     )}
                 >
-                    <div className="p-1.5 bg-primary/10 text-primary rounded-lg shrink-0">
+                    <div className="p-1.5 bg-gold/10 text-gold dark:bg-amber-500/15 dark:text-amber-400 rounded-lg shrink-0">
                         <CalendarIcon size={16} />
                     </div>
                     <span className="flex-1 truncate text-left">
@@ -321,7 +331,7 @@ export function DateRangePicker({
                             animate={{ y: "-50%", scale: 1, opacity: 1 }}
                             exit={{ y: "-50%", scale: 0.95, opacity: 0 }}
                             transition={SPRING_SOFT}
-                            className="fixed inset-x-3 top-1/2 z-[200] flex flex-col bg-white dark:bg-[#0B0E14] rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden"
+                            className="fixed inset-x-3 top-1/2 z-[200] flex flex-col bg-white dark:bg-[#0B0E14] rounded-lg shadow-2xl max-h-[90vh] overflow-hidden"
                         >
                             {/* Overlay Header */}
                             <div className="flex items-center justify-between px-4 py-3 border-b border-dashboard shrink-0">
@@ -344,8 +354,8 @@ export function DateRangePicker({
                                     months={1}
                                     ranges={tempRange}
                                     direction="vertical"
-                                    rangeColors={["#00C888"]}
-                                    color="#00C888"
+                                    rangeColors={["#F59E0B"]}
+                                    color="#F59E0B"
                                     staticRanges={customStaticRanges}
                                     inputRanges={[]}
                                     maxDate={maxDate}
@@ -356,14 +366,16 @@ export function DateRangePicker({
                             <div className="flex items-center gap-3 p-4 border-t border-dashboard bg-gray-50 dark:bg-[#1E2028] shrink-0">
                                 <Button
                                     variant="outline"
+                                    size="smd"
                                     onClick={handleCancel}
-                                    className="flex-1 text-gray-600 dark:text-gray-300 hover:text-gray-700 rounded-xl h-11"
+                                    className="flex-1 font-bold text-gray-600 dark:text-gray-300 hover:text-gray-700"
                                 >
                                     Cancel
                                 </Button>
                                 <Button
+                                    size="smd"
                                     onClick={handleApply}
-                                    className="flex-1 bg-primary hover:bg-[#00A872] text-white border-none rounded-xl h-11 font-semibold"
+                                    className="flex-1 font-bold bg-gold hover:bg-amber-600 text-white border-none"
                                 >
                                     Apply
                                 </Button>
@@ -409,8 +421,8 @@ export function DateRangePicker({
                     }
                     .tablet-drp .rdrStaticRange:hover,
                     .tablet-drp .rdrStaticRangeSelected {
-                        background-color: #ecfdf5 !important;
-                        border-color: #00c888 !important;
+                        background-color: #fef3c7 !important;
+                        border-color: #f59e0b !important;
                     }
                     .tablet-drp .rdrStaticRangeLabel {
                         color: #374151 !important;
@@ -420,7 +432,7 @@ export function DateRangePicker({
                         background-color: transparent !important;
                     }
                     .tablet-drp .rdrStaticRangeSelected .rdrStaticRangeLabel {
-                        color: #00c888 !important;
+                        color: #f59e0b !important;
                     }
                     .tablet-drp .rdrInputRanges {
                         display: none !important;
@@ -453,8 +465,15 @@ export function DateRangePicker({
                     .dark .tablet-drp .rdrStaticRange {
                         border-color: rgba(255, 255, 255, 0.1) !important;
                     }
+                    .dark .tablet-drp .rdrStaticRangeSelected {
+                        background-color: rgba(245, 158, 11, 0.15) !important;
+                        border-color: rgba(245, 158, 11, 0.3) !important;
+                    }
                     .dark .tablet-drp .rdrStaticRangeLabel {
                         color: #d1d5db !important;
+                    }
+                    .dark .tablet-drp .rdrStaticRangeSelected .rdrStaticRangeLabel {
+                        color: #fbbf24 !important;
                     }
                     .dark .tablet-drp .rdrMonthName,
                     .dark .tablet-drp .rdrWeekDay,
@@ -475,11 +494,11 @@ export function DateRangePicker({
                             variant="ghost"
                             id="date"
                             className={cn(
-                                "flex items-center justify-start h-10 gap-2 px-3 text-sm font-normal text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
+                                "flex items-center justify-start h-10 gap-2 px-3 text-sm font-normal text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
                                 !value && "text-gray-600"
                             )}
                         >
-                            <div className="p-1.5 bg-primary/10 text-primary rounded-lg shrink-0">
+                            <div className="p-1.5 bg-gold/10 text-gold dark:bg-amber-500/15 dark:text-amber-400 rounded-lg shrink-0">
                                 <CalendarIcon size={16} />
                             </div>
                             <span className="flex-1 truncate text-left">
@@ -489,7 +508,7 @@ export function DateRangePicker({
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent
-                        className="w-auto p-0 bg-white dark:bg-[#1E2028] border-dashboard shadow-xl rounded-xl overflow-hidden tablet-drp"
+                        className="w-auto p-0 bg-white dark:bg-[#1E2028] border-dashboard shadow-xl rounded-lg overflow-hidden tablet-drp"
                         align="start"
                     >
                         <ReactDateRangePicker
@@ -498,8 +517,8 @@ export function DateRangePicker({
                             months={1}
                             ranges={tempRange}
                             direction="vertical"
-                            rangeColors={["#00C888"]}
-                            color="#00C888"
+                            rangeColors={["#F59E0B"]}
+                            color="#F59E0B"
                             staticRanges={customStaticRanges}
                             inputRanges={[]}
                             maxDate={maxDate}
@@ -509,16 +528,16 @@ export function DateRangePicker({
                         <div className="flex items-center justify-between p-3 border-t border-dashboard bg-gray-50 dark:bg-[#1E2028]">
                             <Button
                                 variant="outline"
-                                size="sm"
+                                size="smd"
                                 onClick={handleCancel}
                                 className="text-gray-600 dark:text-gray-300 hover:text-gray-700"
                             >
                                 Cancel
                             </Button>
                             <Button
-                                size="sm"
+                                size="smd"
                                 onClick={handleApply}
-                                className="bg-primary hover:bg-[#00A872] text-white border-none"
+                                className="bg-gold hover:bg-amber-600 text-white border-none"
                             >
                                 Apply
                             </Button>
@@ -547,7 +566,7 @@ export function DateRangePicker({
                 }
                 .rdrStaticRange:hover,
                 .rdrStaticRangeSelected {
-                    background-color: #ecfdf5 !important;
+                    background-color: #fef3c7 !important;
                 }
                 .rdrStaticRangeLabel {
                     color: #374151 !important;
@@ -555,7 +574,7 @@ export function DateRangePicker({
                     background-color: transparent !important;
                 }
                 .rdrStaticRangeSelected .rdrStaticRangeLabel {
-                    color: #00c888 !important;
+                    color: #f59e0b !important;
                 }
                 .rdrInputRanges {
                     display: none;
@@ -574,11 +593,11 @@ export function DateRangePicker({
                         variant="ghost"
                         id="date"
                         className={cn(
-                            "flex items-center justify-start h-10 gap-2 px-3 text-sm font-normal text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
+                            "flex items-center justify-start h-10 gap-2 px-3 text-sm font-normal text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
                             !value && "text-gray-600"
                         )}
                     >
-                        <div className="p-1.5 bg-primary/10 text-primary rounded-lg shrink-0">
+                        <div className="p-1.5 bg-gold/10 text-gold dark:bg-amber-500/15 dark:text-amber-400 rounded-lg shrink-0">
                             <CalendarIcon size={16} />
                         </div>
                         <span className="flex-1 truncate text-left">
@@ -588,7 +607,7 @@ export function DateRangePicker({
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent
-                    className="w-auto p-0 bg-white border-dashboard shadow-xl rounded-xl overflow-hidden"
+                    className="w-auto p-0 bg-white border-dashboard shadow-xl rounded-lg overflow-hidden"
                     align="start"
                 >
                     <ReactDateRangePicker
@@ -597,8 +616,8 @@ export function DateRangePicker({
                         months={2}
                         ranges={tempRange}
                         direction="horizontal"
-                        rangeColors={["#00C888"]}
-                        color="#00C888"
+                        rangeColors={["#F59E0B"]}
+                        color="#F59E0B"
                         staticRanges={customStaticRanges}
                         inputRanges={[]}
                         maxDate={maxDate}
@@ -608,16 +627,16 @@ export function DateRangePicker({
                     <div className="flex items-center justify-between p-3 border-t border-dashboard bg-gray-50">
                         <Button
                             variant="outline"
-                            size="sm"
+                            size="smd"
                             onClick={handleCancel}
                             className="text-gray-600 hover:text-gray-700"
                         >
                             Cancel
                         </Button>
                         <Button
-                            size="sm"
+                            size="smd"
                             onClick={handleApply}
-                            className="bg-primary hover:bg-[#00A872] text-white border-none"
+                            className="bg-gold hover:bg-amber-600 text-white border-none"
                         >
                             Apply
                         </Button>

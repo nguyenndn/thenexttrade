@@ -52,6 +52,8 @@ export async function calculatePsychologyDiagnostic(
             id: true,
             result: true,
             pnl: true,
+            commission: true,
+            swap: true,
             entryDate: true,
             exitDate: true,
             lotSize: true,
@@ -135,8 +137,10 @@ export async function calculatePsychologyDiagnostic(
             const key = `${dayOfWeek}:${hour}`;
 
             const existing = heatmapMap.get(key) || { wins: 0, losses: 0, count: 0, pnl: 0 };
+            const net =
+                (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
             existing.count++;
-            existing.pnl += t.pnl || 0;
+            existing.pnl += net;
             if (t.result === "WIN") existing.wins++;
             if (t.result === "LOSS") existing.losses++;
             heatmapMap.set(key, existing);
@@ -159,7 +163,11 @@ export async function calculatePsychologyDiagnostic(
     });
 
     // 4. Optimal R:R Optimizer Options
-    const totalPnL = trades.reduce((s, t) => s + (t.pnl || 0), 0);
+    const totalPnL = trades.reduce(
+        (s, t) =>
+            s + (t.pnl || 0) + (t.commission || 0) + (t.swap || 0),
+        0
+    );
     const rrOptimizer: OptimalRROption[] = [
         { targetRR: 1.0, simulatedWinRate: 65, simulatedNetPnL: Math.round(totalPnL * 0.9), isOptimal: false },
         { targetRR: 1.5, simulatedWinRate: 58, simulatedNetPnL: Math.round(totalPnL * 1.25), isOptimal: true },

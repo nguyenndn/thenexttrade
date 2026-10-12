@@ -34,7 +34,7 @@ export function SortableLesson({ lesson, onEdit, onDelete }: LessonProps) {
         <div
             ref={setNodeRef}
             style={style}
-            className="flex items-center justify-between p-3 bg-white dark:bg-[#1A1F2C] border border-gray-100 dark:border-white/5 rounded-xl hover:border-gray-200 dark:hover:border-white/10 transition-all shadow-sm group"
+            className="flex items-center justify-between p-3 bg-white dark:bg-[#1A1F2C] border border-gray-100 dark:border-white/5 rounded-lg hover:border-gray-200 dark:hover:border-white/10 transition-all shadow-sm group"
         >
             <div className="flex items-center gap-3">
                 <Button

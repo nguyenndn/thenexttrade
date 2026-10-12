@@ -18,7 +18,7 @@ const PremiumCard = React.forwardRef<HTMLDivElement, PremiumCardProps>(
                     "relative overflow-hidden transition-all duration-500",
                     "hover:shadow-md transition-shadow",
                     // Base shapes
-                    "rounded-xl border",
+                    "rounded-lg border",
 
                     // Default Variant (Solid)
                     variant === "default" && [

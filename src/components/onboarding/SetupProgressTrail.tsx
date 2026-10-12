@@ -125,7 +125,7 @@ export function SetupProgressTrail({
                                         isCompleted
                                             ? "bg-emerald-500 text-white"
                                             : isActive
-                                              ? "bg-primary text-white shadow-lg shadow-primary/30"
+                                              ? "bg-gold text-white shadow-lg shadow-amber-500/30"
                                               : "bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-600"
                                     }`}
                                 >

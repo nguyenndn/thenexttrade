@@ -24,7 +24,7 @@ export function PendingAccountCard({
     const brokerConfig = BROKERS[license.broker];
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center group h-full relative">
+        <div className="bg-white dark:bg-[#1E2028] rounded-lg p-6 border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center group h-full relative">
             {/* Time Absolute */}
             <div className="absolute top-5 right-5">
                 <span className="text-[10px] bg-gray-100 dark:bg-white/10 px-2 py-1 rounded-full text-gray-600 font-bold">
@@ -61,7 +61,7 @@ export function PendingAccountCard({
                 <Button
                     variant="ghost"
                     size="sm"
-                    className="col-span-1 h-10 bg-cyan-50 dark:bg-cyan-900/10 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-100 dark:hover:bg-cyan-900/20 rounded-xl font-bold text-xs px-2 whitespace-nowrap"
+                    className="col-span-1 h-10 bg-cyan-50 dark:bg-cyan-900/10 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-100 dark:hover:bg-cyan-900/20 rounded-lg font-bold text-xs px-2 whitespace-nowrap"
                     onClick={() =>
                         window.open(brokerConfig?.ibDashboardUrl, "_blank")
                     }
@@ -74,7 +74,7 @@ export function PendingAccountCard({
                 <Button
                     variant="ghost"
                     size="sm"
-                    className="col-span-1 h-10 bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/10 dark:text-red-400 dark:hover:bg-red-900/20 rounded-xl font-bold text-xs px-2 whitespace-nowrap"
+                    className="col-span-1 h-10 bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/10 dark:text-red-400 dark:hover:bg-red-900/20 rounded-lg font-bold text-xs px-2 whitespace-nowrap"
                     onClick={() => onReject(license)}
                 >
                     <X size={14} className="mr-1" />
@@ -85,7 +85,7 @@ export function PendingAccountCard({
                 <Button
                     variant="primary"
                     size="md"
-                    className="col-span-2 shadow-primary/20 uppercase tracking-wide w-full"
+                    className="col-span-2 shadow-amber-500/20 uppercase tracking-wide w-full"
                     onClick={() => onApprove(license)}
                 >
                     <Check size={18} className="mr-2" />

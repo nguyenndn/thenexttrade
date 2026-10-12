@@ -87,7 +87,7 @@ export function WelcomeHero({
     return (
         <div className="space-y-4">
             {/* Hero Card */}
-            <div className="relative rounded-2xl border border-dashboard bg-white dark:bg-[#1E2028] overflow-hidden">
+            <div className="relative rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] overflow-hidden">
                 {/* Background glow */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 dark:bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/5 dark:bg-purple-500/10 rounded-full blur-[80px] pointer-events-none" />
@@ -95,12 +95,12 @@ export function WelcomeHero({
                 <div className="relative z-10 p-6 md:p-8">
                     {/* Greeting */}
                     <div className="flex items-center gap-2 mb-4">
-                        <div className="relative p-2 bg-primary/10 rounded-xl">
+                        <div className="relative p-2 bg-primary/10 rounded-lg">
                             <Rocket
                                 size={20}
                                 className="text-primary animate-[wiggle_2s_ease-in-out_infinite]"
                             />
-                            <div className="absolute inset-0 rounded-xl bg-primary/20 animate-[icon-ping_2.5s_cubic-bezier(0,0,0.2,1)_infinite]" />
+                            <div className="absolute inset-0 rounded-lg bg-primary/20 animate-[icon-ping_2.5s_cubic-bezier(0,0,0.2,1)_infinite]" />
                         </div>
                         <span className="text-xs font-bold text-primary uppercase tracking-wider">
                             Welcome to your Command Center
@@ -170,7 +170,7 @@ export function WelcomeHero({
                         >
                             <Button
                                 variant="primary"
-                                className="gap-2 shadow-lg shadow-primary/25 px-6 py-3 text-sm"
+                                className="gap-2 shadow-lg shadow-amber-500/25 px-6 py-3 text-sm"
                             >
                                 {nextStep.ctaLabel}
                                 <ArrowRight size={16} />
@@ -194,7 +194,7 @@ export function WelcomeHero({
                         >
                             <div className="relative rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] p-5 transition-all duration-300 hover:shadow-lg hover:border-primary/30">
                                 <div className="flex items-start gap-3">
-                                    <div className="p-2.5 rounded-xl bg-gray-100 dark:bg-white/5 shrink-0">
+                                    <div className="p-2.5 rounded-lg bg-gray-100 dark:bg-white/5 shrink-0">
                                         {step.id === "START_ACADEMY" ? (
                                             <GraduationCap
                                                 size={18}
@@ -232,7 +232,7 @@ export function WelcomeHero({
             )}
 
             {/* Ghost Chart Preview - show what the dashboard will look like */}
-            <div className="relative rounded-2xl border border-dashboard bg-white dark:bg-[#1E2028] overflow-hidden">
+            <div className="relative rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] overflow-hidden">
                 {/* Blurred mock chart (SVG) */}
                 <div className="relative h-36 md:h-48 overflow-hidden">
                     <svg

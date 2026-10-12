@@ -107,9 +107,10 @@ export function OnboardingChecklist({ progress }: { progress: UserProgress }) {
     const nextStep = getNextStep(progress);
 
     return (
-        <div className="relative overflow-hidden bg-[#F7F4EC] px-4 pb-16 pt-28 text-slate-950 dark:bg-transparent dark:text-white sm:px-6 lg:px-8">
-            {/* Premium brand background exactly like /about */}
-            <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.16)_0%,rgba(255,255,255,0.72)_34%,rgba(16,185,129,0.10)_100%)] dark:bg-[linear-gradient(135deg,rgba(43,35,68,0.60)_0%,rgba(25,52,81,0.46)_48%,rgba(6,69,79,0.38)_100%)] pointer-events-none" />
+        <div className="relative overflow-hidden bg-white px-4 pb-16 pt-28 text-slate-950 dark:bg-transparent dark:text-white sm:px-6 lg:px-8">
+            {/* Ambient Background Atmosphere & Technical Grid */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.08),transparent_75%)] dark:bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.12),transparent_75%)] pointer-events-none" />
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none" />
 
             <div className="relative z-10 mx-auto max-w-[1180px]">
                 <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">

@@ -480,13 +480,13 @@ export const AIRewriteDialog = forwardRef<
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="bg-white dark:bg-[#1a1e2e] rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 w-full max-w-2xl mx-4 max-h-[95vh] overflow-hidden flex flex-col"
+                        className="bg-white dark:bg-[#1a1e2e] rounded-lg shadow-2xl border border-gray-200 dark:border-white/10 w-full max-w-2xl mx-4 max-h-[95vh] overflow-hidden flex flex-col"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Header */}
                         <div className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-white/10 shrink-0">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/20">
+                                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/20">
                                     <Wand2
                                         size={20}
                                         className="text-white"
@@ -582,7 +582,7 @@ export const AIRewriteDialog = forwardRef<
                                                 }}
                                                 placeholder="https://www.babypips.com/learn/forex/what-is-forex"
                                                 disabled={isLoading}
-                                                className="flex-1 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all disabled:opacity-50"
+                                                className="flex-1 p-3 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all disabled:opacity-50"
                                             />
                                             <Button
                                                 type="button"
@@ -658,7 +658,7 @@ export const AIRewriteDialog = forwardRef<
                                                                         r.url
                                                                     )
                                                                         ? "bg-amber-500 border-amber-500"
-                                                                        : "border-gray-300 dark:border-gray-600"
+                                                                        : "border-gray-200 dark:border-white/10"
                                                                 )}
                                                             >
                                                                 {selectedUrls.has(
@@ -735,7 +735,7 @@ export const AIRewriteDialog = forwardRef<
                                         placeholder="Copy the article content from BabyPips and paste it here..."
                                         disabled={isLoading}
                                         rows={5}
-                                        className="w-full p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all disabled:opacity-50 resize-y"
+                                        className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all disabled:opacity-50 resize-y"
                                     />
                                 </div>
                             )}
@@ -770,9 +770,9 @@ export const AIRewriteDialog = forwardRef<
                                                     if (e.key === "Enter")
                                                         handleSearch();
                                                 }}
-                                                placeholder="e.g. What is a Pip, Fibonacci Retracement, Risk Management"
+                                                
                                                 disabled={isLoading}
-                                                className="flex-1 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all disabled:opacity-50"
+                                                className="flex-1 p-3 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all disabled:opacity-50"
                                             />
                                             <Button
                                                 type="button"
@@ -860,7 +860,7 @@ export const AIRewriteDialog = forwardRef<
                                                                         r.url
                                                                     )
                                                                         ? "bg-amber-500 border-amber-500"
-                                                                        : "border-gray-300 dark:border-gray-600"
+                                                                        : "border-gray-200 dark:border-white/10"
                                                                 )}
                                                             >
                                                                 {selectedUrls.has(
@@ -967,7 +967,7 @@ export const AIRewriteDialog = forwardRef<
                                         onClick={() => setMode("summary")}
                                         disabled={isLoading}
                                         className={cn(
-                                            "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all border",
+                                            "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all border",
                                             mode === "summary"
                                                 ? "bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 ring-1 ring-blue-200 dark:ring-blue-800"
                                                 : "bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-100 dark:hover:bg-white/10"
@@ -981,7 +981,7 @@ export const AIRewriteDialog = forwardRef<
                                         onClick={() => setMode("rewrite")}
                                         disabled={isLoading}
                                         className={cn(
-                                            "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all border",
+                                            "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all border",
                                             mode === "rewrite"
                                                 ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 ring-1 ring-amber-200 dark:ring-amber-800"
                                                 : "bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-100 dark:hover:bg-white/10"
@@ -1036,7 +1036,7 @@ export const AIRewriteDialog = forwardRef<
 
                             {/* Error */}
                             {error && (
-                                <div className="p-3 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-600 dark:text-red-400">
+                                <div className="p-3 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-600 dark:text-red-400">
                                     {error}
                                 </div>
                             )}
@@ -1084,7 +1084,7 @@ export const AIRewriteDialog = forwardRef<
                                         )}
                                     </div>
 
-                                    <div className="p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10">
+                                    <div className="p-3 bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10">
                                         <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
                                             Title
                                         </span>
@@ -1094,7 +1094,7 @@ export const AIRewriteDialog = forwardRef<
                                     </div>
 
                                     {result.metaDescription && (
-                                        <div className="p-3 bg-blue-50 dark:bg-blue-500/5 rounded-xl border border-blue-100 dark:border-blue-900/30">
+                                        <div className="p-3 bg-blue-50 dark:bg-blue-500/5 rounded-lg border border-blue-100 dark:border-blue-900/30">
                                             <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest flex items-center gap-1">
                                                 <Search size={12} />
                                                 Meta Description (
@@ -1107,7 +1107,7 @@ export const AIRewriteDialog = forwardRef<
                                         </div>
                                     )}
 
-                                    <div className="p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 max-h-48 overflow-y-auto">
+                                    <div className="p-3 bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 max-h-48 overflow-y-auto">
                                         <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1">
                                             <Eye size={10} /> Content Preview
                                         </span>
@@ -1162,7 +1162,7 @@ export const AIRewriteDialog = forwardRef<
                                                   ? !pastedContent.trim()
                                                   : selectedUrls.size === 0)
                                         }
-                                        className="gap-2 shadow-lg shadow-primary/30"
+                                        className="gap-2 shadow-lg shadow-amber-500/30"
                                     >
                                         {isLoading ? (
                                             <Loader2
@@ -1177,7 +1177,7 @@ export const AIRewriteDialog = forwardRef<
                                 ) : (
                                     <Button
                                         onClick={handleApply}
-                                        className="gap-2 bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-500/30"
+                                        className="gap-2 bg-gold hover:bg-amber-600 text-white shadow-lg shadow-amber-500/30"
                                     >
                                         <Check size={16} /> Apply
                                     </Button>

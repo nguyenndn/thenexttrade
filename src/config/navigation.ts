@@ -7,6 +7,7 @@ import {
     Wallet,
     GraduationCap,
     Trophy,
+    Award,
     FileText,
     List,
     Users,
@@ -52,28 +53,12 @@ export interface AnalyticsTabItem {
 
 export const ANALYTICS_TABS: AnalyticsTabItem[] = [
     { label: "Analytics", href: "/dashboard/analytics" },
-    { label: "Psychology", href: "/dashboard/psychology" },
-    { label: "Mistakes", href: "/dashboard/mistakes" },
-    { label: "Reports", href: "/dashboard/reports" },
+    { label: "Sessions", href: "/dashboard/sessions" },
     { label: "Intelligence", href: "/dashboard/intelligence" },
+    { label: "Reports", href: "/dashboard/reports" },
 ];
 
 export const menuItems: PublicMenuItem[] = [
-    {
-        name: "Home",
-        href: "/",
-        type: "link",
-    },
-    {
-        name: "Knowledge",
-        href: "/knowledge",
-        type: "link",
-    },
-    {
-        name: "Academy",
-        href: "/academy",
-        type: "link",
-    },
     {
         name: "Trading Systems",
         shortName: "Systems",
@@ -118,7 +103,7 @@ export const dashboardMenuItems = [
         requiresTradeData: false,
     },
 
-    // --- EXECUTION ---
+    // --- PLAYBOOK & EXECUTION ---
     {
         name: "Trading Journal",
         href: "/dashboard/journal",
@@ -138,7 +123,7 @@ export const dashboardMenuItems = [
         requiresTradeData: false,
     },
 
-    // --- REVIEW ---
+    // --- PERFORMANCE ---
     {
         name: "Analytics Hub",
         href: "/dashboard/analytics",
@@ -146,7 +131,7 @@ export const dashboardMenuItems = [
         requiresTradeData: true,
     },
 
-    // --- RESOURCES ---
+    // --- GROWTH ---
     {
         name: "Academy",
         href: "/dashboard/academy",
@@ -160,7 +145,7 @@ export const dashboardMenuItems = [
         requiresTradeData: false,
     },
     {
-        name: "Trading System",
+        name: "Trading Systems",
         href: "/dashboard/trading-systems",
         icon: Bot,
         requiresTradeData: false,
@@ -169,6 +154,12 @@ export const dashboardMenuItems = [
         name: "Edge Missions",
         href: "/dashboard/missions",
         icon: Target,
+        requiresTradeData: false,
+    },
+    {
+        name: "Loyalty & Rewards",
+        href: "/dashboard/loyalty",
+        icon: Award,
         requiresTradeData: false,
     },
 ];
@@ -225,6 +216,7 @@ export const adminMenuItems = [
             { name: "Trader Monitor", href: "/admin/ib/traders" },
             { name: "Trader Behavior", href: "/admin/users/behavior" },
             { name: "Sync Requests", href: "/admin/ib/sync-requests" },
+            { name: "Loyalty & Rewards", href: "/admin/loyalty" },
         ],
     },
 
@@ -238,6 +230,7 @@ export const adminMenuItems = [
             { name: "Users", href: "/admin/users" },
             { name: "Broadcasts", href: "/admin/notifications" },
             { name: "Feedback", href: "/admin/feedback" },
+            { name: "Inquiries", href: "/admin/messages" },
             { name: "Settings", href: "/admin/settings" },
             { name: "Email Lab", href: "/admin/email-lab" },
         ],
@@ -297,9 +290,14 @@ export const dashboardMenuGroups = [
                 icon: Trophy,
             },
             {
-                name: "Trading System",
+                name: "Trading Systems",
                 href: "/dashboard/trading-systems",
                 icon: Bot,
+            },
+            {
+                name: "Loyalty & Rewards",
+                href: "/dashboard/loyalty",
+                icon: Award,
             },
         ],
     },
@@ -360,6 +358,7 @@ export const adminMenuGroups = [
                 href: "/admin/ib/sync-requests",
                 icon: CloudSync,
             },
+            { name: "Loyalty & Rewards", href: "/admin/loyalty", icon: Award },
             { name: "Users", href: "/admin/users", icon: Users },
         ],
     },

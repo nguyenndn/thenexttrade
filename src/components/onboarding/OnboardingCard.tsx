@@ -29,13 +29,13 @@ export function OnboardingCard({
 
     return (
         <div
-            className="relative bg-white dark:bg-[#1A1D27] rounded-2xl border border-dashboard shadow-2xl w-[340px] max-w-[calc(100vw-2rem)] overflow-hidden pointer-events-auto"
+            className="relative bg-white dark:bg-[#1A1D27] rounded-lg border border-dashboard shadow-2xl w-[340px] max-w-[calc(100vw-2rem)] overflow-hidden pointer-events-auto"
             style={{ zIndex: 99999 }}
         >
             {/* Progress Bar */}
             <div className="h-1 bg-gray-100 dark:bg-white/5">
                 <div
-                    className="h-full bg-gradient-to-r from-primary to-emerald-500 transition-all duration-500"
+                    className="h-full bg-gold transition-all duration-500"
                     style={{
                         width: `${((currentStep + 1) / totalSteps) * 100}%`,
                     }}
@@ -47,7 +47,7 @@ export function OnboardingCard({
                 <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2.5">
                         {step.icon && (
-                            <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-primary/10 text-primary text-lg">
+                            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 text-primary text-lg">
                                 {step.icon}
                             </div>
                         )}
@@ -89,7 +89,7 @@ export function OnboardingCard({
 
                     <button
                         onClick={handleNext}
-                        className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-primary to-emerald-500 rounded-lg hover:opacity-90 transition-opacity shadow-sm pointer-events-auto"
+                        className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-gold hover:bg-amber-600 rounded-lg transition-colors shadow-sm pointer-events-auto"
                     >
                         {isLast ? (
                             <>

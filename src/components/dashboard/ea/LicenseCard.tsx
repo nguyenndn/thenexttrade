@@ -82,7 +82,7 @@ export function LicenseCard({ license }: LicenseCardProps) {
             icon: XCircle,
         },
         SUSPENDED: {
-            color: "text-gray-600",
+            color: "text-gray-600 dark:text-gray-400",
             bg: "bg-gray-50 dark:bg-gray-900/10",
             border: "border-dashboard ",
             icon: AlertTriangle,
@@ -123,11 +123,11 @@ export function LicenseCard({ license }: LicenseCardProps) {
             <div className="space-y-4">
                 <div className="flex items-center gap-4">
                     {/* Broker Logo Mock */}
-                    <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/10 flex items-center justify-center font-bold text-gray-600 text-xs text-center p-1">
+                    <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-white/10 flex items-center justify-center font-bold text-gray-600 dark:text-gray-300 text-xs text-center p-1">
                         {license.broker}
                     </div>
                     <div>
-                        <p className="text-xs text-gray-600 font-medium tracking-wider uppercase mb-0.5">
+                        <p className="text-xs text-gray-600 dark:text-gray-400 font-medium tracking-wider uppercase mb-0.5">
                             Account Number
                         </p>
                         <h3 className="text-xl font-bold text-gray-700 dark:text-white font-mono">
@@ -138,14 +138,14 @@ export function LicenseCard({ license }: LicenseCardProps) {
 
                 <div className="pt-4 border-t border-dashboard space-y-2 text-sm">
                     <div className="flex justify-between">
-                        <span className="text-gray-600">Date Added</span>
+                        <span className="text-gray-600 dark:text-gray-400">Date Added</span>
                         <span className="font-medium text-gray-700 dark:text-white">
                             {format(new Date(license.createdAt), "MMM d, yyyy")}
                         </span>
                     </div>
                     {license.expiryDate && (
                         <div className="flex justify-between">
-                            <span className="text-gray-600">Expires</span>
+                            <span className="text-gray-600 dark:text-gray-400">Expires</span>
                             <span className="font-medium text-gray-700 dark:text-white">
                                 {format(
                                     new Date(license.expiryDate),
@@ -169,7 +169,7 @@ export function LicenseCard({ license }: LicenseCardProps) {
                         variant="outline"
                         size="sm"
                         className={cn(
-                            "transition-all font-bold rounded-xl px-4 py-2 h-auto text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"
+                            "transition-all font-bold rounded-lg px-4 py-2 h-auto text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"
                         )}
                     >
                         <Trash2 size={16} className="mr-2" />

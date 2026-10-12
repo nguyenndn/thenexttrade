@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Edit2, Trash2, Target, TrendingUp, Percent, Save, BookOpen, Layers } from "lucide-react";
+import Link from "next/link";
+import { Edit2, Trash2, Target, TrendingUp, Percent, Save, BookOpen, Layers, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Strategy, StrategyPerformance } from "./StrategyManager";
 import { PlaybookLightbox } from "./PlaybookLightbox";
@@ -24,7 +25,7 @@ export function StrategyCard({
     return (
         <>
             <div
-                className={`bg-white dark:bg-[#1E2028] p-6 rounded-xl border shadow-sm group hover:border-primary/50 hover:shadow-md transition-shadow flex flex-col justify-between ${
+                className={`bg-white dark:bg-[#1E2028] p-6 rounded-lg border shadow-sm group hover:border-primary/50 hover:shadow-md transition-shadow flex flex-col justify-between ${
                     isGhost
                         ? "border-dashed border-gray-300 dark:border-white/20"
                         : "border-dashboard"
@@ -41,7 +42,7 @@ export function StrategyCard({
                             <h3 className="font-bold text-lg text-gray-700 dark:text-white flex items-center gap-2 flex-wrap">
                                 {strategy.name}
                                 {strategy.isPlaybook && (
-                                    <span className="inline-flex items-center gap-1 text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">
+                                    <span className="inline-flex items-center gap-1 text-[10px] bg-amber-500/10 text-gold dark:text-amber-400 px-2 py-0.5 rounded-full font-bold">
                                         <BookOpen size={10} />
                                         Playbook
                                     </span>
@@ -90,7 +91,7 @@ export function StrategyCard({
 
                     {/* Playbook Metadata */}
                     {strategy.isPlaybook && (
-                        <div className="mb-4 space-y-2.5 p-3 rounded-xl bg-gray-50/70 dark:bg-white/[0.03] border border-dashboard">
+                        <div className="mb-4 space-y-2.5 p-3 rounded-lg bg-gray-50/70 dark:bg-white/[0.03] border border-dashboard">
                             {/* Setup type + R:R */}
                             <div className="flex items-center justify-between text-xs text-gray-500">
                                 {strategy.setupType ? (
@@ -114,7 +115,7 @@ export function StrategyCard({
                                     {strategy.timeframes.map((tf) => (
                                         <span
                                             key={tf}
-                                            className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded-md"
+                                            className="px-2 py-0.5 bg-amber-500/10 text-gold dark:text-amber-400 text-[10px] font-bold rounded-lg"
                                         >
                                             {tf}
                                         </span>
@@ -122,7 +123,7 @@ export function StrategyCard({
                                     {strategy.pairs.map((pair) => (
                                         <span
                                             key={pair}
-                                            className="px-2 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-bold rounded-md"
+                                            className="px-2 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-bold rounded-lg"
                                         >
                                             {pair}
                                         </span>
@@ -187,7 +188,7 @@ export function StrategyCard({
                     {/* Stats */}
                     {performance ? (
                         <div className="grid grid-cols-3 gap-3 pt-4 border-t border-gray-100 dark:border-white/5">
-                            <div className="text-center p-2 bg-gray-50 dark:bg-white/5 rounded-xl">
+                            <div className="text-center p-2 bg-gray-50 dark:bg-white/5 rounded-lg">
                                 <Target
                                     size={16}
                                     className="mx-auto mb-1 text-purple-500"
@@ -199,7 +200,7 @@ export function StrategyCard({
                                     Win Rate
                                 </p>
                             </div>
-                            <div className="text-center p-2 bg-gray-50 dark:bg-white/5 rounded-xl">
+                            <div className="text-center p-2 bg-gray-50 dark:bg-white/5 rounded-lg">
                                 <TrendingUp
                                     size={16}
                                     className={`mx-auto mb-1 ${performance.totalPnL >= 0 ? "text-green-500" : "text-red-500"}`}
@@ -213,7 +214,7 @@ export function StrategyCard({
                                     P&L
                                 </p>
                             </div>
-                            <div className="text-center p-2 bg-gray-50 dark:bg-white/5 rounded-xl">
+                            <div className="text-center p-2 bg-gray-50 dark:bg-white/5 rounded-lg">
                                 <Percent
                                     size={16}
                                     className="mx-auto mb-1 text-blue-500"
@@ -229,10 +230,24 @@ export function StrategyCard({
                             </div>
                         </div>
                     ) : (
-                        <div className="py-4 text-center bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-dashboard">
+                        <div className="py-4 text-center bg-gray-50 dark:bg-white/5 rounded-lg border border-dashed border-dashboard">
                             <p className="text-xs text-gray-500">No trades recorded</p>
                         </div>
                     )}
+
+                    {/* View in Journal Link */}
+                    <div className="mt-3 pt-3 border-t border-dashboard flex items-center justify-between">
+                        <span className="text-[11px] text-gray-500 font-medium">
+                            {performance?.totalTrades ? `${performance.totalTrades} logged trades` : "0 trades logged"}
+                        </span>
+                        <Link
+                            href={`/dashboard/journal?strategy=${encodeURIComponent(strategy.name)}`}
+                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary/80 transition-colors group/link"
+                        >
+                            <span>View in Journal</span>
+                            <ArrowRight size={12} className="group-hover/link:translate-x-0.5 transition-transform" />
+                        </Link>
+                    </div>
 
                     {/* Save Ghost Button */}
                     {isGhost && (
@@ -240,7 +255,7 @@ export function StrategyCard({
                             <Button
                                 variant="outline"
                                 onClick={onEdit}
-                                className="w-full bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary font-bold border border-primary/20 transition-colors"
+                                className="w-full bg-amber-500/10 text-gold dark:text-amber-400 hover:bg-amber-500/20 hover:text-gold font-bold border border-amber-500/20 transition-colors"
                             >
                                 <Save size={16} />
                                 <span>Save to Library</span>

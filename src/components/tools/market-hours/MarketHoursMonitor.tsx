@@ -118,7 +118,7 @@ export function MarketHoursMonitor() {
         const closeTimeString = `${closeTime.h.toString().padStart(2, "0")}:${closeTime.m.toString().padStart(2, "0")}`;
 
         return (
-            <div className="relative h-14 mb-4 bg-gray-100 dark:bg-white/5 rounded-xl w-full overflow-hidden border border-dashboard group hover:border-primary/50 transition-colors">
+            <div className="relative h-14 mb-4 bg-gray-100 dark:bg-white/5 rounded-lg w-full overflow-hidden border border-dashboard group hover:border-primary/50 transition-colors">
                 <div className="absolute left-4 top-0 bottom-0 flex items-center z-10 pointer-events-none">
                     <div className="flex flex-col">
                         <span className="font-bold text-sm text-gray-700 dark:text-white uppercase tracking-wider flex items-center gap-2">
@@ -153,7 +153,7 @@ export function MarketHoursMonitor() {
     };
 
     return (
-        <div className="w-full bg-white/80 dark:bg-white/[0.02] border border-dashboard/80 rounded-2xl p-5 sm:p-6 shadow-xl shadow-gray-200/10 dark:shadow-none backdrop-blur-md">
+        <div className="w-full bg-white/80 dark:bg-white/[0.02] border border-dashboard/80 rounded-lg p-5 sm:p-6 shadow-xl shadow-gray-200/10 dark:shadow-none backdrop-blur-md">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6 border-b border-dashboard/60 pb-6">
                 <div>
                     <h2 className="text-lg font-extrabold text-gray-800 dark:text-white flex items-center gap-2">
@@ -235,15 +235,14 @@ export function MarketHoursMonitor() {
             </div>
 
             <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-5 bg-gray-50/50 dark:bg-white/[0.01] rounded-xl border border-dashboard/60 hover:border-orange-500/30 transition-all duration-300">
+                <div className="p-5 bg-gray-50/50 dark:bg-white/[0.01] rounded-lg border border-dashboard/60 hover:border-orange-500/30 transition-all duration-300">
                     <h3 className="font-bold text-orange-500 mb-2 flex items-center gap-2 text-sm">
                         <span className="w-2 h-2 rounded-full bg-orange-500"></span>
                         Tokyo Session
                     </h3>
                     <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                        Often considered the "calm before the storm". Liquidity
-                        is lower, and pairs often trade in ranges. Key pairs to
-                        watch include{" "}
+                        Lower liquidity than London/New York. Pairs often trade
+                        in ranges. Key pairs to watch include{" "}
                         <span className="font-medium text-gray-700 dark:text-gray-300">
                             USD/JPY
                         </span>{" "}
@@ -255,15 +254,14 @@ export function MarketHoursMonitor() {
                     </p>
                 </div>
 
-                <div className="p-5 bg-gray-50/50 dark:bg-white/[0.01] rounded-xl border border-dashboard/60 hover:border-red-500/30 transition-all duration-300">
+                <div className="p-5 bg-gray-50/50 dark:bg-white/[0.01] rounded-lg border border-dashboard/60 hover:border-red-500/30 transition-all duration-300">
                     <h3 className="font-bold text-red-500 mb-2 flex items-center gap-2 text-sm">
                         <span className="w-2 h-2 rounded-full bg-red-500"></span>
                         London Session
                     </h3>
                     <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                        The heartbeat of the forex market. Trends frequently
-                        originate here. Expect highest volatility and volume,
-                        specifically in{" "}
+                        London handles the most volume; most daily trends start
+                        here. Volatility peaks in{" "}
                         <span className="font-medium text-gray-700 dark:text-gray-300">
                             GBP
                         </span>{" "}
@@ -275,7 +273,7 @@ export function MarketHoursMonitor() {
                     </p>
                 </div>
 
-                <div className="p-5 bg-gray-50/50 dark:bg-white/[0.01] rounded-xl border border-dashboard/60 hover:border-green-500/30 transition-all duration-300">
+                <div className="p-5 bg-gray-50/50 dark:bg-white/[0.01] rounded-lg border border-dashboard/60 hover:border-green-500/30 transition-all duration-300">
                     <h3 className="font-bold text-green-500 mb-2 flex items-center gap-2 text-sm">
                         <span className="w-2 h-2 rounded-full bg-green-500"></span>
                         New York Session
@@ -292,13 +290,12 @@ export function MarketHoursMonitor() {
                 </div>
             </div>
 
-            <div className="mt-4 p-4 bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/20 dark:border-amber-500/10 rounded-xl flex gap-3 text-sm text-amber-700 dark:text-amber-400 items-start">
+            <div className="mt-4 p-4 bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/20 dark:border-amber-500/10 rounded-lg flex gap-3 text-sm text-amber-700 dark:text-amber-400 items-start">
                 <Info className="shrink-0 mt-0.5" size={18} />
                 <p className="text-xs">
-                    <strong>Pro Tip:</strong> Most experienced traders avoid the
-                    "dead zone" (late US session / early Sydney) due to low
-                    liquidity and high spreads. The best opportunities usually
-                    arise during the London/New York overlap.
+                    Liquidity is thinnest in the late US / early Sydney gap; spreads
+                    widen. The London/New York overlap typically offers the
+                    tightest spreads and highest volume.
                 </p>
             </div>
         </div>

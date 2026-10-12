@@ -169,7 +169,7 @@ export default function AdminQuotesPage() {
             >
                 <Button
                     onClick={openCreateModal}
-                    className="flex items-center gap-2 px-6 py-2.5 font-bold shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0 transition-all"
+                    className="flex items-center gap-2 px-6 py-2.5 font-bold shadow-lg shadow-amber-500/30 active:scale-95 active:translate-y-0 transition-all"
                 >
                     <Plus size={18} strokeWidth={2.5} /> Add New
                 </Button>
@@ -186,7 +186,7 @@ export default function AdminQuotesPage() {
                         <TabsTrigger
                             value="DASHBOARD"
                             className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
-                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                            activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                             activeTextClassName="!text-white"
                         >
                             <LayoutDashboard size={15} />
@@ -195,7 +195,7 @@ export default function AdminQuotesPage() {
                         <TabsTrigger
                             value="HOMEPAGE"
                             className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10"
-                            activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                            activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                             activeTextClassName="!text-white"
                         >
                             <Home size={15} />
@@ -206,7 +206,7 @@ export default function AdminQuotesPage() {
             </Tabs>
 
             {/* Table */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left border-collapse">
                         <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-600 font-bold tracking-wider">
@@ -318,7 +318,7 @@ export default function AdminQuotesPage() {
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent
                                                         align="end"
-                                                        className="w-40 p-1.5 rounded-xl border-gray-200 dark:border-white/10 shadow-xl bg-white dark:bg-[#151925] z-[100]"
+                                                        className="w-40 p-1.5 rounded-lg border-gray-200 dark:border-white/10 shadow-xl bg-white dark:bg-[#151925] z-[100]"
                                                     >
                                                         <DropdownMenuItem
                                                             onClick={() =>
@@ -378,7 +378,7 @@ export default function AdminQuotesPage() {
                         <textarea
                             value={formText}
                             onChange={(e) => setFormText(e.target.value)}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[100px] resize-none"
+                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[100px] resize-none"
                             aria-label="Quote text content"
                         />
                     </div>
@@ -394,7 +394,7 @@ export default function AdminQuotesPage() {
                             type="text"
                             value={formAuthor}
                             onChange={(e) => setFormAuthor(e.target.value)}
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
+                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
                             aria-label="Quote author name"
                         />
                     </div>
@@ -404,7 +404,7 @@ export default function AdminQuotesPage() {
                             type="button"
                             variant="outline"
                             onClick={() => setModalOpen(false)}
-                            className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white font-bold rounded-xl px-6"
+                            className="hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white font-bold rounded-lg px-6"
                         >
                             Cancel
                         </Button>
@@ -412,7 +412,7 @@ export default function AdminQuotesPage() {
                             type="submit"
                             isLoading={saving}
                             disabled={!formText.trim()}
-                            className="bg-primary hover:bg-[#00C888] text-white border-none shadow-lg shadow-primary/30 rounded-xl px-6 font-bold"
+                            className="bg-gold hover:bg-amber-600 text-white border-none shadow-md shadow-amber-500/20 rounded-lg px-6 font-bold"
                         >
                             {editingQuote ? "Save Changes" : "Create Quote"}
                         </Button>

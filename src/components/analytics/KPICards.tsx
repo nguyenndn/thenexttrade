@@ -100,11 +100,11 @@ export function KPICards({ summary }: KPICardsProps) {
                 return (
                     <div
                         key={index}
-                        className={`bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group border-t-4 ${card.color.replace("text-", "border-t-")}`}
+                        className={`bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group border-t-4 ${card.color.replace("text-", "border-t-")}`}
                     >
                         <div className="flex items-center gap-3 mb-4">
                             <div
-                                className={`p-3 rounded-xl ${card.bg} text-opacity-80 group-hover:bg-opacity-100 transition-colors shadow-sm relative z-10`}
+                                className={`p-3 rounded-lg ${card.bg} text-opacity-80 group-hover:bg-opacity-100 transition-colors shadow-sm relative z-10`}
                             >
                                 <Icon
                                     size={20}

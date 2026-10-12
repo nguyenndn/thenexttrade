@@ -16,6 +16,7 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/Button";
 import { NumberTicker } from "@/components/ui/NumberTicker";
 
 export type HeroWidgetType =
@@ -138,7 +139,7 @@ export function DashboardHero({
             case "TOTAL_BALANCE":
                 return (
                     <>
-                        <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 bg-clip-text text-transparent">
+                        <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-emerald-500">
                             <NumberTicker
                                 value={totalBalance}
                                 prefix="$"
@@ -487,11 +488,8 @@ export function DashboardHero({
     return (
         <div
             id="onborda-hero"
-            className="relative overflow-hidden rounded-xl bg-gradient-to-r from-white to-gray-50 dark:from-[#1E2028] dark:to-[#171922] border border-gray-200 dark:border-white/[0.08] px-4 py-3 sm:px-6 sm:py-4 shadow-lg"
+            className="relative overflow-hidden rounded-xl bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 px-4 py-3 sm:px-6 sm:py-4 shadow-sm"
         >
-            {/* Glow effects */}
-            <div className="absolute top-0 left-1/4 w-40 h-40 bg-amber-500/10 dark:bg-amber-500/20 rounded-full blur-[80px] pointer-events-none" />
-            <div className="absolute bottom-0 right-1/4 w-32 h-32 bg-yellow-500/10 dark:bg-yellow-500/15 rounded-full blur-[60px] pointer-events-none" />
 
             <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {heroWidgets.map((type, idx) => {
@@ -532,12 +530,15 @@ export function DashboardHero({
 
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
-                                                <button
-                                                    className="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 active:scale-95 transition-all shadow-sm"
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="w-6 h-6 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 active:scale-95 transition-all shadow-sm"
+                                                    aria-label="Swap Metric"
                                                     title="Swap Metric"
                                                 >
                                                     <Layers size={13} />
-                                                </button>
+                                                </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent
                                                 align="center"

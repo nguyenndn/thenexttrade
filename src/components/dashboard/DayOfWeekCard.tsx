@@ -122,7 +122,7 @@ export function DayOfWeekCard({ data }: DayOfWeekCardProps) {
                             return (
                                 <div
                                     key={d.day}
-                                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all flex-1 ${
+                                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all flex-1 ${
                                         isBest
                                             ? "bg-gradient-to-r from-primary/5 to-emerald-500/5 border border-primary/20"
                                             : isWorst

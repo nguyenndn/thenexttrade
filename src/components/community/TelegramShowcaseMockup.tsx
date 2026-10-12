@@ -330,7 +330,7 @@ export function TelegramShowcaseMockup({
     return (
         <div className="relative w-full">
             {/* Ambient Background Glow */}
-            <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-amber-400/20 via-[#2AABEE]/20 to-amber-500/20 blur-2xl opacity-70 pointer-events-none" />
+            <div className="absolute -inset-1 rounded-lg bg-gold/10 blur-xl opacity-40 pointer-events-none" />
 
             {/* Flowing laser border — same implementation as the "Looking for Automated Execution?" block on the home page */}
             <style
@@ -348,9 +348,9 @@ export function TelegramShowcaseMockup({
                 }}
             />
             {/* Console LED Neon Running Border */}
-            <div className="relative rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(15,23,42,0.08)] dark:shadow-[0_25px_60px_rgba(15,23,42,0.4)]">
+            <div className="relative rounded-lg overflow-hidden shadow-[0_20px_50px_rgba(15,23,42,0.08)] dark:shadow-[0_25px_60px_rgba(15,23,42,0.4)]">
                 {/* Responsive flowing laser border */}
-                <svg className="absolute inset-0 w-full h-full pointer-events-none rounded-3xl">
+                <svg className="absolute inset-0 w-full h-full pointer-events-none rounded-lg">
                     <defs>
                         <linearGradient
                             id="laser-grad-telegram-teaser"
@@ -381,19 +381,19 @@ export function TelegramShowcaseMockup({
                         y="0.5"
                         width="calc(100% - 1px)"
                         height="calc(100% - 1px)"
-                        rx="23"
+                        rx="7"
                         fill="none"
                         stroke="url(#laser-grad-telegram-teaser)"
                         strokeWidth="1.5"
                         className="animate-flow-teaser-new"
                     />
                 </svg>
-                <div className="relative rounded-3xl border border-amber-200/50 dark:border-white/10 bg-white/95 dark:bg-[#0E1621] text-gray-800 dark:text-white backdrop-blur-xl overflow-hidden flex flex-col">
+                <div className="relative rounded-lg border border-amber-200/50 dark:border-white/10 bg-white/95 dark:bg-[#0E1621] text-gray-800 dark:text-white backdrop-blur-xl overflow-hidden flex flex-col">
                 {/* Telegram Window Top Header */}
-                <div className="bg-slate-100/90 dark:bg-[#17212B] px-4 py-3 border-b border-slate-200 dark:border-white/10 flex items-center justify-between">
+                <div className="bg-slate-100/90 dark:bg-[#17212B] px-4 py-3 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="relative shrink-0">
-                            <div className="w-10 h-10 rounded-full p-0.5 bg-gradient-to-tr from-amber-500 to-sky-500 shadow-sm">
+                            <div className="w-10 h-10 rounded-full p-0.5 bg-gold shadow-sm">
                                 <Image
                                     src="/images/logo_ninja.png"
                                     alt="GoldScalperNinja Logo"
@@ -423,7 +423,7 @@ export function TelegramShowcaseMockup({
                             onClick={handleCopyLink}
                             title="Copy Telegram Channel Link"
                             aria-label="Copy Telegram channel invite link"
-                            className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-200/80 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold hover:bg-slate-300 dark:hover:bg-white/[0.16] transition-all active:scale-95"
+                            className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-200/80 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold hover:bg-slate-300 dark:hover:bg-white/[0.16] transition-all active:scale-95"
                         >
                             {copied ? <Check size={12} className="text-emerald-500" /> : <Copy size={12} />}
                             <span className="hidden sm:inline">Copy Link</span>
@@ -433,11 +433,11 @@ export function TelegramShowcaseMockup({
 
                 {/* 3 Interactive Showcase Tabs with Framer Motion Smooth Sliding Active Pill */}
                 <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TabType)} tabsId="telegramShowcase">
-                    <TabsList className="w-full grid grid-cols-3 bg-slate-100 dark:bg-[#17212B] border-b border-slate-200 dark:border-white/10 p-1.5 gap-1.5 rounded-none border-t-0 border-x-0">
+                    <TabsList className="w-full grid grid-cols-3 bg-slate-100 dark:bg-[#17212B] border-b border-gray-200 dark:border-white/10 p-1.5 gap-1.5 rounded-none border-t-0 border-x-0">
                         <TabsTrigger
                             value="psych"
                             className="w-full justify-center py-2 text-xs font-black"
-                            activeIndicatorClassName="!bg-[#2AABEE] shadow-md shadow-[#2AABEE]/25 border-0 rounded-xl"
+                            activeIndicatorClassName="!bg-[#2AABEE] shadow-md shadow-[#2AABEE]/25 border-0 rounded-lg"
                             activeTextClassName="!text-white"
                         >
                             <Brain size={14} className="shrink-0" />
@@ -447,7 +447,7 @@ export function TelegramShowcaseMockup({
                         <TabsTrigger
                             value="mindset"
                             className="w-full justify-center py-2 text-xs font-black"
-                            activeIndicatorClassName="!bg-[#2AABEE] shadow-md shadow-[#2AABEE]/25 border-0 rounded-xl"
+                            activeIndicatorClassName="!bg-[#2AABEE] shadow-md shadow-[#2AABEE]/25 border-0 rounded-lg"
                             activeTextClassName="!text-white"
                         >
                             <Shield size={14} className="shrink-0" />
@@ -457,7 +457,7 @@ export function TelegramShowcaseMockup({
                         <TabsTrigger
                             value="tips"
                             className="w-full justify-center py-2 text-xs font-black"
-                            activeIndicatorClassName="!bg-[#2AABEE] shadow-md shadow-[#2AABEE]/25 border-0 rounded-xl"
+                            activeIndicatorClassName="!bg-[#2AABEE] shadow-md shadow-[#2AABEE]/25 border-0 rounded-lg"
                             activeTextClassName="!text-white"
                         >
                             <BookOpen size={14} className="shrink-0" />
@@ -477,7 +477,7 @@ export function TelegramShowcaseMockup({
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -8 }}
                                 transition={{ duration: 0.25, ease: "easeOut" }}
-                                className="min-h-[214px] bg-gradient-to-br from-violet-500/10 via-purple-500/5 to-violet-500/10 dark:from-violet-500/15 dark:to-violet-500/5 border border-violet-200 dark:border-violet-500/20 rounded-2xl p-3.5 sm:p-4 shadow-sm space-y-3 flex flex-col justify-between"
+                                className="min-h-[214px] bg-violet-500/5 dark:bg-violet-500/10 border border-violet-200 dark:border-violet-500/20 rounded-lg p-3.5 sm:p-4 shadow-sm space-y-3 flex flex-col justify-between"
                             >
                                 <div className="flex items-center justify-between text-[11px] font-bold text-violet-700 dark:text-violet-300">
                                     <span className="flex items-center gap-1.5">
@@ -507,7 +507,7 @@ export function TelegramShowcaseMockup({
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -8 }}
                                 transition={{ duration: 0.25, ease: "easeOut" }}
-                                className="min-h-[214px] bg-gradient-to-br from-sky-500/10 via-blue-500/5 to-sky-500/10 dark:from-sky-500/15 dark:to-sky-500/5 border border-sky-200 dark:border-sky-500/20 rounded-2xl p-3.5 sm:p-4 shadow-sm space-y-3 flex flex-col justify-between"
+                                className="min-h-[214px] bg-sky-500/5 dark:bg-sky-500/10 border border-sky-200 dark:border-sky-500/20 rounded-lg p-3.5 sm:p-4 shadow-sm space-y-3 flex flex-col justify-between"
                             >
                                 <div className="flex items-center justify-between text-[11px] font-bold text-sky-700 dark:text-sky-300">
                                     <span className="flex items-center gap-1.5">
@@ -535,21 +535,21 @@ export function TelegramShowcaseMockup({
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -8 }}
                                 transition={{ duration: 0.25, ease: "easeOut" }}
-                                className="min-h-[214px] bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-emerald-500/10 dark:from-emerald-500/15 dark:to-emerald-500/5 border border-emerald-200 dark:border-emerald-500/20 rounded-2xl p-3.5 sm:p-4 shadow-sm space-y-3 flex flex-col justify-between"
+                                className="min-h-[214px] bg-amber-500/5 dark:bg-gold/10 border border-amber-200 dark:border-gold/20 rounded-lg p-3.5 sm:p-4 shadow-sm space-y-3 flex flex-col justify-between"
                             >
-                                <div className="flex items-center justify-between text-[11px] font-bold text-emerald-700 dark:text-emerald-300">
+                                <div className="flex items-center justify-between text-[11px] font-bold text-amber-700 dark:text-gold">
                                     <span className="flex items-center gap-1.5">
-                                        <BookOpen size={13} className="text-emerald-500" /> S&D + PRICE ACTION TIP
+                                        <BookOpen size={13} className="text-amber-500 dark:text-gold" /> S&D + PRICE ACTION TIP
                                     </span>
-                                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">Execution Edge</span>
+                                    <span className="text-xs font-bold text-amber-600 dark:text-gold">Execution Edge</span>
                                 </div>
 
                                 <p className="text-xs sm:text-sm leading-relaxed font-semibold text-gray-800 dark:text-gray-200">
                                     <strong>{tipsPost.title}</strong> {tipsPost.body}
                                 </p>
 
-                                <div className="flex items-center justify-between text-[11px] font-medium text-gray-500 dark:text-gray-400 pt-2 border-t border-emerald-200/60 dark:border-white/10">
-                                    <span>Setup Type: <strong className="text-emerald-600 dark:text-emerald-400 font-bold">{tipsPost.footerLeft}</strong></span>
+                                <div className="flex items-center justify-between text-[11px] font-medium text-gray-500 dark:text-gray-400 pt-2 border-t border-amber-200/60 dark:border-white/10">
+                                    <span>Setup Type: <strong className="text-amber-600 dark:text-gold font-bold">{tipsPost.footerLeft}</strong></span>
                                     <span className="text-[10px] font-bold text-gray-400">{tipsPost.footerRight}</span>
                                 </div>
                             </motion.div>
@@ -558,9 +558,9 @@ export function TelegramShowcaseMockup({
                 </div>
 
                 {/* Live Community Reactions Bar */}
-                <div className="px-4 py-3 bg-white dark:bg-[#17212B] border-t border-slate-200 dark:border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div className="px-4 py-3 bg-white dark:bg-[#17212B] border-t border-gray-200 dark:border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs">
                     <div className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 font-bold text-[11px]">
-                        <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="inline-block w-2 h-2 rounded-full bg-gold animate-pulse" />
                         <span>LIVE REACTIONS</span>
                     </div>
 
@@ -584,7 +584,7 @@ export function TelegramShowcaseMockup({
                                     className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold transition-all transform active:scale-90 ${
                                         isSelected
                                             ? "bg-[#2AABEE]/20 border border-[#2AABEE] text-[#2AABEE] scale-105 shadow-xs"
-                                            : "bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 text-gray-700 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-white/10"
+                                            : "bg-slate-100 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-700 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-white/10"
                                     }`}
                                 >
                                     <span>{r.emoji}</span>

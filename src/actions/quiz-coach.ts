@@ -63,7 +63,24 @@ Write a response strictly adhering to the following rules:
         }
 
         const rawContent = gatewayResult.rawResult;
-        let explanation = typeof rawContent === "string" ? rawContent.trim() : JSON.stringify(rawContent);
+        let explanation = "";
+        if (typeof rawContent === "string") {
+            try {
+                const parsed = JSON.parse(rawContent);
+                if (parsed && typeof parsed === "object") {
+                    explanation = parsed.explanation || parsed.text || parsed.message || rawContent.trim();
+                } else {
+                    explanation = rawContent.trim();
+                }
+            } catch {
+                explanation = rawContent.trim();
+            }
+        } else if (rawContent && typeof rawContent === "object") {
+            const parsed = rawContent as Record<string, unknown>;
+            explanation = (parsed.explanation || parsed.text || parsed.message || JSON.stringify(rawContent)) as string;
+        } else {
+            explanation = String(rawContent || "");
+        }
 
         return { explanation };
     } catch (error) {

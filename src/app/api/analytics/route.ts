@@ -61,6 +61,8 @@ export async function GET(request: NextRequest) {
                 symbol: true,
                 type: true,
                 pnl: true,
+                commission: true,
+                swap: true,
                 entryDate: true,
                 exitDate: true,
                 result: true,
@@ -69,6 +71,9 @@ export async function GET(request: NextRequest) {
                 exitPrice: true,
             },
         });
+
+        const getNetPnl = (t: any) =>
+            (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
 
         // 5. Calculate summary
         const totalTrades = trades.length;
@@ -81,11 +86,14 @@ export async function GET(request: NextRequest) {
         const breakEvenCount = breakEvens.length;
         const winRate = totalTrades > 0 ? (winCount / totalTrades) * 100 : 0;
 
-        const grossProfit = wins.reduce((sum, t) => sum + (t.pnl || 0), 0);
-        const grossLoss = Math.abs(
-            losses.reduce((sum, t) => sum + (t.pnl || 0), 0)
+        const grossProfit = wins.reduce(
+            (sum, t) => sum + Math.max(0, getNetPnl(t)),
+            0
         );
-        const totalPnL = trades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+        const grossLoss = Math.abs(
+            losses.reduce((sum, t) => sum + Math.min(0, getNetPnl(t)), 0)
+        );
+        const totalPnL = trades.reduce((sum, t) => sum + getNetPnl(t), 0);
         const profitFactor =
             grossLoss > 0
                 ? grossProfit / grossLoss
@@ -97,7 +105,7 @@ export async function GET(request: NextRequest) {
         const avgLoss = lossCount > 0 ? grossLoss / lossCount : 0;
         const avgRRR = avgLoss > 0 ? avgWin / avgLoss : 0;
 
-        const pnlValues = trades.map((t) => t.pnl || 0);
+        const pnlValues = trades.map((t) => getNetPnl(t));
         const bestTrade = pnlValues.length > 0 ? Math.max(...pnlValues) : 0;
         const worstTrade = pnlValues.length > 0 ? Math.min(...pnlValues) : 0;
 
@@ -135,7 +143,7 @@ export async function GET(request: NextRequest) {
 
         // 6. Calculate equity curve
         // Backtrack from current balance to get starting balance of the period
-        const totalPeriodPnL = trades.reduce((sum, t) => sum + (t.pnl || 0), 0);
+        const totalPeriodPnL = trades.reduce((sum, t) => sum + getNetPnl(t), 0);
         let runningBalance = currentBalance - totalPeriodPnL;
 
         const equityCurve: Array<{
@@ -158,7 +166,7 @@ export async function GET(request: NextRequest) {
             const dateKey = brokerDate.toISOString().split("T")[0];
 
             const currentPnL = tradesByDate.get(dateKey) || 0;
-            tradesByDate.set(dateKey, currentPnL + (trade.pnl || 0));
+            tradesByDate.set(dateKey, currentPnL + getNetPnl(trade));
         }
 
         // Build equity curve & daily stats
@@ -221,7 +229,7 @@ export async function GET(request: NextRequest) {
                 wins: 0,
             };
             pairMap.set(trade.symbol, {
-                pnl: current.pnl + (trade.pnl || 0),
+                pnl: current.pnl + getNetPnl(trade),
                 count: current.count + 1,
                 wins: current.wins + (trade.result === "WIN" ? 1 : 0),
             });
@@ -229,7 +237,7 @@ export async function GET(request: NextRequest) {
         const pairPerformance = Array.from(pairMap.entries())
             .map(([symbol, data]) => ({
                 symbol,
-                pnl: data.pnl,
+                pnl: Number(data.pnl.toFixed(2)),
                 tradeCount: data.count,
                 winRate: (data.wins / data.count) * 100,
             }))
@@ -254,7 +262,7 @@ export async function GET(request: NextRequest) {
 
             const current = dayMap.get(dayIndex) || { pnl: 0, count: 0 };
             dayMap.set(dayIndex, {
-                pnl: current.pnl + (trade.pnl || 0),
+                pnl: current.pnl + getNetPnl(trade),
                 count: current.count + 1,
             });
         }
@@ -262,7 +270,7 @@ export async function GET(request: NextRequest) {
             .map(([dayIndex, data]) => ({
                 day: dayNames[dayIndex],
                 dayIndex,
-                pnl: data.pnl,
+                pnl: Number(data.pnl.toFixed(2)),
                 tradeCount: data.count,
             }))
             .sort((a, b) => a.dayIndex - b.dayIndex);
@@ -275,7 +283,10 @@ export async function GET(request: NextRequest) {
                 id: t.id,
                 symbol: t.symbol,
                 type: t.type,
-                pnl: t.pnl || 0,
+                pnl: Number(getNetPnl(t).toFixed(2)),
+                grossProfit: Number((t.pnl || 0).toFixed(2)),
+                commission: Number((t.commission || 0).toFixed(2)),
+                swap: Number((t.swap || 0).toFixed(2)),
                 entryDate: t.entryDate.toISOString(), // Keep original timestamp
                 exitDate: t.exitDate?.toISOString(),
                 result: t.result || "BREAK_EVEN",

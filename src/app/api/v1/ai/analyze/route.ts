@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
+import { normalizeSyncApiKey } from "@/lib/utils/api-key";
 import {
     executeAiGateway,
     GatewayExecutionResult,
@@ -43,11 +44,21 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const token = authHeader.slice("Bearer ".length).trim();
-        const user = await prisma.user.findUnique({
-            where: { syncApiKey: token },
-            select: { id: true },
-        });
+        const rawToken = authHeader.slice("Bearer ".length).trim();
+        const token = normalizeSyncApiKey(rawToken);
+        let user = token
+            ? await prisma.user.findUnique({
+                  where: { syncApiKey: token },
+                  select: { id: true },
+              })
+            : null;
+
+        if (!user && rawToken && rawToken !== token) {
+            user = await prisma.user.findUnique({
+                where: { syncApiKey: rawToken },
+                select: { id: true },
+            });
+        }
         if (!user) {
             return NextResponse.json(
                 {

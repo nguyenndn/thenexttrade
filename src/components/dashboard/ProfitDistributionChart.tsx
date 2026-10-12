@@ -102,7 +102,7 @@ export function ProfitDistributionChart({
                                 if (active && payload && payload.length) {
                                     const d = payload[0].payload;
                                     return (
-                                        <div className="bg-white dark:bg-[#1E2028] p-2.5 border border-dashboard rounded-xl shadow-xl flex items-center gap-2.5">
+                                        <div className="bg-white dark:bg-[#1E2028] p-2.5 border border-dashboard rounded-lg shadow-xl flex items-center gap-2.5">
                                             <div
                                                 className="w-2.5 h-2.5 rounded-full"
                                                 style={{

@@ -277,7 +277,7 @@ export function StrategyManager({
                         variant="primary"
                         size="smd"
                         onClick={() => { setDefaultPlaybook(false); setShowModal(true); }}
-                        className="flex items-center justify-center gap-2 shadow-lg shadow-primary/25"
+                        className="flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25"
                     >
                         <Plus size={18} strokeWidth={2.5} />
                         New Strategy
@@ -309,7 +309,7 @@ export function StrategyManager({
 
             {/* Toolbar */}
             {allStrategies.length > 0 && (
-                <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl p-4 shadow-sm mt-6">
+                <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg p-4 shadow-sm mt-6">
                     <div className="flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
                         <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center flex-1">
                             <div className="w-full sm:max-w-xs">
@@ -322,13 +322,13 @@ export function StrategyManager({
                             </div>
 
                             {/* Filter Type Pills */}
-                            <div className="flex items-center gap-1 p-1 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashboard self-start sm:self-auto">
+                            <div className="flex items-center gap-1 p-1 bg-gray-50 dark:bg-white/5 rounded-lg border border-dashboard self-start sm:self-auto">
                                 <button
                                     type="button"
                                     onClick={() => setFilterType("all")}
                                     className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap ${
                                         filterType === "all"
-                                            ? "bg-primary text-white shadow-sm"
+                                            ? "bg-gold text-white shadow-sm"
                                             : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                                     }`}
                                 >
@@ -339,7 +339,7 @@ export function StrategyManager({
                                     onClick={() => setFilterType("playbook")}
                                     className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 whitespace-nowrap ${
                                         filterType === "playbook"
-                                            ? "bg-primary text-white shadow-sm"
+                                            ? "bg-gold text-white shadow-sm"
                                             : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                                     }`}
                                 >
@@ -351,7 +351,7 @@ export function StrategyManager({
                                     onClick={() => setFilterType("standard")}
                                     className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap ${
                                         filterType === "standard"
-                                            ? "bg-primary text-white shadow-sm"
+                                            ? "bg-gold text-white shadow-sm"
                                             : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                                     }`}
                                 >

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { detectBroker } from "@/lib/ea/broker-detection";
 import { parseBrokerNumber } from "@/lib/utils";
 import { rateLimit } from "@/lib/rate-limit";
+import { normalizeSyncApiKey } from "@/lib/utils/api-key";
 
 const limiter = rateLimit({
     uniqueTokenPerInterval: 500,
@@ -26,9 +27,10 @@ function parseNumeric(val: unknown): number | undefined {
  */
 export async function POST(request: NextRequest) {
     try {
-        const syncApiKey =
+        const rawApiKey =
             request.headers.get("X-Sync-Key") ||
             request.headers.get("X-API-Key");
+        const syncApiKey = normalizeSyncApiKey(rawApiKey);
         if (!syncApiKey) {
             return NextResponse.json(
                 { error: "Missing sync API key" },
@@ -46,7 +48,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const user = await prisma.user.findUnique({
+        let user = await prisma.user.findUnique({
             where: { syncApiKey },
             select: {
                 id: true,
@@ -55,6 +57,18 @@ export async function POST(request: NextRequest) {
                 },
             },
         });
+
+        if (!user && rawApiKey && rawApiKey.trim() !== syncApiKey) {
+            user = await prisma.user.findUnique({
+                where: { syncApiKey: rawApiKey.trim() },
+                select: {
+                    id: true,
+                    tradingAccounts: {
+                        select: { id: true, accountNumber: true },
+                    },
+                },
+            });
+        }
 
         if (!user) {
             return NextResponse.json(

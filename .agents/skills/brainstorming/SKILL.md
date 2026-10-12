@@ -1,163 +1,66 @@
 ---
 name: brainstorming
-description: Socratic questioning protocol + user communication. MANDATORY for complex requests, new features, or unclear requirements. Includes progress reporting and error handling.
-allowed-tools: Read, Glob, Grep
+description: Unified Brainstorming & Socratic Idea Exploration (commands: /brainstorm, /brainstorming). Explores product & technical options, asks 3 framing questions with trade-offs before implementation.
 ---
 
-# Brainstorming & Communication Protocol
+# /brainstorm — Unified Idea Exploration & Socratic Gate
 
-> **MANDATORY:** Use for complex/vague requests, new features, updates.
+## Purpose
+Combines Socratic Questioning with structured YC-style idea exploration. Use before building features, making technical architecture decisions, or refining vague requirements.
 
----
-
-## 🛑 SOCRATIC GATE (ENFORCEMENT)
-
-### When to Trigger
-
-| Pattern | Action |
-|---------|--------|
-| "Build/Create/Make [thing]" without details | 🛑 ASK 3 questions |
-| Complex feature or architecture | 🛑 Clarify before implementing |
-| Update/change request | 🛑 Confirm scope |
-| Vague requirements | 🛑 Ask purpose, users, constraints |
-
-### 🚫 MANDATORY: 3 Questions Before Implementation
-
-1. **STOP** - Do NOT start coding
-2. **ASK** - Minimum 3 questions:
-   - 🎯 Purpose: What problem are you solving?
-   - 👥 Users: Who will use this?
-   - 📦 Scope: Must-have vs nice-to-have?
-3. **WAIT** - Get response before proceeding
+**HARD RULE:** NO code writing during brainstorm. Output is a structured design document.
 
 ---
 
-## 🧠 Dynamic Question Generation
+## Phase 1: Context Gathering & Karpathy Gate
+1. Read relevant system files (`ARCHITECTURE.md`, target source files).
+2. Understand the user's ultimate goal.
+3. **State assumptions explicitly** — What do you believe the user wants? Where is the ambiguity?
+4. Determine the exploration mode:
+   - **Product Mode:** User flows, MVP scope, 10x features.
+   - **Technical Mode:** Architecture, DB schema, API design, tech tradeoffs.
+   - **Explorer Mode:** Feasibility research, learning, validating concepts.
 
-**⛔ NEVER use static templates.** Read `dynamic-questioning.md` for principles.
+---
 
-### Core Principles
+## Phase 2: Socratic Gate (Minimum 3 Questions)
+Before any implementation, ask minimum 3 strategic questions formatted with tradeoffs:
+- 🎯 **Purpose:** What specific problem are we solving?
+- 👥 **Audience:** Who will use this and how?
+- 📦 **Scope:** Must-have (MVP) vs nice-to-have?
 
-| Principle | Meaning |
-|-----------|---------|
-| **Questions Reveal Consequences** | Each question connects to an architectural decision |
-| **Context Before Content** | Understand greenfield/feature/refactor/debug context first |
-| **Minimum Viable Questions** | Each question must eliminate implementation paths |
-| **Generate Data, Not Assumptions** | Don't guess—ask with trade-offs |
-
-### Question Generation Process
-
-```
-1. Parse request → Extract domain, features, scale indicators
-2. Identify decision points → Blocking vs. deferable
-3. Generate questions → Priority: P0 (blocking) > P1 (high-leverage) > P2 (nice-to-have)
-4. Format with trade-offs → What, Why, Options, Default
-```
-
-### Question Format (MANDATORY)
-
+### Question Format
 ```markdown
 ### [PRIORITY] **[DECISION POINT]**
-
 **Question:** [Clear question]
-
-**Why This Matters:**
-- [Architectural consequence]
-- [Affects: cost/complexity/timeline/scale]
-
+**Why This Matters:** [Architectural / UX consequence]
 **Options:**
 | Option | Pros | Cons | Best For |
 |--------|------|------|----------|
 | A | [+] | [-] | [Use case] |
-
+| B | [+] | [-] | [Use case] |
 **If Not Specified:** [Default + rationale]
 ```
 
-**For detailed domain-specific question banks and algorithms**, see: `dynamic-questioning.md`
+---
+
+## Phase 3: Mode-Specific Deep Dive
+
+### 3A. Product Mode (Feature Exploration)
+- What is the smallest viable version (MVP) that delivers immediate value?
+- What is the 10x dream version?
+- What are the UX pitfalls and edge cases?
+
+### 3B. Technical Mode (Architecture Decisions)
+- Compare architectural options (e.g. Server Action vs API Route, Redis vs Postgres polling).
+- Evaluate operational complexity, security, and scaling bottlenecks.
+- Check compliance with Breek Design System and tech conventions.
 
 ---
 
-## Progress Reporting (PRINCIPLE-BASED)
-
-**PRINCIPLE:** Transparency builds trust. Status must be visible and actionable.
-
-### Status Board Format
-
-| Agent | Status | Current Task | Progress |
-|-------|--------|--------------|----------|
-| [Agent Name] | ✅🔄⏳❌⚠️ | [Task description] | [% or count] |
-
-### Status Icons
-
-| Icon | Meaning | Usage |
-|------|---------|-------|
-| ✅ | Completed | Task finished successfully |
-| 🔄 | Running | Currently executing |
-| ⏳ | Waiting | Blocked, waiting for dependency |
-| ❌ | Error | Failed, needs attention |
-| ⚠️ | Warning | Potential issue, not blocking |
-
----
-
-## Error Handling (PRINCIPLE-BASED)
-
-**PRINCIPLE:** Errors are opportunities for clear communication.
-
-### Error Response Pattern
-
-```
-1. Acknowledge the error
-2. Explain what happened (user-friendly)
-3. Offer specific solutions with trade-offs
-4. Ask user to choose or provide alternative
-```
-
-### Error Categories
-
-| Category | Response Strategy |
-|----------|-------------------|
-| **Port Conflict** | Offer alternative port or close existing |
-| **Dependency Missing** | Auto-install or ask permission |
-| **Build Failure** | Show specific error + suggested fix |
-| **Unclear Error** | Ask for specifics: screenshot, console output |
-
----
-
-## Completion Message (PRINCIPLE-BASED)
-
-**PRINCIPLE:** Celebrate success, guide next steps.
-
-### Completion Structure
-
-```
-1. Success confirmation (celebrate briefly)
-2. Summary of what was done (concrete)
-3. How to verify/test (actionable)
-4. Next steps suggestion (proactive)
-```
-
----
-
-## Communication Principles
-
-| Principle | Implementation |
-|-----------|----------------|
-| **Concise** | No unnecessary details, get to point |
-| **Visual** | Use emojis (✅🔄⏳❌) for quick scanning |
-| **Specific** | "~2 minutes" not "wait a bit" |
-| **Alternatives** | Offer multiple paths when stuck |
-| **Proactive** | Suggest next step after completion |
-
----
-
-## Anti-Patterns (AVOID)
-
-| Anti-Pattern | Why |
-|--------------|-----|
-| Jumping to solutions before understanding | Wastes time on wrong problem |
-| Assuming requirements without asking | Creates wrong output |
-| Over-engineering first version | Delays value delivery |
-| Ignoring constraints | Creates unusable solutions |
-| "I think" phrases | Uncertainty → Ask instead |
-
----
+## Phase 4: Decision Document Output
+Output a concise design summary:
+1. **Selected Direction & Rationale**
+2. **Key Architectural Choices**
+3. **Scope Definition (In-scope vs Deferred)**
+4. **Next Steps:** Suggest running `/plan` to proceed with implementation.

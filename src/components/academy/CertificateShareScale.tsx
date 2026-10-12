@@ -43,7 +43,7 @@ export function CertificateShareScale({
         <div ref={containerRef} className="w-full">
             <div
                 style={{ height: Math.round(850 * scale) }}
-                className="relative overflow-hidden rounded-xl border border-dashboard shadow-xl"
+                className="relative overflow-hidden rounded-lg border border-dashboard shadow-xl"
             >
                 <div
                     style={{

@@ -1,21 +1,19 @@
-import { Metadata } from "next";
-import { PublicHeader } from "@/components/layout/PublicHeader";
-import { SiteFooter } from "@/components/layout/SiteFooter";
-import { DynamicFirefly as FireflyBackground } from "@/components/ui/DynamicFirefly";
-
+import type { Metadata } from "next";
+import { getAuthUser } from "@/lib/auth-cache";
+import { ToolsPageShell } from "@/components/tools/ToolsPageShell";
 import BrokersClient from "./BrokersClient";
 
 export const metadata: Metadata = {
     title: "Verified Forex Brokers & Infrastructure Partners | TheNextTrade",
     description:
-        "Comprehensive reviews of regulated Forex brokers, low-latency VPS hosting, and crypto trading platforms vetted by professional traders.",
+        "Reviews of regulated forex brokers, VPS hosting, and crypto platforms.",
     alternates: {
         canonical: "/brokers",
     },
     openGraph: {
         title: "Verified Forex Brokers & Infrastructure Partners | TheNextTrade",
         description:
-            "Regulated Forex brokers, low-latency VPS hosting, and crypto platforms vetted by professional traders.",
+            "Reviews of regulated forex brokers, VPS hosting, and crypto platforms.",
         url: "/brokers",
         siteName: "TheNextTrade",
         type: "website",
@@ -24,28 +22,18 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "Verified Forex Brokers & Infrastructure Partners",
         description:
-            "Regulated Forex brokers and low-latency VPS hosting vetted by professional traders.",
+            "Reviews of regulated forex brokers, VPS hosting, and crypto platforms.",
     },
 };
 
 export const revalidate = 86400;
 
 export default async function BrokersPage() {
+    const user = await getAuthUser();
+
     return (
-        <div className="min-h-screen flex flex-col bg-white dark:bg-transparent text-gray-700 dark:text-white">
-            <PublicHeader />
-
-            <main className="flex-1 pt-20 sm:pt-32 pb-8 sm:pb-16 relative overflow-hidden">
-                {/* Background */}
-                <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2] pointer-events-none" />
-                <FireflyBackground />
-
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <BrokersClient />
-                </div>
-            </main>
-
-            <SiteFooter />
-        </div>
+        <ToolsPageShell maxWidth="max-w-6xl" user={user}>
+            <BrokersClient />
+        </ToolsPageShell>
     );
 }

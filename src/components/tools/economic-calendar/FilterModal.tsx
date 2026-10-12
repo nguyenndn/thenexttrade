@@ -144,7 +144,7 @@ export function FilterModal({
                     animate="animate"
                     exit="exit"
                     transition={SPRING_SOFT}
-                    className={`relative z-10 w-full max-w-md rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] cursor-default ${isDark ? "bg-slate-800 text-white" : "bg-white text-gray-700"}`}
+                    className={`relative z-10 w-full max-w-md rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh] cursor-default ${isDark ? "bg-slate-800 text-white" : "bg-white text-gray-700"}`}
                 >
                 {/* Header */}
                 <div
@@ -387,7 +387,7 @@ export function FilterModal({
                         onClick={() => onApply(filters)}
                         variant="primary"
                         size="smd"
-                        className="font-bold bg-primary hover:bg-[#00B078] text-white shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all"
+                        className="font-bold bg-gold hover:bg-amber-600 text-white shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all border-none"
                     >
                         Apply Filters
                     </Button>

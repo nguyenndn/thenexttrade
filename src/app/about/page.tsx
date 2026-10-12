@@ -47,10 +47,10 @@ export const metadata: Metadata = {
 
 export default async function AboutPage() {
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-transparent text-gray-900 dark:text-white overflow-hidden relative selection:bg-amber-500/20 selection:text-amber-500">
-            {/* Ambient Background Gold Atmosphere Gradient */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_12%,rgba(245,158,11,0.14),transparent_75%)] pointer-events-none" />
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808010_1px,transparent_1px),linear-gradient(to_bottom,#80808010_1px,transparent_1px)] bg-[size:48px_48px] pointer-events-none" />
+        <div className="min-h-screen bg-white dark:bg-transparent text-gray-900 dark:text-white overflow-hidden relative selection:bg-amber-500/20 selection:text-amber-500">
+            {/* Ambient Background Atmosphere & Technical Grid */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.08),transparent_75%)] dark:bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.12),transparent_75%)] pointer-events-none" />
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none" />
 
             {/* Golden Firefly Particles */}
             <DynamicFirefly color="gold" count={45} />
@@ -64,7 +64,7 @@ export default async function AboutPage() {
                         {/* Punchy & Compact Headline */}
                         <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-[1.12] text-gray-900 dark:text-white mb-4 max-w-3xl mx-auto">
                             From Blown Accounts to{" "}
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-gold to-yellow-400 dark:from-gold dark:via-yellow-300 dark:to-amber-400">
+                            <span className="text-gold">
                                 Disciplined Execution
                             </span>
                         </h1>
@@ -76,9 +76,9 @@ export default async function AboutPage() {
 
                     {/* Pure & Elegant Quote Card (No Avatar, No Name Line) */}
                     <ScrollReveal delay={0.15}>
-                        <div className="mt-8 sm:mt-10 max-w-2xl mx-auto p-6 sm:p-7 rounded-2xl bg-white/80 dark:bg-slate-900/60 border border-amber-500/20 backdrop-blur-xl shadow-lg shadow-amber-500/[0.02] text-center relative overflow-hidden">
+                        <div className="mt-8 sm:mt-10 max-w-2xl mx-auto p-6 sm:p-7 rounded-lg bg-white/80 dark:bg-slate-900/60 border border-amber-500/20 backdrop-blur-xl shadow-lg shadow-amber-500/[0.02] text-center relative overflow-hidden">
                             <p className="text-base sm:text-lg font-medium text-gray-800 dark:text-gray-200 italic leading-relaxed">
-                                &ldquo;The market never defeats a trader on its own. It is unchecked emotion, oversized lots, and lack of honest journaling that wipe out accounts. When you master your data, you master your trading.&rdquo;
+                                &ldquo;The market never defeats a trader on its own. It is unchecked emotion, oversized lots, and lack of honest journaling that wipe out accounts. When you audit your execution data, discipline becomes repeatable.&rdquo;
                             </p>
                         </div>
                     </ScrollReveal>
@@ -99,7 +99,7 @@ export default async function AboutPage() {
                                 5 Hard Truths I Learned the Hard Way
                             </h2>
                             <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                                No fancy marketing buzzwords. Just the hard lessons that turned my equity curve around.
+                                The lessons that actually changed my results.
                             </p>
                         </div>
                     </ScrollReveal>
@@ -146,7 +146,7 @@ export default async function AboutPage() {
                             const Icon = truth.icon;
                             return (
                                 <ScrollReveal key={idx} delay={0.08 * idx}>
-                                    <div className="h-full p-6 sm:p-7 rounded-2xl bg-white dark:bg-slate-900/50 border border-slate-200/80 dark:border-white/[0.08] hover:border-amber-500/40 transition-all duration-300 shadow-sm hover:shadow-md flex flex-col justify-between group">
+                                    <div className="h-full p-6 sm:p-7 rounded-lg bg-white dark:bg-slate-900/50 border border-gray-200 dark:border-white/[0.08] hover:border-amber-500/40 transition-all duration-300 shadow-sm hover:shadow-md flex flex-col justify-between group">
                                         <div className="space-y-3.5">
                                             <div className="flex items-center justify-between">
                                                 <span className="font-mono text-2xl font-black text-amber-500/60 group-hover:text-amber-500 transition-colors">
@@ -173,11 +173,11 @@ export default async function AboutPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* Mission */}
                         <ScrollReveal delay={0.1} direction="left">
-                            <div className="h-full rounded-3xl p-8 sm:p-12 bg-gradient-to-br from-amber-500/[0.06] via-white to-amber-500/[0.02] dark:from-amber-500/[0.05] dark:via-slate-900/80 dark:to-transparent border border-amber-500/20 shadow-sm hover:shadow-xl transition-all duration-500 relative overflow-hidden">
-                                <Target size={180} className="absolute -bottom-8 -right-8 text-amber-500/[0.05] pointer-events-none" />
+                            <div className="h-full rounded-lg p-8 sm:p-12 bg-white/90 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden backdrop-blur-md">
+                                <Target size={180} className="absolute -bottom-8 -right-8 text-amber-500/[0.03] pointer-events-none" />
                                 <div className="relative z-10 space-y-5">
                                     <div className="flex items-center gap-3.5 sm:gap-4">
-                                        <div className="h-12 w-12 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-600 dark:text-gold shrink-0 shadow-xs relative">
+                                        <div className="h-12 w-12 rounded-lg bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-600 dark:text-gold shrink-0 shadow-xs relative">
                                             <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
                                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
                                                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500" />
@@ -189,7 +189,7 @@ export default async function AboutPage() {
                                         </h2>
                                     </div>
                                     <p className="text-base text-gray-600 dark:text-gray-300 leading-relaxed font-normal">
-                                        To democratize elite-grade trading analytics for every retail trader on earth. We believe quality tools, automated MT5 synchronization, and structured education should be accessible to all — without paywalls, scams, or fake signal channels.
+                                        To deliver institutional-grade execution analytics to every retail trader. We believe quality tools, automated MT5 synchronization, and structured education should be accessible to all — without paywalls, scams, or fake signal channels.
                                     </p>
                                 </div>
                             </div>
@@ -197,11 +197,11 @@ export default async function AboutPage() {
 
                         {/* Vision */}
                         <ScrollReveal delay={0.2} direction="right">
-                            <div className="h-full rounded-3xl p-8 sm:p-12 bg-gradient-to-br from-blue-500/[0.06] via-white to-cyan-500/[0.02] dark:from-blue-500/[0.05] dark:via-slate-900/80 dark:to-transparent border border-blue-500/20 shadow-sm hover:shadow-xl transition-all duration-500 relative overflow-hidden">
-                                <TrendingUp size={180} className="absolute -bottom-8 -right-8 text-blue-500/[0.05] pointer-events-none" />
+                            <div className="h-full rounded-lg p-8 sm:p-12 bg-white/90 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden backdrop-blur-md">
+                                <TrendingUp size={180} className="absolute -bottom-8 -right-8 text-sky-500/[0.03] pointer-events-none" />
                                 <div className="relative z-10 space-y-5">
                                     <div className="flex items-center gap-3.5 sm:gap-4">
-                                        <div className="h-12 w-12 rounded-2xl bg-blue-500/10 border border-blue-500/25 flex items-center justify-center text-blue-600 dark:text-cyan-400 shrink-0 shadow-xs relative">
+                                        <div className="h-12 w-12 rounded-lg bg-blue-500/10 border border-blue-500/25 flex items-center justify-center text-blue-600 dark:text-cyan-400 shrink-0 shadow-xs relative">
                                             <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
                                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
                                                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500" />
@@ -213,7 +213,7 @@ export default async function AboutPage() {
                                         </h2>
                                     </div>
                                     <p className="text-base text-gray-600 dark:text-gray-300 leading-relaxed font-normal">
-                                        To build the single comprehensive ecosystem where a trader can start from their very first pip calculation, systematically master risk psychology, and transition into an automated, profitable prop-firm level operator.
+                                        To build a focused workspace where traders start from their first pip calculation, build solid risk habits, and transition into disciplined execution.
                                     </p>
                                 </div>
                             </div>
@@ -224,19 +224,19 @@ export default async function AboutPage() {
                 {/* 5. EDITORIAL CONVERSION CTA */}
                 <section className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
                     <ScrollReveal>
-                        <div className="rounded-3xl p-8 sm:p-12 md:p-14 text-center border border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-white dark:via-slate-900/90 to-amber-500/5 backdrop-blur-2xl shadow-2xl relative overflow-hidden">
+                        <div className="rounded-lg p-8 sm:p-12 md:p-14 text-center border border-gray-200 dark:border-white/10 bg-white/90 dark:bg-white/[0.03] backdrop-blur-md shadow-sm relative overflow-hidden">
                             <div className="relative z-10 space-y-6">
                                 <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-black text-gray-900 dark:text-white tracking-tight sm:whitespace-nowrap">
-                                    Build Your Systematic Trading Edge Today
+                                    Start fixing your trading habits
                                 </h2>
                                 <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
                                     No credit card required. Connect your MT5 account in 30 seconds and uncover the behavioral leaks holding you back from consistent profitability.
                                 </p>
                                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
                                     <Link href="/auth/signup?intent=TRADE_FIRST&source=about_page" className="w-full sm:w-auto">
-                                        <Button className="w-full sm:w-auto min-h-13 px-8 rounded-xl bg-gold hover:bg-amber-600 text-white font-bold text-base shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2">
+                                        <Button size="smd" className="w-full sm:w-auto rounded-lg bg-gold hover:bg-amber-600 text-white font-bold shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2">
                                             <span>Get Started Free</span>
-                                            <ArrowRight size={18} />
+                                            <ArrowRight size={14} />
                                         </Button>
                                     </Link>
                                     <a
@@ -245,8 +245,8 @@ export default async function AboutPage() {
                                         rel="noopener noreferrer"
                                         className="w-full sm:w-auto"
                                     >
-                                        <Button variant="outline" className="w-full sm:w-auto min-h-13 px-8 rounded-xl border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900 text-gray-800 dark:text-gray-200 font-bold text-base flex items-center justify-center gap-2">
-                                            <Send size={16} className="text-amber-500" />
+                                        <Button variant="outline" size="smd" className="w-full sm:w-auto rounded-lg border-gray-300 dark:border-white/10 bg-white/80 dark:bg-slate-900 text-gray-800 dark:text-gray-200 font-bold flex items-center justify-center gap-2">
+                                            <Send size={14} className="text-amber-500" />
                                             <span>Join Trader Community</span>
                                         </Button>
                                     </a>

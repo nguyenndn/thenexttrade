@@ -73,7 +73,7 @@ export function MobileNavigation({
             className="lg:hidden px-2 pb-4 absolute top-full left-0 w-full z-40"
         >
             <div
-                className={`max-w-7xl mx-auto rounded-xl border shadow-lg ${isDark ? "bg-slate-900/95 border-slate-700" : "bg-white border-dashboard"}`}
+                className={`max-w-7xl mx-auto rounded-lg border shadow-lg ${isDark ? "bg-slate-900/95 border-slate-700" : "bg-white border-dashboard"}`}
             >
                 {/* Nav Links */}
                 <nav className="p-4 space-y-2">
@@ -121,7 +121,7 @@ export function MobileNavigation({
                         <div className="p-4 space-y-1">
                             {/* Avatar + name */}
                             <div
-                                className={`flex items-center gap-3 px-3 py-3 rounded-xl mb-2 ${isDark ? "bg-slate-800" : "bg-gray-50"}`}
+                                className={`flex items-center gap-3 px-3 py-3 rounded-lg mb-2 ${isDark ? "bg-slate-800" : "bg-gray-50"}`}
                             >
                                 <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/30 shrink-0">
                                     {user.image ? (
@@ -204,7 +204,7 @@ export function MobileNavigation({
                                 onClick={onClose}
                                 className={buttonVariants({
                                     variant: "outline",
-                                    className: `flex min-h-11 items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-bold transition-colors ${isDark ? "border-orange-400/20 bg-orange-400/10 text-orange-300 hover:bg-orange-400/15" : "border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100"}`,
+                                    className: `flex min-h-11 items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-bold transition-colors ${isDark ? "border-orange-400/20 bg-orange-400/10 text-orange-300 hover:bg-orange-400/15" : "border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100"}`,
                                 })}
                             >
                                 <Compass size={16} />
@@ -216,7 +216,7 @@ export function MobileNavigation({
                                     onClick={onClose}
                                     className={buttonVariants({
                                         variant: "outline",
-                                        className: `flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${isDark ? "border-slate-600 text-white hover:bg-slate-800" : "border-dashboard text-gray-800 hover:bg-gray-50"}`,
+                                        className: `flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold border transition-colors ${isDark ? "border-slate-600 text-white hover:bg-slate-800" : "border-dashboard text-gray-800 hover:bg-gray-50"}`,
                                     })}
                                 >
                                     <LogIn size={16} />
@@ -228,7 +228,7 @@ export function MobileNavigation({
                                     className={buttonVariants({
                                         variant: "primary",
                                         className:
-                                            "flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-amber-500 hover:bg-amber-600 shadow-sm shadow-amber-500/20",
+                                            "flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold bg-amber-500 hover:bg-amber-600 shadow-sm shadow-amber-500/20",
                                     })}
                                 >
                                     <UserPlus size={16} />

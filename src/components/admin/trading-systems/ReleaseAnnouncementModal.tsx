@@ -193,13 +193,13 @@ export function ReleaseAnnouncementModal({
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
             <div
-                className="relative w-full max-w-7xl h-[95vh] max-h-[960px] flex flex-col bg-white dark:bg-[#121624] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden"
+                className="relative w-full max-w-7xl h-[95vh] max-h-[960px] flex flex-col bg-white dark:bg-[#121624] border border-gray-200 dark:border-white/10 rounded-lg shadow-2xl overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* ── Modal Header ── */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/75 dark:bg-[#181E32]/75">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-500">
+                        <div className="p-2.5 rounded-lg bg-amber-500/10 text-amber-500">
                             <Sparkles size={22} />
                         </div>
                         <div>
@@ -219,7 +219,7 @@ export function ReleaseAnnouncementModal({
 
                     <div className="flex items-center gap-3">
                         {/* Viewport Switcher */}
-                        <div className="flex items-center p-1 bg-gray-200/70 dark:bg-white/5 rounded-xl border border-gray-300/60 dark:border-white/10">
+                        <div className="flex items-center p-1 bg-gray-200/70 dark:bg-white/5 rounded-lg border border-gray-300/60 dark:border-white/10">
                             <button
                                 type="button"
                                 onClick={() => setViewMode("desktop")}
@@ -252,7 +252,7 @@ export function ReleaseAnnouncementModal({
                             variant="outline"
                             size="icon"
                             onClick={onClose}
-                            className="rounded-xl h-9 w-9 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
+                            className="rounded-lg h-9 w-9 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
                             aria-label="Close Modal"
                         >
                             <X size={18} />
@@ -272,7 +272,7 @@ export function ReleaseAnnouncementModal({
                             <div className="grid grid-cols-1 gap-2">
                                 <div
                                     onClick={() => setTargetAudience("ACTIVE_HOLDERS")}
-                                    className={`p-3 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
+                                    className={`p-3 rounded-lg border cursor-pointer transition-all flex items-center justify-between ${
                                         targetAudience === "ACTIVE_HOLDERS"
                                             ? "border-amber-500/50 bg-amber-500/5 dark:bg-amber-500/10 text-amber-500"
                                             : "border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20"
@@ -296,7 +296,7 @@ export function ReleaseAnnouncementModal({
 
                                 <div
                                     onClick={() => setTargetAudience("PRO_TRADERS")}
-                                    className={`p-3 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
+                                    className={`p-3 rounded-lg border cursor-pointer transition-all flex items-center justify-between ${
                                         targetAudience === "PRO_TRADERS"
                                             ? "border-amber-500/50 bg-amber-500/5 dark:bg-amber-500/10 text-amber-500"
                                             : "border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20"
@@ -320,7 +320,7 @@ export function ReleaseAnnouncementModal({
 
                                 <div
                                     onClick={() => setTargetAudience("ALL_USERS")}
-                                    className={`p-3 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
+                                    className={`p-3 rounded-lg border cursor-pointer transition-all flex items-center justify-between ${
                                         targetAudience === "ALL_USERS"
                                             ? "border-amber-500/50 bg-amber-500/5 dark:bg-amber-500/10 text-amber-500"
                                             : "border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20"
@@ -384,8 +384,8 @@ export function ReleaseAnnouncementModal({
                                 value={rawHighlights}
                                 onChange={(e) => setRawHighlights(e.target.value)}
                                 rows={4}
-                                placeholder="Enter features (one per line)..."
-                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/5 p-3 text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all font-sans leading-relaxed resize-none"
+                                
+                                className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/5 p-3 text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all font-sans leading-relaxed resize-none"
                             />
                         </div>
 
@@ -399,12 +399,12 @@ export function ReleaseAnnouncementModal({
                                 onChange={(e) => setLicenseNote(e.target.value)}
                                 rows={2}
                                 placeholder="Instructions regarding license key..."
-                                className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/5 p-3 text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all font-sans leading-relaxed resize-none"
+                                className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/5 p-3 text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all font-sans leading-relaxed resize-none"
                             />
                         </div>
 
                         {/* 5. Test Send Box */}
-                        <div className="p-3.5 rounded-xl bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/20 space-y-2">
+                        <div className="p-3.5 rounded-lg bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/20 space-y-2">
                             <div className="flex items-center gap-1.5 text-xs font-bold text-amber-600 dark:text-amber-400">
                                 <Mail size={14} />
                                 <span>Send Test Email First</span>
@@ -413,7 +413,7 @@ export function ReleaseAnnouncementModal({
                                 <PremiumInput
                                     value={testRecipient}
                                     onChange={(e) => setTestRecipient(e.target.value)}
-                                    placeholder="Enter your email to test..."
+                                    
                                     className="h-8 text-xs flex-1 bg-white dark:bg-[#0C0F1B]"
                                 />
                                 <Button
@@ -437,7 +437,7 @@ export function ReleaseAnnouncementModal({
                     {/* Right Column: Live Viewport Preview (lg:col-span-7) */}
                     <div className="lg:col-span-7 h-full flex flex-col bg-gray-100 dark:bg-[#080B14] p-4 sm:p-6 overflow-hidden">
                         <div
-                            className={`transition-all duration-300 bg-white rounded-2xl shadow-xl border border-gray-200 dark:border-white/10 overflow-hidden h-full flex flex-col mx-auto ${
+                            className={`transition-all duration-300 bg-white rounded-lg shadow-xl border border-gray-200 dark:border-white/10 overflow-hidden h-full flex flex-col mx-auto ${
                                 viewMode === "desktop"
                                     ? "w-full max-w-[700px]"
                                     : "w-[390px] max-w-full"
@@ -473,14 +473,14 @@ export function ReleaseAnnouncementModal({
                         <Button
                             variant="outline"
                             onClick={onClose}
-                            className="rounded-xl h-10 px-5 text-xs font-semibold"
+                            className="rounded-lg h-10 px-5 text-xs font-semibold"
                         >
                             Cancel
                         </Button>
                         <Button
                             onClick={handleLaunchBroadcast}
                             disabled={isBroadcasting || currentCount === 0}
-                            className="rounded-xl h-10 px-6 text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white flex items-center gap-2 shadow-md shadow-amber-500/20"
+                            className="rounded-lg h-10 px-6 text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white flex items-center gap-2 shadow-md shadow-amber-500/20"
                         >
                             {isBroadcasting ? (
                                 <>

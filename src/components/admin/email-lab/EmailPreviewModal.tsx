@@ -67,13 +67,13 @@ export function EmailPreviewModal({
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/75 backdrop-blur-md animate-in fade-in duration-200">
             <div
-                className="relative w-full max-w-6xl h-[95vh] max-h-[960px] flex flex-col bg-white dark:bg-[#121624] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden"
+                className="relative w-full max-w-6xl h-[95vh] max-h-[960px] flex flex-col bg-white dark:bg-[#121624] border border-gray-200 dark:border-white/10 rounded-lg shadow-2xl overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* ── Modal Header ── */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/75 dark:bg-[#181E32]/75">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-500">
+                        <div className="p-2.5 rounded-lg bg-amber-500/10 text-amber-500">
                             <Mail size={22} />
                         </div>
                         <div>
@@ -94,11 +94,11 @@ export function EmailPreviewModal({
                     {/* Controls & Close */}
                     <div className="flex items-center gap-3">
                         {/* Device Viewport Toggle */}
-                        <div className="flex items-center p-1 bg-gray-200/70 dark:bg-white/5 rounded-xl border border-gray-300/60 dark:border-white/10">
+                        <div className="flex items-center p-1 bg-gray-200/70 dark:bg-white/5 rounded-lg border border-gray-300/60 dark:border-white/10">
                             <button
                                 type="button"
                                 onClick={() => setViewMode("desktop")}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                                     viewMode === "desktop"
                                         ? "bg-white dark:bg-[#0C0F1B] text-amber-500 shadow-sm"
                                         : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
@@ -111,7 +111,7 @@ export function EmailPreviewModal({
                             <button
                                 type="button"
                                 onClick={() => setViewMode("mobile")}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                                     viewMode === "mobile"
                                         ? "bg-white dark:bg-[#0C0F1B] text-amber-500 shadow-sm"
                                         : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
@@ -127,7 +127,7 @@ export function EmailPreviewModal({
                             variant="outline"
                             size="icon"
                             onClick={onClose}
-                            className="rounded-xl h-9 w-9 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
+                            className="rounded-lg h-9 w-9 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
                             aria-label="Close Preview"
                         >
                             <X size={18} />
@@ -138,7 +138,7 @@ export function EmailPreviewModal({
                 {/* ── Modal Body: Isolated iframe viewport (Expanded & Height Guaranteed) ── */}
                 <div className="flex-1 min-h-0 bg-gray-100 dark:bg-[#080B14] p-3 sm:p-5 flex items-stretch justify-center overflow-hidden">
                     <div
-                        className={`transition-all duration-300 bg-white rounded-2xl shadow-xl border border-gray-200 dark:border-white/10 overflow-hidden h-full flex flex-col mx-auto ${
+                        className={`transition-all duration-300 bg-white rounded-lg shadow-xl border border-gray-200 dark:border-white/10 overflow-hidden h-full flex flex-col mx-auto ${
                             viewMode === "desktop"
                                 ? "w-full max-w-[740px]"
                                 : "w-[390px] max-w-full"
@@ -176,14 +176,14 @@ export function EmailPreviewModal({
                         <Button
                             variant="outline"
                             onClick={onClose}
-                            className="rounded-xl h-9 text-xs font-semibold"
+                            className="rounded-lg h-9 text-xs font-semibold"
                         >
                             Close Preview
                         </Button>
                         <Button
                             onClick={handleSendTest}
                             disabled={sending}
-                            className="rounded-xl h-9 text-xs font-semibold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white flex items-center gap-2 shadow-sm shadow-amber-500/20"
+                            className="rounded-lg h-9 text-xs font-semibold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white flex items-center gap-2 shadow-sm shadow-amber-500/20"
                         >
                             {sending ? (
                                 <>

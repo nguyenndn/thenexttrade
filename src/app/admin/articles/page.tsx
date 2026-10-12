@@ -214,7 +214,7 @@ export default async function AdminArticlesPage({ searchParams }: PageProps) {
                     <Link href="/admin/articles/create">
                         <Button
                             variant="primary"
-                            className="shadow-lg shadow-primary/30"
+                            className="shadow-lg shadow-amber-500/30"
                         >
                             <Plus size={18} strokeWidth={2.5} />
                             Add New

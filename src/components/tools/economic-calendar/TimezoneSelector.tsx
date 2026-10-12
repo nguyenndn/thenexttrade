@@ -263,7 +263,7 @@ export function TimezoneSelector({ value, onChange }: TimezoneSelectorProps) {
 
             {isOpen && (
                 <div
-                    className={`absolute right-0 mt-2 w-64 rounded-xl shadow-xl border overflow-hidden z-50 ${
+                    className={`absolute right-0 mt-2 w-64 rounded-lg shadow-xl border overflow-hidden z-50 ${
                         isDark
                             ? "bg-slate-800 border-slate-700"
                             : "bg-white border-dashboard"

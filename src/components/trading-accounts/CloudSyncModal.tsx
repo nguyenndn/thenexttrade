@@ -339,7 +339,7 @@ export function CloudSyncModal({
             <DialogContent className="max-w-md rounded-2xl p-5 sm:p-6">
                 <DialogHeader>
                     <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-amber-500/20 bg-amber-500/10 text-gold dark:text-amber-400">
                             <CloudSync className="h-5 w-5" />
                         </div>
                         <div>
@@ -355,7 +355,7 @@ export function CloudSyncModal({
 
                 {/* Previous Failure Notice */}
                 {latestJob?.status === "FAILED" && !isJobActive && (
-                    <div className="mt-3 rounded-xl border border-rose-500/20 bg-rose-50/70 dark:bg-rose-500/10 p-3 text-xs text-rose-700 dark:text-rose-300">
+                    <div className="mt-3 rounded-lg border border-rose-500/20 bg-rose-50/70 dark:bg-rose-500/10 p-3 text-xs text-rose-700 dark:text-rose-300">
                         <div className="flex items-start gap-2.5">
                             <AlertCircle className="h-4 w-4 text-rose-500 shrink-0 mt-0.5" />
                             <div className="min-w-0 flex-1">
@@ -378,9 +378,9 @@ export function CloudSyncModal({
                 )}
 
                 {/* Account Specs - 2 rows x 2 columns (UI matches AccountSettingsModal) */}
-                <div className="mt-3 rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-dashboard divide-y divide-gray-200/60 dark:divide-white/5 text-xs overflow-hidden">
+                <div className="mt-3 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-dashboard divide-y divide-gray-200 dark:divide-white/5 text-xs overflow-hidden">
                     {/* Row 1: Account Number & Broker */}
-                    <div className="grid grid-cols-2 divide-x divide-gray-200/60 dark:divide-white/5">
+                    <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/5">
                         <div className="px-4 py-2.5 min-w-0">
                             <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider flex items-center gap-1.5 mb-0.5">
                                 <Hash size={12} className="text-gray-400 shrink-0" />
@@ -405,7 +405,7 @@ export function CloudSyncModal({
                     </div>
 
                     {/* Row 2: Active Server & Platform & Base */}
-                    <div className="grid grid-cols-2 divide-x divide-gray-200/60 dark:divide-white/5">
+                    <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/5">
                         <div className="px-4 py-2.5 min-w-0">
                             <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider flex items-center gap-1.5 mb-0.5">
                                 <Server size={12} className="text-gray-400 shrink-0" />
@@ -439,7 +439,7 @@ export function CloudSyncModal({
                                     MT5 Broker Server <span className="text-red-500">*</span>
                                 </label>
                                 {effectiveBroker && (
-                                    <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-gold dark:text-amber-400 border border-amber-500/20">
                                         {effectiveBroker}
                                     </span>
                                 )}
@@ -454,7 +454,7 @@ export function CloudSyncModal({
                                         setServer(account.server || "");
                                         setBroker(account.broker || null);
                                     }}
-                                    className="h-5 px-2 text-[10px] text-gray-500 hover:text-gray-700 dark:hover:text-white rounded-xl"
+                                    className="h-5 px-2 text-[10px] text-gray-500 hover:text-gray-700 dark:hover:text-white rounded-lg"
                                 >
                                     Cancel
                                 </Button>
@@ -475,7 +475,6 @@ export function CloudSyncModal({
                             }}
                             label=""
                             required
-                            placeholder="e.g. STARTRADERFinancial-Live, Exness-Real10"
                             helperText="Select or enter the exact MT5 server name (type broker name to search)"
                         />
                     </div>
@@ -485,7 +484,7 @@ export function CloudSyncModal({
                 {(!hasCredentials || isEditingPassword) && (
                     <div className="mt-2.5 space-y-2">
                         {loadingStatus && account.hasCredentials === undefined ? (
-                            <div className="h-12 rounded-xl border border-gray-100 bg-gray-50/50 dark:border-white/10 dark:bg-white/[0.02] flex items-center justify-center gap-2">
+                            <div className="h-12 rounded-lg border border-gray-100 bg-gray-50/50 dark:border-white/10 dark:bg-white/[0.02] flex items-center justify-center gap-2">
                                 <RefreshCw className="h-3.5 w-3.5 animate-spin text-gray-400" />
                                 <span className="text-xs text-gray-400">Verifying credentials...</span>
                             </div>
@@ -504,7 +503,7 @@ export function CloudSyncModal({
                                                 setIsEditingPassword(false);
                                                 setPassword("");
                                             }}
-                                            className="h-6 px-2 text-[11px] text-gray-500 hover:text-gray-700 dark:hover:text-white rounded-xl"
+                                            className="h-6 px-2 text-[11px] text-gray-500 hover:text-gray-700 dark:hover:text-white rounded-lg"
                                         >
                                             Cancel
                                         </Button>
@@ -514,10 +513,10 @@ export function CloudSyncModal({
                                 <div className="relative">
                                     <Input
                                         type={showPassword ? "text" : "password"}
-                                        placeholder="Enter your investor password (passview)"
+                                        placeholder="Investor password (passview)"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="pr-10 rounded-xl h-9 text-xs"
+                                        className="pr-10 rounded-lg h-9 text-xs"
                                         autoFocus={isEditingPassword}
                                     />
                                     <button
@@ -534,7 +533,7 @@ export function CloudSyncModal({
                                     </button>
                                 </div>
 
-                                <div className="rounded-xl border border-gray-200/70 bg-gray-50/50 p-2 text-[11px] leading-relaxed text-gray-600 dark:border-white/10 dark:bg-white/[0.02] dark:text-gray-400">
+                                <div className="rounded-lg border border-gray-200 bg-gray-50/50 p-2 text-[11px] leading-relaxed text-gray-600 dark:border-white/10 dark:bg-white/[0.02] dark:text-gray-400">
                                     <div className="flex items-start gap-2">
                                         <Lock className="h-3.5 w-3.5 mt-0.5 shrink-0 text-gray-400" />
                                         <span>
@@ -554,7 +553,7 @@ export function CloudSyncModal({
                         <span>Sync Period</span>
                     </label>
                     <Select value={syncPeriod} onValueChange={setSyncPeriod}>
-                        <SelectTrigger className="w-full rounded-xl bg-gray-50/50 dark:bg-white/[0.03] border-dashboard h-9 text-xs">
+                        <SelectTrigger className="w-full rounded-lg bg-gray-50 dark:bg-[#151925] border border-dashboard dark:border-white/10 h-9 text-xs">
                             <SelectValue placeholder="Select period" />
                         </SelectTrigger>
                         <SelectContent>
@@ -582,7 +581,7 @@ export function CloudSyncModal({
                                     value={customFromDate}
                                     max={customToDate || undefined}
                                     onChange={(e) => setCustomFromDate(e.target.value)}
-                                    className="rounded-xl text-xs h-8.5 bg-gray-50/50 dark:bg-white/[0.03] border-dashboard font-medium"
+                                    className="rounded-lg text-xs h-8.5 bg-gray-50 dark:bg-[#151925] border border-dashboard dark:border-white/10 font-medium"
                                 />
                             </div>
                             <div>
@@ -596,7 +595,7 @@ export function CloudSyncModal({
                                     min={customFromDate || undefined}
                                     max={new Date().toISOString().split("T")[0]}
                                     onChange={(e) => setCustomToDate(e.target.value)}
-                                    className="rounded-xl text-xs h-8.5 bg-gray-50/50 dark:bg-white/[0.03] border-dashboard font-medium"
+                                    className="rounded-lg text-xs h-8.5 bg-gray-50 dark:bg-[#151925] border border-dashboard dark:border-white/10 font-medium"
                                 />
                             </div>
                         </div>
@@ -605,7 +604,7 @@ export function CloudSyncModal({
 
 
                 {/* Manual Sync Support Request Trigger */}
-                <div className="mt-2.5 flex items-center justify-between rounded-xl border border-gray-200/80 bg-gray-50/60 px-3 py-2 text-xs dark:border-white/5 dark:bg-white/[0.02]">
+                <div className="mt-2.5 flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50/60 px-3 py-2 text-xs dark:border-white/5 dark:bg-white/[0.02]">
                     <span className="text-[11px] text-gray-500 dark:text-gray-400">
                         Sync failing or need assistance?
                     </span>
@@ -629,7 +628,7 @@ export function CloudSyncModal({
                             variant="outline"
                             onClick={handleCancelSync}
                             disabled={isCancelling}
-                            className="rounded-xl h-10 px-3.5 text-xs font-semibold border-red-500/30 text-red-600 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-500/10"
+                            className="rounded-lg h-10 px-3.5 text-xs font-semibold border-red-500/30 text-red-600 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-500/10"
                         >
                             {isCancelling ? "Cancelling..." : "Cancel Sync"}
                         </Button>
@@ -642,7 +641,7 @@ export function CloudSyncModal({
                             (!hasCredentials && !password.trim()) ||
                             !(server.trim() || account.server)
                         }
-                        className="flex-1 rounded-xl gap-2 font-bold h-10 shadow-sm"
+                        className="flex-1 rounded-lg gap-2 font-bold h-10 shadow-sm"
                     >
                         <RefreshCw
                             className={`h-4 w-4 ${isJobActive ? "animate-spin" : ""}`}

@@ -53,7 +53,7 @@ export function FilterTab({
             className={cn(
                 "group relative flex items-center h-auto justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 whitespace-nowrap",
                 active
-                    ? "bg-white dark:bg-[#1E2028] text-gray-700 dark:text-white shadow-sm border border-primary/30 hover:bg-white dark:hover:bg-[#1E2028]"
+                    ? "bg-white dark:bg-[#1E2028] text-gray-700 dark:text-white shadow-sm border border-amber-500/40 hover:bg-white dark:hover:bg-[#1E2028]"
                     : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-transparent border border-transparent"
             )}
         >
@@ -62,7 +62,7 @@ export function FilterTab({
                 className={cn(
                     "transition-colors",
                     active
-                        ? "text-primary"
+                        ? "text-gold dark:text-amber-400"
                         : "opacity-50 group-hover:opacity-80"
                 )}
             />
@@ -72,7 +72,7 @@ export function FilterTab({
                     className={cn(
                         "flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 transition-colors",
                         active
-                            ? "bg-primary/10 text-primary"
+                            ? "bg-amber-500/10 text-gold dark:text-amber-400 font-bold"
                             : "bg-gray-100 dark:bg-white/5 text-gray-500"
                     )}
                 >

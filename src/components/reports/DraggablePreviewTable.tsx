@@ -115,13 +115,13 @@ export function DraggablePreviewTable({
                                 size="sm"
                                 className="h-8 text-xs font-bold gap-1.5 shadow-sm bg-white dark:bg-[#1E2028]"
                             >
-                                <Columns size={14} className="text-primary" />{" "}
+                                <Columns size={14} className="text-gold" />{" "}
                                 Add Column
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
                             align="end"
-                            className="w-56 bg-white dark:bg-[#1E2028] border-dashboard rounded-xl p-2 shadow-xl z-50"
+                            className="w-56 bg-white dark:bg-[#1E2028] border-dashboard rounded-lg p-2 shadow-xl z-50"
                         >
                             <div className="px-2 py-1.5 text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1">
                                 Restored Columns
@@ -134,7 +134,7 @@ export function DraggablePreviewTable({
                                 >
                                     <PlusCircle
                                         size={14}
-                                        className="text-primary"
+                                        className="text-gold"
                                     />{" "}
                                     {hidden.name}
                                 </DropdownMenuItem>
@@ -144,7 +144,7 @@ export function DraggablePreviewTable({
                 </div>
             )}
 
-            <div className="overflow-x-auto rounded-xl border border-dashboard custom-scrollbar bg-white dark:bg-[#1E2028]">
+            <div className="overflow-x-auto rounded-lg border border-dashboard custom-scrollbar bg-white dark:bg-[#1E2028]">
                 <table className="w-full text-left border-collapse">
                     <thead>
                         <tr className="bg-gray-50 dark:bg-white/5 border-b border-dashboard">
@@ -157,13 +157,13 @@ export function DraggablePreviewTable({
                                     }
                                     onDragOver={(e) => handleDragOver(e, index)}
                                     onDrop={(e) => handleDrop(e, index)}
-                                    className={`p-4 text-xs font-black uppercase tracking-wider text-gray-600 dark:text-gray-300 whitespace-nowrap min-w-[120px] group cursor-grab active:cursor-grabbing border-r border-dashboard/50 last:border-r-0 ${draggedColIdx === index ? "opacity-40 bg-primary/5" : ""}`}
+                                    className={`p-4 text-xs font-black uppercase tracking-wider text-gray-600 dark:text-gray-300 whitespace-nowrap min-w-[120px] group cursor-grab active:cursor-grabbing border-r border-dashboard/50 last:border-r-0 ${draggedColIdx === index ? "opacity-40 bg-amber-500/5" : ""}`}
                                 >
                                     <div className="flex items-center justify-between gap-3">
                                         <div className="flex items-center gap-2">
                                             <GripHorizontal
                                                 size={14}
-                                                className="text-gray-400 group-hover:text-primary transition-colors"
+                                                className="text-gray-400 group-hover:text-gold transition-colors"
                                             />
                                             <span>{header}</span>
                                         </div>

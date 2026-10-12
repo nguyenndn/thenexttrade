@@ -84,7 +84,7 @@ export function TradingRuleCard({
             case "MEDIUM":
                 return "bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20";
             default:
-                return "bg-slate-50 text-slate-600 border-slate-200 dark:bg-white/5 dark:text-slate-400 dark:border-white/10";
+                return "bg-slate-50 text-slate-600 border-gray-200 dark:bg-white/5 dark:text-slate-400 dark:border-white/10";
         }
     };
 
@@ -103,11 +103,7 @@ export function TradingRuleCard({
 
     return (
         <div
-            className={`relative flex flex-col justify-between p-5 rounded-2xl border transition-all duration-300 ${
-                localActive
-                    ? "bg-white dark:bg-[#1E2028] border-dashboard/80 dark:border-white/[0.08] hover:shadow-md"
-                    : "bg-gray-50/50 dark:bg-white/[0.02] border-dashboard/80 dark:border-white/[0.04] opacity-60"
-            }`}
+            className="relative flex flex-col justify-between p-5 rounded-lg border transition-all duration-300 bg-white dark:bg-[#1E2028] border-dashboard/80 dark:border-white/[0.08] hover:shadow-md"
         >
             <div>
                 {/* Header Tags */}
@@ -171,7 +167,7 @@ export function TradingRuleCard({
                     disabled={isPending || isDeleting}
                     title="Edit Rule"
                     aria-label="Edit Rule"
-                    className="w-7 h-7 rounded-lg border-gray-300 dark:border-white/10 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
+                    className="w-7 h-7 rounded-lg border-dashboard dark:border-white/10 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
                 >
                     <Edit size={12} />
                 </Button>

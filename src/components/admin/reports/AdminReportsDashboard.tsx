@@ -24,7 +24,7 @@ export function AdminReportsDashboard({ data }: Props) {
             <ActivationImprovementFunnelPanel dateRange={data.range} />
 
             {/* Admin Activation Inbox */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6 group hover:shadow-md transition-shadow">
+            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm p-6 group hover:shadow-md transition-shadow">
                 <h3 className="text-lg font-black text-slate-800 dark:text-white">
                     Admin Activation Inbox
                 </h3>

@@ -85,14 +85,14 @@ export function AcademyStatsGrid({ levels }: AcademyStatsGridProps) {
                 return (
                     <div
                         key={idx}
-                        className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-4 sm:p-5 shadow-sm hover:border-gray-300 dark:hover:border-white/20 transition-all"
+                        className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-4 sm:p-5 shadow-sm hover:border-gray-300 dark:hover:border-white/20 transition-all"
                     >
                         <div className="flex items-center justify-between mb-3">
                             <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                 {stat.label}
                             </span>
                             <div
-                                className={`w-9 h-9 rounded-xl flex items-center justify-center ${stat.iconBg}`}
+                                className={`w-9 h-9 rounded-lg flex items-center justify-center ${stat.iconBg}`}
                             >
                                 <Icon size={18} className={stat.iconColor} />
                             </div>

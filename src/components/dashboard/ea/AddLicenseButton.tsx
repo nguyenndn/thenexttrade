@@ -11,7 +11,7 @@ export function AddLicenseButton() {
     return (
         <>
             <Button
-                variant="primary"
+                variant="gold"
                 onClick={() => setIsOpen(true)}
                 className="w-full md:w-auto"
             >

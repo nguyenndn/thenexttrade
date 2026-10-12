@@ -7,8 +7,6 @@ import {
     ChevronLeft,
     ChevronRight,
     MessageCircle,
-    Shield,
-    CheckCircle2,
     X,
 } from "lucide-react";
 import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
@@ -16,56 +14,8 @@ import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 interface FeedbackItem {
     id: number;
     imageSrc: string;
-    userName: string;
-    userHandle: string;
-    date: string;
-    role: string;
-    text: string;
-    profit: string;
+    title: string;
 }
-
-const mockFeedbacks: FeedbackItem[] = [
-    {
-        id: 1,
-        imageSrc: "/images/feedbacks/feedback-1.jpg",
-        userName: "Hoàng Nam",
-        userHandle: "@namtrader92",
-        date: "Today, 14:32",
-        role: "Verified VIP Member",
-        text: "Tín hiệu XAUUSD chuẩn đét luôn admin ơi! Sáng nay em vừa khớp lệnh Buy ở 2342 ăn trọn 120 pips. Quản lý vốn SL/TP cực kỳ rõ ràng, theo nhóm VIP giúp em kỷ luật hơn rất nhiều, tài khoản tăng trưởng đều đặn.",
-        profit: "+$420.50 (XAUUSD Buy)",
-    },
-    {
-        id: 2,
-        imageSrc: "/images/feedbacks/feedback-2.jpg",
-        userName: "David K.",
-        userHandle: "@david_k_fx",
-        date: "Yesterday, 18:15",
-        role: "Verified VIP Member",
-        text: "Ebook SMC (Smart Money Concepts) tặng kèm viết cực kỳ chi tiết, dễ hiểu cho người mới như mình. Đặc biệt con bot EA Trade Assistant hỗ trợ quản lý lệnh bán/mua cực nhạy, kéo SL về entry tự động đỡ phải canh màn hình mất thời gian.",
-        profit: "EA Trade Assistant Activator",
-    },
-    {
-        id: 3,
-        imageSrc: "/images/feedbacks/feedback-3.jpg",
-        userName: "Minh Anh",
-        userHandle: "@minhanh_gold",
-        date: "Friday, 10:04",
-        role: "Verified VIP Member",
-        text: "Thích nhất không khí chia sẻ kinh nghiệm văn minh, tích cực trong phòng chat TraderRoom 24/7. Admin support 1:1 siêu nhiệt tình, giải thích cặn kẽ từng setup lệnh lỗi để lần sau mình rút kinh nghiệm. Xứng đáng 5 sao!",
-        profit: "Active in TraderRoom",
-    },
-    {
-        id: 4,
-        imageSrc: "/images/feedbacks/feedback-4.jpg",
-        userName: "Quốc Bảo",
-        userHandle: "@bao_gold_scalper",
-        date: "Thursday, 09:40",
-        role: "Verified VIP Member",
-        text: "Lần đầu tiên thấy nhóm tín hiệu mà admin hỗ trợ nhiệt tình thế này. EA chạy mượt mà, lệnh đi đều, không tham lam nhồi lệnh vô tội vạ. Rất yên tâm gửi gắm tài khoản giao dịch ở đây.",
-        profit: "EA TraderRoom Member",
-    },
-];
 
 interface FeedbackCarouselProps {
     images?: string[];
@@ -90,19 +40,16 @@ export function FeedbackCarousel({ images = [] }: FeedbackCarouselProps) {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    const feedbacks =
-        images.length > 0
-            ? images.map((img, index) => ({
-                  id: index + 1,
-                  imageSrc: img,
-                  userName: "VIP Group Feedback",
-                  userHandle: `Real Setup #${index + 1}`,
-                  date: "Verified Setup",
-                  role: "Verified VIP Member",
-                  text: "Tín hiệu XAUUSD chuẩn đét luôn admin ơi! Sáng nay em vừa khớp lệnh Buy ở 2342 ăn trọn 120 pips. Quản lý vốn SL/TP cực kỳ rõ ràng, theo nhóm VIP giúp em kỷ luật hơn rất nhiều, tài khoản tăng trưởng đều đặn.",
-                  profit: "+$420.50 (XAUUSD Buy)",
-              }))
-            : mockFeedbacks;
+    // Do not render carousel if no real feedback images are provided
+    if (images.length === 0) {
+        return null;
+    }
+
+    const feedbacks: FeedbackItem[] = images.map((img, index) => ({
+        id: index + 1,
+        imageSrc: img,
+        title: `Feedback Screenshot #${index + 1}`,
+    }));
 
     const handleNext = () => {
         setCurrentIndex((prev) => (prev + 1) % feedbacks.length);
@@ -122,11 +69,8 @@ export function FeedbackCarousel({ images = [] }: FeedbackCarouselProps) {
         setImageErrors((prev) => ({ ...prev, [id]: true }));
     };
 
-    const handleCardClick = (item: any) => {
-        const title =
-            images.length > 0
-                ? `Feedback Screenshot #${item.id}`
-                : item.userName;
+    const handleCardClick = (item: FeedbackItem) => {
+        const title = `Feedback Screenshot #${item.id}`;
         setActiveLightboxImage(item.imageSrc);
         setActiveLightboxTitle(title);
     };
@@ -232,68 +176,33 @@ export function FeedbackCarousel({ images = [] }: FeedbackCarouselProps) {
                                 }}
                             >
                                 <div
-                                    className={`w-full rounded-3xl border bg-white dark:bg-[#131622] p-4 flex flex-col justify-between h-full group relative transition-all duration-500 ${
+                                    className={`w-full rounded-lg border bg-white dark:bg-[#131622] p-4 flex flex-col justify-between h-full group relative transition-all duration-500 ${
                                         isActive
                                             ? "border-gold/60 dark:border-gold/50 shadow-[0_0_35px_rgba(245,158,11,0.15)] dark:shadow-[0_0_40px_rgba(245,158,11,0.12)] scale-[1.02]"
                                             : "border-dashboard/80 shadow-md shadow-amber-500/[0.01]"
                                     }`}
                                 >
-                                    {/* 3D Cyan/Amber Glowing Aura exactly matching the reference layout style */}
+                                    {/* Subtle active shadow */}
                                     {isActive && (
-                                        <div className="absolute inset-0 -m-1 rounded-[28px] bg-gradient-to-tr from-gold/30 to-amber-500/20 opacity-40 blur-xl -z-10 animate-pulse pointer-events-none" />
+                                        <div className="absolute inset-0 -m-1 rounded-lg bg-gold/10 opacity-60 blur-md -z-10 pointer-events-none" />
                                     )}
 
                                     {imageErrors[item.id] ? (
-                                        /* FALLBACK MOCKUP */
-                                        <div className="w-full aspect-[1290/2796] rounded-2xl bg-[#F0F4F8] dark:bg-[#0B0E14] border border-dashboard dark:border-white/[0.04] flex flex-col overflow-hidden text-left relative shadow-inner">
-                                            {/* Header */}
-                                            <div className="bg-white dark:bg-[#181F2B] px-3.5 py-2.5 border-b border-dashboard dark:border-white/[0.06] flex items-center gap-2.5 shrink-0">
-                                                <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center font-bold text-xs shadow-sm">
-                                                    {item.userName.charAt(0)}
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex items-center gap-1">
-                                                        <span className="text-xs sm:text-sm font-bold text-gray-800 dark:text-white truncate">
-                                                            {item.userName}
-                                                        </span>
-                                                        <CheckCircle2
-                                                            size={13}
-                                                            className="text-blue-500 fill-blue-500 dark:text-sky-400 dark:fill-sky-400 shrink-0"
-                                                        />
-                                                    </div>
-                                                    <span className="text-[10px] text-amber-600 dark:text-gold font-bold tracking-wide flex items-center gap-1 uppercase">
-                                                        <Shield size={9} />{" "}
-                                                        {item.role}
-                                                    </span>
-                                                </div>
+                                        /* NEUTRAL PLACEHOLDER ON IMAGE LOAD ERROR */
+                                        <div className="w-full aspect-[1290/2796] rounded-lg bg-gray-100 dark:bg-[#0B0E14] border border-dashboard dark:border-white/[0.04] flex flex-col items-center justify-center p-6 text-center">
+                                            <div className="w-12 h-12 rounded-full bg-amber-500/10 border border-gold/20 flex items-center justify-center text-amber-500 mb-3">
+                                                <MessageCircle size={22} />
                                             </div>
-
-                                            {/* Body */}
-                                            <div className="flex-1 p-4 flex flex-col justify-between overflow-y-auto space-y-4">
-                                                <div className="self-start max-w-[90%] bg-white dark:bg-[#181F2B] rounded-2xl rounded-tl-none p-3.5 shadow-sm border border-gray-150 dark:border-white/[0.03] space-y-2 relative">
-                                                    <span className="text-[10px] text-gray-400 dark:text-gray-500 font-semibold block">
-                                                        {item.userHandle}
-                                                    </span>
-                                                    <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
-                                                        {item.text}
-                                                    </p>
-                                                </div>
-
-                                                <div className="self-end max-w-[80%] bg-gradient-to-br from-emerald-500/10 to-teal-500/10 dark:from-primary/10 dark:to-teal-500/5 rounded-2xl rounded-tr-none p-3 border border-emerald-500/20 dark:border-primary/20 flex items-center gap-3.5 shadow-sm">
-                                                    <div className="flex-1">
-                                                        <span className="text-[8px] sm:text-[9px] text-emerald-600 dark:text-primary font-bold uppercase tracking-wider block">
-                                                            Target Reached
-                                                        </span>
-                                                        <span className="text-xs sm:text-sm font-black text-emerald-700 dark:text-primary leading-none block mt-0.5">
-                                                            {item.profit}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <span className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                                Feedback Screenshot
+                                            </span>
+                                            <span className="text-[11px] text-gray-400 mt-1">
+                                                Verified Telegram Share
+                                            </span>
                                         </div>
                                     ) : (
                                         /* ACTUAL IMAGE SCREENSHOT (Optimized for iPhone 15 Pro Max Aspect Ratio) */
-                                        <div className="relative w-full aspect-[1290/2796] rounded-2xl overflow-hidden bg-slate-900/50 dark:bg-slate-950 border border-gray-150/80 dark:border-white/[0.06] flex items-center justify-center">
+                                        <div className="relative w-full aspect-[1290/2796] rounded-lg overflow-hidden bg-slate-900/50 dark:bg-slate-950 border border-gray-150/80 dark:border-white/[0.06] flex items-center justify-center">
                                             <img
                                                 src={item.imageSrc}
                                                 alt="Telegram feedback screenshot"
@@ -309,18 +218,14 @@ export function FeedbackCarousel({ images = [] }: FeedbackCarouselProps) {
                                     <div className="mt-4 text-left border-t border-dashboard dark:border-white/[0.04] pt-3 flex items-center justify-between shrink-0">
                                         <div>
                                             <div className="text-xs font-black text-gray-800 dark:text-white leading-tight">
-                                                {images.length > 0
-                                                    ? `Feedback Screenshot #${item.id}`
-                                                    : item.userName}
+                                                {`Feedback Screenshot #${item.id}`}
                                             </div>
                                             <div className="text-[10px] text-gray-400 font-medium">
-                                                {images.length > 0
-                                                    ? "Verified Telegram Share"
-                                                    : item.userHandle}
+                                                Verified Telegram Share
                                             </div>
                                         </div>
                                         <div className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-gold/20 text-[9px] font-bold text-gold uppercase tracking-wider">
-                                            ★ Signal Result
+                                            ★ Community Share
                                         </div>
                                     </div>
                                 </div>
@@ -433,7 +338,7 @@ function FeedbackLightboxModal({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative my-auto w-full max-w-[440px] sm:max-w-[520px] aspect-[1290/2796] rounded-3xl overflow-hidden bg-slate-950 border border-gold/30 shadow-[0_0_50px_rgba(245,158,11,0.2)] flex items-center justify-center"
+                        className="relative my-auto w-full max-w-[440px] sm:max-w-[520px] aspect-[1290/2796] rounded-lg overflow-hidden bg-slate-950 border border-gold/30 shadow-[0_0_50px_rgba(245,158,11,0.2)] flex items-center justify-center"
                         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking the card
                     >
                         {/* Close Button at top-right of the card */}

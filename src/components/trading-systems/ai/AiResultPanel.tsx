@@ -35,7 +35,7 @@ function ActionBadge({ action }: { action: string }) {
 
     return (
         <div
-            className={`inline-flex items-center gap-1.5 rounded-xl border px-3.5 py-1.5 text-xs font-black uppercase tracking-wider ${config.bg}`}
+            className={`inline-flex items-center gap-1.5 rounded-lg border px-3.5 py-1.5 text-xs font-black uppercase tracking-wider ${config.bg}`}
         >
             <Icon size={15} />
             {config.label}
@@ -71,7 +71,7 @@ function SignalPriceItem({
     }[type];
 
     return (
-        <div className={`flex items-center justify-between rounded-xl border p-2.5 ${styles.border}`}>
+        <div className={`flex items-center justify-between rounded-lg border p-2.5 ${styles.border}`}>
             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
                 {label}
             </span>
@@ -99,7 +99,7 @@ export function AiResultPanel({
                     {[1, 2, 3, 4, 5].map((i) => (
                         <div
                             key={i}
-                            className="h-8 rounded-xl bg-gray-200 dark:bg-white/5"
+                            className="h-8 rounded-lg bg-gray-200 dark:bg-white/5"
                         />
                     ))}
                 </div>
@@ -110,7 +110,7 @@ export function AiResultPanel({
     if (!result) {
         return (
             <div className="text-center py-8 space-y-2">
-                <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gold/10 text-gold mb-1">
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-gold/10 text-gold mb-1">
                     <Target size={20} />
                 </div>
                 <p className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -125,7 +125,7 @@ export function AiResultPanel({
 
     if (!result.ok || !result.data) {
         return (
-            <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4 space-y-2">
+            <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-4 space-y-2">
                 <div className="flex items-center gap-2 text-red-500">
                     <AlertTriangle size={16} />
                     <p className="text-xs font-bold uppercase tracking-wider">Analysis Error</p>
@@ -172,14 +172,14 @@ export function AiResultPanel({
                 </div>
                 <div className="h-2 rounded-full bg-gray-200 dark:bg-white/5 overflow-hidden">
                     <div
-                        className="h-full rounded-full bg-gradient-to-r from-gold to-amber-400 transition-all duration-500"
+                        className="h-full rounded-full bg-gold transition-all duration-500"
                         style={{ width: `${d.confidence}%` }}
                     />
                 </div>
             </div>
 
             {/* Key Price Levels Card (ALWAYS DISPLAYED) */}
-            <div className="space-y-2 rounded-2xl border border-gray-200 dark:border-white/10 p-3.5 bg-gray-50/50 dark:bg-white/[0.02]">
+            <div className="space-y-2 rounded-lg border border-gray-200 dark:border-white/10 p-3.5 bg-gray-50/50 dark:bg-white/[0.02]">
                 <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/5 pb-2 mb-2">
                     <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">
                         Key Price Levels
@@ -203,7 +203,7 @@ export function AiResultPanel({
                         <p className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">
                             Market Analysis
                         </p>
-                        <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/[0.02] p-3 rounded-xl border border-gray-200/60 dark:border-white/10">
+                        <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/[0.02] p-3 rounded-lg border border-gray-200 dark:border-white/10">
                             {d.market_analysis}
                         </p>
                     </div>
@@ -214,7 +214,7 @@ export function AiResultPanel({
                         <p className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">
                             Trade Rationale
                         </p>
-                        <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/[0.02] p-3 rounded-xl border border-gray-200/60 dark:border-white/10">
+                        <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/[0.02] p-3 rounded-lg border border-gray-200 dark:border-white/10">
                             {d.reason}
                         </p>
                     </div>
@@ -225,7 +225,7 @@ export function AiResultPanel({
                         <p className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">
                             Risk Advisory
                         </p>
-                        <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/[0.02] p-3 rounded-xl border border-gray-200/60 dark:border-white/10">
+                        <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/[0.02] p-3 rounded-lg border border-gray-200 dark:border-white/10">
                             {d.risk_note}
                         </p>
                     </div>
@@ -233,7 +233,7 @@ export function AiResultPanel({
             </div>
 
             {/* Disclaimer */}
-            <div className="flex items-start gap-2 rounded-xl border border-amber-500/15 bg-amber-500/5 p-3">
+            <div className="flex items-start gap-2 rounded-lg border border-amber-500/15 bg-amber-500/5 p-3">
                 <ShieldAlert size={14} className="mt-0.5 shrink-0 text-amber-500" />
                 <p className="text-[10px] leading-relaxed text-gray-500 dark:text-gray-400">
                     AI-generated advisory only. Always apply strict risk management (1-2% risk per trade).

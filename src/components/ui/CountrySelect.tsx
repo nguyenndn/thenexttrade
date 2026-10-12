@@ -69,7 +69,7 @@ export function CountrySelect({
                 type="button"
                 onClick={() => !loading && setIsOpen(!isOpen)}
                 className={cn(
-                    "flex items-center justify-between w-full h-[42px] px-3.5 py-2.5 rounded-xl border bg-gray-50 dark:bg-[#151925] text-left transition-all font-medium hover:bg-gray-50 dark:hover:bg-[#151925]",
+                    "flex items-center justify-between w-full h-[42px] px-3.5 py-2.5 rounded-lg border bg-gray-50 dark:bg-[#151925] text-left transition-all font-medium hover:bg-gray-50 dark:hover:bg-[#151925]",
                     "border-dashboard hover:border-gray-300 dark:hover:border-white/20 focus:outline-none focus:border-primary dark:focus:border-primary focus:ring-2 focus:ring-primary/20 dark:focus:ring-primary/20 active:scale-100",
                     error ? "border-red-500/50" : "",
                     loading ? "opacity-70 cursor-wait" : "",
@@ -86,7 +86,7 @@ export function CountrySelect({
                         <img
                             src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/${selectedCountry.code.toLowerCase()}.svg`}
                             alt={selectedCountry.name}
-                            className="w-5 h-3.5 rounded object-cover shadow-sm shrink-0"
+                            className="w-5 h-3.5 rounded-lg object-cover shadow-sm shrink-0"
                         />
                         <span className="text-gray-700 dark:text-white text-sm font-medium truncate pr-2">
                             {selectedCountry.name}
@@ -123,7 +123,7 @@ export function CountrySelect({
                     exit={{ opacity: 0, scale: 0.97, y: -4 }}
                     transition={SPRING_SOFT}
                     style={{ transformOrigin: "top" }}
-                    className="absolute z-50 w-full mt-2 bg-white dark:bg-[#1C1F2E] border border-dashboard rounded-xl shadow-2xl max-h-80 overflow-hidden flex flex-col"
+                    className="absolute z-50 w-full mt-2 bg-white dark:bg-[#1C1F2E] border border-dashboard rounded-lg shadow-2xl max-h-80 overflow-hidden flex flex-col"
                 >
                     {/* Search Bar */}
                     <div className="p-3 border-b border-dashboard sticky top-0 bg-white dark:bg-[#1C1F2E] z-10">

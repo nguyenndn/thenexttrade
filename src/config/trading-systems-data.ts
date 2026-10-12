@@ -69,7 +69,7 @@ export interface SystemData {
 export const TRADING_SYSTEMS_DATA: SystemData[] = [
     {
         slug: "goldscalperninja",
-        title: "EA GoldScalperNinja",
+        title: "GoldScalperNinja EA",
         version: "v3.0",
         description:
             "Automated MT5 Expert Advisor with D1 Trend Master filters and Smart Sequence Pruning.",
@@ -425,7 +425,7 @@ export const TRADING_SYSTEMS_DATA: SystemData[] = [
     },
     {
         slug: "gsn-phoenix-grid",
-        title: "GSN Phoenix Grid",
+        title: "GSN - Apex Gold Sentinel",
         version: "v1.0",
         description:
             "5-Layer modular adverse DCA grid with Profit Bank harvesting and Macro-Trend filters.",
@@ -460,9 +460,9 @@ export const TRADING_SYSTEMS_DATA: SystemData[] = [
             },
             {
                 name: "LotMode",
-                defaultValue: "Bù Lot",
+                defaultValue: "Lot Compensation",
                 description:
-                    "Martingale calculation mode: Multiplier (recursive compounding) or Bù Lot (slippage compensation).",
+                    "Martingale calculation mode: Multiplier (recursive compounding) or Lot Compensation (slippage compensation).",
             },
             {
                 name: "Adaptive Risk Levels",
@@ -553,7 +553,7 @@ export const TRADING_SYSTEMS_DATA: SystemData[] = [
             {
                 step: "01",
                 title: "Retrieve EA File",
-                desc: "Download the compiled GSN Phoenix Grid .ex5 file from your dashboard under verified accounts.",
+                desc: "Download the compiled GSN - Apex Gold Sentinel .ex5 file from your dashboard under verified accounts.",
             },
             {
                 step: "02",

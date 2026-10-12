@@ -28,9 +28,9 @@ export function ExperimentResult({ experiment, onClose }: ExperimentResultProps)
     }
 
     return (
-        <div className="p-6 rounded-2xl bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-slate-800 shadow-2xl space-y-5 text-slate-900 dark:text-white max-w-lg mx-auto">
+        <div className="p-6 rounded-lg bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-slate-800 shadow-2xl space-y-5 text-slate-900 dark:text-white max-w-lg mx-auto">
             <div className="flex items-center gap-3">
-                <div className={`p-3 rounded-2xl border ${outcomeColor}`}>
+                <div className={`p-3 rounded-lg border ${outcomeColor}`}>
                     {icon}
                 </div>
                 <div>
@@ -41,7 +41,7 @@ export function ExperimentResult({ experiment, onClose }: ExperimentResultProps)
                 </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-gray-200 dark:border-slate-800 space-y-2 text-xs">
+            <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-gray-200 dark:border-slate-800 space-y-2 text-xs">
                 <div className="flex justify-between border-b border-gray-200 dark:border-slate-800 pb-2">
                     <span className="text-slate-500 dark:text-slate-400">Experiment Title</span>
                     <span className="font-semibold text-slate-900 dark:text-white">{experiment.title}</span>
@@ -62,7 +62,7 @@ export function ExperimentResult({ experiment, onClose }: ExperimentResultProps)
 
             {onClose && (
                 <div className="flex justify-end pt-2">
-                    <Button variant="primary" onClick={onClose} className="bg-emerald-500 text-slate-950 font-bold rounded-xl">
+                    <Button variant="primary" onClick={onClose} className="bg-gold hover:bg-amber-600 text-white font-bold rounded-lg shadow-md shadow-amber-500/20 border-none">
                         Continue Trading
                     </Button>
                 </div>

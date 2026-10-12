@@ -180,7 +180,7 @@ export function PasswordStrengthPopover({
             onMouseLeave={onMouseLeave}
             onClick={onClick}
             className={cn(
-                "absolute left-0 right-0 top-full mt-2 w-full z-50 rounded-2xl border border-slate-200/90 bg-white p-3.5 sm:p-4 shadow-2xl shadow-slate-900/10 box-border",
+                "absolute left-0 right-0 top-full mt-2 w-full z-50 rounded-lg border border-gray-200 bg-white p-3.5 sm:p-4 shadow-2xl shadow-slate-900/10 box-border",
                 "dark:border-white/10 dark:bg-[#1E2028] dark:shadow-[0_20px_50px_rgba(0,0,0,0.6)]",
                 "transition-all duration-200 ease-out",
                 isVisible

@@ -1,14 +1,12 @@
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import { ArrowRight } from "lucide-react";
+// import { ArrowRight } from "lucide-react";
 import { AboutUsSection } from "@/components/home/AboutUsSection";
-import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
+// import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
 import { FadeIn } from "@/components/ui/FadeIn";
-import { cache } from "@/lib/cache";
 import { getAuthUser } from "@/lib/auth-cache";
-import { prisma } from "@/lib/prisma";
-import Link from "next/link";
-import { Button } from "@/components/ui/Button";
+// import Link from "next/link";
+// import { Button } from "@/components/ui/Button";
 import { Suspense } from "react";
 import { HomeFeedSkeleton } from "@/components/ui/LoadingSkeleton";
 import { SaaSHeroSection } from "@/components/home/SaaSHeroSection";
@@ -19,14 +17,14 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
     title: "TheNextTrade - All-in-One Forex Trading OS, Playbook & Journal",
     description:
-        "Turn your trade history into consistent edge with TheNextTrade. Automated MT5 Trade Journal, Playbook Studio, 18 institutional-grade calculators, and structured Academy.",
+        "Turn your trade history into consistent edge with TheNextTrade. Automated MT5 Trade Journal, Playbook Studio, 18 free forex calculators, and structured Academy.",
     alternates: {
         canonical: "/",
     },
     openGraph: {
         title: "TheNextTrade - All-in-One Forex Trading OS, Playbook & Journal",
         description:
-            "Automated MT5 Trade Journal, Playbook Studio, 18 institutional-grade calculators, and structured 3-level Academy.",
+            "Automated MT5 Trade Journal, Playbook Studio, 18 free forex calculators, and structured 3-level Academy.",
         url: "https://thenexttrade.com",
         siteName: "TheNextTrade",
         images: [
@@ -44,7 +42,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "TheNextTrade - All-in-One Forex Trading OS",
         description:
-            "Automated MT5 Trade Journal, Playbook Studio, 18 institutional-grade calculators, and structured 3-level Academy.",
+            "Automated MT5 Trade Journal, Playbook Studio, 18 free forex calculators, and structured 3-level Academy.",
         images: ["/og-image.jpg"],
     },
 };
@@ -67,13 +65,14 @@ const HomeFAQSection = dynamic(
         })),
     { loading: () => <div className="h-96" /> }
 );
-const LearningPathTimeline = dynamic(
-    () =>
-        import("@/components/home/LearningPathTimeline").then((m) => ({
-            default: m.LearningPathTimeline,
-        })),
-    { loading: () => <div className="h-96" /> }
-);
+// Temporarily hidden while Academy menu is disabled
+// const LearningPathTimeline = dynamic(
+//     () =>
+//         import("@/components/home/LearningPathTimeline").then((m) => ({
+//             default: m.LearningPathTimeline,
+//         })),
+//     { loading: () => <div className="h-96" /> }
+// );
 const WebForexTools = dynamic(
     () =>
         import("@/components/home/WebForexTools").then((m) => ({
@@ -144,7 +143,6 @@ export default async function Home() {
             <Suspense fallback={<HomeFeedSkeleton />}>
                 <HomeFeed isLoggedIn={isLoggedIn} />
             </Suspense>
-            <SiteFooter />
         </main>
     );
 }
@@ -154,36 +152,6 @@ interface HomeFeedProps {
 }
 
 async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
-    // Fetch only trust metrics to speed up initial SSR load
-    const trustMetrics = await cache.wrap(
-        "home:trust_metrics",
-        async () => {
-            const [
-                tradingGuides,
-                academyLessons,
-                connectedAccounts,
-                syncedTrades,
-                coachReports,
-            ] = await Promise.all([
-                prisma.article.count({ where: { status: "PUBLISHED" } }),
-                prisma.lesson.count({ where: { status: "published" } }),
-                prisma.tradingAccount.count({
-                    where: { lastSync: { not: null } },
-                }),
-                prisma.journalEntry.count(),
-                prisma.tradingReport.count({ where: { type: "WEEKLY" } }),
-            ]);
-            return {
-                tradingGuides,
-                academyLessons,
-                connectedAccounts,
-                syncedTrades,
-                coachReports,
-            };
-        },
-        86400
-    );
-
     return (
         <>
             {/* 1. Hero Section */}
@@ -191,9 +159,9 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                 <SaaSHeroSection isLoggedIn={isLoggedIn} />
             </FadeIn>
 
-            {/* 2. Trust Metrics Strip */}
+            {/* 2. Transparency Strip — what we charge and who pays us, stated early */}
             <FadeIn delay={0.15}>
-                <HomeTrustMetrics metrics={trustMetrics} />
+                <HomeTrustMetrics />
             </FadeIn>
 
             {/* 3. Product Proof & Workflow (Connect -> Analyze -> Improve) */}
@@ -221,19 +189,18 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                 <MT5TeaserCTA isLoggedIn={isLoggedIn} />
             </FadeIn>
 
-            {/* STEP 03 / 04 · Institutional Knowledge (12-Level Academy Curriculum) */}
+            {/* STEP 03 / 04 · Institutional Knowledge (12-Level Academy Curriculum) — Temporarily hidden while Academy menu is disabled */}
+            {/*
             <div
                 id="academy-preview"
                 className="relative overflow-hidden bg-white dark:bg-transparent border-t border-dashboard"
             >
-                {/* Grid Pattern Background */}
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]"></div>
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gold/5 via-transparent to-transparent dark:from-gold/[0.03] dark:via-transparent dark:to-transparent"></div>
                 <section className="py-6 sm:py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <FadeIn delay={0.1} direction="up">
                         <HomeSectionHeading
                             align="center"
-                            eyebrow="STEP 03 / 04 · INSTITUTIONAL KNOWLEDGE"
                             title="From market novice to funded master"
                             highlight="funded master"
                             description="A structured 12-level progression from foundations to institutional execution: market structure, liquidity mechanics, and cold risk math."
@@ -247,12 +214,12 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                     <FadeIn delay={0.3} direction="up">
                         <div className="flex justify-center mt-6">
                             <Link href="/academy" className="w-full sm:w-auto inline-block">
-                                <Button className="w-full sm:w-auto relative overflow-hidden rounded-xl bg-gold text-white font-extrabold shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:bg-amber-600 hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 min-h-12 px-6 sm:px-8 text-sm group animate-btn-shine flex items-center justify-center">
+                                <Button size="smd" className="w-full sm:w-auto relative overflow-hidden rounded-lg bg-gold text-white font-extrabold shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:bg-amber-600 hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 px-6 group animate-btn-shine flex items-center justify-center">
                                     <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                                     <span className="flex items-center gap-2 relative z-10">
                                         Explore Academy{" "}
                                         <ArrowRight
-                                            size={16}
+                                            size={14}
                                             className="group-hover:translate-x-1 transition-transform duration-300"
                                         />
                                     </span>
@@ -262,6 +229,7 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                     </FadeIn>
                 </section>
             </div>
+            */}
 
             {/* STEP 04 / 04 · Zero-Fee Capital Preservation (Broker-Funded Sponsorship & Rankings) */}
             <FadeIn delay={0.1} direction="up">
@@ -299,6 +267,11 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                     </section>
                 </div>
             </FadeIn>
+
+            {/* 12. Site Footer — every other public page renders this; the
+                homepage was importing it and never mounting it, so visitors
+                hit a dead end at the bottom of the highest-traffic page. */}
+            <SiteFooter />
         </>
     );
 }

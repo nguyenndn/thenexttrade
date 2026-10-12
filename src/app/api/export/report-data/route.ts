@@ -46,6 +46,8 @@ export async function GET(request: NextRequest) {
                 symbol: true,
                 type: true,
                 pnl: true,
+                commission: true,
+                swap: true,
                 result: true,
                 // @ts-ignore
                 strategy: true,
@@ -54,24 +56,42 @@ export async function GET(request: NextRequest) {
             orderBy: { entryDate: "desc" },
         });
 
+        const getNetPnl = (t: {
+            pnl: number | null;
+            commission?: number | null;
+            swap?: number | null;
+        }) => (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+
         // Calculate summary stats
         const wins = trades.filter((t) => t.result === "WIN");
         const losses = trades.filter((t) => t.result === "LOSS");
         const breakEven = trades.filter((t) => t.result === "BREAK_EVEN");
 
-        const grossProfit = wins.reduce((sum, t) => sum + (t.pnl || 0), 0);
-        const grossLoss = Math.abs(
-            losses.reduce((sum, t) => sum + (t.pnl || 0), 0)
-        );
-        const netPnL = grossProfit - grossLoss;
+        const winningPnLs = wins.map((t) => getNetPnl(t));
+        const losingPnLs = losses.map((t) => getNetPnl(t));
 
-        const avgWin = wins.length > 0 ? grossProfit / wins.length : 0;
-        const avgLoss = losses.length > 0 ? grossLoss / losses.length : 0;
+        const grossProfit = winningPnLs.reduce(
+            (sum, p) => sum + (p > 0 ? p : 0),
+            0
+        );
+        const grossLoss = Math.abs(
+            losingPnLs.reduce((sum, p) => sum + (p < 0 ? p : 0), 0)
+        );
+        const netPnL = trades.reduce((sum, t) => sum + getNetPnl(t), 0);
+
+        const avgWin =
+            wins.length > 0
+                ? winningPnLs.reduce((s, p) => s + p, 0) / wins.length
+                : 0;
+        const avgLoss =
+            losses.length > 0
+                ? Math.abs(losingPnLs.reduce((s, p) => s + p, 0) / losses.length)
+                : 0;
 
         const largestWin =
-            wins.length > 0 ? Math.max(...wins.map((t) => t.pnl || 0)) : 0;
+            winningPnLs.length > 0 ? Math.max(...winningPnLs) : 0;
         const largestLoss =
-            losses.length > 0 ? Math.min(...losses.map((t) => t.pnl || 0)) : 0;
+            losingPnLs.length > 0 ? Math.min(...losingPnLs) : 0;
 
         // By pair
         const pairMap = new Map<
@@ -85,7 +105,7 @@ export async function GET(request: NextRequest) {
                 wins: 0,
                 total: 0,
             };
-            current.pnl += trade.pnl || 0;
+            current.pnl += getNetPnl(trade);
             current.total++;
             if (trade.result === "WIN") current.wins++;
             pairMap.set(symbol, current);
@@ -108,7 +128,7 @@ export async function GET(request: NextRequest) {
         for (const trade of trades) {
             const name = (trade as any).strategy || "No Strategy";
             const current = stratMap.get(name) || { pnl: 0, wins: 0, total: 0 };
-            current.pnl += trade.pnl || 0;
+            current.pnl += getNetPnl(trade);
             current.total++;
             if (trade.result === "WIN") current.wins++;
             stratMap.set(name, current);
@@ -132,7 +152,7 @@ export async function GET(request: NextRequest) {
             return {
                 date: format(day, "MMM dd"),
                 trades: dayTrades.length,
-                pnl: dayTrades.reduce((sum, t) => sum + (t.pnl || 0), 0),
+                pnl: dayTrades.reduce((sum, t) => sum + getNetPnl(t), 0),
             };
         });
 
@@ -141,7 +161,7 @@ export async function GET(request: NextRequest) {
             date: utcTime(new Date(t.entryDate), "MMM dd"),
             symbol: t.symbol,
             type: t.type,
-            pnl: t.pnl || 0,
+            pnl: Number(getNetPnl(t).toFixed(2)),
             result: t.result || "",
         }));
 

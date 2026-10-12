@@ -80,7 +80,7 @@ export async function POST(
                 data: { status: "PENDING" },
             });
 
-            // TODO: Send Notification to Admins
+            // NOTE: Admin notification for article submission (P2 — requires notification dispatch refactor)
         } else if (action === "approve") {
             // Only ADMIN can approve
             if (currentUserProfile.role !== "ADMIN") {
@@ -98,7 +98,7 @@ export async function POST(
                 },
             });
 
-            // TODO: Send Notification to Author
+            // NOTE: Author approval notification (P2 — requires notification dispatch refactor)
         } else if (action === "reject") {
             // Only ADMIN can reject
             if (currentUserProfile.role !== "ADMIN") {
@@ -122,7 +122,7 @@ export async function POST(
                 },
             });
 
-            // TODO: Send Notification to Author
+            // NOTE: Author rejection notification (P2 — requires notification dispatch refactor)
         }
 
         return NextResponse.json({ success: true });

@@ -18,6 +18,7 @@ const sourceSans = Source_Sans_3({
     adjustFontFallback: true,
     weight: ["400", "500", "600", "700"],
 });
+
 const lexend = Lexend({
     subsets: ["latin"],
     variable: "--font-lexend",
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
         template: "%s | TheNextTrade",
     },
     description:
-        "Master the markets with TheNextTrade. Advanced Position Size Calculator, Trading Journal, and premium Forex Academy materials.",
+        "Forex position-size calculator, MT5-synced trading journal, and targeted risk calculators — free to use.",
     keywords: [
         "Forex",
         "Trading Journal",
@@ -50,7 +51,7 @@ export const metadata: Metadata = {
         locale: "en_US",
         url: "https://thenexttrade.com",
         title: "TheNextTrade - Professional Forex Trading Tools",
-        description: "Master the markets with advanced tools and education.",
+        description: "Forex tools, journal, and education — free to start.",
         siteName: "TheNextTrade",
         images: [
             {
@@ -92,7 +93,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
     width: "device-width",
     initialScale: 1,
-    maximumScale: 1,
+    maximumScale: 5,
     viewportFit: "cover",
     themeColor: [
         { media: "(prefers-color-scheme: light)", color: "#ffffff" },
@@ -152,7 +153,7 @@ export default function RootLayout({
  `,
                     }}
                 />
-                {process.env.NODE_ENV === "production" && (
+                {process.env.NODE_ENV === "production" ? (
                     <script
                         dangerouslySetInnerHTML={{
                             __html: `
@@ -164,16 +165,28 @@ navigator.serviceWorker.register('/sw.js');
 `,
                         }}
                     />
+                ) : (
+                    <script
+                        dangerouslySetInnerHTML={{
+                            __html: `
+if ('serviceWorker' in navigator) {
+navigator.serviceWorker.getRegistrations().then(function(registrations) {
+for (var r of registrations) { r.unregister(); }
+});
+}
+`,
+                        }}
+                    />
                 )}
             </head>
             <body
                 className={`${sourceSans.variable} ${lexend.variable} font-sans bg-white dark:bg-transparent`}
             >
                 <NextTopLoader
-                    color="hsl(var(--primary))"
+                    color="#F59E0B"
                     height={3}
                     showSpinner={false}
-                    shadow="0 0 10px hsl(var(--primary)),0 0 5px hsl(var(--primary))"
+                    shadow="0 0 10px #F59E0B,0 0 5px #F59E0B"
                 />
                 <ThemeProvider>
                     <JsonLd
@@ -196,7 +209,7 @@ navigator.serviceWorker.register('/sw.js');
                             url: getBaseUrl(),
                             logo: absoluteUrl("/logo.png"),
                             description:
-                                "Professional Forex Trading Tools & Academy. Master the markets with structured education, trading tools, and market analysis.",
+                                "Forex trading tools, trade journal, and market analysis for retail traders.",
                             foundingDate: "2024",
                             sameAs: ["https://twitter.com/thenexttrade"],
                             contactPoint: {

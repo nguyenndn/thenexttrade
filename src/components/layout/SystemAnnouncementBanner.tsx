@@ -78,7 +78,7 @@ export function SystemAnnouncementBanner() {
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="relative w-full max-w-md bg-white dark:bg-[#151925] border border-dashboard rounded-2xl shadow-2xl overflow-hidden"
+                className="relative w-full max-w-md bg-white dark:bg-[#151925] border border-dashboard rounded-lg shadow-2xl overflow-hidden"
             >
                 {/* Decorative header */}
                 <div className="h-2 bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400" />

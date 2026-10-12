@@ -50,6 +50,24 @@ export interface TradingMove {
     href: string;
 }
 
+export interface ArchetypePrescriptionItem {
+    name: string;
+    tagline: string;
+    why: string;
+    href: string;
+    badge: string;
+    actionLabel: string;
+}
+
+export interface ArchetypePrescription {
+    diagnosisTitle: string;
+    diagnosisText: string;
+    targetOutcome: string;
+    tool: ArchetypePrescriptionItem;
+    system: ArchetypePrescriptionItem;
+    lesson: ArchetypePrescriptionItem;
+}
+
 export interface Archetype {
     id: ArchetypeId;
     name: string;
@@ -60,6 +78,7 @@ export interface Archetype {
     focus: string[];
     keystone: TradingMove;
     moves: TradingMove[];
+    prescription: ArchetypePrescription;
 }
 
 export const DIMENSIONS: DimensionMeta[] = [
@@ -656,6 +675,36 @@ export const ARCHETYPES: Record<ArchetypeId, Archetype> = {
                 href: "/dashboard/journal",
             },
         ],
+        prescription: {
+            diagnosisTitle: "Unanchored Risk & Capital Exposure",
+            diagnosisText:
+                "Zero capital preservation framework with impulse position sizing. High probability of catastrophic account liquidation without mechanical sizing locks.",
+            targetOutcome: "Enforce 1% hard risk ceiling and automate stop loss attachment before entry.",
+            tool: {
+                name: "Position Size Calculator",
+                tagline: "Precision Lot Sizing",
+                why: "Calculates exact lot size based on a fixed 1% cash risk and stop-loss distance, taking emotion out of sizing.",
+                href: "/tools/position-size-calculator",
+                badge: "Core Risk Tool",
+                actionLabel: "Calculate Safe Lot Size",
+            },
+            system: {
+                name: "Trade Manager MT5",
+                tagline: "Mechanical Execution Panel",
+                why: "Locks in pre-set stop losses and hard risk constraints with 1-click execution that cannot be overridden in the heat of battle.",
+                href: "/trading-systems/trade-manager",
+                badge: "MT5 Risk Armor",
+                actionLabel: "Explore Trade Manager",
+            },
+            lesson: {
+                name: "Capital Preservation & Risk of Ruin",
+                tagline: "Cold Math of Drawdown",
+                why: "Understand the exponential recovery math behind drawdowns and why survival precedes profitability.",
+                href: "/academy/lesson/going-live-the-financial-side-of-real-money",
+                badge: "Academy Level 6",
+                actionLabel: "Study Lesson",
+            },
+        },
     },
     analysis_paralyser: {
         id: "analysis_paralyser",
@@ -699,6 +748,36 @@ export const ARCHETYPES: Record<ArchetypeId, Archetype> = {
                 href: "/dashboard/journal",
             },
         ],
+        prescription: {
+            diagnosisTitle: "Over-Filtering & Execution Hesitation",
+            diagnosisText:
+                "Demands unattainable 100% certainty in a probabilistic arena. Hesitation causes chronic missed moves, leading to FOMO chasing at the worst prices.",
+            targetOutcome: "Shift from certainty-seeking to probabilistic execution with automated rule sets.",
+            tool: {
+                name: "Risk-Reward Calculator",
+                tagline: "Asymmetric Expectancy",
+                why: "Internalise that a 40-50% win rate generates steady profits when R:R is mechanically held above 1:2.",
+                href: "/tools/risk-reward-calculator",
+                badge: "Expectancy Engine",
+                actionLabel: "Model Your Edge",
+            },
+            system: {
+                name: "GoldScalperNinja EA",
+                tagline: "Algorithmic Precision",
+                why: "Systematic D1 Trend Master rules that execute without second-guessing or hesitation when your criteria align.",
+                href: "/trading-systems/goldscalperninja",
+                badge: "Automated Execution",
+                actionLabel: "Explore GoldScalperNinja",
+            },
+            lesson: {
+                name: "Going Live: The Psychology of Real Money",
+                tagline: "Overcoming Hesitation",
+                why: "Train emotional detachment from individual trade outcomes and focus on 20-trade execution sample sizes.",
+                href: "/academy/lesson/going-live-the-psychology-of-trading-real-money",
+                badge: "Academy Level 5",
+                actionLabel: "Study Lesson",
+            },
+        },
     },
     signal_dependent: {
         id: "signal_dependent",
@@ -741,6 +820,36 @@ export const ARCHETYPES: Record<ArchetypeId, Archetype> = {
                 href: "/knowledge",
             },
         ],
+        prescription: {
+            diagnosisTitle: "Outsourced Conviction & Execution Fragility",
+            diagnosisText:
+                "Trades blind alerts without personal structural thesis. Vulnerable to provider collapse, contradictory calls, and panic exits.",
+            targetOutcome: "Build independent MT5 execution competence and validate signal confluences before entry.",
+            tool: {
+                name: "Market Hours & Session Monitor",
+                tagline: "Session Liquidity Radar",
+                why: "Identify genuine London/New York session overlap volume to verify if incoming signals align with institutional liquidity.",
+                href: "/tools/market-hours",
+                badge: "Market Timing",
+                actionLabel: "Check Session Radar",
+            },
+            system: {
+                name: "Trade Manager MT5",
+                tagline: "Trade Ownership Panel",
+                why: "Take control of manual alerts with automated trailing stops, break-even protection, and direct journal sync.",
+                href: "/trading-systems/trade-manager",
+                badge: "Execution Assist",
+                actionLabel: "Explore Trade Manager",
+            },
+            lesson: {
+                name: "Meet Your Trading Platform: MT5 & Mechanics",
+                tagline: "Independent Mastery",
+                why: "Gain complete technical fluency over MT5 order types, chart tools, and execution mechanics to stop relying on third parties.",
+                href: "/academy/lesson/meet-your-trading-platform-mt4-mt5-and-more",
+                badge: "Academy Level 2",
+                actionLabel: "Study Lesson",
+            },
+        },
     },
     indicator_stacker: {
         id: "indicator_stacker",
@@ -780,6 +889,36 @@ export const ARCHETYPES: Record<ArchetypeId, Archetype> = {
                 href: "/dashboard/strategies",
             },
         ],
+        prescription: {
+            diagnosisTitle: "Chart Pollution & Lagging Indecision",
+            diagnosisText:
+                "Stacks 6+ lagging indicators, confusing visual clutter with confluence. Creates late entries, wide stops, and conflicting signals.",
+            targetOutcome: "Strip away chart noise, trade raw price structure, and use macro market correlation for genuine edge.",
+            tool: {
+                name: "Correlation Matrix",
+                tagline: "Macro Market Confluence",
+                why: "Replace lagging oscillators with real institutional cross-asset correlations across Gold, USD, and major currencies.",
+                href: "/tools/correlation-matrix",
+                badge: "Macro Tool",
+                actionLabel: "Analyze Correlations",
+            },
+            system: {
+                name: "Trade Manager MT5",
+                tagline: "Trend Matrix Overlay",
+                why: "Provides a clean 6x7 multi-timeframe scoring matrix right on your chart, eliminating the need for messy indicator stacks.",
+                href: "/trading-systems/trade-manager",
+                badge: "Clean Chart Overlay",
+                actionLabel: "Explore Trade Manager",
+            },
+            lesson: {
+                name: "What is a Pip & Why It's Worth More Than You Think",
+                tagline: "Raw Price Dynamics",
+                why: "Return to raw price structure, pip values, and tick mechanics on a clean, indicator-free chart.",
+                href: "/academy/lesson/what-is-a-pip-and-why-its-worth-more-than-you-think",
+                badge: "Academy Level 1",
+                actionLabel: "Study Lesson",
+            },
+        },
     },
     emotional_revenge_trader: {
         id: "emotional_revenge_trader",
@@ -818,11 +957,41 @@ export const ARCHETYPES: Record<ArchetypeId, Archetype> = {
                 href: "/dashboard/rules",
             },
             {
-                label: "Track Your Psychology",
-                why: "Journal emotional state alongside trade outcomes.",
-                href: "/dashboard/psychology",
+                label: "Trading Intelligence",
+                why: "Audit execution leaks and behavioral discipline patterns.",
+                href: "/dashboard/intelligence",
             },
         ],
+        prescription: {
+            diagnosisTitle: "Tilt Vulnerability & Revenge Sizing Spirals",
+            diagnosisText:
+                "Normal losses trigger emotional outrage and rapid lot doubling. High vulnerability to wiping out weeks of discipline in a single tilt session.",
+            targetOutcome: "Deploy hard circuit-breakers and behavioral guardrails to prevent revenge execution.",
+            tool: {
+                name: "Drawdown Calculator",
+                tagline: "Drawdown Curve Radar",
+                why: "Calculate required recovery percentages after consecutive losses to mechanically kill the urge to revenge trade.",
+                href: "/tools/drawdown-calculator",
+                badge: "Drawdown Radar",
+                actionLabel: "Inspect Drawdown Limits",
+            },
+            system: {
+                name: "Trade Manager MT5",
+                tagline: "Behavioral Circuit Breaker",
+                why: "Enforces pre-set maximum daily loss thresholds and automatically locks out new trades once your loss limit is hit.",
+                href: "/trading-systems/trade-manager",
+                badge: "Tilt Guard",
+                actionLabel: "Explore Trade Manager",
+            },
+            lesson: {
+                name: "Going Live: The Psychology of Real Money",
+                tagline: "Emotional Regulation",
+                why: "Learn the mandatory 15-minute post-loss cool-down rule and pre-commit reactions before entering the market.",
+                href: "/academy/lesson/going-live-the-psychology-of-trading-real-money",
+                badge: "Academy Level 5",
+                actionLabel: "Study Lesson",
+            },
+        },
     },
     news_trader: {
         id: "news_trader",
@@ -866,6 +1035,36 @@ export const ARCHETYPES: Record<ArchetypeId, Archetype> = {
                 href: "/community",
             },
         ],
+        prescription: {
+            diagnosisTitle: "Headline Chasing & Volatility Whip-Saw Risk",
+            diagnosisText:
+                "Speculates directly into high-impact releases (CPI, NFP, FOMC). Highly susceptible to institutional liquidity sweeps and spread blowouts.",
+            targetOutcome: "Trade post-news structural confirmations instead of gambling on 0-second opening spikes.",
+            tool: {
+                name: "Economic Calendar",
+                tagline: "Live Macro Volatility Radar",
+                why: "Institutional macroeconomic calendar with high-impact event alerts and historical deviation data.",
+                href: "/tools/economic-calendar",
+                badge: "Macro Radar",
+                actionLabel: "Open Economic Calendar",
+            },
+            system: {
+                name: "GoldScalperNinja EA",
+                tagline: "Automated News Filter",
+                why: "Includes automated news safety filters that halt fresh execution 15 minutes before and after high-impact events.",
+                href: "/trading-systems/goldscalperninja",
+                badge: "Smart News Guard",
+                actionLabel: "Explore GoldScalperNinja",
+            },
+            lesson: {
+                name: "Reading the Economic Calendar & Reacting to News",
+                tagline: "News Strategy Blueprint",
+                why: "Master institutional news mechanics: avoid the opening trap and trade the sustained secondary reaction leg.",
+                href: "/academy/lesson/reading-the-economic-calendar-and-reacting-to-the-news",
+                badge: "Academy Level 7",
+                actionLabel: "Study Lesson",
+            },
+        },
     },
     system_hopper: {
         id: "system_hopper",
@@ -909,6 +1108,36 @@ export const ARCHETYPES: Record<ArchetypeId, Archetype> = {
                 href: "/dashboard/journal",
             },
         ],
+        prescription: {
+            diagnosisTitle: "Framework Churn & Small-Sample Abandonment",
+            diagnosisText:
+                "Abandons viable strategies after 3-5 routine losses. Constantly switches indicators and courses without building a statistically valid sample size.",
+            targetOutcome: "Commit to one robust system across a minimum 100-trade sample size to realize compounding expectancy.",
+            tool: {
+                name: "Compounding Calculator",
+                tagline: "Compounding Expectancy Engine",
+                why: "Visualise how steady 2-3% monthly compounding outperforms sporadic high-risk windfalls over a 12-month horizon.",
+                href: "/tools/compounding-calculator",
+                badge: "Compounding Engine",
+                actionLabel: "Model Compounding Growth",
+            },
+            system: {
+                name: "GSN - Apex Gold Sentinel",
+                tagline: "5-Layer Adaptive Survival Grid",
+                why: "Mechanical survival architecture with Phoenix Profit Bank harvesting that thrives across diverse market regimes without strategy hopping.",
+                href: "/trading-systems/gsn-phoenix-grid",
+                badge: "Multi-Regime System",
+                actionLabel: "Explore Sentinel",
+            },
+            lesson: {
+                name: "Choosing Your Trading Style: Scalping vs Day vs Swing",
+                tagline: "Strategic Alignment",
+                why: "Select one defined style matched to your personality and commit to 100 logged trades before making any tweaks.",
+                href: "/academy/lesson/choosing-your-trading-style-scalping-day-swing-position",
+                badge: "Academy Level 8",
+                actionLabel: "Study Lesson",
+            },
+        },
     },
     brand_new_beginner: {
         id: "brand_new_beginner",
@@ -947,5 +1176,35 @@ export const ARCHETYPES: Record<ArchetypeId, Archetype> = {
                 href: "/knowledge",
             },
         ],
+        prescription: {
+            diagnosisTitle: "Unformed Foundations & High Vulnerability",
+            diagnosisText:
+                "Zero market experience with no protective framework. Prone to excessive leverage, social media hype, and skipped demo training.",
+            targetOutcome: "Establish mathematical baseline, demo execution habits, and pip calculation mastery before risking real capital.",
+            tool: {
+                name: "Pip Value Calculator",
+                tagline: "Unit Economics of Price",
+                why: "Learn the exact monetary value of 1 pip on Gold and major FX pairs across micro, mini, and standard lots.",
+                href: "/tools/pip-value-calculator",
+                badge: "Beginner Primer",
+                actionLabel: "Calculate Pip Value",
+            },
+            system: {
+                name: "Trade Manager MT5",
+                tagline: "Execution Guardrails",
+                why: "Visual order lines on chart with automated lot size validation to prevent fatal novice order entry typos.",
+                href: "/trading-systems/trade-manager",
+                badge: "Protected Execution",
+                actionLabel: "Explore Trade Manager",
+            },
+            lesson: {
+                name: "What is a Pip & Why It's Worth More Than You Think",
+                tagline: "Foundational Trading Math",
+                why: "The essential starting lesson on pips, spreads, leverage, and margin that every trader must master first.",
+                href: "/academy/lesson/what-is-a-pip-and-why-its-worth-more-than-you-think",
+                badge: "Academy Level 1",
+                actionLabel: "Study Lesson",
+            },
+        },
     },
 };

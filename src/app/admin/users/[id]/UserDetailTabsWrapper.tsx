@@ -45,7 +45,7 @@ export function UserDetailTabsWrapper({
     return (
         <Tabs defaultValue="overview" className="w-full space-y-6">
             <div className="border-b border-gray-200 dark:border-white/10 pb-4">
-                <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto rounded-xl border border-gray-200 bg-[#F1F3F5] p-1 dark:border-white/10 dark:bg-[#1A1D27] flex-nowrap custom-scrollbar">
+                <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto rounded-lg border border-gray-200 bg-[#F1F3F5] p-1 dark:border-white/10 dark:bg-[#1A1D27] flex-nowrap custom-scrollbar">
                     <TabsTrigger value="overview" className="shrink-0 gap-2">
                         <ShieldCheck size={16} /> Overview
                     </TabsTrigger>
@@ -58,7 +58,7 @@ export function UserDetailTabsWrapper({
                     <TabsTrigger value="journal" className="shrink-0 gap-2">
                         <BookOpen size={16} /> Journal & Trades
                         {typeof counts?.journal === "number" && (
-                            <span className="ml-1 rounded-md bg-gray-200 px-1.5 py-0.5 text-[10px] font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
+                            <span className="ml-1 rounded-lg bg-gray-200 px-1.5 py-0.5 text-[10px] font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
                                 {counts.journal}
                             </span>
                         )}
@@ -66,7 +66,7 @@ export function UserDetailTabsWrapper({
                     <TabsTrigger value="plans" className="shrink-0 gap-2">
                         <Compass size={16} /> Plans & Playbooks
                         {typeof counts?.plans === "number" && (
-                            <span className="ml-1 rounded-md bg-gray-200 px-1.5 py-0.5 text-[10px] font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
+                            <span className="ml-1 rounded-lg bg-gray-200 px-1.5 py-0.5 text-[10px] font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
                                 {counts.plans}
                             </span>
                         )}
@@ -74,7 +74,7 @@ export function UserDetailTabsWrapper({
                     <TabsTrigger value="rules" className="shrink-0 gap-2">
                         <Shield size={16} /> Rules & Goals
                         {typeof counts?.rules === "number" && (
-                            <span className="ml-1 rounded-md bg-gray-200 px-1.5 py-0.5 text-[10px] font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
+                            <span className="ml-1 rounded-lg bg-gray-200 px-1.5 py-0.5 text-[10px] font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
                                 {counts.rules}
                             </span>
                         )}
@@ -82,7 +82,7 @@ export function UserDetailTabsWrapper({
                     <TabsTrigger value="growth" className="shrink-0 gap-2">
                         <Sparkles size={16} /> Growth & Coach
                         {typeof counts?.growth === "number" && (
-                            <span className="ml-1 rounded-md bg-gray-200 px-1.5 py-0.5 text-[10px] font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
+                            <span className="ml-1 rounded-lg bg-gray-200 px-1.5 py-0.5 text-[10px] font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
                                 {counts.growth}
                             </span>
                         )}
@@ -90,7 +90,7 @@ export function UserDetailTabsWrapper({
                     <TabsTrigger value="reports" className="shrink-0 gap-2">
                         <BarChart3 size={16} /> Reports & Notes
                         {typeof counts?.reports === "number" && (
-                            <span className="ml-1 rounded-md bg-gray-200 px-1.5 py-0.5 text-[10px] font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
+                            <span className="ml-1 rounded-lg bg-gray-200 px-1.5 py-0.5 text-[10px] font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
                                 {counts.reports}
                             </span>
                         )}

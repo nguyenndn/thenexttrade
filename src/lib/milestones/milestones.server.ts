@@ -49,9 +49,9 @@ export const MILESTONES: MilestoneDefinition[] = [
         id: "TEN_TRADES",
         title: "10 Trades Milestone! 🏆",
         message:
-            "You've logged 10 trades. Psychology tracker is now powered with enough data for meaningful insights.",
+            "You've logged 10 trades. Trading Intelligence radar is now powered with enough data for meaningful insights.",
         icon: "Trophy",
-        link: "/dashboard/psychology",
+        link: "/dashboard/intelligence",
     },
     {
         id: "FIRST_ACADEMY_LESSON",

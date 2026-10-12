@@ -7,6 +7,7 @@ interface PageHeaderProps {
     children?: ReactNode;
     className?: string;
     mobileFullWidthButton?: boolean;
+    accentColor?: "gold" | "primary";
 }
 
 export function PageHeader({
@@ -15,6 +16,7 @@ export function PageHeader({
     children,
     className,
     mobileFullWidthButton,
+    accentColor = "gold",
 }: PageHeaderProps) {
     return (
         <div
@@ -27,7 +29,14 @@ export function PageHeader({
             {/* Left: Gradient accent bar + text */}
             <div className="flex items-center gap-4">
                 {/* Gradient Bar */}
-                <div className="w-1 self-stretch min-h-[40px] rounded-full bg-gradient-to-b from-primary via-emerald-400 to-teal-500 shrink-0" />
+                <div
+                    className={cn(
+                        "w-1 self-stretch min-h-[40px] rounded-full shrink-0",
+                        accentColor === "gold"
+                            ? "bg-gradient-to-b from-amber-400 via-amber-500 to-amber-600 shadow-[0_0_8px_rgba(245,158,11,0.25)]"
+                            : "bg-gradient-to-b from-primary via-emerald-400 to-teal-500"
+                    )}
+                />
                 <div>
                     {title && (
                         <h1 className="text-xl font-bold text-gray-700 dark:text-white tracking-tight">

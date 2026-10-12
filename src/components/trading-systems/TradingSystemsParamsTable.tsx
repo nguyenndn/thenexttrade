@@ -47,7 +47,7 @@ export function TradingSystemsParamsTable({
     };
 
     return (
-        <div className="rounded-3xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 shadow-sm overflow-hidden flex flex-col gap-5">
+        <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 shadow-sm overflow-hidden flex flex-col gap-5">
             {/* Table Header Action Row */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <h3 className="text-base font-black text-gray-800 dark:text-white uppercase tracking-wider flex items-center gap-2 shrink-0">
@@ -56,7 +56,7 @@ export function TradingSystemsParamsTable({
                 </h3>
 
                 {/* Height Synchronized Search Input (Exactly 38px height) */}
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 focus-within:border-gold focus-within:ring-1 focus-within:ring-gold transition-all w-full sm:max-w-[200px] h-[38px]">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 focus-within:border-gold focus-within:ring-1 focus-within:ring-gold transition-all w-full sm:max-w-[200px] h-[38px]">
                     <Search size={14} className="text-gray-400 shrink-0" />
                     <input
                         type="text"

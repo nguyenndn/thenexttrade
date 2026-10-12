@@ -75,7 +75,7 @@ export function SyncTroubleshootingPanel({
 
     return (
         <div
-            className={`rounded-xl border border-dashboard overflow-hidden ${className}`}
+            className={`rounded-lg border border-dashboard overflow-hidden ${className}`}
         >
             {/* Trigger */}
             <button

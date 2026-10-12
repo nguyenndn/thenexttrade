@@ -53,7 +53,7 @@ export function TradeShareCard({
     return (
         <div
             className={cn(
-                "relative w-full max-w-3xl mx-auto rounded-xl overflow-hidden bg-white dark:bg-[#1E2028] shadow-2xl border border-dashboard transition-all text-left",
+                "relative w-full max-w-3xl mx-auto rounded-lg overflow-hidden bg-white dark:bg-[#1E2028] shadow-2xl border border-dashboard transition-all text-left",
                 className
             )}
         >

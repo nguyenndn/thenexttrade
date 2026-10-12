@@ -101,7 +101,7 @@ export function PnLCalendar({
     };
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group mt-6">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group mt-6">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2.5">
                     <div className="p-2 bg-primary/10 rounded-lg text-primary">
@@ -144,7 +144,7 @@ export function PnLCalendar({
             <div className="w-full overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800">
                 <div className="min-w-[700px] relative">
                     {isLoading && (
-                        <div className="absolute inset-0 bg-white/50 dark:bg-[#1E2028]/50 flex items-center justify-center z-20 backdrop-blur-sm rounded-xl">
+                        <div className="absolute inset-0 bg-white/50 dark:bg-[#1E2028]/50 flex items-center justify-center z-20 backdrop-blur-sm rounded-lg">
                             <span className="font-bold text-gray-500 flex items-center gap-2">
                                 <Loader2 size={16} className="animate-spin" />{" "}
                                 Loading...
@@ -195,7 +195,7 @@ export function PnLCalendar({
                                 <div
                                     key={date.toISOString()}
                                     className={cn(
-                                        "rounded-xl p-3 min-h-[90px] relative group transition-all duration-200 flex flex-col",
+                                        "rounded-lg p-3 min-h-[90px] relative group transition-all duration-200 flex flex-col",
                                         bgClass
                                     )}
                                 >
@@ -300,8 +300,7 @@ export function PnLCalendar({
                         worked well? What mistakes were made?
                     </p>
                     <textarea
-                        className="w-full h-40 p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-none transition-all"
-                        placeholder="Write your daily reflection here..."
+                        className="w-full h-40 p-3 rounded-lg border border-dashboard dark:border-white/10 bg-gray-50 dark:bg-[#151925] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none resize-none transition-all text-sm"
                         value={noteContent}
                         onChange={(e) => setNoteContent(e.target.value)}
                     />

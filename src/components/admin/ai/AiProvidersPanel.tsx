@@ -226,11 +226,11 @@ export function AiProvidersPanel({
                     return (
                         <div
                             key={provider.id}
-                            className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl shadow-sm hover:shadow-md transition-shadow p-5 space-y-4"
+                            className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg shadow-sm hover:shadow-md transition-shadow p-5 space-y-4"
                         >
                             <div className="flex flex-wrap items-center justify-between gap-3">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
                                         <Cpu className="w-5 h-5" />
                                     </div>
                                     <div>
@@ -273,7 +273,7 @@ export function AiProvidersPanel({
                                         type="button"
                                         variant="ghost"
                                         onClick={() => handleOpenConfig(provider)}
-                                        className={`h-auto px-3 py-1.5 ${editingProviderId === provider.id ? "bg-primary text-white shadow-sm shadow-primary/20" : "bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10"}`}
+                                        className={`h-auto px-3 py-1.5 ${editingProviderId === provider.id ? "bg-gold text-white shadow-sm shadow-amber-500/20" : "bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10"}`}
                                     >
                                         <Settings className="w-3.5 h-3.5" />
                                         Config
@@ -302,7 +302,7 @@ export function AiProvidersPanel({
                             <div>
                                 {/* Configuration details - always visible unless editing */}
                                 {editingProviderId === provider.id ? (
-                                    <div className="bg-primary/5 p-4 rounded-xl border border-primary/20 space-y-4">
+                                    <div className="bg-primary/5 p-4 rounded-lg border border-primary/20 space-y-4">
                                         <h4 className="text-xs font-bold text-primary uppercase tracking-wider">
                                             Update Configuration
                                         </h4>
@@ -312,8 +312,8 @@ export function AiProvidersPanel({
                                                     Base URL
                                                 </label>
                                                 <input
-                                                    placeholder="e.g. https://api.openai.com/v1"
-                                                    className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
+                                                    
+                                                    className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
                                                     value={
                                                         editProviderForm.baseUrl
                                                     }
@@ -456,7 +456,7 @@ export function AiProvidersPanel({
                                                 </label>
                                                 <input
                                                     type="number"
-                                                    className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
+                                                    className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
                                                     value={
                                                         editProviderForm.timeoutMs
                                                     }
@@ -477,8 +477,8 @@ export function AiProvidersPanel({
                                                 <div className="relative">
                                                     <input
                                                         type={showApiKey ? "text" : "password"}
-                                                        placeholder="Enter key to save/update"
-                                                        className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl pl-3 pr-10 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary font-mono"
+                                                        
+                                                        className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg pl-3 pr-10 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary font-mono"
                                                         value={
                                                             editProviderForm.apiKey
                                                         }
@@ -616,7 +616,7 @@ export function AiProvidersPanel({
                     );
                 })}
                 {providers.length === 0 && (
-                    <div className="text-center py-12 text-sm text-gray-500 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
+                    <div className="text-center py-12 text-sm text-gray-500 bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm">
                         No AI Providers configured yet.
                     </div>
                 )}

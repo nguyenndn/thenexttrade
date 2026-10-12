@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import {
     fetchUserSessions,
     deleteSession,
-} from "@/app/dashboard/settings/account/actions";
+} from "@/app/dashboard/settings/security/actions";
 import {
     Loader2,
     Smartphone,
@@ -111,7 +111,7 @@ export function ActiveSessionsList() {
                     return (
                         <div
                             key={session.id}
-                            className={`flex items-center justify-between p-4 rounded-xl border transition-all ${isCurrent ? "bg-green-50/50 dark:bg-green-500/5 border-green-200 dark:border-green-500/30" : "bg-gray-50 dark:bg-white/5 border-dashboard "}`}
+                            className={`flex items-center justify-between p-4 rounded-lg border transition-all ${isCurrent ? "bg-green-50/50 dark:bg-green-500/5 border-green-200 dark:border-green-500/30" : "bg-gray-50 dark:bg-white/5 border-dashboard "}`}
                         >
                             <div className="flex items-center gap-4">
                                 <div

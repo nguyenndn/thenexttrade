@@ -160,6 +160,6 @@ Dưới đây là các thông số cài đặt mặc định đã được tối
    * Tìm đến thư mục `MQL5/Experts/GoldScalperNinja/GoldScalperNinja - PHOENIX GRID/set/`.
    * Chọn tệp `100k_medium.set` (Mức rủi ro trung bình khuyến nghị) hoặc `100k_low.set` (Mức rủi ro thấp, cực kỳ an toàn).
 4. **Giám sát thông qua Panel:**
-   * Góc trên bên phải biểu đồ sẽ hiển thị bảng điều khiển **GSN PHOENIX GRID**.
+   * Góc trên bên phải biểu đồ sẽ hiển thị bảng điều khiển **GSN - Apex Gold Sentinel**.
    * Kiểm tra xem các nút bấm hiển thị trạng thái `BUY: ON`, `SELL: ON` và `EA: ON`.
    * Nếu muốn dừng EA an toàn sau khi rổ lệnh hiện tại chốt lời, anh chỉ cần ấn vào nút **LAST ROUND** trên Panel thành `LAST ROUND: ON`. EA sẽ chốt lời rổ lệnh hiện tại và tự động dừng lại, không mở thêm lệnh mới.

@@ -31,7 +31,7 @@ export function AdminPageHeader({
                 {backHref && (
                     <Link
                         href={backHref}
-                        className="p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors shrink-0"
+                        className="p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors shrink-0"
                         aria-label="Go back"
                     >
                         <ArrowLeft size={20} className="text-gray-600" />

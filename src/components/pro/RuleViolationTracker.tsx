@@ -64,7 +64,7 @@ function RuleViolationContent({ accountId }: { accountId?: string }) {
 
     if (error) {
         return (
-            <div className="rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] p-6 text-center">
+            <div className="rounded-lg border border-dashboard bg-white dark:bg-[#1E2028] p-6 text-center">
                 <XCircle className="mx-auto h-8 w-8 text-gray-300 dark:text-gray-600" />
                 <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                     {error}
@@ -133,7 +133,7 @@ function RuleViolationContent({ accountId }: { accountId?: string }) {
                         return (
                             <div
                                 key={v.type}
-                                className={`rounded-xl border p-4 ${color}`}
+                                className={`rounded-lg border p-4 ${color}`}
                             >
                                 <div className="flex items-start gap-3">
                                     <Icon className="h-5 w-5 mt-0.5 shrink-0" />
@@ -176,7 +176,7 @@ function RuleViolationContent({ accountId }: { accountId?: string }) {
                     })}
                 </div>
             ) : (
-                <div className="rounded-xl border border-emerald-200 dark:border-emerald-500/20 bg-emerald-50 dark:bg-emerald-500/5 p-6 text-center">
+                <div className="rounded-lg border border-emerald-200 dark:border-emerald-500/20 bg-emerald-50 dark:bg-emerald-500/5 p-6 text-center">
                     <CheckCircle2 className="mx-auto h-8 w-8 text-emerald-500 dark:text-emerald-400" />
                     <p className="mt-2 font-bold text-sm text-emerald-600 dark:text-emerald-400">
                         Perfect Compliance

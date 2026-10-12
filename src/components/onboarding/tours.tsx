@@ -299,7 +299,7 @@ export const analyticsTour: { tour: string; steps: Step[] } = {
             title: "Analytics Hub",
             content: (
                 <p>
-                    Deep dive into your performance.{" "}
+                    Audit your execution performance.{" "}
                     <strong>Equity curve</strong>,{" "}
                     <strong>pair analysis</strong>, <strong>day-of-week</strong>{" "}
                     patterns, and more.
@@ -448,7 +448,6 @@ export const tourMap: Record<string, string> = {
     "/dashboard/strategies": "strategies-tour",
     "/dashboard/analytics": "analytics-tour",
     "/dashboard/reports": "analytics-tour",
-    "/dashboard/mistakes": "analytics-tour",
     "/dashboard/intelligence": "analytics-tour",
     "/dashboard/academy": "academy-tour",
     "/dashboard/settings": "settings-tour",

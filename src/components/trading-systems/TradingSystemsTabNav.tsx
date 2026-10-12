@@ -35,7 +35,7 @@ export function TradingSystemsTabNav({
     return (
         <div>
             {/* Tab Navigation */}
-            <div className="mb-8 flex items-center gap-1 rounded-2xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#111318]/80 p-1.5 backdrop-blur-md w-full sm:w-fit overflow-x-auto scrollbar-hide shadow-sm">
+            <div className="mb-8 flex items-center gap-1 rounded-lg border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#111318]/80 p-1.5 backdrop-blur-md w-full sm:w-fit overflow-x-auto scrollbar-hide shadow-sm">
                 {TABS.map((tab) => {
                     const Icon = tab.icon;
                     const isActive = activeTab === tab.id;
@@ -44,7 +44,7 @@ export function TradingSystemsTabNav({
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`relative shrink-0 flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-black uppercase tracking-wider transition-colors z-10 ${
+                            className={`relative shrink-0 flex items-center gap-2 rounded-lg px-5 py-2.5 text-xs font-black uppercase tracking-wider transition-colors z-10 ${
                                 isActive
                                     ? "text-white"
                                     : "text-gray-600 dark:text-gray-400 hover:text-gold dark:hover:text-gold"
@@ -53,7 +53,7 @@ export function TradingSystemsTabNav({
                             {isActive && (
                                 <motion.div
                                     layoutId="trading-systems-main-tab-pill"
-                                    className="absolute inset-0 bg-gold rounded-xl shadow-md shadow-gold/25 z-[-1]"
+                                    className="absolute inset-0 bg-gold rounded-lg shadow-md shadow-gold/25 z-[-1]"
                                     transition={{
                                         type: "spring",
                                         stiffness: 380,

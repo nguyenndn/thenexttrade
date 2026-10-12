@@ -57,11 +57,11 @@ const LEVEL_THEMES: Record<number, LevelTheme> = {
             "#38bdf8",
             "#67e8f9",
         ],
-        heading: "First Steps Complete!",
+        heading: "First Steps Complete",
         message:
-            "You've taken the leap! Welcome to the world of Forex trading. This is just the beginning of an incredible journey.",
-        quote: "Every expert was once a beginner. You've just proven you have what it takes.",
-        cta: "🌟 The foundations await — keep building!",
+            "Welcome to real-market Forex trading. Focus on cold execution rules and risk control from day one.",
+        quote: "Every disciplined trader starts with the basics. Fundamentals first, capital preservation always.",
+        cta: "Continue to Foundations",
     },
     2: {
         icon: Layers,
@@ -77,11 +77,11 @@ const LEVEL_THEMES: Record<number, LevelTheme> = {
             "#fcd34d",
             "#fde047",
         ],
-        heading: "Foundations Built!",
+        heading: "Foundations Built",
         message:
-            "Your trading foundation is rock solid! You now understand brokers, analysis types, and chart basics.",
-        quote: "A strong foundation is the secret behind every great trader's success.",
-        cta: "📊 Time to read the charts like a pro!",
+            "Your trading foundation is in place. You now understand broker custody, order types, and basic chart structure.",
+        quote: "A clear understanding of market mechanics protects your capital from beginner mistakes.",
+        cta: "Proceed to Technical Structure",
     },
     3: {
         icon: BarChart3,
@@ -97,11 +97,11 @@ const LEVEL_THEMES: Record<number, LevelTheme> = {
             "#5eead4",
             "#6ee7b7",
         ],
-        heading: "Chart Master!",
+        heading: "Market Structure",
         message:
-            "Support, resistance, candlesticks, Fibonacci — you can now read the market's language fluently!",
-        quote: "The charts tell a story. You've just learned to listen.",
-        cta: "🔍 Patterns are everywhere — time to hunt them!",
+            "Support, resistance, liquidity pools, and price delivery are now part of your daily technical lens.",
+        quote: "The charts reflect human psychology and order flow. You have learned to read both.",
+        cta: "Advance to Price Action Patterns",
     },
     4: {
         icon: TrendingUp,
@@ -117,11 +117,11 @@ const LEVEL_THEMES: Record<number, LevelTheme> = {
             "#6ee7b7",
             "#86efac",
         ],
-        heading: "Pattern Hunter!",
+        heading: "Pattern Recognition",
         message:
-            "You've mastered the art of recognizing chart patterns. The market holds fewer secrets from you now.",
-        quote: "In every chart, there's a pattern waiting to be discovered by those who know where to look.",
-        cta: "🎯 Ready to build winning strategies!",
+            "You can now identify high-probability chart patterns and market structure with precision.",
+        quote: "Patterns are not predictions — they are probabilistic setups with defined risk.",
+        cta: "Build Your Execution Strategy",
     },
     5: {
         icon: Target,
@@ -137,11 +137,11 @@ const LEVEL_THEMES: Record<number, LevelTheme> = {
             "#86efac",
             "#bef264",
         ],
-        heading: "Strategy Architect!",
+        heading: "Strategy Architect",
         message:
-            "You now think in systems, not just trades. Your strategic mindset sets you apart from 90% of traders.",
-        quote: "A plan is the bridge between where you are and where you want to be.",
-        cta: "🌍 Global markets are calling!",
+            "You now think in probabilistic systems. A systematic plan separates long-term winners from gamblers.",
+        quote: "A trading system is a defined set of rules that eliminates emotional decision-making.",
+        cta: "Explore Macro Fundamentals",
     },
     6: {
         icon: Globe,
@@ -157,11 +157,11 @@ const LEVEL_THEMES: Record<number, LevelTheme> = {
             "#fcd34d",
             "#fde047",
         ],
-        heading: "Market Scholar!",
+        heading: "Macro Fundamentals",
         message:
-            "Fundamentals, economics, global events — you now see the bigger picture that moves the markets.",
-        quote: "Understanding the 'why' behind price movement is the mark of a true market scholar.",
-        cta: "🧭 Navigate the global landscape!",
+            "Central bank rates, economic releases, and geopolitical context form the backdrop of your trades.",
+        quote: "Understanding the fundamental driver gives you the conviction to hold through volatility.",
+        cta: "Study Intermarket Analysis",
     },
     7: {
         icon: Compass,
@@ -177,11 +177,11 @@ const LEVEL_THEMES: Record<number, LevelTheme> = {
             "#fdba74",
             "#fcd34d",
         ],
-        heading: "Global Thinker!",
+        heading: "Intermarket Analysis",
         message:
-            "You think globally and trade wisely. Cross-market correlations and intermarket analysis are your new tools.",
-        quote: "The best traders don't just watch one market — they see the connections between all of them.",
-        cta: "⚙️ Time to build your trading system!",
+            "Cross-asset correlations and currency strength dynamics give you edge across sessions.",
+        quote: "Capital flows between asset classes. Spotting the trend early is your edge.",
+        cta: "Refine Your Complete System",
     },
     8: {
         icon: Map,
@@ -197,11 +197,11 @@ const LEVEL_THEMES: Record<number, LevelTheme> = {
             "#fda4af",
             "#f9a8d4",
         ],
-        heading: "System Builder!",
+        heading: "System Builder",
         message:
-            "You've built a complete trading system — from entry to exit, from rules to execution. This is elite territory.",
-        quote: "A trading system isn't just a set of rules — it's your competitive edge in the market.",
-        cta: "🛡️ Protect your capital — master risk!",
+            "You have built a complete trading system — from entry to exit, from rules to execution.",
+        quote: "Flawless execution of a tested strategy is the hallmark of professional consistency.",
+        cta: "Master Capital Preservation",
     },
     9: {
         icon: Shield,
@@ -217,11 +217,11 @@ const LEVEL_THEMES: Record<number, LevelTheme> = {
             "#fca5a5",
             "#fdba74",
         ],
-        heading: "Risk Manager!",
+        heading: "Risk & Capital Preservation",
         message:
-            "Capital preservation is the ultimate skill. You now trade with discipline, precision, and confidence.",
+            "Capital preservation is the ultimate skill. Hard stop-losses and strict sizing protect your survival.",
         quote: "It's not about how much you make — it's about how well you protect what you have.",
-        cta: "🧠 Master the final frontier — your mind!",
+        cta: "Train Trading Psychology",
     },
     10: {
         icon: Brain,
@@ -237,11 +237,11 @@ const LEVEL_THEMES: Record<number, LevelTheme> = {
             "#a5b4fc",
             "#c4b5fd",
         ],
-        heading: "Mind Master!",
+        heading: "Execution Psychology",
         message:
-            "Trading psychology conquered! Fear, greed, discipline — you've mastered the mental game that defeats most traders.",
-        quote: "The market is a mirror — master yourself, and you master the market.",
-        cta: "🚀 You're ready for launch!",
+            "Revenge trading, FOMO, and hesitation eliminated. You execute with neutral, cold discipline.",
+        quote: "Trading is 10% analysis and 90% emotional control under financial pressure.",
+        cta: "Proceed to Final Evaluation",
     },
     11: {
         icon: Rocket,
@@ -257,11 +257,11 @@ const LEVEL_THEMES: Record<number, LevelTheme> = {
             "#f9a8d4",
             "#fda4af",
         ],
-        heading: "🏆 LEGENDARY — Full Academy Complete!",
+        heading: "Full Academy Curriculum Completed",
         message:
-            "You've completed the entire Academy! You are now equipped with the knowledge, strategy, and mindset of a professional trader.",
-        quote: "This isn't the end — it's the beginning of your real trading career. Now go make it happen!",
-        cta: "💎 You are a TheNextTrade Graduate!",
+            "You have completed the entire TheNextTrade Academy curriculum. You are equipped with cold risk math and systematic discipline.",
+        quote: "Education provides the foundation. Strict daily risk management delivers the result.",
+        cta: "Review Your Trader Profile",
     },
 };
 
@@ -279,11 +279,11 @@ const DEFAULT_THEME: LevelTheme = {
         "#ef4444",
         "#ec4899",
     ],
-    heading: "Level Complete!",
+    heading: "Level Complete",
     message:
-        "Great work! You're making incredible progress on your trading journey.",
-    quote: "Patience is the key — the most exciting knowledge is waiting for you ahead.",
-    cta: "🚀 Next level unlocked — Keep conquering!",
+        "Great work. You are building consistent market knowledge and systematic discipline.",
+    quote: "Consistent execution over 100 trades beats any single lucky winner.",
+    cta: "Continue to Next Module",
 };
 
 /* ── Particle Generators ─────────────────────── */
@@ -599,7 +599,7 @@ export function LevelUpCelebration({
                         {/* Text card */}
                         <motion.div
                             className={cn(
-                                "text-center rounded-3xl px-8 py-7 border shadow-[0_20px_50px_rgba(245,158,11,0.15)] max-w-md backdrop-blur-md transition-all duration-300 relative overflow-hidden",
+                                "text-center rounded-lg px-8 py-7 border shadow-[0_20px_50px_rgba(245,158,11,0.15)] max-w-md backdrop-blur-md transition-all duration-300 relative overflow-hidden",
                                 "bg-[#FCF9F2]/95 border-amber-500/25 text-gray-900",
                                 "dark:bg-[#151411]/95 dark:border-amber-500/10 dark:text-white"
                             )}
@@ -656,7 +656,7 @@ export function LevelUpCelebration({
                                     </p>
 
                                     {/* Decorative Gold Badge for CTA */}
-                                    <div className="mt-2 p-3.5 rounded-2xl bg-amber-500/5 dark:bg-amber-400/[0.02] border border-amber-500/10 dark:border-amber-400/10 flex items-center justify-center gap-2">
+                                    <div className="mt-2 p-3.5 rounded-lg bg-amber-500/5 dark:bg-amber-400/[0.02] border border-amber-500/10 dark:border-amber-400/10 flex items-center justify-center gap-2">
                                         <span className="text-xs font-black text-amber-700 dark:text-amber-400 tracking-wide uppercase">
                                             {theme.cta}
                                         </span>

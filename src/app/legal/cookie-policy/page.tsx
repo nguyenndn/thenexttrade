@@ -20,7 +20,7 @@ export default function CookiePolicyPage() {
     return (
         <>
             <div className="max-w-3xl mx-auto text-center space-y-6 mb-20 mt-12">
-                <div className="inline-flex items-center justify-center p-3 rounded-xl bg-orange-500/10 text-orange-500 mb-2 ring-4 ring-orange-500/5 animate-in fade-in zoom-in slide-in-from-bottom-4 duration-500">
+                <div className="inline-flex items-center justify-center p-3 rounded-lg bg-orange-500/10 text-orange-500 mb-2 ring-4 ring-orange-500/5 animate-in fade-in zoom-in slide-in-from-bottom-4 duration-500">
                     <Cookie size={40} strokeWidth={1.5} />
                 </div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-700 dark:text-white leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700">
@@ -36,7 +36,7 @@ export default function CookiePolicyPage() {
             </div>
 
             <div className="max-w-4xl mx-auto">
-                <div className="bg-white/95 dark:bg-white/[0.055] border border-dashboard dark:border-white/10 rounded-xl p-8 md:p-14 shadow-xl prose dark:prose-invert prose-headings:text-gray-700 dark:prose-headings:text-white prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-strong:text-gray-700 dark:prose-strong:text-white max-w-none transition-colors duration-300 backdrop-blur-md">
+                <div className="bg-white/95 dark:bg-white/[0.055] border border-dashboard dark:border-white/10 rounded-lg p-8 md:p-14 shadow-xl prose dark:prose-invert prose-headings:text-gray-700 dark:prose-headings:text-white prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-strong:text-gray-700 dark:prose-strong:text-white max-w-none transition-colors duration-300 backdrop-blur-md">
                     <h2>1. What Are Cookies?</h2>
                     <p>
                         Cookies are small data files placed on your computer or
@@ -52,7 +52,7 @@ export default function CookiePolicyPage() {
                         cookies.&quot; Cookies set by parties other than the
                         website owner are called &quot;third-party
                         cookies.&quot; We use both to provide you with a
-                        seamless and secure trading journal experience.
+                        reliable and secure trading journal experience.
                     </p>
 
                     <h2>2. How We Use Cookies</h2>

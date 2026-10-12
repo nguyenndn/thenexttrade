@@ -18,7 +18,7 @@ export const MIN_30D_LOTS = MIN_MONTHLY_LOTS;
 export const INACTIVITY_WARN_DAYS = 7;
 export const INACTIVITY_WARNING_DAYS = INACTIVITY_WARN_DAYS;
 export const INACTIVITY_PAUSE_DAYS = 14;
-export const FUNDING_MIN_BALANCE = 300;
+export const FUNDING_MIN_BALANCE = 200;
 export const FUNDING_RECHECK_DAYS = 30;
 export const FUNDING_GRACE_DAYS = 7;
 export const VALID_SYNC_SOURCES = ["EA_SYNC", "EA_HISTORY", "SUPPORT_SYNC"];
@@ -341,16 +341,7 @@ export async function getAccountProAccess(
         policyReason = "Broker is not in the list of supported partner brokers.";
     } else if (fundingExpired) {
         policyState = "PAUSED";
-        policyReason = "Funding verification has expired. Please top up $300 to maintain VIP.";
-    } else if (daysSinceLastTrade !== null && daysSinceLastTrade > INACTIVITY_PAUSE_DAYS) {
-        policyState = "PAUSED";
-        policyReason = `No trades recorded for ${daysSinceLastTrade} trading days (limit is ${INACTIVITY_PAUSE_DAYS} trading days).`;
-    } else if (rolling30dLots < MIN_MONTHLY_LOTS) {
-        policyState = "PAUSED";
-        policyReason = `30-day trading volume is ${rolling30dLots.toFixed(2)} / ${MIN_MONTHLY_LOTS} lots required.`;
-    } else if (daysSinceLastTrade !== null && daysSinceLastTrade > INACTIVITY_WARN_DAYS) {
-        policyState = "WARNED";
-        policyReason = `No trades recorded for ${daysSinceLastTrade} trading days. Trade soon to maintain VIP.`;
+        policyReason = "Funding verification has expired. Please top up $200 to maintain VIP.";
     } else if (fundingInGrace) {
         policyState = "WARNED";
         policyReason = "Account balance check is in grace period.";
@@ -645,16 +636,7 @@ export async function getUserProAccess(
                 : undefined;
     } else if (fundingExpired) {
         aggregatePolicyState = "PAUSED";
-        policyReason = "Funding verification has expired. Please top up $300 to maintain VIP.";
-    } else if (daysSinceLastTrade !== null && daysSinceLastTrade > INACTIVITY_PAUSE_DAYS) {
-        aggregatePolicyState = "PAUSED";
-        policyReason = `No trades recorded for ${daysSinceLastTrade} trading days (limit is ${INACTIVITY_PAUSE_DAYS} trading days).`;
-    } else if (totalRolling30dLots < MIN_MONTHLY_LOTS) {
-        aggregatePolicyState = "PAUSED";
-        policyReason = `30-day trading volume is ${totalRolling30dLots.toFixed(2)} / ${MIN_MONTHLY_LOTS} lots required.`;
-    } else if (daysSinceLastTrade !== null && daysSinceLastTrade > INACTIVITY_WARN_DAYS) {
-        aggregatePolicyState = "WARNED";
-        policyReason = `No trades recorded for ${daysSinceLastTrade} trading days. Trade soon to maintain VIP.`;
+        policyReason = "Funding verification has expired. Please top up $200 to maintain VIP.";
     } else if (fundingInGrace) {
         aggregatePolicyState = "WARNED";
         policyReason = "Account balance check is in grace period.";

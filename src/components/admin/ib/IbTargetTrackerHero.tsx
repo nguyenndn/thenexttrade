@@ -72,14 +72,14 @@ export function IbTargetTrackerHero({
     ];
 
     return (
-        <div className="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 sm:p-6 shadow-sm space-y-6">
+        <div className="relative overflow-hidden rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 sm:p-6 shadow-sm space-y-6">
             {/* Top Accent Gradient Line */}
             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-500 via-orange-500 to-emerald-500" />
 
             {/* Header Row: Title, Target Details & Pace Capsule */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3.5">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-sm shrink-0">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-sm shrink-0">
                         <Target className="h-5 w-5" />
                     </div>
                     <div>
@@ -110,7 +110,7 @@ export function IbTargetTrackerHero({
                 </div>
 
                 {/* Pace Capsule Badge */}
-                <div className="inline-flex items-center gap-2 self-start rounded-xl border border-amber-500/20 bg-amber-500/10 px-3.5 py-1.5 text-xs font-bold text-amber-700 dark:text-amber-300 shadow-xs sm:self-auto shrink-0">
+                <div className="inline-flex items-center gap-2 self-start rounded-lg border border-amber-500/20 bg-amber-500/10 px-3.5 py-1.5 text-xs font-bold text-amber-700 dark:text-amber-300 shadow-xs sm:self-auto shrink-0">
                     <Calendar className="h-3.5 w-3.5 text-amber-500" />
                     <span>{paceInfo.tradingDaysLeft} trading days left</span>
                     <span className="text-amber-300 dark:text-amber-600">·</span>
@@ -123,7 +123,7 @@ export function IbTargetTrackerHero({
             {/* 3 Elevated Non-Flat Metrics Grid */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 {/* 1. Earned Revenue */}
-                <div className="relative p-5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.04] shadow-xs hover:shadow-md hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200 flex flex-col justify-between">
+                <div className="relative p-5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.04] shadow-xs hover:shadow-md hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200 flex flex-col justify-between">
                     <div>
                         <div className="flex items-center justify-between gap-2">
                             <span className="text-xs font-black uppercase tracking-wider text-gray-700 dark:text-gray-300">
@@ -148,13 +148,13 @@ export function IbTargetTrackerHero({
                         </div>
                     </div>
 
-                    <p className="mt-3.5 pt-2.5 border-t border-gray-200/80 dark:border-white/10 text-xs font-medium text-gray-500 dark:text-gray-400 capitalize">
+                    <p className="mt-3.5 pt-2.5 border-t border-gray-200 dark:border-white/10 text-xs font-medium text-gray-500 dark:text-gray-400 capitalize">
                         In {rangeLabel}
                     </p>
                 </div>
 
                 {/* 2. Traded Volume Progress */}
-                <div className="relative p-5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.04] shadow-xs hover:shadow-md hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200 flex flex-col justify-between">
+                <div className="relative p-5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.04] shadow-xs hover:shadow-md hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200 flex flex-col justify-between">
                     <div>
                         <div className="flex items-center justify-between gap-2">
                             <span className="text-xs font-black uppercase tracking-wider text-gray-700 dark:text-gray-300">
@@ -178,13 +178,13 @@ export function IbTargetTrackerHero({
                         </div>
                     </div>
 
-                    <p className="mt-3.5 pt-2.5 border-t border-gray-200/80 dark:border-white/10 text-xs font-medium text-gray-500 dark:text-gray-400">
+                    <p className="mt-3.5 pt-2.5 border-t border-gray-200 dark:border-white/10 text-xs font-medium text-gray-500 dark:text-gray-400">
                         Current pace: <span className="font-bold text-gray-700 dark:text-gray-300">~{paceInfo.currentDailyRunRate} lots/day</span>
                     </p>
                 </div>
 
                 {/* 3. Gap to $10,000 Target */}
-                <div className="relative p-5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.04] shadow-xs hover:shadow-md hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200 flex flex-col justify-between">
+                <div className="relative p-5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.04] shadow-xs hover:shadow-md hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200 flex flex-col justify-between">
                     <div>
                         <div className="flex items-center justify-between gap-2">
                             <span className="text-xs font-black uppercase tracking-wider text-gray-700 dark:text-gray-300">
@@ -215,7 +215,7 @@ export function IbTargetTrackerHero({
                         </div>
                     </div>
 
-                    <p className="mt-3.5 pt-2.5 border-t border-gray-200/80 dark:border-white/10 text-xs font-medium text-gray-500 dark:text-gray-400">
+                    <p className="mt-3.5 pt-2.5 border-t border-gray-200 dark:border-white/10 text-xs font-medium text-gray-500 dark:text-gray-400">
                         Need <span className="font-bold text-rose-600 dark:text-rose-400 font-mono">~{paceInfo.dailyLotsNeeded} lots/day</span> to reach goal
                     </p>
                 </div>

@@ -17,7 +17,7 @@ interface Review {
 const REVIEWS: Review[] = [
     {
         name: "Marcus T.",
-        role: "Gold Scalper (Funded)",
+        role: "Gold Scalper · Beta Cohort",
         text: "I used to blow accounts following Telegram VIP signals. TheNextTrade forced me to look at my actual MT5 data on XAU/USD. Cut my revenge lot size, focused on NY open, and finally passed my 100k funded evaluation.",
         rating: 5,
         initials: "MT",
@@ -25,15 +25,15 @@ const REVIEWS: Review[] = [
     },
     {
         name: "Sophia L.",
-        role: "Prop Firm Trader",
+        role: "Prop Firm Trader · Beta Tester",
         text: "The Weekly Coach caught my biggest leak: taking 5 random trades in the Asian session when there's zero volume. Cutting that single bad habit flipped my monthly P&L into steady green.",
         rating: 5,
         initials: "SL",
-        color: "bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/10",
+        color: "bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 border border-gray-200 dark:border-white/10",
     },
     {
         name: "James K.",
-        role: "Algorithmic & Manual Trader",
+        role: "Algo & Manual · Early Access",
         text: "Connecting MT5 via Trade Manager EA took 60 seconds. Having live telemetry with session analytics and risk math in one workspace replaced 3 separate paid subscriptions.",
         rating: 5,
         initials: "JK",
@@ -41,15 +41,15 @@ const REVIEWS: Review[] = [
     },
     {
         name: "Liam C.",
-        role: "Forex Community Lead",
+        role: "Telegram Community Lead",
         text: "I tell my members to stop paying for shady signal channels. The zero-cost partner model with verified brokers gives them real institutional software without draining their trading capital.",
         rating: 5,
         initials: "LC",
-        color: "bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/10",
+        color: "bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 border border-gray-200 dark:border-white/10",
     },
     {
         name: "David R.",
-        role: "Day Trader",
+        role: "Day Trader · Beta Tester",
         text: "The 18 risk calculators and live session clocks keep me disciplined before I ever click enter. No marketing hype or holy grail BS, just cold hard math and execution rules.",
         rating: 5,
         initials: "DR",
@@ -57,11 +57,11 @@ const REVIEWS: Review[] = [
     },
     {
         name: "Elena M.",
-        role: "Disciplined FX Trader",
+        role: "FX Trader · Early Cohort",
         text: "The 10-trade sprint rule cured my overtrading. Instead of spiraling after a red session, I have one clear rule to execute cleanly. Best trading tool I've used.",
         rating: 5,
         initials: "EM",
-        color: "bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/10",
+        color: "bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 border border-gray-200 dark:border-white/10",
     },
 ];
 
@@ -115,9 +115,9 @@ export function ReviewsSection() {
             <section className="py-6 sm:py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <HomeSectionHeading
                     align="center"
-                    title="Battle-Tested by Real Traders"
-                    highlight="Real Traders"
-                    description="From prop firm challenge passers to disciplined gold scalpers — real feedback from the trenches."
+                    title="Feedback from Our Private Beta"
+                    highlight="Private Beta"
+                    description="Early impressions from prop firm traders and scalpers in our Telegram community testing MT5 sync before public release."
                     className="mb-10 sm:mb-12"
                 />
 
@@ -152,7 +152,7 @@ export function ReviewsSection() {
                             return (
                                 <div
                                     key={`${currentIndex}-${idx}`}
-                                    className={`relative p-4 sm:p-4 lg:p-5 rounded-xl border transition-all duration-500 animate-in fade-in slide-in-from-right-4 flex flex-col justify-between h-full ${cardClasses}`}
+                                    className={`relative p-4 sm:p-4 lg:p-5 rounded-lg border transition-all duration-500 animate-in fade-in slide-in-from-right-4 flex flex-col justify-between h-full ${cardClasses}`}
                                 >
                                     {/* Top Row: Rating and faint Quote icon */}
                                     <div className="flex items-center justify-between mb-3">

@@ -91,7 +91,7 @@ export function ShortcutsMenuModal({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="bg-white dark:bg-[#151925] w-full max-w-2xl rounded-xl shadow-xl flex flex-col border border-gray-200 dark:border-white/10 max-h-[85vh]"
+                        className="bg-white dark:bg-[#151925] w-full max-w-2xl rounded-lg shadow-xl flex flex-col border border-gray-200 dark:border-white/10 max-h-[85vh]"
                     >
                 {/* Header */}
                 <div className="flex flex-wrap items-center justify-between gap-3 p-4 border-b border-gray-200 dark:border-white/10">
@@ -126,7 +126,7 @@ export function ShortcutsMenuModal({
                             size="icon"
                             onClick={onClose}
                             aria-label="Close modal"
-                            className="w-auto h-auto p-2 text-gray-500 hover:text-gray-600 hover:bg-gray-100 rounded-xl dark:hover:bg-white/5 transition-colors border-0"
+                            className="w-auto h-auto p-2 text-gray-500 hover:text-gray-600 hover:bg-gray-100 rounded-lg dark:hover:bg-white/5 transition-colors border-0"
                         >
                             <X size={20} />
                         </Button>
@@ -171,7 +171,7 @@ export function ShortcutsMenuModal({
                                             shortcut.name
                                         )
                                     }
-                                    className="flex flex-col items-start p-4 text-left border border-gray-200 dark:border-white/10 rounded-xl hover:border-blue-500/30 hover:bg-blue-50/50 dark:hover:bg-blue-500/5 transition-all group focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer"
+                                    className="flex flex-col items-start p-4 text-left border border-gray-200 dark:border-white/10 rounded-lg hover:border-blue-500/30 hover:bg-blue-50/50 dark:hover:bg-blue-500/5 transition-all group focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer"
                                 >
                                     <div className="flex items-center gap-2 w-full mb-1">
                                         <Zap
@@ -193,7 +193,7 @@ export function ShortcutsMenuModal({
                             ))}
                         </div>
                     ) : (
-                        <div className="flex flex-col items-center justify-center h-full text-center p-8 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10 mt-4">
+                        <div className="flex flex-col items-center justify-center h-full text-center p-8 bg-gray-50 dark:bg-white/5 rounded-lg border border-dashed border-gray-200 dark:border-white/10 mt-4">
                             <Zap
                                 size={32}
                                 className="text-gray-300 dark:text-gray-600 mb-3"

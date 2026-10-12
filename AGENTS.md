@@ -63,7 +63,7 @@
 | Button | raw `<button>` HTML | `<Button>` from `@/components/ui/Button` |
 | Dropdown | native `<select>` | `<DropdownMenu>` |
 | Icons | Emoji 🚀📈 | `lucide-react` |
-| Border radius | `rounded-md` / `rounded-sm` | `rounded-xl` minimum |
+| Border radius | `rounded-md` / `rounded-sm` on cards; bubbly `rounded-xl` on buttons | Optical hierarchy: Cards/Panels = `rounded-xl` (12px+); Buttons/Inputs = `rounded-lg` (8px) |
 | Cancel/Close | `variant="ghost"` | `variant="outline"` |
 | Accessibility | icon button with no label | `aria-label` |
 | Input Placeholders | `placeholder="e.g. 200"` | No placeholder (rely on clear Label & Helper Text) |

@@ -218,7 +218,7 @@ export function ServerCombobox({
                             if (inputRef.current) inputRef.current.focus();
                         }
                     }}
-                    className={`group relative flex items-center w-full rounded-xl border bg-white dark:bg-[#1E2028] px-3.5 py-2.5 transition-all cursor-text ${
+                    className={`group relative flex items-center w-full rounded-lg border bg-white dark:bg-[#1E2028] px-3.5 py-2.5 transition-all cursor-text ${
                         isOpen
                             ? "border-primary ring-2 ring-primary/20 shadow-sm"
                             : error
@@ -261,7 +261,7 @@ export function ServerCombobox({
                                 type="button"
                                 onClick={handleClear}
                                 aria-label="Clear server"
-                                className="p-0.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-md transition-colors"
+                                className="p-0.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-lg transition-colors"
                             >
                                 <X className="h-3.5 w-3.5" />
                             </button>
@@ -279,7 +279,7 @@ export function ServerCombobox({
                     <div
                         ref={contentRef}
                         style={dropdownStyle}
-                        className="rounded-xl border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-[#1E2028] overflow-hidden flex flex-col animate-in fade-in-0 zoom-in-95 duration-150"
+                        className="rounded-lg border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-[#1E2028] overflow-hidden flex flex-col animate-in fade-in-0 zoom-in-95 duration-150"
                     >
                         {/* Server count & guidance header */}
                         <div className="px-3 py-2 bg-gray-50/95 dark:bg-white/[0.04] border-b border-gray-100 dark:border-white/5 flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400 select-none shrink-0">
@@ -318,7 +318,7 @@ export function ServerCombobox({
                                             "{search.trim()}"
                                         </strong>
                                     </span>
-                                    <span className="text-[10px] uppercase tracking-wider bg-primary/20 text-primary px-1.5 py-0.5 rounded font-bold shrink-0 ml-2">
+                                    <span className="text-[10px] uppercase tracking-wider bg-primary/20 text-primary px-1.5 py-0.5 rounded-lg font-bold shrink-0 ml-2">
                                         Custom
                                     </span>
                                 </button>
@@ -355,8 +355,8 @@ export function ServerCombobox({
                                                 <div className="flex items-center gap-2 min-w-0">
                                                     <span className="font-mono truncate">{server.name}</span>
                                                     {server.isDemo && (
-                                                        <span className="text-[10px] px-1 py-0.2 rounded bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-300 shrink-0">
-                                                             Demo
+                                                        <span className="text-[10px] px-1.5 py-0.5 rounded-lg bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-300 shrink-0">
+                                                            Demo
                                                         </span>
                                                     )}
                                                 </div>

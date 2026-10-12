@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import {
     Unplug,
     Key,
@@ -245,7 +246,7 @@ export default function SyncSettingsClient() {
 
                 <div className="relative px-6 py-6">
                     <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20 shrink-0">
+                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20 shrink-0">
                             <Unplug size={22} className="text-white" />
                         </div>
                         <div className="min-w-0">
@@ -266,11 +267,11 @@ export default function SyncSettingsClient() {
                             ({ icon: Icon, label, desc, color, bg }) => (
                                 <div
                                     key={label}
-                                    className="group flex items-center gap-3.5 px-4 py-3.5 rounded-xl bg-white dark:bg-[#252731] border border-gray-200 dark:border-white/10 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_20px_-8px_rgba(0,0,0,0.1)] dark:shadow-none transition-all duration-300 hover:border-gray-200 dark:hover:border-white/10"
+                                    className="group flex items-center gap-3.5 px-4 py-3.5 rounded-lg bg-white dark:bg-[#252731] border border-gray-200 dark:border-white/10 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_20px_-8px_rgba(0,0,0,0.1)] dark:shadow-none transition-all duration-300 hover:border-gray-200 dark:hover:border-white/10"
                                 >
                                     <div
                                         className={cn(
-                                            "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110",
+                                            "w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110",
                                             bg
                                         )}
                                     >
@@ -348,7 +349,7 @@ export default function SyncSettingsClient() {
                     {!keyData.hasKey ? (
                         /* ── No key yet ── */
                         <div className="text-center py-10">
-                            <div className="w-16 h-16 mx-auto rounded-2xl bg-gray-50 dark:bg-white/5 border border-dashboard flex items-center justify-center mb-5">
+                            <div className="w-16 h-16 mx-auto rounded-lg bg-gray-50 dark:bg-white/5 border border-dashboard flex items-center justify-center mb-5">
                                 <Key
                                     size={28}
                                     className="text-gray-300 dark:text-gray-600"
@@ -367,7 +368,7 @@ export default function SyncSettingsClient() {
                                 variant="primary"
                                 size="smd"
                                 disabled={isGenerating}
-                                className="shadow-lg shadow-primary/20"
+                                className="shadow-lg shadow-amber-500/20"
                             >
                                 {isGenerating ? (
                                     <Loader2
@@ -400,14 +401,14 @@ export default function SyncSettingsClient() {
                                                       keyData.key ||
                                                       ""
                                             }
-                                            className="w-full px-4 py-3 bg-gray-50 dark:bg-[#151925] border border-dashboard rounded-xl text-sm font-mono text-gray-700 dark:text-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all select-all"
+                                            className="w-full px-4 py-3 bg-gray-50 dark:bg-[#151925] border border-dashboard rounded-lg text-sm font-mono text-gray-700 dark:text-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all select-all"
                                         />
                                     </div>
                                     <Button
                                         onClick={copyKey}
                                         variant="outline"
                                         size="icon"
-                                        className="shrink-0 h-[46px] w-[46px] rounded-xl text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary border-dashboard"
+                                        className="shrink-0 h-[46px] w-[46px] rounded-lg text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary border-dashboard"
                                         aria-label="Copy API Key"
                                     >
                                         {copied ? (
@@ -424,7 +425,7 @@ export default function SyncSettingsClient() {
 
                             {/* Show full key notice (only after generation) */}
                             {showFullKey && generatedKey && (
-                                <div className="flex items-start gap-3 px-4 py-3.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20">
+                                <div className="flex items-start gap-3 px-4 py-3.5 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20">
                                     <AlertCircle
                                         size={18}
                                         className="text-amber-500 shrink-0 mt-0.5"
@@ -519,20 +520,22 @@ export default function SyncSettingsClient() {
                                     key={stepItem.id}
                                     onClick={() => toggleStep(stepItem.id)}
                                     className={cn(
-                                        "group relative flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border transition-all duration-200 cursor-pointer select-none",
+                                        "group relative flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-lg border transition-all duration-200 cursor-pointer select-none",
                                         isDone
                                             ? "bg-emerald-500/[0.03] border-emerald-500/30 dark:bg-emerald-500/[0.05] dark:border-emerald-500/20 shadow-sm"
-                                            : "bg-gray-50/60 dark:bg-white/[0.02] border-gray-200/80 dark:border-white/5 hover:border-primary/40 dark:hover:border-primary/40 hover:bg-gray-50 dark:hover:bg-white/[0.04]"
+                                            : "bg-gray-50/60 dark:bg-white/[0.02] border-gray-200 dark:border-white/5 hover:border-primary/40 dark:hover:border-primary/40 hover:bg-gray-50 dark:hover:bg-white/[0.04]"
                                     )}
                                 >
                                     <div className="flex items-start sm:items-center gap-3.5 min-w-0">
-                                        <button
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
                                             type="button"
                                             aria-label={`Mark step ${stepItem.step} as ${isDone ? "incomplete" : "complete"}`}
                                             className={cn(
-                                                "w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black shrink-0 transition-all duration-200 mt-0.5 sm:mt-0",
+                                                "w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black shrink-0 transition-all duration-200 mt-0.5 sm:mt-0 p-0",
                                                 isDone
-                                                    ? "bg-emerald-500 text-white shadow-sm shadow-emerald-500/25 ring-2 ring-emerald-500/20"
+                                                    ? "bg-emerald-500 text-white shadow-sm shadow-emerald-500/25 ring-2 ring-emerald-500/20 hover:bg-emerald-600 hover:text-white"
                                                     : "bg-white dark:bg-[#1E2028] text-gray-400 dark:text-gray-500 ring-1 ring-gray-200 dark:ring-white/10 group-hover:ring-primary/40 group-hover:text-primary"
                                             )}
                                         >
@@ -544,7 +547,7 @@ export default function SyncSettingsClient() {
                                             ) : (
                                                 stepItem.step
                                             )}
-                                        </button>
+                                        </Button>
                                         <div className="min-w-0">
                                             <div className="flex items-center gap-2 flex-wrap">
                                                 <span
@@ -597,10 +600,10 @@ export default function SyncSettingsClient() {
                         })}
                     </div>
 
-                    {/* Download button */}
+                    {/* Trading Systems Link */}
                     <div className="mt-6 pt-4 border-t border-dashboard space-y-3">
                         <div className="flex flex-wrap gap-3">
-                            <a
+                            <Link
                                 href="/dashboard/trading-systems"
                                 className={buttonVariants({
                                     variant: "primary",
@@ -609,18 +612,7 @@ export default function SyncSettingsClient() {
                             >
                                 <Download size={15} />
                                 Go to Trading Systems to get Trade Manager
-                            </a>
-                            <a
-                                href="/downloads/TheNextTrade_TradeSync.ex5"
-                                download
-                                className={buttonVariants({
-                                    variant: "outline",
-                                    size: "smd",
-                                })}
-                            >
-                                <Download size={13} />
-                                Download Trade Manager EA (.ex5)
-                            </a>
+                            </Link>
                         </div>
                         <p className="text-[10px] text-gray-400 dark:text-gray-500">
                             Requires MetaTrader 5 installed · Runs on Windows or

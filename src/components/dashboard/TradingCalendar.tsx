@@ -15,6 +15,7 @@ import {
     parseISO,
 } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import {
     Tooltip,
     TooltipContent,
@@ -85,20 +86,24 @@ export function TradingCalendar({ data, selectedDates }: TradingCalendarProps) {
                     {format(currentMonth, "MMMM yyyy")}
                 </h3>
                 <div className="flex items-center gap-1">
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={handlePrevMonth}
-                        className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
-                        title="Previous Month"
+                        className="h-7 w-7 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                        aria-label="Previous Month"
                     >
                         <ChevronLeft size={16} />
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={handleNextMonth}
-                        className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
-                        title="Next Month"
+                        className="h-7 w-7 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                        aria-label="Next Month"
                     >
                         <ChevronRight size={16} />
-                    </button>
+                    </Button>
                 </div>
             </div>
 
@@ -189,7 +194,7 @@ export function TradingCalendar({ data, selectedDates }: TradingCalendarProps) {
                                 </TooltipTrigger>
 
                                 {hasTrades ? (
-                                    <TooltipContent className="bg-gray-950 dark:bg-white text-white dark:text-gray-900 border-none shadow-xl rounded-xl p-2.5 text-xs font-semibold">
+                                    <TooltipContent className="bg-gray-950 dark:bg-white text-white dark:text-gray-900 border-none shadow-xl rounded-lg p-2.5 text-xs font-semibold">
                                         <p className="font-extrabold text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">
                                             {format(day, "EEEE, MMMM dd, yyyy")}
                                         </p>

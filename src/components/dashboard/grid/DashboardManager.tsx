@@ -450,7 +450,7 @@ export function DashboardManager({
     if (!activeDashboard) return null;
 
     const controls = (
-        <div className="flex items-center gap-1.5 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-[#382F1D] rounded-xl px-2 h-10 shadow-sm w-full 2xl:w-auto max-w-full overflow-x-auto scrollbar-none">
+        <div className="flex items-center gap-1.5 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-[#382F1D] rounded-lg px-2 h-10 shadow-sm w-full 2xl:w-auto max-w-full overflow-x-auto scrollbar-none">
             {isEditable ? (
                 <>
                     <input
@@ -461,30 +461,37 @@ export function DashboardManager({
                         placeholder="Dashboard Name"
                         autoFocus
                     />
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => handleDeleteDashboard(activeId)}
                         disabled={dashboards.length <= 1 || isPending}
                         className="w-7 h-7 flex items-center justify-center text-red-500 hover:text-red-650 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed mx-1 shrink-0"
+                        aria-label="Delete Dashboard"
                         title="Delete Dashboard"
                     >
                         <Trash2 className="w-4 h-4" />
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => setIsCatalogueOpen(true)}
                         className="flex items-center justify-center gap-1.5 px-2.5 h-7 min-w-[110px] text-xs font-bold text-amber-500 dark:text-amber-400 bg-amber-500/5 border border-dashed border-amber-500/30 hover:bg-amber-500/10 rounded-lg transition-colors mx-1 whitespace-nowrap shrink-0"
                         title="Add Widget"
                     >
                         <Plus className="w-3.5 h-3.5" /> Widget
-                    </button>
+                    </Button>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <button
+                            <Button
+                                variant="outline"
+                                size="sm"
                                 className="flex items-center justify-center gap-1.5 px-2.5 h-7 min-w-[120px] text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors mx-1 outline-none whitespace-nowrap shrink-0"
                                 title="Grid Presets"
                             >
                                 <LayoutGrid className="w-3.5 h-3.5" /> Grid
                                 Presets
-                            </button>
+                            </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
                             align="end"
@@ -578,7 +585,9 @@ export function DashboardManager({
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    <button
+                    <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => {
                             setIsEditable(false);
                             setFreeStyleBackup(null);
@@ -614,26 +623,32 @@ export function DashboardManager({
                         className="px-2.5 h-7 flex items-center justify-center min-w-[110px] text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-gray-200 dark:border-gray-700 rounded-lg transition-colors bg-transparent whitespace-nowrap shrink-0 mx-0.5"
                     >
                         Cancel
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="primary"
+                        size="sm"
                         onClick={handleSave}
                         disabled={isPending}
                         className="px-3.5 h-7 flex items-center justify-center min-w-[110px] text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-all shadow-sm shadow-amber-500/20 hover:scale-[1.02] active:scale-[0.98] ml-1.5 whitespace-nowrap shrink-0"
                     >
                         Save
-                    </button>
+                    </Button>
                 </>
             ) : (
                 <>
                     <LayoutGrid className="w-4 h-4 text-slate-500 dark:text-slate-400 ml-1.5 mr-1 shrink-0" />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <button className="flex items-center justify-between gap-2 px-4 h-7 min-w-[120px] text-[13px] font-bold text-amber-500 dark:text-amber-400 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 rounded-lg shadow-sm outline-none transition-colors whitespace-nowrap shrink-0">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="flex items-center justify-between gap-2 px-4 h-7 min-w-[120px] text-[13px] font-bold text-amber-500 dark:text-amber-400 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 rounded-lg shadow-sm outline-none transition-colors whitespace-nowrap shrink-0"
+                            >
                                 <span className="max-w-[120px] truncate">
                                     {activeDashboard?.name || "Dashboard"}
                                 </span>
                                 <ChevronDown className="w-4 h-4" />
-                            </button>
+                            </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
                             align="start"
@@ -683,27 +698,33 @@ export function DashboardManager({
 
                     <div className="w-px h-5 bg-gray-200 dark:bg-gray-800 mx-1" />
 
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={handleCreateDashboard}
                         disabled={isPending}
                         className="w-7 h-7 flex items-center justify-center text-slate-500 hover:text-amber-500 dark:text-slate-400 dark:hover:text-amber-400 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors"
+                        aria-label="Create New Dashboard"
                         title="Create New Dashboard"
                     >
                         <Plus className="w-4 h-4" />
-                    </button>
+                    </Button>
 
                     <div className="w-px h-5 bg-gray-200 dark:bg-gray-800 mx-1" />
 
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => {
                             setEditName(activeDashboard.name);
                             setIsEditable(true);
                         }}
                         className="w-7 h-7 flex items-center justify-center text-slate-500 hover:text-amber-500 dark:text-slate-400 dark:hover:text-amber-400 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors"
+                        aria-label="Edit Dashboard"
                         title="Edit Dashboard"
                     >
                         <Edit3 className="w-4 h-4" />
-                    </button>
+                    </Button>
                 </>
             )}
         </div>
@@ -744,7 +765,7 @@ export function DashboardManager({
                 className={cn(
                     "min-h-[500px] transition-[background-color,border-color] duration-200 -mx-2",
                     isEditable &&
-                        "bg-gray-50 dark:bg-gray-800/30 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-700 p-0"
+                        "bg-gray-50 dark:bg-gray-800/30 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700 p-0"
                 )}
             >
                 {layout.length === 0 ? (
@@ -752,19 +773,21 @@ export function DashboardManager({
                         <LayoutDashboard className="w-12 h-12 mb-4 text-gray-300 dark:text-gray-700" />
                         <p>This dashboard is empty.</p>
                         {isEditable ? (
-                            <button
+                            <Button
+                                variant="ghost"
                                 onClick={() => setIsCatalogueOpen(true)}
-                                className="mt-4 text-primary font-medium hover:underline"
+                                className="mt-4 text-amber-500 hover:text-amber-600 font-medium hover:underline p-0 h-auto"
                             >
                                 Add your first widget
-                            </button>
+                            </Button>
                         ) : (
-                            <button
+                            <Button
+                                variant="ghost"
                                 onClick={() => setIsEditable(true)}
-                                className="mt-4 text-primary font-medium hover:underline"
+                                className="mt-4 text-amber-500 hover:text-amber-600 font-medium hover:underline p-0 h-auto"
                             >
                                 Edit to add widgets
-                            </button>
+                            </Button>
                         )}
                     </div>
                 ) : (
@@ -844,8 +867,9 @@ export function DashboardManager({
                             onChange={(e) =>
                                 setNewDashboardName(e.target.value)
                             }
-                            placeholder="Enter dashboard name"
+                            aria-label="Dashboard name"
                             autoFocus
+                            className="focus:ring-2 focus:ring-gold/50 focus:border-gold"
                             onKeyDown={(e) => {
                                 if (e.key === "Enter") {
                                     submitCreateDashboard();
@@ -857,14 +881,12 @@ export function DashboardManager({
                         <Button
                             variant="outline"
                             size="smd"
-                            className="h-10 px-3.5 text-[13px] font-medium"
                             onClick={() => setIsCreateModalOpen(false)}
                         >
                             Cancel
                         </Button>
                         <Button
                             size="smd"
-                            className="h-10 px-4 text-[13px] font-medium"
                             onClick={submitCreateDashboard}
                             disabled={isPending || !newDashboardName.trim()}
                         >
@@ -893,7 +915,6 @@ export function DashboardManager({
                         <Button
                             variant="outline"
                             size="smd"
-                            className="h-10 px-3.5 text-[13px] font-medium"
                             onClick={() => setIsDeleteModalOpen(false)}
                         >
                             Cancel
@@ -901,7 +922,6 @@ export function DashboardManager({
                         <Button
                             variant="destructive"
                             size="smd"
-                            className="h-10 px-4 text-[13px] font-medium"
                             onClick={confirmDeleteDashboard}
                             disabled={isPending}
                         >
@@ -930,7 +950,6 @@ export function DashboardManager({
                                     onChange={(e) =>
                                         setCustomCols(e.target.value)
                                     }
-                                    placeholder="e.g. 3"
                                 />
                             </div>
                             <div className="space-y-1.5">
@@ -945,7 +964,6 @@ export function DashboardManager({
                                     onChange={(e) =>
                                         setCustomRows(e.target.value)
                                     }
-                                    placeholder="e.g. 3"
                                 />
                             </div>
                         </div>
@@ -954,7 +972,6 @@ export function DashboardManager({
                         <Button
                             variant="outline"
                             size="smd"
-                            className="h-10 px-3.5 text-[13px] font-medium"
                             onClick={() => setIsCustomGridOpen(false)}
                         >
                             Cancel

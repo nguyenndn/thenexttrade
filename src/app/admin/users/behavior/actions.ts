@@ -137,6 +137,8 @@ export async function getBehaviorSegments(
                         status: true,
                         result: true,
                         pnl: true,
+                        commission: true,
+                        swap: true,
                         entryDate: true,
                         createdAt: true,
                         syncSource: true,
@@ -262,7 +264,7 @@ export async function getBehaviorSegments(
             filteredItems.sort((a, b) => getUrgencyScore(b) - getUrgencyScore(a));
         } else {
             // Tab B - Value:
-            // Sắp xếp theo Axis 1 (thật sự giao dịch) rồi Axis 2 (nhịp độ activeDays30)
+            // Sort by Axis 1 (live trading active) then Axis 2 (activeDays30 cadence)
             filteredItems.sort((a, b) => {
                 const aLive = a.classification.metrics.hasLiveAccount ? 1 : 0;
                 const bLive = b.classification.metrics.hasLiveAccount ? 1 : 0;

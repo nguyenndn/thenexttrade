@@ -27,6 +27,7 @@ import { UserMenu } from "@/components/layout/UserMenu";
 import { NotificationBell } from "@/components/layout/NotificationBell";
 import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
 import { Button } from "@/components/ui/Button";
+import { SampleModeToggle } from "@/components/dashboard/SampleModeToggle";
 
 export function Header({
     onMobileMenuClick,
@@ -112,6 +113,9 @@ export function Header({
                             />
                         </div>
                     )}
+
+                    {/* Sample Mode Toggle */}
+                    <SampleModeToggle />
 
                     {/* Theme Toggle - visible on all sizes, next to avatar */}
                     <ThemeToggleSwitch />

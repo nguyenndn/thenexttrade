@@ -30,7 +30,7 @@ export function ProfitLossCalc() {
     return (
         <div className="grid lg:grid-cols-12 gap-8">
             <div className="lg:col-span-7 space-y-6">
-                <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-xl gap-1">
+                <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-lg gap-1">
                     <Button
                         type="button"
                         variant="ghost"
@@ -145,7 +145,7 @@ export function ProfitLossCalc() {
             <div className="lg:col-span-5">
                 <div
                     className={cn(
-                        "border p-6 rounded-2xl h-full flex flex-col justify-center text-center shadow-lg transition-colors duration-300",
+                        "border p-6 rounded-lg h-full flex flex-col justify-center text-center shadow-lg transition-colors duration-300",
                         isProfit
                             ? "bg-green-500/10 border-green-500/20 dark:bg-green-900/10"
                             : "bg-red-500/10 border-red-500/20 dark:bg-red-900/10"

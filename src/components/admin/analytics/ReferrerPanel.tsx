@@ -109,7 +109,7 @@ export function ReferrerPanel({ referrers }: Props) {
     }));
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
+        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5">
             <div className="flex items-center gap-2 mb-4">
                 <Share2 className="w-4 h-4 text-indigo-500" />
                 <h2 className="text-sm font-bold text-gray-900 dark:text-white">

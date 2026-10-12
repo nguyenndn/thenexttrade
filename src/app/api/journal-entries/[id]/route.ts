@@ -28,6 +28,8 @@ const journalEntryUpdateSchema = z.object({
     status: z.enum(["OPEN", "CLOSED"]).optional(),
     result: z.enum(["WIN", "LOSS", "BREAK_EVEN"]).optional().nullable(),
     pnl: z.number().optional().nullable(),
+    commission: z.number().optional().nullable(),
+    swap: z.number().optional().nullable(),
     notes: z.string().optional(),
     entryReason: z.string().optional().nullable(),
     exitReason: z.string().optional().nullable(),

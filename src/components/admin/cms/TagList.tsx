@@ -176,7 +176,7 @@ export default function TagList({ hideHeader }: { hideHeader?: boolean }) {
                 >
                     <Button
                         onClick={handleCreate}
-                        className="flex items-center gap-2 px-6 py-2.5 font-bold shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0 transition-all"
+                        className="flex items-center gap-2 px-6 py-2.5 font-bold shadow-lg shadow-amber-500/30 active:scale-95 active:translate-y-0 transition-all"
                     >
                         <Plus size={18} strokeWidth={2.5} /> Add New
                     </Button>
@@ -184,7 +184,7 @@ export default function TagList({ hideHeader }: { hideHeader?: boolean }) {
             )}
 
             {/* Toolbar: Search + Bulk Actions */}
-            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-4 shadow-sm">
                 <div className="flex flex-1 gap-4 flex-col lg:flex-row justify-between w-full lg:items-center">
                     <div className="flex-1 w-full max-w-md">
                         <PremiumInput
@@ -202,7 +202,7 @@ export default function TagList({ hideHeader }: { hideHeader?: boolean }) {
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.92, y: 4 }}
                             transition={SPRING_SOFT}
-                            className="flex items-center gap-1.5 bg-primary/10 px-4 h-[42px] rounded-xl text-sm shrink-0"
+                            className="flex items-center gap-1.5 bg-primary/10 px-4 h-[42px] rounded-lg text-sm shrink-0"
                         >
                             <span className="font-bold text-primary mr-2">
                                 {selectedIds.size} selected
@@ -230,7 +230,7 @@ export default function TagList({ hideHeader }: { hideHeader?: boolean }) {
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left border-collapse">
                         <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-600 font-bold tracking-wider">
@@ -358,7 +358,7 @@ export default function TagList({ hideHeader }: { hideHeader?: boolean }) {
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent
                                                         align="end"
-                                                        className="w-40 p-1.5 rounded-xl border-gray-200 dark:border-white/10 shadow-xl bg-white dark:bg-[#151925] z-[100]"
+                                                        className="w-40 p-1.5 rounded-lg border-gray-200 dark:border-white/10 shadow-xl bg-white dark:bg-[#151925] z-[100]"
                                                     >
                                                         <DropdownMenuItem
                                                             onClick={() =>

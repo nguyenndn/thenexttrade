@@ -83,10 +83,10 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                     {/* Market Hours Widget */}
                     <Link
                         href="/tools/market-hours"
-                        className="group relative flex items-center p-6 bg-gradient-to-br from-white to-emerald-50/30 dark:from-[#1E2028] dark:to-emerald-950/[0.04] rounded-xl border border-dashboard hover:border-primary/40 dark:hover:border-primary/20 hover:shadow-md transition-shadow"
+                        className="group relative flex items-center p-6 bg-gradient-to-br from-white to-emerald-50/30 dark:from-[#1E2028] dark:to-emerald-950/[0.04] rounded-lg border border-dashboard hover:border-primary/40 dark:hover:border-primary/20 hover:shadow-md transition-shadow"
                     >
                         {/* Icon Box */}
-                        <div className="hidden sm:flex flex-shrink-0 w-16 h-16 rounded-xl bg-primary/10 dark:bg-primary/20 items-center justify-center mr-6 group-hover:scale-110 transition-transform text-primary dark:text-primary">
+                        <div className="hidden sm:flex flex-shrink-0 w-16 h-16 rounded-lg bg-primary/10 dark:bg-primary/20 items-center justify-center mr-6 group-hover:scale-110 transition-transform text-primary dark:text-primary">
                             <Clock size={32} strokeWidth={1.5} />
                         </div>
 
@@ -142,10 +142,10 @@ export function ToolsPreviewSection({ nextEvent }: ToolsPreviewProps) {
                     {/* Economic Calendar Widget */}
                     <Link
                         href="/tools/economic-calendar"
-                        className="group relative flex items-center p-6 bg-gradient-to-br from-white to-gold/[0.03] dark:from-[#1E2028] dark:to-gold/[0.02] rounded-xl border border-dashboard hover:border-gold/40 dark:hover:border-gold/20 hover:shadow-md transition-shadow"
+                        className="group relative flex items-center p-6 bg-gradient-to-br from-white to-gold/[0.03] dark:from-[#1E2028] dark:to-gold/[0.02] rounded-lg border border-dashboard hover:border-gold/40 dark:hover:border-gold/20 hover:shadow-md transition-shadow"
                     >
                         {/* Icon Box */}
-                        <div className="hidden sm:flex flex-shrink-0 w-16 h-16 rounded-xl bg-gold/10 dark:bg-gold/20 items-center justify-center mr-6 group-hover:scale-110 transition-transform text-gold dark:text-gold">
+                        <div className="hidden sm:flex flex-shrink-0 w-16 h-16 rounded-lg bg-gold/10 dark:bg-gold/20 items-center justify-center mr-6 group-hover:scale-110 transition-transform text-gold dark:text-gold">
                             <Calendar size={32} strokeWidth={1.5} />
                         </div>
 

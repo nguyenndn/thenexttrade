@@ -73,7 +73,7 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
             : 0;
 
     return (
-        <section className="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm hover:shadow-md transition-shadow p-5 sm:p-6 space-y-6">
+        <section className="relative overflow-hidden rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm hover:shadow-md transition-shadow p-5 sm:p-6 space-y-6">
             {/* Top Accent Gradient Line */}
             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 via-sky-400 to-amber-500" />
 
@@ -101,7 +101,7 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
                         {/* Trend Percentage Badge */}
                         <span
                             className={cn(
-                                "mb-1 inline-flex items-center gap-1.5 rounded-xl border px-3 py-1 text-xs font-black tabular-nums shadow-xs",
+                                "mb-1 inline-flex items-center gap-1.5 rounded-lg border px-3 py-1 text-xs font-black tabular-nums shadow-xs",
                                 isPositive &&
                                     "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20",
                                 isNegative &&
@@ -118,7 +118,7 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
 
                         {/* Secondary Stats Capsules */}
                         <div className="flex items-center gap-2 mb-0.5">
-                            <div className="px-3 py-1.5 rounded-xl bg-gray-50/90 dark:bg-white/[0.03] border border-gray-200/80 dark:border-white/10 shadow-xs">
+                            <div className="px-3 py-1.5 rounded-lg bg-gray-50/90 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 shadow-xs">
                                 <p className="text-[10px] font-black uppercase tracking-wider text-gray-400">
                                     Previous
                                 </p>
@@ -127,7 +127,7 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
                                 </p>
                             </div>
 
-                            <div className="px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 shadow-xs">
+                            <div className="px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 shadow-xs">
                                 <p className="text-[10px] font-black uppercase tracking-wider text-amber-700 dark:text-amber-400">
                                     Pro Activation
                                 </p>
@@ -145,7 +145,7 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
                         variant: "outline",
                         size: "sm",
                         className:
-                            "rounded-xl font-bold shadow-xs shrink-0 self-start lg:self-center gap-1.5",
+                            "rounded-lg font-bold shadow-xs shrink-0 self-start lg:self-center gap-1.5",
                     })}
                 >
                     View Users
@@ -154,10 +154,10 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
             </div>
 
             {/* Funnel Section: Weekly Active Traders Funnel */}
-            <div className="pt-5 border-t border-gray-200/80 dark:border-white/10 space-y-4">
+            <div className="pt-5 border-t border-gray-200 dark:border-white/10 space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 shadow-xs">
+                        <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 shadow-xs">
                             <Activity size={16} />
                         </div>
                         <div>
@@ -170,7 +170,7 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
                         </div>
                     </div>
 
-                    <span className="self-start sm:self-auto px-3 py-1 rounded-full text-xs font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/5 border border-gray-200/60 dark:border-white/10">
+                    <span className="self-start sm:self-auto px-3 py-1 rounded-full text-xs font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10">
                         {data.proUnlockedUsers.toLocaleString()} of{" "}
                         {data.newUsers.toLocaleString()} users reached Pro Active
                     </span>
@@ -191,14 +191,14 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
                         return (
                             <div
                                 key={step.key}
-                                className="relative p-4 rounded-xl border border-gray-200/80 dark:border-white/10 bg-gray-50/70 dark:bg-white/[0.02] hover:bg-white dark:hover:bg-white/[0.05] shadow-xs hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 group flex flex-col justify-between"
+                                className="relative p-4 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-white/[0.02] hover:bg-white dark:hover:bg-white/[0.05] shadow-xs hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 group flex flex-col justify-between"
                             >
                                 <div>
                                     {/* Icon & Step Number */}
                                     <div className="flex items-center justify-between gap-2 mb-3">
                                         <div
                                             className={cn(
-                                                "w-9 h-9 rounded-xl flex items-center justify-center text-white shadow-xs shrink-0",
+                                                "w-9 h-9 rounded-lg flex items-center justify-center text-white shadow-xs shrink-0",
                                                 step.gradient
                                             )}
                                         >
@@ -229,8 +229,8 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
                                 </div>
 
                                 {/* Progress depth bar */}
-                                <div className="mt-3.5 pt-2 border-t border-gray-200/60 dark:border-white/5">
-                                    <div className="h-1.5 w-full rounded-full bg-gray-200/80 dark:bg-white/10 overflow-hidden shadow-inner">
+                                <div className="mt-3.5 pt-2 border-t border-gray-200 dark:border-white/5">
+                                    <div className="h-1.5 w-full rounded-full bg-gray-200 dark:bg-white/10 overflow-hidden shadow-inner">
                                         <div
                                             className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-500"
                                             style={{

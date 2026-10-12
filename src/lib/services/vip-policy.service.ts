@@ -87,7 +87,7 @@ export async function runVipPolicyReconciliation(): Promise<VipPolicyRunResult> 
                                 },
                             });
                         } else {
-                            // Balance dropped below $300 at recheck time
+                            // Balance dropped below $200 at recheck time
                             if (!account.fundingGraceUntil) {
                                 // Put into 7-day grace
                                 const graceUntil = new Date(
@@ -104,7 +104,7 @@ export async function runVipPolicyReconciliation(): Promise<VipPolicyRunResult> 
                     }
                 }
 
-                // 2. Activity Policy Check
+                // 2. Activity / Funding Policy Check
                 const proAccess = await getAccountProAccess(
                     account.userId,
                     account.id
@@ -113,26 +113,15 @@ export async function runVipPolicyReconciliation(): Promise<VipPolicyRunResult> 
                 if (proAccess.policyState === "PAUSED") {
                     result.pausedCount++;
 
-                    // If inactivity > 14 days or funding expired, expire the DB entitlement
-                    const inactivityDays =
-                        proAccess.activityInfo?.daysSinceLastTrade;
+                    // If funding verification expired, expire the DB entitlement
                     const isFundingExpired = proAccess.fundingInfo?.expired;
 
-                    if (
-                        (inactivityDays !== null &&
-                            inactivityDays !== undefined &&
-                            inactivityDays > 14) ||
-                        isFundingExpired
-                    ) {
+                    if (isFundingExpired) {
                         await prisma.proEntitlement.update({
                             where: { id: entitlement.id },
                             data: {
                                 status: "EXPIRED",
-                                adminNote: `Auto-expired by VIP Active Retention Policy: ${
-                                    isFundingExpired
-                                        ? "Funding verification expired"
-                                        : `No trades for ${inactivityDays} trading days`
-                                }`,
+                                adminNote: "Auto-expired by VIP Policy: Funding verification expired (balance below $200).",
                             },
                         });
 
@@ -141,9 +130,7 @@ export async function runVipPolicyReconciliation(): Promise<VipPolicyRunResult> 
                                 userId: account.userId,
                                 type: NotificationType.LICENSE_EXPIRED,
                                 title: "VIP Access Expired",
-                                message: isFundingExpired
-                                    ? "Your VIP access has expired because account funding fell below the $300 minimum. Top up to reactivate."
-                                    : `Your VIP access has expired due to ${inactivityDays} trading days of inactivity. Trade actively to restore VIP status.`,
+                                message: "Your VIP access has expired because account funding fell below the $200 minimum. Top up to reactivate.",
                                 priority: NotificationPriority.HIGH,
                                 link: NOTIFICATION_ROUTES.VIP_ACCOUNTS,
                             },

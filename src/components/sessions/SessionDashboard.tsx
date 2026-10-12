@@ -22,7 +22,7 @@ const SessionPerformance = dynamic(
     () => import("./SessionPerformance").then((m) => m.SessionPerformance),
     {
         loading: () => (
-            <div className="h-[400px] bg-gray-50 dark:bg-white/5 animate-pulse rounded-xl" />
+            <div className="h-[400px] bg-gray-50 dark:bg-white/5 animate-pulse rounded-lg" />
         ),
         ssr: false,
     }
@@ -32,7 +32,7 @@ const HourlyHeatmap = dynamic(
     () => import("./HourlyHeatmap").then((m) => m.HourlyHeatmap),
     {
         loading: () => (
-            <div className="h-[200px] bg-gray-50 dark:bg-white/5 animate-pulse rounded-xl" />
+            <div className="h-[200px] bg-gray-50 dark:bg-white/5 animate-pulse rounded-lg" />
         ),
         ssr: false,
     }
@@ -42,7 +42,7 @@ const SessionClock = dynamic(
     () => import("./SessionClock").then((m) => m.SessionClock),
     {
         loading: () => (
-            <div className="h-[400px] bg-gray-50 dark:bg-white/5 animate-pulse rounded-xl" />
+            <div className="h-[400px] bg-gray-50 dark:bg-white/5 animate-pulse rounded-lg" />
         ),
         ssr: false,
     }
@@ -127,7 +127,7 @@ export function SessionDashboard() {
             {isLoading ? (
                 <SessionLoadingSkeleton />
             ) : !data || data.sessionStats.length === 0 ? (
-                <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-8">
+                <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border-2 border-dashed border-dashboard mt-8">
                     {/* Animated Clock Icon */}
                     <div className="relative w-20 h-20 mb-6 mx-auto">
                         <div className="absolute inset-0 rounded-full bg-primary/10 dark:bg-primary/5 animate-[session-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
@@ -292,7 +292,7 @@ function QuickStatCard({
     color: string;
 }) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-dashboard shadow-sm transition-shadow hover:shadow-md">
+        <div className="bg-white dark:bg-[#1E2028] p-4 rounded-lg border border-dashboard shadow-sm transition-shadow hover:shadow-md">
             <div className="flex items-center gap-2 mb-2">
                 <div
                     className={`p-1.5 rounded-lg bg-gray-50 dark:bg-white/5 ${color}`}
@@ -313,18 +313,18 @@ function QuickStatCard({
 function SessionLoadingSkeleton() {
     return (
         <div className="space-y-4 animate-pulse">
-            <div className="h-24 bg-gray-100 dark:bg-white/5 rounded-xl w-full" />
+            <div className="h-24 bg-gray-100 dark:bg-white/5 rounded-lg w-full" />
             <div className="grid grid-cols-4 gap-4">
                 {[1, 2, 3, 4].map((i) => (
                     <div
                         key={i}
-                        className="h-24 bg-gray-100 dark:bg-white/5 rounded-xl"
+                        className="h-24 bg-gray-100 dark:bg-white/5 rounded-lg"
                     />
                 ))}
             </div>
             <div className="grid grid-cols-3 gap-4">
-                <div className="col-span-2 h-80 bg-gray-100 dark:bg-white/5 rounded-xl" />
-                <div className="col-span-1 h-80 bg-gray-100 dark:bg-white/5 rounded-xl" />
+                <div className="col-span-2 h-80 bg-gray-100 dark:bg-white/5 rounded-lg" />
+                <div className="col-span-1 h-80 bg-gray-100 dark:bg-white/5 rounded-lg" />
             </div>
         </div>
     );

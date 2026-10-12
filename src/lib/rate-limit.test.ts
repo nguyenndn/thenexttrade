@@ -1,8 +1,18 @@
-import { describe, it, expect, vi } from "vitest";
-import { rateLimit } from "./rate-limit";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
-describe("rateLimit", () => {
+// Mock Upstash Redis to not exist — forces LRU fallback
+vi.mock("@upstash/redis", () => ({
+    Redis: vi.fn(),
+}));
+
+// Clear module cache between tests to get fresh rate limiter instances
+beforeEach(() => {
+    vi.resetModules();
+});
+
+describe("rateLimit (in-memory fallback)", () => {
     it("should allow requests within limit", async () => {
+        const { rateLimit } = await import("./rate-limit");
         const limiter = rateLimit({
             interval: 1000,
             uniqueTokenPerInterval: 500,
@@ -12,6 +22,7 @@ describe("rateLimit", () => {
     });
 
     it("should block requests exceeding limit", async () => {
+        const { rateLimit } = await import("./rate-limit");
         const strictLimiter = rateLimit({ interval: 1000 });
         const testToken = "strict-test";
 
@@ -22,6 +33,7 @@ describe("rateLimit", () => {
     });
 
     it("should track tokens independently", async () => {
+        const { rateLimit } = await import("./rate-limit");
         const limiter = rateLimit({ interval: 1000 });
         const limit = 2;
 

@@ -33,7 +33,7 @@ const Input = React.forwardRef<
                         id={id}
                         type={type}
                         className={cn(
-                            "w-full p-2.5 rounded-xl bg-gray-50 dark:bg-[#151925] border border-dashboard text-sm outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all",
+                            "w-full p-2.5 rounded-lg bg-gray-50 dark:bg-[#151925] border border-dashboard text-sm outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition-all",
                             "placeholder:text-gray-500 dark:placeholder:text-gray-600 placeholder:font-normal",
                             "text-gray-700 dark:text-white font-medium",
                             startIcon ? "pl-10" : "",

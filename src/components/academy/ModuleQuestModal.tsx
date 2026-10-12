@@ -258,7 +258,7 @@ export function ModuleQuestModal({
                         stiffness: 340,
                     }}
                     className={cn(
-                        "relative w-full max-w-xl rounded-2xl border overflow-hidden",
+                        "relative w-full max-w-xl rounded-lg border overflow-hidden",
                         "bg-white dark:bg-[#1E2028] text-gray-900 dark:text-white",
                         "border-gray-200 dark:border-white/10 shadow-2xl z-10"
                     )}
@@ -305,7 +305,7 @@ export function ModuleQuestModal({
                         </div>
 
                         {/* Progress Telemetry Card */}
-                        <div className="p-3.5 rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-gray-200/80 dark:border-white/[0.08] space-y-2.5">
+                        <div className="p-3.5 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/[0.08] space-y-2.5">
                             <div className="flex items-center justify-between text-xs">
                                 <div className="flex items-center gap-2">
                                     <span className="font-semibold text-gray-700 dark:text-zinc-300">
@@ -355,18 +355,18 @@ export function ModuleQuestModal({
                                             key={lesson.id}
                                             onClick={() => handleLessonAction(lesson)}
                                             className={cn(
-                                                "w-full group flex items-center justify-between p-3 rounded-xl border text-left transition-colors",
+                                                "w-full group flex items-center justify-between p-3 rounded-lg border text-left transition-colors",
                                                 "relative overflow-hidden",
                                                 isCompleted &&
                                                     "bg-amber-500/[0.06] dark:bg-amber-500/[0.04] border-amber-500/30 dark:border-amber-500/20 hover:border-amber-500/50",
                                                 isCurrent &&
                                                     "bg-amber-500/10 dark:bg-amber-500/[0.08] border-amber-500/60 dark:border-amber-500/50 shadow-sm",
                                                 isLocked &&
-                                                    "bg-gray-50/50 dark:bg-white/[0.01] border-gray-200/60 dark:border-white/[0.05] opacity-60 cursor-pointer hover:border-gray-300 dark:hover:border-white/10",
+                                                    "bg-gray-50/50 dark:bg-white/[0.01] border-gray-200 dark:border-white/[0.05] opacity-60 cursor-pointer hover:border-gray-300 dark:hover:border-white/10",
                                                 !isCompleted &&
                                                     !isCurrent &&
                                                     !isLocked &&
-                                                    "bg-gray-50/70 dark:bg-white/[0.02] border-gray-200/70 dark:border-white/[0.06] hover:bg-gray-100/70 dark:hover:bg-white/[0.05] hover:border-gray-300 dark:hover:border-white/15"
+                                                    "bg-gray-50/70 dark:bg-white/[0.02] border-gray-200 dark:border-white/[0.06] hover:bg-gray-100/70 dark:hover:bg-white/[0.05] hover:border-gray-300 dark:hover:border-white/15"
                                             )}
                                         >
                                             {/* Left: Step Index & Title */}

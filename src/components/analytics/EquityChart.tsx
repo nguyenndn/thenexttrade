@@ -22,7 +22,7 @@ interface EquityChartProps {
 const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
         return (
-            <div className="bg-white dark:bg-[#1E2028] border border-dashboard p-4 rounded-xl shadow-xl">
+            <div className="bg-white dark:bg-[#1E2028] border border-dashboard p-4 rounded-lg shadow-xl">
                 <p className="text-sm font-bold text-gray-600 mb-2">
                     {format(new Date(label), "MMM dd, yyyy")}
                 </p>
@@ -44,7 +44,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export function EquityChart({ data }: EquityChartProps) {
     if (!data || data.length === 0) {
         return (
-            <div className="h-[300px] flex items-center justify-center text-gray-500 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-dashboard">
+            <div className="h-[300px] flex items-center justify-center text-gray-500 bg-gray-50 dark:bg-white/5 rounded-lg border border-dashed border-dashboard">
                 No trading data available to display chart.
             </div>
         );

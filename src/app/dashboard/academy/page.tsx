@@ -189,11 +189,11 @@ export default async function UserAcademyDashboard() {
                 description="Curated execution playbooks, risk math, and structured trader curriculum."
             >
                 <div className="flex items-center gap-3 text-sm font-bold w-full sm:w-auto">
-                    <div className="flex items-center justify-center gap-1.5 text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-white/[0.05] border border-dashboard dark:border-white/[0.08] px-3.5 py-1.5 rounded-xl flex-1 sm:flex-none text-xs font-semibold">
+                    <div className="flex items-center justify-center gap-1.5 text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-white/[0.05] border border-dashboard dark:border-white/[0.08] px-3.5 py-1.5 rounded-lg flex-1 sm:flex-none text-xs font-semibold">
                         <GraduationCap size={15} className="text-primary" />
                         <span>{Math.round(overallProgress)}% Complete</span>
                     </div>
-                    <div className="flex items-center justify-center gap-1.5 text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-white/[0.05] border border-dashboard dark:border-white/[0.08] px-3.5 py-1.5 rounded-xl flex-1 sm:flex-none text-xs font-semibold">
+                    <div className="flex items-center justify-center gap-1.5 text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-white/[0.05] border border-dashboard dark:border-white/[0.08] px-3.5 py-1.5 rounded-lg flex-1 sm:flex-none text-xs font-semibold">
                         <BookOpen size={15} className="text-primary" />
                         <span>
                             {completedLessons}/{totalLessons} Lessons
@@ -210,7 +210,7 @@ export default async function UserAcademyDashboard() {
                         <div
                             id="onborda-academy-resume"
                             className={cn(
-                                "relative overflow-hidden rounded-2xl border p-6 shadow-sm transition-all duration-300",
+                                "relative overflow-hidden rounded-lg border p-6 shadow-sm transition-all duration-300",
                                 idleDays >= 7
                                     ? "bg-white dark:bg-[#1E2028] border-amber-500/30 dark:border-amber-500/20"
                                     : "bg-white dark:bg-[#1E2028] border-dashboard dark:border-white/[0.08]"
@@ -265,7 +265,7 @@ export default async function UserAcademyDashboard() {
                                             variant: "primary",
                                             size: "smd",
                                             className:
-                                                "group whitespace-nowrap shadow-lg shadow-primary/20 gap-1.5 font-bold rounded-xl",
+                                                "group whitespace-nowrap shadow-lg shadow-amber-500/20 gap-1.5 font-bold rounded-lg",
                                         })}
                                     >
                                         {hasStarted
@@ -286,7 +286,7 @@ export default async function UserAcademyDashboard() {
                             </div>
                         </div>
                     ) : (
-                        <div className="p-6 rounded-xl bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 text-yellow-600 dark:text-yellow-400 flex items-center gap-4">
+                        <div className="p-6 rounded-lg bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 text-yellow-600 dark:text-yellow-400 flex items-center gap-4">
                             <Trophy size={24} />
                             <div>
                                 <h3 className="font-bold">Mission Complete!</h3>
@@ -306,7 +306,7 @@ export default async function UserAcademyDashboard() {
                             isGuest={false}
                             completedLessonIds={completedLessonIds}
                             devMode={academyDevMode}
-                            className="rounded-2xl border border-dashboard dark:border-white/[0.08] shadow-sm"
+                            className="rounded-lg border border-dashboard dark:border-white/[0.08] shadow-sm"
                         />
                     </div>
                 </div>
@@ -314,10 +314,10 @@ export default async function UserAcademyDashboard() {
                 {/* Sidebar Stats */}
                 <div id="onborda-academy-sidebar" className="space-y-4">
                     {/* Daily Streak */}
-                    <div className="bg-white dark:bg-[#1E2028] p-5 rounded-2xl border border-dashboard dark:border-white/[0.08] shadow-sm relative overflow-hidden">
+                    <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-dashboard dark:border-white/[0.08] shadow-sm relative overflow-hidden">
                         <div className="relative z-10">
                             <div className="flex items-center gap-2.5 mb-3">
-                                <div className="p-2 bg-amber-500/10 rounded-xl text-amber-500">
+                                <div className="p-2 bg-amber-500/10 rounded-lg text-amber-500">
                                     <Zap
                                         size={18}
                                         className="fill-current"
@@ -342,7 +342,7 @@ export default async function UserAcademyDashboard() {
                     </div>
 
                     {/* Available Quizzes */}
-                    <div className="bg-white dark:bg-[#1E2028] p-5 rounded-2xl border border-dashboard dark:border-white/[0.08] shadow-sm">
+                    <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-dashboard dark:border-white/[0.08] shadow-sm">
                         <h3 className="font-extrabold text-sm text-gray-700 dark:text-white mb-4 flex items-center gap-2 tracking-wider uppercase">
                             <Trophy size={18} className="text-yellow-500" />{" "}
                             Quizzes
@@ -390,7 +390,7 @@ export default async function UserAcademyDashboard() {
                                         <EmptyState
                                             icon={Target}
                                             description="Complete all lessons in a module to unlock its quiz."
-                                            className="border border-dashed border-dashboard rounded-xl"
+                                            className="border border-dashed border-dashboard rounded-lg"
                                         />
                                     </div>
                                 );
@@ -416,7 +416,7 @@ export default async function UserAcademyDashboard() {
                                             <a
                                                 key={quiz.id}
                                                 href={`/dashboard/academy/quiz/${quiz.id}`}
-                                                className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 border border-transparent hover:border-dashboard/50 transition-all group"
+                                                className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 border border-transparent hover:border-dashboard/50 transition-all group"
                                             >
                                                 <div className="flex-1 truncate pr-3">
                                                     <p className="text-sm font-bold text-gray-700 dark:text-gray-200 truncate group-hover:text-primary transition-colors">
@@ -466,7 +466,7 @@ export default async function UserAcademyDashboard() {
                         href="/dashboard/academy/certificates"
                         className="block"
                     >
-                        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-2xl border border-dashboard dark:border-white/[0.08] shadow-sm hover:border-primary/30 hover:shadow-md transition-all group">
+                        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-dashboard dark:border-white/[0.08] shadow-sm hover:border-primary/30 hover:shadow-md transition-all group">
                             <h3 className="font-extrabold text-sm text-gray-700 dark:text-white mb-3 flex items-center gap-2 tracking-wider uppercase">
                                 <Award size={18} className="text-primary" />{" "}
                                 Certificates

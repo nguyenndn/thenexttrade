@@ -54,7 +54,7 @@ export function TabsList({ children, className }: TabsListProps) {
     return (
         <div
             className={cn(
-                "flex items-center gap-1 bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-xl border border-dashboard w-fit",
+                "flex items-center gap-1 bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-lg border border-dashboard w-fit",
                 className
             )}
         >
@@ -83,6 +83,22 @@ export function TabsTrigger({
 
     const isActive = context.activeTab === value;
 
+    const sanitizedIndicatorClass = activeIndicatorClassName
+        ? activeIndicatorClassName
+              .replace(
+                  /!?bg-gradient-to-[a-z0-9-]+\s+from-(?:gold|amber-\d+)(?:\s+via-[a-z0-9-]+)?\s+to-(?:amber-\d+|gold)/g,
+                  "!bg-gold"
+              )
+              .replace(
+                  /!?bg-gradient-to-r\s+from-gold\s+to-amber-600/g,
+                  "!bg-gold"
+              )
+              .replace(
+                  /!?bg-gradient-to-r\s+from-amber-500\s+to-amber-600/g,
+                  "!bg-gold"
+              )
+        : undefined;
+
     return (
         <Button
             variant="ghost"
@@ -99,8 +115,8 @@ export function TabsTrigger({
                 <motion.div
                     layoutId={`activeTab-${context.tabsId}`}
                     className={cn(
-                        "absolute inset-0 bg-white dark:bg-[#262A36] shadow-sm rounded-lg -z-10 border border-dashboard ",
-                        activeIndicatorClassName
+                        "absolute inset-0 bg-white dark:bg-[#262A36] shadow-sm rounded-lg -z-10 border border-dashboard",
+                        sanitizedIndicatorClass
                     )}
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />

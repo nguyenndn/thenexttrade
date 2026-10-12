@@ -32,7 +32,7 @@ export function AdminNotes({ userId, initialNotes }: AdminNotesProps) {
     };
 
     return (
-        <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden">
+        <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden">
             <div className="px-4 sm:px-6 py-3 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                 <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
                     <StickyNote size={16} className="text-gray-500" /> Admin

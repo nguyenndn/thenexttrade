@@ -5,7 +5,7 @@ import {
     startTwoFactorSetup,
     verifyTwoFactorSetup,
     disableTwoFactor,
-} from "@/app/dashboard/settings/account/actions";
+} from "@/app/dashboard/settings/security/actions";
 import { toast } from "sonner";
 import {
     Shield,
@@ -93,7 +93,7 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
             <div>
                 <div className="flex justify-between items-start">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-green-50 dark:bg-green-500/10 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-lg bg-green-50 dark:bg-green-500/10 flex items-center justify-center">
                             <Shield size={24} className="text-green-500" />
                         </div>
                         <div>
@@ -128,7 +128,7 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                 )}
 
                 {step === "disable-verify" && (
-                    <div className="mt-6 bg-red-50 dark:bg-white/5 rounded-xl p-6 border border-red-200 animate-in fade-in zoom-in-95 duration-200">
+                    <div className="mt-6 bg-red-50 dark:bg-white/5 rounded-lg p-6 border border-red-200 animate-in fade-in zoom-in-95 duration-200">
                         <h3 className="font-bold text-gray-700 dark:text-white mb-4">
                             Verify to Disable 2FA
                         </h3>
@@ -144,7 +144,7 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                                 onChange={(e) => setDisableCode(e.target.value)}
                                 placeholder="123456"
                                 maxLength={6}
-                                className="w-full max-w-[200px] px-4 py-2 bg-white dark:bg-black/20 border border-dashboard rounded-xl focus:outline-none focus:border-red-500 font-mono text-center tracking-widest text-lg"
+                                className="w-full max-w-[200px] px-4 py-2 bg-white dark:bg-black/20 border border-dashboard rounded-lg focus:outline-none focus:border-red-500 font-mono text-center tracking-widest text-lg"
                             />
                             <Button
                                 variant="destructive"
@@ -178,7 +178,7 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
         <div>
             <div className="flex justify-between items-start">
                 <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gray-50 dark:bg-gray-800 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-lg bg-gray-50 dark:bg-gray-800 flex items-center justify-center">
                         <Shield size={24} className="text-gray-500" />
                     </div>
                     <div>
@@ -211,12 +211,12 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
             )}
 
             {step === "setup" && (
-                <div className="mt-6 bg-gray-50 dark:bg-white/5 rounded-xl p-6 border border-dashboard animate-in fade-in zoom-in-95 duration-200">
+                <div className="mt-6 bg-gray-50 dark:bg-white/5 rounded-lg p-6 border border-dashboard animate-in fade-in zoom-in-95 duration-200">
                     <h3 className="font-bold text-gray-700 dark:text-white mb-4">
                         Scan QR Code
                     </h3>
                     <div className="flex flex-col md:flex-row gap-8">
-                        <div className="bg-white p-4 rounded-xl border border-dashboard w-fit mx-auto md:mx-0">
+                        <div className="bg-white p-4 rounded-lg border border-dashboard w-fit mx-auto md:mx-0">
                             {/* Supabase returns SVG string usually, need to verify format. 
  Assuming data URI `data:image/svg+xml;base64,...` or raw SVG.
  If raw SVG, need dangerouslySetInnerHTML.
@@ -277,7 +277,7 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                                         }
                                         placeholder="123456"
                                         maxLength={6}
-                                        className="w-full max-w-[200px] px-4 py-2 bg-white dark:bg-black/20 border border-dashboard rounded-xl focus:outline-none focus:border-primary font-mono text-center tracking-widest text-lg"
+                                        className="w-full max-w-[200px] px-4 py-2 bg-white dark:bg-black/20 border border-dashboard rounded-lg focus:outline-none focus:border-primary font-mono text-center tracking-widest text-lg"
                                     />
                                     <Button
                                         size="smd"

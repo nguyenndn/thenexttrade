@@ -34,8 +34,8 @@ export function AccountCurrencySelect({
                     className={cn(
                         "px-3 py-2 rounded-lg text-xs font-bold transition-all border",
                         value === c.code
-                            ? "bg-primary text-white border-primary shadow-sm shadow-primary/20"
-                            : "bg-white dark:bg-white/5 text-gray-600 dark:text-gray-500 border-dashboard hover:border-primary/50"
+                            ? "bg-gold text-white border-amber-500 shadow-sm shadow-amber-500/20"
+                            : "bg-white dark:bg-white/5 text-gray-600 dark:text-gray-500 border-dashboard hover:border-gold/50"
                     )}
                     title={c.name}
                 >

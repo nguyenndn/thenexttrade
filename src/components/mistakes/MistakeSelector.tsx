@@ -100,14 +100,14 @@ export function MistakeSelector({
                         <Button
                             variant="ghost"
                             type="button"
-                            className="w-full h-auto flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-black/20 rounded-xl border border-dashboard text-left hover:border-primary transition-colors focus:border-primary focus:outline-none hover:bg-gray-50 dark:hover:bg-black/20 font-normal"
+                            className="w-full h-10 flex items-center justify-between px-3 bg-gray-50 dark:bg-black/20 rounded-lg border border-dashboard text-left hover:border-primary transition-colors focus:border-primary focus:outline-none hover:bg-gray-50 dark:hover:bg-black/20 font-normal"
                         >
-                            <span className="text-sm font-medium text-gray-600">
+                            <span className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">
                                 {value.length === 0
                                     ? "Select mistakes..."
                                     : `${value.length} mistake(s) logged`}
                             </span>
-                            <ChevronDown size={16} className="text-gray-500" />
+                            <ChevronDown size={15} className="text-gray-500" />
                         </Button>
                     )}
                 </PopoverTrigger>
@@ -141,7 +141,7 @@ export function MistakeSelector({
  w-full flex h-auto items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors group justify-start font-normal
  ${
      value.includes(mistake.code)
-         ? "bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary"
+         ? "bg-amber-500/10 text-gold hover:bg-amber-500/20 hover:text-gold font-bold"
          : "hover:bg-gray-50 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300"
  }
  `}

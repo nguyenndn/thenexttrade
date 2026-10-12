@@ -195,18 +195,18 @@ export function ShareTradeModal({
                                 )}
                                 Download
                             </Button>
-                            <div className="flex items-center justify-center gap-1.5 bg-gray-100 dark:bg-black/20 p-1.5 rounded-xl w-[180px]">
+                            <div className="flex items-center justify-center gap-1.5 bg-gray-100 dark:bg-black/20 p-1.5 rounded-lg w-[180px]">
                                 <Button
                                     variant="outline"
                                     onClick={() => setMode("basic")}
-                                    className={`flex-1 rounded-xl font-bold transition-all h-8 !px-0 ${mode === "basic" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm border-transparent" : "text-gray-600 hover:text-gray-700 border-transparent dark:hover:text-white hover:bg-transparent"}`}
+                                    className={`flex-1 rounded-lg font-bold transition-all h-8 !px-0 ${mode === "basic" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm border-transparent" : "text-gray-600 hover:text-gray-700 border-transparent dark:hover:text-white hover:bg-transparent"}`}
                                 >
                                     Basic
                                 </Button>
                                 <Button
                                     variant="outline"
                                     onClick={() => setMode("full")}
-                                    className={`flex-1 rounded-xl font-bold transition-all h-8 !px-0 ${mode === "full" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm border-transparent" : "text-gray-600 hover:text-gray-700 border-transparent dark:hover:text-white hover:bg-transparent"}`}
+                                    className={`flex-1 rounded-lg font-bold transition-all h-8 !px-0 ${mode === "full" ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm border-transparent" : "text-gray-600 hover:text-gray-700 border-transparent dark:hover:text-white hover:bg-transparent"}`}
                                 >
                                     Full
                                 </Button>
@@ -216,7 +216,7 @@ export function ShareTradeModal({
 
                     {/* Card Preview Area */}
                     <div
-                        className="flex justify-center py-4 w-full rounded-xl bg-white dark:bg-[#1E2028]"
+                        className="flex justify-center py-4 w-full rounded-lg bg-white dark:bg-[#1E2028]"
                         ref={cardRef}
                     >
                         <TradeShareCard
@@ -232,7 +232,7 @@ export function ShareTradeModal({
                     </div>
 
                     {/* Add Description Accordion */}
-                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard overflow-hidden transition-all duration-300 shadow-sm">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard overflow-hidden transition-all duration-300 shadow-sm">
                         <Button
                             variant="outline"
                             onClick={() => setDescriptionOpen(!descriptionOpen)}
@@ -257,7 +257,7 @@ export function ShareTradeModal({
                             <div className="overflow-hidden">
                                 <div className="p-4 relative bg-gray-50/50 dark:bg-black/10 border-t border-dashboard">
                                     <textarea
-                                        className="w-full p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none resize-none transition-all shadow-sm font-medium"
+                                        className="w-full p-3.5 rounded-lg bg-gray-50 dark:bg-[#151925] border border-dashboard dark:border-white/10 text-gray-900 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/30 focus:outline-none resize-none transition-all shadow-sm text-sm font-medium"
                                         rows={3}
                                         placeholder="Tell the story of this trade..."
                                         value={description}
@@ -293,7 +293,7 @@ export function ShareTradeModal({
                             <input
                                 readOnly
                                 value={shareUrl}
-                                className="w-full bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl pl-4 pr-24 py-3 text-sm text-gray-600 font-mono focus:outline-none focus:border-blue-500 transition-colors"
+                                className="w-full bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg pl-4 pr-24 py-3 text-sm text-gray-600 font-mono focus:outline-none focus:border-blue-500 transition-colors"
                             />
                             <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
                                 <Button

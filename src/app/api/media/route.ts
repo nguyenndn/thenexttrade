@@ -142,15 +142,6 @@ export async function POST(request: Request) {
 
         const mainInfo = mainBuffer.info;
 
-        // Save to DB
-        console.log("Saving to DB...", {
-            filename: mainFilename,
-            url,
-            type: "image/webp",
-            size: mainInfo.size,
-            userId: user.id,
-        });
-
         const media = await prisma.media.create({
             data: {
                 filename: mainFilename, // Storing new .webp name
@@ -166,12 +157,11 @@ export async function POST(request: Request) {
             },
         });
 
-        console.log("DB Save Success:", media.id);
         return NextResponse.json(media);
     } catch (error) {
         console.error("Upload failed details:", error);
         return NextResponse.json(
-            { error: "Upload failed: " + (error as any).message },
+            { error: "Upload failed: " + (error instanceof Error ? error.message : "Unknown error") },
             { status: 500 }
         );
     }

@@ -230,7 +230,7 @@ export function UserList({
 
     // ─── Render ────────────────────────────────────────────────────
     return (
-        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
             {/* Toolbar */}
             <div className="p-4 border-b border-gray-200 dark:border-white/10">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
@@ -249,7 +249,7 @@ export function UserList({
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="outline"
-                                className="rounded-xl text-sm font-medium h-10 px-4"
+                                className="rounded-lg text-sm font-medium h-10 px-4"
                             >
                                 <ShieldCheck size={14} className="mr-2" />
                                 {currentRole
@@ -262,7 +262,7 @@ export function UserList({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
                             align="start"
-                            className="w-36 rounded-xl"
+                            className="w-36 rounded-lg"
                         >
                             {ROLE_OPTIONS.map((opt) => (
                                 <DropdownMenuItem
@@ -290,7 +290,7 @@ export function UserList({
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="outline"
-                                className="rounded-xl text-sm font-medium h-10 px-4"
+                                className="rounded-lg text-sm font-medium h-10 px-4"
                             >
                                 <Globe2 size={14} className="mr-2" />
                                 {currentCountry
@@ -301,7 +301,7 @@ export function UserList({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
                             align="start"
-                            className="w-52 rounded-xl"
+                            className="w-52 rounded-lg"
                         >
                             <DropdownMenuItem
                                 onClick={() =>
@@ -346,7 +346,7 @@ export function UserList({
                         <Button
                             variant="outline"
                             onClick={() => setIsBulkConfirmOpen(true)}
-                            className="rounded-xl text-sm font-medium h-10 px-4 text-red-500 border-red-200 hover:bg-red-50 dark:border-red-500/20 dark:hover:bg-red-500/10"
+                            className="rounded-lg text-sm font-medium h-10 px-4 text-red-500 border-red-200 hover:bg-red-50 dark:border-red-500/20 dark:hover:bg-red-500/10"
                         >
                             <Trash2 size={14} className="mr-2" />
                             Delete ({selectedIds.size})
@@ -558,7 +558,7 @@ export function UserList({
                                     page: String(currentPage - 1),
                                 })
                             }
-                            className="rounded-xl h-9 px-3"
+                            className="rounded-lg h-9 px-3"
                         >
                             <ChevronLeft size={14} className="mr-1" />
                             Previous
@@ -572,7 +572,7 @@ export function UserList({
                                     page: String(currentPage + 1),
                                 })
                             }
-                            className="rounded-xl h-9 px-3"
+                            className="rounded-lg h-9 px-3"
                         >
                             Next
                             <ChevronRight size={14} className="ml-1" />

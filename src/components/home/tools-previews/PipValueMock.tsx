@@ -27,7 +27,7 @@ export function PipValueMock() {
 
     return (
         <div
-            className="h-44 w-full bg-[#f4faf8] dark:bg-slate-900/80 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/60 dark:border-white/10 select-none cursor-pointer"
+            className="h-44 w-full bg-[#f4faf8] dark:bg-slate-900/80 rounded-lg p-4 flex flex-col justify-between relative overflow-hidden border border-gray-200 dark:border-white/10 select-none cursor-pointer"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
@@ -46,7 +46,7 @@ export function PipValueMock() {
             <div className="flex-1 flex flex-col justify-center gap-2 z-10 my-1">
                 <div className="flex justify-between items-center text-[10px] font-bold text-slate-500 dark:text-slate-400">
                     <span>Live Mid Rate</span>
-                    <span className="font-mono text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-white/10 px-1.5 py-0.5 rounded-lg border border-slate-200 dark:border-white/10">
+                    <span className="font-mono text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-white/10 px-1.5 py-0.5 rounded-lg border border-gray-200 dark:border-white/10">
                         {rate.toFixed(4)}
                     </span>
                 </div>
@@ -92,7 +92,7 @@ export function PipValueMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-slate-100 dark:border-white/10 pt-2 font-mono">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono">
                 <span>Account Base: USD</span>
                 <span
                     className={

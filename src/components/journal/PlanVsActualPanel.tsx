@@ -75,7 +75,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
 
     return (
         <div className="space-y-5">
-            <div className="flex items-center gap-2 p-3.5 rounded-xl border border-dashboard bg-purple-500/5">
+            <div className="flex items-center gap-2 p-3.5 rounded-lg border border-dashboard bg-purple-500/5">
                 <Scale size={18} className="text-purple-500 flex-shrink-0" />
                 <div className="min-w-0">
                     <p className="text-xs font-black uppercase text-purple-600 dark:text-purple-400">
@@ -94,7 +94,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
             {/* Side-by-Side Parameter Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Plan Column */}
-                <div className="bg-purple-50/40 dark:bg-purple-500/[0.02] p-4 rounded-xl border border-purple-100 dark:border-purple-500/10 space-y-3">
+                <div className="bg-purple-50/40 dark:bg-purple-500/[0.02] p-4 rounded-lg border border-purple-100 dark:border-purple-500/10 space-y-3">
                     <h4 className="text-xs font-black uppercase text-purple-600 dark:text-purple-400 tracking-wider">
                         Planned Setup
                     </h4>
@@ -172,7 +172,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                 </div>
 
                 {/* Actual Column */}
-                <div className="bg-white dark:bg-black/10 p-4 rounded-xl border border-dashboard space-y-3">
+                <div className="bg-white dark:bg-black/10 p-4 rounded-lg border border-dashboard space-y-3">
                     <h4 className="text-xs font-black uppercase text-gray-400 tracking-wider">
                         Actual Execution
                     </h4>
@@ -318,7 +318,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
 
             {/* Checklist Compliance review */}
             {entry.ruleChecks && entry.ruleChecks.length > 0 && (
-                <div className="p-4 rounded-xl border border-dashboard bg-white dark:bg-black/10 space-y-3">
+                <div className="p-4 rounded-lg border border-dashboard bg-white dark:bg-black/10 space-y-3">
                     <h4 className="text-xs font-black uppercase text-gray-400 tracking-wider">
                         Rulebook Checklist Verification
                     </h4>
@@ -364,7 +364,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
 
             {/* Pre-Trade Checklist Snapshot */}
             {plan.tradeCheckSnapshot && (
-                <div className="p-4 rounded-xl border border-dashboard bg-white dark:bg-black/10 space-y-3">
+                <div className="p-4 rounded-lg border border-dashboard bg-white dark:bg-black/10 space-y-3">
                     <div className="flex items-center justify-between">
                         <h4 className="text-xs font-black uppercase text-gray-400 tracking-wider flex items-center gap-1.5">
                             <CheckCircle
@@ -459,7 +459,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
             {/* Thesis vs Execution Notes */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {plan.thesis && (
-                    <div className="p-3.5 rounded-xl border border-dashboard bg-gray-50/30 dark:bg-black/20 space-y-1">
+                    <div className="p-3.5 rounded-lg border border-dashboard bg-gray-50/30 dark:bg-black/20 space-y-1">
                         <h5 className="text-[10px] font-black uppercase text-gray-400 flex items-center gap-1">
                             <BookOpen size={12} className="text-purple-500" />
                             Planned Thesis
@@ -471,7 +471,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                 )}
 
                 {entry.notes && (
-                    <div className="p-3.5 rounded-xl border border-dashboard bg-gray-50/30 dark:bg-black/20 space-y-1">
+                    <div className="p-3.5 rounded-lg border border-dashboard bg-gray-50/30 dark:bg-black/20 space-y-1">
                         <h5 className="text-[10px] font-black uppercase text-gray-400 flex items-center gap-1">
                             <CheckCircle
                                 size={12}

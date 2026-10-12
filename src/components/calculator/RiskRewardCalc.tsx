@@ -37,7 +37,7 @@ export function RiskRewardCalc() {
         <div className="grid lg:grid-cols-12 gap-8">
             <div className="lg:col-span-7 space-y-6">
                 {/* Direction Switch */}
-                <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-xl gap-1">
+                <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-lg gap-1">
                     <Button
                         type="button"
                         variant="ghost"
@@ -131,7 +131,7 @@ export function RiskRewardCalc() {
                                             parseFloat(e.target.value) || 0,
                                     })
                                 }
-                                className="w-full px-4 py-3 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none font-bold text-lg text-red-600 dark:text-red-400 transition-all"
+                                className="w-full px-4 py-3 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none font-bold text-lg text-red-600 dark:text-red-400 transition-all"
                             />
                         </div>
                         <div className="space-y-2">
@@ -149,7 +149,7 @@ export function RiskRewardCalc() {
                                             parseFloat(e.target.value) || 0,
                                     })
                                 }
-                                className="w-full px-4 py-3 bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-500/20 outline-none font-bold text-lg text-green-600 dark:text-green-400 transition-all"
+                                className="w-full px-4 py-3 bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-500/20 outline-none font-bold text-lg text-green-600 dark:text-green-400 transition-all"
                             />
                         </div>
                     </div>
@@ -194,7 +194,7 @@ export function RiskRewardCalc() {
             </div>
 
             <div className="lg:col-span-5">
-                <div className="bg-white dark:bg-[#151925] border border-dashboard p-6 rounded-2xl h-full flex flex-col justify-center text-center shadow-lg relative overflow-hidden">
+                <div className="bg-white dark:bg-[#151925] border border-dashboard p-6 rounded-lg h-full flex flex-col justify-center text-center shadow-lg relative overflow-hidden">
                     {result && (
                         <div className="relative z-10">
                             <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">

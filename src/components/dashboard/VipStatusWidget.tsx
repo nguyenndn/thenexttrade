@@ -16,6 +16,7 @@ import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { ProBenefitsModal } from "./ProBenefitsModal";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 interface VipRequest {
     id: string;
@@ -264,7 +265,7 @@ export function VipStatusWidget() {
                 <div className="relative overflow-hidden py-1 transition-all duration-300">
                     <div className="space-y-2.5">
                         <div className="flex items-center gap-2.5">
-                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20">
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20">
                                 <Timer className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                             </div>
 
@@ -297,7 +298,11 @@ export function VipStatusWidget() {
 
                             <Link
                                 href={ctaHref}
-                                className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 active:scale-[0.98]"
+                                className={buttonVariants({
+                                    variant: "gold",
+                                    size: "sm",
+                                    className: "w-full text-[11px] font-bold py-2 gap-1",
+                                })}
                             >
                                 <span className="truncate">Connect Eligible Account</span>
                                 <ArrowRight className="h-3 w-3 shrink-0" />
@@ -336,7 +341,7 @@ export function VipStatusWidget() {
                     <div className="flex items-center gap-2.5 py-1 px-0.5">
                         {/* Icon with status indicator matching Pro Tier */}
                         <div className="relative shrink-0">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20 text-amber-600 dark:text-amber-400 shadow-sm transition-transform duration-300 group-hover:scale-105">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20 text-amber-600 dark:text-amber-400 shadow-sm transition-transform duration-300 group-hover:scale-105">
                                 <Crown className="h-4 w-4" />
                             </div>
                             {/* Status indicator dot */}
@@ -361,7 +366,7 @@ export function VipStatusWidget() {
                     </div>
 
                     {hasPendingRequest ? (
-                        <div className="mt-2 flex items-start gap-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 px-2.5 py-2">
+                        <div className="mt-2 flex items-start gap-2 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 px-2.5 py-2">
                             <Timer className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
                             <div className="min-w-0">
                                 <p className="text-[10px] font-bold text-amber-700 dark:text-amber-400 truncate">
@@ -383,12 +388,16 @@ export function VipStatusWidget() {
                             <Link
                                 href={ctaHref}
                                 onClick={(e) => e.stopPropagation()}
-                                className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 active:scale-[0.98]"
+                                className={buttonVariants({
+                                    variant: "gold",
+                                    size: "smd",
+                                    className: "w-full text-xs font-bold",
+                                })}
                             >
                                 <span className="truncate">
                                     Apply for Partner Pro
                                 </span>
-                                <ArrowRight className="h-3 w-3 shrink-0" />
+                                <ArrowRight size={14} className="shrink-0" />
                             </Link>
                         </div>
                     )}
@@ -421,7 +430,7 @@ export function VipStatusWidget() {
                     >
                         <div className="flex items-center gap-2.5 py-1 px-0.5">
                             <div className="relative shrink-0">
-                                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20 text-amber-600 dark:text-amber-400 shadow-sm">
+                                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20 text-amber-600 dark:text-amber-400 shadow-sm">
                                     <AlertTriangle className="h-4 w-4" />
                                 </div>
                             </div>
@@ -437,7 +446,7 @@ export function VipStatusWidget() {
                         </div>
 
                         {/* Reason Alert */}
-                        <div className="mt-2 flex items-start gap-1.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 p-2 text-[10px] text-amber-700 dark:text-amber-400 font-medium">
+                        <div className="mt-2 flex items-start gap-1.5 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 p-2 text-[10px] text-amber-700 dark:text-amber-400 font-medium">
                             <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
                             <span>
                                 {proAccess.activityInfo?.reason ||
@@ -446,7 +455,7 @@ export function VipStatusWidget() {
                         </div>
 
                         {/* 30-Day Volume Progress */}
-                        <div className="mt-2 rounded-xl bg-gray-50/80 dark:bg-white/[0.02] p-2 space-y-1.5 border border-dashboard dark:border-white/[0.06]">
+                        <div className="mt-2 rounded-lg bg-gray-50/80 dark:bg-white/[0.02] p-2 space-y-1.5 border border-dashboard dark:border-white/[0.06]">
                             <div className="flex items-center justify-between text-[10px] text-gray-500 dark:text-gray-400">
                                 <span>30d Volume</span>
                                 <span className="font-bold text-gray-800 dark:text-gray-200 font-mono">
@@ -465,7 +474,11 @@ export function VipStatusWidget() {
                             <Link
                                 href="/dashboard/journal"
                                 onClick={(e) => e.stopPropagation()}
-                                className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 active:scale-[0.98]"
+                                className={buttonVariants({
+                                    variant: "gold",
+                                    size: "sm",
+                                    className: "w-full text-[11px] font-bold py-2 gap-1",
+                                })}
                             >
                                 <span className="truncate">Open Journal & Restore</span>
                                 <ArrowRight className="h-3 w-3 shrink-0" />
@@ -492,7 +505,7 @@ export function VipStatusWidget() {
                         <div className="flex items-center gap-2.5 py-1 px-0.5">
                             {/* Icon */}
                             <div className="relative shrink-0">
-                                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20 text-amber-600 dark:text-amber-400 shadow-sm transition-transform duration-300 group-hover:scale-105">
+                                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20 text-amber-600 dark:text-amber-400 shadow-sm transition-transform duration-300 group-hover:scale-105">
                                     <Crown className="h-4 w-4" />
                                 </div>
                                 {/* Static status indicator */}
@@ -520,7 +533,7 @@ export function VipStatusWidget() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={(e) => e.stopPropagation()}
-                                className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#2AABEE] px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-[#2AABEE]/20 transition-all duration-300 hover:bg-[#2298d4] hover:shadow-md hover:shadow-[#2AABEE]/25 active:scale-[0.98]"
+                                className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg bg-[#2AABEE] px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-[#2AABEE]/20 transition-all duration-300 hover:bg-[#2298d4] hover:shadow-md hover:shadow-[#2AABEE]/25 active:scale-[0.98]"
                             >
                                 <Send className="h-3 w-3 shrink-0" />
                                 <span className="truncate">Join Pro Telegram</span>
@@ -551,7 +564,7 @@ export function VipStatusWidget() {
                 {/* Header Row */}
                 <div className="flex items-center gap-2.5">
                     <div
-                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${cfg.iconBg} border border-dashboard dark:border-white/10`}
+                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${cfg.iconBg} border border-dashboard dark:border-white/10`}
                     >
                         <StatusIcon
                             className={`h-4 w-4 ${cfg.iconColor}`}
@@ -581,7 +594,7 @@ export function VipStatusWidget() {
 
                 {/* Grace expiry */}
                 {status === "GRACE" && expiresAt && (
-                    <div className="flex items-start gap-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 px-2.5 py-2">
+                    <div className="flex items-start gap-2 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 px-2.5 py-2">
                         <Timer className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
                         <p className="text-[10px] font-semibold text-amber-700 dark:text-amber-400 truncate">
                             Expires{" "}
@@ -602,24 +615,32 @@ export function VipStatusWidget() {
                     (status === "EXPIRED" || status === "REVOKED") && (
                         <Link
                             href="/dashboard/accounts?action=add&intent=unlock-pro"
-                            className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 active:scale-[0.98]"
+                            className={buttonVariants({
+                                variant: "gold",
+                                size: "smd",
+                                className: "w-full text-xs font-bold",
+                            })}
                         >
                             <span className="truncate">
                                 Re-apply for Partner Pro
                             </span>
-                            <ArrowRight className="h-3 w-3 shrink-0" />
+                            <ArrowRight size={14} className="shrink-0" />
                         </Link>
                     )}
 
                 {status === "GRACE" && (
                     <Link
                         href="/dashboard/accounts?action=add&intent=unlock-pro"
-                        className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-3 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all duration-300 active:scale-[0.98]"
+                        className={buttonVariants({
+                            variant: "gold",
+                            size: "smd",
+                            className: "w-full text-xs font-bold",
+                        })}
                     >
                         <span className="truncate">
                             Complete Verification
                         </span>
-                        <ArrowRight className="h-3 w-3 shrink-0" />
+                        <ArrowRight size={14} className="shrink-0" />
                     </Link>
                 )}
             </div>

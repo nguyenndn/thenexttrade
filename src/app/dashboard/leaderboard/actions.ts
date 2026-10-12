@@ -417,7 +417,7 @@ async function getTradingLeaderboard(
  SELECT u.id AS "userId", u.name, u.image, u.xp, u.level,
  ROUND(COUNT(CASE WHEN je.result = 'WIN' THEN 1 END) * 100.0 / NULLIF(COUNT(CASE WHEN je.result IN ('WIN', 'LOSS') THEN 1 END), 0), 1) AS "winRate",
  COUNT(*) AS "totalTrades",
- COALESCE(SUM(je.pnl), 0) AS "totalPnl"
+ COALESCE(SUM(COALESCE(je.pnl, 0) + COALESCE(je.commission, 0) + COALESCE(je.swap, 0)), 0) AS "totalPnl"
  FROM "User" u
  INNER JOIN "trading_accounts" ta ON ta."userId" = u.id AND ta.use_for_leaderboard = true
  INNER JOIN "JournalEntry" je ON je."accountId" = ta.id
@@ -615,7 +615,12 @@ export async function getLeaderboardSidebarData(): Promise<SidebarDataResponse> 
             useForLeaderboard: true,
             journalEntries: {
                 where: { status: "CLOSED" },
-                select: { pnl: true, entryDate: true },
+                select: {
+                    pnl: true,
+                    commission: true,
+                    swap: true,
+                    entryDate: true,
+                },
             },
         },
     });
@@ -638,7 +643,8 @@ export async function getLeaderboardSidebarData(): Promise<SidebarDataResponse> 
         let hasData = false;
 
         acc.journalEntries.forEach((je) => {
-            const pnl = je.pnl ?? 0;
+            const pnl =
+                (je.pnl ?? 0) + (je.commission ?? 0) + (je.swap ?? 0);
             const date = new Date(je.entryDate);
             if (date >= startOfDay) daily += pnl;
             if (date >= startOfWeek) weekly += pnl;

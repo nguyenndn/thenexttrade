@@ -23,10 +23,10 @@ export function ArticleCard({ article }: ArticleCardProps) {
     return (
         <Link
             href={`/articles/${article.slug}`}
-            className="group relative bg-white/80 dark:bg-[#131622]/60 border border-gold/15 dark:border-white/10 hover:border-gold/40 dark:hover:border-gold/30 rounded-2xl p-2 shadow-sm hover:shadow-[0_12px_30px_rgba(245,158,11,0.06)] dark:hover:shadow-[0_12px_30px_rgba(245,158,11,0.02)] transition-all duration-300 flex flex-col backdrop-blur-md"
+            className="group relative bg-white/80 dark:bg-[#131622]/60 border border-gold/15 dark:border-white/10 hover:border-gold/40 dark:hover:border-gold/30 rounded-lg p-2 shadow-sm hover:shadow-[0_12px_30px_rgba(245,158,11,0.06)] dark:hover:shadow-[0_12px_30px_rgba(245,158,11,0.02)] transition-all duration-300 flex flex-col backdrop-blur-md"
         >
             {/* Thumbnail */}
-            <div className="relative aspect-[16/9] rounded-xl overflow-hidden bg-gray-900">
+            <div className="relative aspect-[16/9] rounded-lg overflow-hidden bg-gray-900">
                 {article.thumbnail ? (
                     <SafeImage
                         src={article.thumbnail}

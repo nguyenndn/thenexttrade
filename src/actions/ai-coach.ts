@@ -252,6 +252,7 @@ export async function generateAiCoachInsights(
     if (!pro.isPro) {
         return {
             error: "AI Coach is a Pro feature. Unlock Pro for free by verifying as a VIP trader.",
+            isProRequired: true,
         };
     }
 
@@ -286,6 +287,18 @@ export async function generateAiCoachInsights(
                 ...(accountId ? { accountId } : {}),
             },
         });
+
+        // 20-Trade Gate: Do not query AI or run analysis if user has < 20 closed trades
+        if (totalClosedCount < 20) {
+            return {
+                success: false,
+                insufficientData: true,
+                currentTrades: totalClosedCount,
+                requiredTrades: 20,
+                remainingTrades: 20 - totalClosedCount,
+                error: "Minimum 20 closed trades required for AI Coaching analysis.",
+            };
+        }
 
         // Max updatedAt across closed entries — catches EDITS to existing trades
         // (changing result/PnL/SL/emotion does not change the count or the latest
@@ -333,7 +346,12 @@ export async function generateAiCoachInsights(
 
         if (!data.hasEnoughData) {
             return {
-                error: "Not enough data to analyze. Minimum 30 closed trades required.",
+                success: false,
+                insufficientData: true,
+                currentTrades: data.totalAnalyzed,
+                requiredTrades: 20,
+                remainingTrades: Math.max(0, 20 - data.totalAnalyzed),
+                error: "Minimum 20 closed trades required for AI Coaching analysis.",
             };
         }
 

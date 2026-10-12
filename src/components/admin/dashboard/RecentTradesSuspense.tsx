@@ -9,10 +9,19 @@ export async function RecentTradesSuspense() {
             include: { user: { select: { name: true, image: true } } },
         });
 
-        const formattedTrades = recentTrades.map((trade) => ({
-            ...trade,
-            type: trade.type as "BUY" | "SELL",
-        }));
+        const formattedTrades = recentTrades.map((trade) => {
+            const netPnl =
+                trade.pnl !== null
+                    ? (trade.pnl || 0) +
+                      (trade.commission || 0) +
+                      (trade.swap || 0)
+                    : null;
+            return {
+                ...trade,
+                pnl: netPnl !== null ? Number(netPnl.toFixed(2)) : null,
+                type: trade.type as "BUY" | "SELL",
+            };
+        });
 
         return <RecentTradesWidget trades={formattedTrades} />;
     } catch {

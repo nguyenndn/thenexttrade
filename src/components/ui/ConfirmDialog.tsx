@@ -95,7 +95,7 @@ export function ConfirmDialog({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative w-full max-w-md bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl overflow-hidden border border-dashboard "
+                        className="relative w-full max-w-md bg-white dark:bg-[#1E2028] rounded-lg shadow-2xl overflow-hidden border border-dashboard "
                         role="alertdialog"
                     >
                         {/* Close Button */}

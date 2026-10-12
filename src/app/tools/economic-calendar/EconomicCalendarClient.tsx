@@ -179,7 +179,7 @@ export function EconomicCalendarClient() {
             />
 
             {/* Breadcrumb */}
-            <div className="flex items-center gap-2.5 text-xs font-semibold bg-white/60 dark:bg-white/[0.02] border border-gold/15 rounded-xl px-4 py-2.5 mb-8 w-fit max-w-full shadow-sm relative z-10 backdrop-blur-sm">
+            <div className="flex items-center gap-2.5 text-xs font-semibold bg-white/60 dark:bg-white/[0.02] border border-gold/15 rounded-lg px-4 py-2.5 mb-8 w-fit max-w-full shadow-sm relative z-10 backdrop-blur-sm">
                 <Link
                     href="/"
                     className="text-gray-500 dark:text-gray-400 hover:text-gold dark:hover:text-gold transition-colors shrink-0 flex items-center gap-1.5"
@@ -222,7 +222,7 @@ export function EconomicCalendarClient() {
 
                         {/* Extrabold Lexend Title with custom icon */}
                         <div className="flex items-center gap-2.5 sm:gap-3">
-                            <div className="p-2.5 bg-gold/10 text-gold border border-gold/20 rounded-xl shadow-sm shrink-0">
+                            <div className="p-2.5 bg-gold/10 text-gold border border-gold/20 rounded-lg shadow-sm shrink-0">
                                 <Calendar size={22} className="stroke-[2.5]" />
                             </div>
                             <h1 className="text-[20px] sm:text-3xl md:text-5xl font-black text-slate-800 dark:text-white tracking-tight leading-none font-heading">
@@ -241,7 +241,7 @@ export function EconomicCalendarClient() {
 
                     {/* Column Right: Glassmorphic Micro HUD Panel */}
                     <div className="md:col-span-5 lg:col-span-4">
-                        <div className="bg-white/80 dark:bg-white/[0.02] border border-gold/15 rounded-2xl p-5 shadow-lg relative backdrop-blur-md overflow-hidden group-hover:border-gold/35 transition-colors duration-300">
+                        <div className="bg-white/80 dark:bg-white/[0.02] border border-gold/15 rounded-lg p-5 shadow-lg relative backdrop-blur-md overflow-hidden group-hover:border-gold/35 transition-colors duration-300">
                             {/* Abstract digital line background */}
                             <div className="absolute top-0 right-0 w-32 h-32 bg-gold/[0.04] dark:bg-gold/[0.02] rounded-full blur-2xl pointer-events-none" />
 
@@ -271,8 +271,8 @@ export function EconomicCalendarClient() {
                                     <span className="text-xs font-extrabold text-slate-500 dark:text-slate-400">
                                         Impact Filter
                                     </span>
-                                    <span className="text-xs font-black text-emerald-500 dark:text-emerald-400">
-                                        Optimized
+                                    <span className="text-xs font-black text-slate-800 dark:text-white uppercase tracking-wider">
+                                        {filters.impact.length === 3 ? "All (H/M/L)" : filters.impact.join("/") || "None"}
                                     </span>
                                 </div>
                             </div>
@@ -336,7 +336,7 @@ export function EconomicCalendarClient() {
 
             {metadata?.status === ("__removed__" as CalendarMetadata["status"]) && (
                 <div
-                    className={`mb-6 rounded-xl border px-4 py-3 text-xs ${
+                    className={`mb-6 rounded-lg border px-4 py-3 text-xs ${
                         metadata.status === "FALLBACK" || metadata.status === "UNAVAILABLE"
                             ? "border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200"
                             : "border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200"
@@ -369,7 +369,7 @@ export function EconomicCalendarClient() {
             <div className="mb-6 space-y-4">
                 {/* Week Navigation Bar */}
                 <div
-                    className={`rounded-xl border shadow-sm p-1.5 flex items-center justify-between gap-1 ${isDark ? "bg-slate-800 border-slate-700" : "bg-white border-dashboard"}`}
+                    className={`rounded-lg border shadow-sm p-1.5 flex items-center justify-between gap-1 ${isDark ? "bg-slate-800 border-slate-700" : "bg-white border-dashboard"}`}
                 >
                     <div className="flex-1 grid grid-cols-7 gap-0.5 md:gap-1 text-center">
                         {weekDays.map((day) => {
@@ -383,7 +383,7 @@ export function EconomicCalendarClient() {
                                     key={day.toISOString()}
                                     onClick={() => setSelectedDate(day)}
                                     className={`
-                    relative flex flex-col items-center justify-center py-1.5 md:py-2 rounded-xl transition-all h-auto
+                    relative flex flex-col items-center justify-center py-1.5 md:py-2 rounded-lg transition-all h-auto
                     ${
                         isSelected
                             ? "bg-gold text-white shadow-md shadow-gold/20 hover:bg-gold/90"
@@ -414,7 +414,7 @@ export function EconomicCalendarClient() {
 
                 {/* Trading Warning Banner */}
                 <div
-                    className={`rounded-xl border p-4 flex items-start gap-3 bg-gold/5 border-gold/15`}
+                    className={`rounded-lg border p-4 flex items-start gap-3 bg-gold/5 border-gold/15`}
                 >
                     <TriangleAlert
                         className="text-gold dark:text-gold shrink-0 mt-0.5"
@@ -435,7 +435,7 @@ export function EconomicCalendarClient() {
 
             {/* Calendar Table */}
             <div
-                className={`rounded-xl border overflow-x-auto shadow-sm ${isDark ? "bg-[#151925]/90 border-gold/15 shadow-md" : "bg-white border-gold/15 shadow-sm"}`}
+                className={`rounded-lg border overflow-x-auto shadow-sm ${isDark ? "bg-[#151925]/90 border-gold/15 shadow-md" : "bg-white border-gold/15 shadow-sm"}`}
             >
                 {/* Card Header with Full Date */}
                 <div

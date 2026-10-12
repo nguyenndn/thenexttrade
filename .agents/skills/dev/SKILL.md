@@ -1,0 +1,156 @@
+---
+name: dev
+description: Core Full-Stack Developer — Implementing features and fixing complex bugs
+---
+
+# Super Dev Workflow (/dev)
+
+## Vai trò & Mục tiêu
+Hóa thân thành **Senior Full-Stack Engineer** của dự án. Nhận bản thiết kế (`implementation_plan.md`) hoặc Bug Report, phân tích logic, chẻ nhỏ file, viết code tuân thủ Design System tuyệt đối, kết nối API mượt mà và fix bug tận gốc.
+
+## Pre-Conditions (Điều kiện tiên quyết)
+- [ ] Nếu **Tính năng mới**: Phải có `implementation_plan.md` đã được User approve (output của `/plan_feature`)
+- [ ] Nếu **Fix Bug**: Phải có mô tả lỗi rõ ràng (Console Error, Screenshot, Steps to Reproduce)
+- [ ] Dev server đang chạy (`npm run dev`)
+
+## Mandatory References (Tài liệu bắt buộc đọc TRƯỚC KHI CODE)
+> **NGHIÊM CẤM** bắt tay code mà chưa đọc các file này:
+- `AGENTS.md` — Standing Execution Contract (**7 rules — đọc TUYỆT ĐỐI trước tiên**)
+- `design/ui-guide.md` — Breek Premium Design System (THE LAW)
+- `rules.md` — Workspace Rules & Conventions
+- `implementation_plan.md` — Bản thiết kế (nếu có)
+
+## Quy trình (7 Bước Thi Công)
+
+### 1. Đồng Bộ Context (Context Sync)
+
+> **🧠 Karpathy: Goal-Driven Execution** — Trước khi code, define rõ success criteria:
+> ```
+> 1. [Step] → verify: [check]
+> 2. [Step] → verify: [check]
+> ```
+> **🧠 Karpathy: Surgical Changes** — Chỉ chạm vào file cần thiết. Không "improve" code không liên quan.
+
+- **Tính năng mới:** Đọc `implementation_plan.md` → hiểu scope, component tree, API design.
+- **Fix Bug:** Thu thập evidence (Console Error, Network tab, Screenshot). Dùng `view_file` chui vào file khả nghi để chẩn bệnh.
+- Quét nhanh các file liên quan để hiểu code hiện tại.
+- **State assumptions explicitly** — nếu không chắc chắn, HỎI trước khi code.
+- **Restate plan as checklist** (AGENTS.md Rule 2): copy **mọi bước** của `implementation_plan.md` / scope bug-fix thành checklist đánh số ngay trong tin nhắn đầu tiên; bước nào nhiều deliverable → tách thành item riêng. Checklist này là thước đo DUY NHẤT để tự audit ở Bước 7.
+
+### 2. Chẻ Nhỏ Công Việc (Task Breakdown)
+- Lập **Task List** rõ ràng vào `task.md`:
+  ```
+  - [ ] Tạo Prisma schema / migration
+  - [ ] Viết Server Actions (backend logic)
+  - [ ] Xây UI Components
+  - [ ] Đấu Data thực (connect API)
+  - [ ] Xử lý Error/Loading/Empty States
+  - [ ] Viết Unit Tests
+  - [ ] Self-review & cleanup
+  ```
+- Thứ tự ưu tiên: **Schema → Backend → UI → Integration → States → Tests**
+
+### 3. Gõ Code Tuân Luật (Ruthless Execution)
+
+#### 3.1 THE LAW — Breek Premium Code Rules (Vi phạm = Reject)
+| Rule | ❌ Sai | ✅ Đúng |
+|------|--------|---------|
+| **English Only** | `"Đang tải..."` | `"Loading..."` |
+| **Button Component** | `<button>` HTML | `<Button>` from `@/components/ui/Button` |
+| **Dropdown** | `<select>` native | `<DropdownMenu>` component |
+| **Icons** | Emoji 🚀📈 | `lucide-react` icons |
+| **Border Radius** | `rounded-md`, `rounded-sm` | `rounded-xl` minimum |
+| **Accessibility** | Icon button without label | `aria-label="Close modal"` |
+| **Cancel Button** | `variant="ghost"` | Cancel/Close dùng `variant="outline"` |
+
+#### 3.2 Coding Standards
+- **Modular Files:** Component UI > 150 dòng → tách thành SubComponent.
+- **Utility Functions:** Logic xử lý data → tách ra `lib/utils` hoặc `src/hooks`.
+- **Form Validation:** BẮT BUỘC dùng `react-hook-form` + `zod`.
+- **Loading States:** `isLoading` trên Button (kèm spinner) hoặc Skeleton Loading.
+- **Type Safety:** Không dùng `any`. Define rõ TypeScript interfaces/types.
+- **Server vs Client:** Maximize Server Components. Chỉ `'use client'` khi cần interactivity.
+
+### 4. Kỹ Thuật Debug (Sniper Debugging)
+Khi fix bug, **tuyệt đối không đoán mò**. Phải tìm Root Cause:
+- **Lỗi State (React):** Kiểm tra Dependency List của `useEffect`. Infinite loop? Missing cleanup?
+- **Lỗi Data (Prisma/Supabase):** Kiểm tra query, relations, missing `include`.
+- **Lỗi Hydration:** Check `<p>` bọc trong `<p>`, `<div>` trong `<button>`, hoặc locale mismatch (`toLocaleDateString` thiếu locale).
+- **Lỗi Type:** `npx tsc --noEmit` để bắt tất cả type errors.
+
+### 5. Viết Unit Tests (Testing)
+- Sau khi code xong mỗi module/component quan trọng, **BẮT BUỘC** viết test:
+  - **Server Actions / Utility Functions:** Unit test bằng **Vitest** — test input/output, edge cases, error handling.
+  - **React Components (nếu cần):** Test rendering, user interactions bằng **React Testing Library**.
+- Test files đặt cùng thư mục hoặc trong `__tests__/`:
+  ```
+  src/
+  ├── actions/
+  │   ├── comment.ts
+  │   └── comment.test.ts      ← Unit test
+  ├── components/
+  │   ├── CommentList.tsx
+  │   └── CommentList.test.tsx  ← Component test
+  ```
+- Chạy verify: `npx vitest run` — đảm bảo **100% pass**.
+
+### 6. Syntax & Quality Gate (gộp /check_syntax)
+Sau khi code xong, **BẮT BUỘC** chạy tuần tự trước khi báo cáo:
+
+#### 6.1 TypeScript Type Check
+Bắt lỗi type mismatch, missing props, `any` abuse.
+// turbo
+```powershell
+npx tsc --noEmit
+```
+
+#### 6.2 Lint Check
+Bắt lỗi code style, unused imports, React anti-patterns.
+// turbo
+```powershell
+npm run lint
+```
+
+#### 6.3 Unit Tests
+Đảm bảo không regression — tất cả tests phải pass.
+// turbo
+```powershell
+npx vitest run
+```
+
+#### 6.4 Build Verification (Optional — cho thay đổi lớn)
+Đảm bảo production build không fail.
+```powershell
+npm run build
+```
+
+#### 6.5 Fix Loop
+- Nếu bất kỳ bước nào fail → **fix ngay lập tức**.
+- Re-run lại từ 6.1 sau khi fix.
+- **KHÔNG chuyển Step 7 khi còn errors.**
+
+### 7. Self-Review, Self-Audit & Chuyển Giao (Hand-off)
+- **Tự audit diff vs checklist** (AGENTS.md Rule 6): soát toàn bộ diff so với checklist ở Bước 1 — mọi item phải hiện diện trong diff; thứ không có trong plan phải gỡ bỏ hoặc giải thích. Soát "mối nối" dễ quên: import mới có được export chưa, API route mới reachable chưa, field mới có trong type + form + DB chưa, DB ↔ UI đồng bộ chưa.
+- Update `task.md` (mark completed) và viết `walkthrough.md`.
+- **Báo cáo theo template AGENTS.md Rule 7:** mỗi item trong checklist = `DONE` (file nào, verify bằng lệnh nào) hoặc `BLOCKED` (lý do chính xác + cần gì để gỡ). **KHÔNG có item âm thầm bị bỏ.**
+- Kết thúc báo cáo: *"Sẵn sàng cho Review."*
+
+## Output Artifacts (Sản phẩm đầu ra)
+- [ ] Source code hoàn chỉnh (các file đã tạo/sửa)
+- [ ] `task.md` — đã update tiến độ
+- [ ] `walkthrough.md` — tóm tắt những gì đã làm
+- [ ] Unit Tests — pass 100%
+
+## Definition of Done
+- [ ] Mọi item trong plan đều DONE (đã verify) hoặc được báo BLOCKED kèm lý do — KHÔNG có item âm thầm bị bỏ
+- [ ] Code tuân thủ 100% Breek Premium UI Guide
+- [ ] Không có text Tiếng Việt trên UI
+- [ ] `npx tsc --noEmit` pass (0 errors)
+- [ ] Unit tests pass 100%
+- [ ] Loading/Error/Empty states đã xử lý
+- [ ] Dark/Light mode tương thích
+- [ ] Mobile responsive (không horizontal scroll)
+- [ ] Console sạch (không ReferenceError, không Hydration error)
+
+## Workflow tiếp theo
+→ `/code_review` (Code Review) hoặc `/qa` (QA Testing)

@@ -79,7 +79,7 @@ export function AccountSetupWidget({
             <div className="px-5 pb-4">
                 <div className="h-1.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden border border-dashboard dark:border-white/5">
                     <div
-                        className="h-full rounded-full bg-primary transition-all duration-500 ease-out"
+                        className="h-full rounded-full bg-gradient-to-r from-gold to-amber-500 transition-all duration-500 ease-out"
                         style={{ width: `${progress}%` }}
                     />
                 </div>
@@ -95,7 +95,7 @@ export function AccountSetupWidget({
                             className={cn(
                                 "flex items-center gap-3 px-5 py-3 transition-colors",
                                 step.completed
-                                    ? "bg-primary/[0.03]"
+                                    ? "bg-amber-500/[0.04]"
                                     : "hover:bg-gray-50 dark:hover:bg-white/[0.02]"
                             )}
                         >
@@ -104,7 +104,7 @@ export function AccountSetupWidget({
                                 className={cn(
                                     "flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center transition-all",
                                     step.completed
-                                        ? "text-primary"
+                                        ? "text-amber-500 dark:text-amber-400"
                                         : "border-2 border-dashboard dark:border-white/10"
                                 )}
                             >
@@ -119,7 +119,7 @@ export function AccountSetupWidget({
                                 className={cn(
                                     "flex-shrink-0 transition-colors",
                                     step.completed
-                                        ? "text-primary"
+                                        ? "text-amber-500 dark:text-amber-400"
                                         : "text-gray-400 dark:text-gray-500"
                                 )}
                             />
@@ -129,7 +129,7 @@ export function AccountSetupWidget({
                                 className={cn(
                                     "text-sm font-medium transition-colors",
                                     step.completed
-                                        ? "text-primary font-semibold"
+                                        ? "text-amber-600 dark:text-amber-400 font-semibold"
                                         : "text-gray-600 dark:text-gray-400"
                                 )}
                             >

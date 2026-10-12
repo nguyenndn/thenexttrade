@@ -160,7 +160,7 @@ export function AdminTicketDetailDrawer({
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="h-8 w-8 min-w-8 aspect-square rounded-xl"
+                                className="h-8 w-8 min-w-8 aspect-square rounded-lg"
                                 aria-label="Close drawer"
                             >
                                 <X size={16} />
@@ -171,19 +171,19 @@ export function AdminTicketDetailDrawer({
                     {/* Scrollable Body */}
                     <div className="flex-1 overflow-y-auto p-6 space-y-5">
                         {/* Trader Profile Row */}
-                        <div className="p-4 rounded-xl border border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex items-center justify-between gap-3">
+                        <div className="p-4 rounded-lg border border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex items-center justify-between gap-3">
                             <div className="flex items-center gap-3 min-w-0">
                                 <Link
                                     href={`/admin/users/${item.user.id}`}
                                     className="shrink-0 group"
                                     title="View Trader Profile"
                                 >
-                                    <Avatar className="h-10 w-10 rounded-xl border border-gray-100 dark:border-white/10 group-hover:ring-2 group-hover:ring-primary/40 transition-all">
+                                    <Avatar className="h-10 w-10 rounded-lg border border-gray-100 dark:border-white/10 group-hover:ring-2 group-hover:ring-primary/40 transition-all">
                                         <AvatarImage
                                             src={item.user.image || undefined}
                                             alt={item.user.name || "Trader"}
                                         />
-                                        <AvatarFallback className="rounded-xl bg-primary/10 text-primary font-bold text-sm">
+                                        <AvatarFallback className="rounded-lg bg-primary/10 text-primary font-bold text-sm">
                                             {(item.user.name || item.user.email || "U").charAt(0).toUpperCase()}
                                         </AvatarFallback>
                                     </Avatar>
@@ -227,7 +227,7 @@ export function AdminTicketDetailDrawer({
                             <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">
                                 Account Specifications
                             </span>
-                            <div className="grid grid-cols-2 divide-x divide-y divide-gray-100 dark:divide-white/5 border border-gray-100 dark:border-white/5 rounded-xl bg-gray-50/50 dark:bg-white/[0.02] overflow-hidden">
+                            <div className="grid grid-cols-2 divide-x divide-y divide-gray-100 dark:divide-white/5 border border-gray-100 dark:border-white/5 rounded-lg bg-gray-50/50 dark:bg-white/[0.02] overflow-hidden">
                                 <div className="p-3">
                                     <span className="text-[11px] font-bold text-gray-400 block">
                                         Account Number
@@ -267,7 +267,7 @@ export function AdminTicketDetailDrawer({
 
                         {/* Trader Notes / Problem Description */}
                         {item.supportTicket?.notes && (
-                            <div className="p-4 rounded-xl border border-amber-500/20 bg-amber-500/5 space-y-1">
+                            <div className="p-4 rounded-lg border border-amber-500/20 bg-amber-500/5 space-y-1">
                                 <div className="flex items-center gap-1.5 text-xs font-bold text-amber-600 dark:text-amber-400">
                                     <AlertTriangle size={14} />
                                     <span>Trader Notes / Error Details:</span>
@@ -279,7 +279,7 @@ export function AdminTicketDetailDrawer({
                         )}
 
                         {/* Investor Credentials Inspector Box */}
-                        <div className="rounded-xl border border-emerald-500/25 bg-emerald-50/50 dark:bg-emerald-950/15 p-4 space-y-3">
+                        <div className="rounded-lg border border-emerald-500/25 bg-emerald-50/50 dark:bg-emerald-950/15 p-4 space-y-3">
                             <div className="flex items-center justify-between gap-2">
                                 <div className="flex items-center gap-2">
                                     <KeyRound size={16} className="text-emerald-600 dark:text-emerald-400" />
@@ -399,7 +399,7 @@ export function AdminTicketDetailDrawer({
                         <Button
                             variant="outline"
                             onClick={onClose}
-                            className="rounded-xl text-xs font-bold"
+                            className="rounded-lg text-xs font-bold"
                         >
                             Close
                         </Button>
@@ -412,7 +412,7 @@ export function AdminTicketDetailDrawer({
                                         setFailReason("");
                                         setIsFailDialogOpen(true);
                                     }}
-                                    className="rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10 gap-1.5"
+                                    className="rounded-lg text-xs font-bold text-rose-600 dark:text-rose-400 border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10 gap-1.5"
                                 >
                                     <X size={14} />
                                     Mark Failed
@@ -421,7 +421,7 @@ export function AdminTicketDetailDrawer({
                                     variant="primary"
                                     onClick={handleResolve}
                                     isLoading={isResolving}
-                                    className="rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs gap-1.5"
+                                    className="rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs gap-1.5"
                                 >
                                     <Check size={14} />
                                     Mark Synced
@@ -460,7 +460,7 @@ export function AdminTicketDetailDrawer({
                             value={failReason}
                             onChange={(e) => setFailReason(e.target.value)}
                             rows={3}
-                            className="w-full text-xs p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-800 dark:text-white focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500"
+                            className="w-full text-xs p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-800 dark:text-white focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500"
                         />
                     </div>
 
@@ -468,7 +468,7 @@ export function AdminTicketDetailDrawer({
                         <Button
                             variant="outline"
                             onClick={() => setIsFailDialogOpen(false)}
-                            className="rounded-xl text-xs font-bold"
+                            className="rounded-lg text-xs font-bold"
                         >
                             Cancel
                         </Button>
@@ -476,7 +476,7 @@ export function AdminTicketDetailDrawer({
                             variant="destructive"
                             onClick={handleFailSubmit}
                             isLoading={isFailing}
-                            className="rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700"
+                            className="rounded-lg text-xs font-bold bg-rose-600 hover:bg-rose-700"
                         >
                             Confirm Failed
                         </Button>

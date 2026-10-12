@@ -42,7 +42,7 @@ export function ActivationImprovementFunnelPanel({ dateRange }: Props) {
 
     if (loading && !report) {
         return (
-            <div className="p-8 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm text-center text-xs text-gray-500">
+            <div className="p-8 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm text-center text-xs text-gray-500">
                 Loading activation and improvement funnel...
             </div>
         );
@@ -51,12 +51,12 @@ export function ActivationImprovementFunnelPanel({ dateRange }: Props) {
     if (!report) return null;
 
     return (
-        <div className="p-6 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm hover:shadow-md transition-shadow space-y-6">
+        <div className="p-6 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm hover:shadow-md transition-shadow space-y-6">
             {/* Header: Title & Description */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h3 className="text-lg font-black text-slate-800 dark:text-white flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0">
                             <Filter className="w-4 h-4" />
                         </div>
                         First-Value & Improvement Funnel
@@ -69,7 +69,7 @@ export function ActivationImprovementFunnelPanel({ dateRange }: Props) {
 
             {/* Biggest drop-off recommendation */}
             {report.recommendedAction && (
-                <div className="flex items-start gap-3 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs shadow-xs">
+                <div className="flex items-start gap-3 p-4 rounded-lg bg-rose-500/10 border border-rose-500/20 text-xs shadow-xs">
                     <div className="w-7 h-7 rounded-lg bg-rose-500/20 text-rose-500 flex items-center justify-center shrink-0 mt-0.5">
                         <TrendingDown className="w-4 h-4" />
                     </div>
@@ -89,7 +89,7 @@ export function ActivationImprovementFunnelPanel({ dateRange }: Props) {
                 {report.stages.map((stg) => (
                     <div
                         key={stg.stage}
-                        className="p-3.5 rounded-xl bg-gray-50/70 dark:bg-white/[0.02] border border-gray-200/80 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 transition-colors flex items-center justify-between text-xs"
+                        className="p-3.5 rounded-lg bg-gray-50/70 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 transition-colors flex items-center justify-between text-xs"
                     >
                         <div className="space-y-1 w-2/5">
                             <span className="font-bold text-slate-800 dark:text-slate-200 block">
@@ -137,9 +137,9 @@ export function ActivationImprovementFunnelPanel({ dateRange }: Props) {
                 </div>
                 <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 text-xs">
                     {/* 1. Verified No Onboarding */}
-                    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                    <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
                         <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 shrink-0 rounded-xl flex items-center justify-center bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-xs">
+                            <div className="w-9 h-9 shrink-0 rounded-lg flex items-center justify-center bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-xs">
                                 <UserCheck size={16} aria-hidden="true" />
                             </div>
                             <div className="min-w-0 flex-1">
@@ -154,9 +154,9 @@ export function ActivationImprovementFunnelPanel({ dateRange }: Props) {
                     </div>
 
                     {/* 2. Account No Data */}
-                    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                    <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
                         <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 shrink-0 rounded-xl flex items-center justify-center bg-gradient-to-br from-cyan-500 to-blue-500 text-white shadow-xs">
+                            <div className="w-9 h-9 shrink-0 rounded-lg flex items-center justify-center bg-gradient-to-br from-cyan-500 to-blue-500 text-white shadow-xs">
                                 <CreditCard size={16} aria-hidden="true" />
                             </div>
                             <div className="min-w-0 flex-1">
@@ -171,9 +171,9 @@ export function ActivationImprovementFunnelPanel({ dateRange }: Props) {
                     </div>
 
                     {/* 3. Data No Insight */}
-                    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                    <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
                         <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 shrink-0 rounded-xl flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-xs">
+                            <div className="w-9 h-9 shrink-0 rounded-lg flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-xs">
                                 <Activity size={16} aria-hidden="true" />
                             </div>
                             <div className="min-w-0 flex-1">
@@ -188,9 +188,9 @@ export function ActivationImprovementFunnelPanel({ dateRange }: Props) {
                     </div>
 
                     {/* 4. Insight No Weekly Review */}
-                    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                    <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
                         <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 shrink-0 rounded-xl flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-xs">
+                            <div className="w-9 h-9 shrink-0 rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-xs">
                                 <BarChart3 size={16} aria-hidden="true" />
                             </div>
                             <div className="min-w-0 flex-1">
@@ -205,9 +205,9 @@ export function ActivationImprovementFunnelPanel({ dateRange }: Props) {
                     </div>
 
                     {/* 5. Weekly Review No Pro */}
-                    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                    <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
                         <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 shrink-0 rounded-xl flex items-center justify-center bg-gradient-to-br from-amber-500 to-rose-500 text-white shadow-xs">
+                            <div className="w-9 h-9 shrink-0 rounded-lg flex items-center justify-center bg-gradient-to-br from-amber-500 to-rose-500 text-white shadow-xs">
                                 <Crown size={16} aria-hidden="true" />
                             </div>
                             <div className="min-w-0 flex-1">
@@ -222,9 +222,9 @@ export function ActivationImprovementFunnelPanel({ dateRange }: Props) {
                     </div>
 
                     {/* 6. Returned Next Week */}
-                    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                    <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
                         <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 shrink-0 rounded-xl flex items-center justify-center bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-xs">
+                            <div className="w-9 h-9 shrink-0 rounded-lg flex items-center justify-center bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-xs">
                                 <CheckCircle2 size={16} aria-hidden="true" />
                             </div>
                             <div className="min-w-0 flex-1">

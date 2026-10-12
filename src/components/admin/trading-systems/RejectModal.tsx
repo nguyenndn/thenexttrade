@@ -65,7 +65,7 @@ export function RejectModal({ license, isOpen, onClose }: RejectModalProps) {
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="bg-white dark:bg-[#1E2028] rounded-xl border-0 dark:border max-w-md">
+            <DialogContent className="bg-white dark:bg-[#1E2028] rounded-2xl border-0 dark:border max-w-md">
                 <DialogHeader>
                     <DialogTitle className="text-xl font-bold text-red-600 dark:text-red-500 flex items-center gap-2">
                         <AlertTriangle size={24} />
@@ -95,7 +95,7 @@ export function RejectModal({ license, isOpen, onClose }: RejectModalProps) {
                             />
                         </div>
 
-                        <div className="bg-red-50 dark:bg-red-900/10 p-3 rounded-xl border border-red-100 dark:border-red-900/20">
+                        <div className="bg-red-50 dark:bg-red-900/10 p-3 rounded-lg border border-red-100 dark:border-red-900/20">
                             <p className="text-xs text-red-600 dark:text-red-400">
                                 The user will receive a notification with this
                                 reason. They can delete the account request and

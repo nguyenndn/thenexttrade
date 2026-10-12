@@ -23,7 +23,7 @@ export function PlanAdherence({ data }: PlanAdherenceProps) {
     ].filter((d) => d.value > 0);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow cursor-pointer group flex flex-col h-full">
+        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow cursor-pointer group flex flex-col h-full">
             <h3 className="text-sm font-bold text-gray-700 dark:text-white mb-4">
                 Plan Adherence
             </h3>
@@ -67,7 +67,7 @@ export function PlanAdherence({ data }: PlanAdherenceProps) {
                 </div>
 
                 <div className="space-y-4">
-                    <div className="p-4 bg-green-50 dark:bg-green-500/10 rounded-xl border border-green-100 dark:border-green-500/20">
+                    <div className="p-4 bg-green-50 dark:bg-green-500/10 rounded-lg border border-green-100 dark:border-green-500/20">
                         <div className="text-sm font-bold text-green-700 dark:text-green-400 mb-1">
                             Followed Plan
                         </div>
@@ -89,7 +89,7 @@ export function PlanAdherence({ data }: PlanAdherenceProps) {
                         </div>
                     </div>
 
-                    <div className="p-4 bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-100 dark:border-red-500/20">
+                    <div className="p-4 bg-red-50 dark:bg-red-500/10 rounded-lg border border-red-100 dark:border-red-500/20">
                         <div className="text-sm font-bold text-red-700 dark:text-red-400 mb-1">
                             Deviated
                         </div>

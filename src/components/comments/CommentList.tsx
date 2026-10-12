@@ -39,12 +39,12 @@ export function CommentList({
 }: CommentListProps) {
     if (comments.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center text-center py-14 px-6 border-2 border-dashed border-dashboard rounded-3xl bg-gray-50/20 dark:bg-[#0b0d14]/20 relative overflow-hidden transition-all duration-300">
+            <div className="flex flex-col items-center justify-center text-center py-14 px-6 border-2 border-dashed border-dashboard rounded-lg bg-gray-50/20 dark:bg-[#0b0d14]/20 relative overflow-hidden transition-all duration-300">
                 {/* Glowing subtle circles in empty state */}
                 <div className="absolute w-36 h-36 bg-gold/5 rounded-full blur-2xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
 
                 <div className="relative z-10 flex flex-col items-center">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-gold/10 to-amber-500/10 dark:from-gold/20 dark:to-amber-500/20 border border-gold/20 dark:border-gold/30 flex items-center justify-center mb-5 text-gold shadow-[0_4px_20px_rgba(202,138,4,0.06)] animate-bounce duration-1000">
+                    <div className="w-14 h-14 rounded-lg bg-gradient-to-tr from-gold/10 to-amber-500/10 dark:from-gold/20 dark:to-amber-500/20 border border-gold/20 dark:border-gold/30 flex items-center justify-center mb-5 text-gold shadow-[0_4px_20px_rgba(202,138,4,0.06)] animate-bounce duration-1000">
                         <MessageSquareCode size={24} className="stroke-[2]" />
                     </div>
 
@@ -191,7 +191,7 @@ function CommentItem({
                 </div>
 
                 {isReplying && (
-                    <div className="mt-4 pl-4 border-l-2 border-gold/30 bg-gray-50/30 dark:bg-white/[0.01] p-4 rounded-xl shadow-inner animate-in slide-in-from-top-2 fade-in duration-300">
+                    <div className="mt-4 pl-4 border-l-2 border-gold/30 bg-gray-50/30 dark:bg-white/[0.01] p-4 rounded-lg shadow-inner animate-in slide-in-from-top-2 fade-in duration-300">
                         <CommentForm
                             articleId={articleId}
                             parentId={comment.id}

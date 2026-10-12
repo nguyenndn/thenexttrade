@@ -295,7 +295,7 @@ export function IbOverviewClient({
                 tabsId="ib-overview-tabs"
             >
                 <div className="overflow-x-auto scrollbar-hide flex">
-                    <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1 gap-1 shrink-0">
+                    <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-1 gap-1 shrink-0">
                         {[
                             { id: "overview", label: "Command Center", icon: LayoutDashboard },
                             { id: "products", label: "Product Adoption", icon: Zap },
@@ -307,7 +307,7 @@ export function IbOverviewClient({
                                     key={t.id}
                                     value={t.id}
                                     className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:border-white/10 dark:hover:border-white/10 flex items-center gap-2"
-                                    activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                    activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                                     activeTextClassName="!text-white"
                                 >
                                     <Icon size={15} />
@@ -326,10 +326,10 @@ export function IbOverviewClient({
                     {(overview.vipUsersWithoutFirstSync || 0) > 0 && (
                         <Link
                             href="/admin/ib/traders?vip=ACTIVE&accountHealth=NEVER_SYNCED"
-                            className="flex items-center justify-between gap-4 rounded-xl border border-amber-500/30 bg-white dark:bg-[#1E2028] p-4 shadow-sm hover:shadow-md hover:border-amber-500/50 transition-all group"
+                            className="flex items-center justify-between gap-4 rounded-lg border border-amber-500/30 bg-white dark:bg-[#1E2028] p-4 shadow-sm hover:shadow-md hover:border-amber-500/50 transition-all group"
                         >
                             <div className="flex items-center gap-3">
-                                <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
+                                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
                                     <AlertTriangle size={18} />
                                 </div>
                                 <span className="font-bold text-sm text-gray-900 dark:text-white">
@@ -349,14 +349,14 @@ export function IbOverviewClient({
                         {/* Retention & Health */}
                         <Link
                             href="/admin/ib/traders?accountHealth=STALE"
-                            className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md hover:border-orange-500/30 transition-all space-y-2 group block"
+                            className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md hover:border-orange-500/30 transition-all space-y-2 group block"
                         >
                             <div className="flex items-center justify-between">
                                 <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
                                     Retention & Health
                                 </span>
                                 <div className="flex items-center gap-1.5">
-                                    <div className="p-2.5 rounded-xl bg-orange-500/10 text-orange-600 dark:text-orange-400 ring-1 ring-orange-500/20">
+                                    <div className="p-2.5 rounded-lg bg-orange-500/10 text-orange-600 dark:text-orange-400 ring-1 ring-orange-500/20">
                                         <AlertTriangle size={16} />
                                     </div>
                                     <ArrowUpRight size={14} className="text-gray-400 group-hover:text-orange-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
@@ -373,14 +373,14 @@ export function IbOverviewClient({
                         {/* Trade Manager Active */}
                         <Link
                             href="/admin/ib/traders?syncSource=EA"
-                            className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md hover:border-cyan-500/30 transition-all space-y-2 group block"
+                            className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md hover:border-cyan-500/30 transition-all space-y-2 group block"
                         >
                             <div className="flex items-center justify-between">
                                 <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
                                     Trade Manager Active
                                 </span>
                                 <div className="flex items-center gap-1.5">
-                                    <div className="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 ring-1 ring-cyan-500/20">
+                                    <div className="p-2.5 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 ring-1 ring-cyan-500/20">
                                         <Zap size={16} />
                                     </div>
                                     <ArrowUpRight size={14} className="text-gray-400 group-hover:text-cyan-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
@@ -397,14 +397,14 @@ export function IbOverviewClient({
                         {/* Out-of-IB Active Ratio */}
                         <Link
                             href="/admin/users/behavior?tab=radar"
-                            className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md hover:border-emerald-500/30 transition-all space-y-2 group block"
+                            className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md hover:border-emerald-500/30 transition-all space-y-2 group block"
                         >
                             <div className="flex items-center justify-between">
                                 <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
                                     Out-of-IB Active Ratio
                                 </span>
                                 <div className="flex items-center gap-1.5">
-                                    <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/20">
+                                    <div className="p-2.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/20">
                                         <Compass size={16} />
                                     </div>
                                     <ArrowUpRight size={14} className="text-gray-400 group-hover:text-emerald-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
@@ -419,7 +419,7 @@ export function IbOverviewClient({
                         </Link>
                     </div>
                     {/* Active Pro Traders Highlight Banner (High-depth card) */}
-                    <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 sm:p-7 shadow-sm relative overflow-hidden">
+                    <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 sm:p-7 shadow-sm relative overflow-hidden">
                         <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-amber-500" />
                         <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
                             <div className="max-w-xl">
@@ -442,7 +442,7 @@ export function IbOverviewClient({
                                 </p>
                             </div>
                             <div className="grid flex-1 gap-3 sm:grid-cols-3">
-                                <div className="rounded-xl border border-gray-100 bg-gray-50/80 p-4 shadow-sm dark:border-white/5 dark:bg-white/[0.03]">
+                                <div className="rounded-lg border border-gray-100 bg-gray-50/80 p-4 shadow-sm dark:border-white/5 dark:bg-white/[0.03]">
                                     <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                                         Leads
                                     </p>
@@ -453,7 +453,7 @@ export function IbOverviewClient({
                                         {rangeLabel}
                                     </p>
                                 </div>
-                                <div className="rounded-xl border border-gray-100 bg-gray-50/80 p-4 shadow-sm dark:border-white/5 dark:bg-white/[0.03]">
+                                <div className="rounded-lg border border-gray-100 bg-gray-50/80 p-4 shadow-sm dark:border-white/5 dark:bg-white/[0.03]">
                                     <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                                         Requests
                                     </p>
@@ -464,7 +464,7 @@ export function IbOverviewClient({
                                         submitted in range
                                     </p>
                                 </div>
-                                <div className="rounded-xl border border-gray-100 bg-gray-50/80 p-4 shadow-sm dark:border-white/5 dark:bg-white/[0.03]">
+                                <div className="rounded-lg border border-gray-100 bg-gray-50/80 p-4 shadow-sm dark:border-white/5 dark:bg-white/[0.03]">
                                     <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                                         Conversion
                                     </p>
@@ -480,10 +480,10 @@ export function IbOverviewClient({
                     </div>
 
                     {/* Pending VIP Requests Table (matching pipeline) */}
-                    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-sm space-y-4">
+                    <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-sm space-y-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
+                                <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
                                     <Crown size={20} />
                                 </div>
                                 <div>
@@ -511,7 +511,7 @@ export function IbOverviewClient({
                         </div>
 
                         {pendingRequests.length === 0 ? (
-                            <div className="py-10 flex flex-col items-center justify-center text-center text-gray-500 dark:text-gray-400 border border-dashed border-gray-200 dark:border-white/10 rounded-xl">
+                            <div className="py-10 flex flex-col items-center justify-center text-center text-gray-500 dark:text-gray-400 border border-dashed border-gray-200 dark:border-white/10 rounded-lg">
                                 <CheckCircle2 className="w-8 h-8 text-emerald-500 mb-2 opacity-60" />
                                 <p className="text-sm font-bold text-gray-700 dark:text-gray-300">
                                     All caught up!
@@ -522,7 +522,7 @@ export function IbOverviewClient({
                                 </p>
                             </div>
                         ) : (
-                            <div className="rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden">
+                            <div className="rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden">
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left text-xs">
                                         <thead className="bg-gray-50/80 dark:bg-white/[0.03] text-[11px] uppercase text-gray-500 dark:text-gray-400 font-bold tracking-wider border-b border-gray-100 dark:border-white/5">
@@ -613,7 +613,7 @@ export function IbOverviewClient({
                                                                         req.requestId
                                                                     )
                                                                 }
-                                                                className="h-8 px-3 rounded-xl text-xs font-bold text-emerald-600 border-emerald-500/30 hover:bg-emerald-50 dark:hover:bg-emerald-500/10"
+                                                                className="h-8 px-3 rounded-lg text-xs font-bold text-emerald-600 border-emerald-500/30 hover:bg-emerald-50 dark:hover:bg-emerald-500/10"
                                                             >
                                                                 <Check size={13} className="mr-1" />
                                                                 Approve
@@ -627,13 +627,13 @@ export function IbOverviewClient({
                                                                         req.requestId
                                                                     )
                                                                 }
-                                                                className="h-8 px-3 rounded-xl text-xs font-bold text-rose-600 border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10"
+                                                                className="h-8 px-3 rounded-lg text-xs font-bold text-rose-600 border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10"
                                                             >
                                                                 Reject
                                                             </Button>
                                                             <Link
                                                                 href={`/admin/ib/pipeline?q=${req.rawAccountNumber || req.accountNumber}`}
-                                                                className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                                                                className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                                                                 title="View in Pipeline"
                                                             >
                                                                 <ExternalLink
@@ -666,12 +666,12 @@ export function IbOverviewClient({
                                 <Link
                                     key={action.title}
                                     href={action.href}
-                                    className="group rounded-xl border border-gray-200 dark:border-white/10 bg-white p-5 shadow-sm hover:shadow-md transition-all dark:bg-[#1E2028] hover:border-primary/30 flex flex-col justify-between"
+                                    className="group rounded-lg border border-gray-200 dark:border-white/10 bg-white p-5 shadow-sm hover:shadow-md transition-all dark:bg-[#1E2028] hover:border-primary/30 flex flex-col justify-between"
                                 >
                                     <div>
                                         <div className="flex items-start justify-between gap-4">
                                             <div
-                                                className={`rounded-xl p-3 ${toneClass}`}
+                                                className={`rounded-lg p-3 ${toneClass}`}
                                             >
                                                 <Icon size={20} strokeWidth={2.5} />
                                             </div>
@@ -704,11 +704,11 @@ export function IbOverviewClient({
                         {CANONICAL_PRODUCTS.map((prod) => (
                             <div
                                 key={prod.id}
-                                className="p-5 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm hover:shadow-md transition-all space-y-3 relative overflow-hidden group"
+                                className="p-5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm hover:shadow-md transition-all space-y-3 relative overflow-hidden group"
                             >
-                                <div className="absolute top-0 inset-x-0 h-0.5 bg-primary/40 group-hover:bg-primary transition-colors" />
+                                <div className="absolute top-0 inset-x-0 h-0.5 bg-gold/40 group-hover:bg-gold transition-colors" />
                                 <div className="flex items-center justify-between">
-                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
+                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-gold dark:text-amber-400 border border-amber-500/20">
                                         {prod.slug}
                                     </span>
                                     <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
@@ -742,12 +742,12 @@ export function IbOverviewClient({
                     {/* Capital Analytics Overview Cards */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {/* Reported Capital */}
-                        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md transition-all space-y-2 group">
+                        <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md transition-all space-y-2 group">
                             <div className="flex items-center justify-between">
                                 <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
                                     Reported Capital
                                 </span>
-                                <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
+                                <div className="p-2.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
                                     <DollarSign size={16} />
                                 </div>
                             </div>
@@ -761,12 +761,12 @@ export function IbOverviewClient({
                         </div>
 
                         {/* Fresh Capital (24h) */}
-                        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md transition-all space-y-2 group">
+                        <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md transition-all space-y-2 group">
                             <div className="flex items-center justify-between">
                                 <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
                                     Fresh Capital (24h)
                                 </span>
-                                <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/20">
+                                <div className="p-2.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/20">
                                     <ShieldCheck size={16} />
                                 </div>
                             </div>
@@ -779,7 +779,7 @@ export function IbOverviewClient({
                         </div>
                     </div>
 
-                    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-sm space-y-5">
+                    <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-sm space-y-5">
                         <div className="flex items-center justify-between">
                             <h3 className="font-bold text-sm text-gray-900 dark:text-white">
                                 Broker Referral Breakdown
@@ -838,7 +838,7 @@ export function IbOverviewClient({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4"
+                            className="w-full max-w-md rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4"
                         >
                             <h3 className="text-base font-bold text-gray-900 dark:text-white">
                                 Reject VIP Request
@@ -851,7 +851,7 @@ export function IbOverviewClient({
                                 value={rejectReason}
                                 onChange={(e) => setRejectReason(e.target.value)}
                                 aria-label="Rejection reason"
-                                className="w-full h-24 p-3 text-xs rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
+                                className="w-full h-24 p-3 text-xs rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
                             />
                             <div className="flex items-center justify-end gap-2 pt-2">
                                 <Button

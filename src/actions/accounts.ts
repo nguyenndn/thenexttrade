@@ -2,8 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
-import { generateApiKey } from "@/lib/utils/api-key";
-import crypto from "crypto";
+import { generateApiKey, generateSyncApiKey } from "@/lib/utils/api-key";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getAccountsProEligibility } from "@/lib/pro-eligibility";
@@ -306,8 +305,7 @@ export async function createTradingAccount(
         let syncApiKey = existingUser?.syncApiKey ?? null;
 
         if (!syncApiKey) {
-            const randomPart = crypto.randomBytes(24).toString("hex");
-            syncApiKey = `tnt_${randomPart}`;
+            syncApiKey = generateSyncApiKey();
             await prisma.user.update({
                 where: { id: user.id },
                 data: {

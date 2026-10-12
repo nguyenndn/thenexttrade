@@ -142,8 +142,8 @@ Nút bấm phải có hiệu ứng chuyển đổi mượt mà, độ sâu tinh 
   <Button onClick={() => router.push('...')}> ... </Button>
   ```
 
-**Nút Primary CTA (Xanh Lá Chính)**
-Dùng cho các hành động trọng yếu: "Tạo mới (Create)", "Thêm mới (Add New)", "Lưu (Save)". Kích thước mặc định `md` = `px-6 py-2.5 text-sm`.
+**Nút Primary CTA (Vàng Gold Chính)**
+Dùng cho các hành động trọng yếu: "Tạo mới (Create)", "Thêm mới (Add New)", "Lưu (Save)". Sử dụng gam màu Vàng Gold `#F59E0B` (`bg-gold hover:bg-amber-600 text-white shadow-md shadow-amber-500/20`). Kích thước mặc định `md` = `px-6 py-2.5 text-sm`.
 ```tsx
 // Chuẩn — không cần khai báo kích thước thủ công, Button.tsx đã quản lý
 <Button variant="primary">
@@ -201,12 +201,12 @@ Dùng cho các nút kích hoạt chỉ có biểu tượng hoặc hành động 
 ```
 *Lưu ý: Kích thước biểu tượng chuẩn = `size="icon"` → `h-10 w-10 p-0`. Chỉ ghi đè với `h-9 w-9` hoặc `w-auto h-auto p-0` cho các hàng bảng dữ liệu nhỏ gọn.*
 
-**Nút Hủy / Trung Tính (Cancel / Neutral - Ghost)**
-Dùng cho hành động "Hủy (Cancel)" hoặc "Quay lại" trong các hộp thoại modal.
+**Nút Hủy / Trung Tính (Cancel / Neutral - Outline)**
+Dùng cho hành động "Hủy (Cancel)" hoặc "Quay lại" trong các hộp thoại modal. Bắt buộc dùng `variant="outline"` (không dùng `variant="ghost"` và không tự gõ border ad-hoc `border-gray-300`).
 ```tsx
 <Button
-  variant="ghost" 
-  className="px-6 py-3 rounded-xl font-bold text-gray-500 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5"
+  variant="outline" 
+  className="font-bold text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
 >
   Cancel
 </Button>
@@ -239,11 +239,57 @@ Hệ thống sử dụng bán kính bo góc lớn nhằm tạo cảm giác "thâ
 </div>
 ```
 
-### 2.3 Ô Nhập Liệu Form (Form Inputs)
+### 2.3 Ô Nhập Liệu Form & Hộp Chọn (Form Controls: Inputs, Textarea, SelectTrigger)
 *(Đối với các quy chuẩn chuẩn hóa riêng cho trang Admin, xem **Mục 13**).*
 
+Mọi thành phần nhập liệu (Inputs, Textarea, SelectTrigger, Combobox) phải tuân thủ nghiêm ngặt chuẩn token Breek Premium:
+- **Bo góc (Border Radius):** Bắt buộc `rounded-lg` (8px). **TUYỆT ĐỐI CẤM** dùng `rounded-xl` trên inputs/selects/textareas gây hiệu ứng phồng tròn ("bubbly") làm tranh chấp thị giác với khung thẻ Card.
+- **Màu nền (Surface Token):**
+  - Chế độ sáng: `bg-gray-50` (hoặc `bg-white` khi nằm trên nền xám).
+  - Chế độ tối: `dark:bg-[#151925]` (nằm lọt lòng bên trong thẻ Card `dark:bg-[#1E2028]` hoặc Modal `dark:bg-[#11141d]`).
+  - ❌ **CẤM:** Không dùng `dark:bg-[#1E2028]` bên trong input/textarea/select — `#1E2028` là màu của Card/Modal container, dùng cho input sẽ làm phẳng lì và chìm giao diện.
+- **Đường viền (Border):** `border border-dashboard dark:border-white/10`. Không tự ý gõ override `border-gray-300` thủ công.
+- **Trạng thái Focus:** `focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all`.
+
+**Cấu Trúc Ô Nhập Liệu Form Tiêu Chuẩn:**
+```tsx
+<div className="space-y-1.5">
+    <label className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 block">
+        Account Name
+    </label>
+    <PremiumInput
+        label="Account Name"
+        helperText="Custom name to identify this portfolio"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        required
+    />
+</div>
+```
+
+**Cấu Trúc SelectTrigger & Textarea:**
+```tsx
+// SelectTrigger
+<SelectTrigger className="w-full h-10 px-3 border border-dashboard dark:border-white/10 rounded-lg bg-gray-50 dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
+    <SelectValue placeholder="Select Option" />
+</SelectTrigger>
+
+// Textarea
+<textarea
+    className="w-full p-3.5 rounded-lg bg-gray-50 dark:bg-[#151925] border border-dashboard dark:border-white/10 text-gray-900 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/30 focus:outline-none resize-none transition-all shadow-sm text-sm font-medium"
+    rows={3}
+    value={notes}
+    onChange={(e) => setNotes(e.target.value)}
+/>
+```
+
+**Quy Chuẩn Chống Placeholder Chung Chung (Anti-Generic Placeholders Policy):**
+- ❌ **CẤM** đặt placeholder ví dụ chung chung gây rối mắt (`placeholder="e.g. 200"`, `placeholder="12345678"`, `placeholder="Enter title..."`).
+- ✅ **BẮT BUỘC** dùng `Label` rõ ràng và prop `helperText` (mô tả ngữ nghĩa, định dạng) để hướng dẫn người dùng.
+- Chỉ sử dụng placeholder khi có syntax mask / pattern định dạng đặc thù (Ví dụ: `EURUSD`, `+1 234 567 890`).
+
 **Ô Nhập Liệu Nổi Bật (Hero Input - Trang Đăng Nhập / Landing Page)**
-Dành cho các khu vực trung tâm đòi hỏi trọng lượng thị giác lớn.
+Dành cho các khu vực trung tâm đòi hỏi trọng lượng thị giác lớn:
 ```tsx
 <div className="relative group">
     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -286,6 +332,83 @@ Tránh dùng `<input type="checkbox">` native làm vỡ UI trên các trình duy
 </Button>
 ```
 *Lưu ý cho Bảng dữ liệu:* Cột checkbox ở Header và Row phải đồng nhất class (Ví dụ: `w-14 pl-6 pr-4 py-5`) để đảm bảo các ô tự do thẳng hàng. Trong bảng dày đặc, giữ `size="icon"` rồi ghi đè `w-auto h-auto p-0` để thu gọn — đúng chuẩn icon-size nêu ở Mục 2.1.
+
+### 2.6 Bộ Chọn Màu Nhúng Ô Nhập (Prefix Color Swatch Pattern)
+Khi form yêu cầu chọn màu định danh cho thực thể (Trading Account, Strategy, Rulebook tag):
+- ❌ **CẤM** tạo một khu vực riêng chiếm 2 hàng với 20-30 nút tròn gây phình modal và lãng phí diện tích.
+- ✅ **BẮT BUỘC** nhúng trực tiếp nút swatch màu `[ 🟢 ▾ ]` vào prop `prefix` của `PremiumInput`, kết hợp với Radix `Popover` tự đóng khi người dùng chọn màu:
+
+```tsx
+<PremiumInput
+    label="Account Name"
+    value={name}
+    onChange={(e) => setName(e.target.value)}
+    prefix={
+        <Popover open={colorPickerOpen} onOpenChange={setColorPickerOpen}>
+            <PopoverTrigger asChild>
+                <button
+                    type="button"
+                    className="flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-gray-200/70 dark:hover:bg-white/10 transition-colors cursor-pointer"
+                    aria-label="Choose account color badge"
+                >
+                    <span className="w-4 h-4 rounded-full border border-black/15 shadow-sm" style={{ backgroundColor: color }} />
+                    <ChevronDown size={11} className="text-gray-400" />
+                </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-64 p-3 bg-white dark:bg-[#1E2028] border border-dashboard shadow-2xl rounded-2xl z-[150]">
+                {/* Lưới màu gọn gàng bên trong popover */}
+            </PopoverContent>
+        </Popover>
+    }
+/>
+```
+
+### 2.7 Khối Thông Số Kỹ Thuật Lưới 2x2 (2x2 Matrix Specs Card)
+Khi hiển thị bộ 4 thông số kỹ thuật cốt lõi (Account #, Broker, Server, Platform):
+- ❌ **CẤM** xếp danh sách dọc dài 4 hàng đơn điệu gây tốn chiều cao modal.
+- ✅ **BẮT BUỘC** đóng gói thành card lưới 2 hàng x 2 cột có `divide-x/y`, label phía trên, value in đậm phía dưới và có cơ chế chống tràn chuỗi dài (`truncate`):
+
+```tsx
+<div className="rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-dashboard divide-y divide-gray-200/60 dark:divide-white/5 text-xs overflow-hidden">
+    <div className="grid grid-cols-2 divide-x divide-gray-200/60 dark:divide-white/5">
+        <div className="px-4 py-2.5 min-w-0">
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Account Number</span>
+            <span className="font-bold text-gray-800 dark:text-gray-200 tabular-nums block truncate">{account.accountNumber}</span>
+        </div>
+        <div className="px-4 py-2.5 min-w-0">
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Broker</span>
+            <span className="font-bold text-gray-800 dark:text-gray-200 block truncate">{account.broker}</span>
+        </div>
+    </div>
+    <div className="grid grid-cols-2 divide-x divide-gray-200/60 dark:divide-white/5">
+        <div className="px-4 py-2.5 min-w-0">
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Server</span>
+            <span className="font-semibold text-gray-800 dark:text-gray-200 block truncate">{account.server}</span>
+        </div>
+        <div className="px-4 py-2.5 min-w-0">
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Platform</span>
+            <span className="font-semibold text-gray-800 dark:text-gray-200 block truncate">{account.platform || "MT5"}</span>
+        </div>
+    </div>
+</div>
+```
+
+### 2.8 Trạng Thái Đo Lường Từ Xa (Clean Telemetry Status)
+Khi biểu diễn trạng thái kết nối dữ liệu trực tiếp từ MT5 / EA:
+- ❌ **CẤM** đặt nhãn chữ cứng chiếm diện tích như badge `Live (EA)`.
+- ✅ **BẮT BUỘC** dùng chấm trạng thái phát xung (pulsing green dot) kết hợp với mốc thời gian tương đối (`formatDistanceToNow`) và tooltip giải thích:
+
+```tsx
+<div className="flex items-center gap-1.5" title={`Last synced: ${formatDistanceToNow(lastSync)} ago`}>
+    <span className="relative flex h-2 w-2">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+    </span>
+    <span className="text-xs text-gray-500 dark:text-gray-400">
+        {formatDistanceToNow(lastSync, { addSuffix: true })}
+    </span>
+</div>
+```
 
 ---
 
@@ -345,7 +468,7 @@ Dùng ở tiêu đề trang hoặc trạng thái trống (empty states).
 
 ---
 
-> **Nguyên Tắc Nằm Lòng:** Nếu một thành phần nhìn giống hệt component mặc định của Tailwind, điều đó có nghĩa là bạn đang làm sai. Hãy bo góc `rounded-xl`, bổ sung viền `dark:border-white/10` và tăng padding hợp lý. Hãy làm cho nó toát lên đẳng cấp "Premium".
+> **Nguyên Tắc Nằm Lòng:** Nếu một thành phần nhìn giống hệt component mặc định của Tailwind, điều đó có nghĩa là bạn đang làm sai. Hãy áp dụng hệ phân cấp bo góc quang học (`rounded-xl` / `rounded-2xl` cho Cards/Panels; `rounded-lg` cho Buttons/Inputs/Controls), bổ sung viền `dark:border-white/10` và tăng padding hợp lý. Hãy làm cho nó toát lên đẳng cấp "Premium".
 
 ---
 
@@ -374,8 +497,8 @@ Tất cả các Modal tùy biến BẮT BUỘC phải đóng lại khi người 
     {/* 1. Lớp phủ Backdrop (Xử lý onClick để đóng modal) */}
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={onClose} />
     
-    {/* 2. Hộp nội dung Modal (z-10 bảo đảm nổi lên trên lớp backdrop) */}
-    <div className="relative z-10 w-full max-w-lg bg-white dark:bg-[#1E2028] rounded-xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    {/* 2. Hộp nội dung Modal (z-10 bảo đảm nổi lên trên lớp backdrop, bo góc rounded-2xl chuẩn) */}
+    <div className="relative z-10 w-full max-w-lg bg-white dark:bg-[#11141d] rounded-2xl border border-dashboard dark:border-white/[0.08] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         <div className="p-6">Nội dung modal</div>
     </div>
 </div>
@@ -456,15 +579,21 @@ Con trỏ mặc định là `default` (mũi tên) cho toàn bộ ứng dụng. Q
 
 ---
 
-## 10. Tiêu Chuẩn Bán Kính Bo Góc (Border Radius Standards)
+## 10. Tiêu Chuẩn Bán Kính Bo Góc Quang Học (Optical Border Radius Hierarchy)
 
-| Mức tối thiểu | Class | Phạm vi sử dụng |
+Tuân thủ nghiêm ngặt **hệ phân cấp bo góc quang học (Optical Hierarchy)** để tránh hiện tượng các nút bấm và ô nhập bị phồng tròn quá mức ("bubbly buttons/inputs") tranh chấp thị giác với các khung thẻ container:
+
+| Phân Cấp Quang Học | Class | Thành Phần Áp Dụng |
 |:---|:---|:---|
-| **Cards, Modals, Inputs** | `rounded-xl` | Bắt buộc mặc định cho mọi container và ô nhập chính |
-| **Badges, Tags, Chips** | `rounded-lg` | Dành cho các nhãn, huy hiệu nhỏ hơn |
-| **Pills, Trạng Thái Chấm** | `rounded-full` | Dành cho các chỉ báo trạng thái tròn |
+| **Modals & Dialogs** | `rounded-2xl` | Cửa sổ nổi, hộp thoại modal (`DialogContent`), sheet panel popups |
+| **Cards & Panels** | `rounded-xl` | Thẻ tính năng, panels, khối container chính (`rounded-2xl` cho hero showcase / marketing card đặc biệt) |
+| **Dropdown Menus & Popovers** | `rounded-xl` | Bảng chọn menu (`DropdownMenuContent`), popover swatch màu, tooltip lớn |
+| **Buttons, Inputs, Textareas, SelectTriggers** | `rounded-lg` | Tất cả nút bấm (`Button`), ô nhập (`Input`), vùng văn bản (`textarea`), hộp chọn (`SelectTrigger`), combobox trigger (chuẩn 8px optical standard) |
+| **Badges, Tags, Chips** | `rounded-lg` / `rounded-full` | Huy hiệu, thẻ tag phân loại, latency chip, pill đếm |
 
-> **NGHIÊM CẤM** dùng `rounded-md`, `rounded-sm`, hoặc `rounded` đơn thuần. Mức tối thiểu cho mọi thành phần là `rounded-lg`.
+> **NGUYÊN TẮC CỐT LÕI:**
+> - **CẤM** dùng `rounded-xl` trên Buttons và Form Inputs (ngăn chặn hiệu ứng "bubbly" thiếu tinh gọn, phá vỡ tính chuyên nghiệp của nền tảng Fintech).
+> - **CẤM** dùng `rounded-md`, `rounded-sm`, hoặc 4px `rounded` trôi nổi trên bất kỳ thành phần nào. Mức bo góc tối thiểu của hệ thống là `rounded-lg` (8px).
 
 ---
 
@@ -620,16 +749,15 @@ Prop `equalWidth` cho phép AccountSelector và DateRangePicker chia đều 50% 
 Dành cho mọi form nhập liệu nội bộ, bắt buộc sử dụng cấu trúc Input sau (thay thế cho các thẻ input trôi nổi):
 
 ```tsx
-<div className="group">
-    <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">
-        Label <span className="font-normal text-gray-500">(Optional)</span>
+<div className="group space-y-1.5">
+    <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+        Target Goal
     </label>
     <input
         type="text"
-        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-500"
-        placeholder="Placeholder text..."
+        className="w-full rounded-lg border border-dashboard dark:border-white/10 bg-gray-50 dark:bg-[#151925] px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/50 text-gray-800 dark:text-white transition-all"
     />
-    <p className="text-red-500 text-xs mt-1">Error message here</p>
+    <p className="text-xs text-gray-500 dark:text-gray-400">Set a concrete discipline habit (e.g. review daily losses)</p>
 </div>
 ```
 *Ghi chú căn lề khoảng cách Form Modal:*
@@ -769,7 +897,7 @@ Tiêu chuẩn thiết kế cho các thanh Tabs điều hướng sử dụng comp
 
 ## 15. Tiêu Chuẩn Ngôn Ngữ & Văn Phong Thực Chiến (Tone of Voice & Anti-AI Copywriting)
 
-Mọi văn bản hiển thị trên giao diện người dùng (UI text, headlines, tooltips, placeholders, emails, thông báo) bắt buộc phải tuân theo phong cách **Pro Forex / Systematic Edge / Risk Math**, loại bỏ hoàn toàn các sáo ngữ tiếp thị khuôn mẫu của AI.
+Mọi văn bản hiển thị trên giao diện người dùng (UI text, headlines, tooltips, placeholders, emails, thông báo) và toàn bộ nội dung tài liệu/bài viết (`content/data/**`) bắt buộc phải tuân theo phong cách **Pro Forex / Systematic Edge / Risk Math**, loại bỏ hoàn toàn các sáo ngữ tiếp thị khuôn mẫu của AI.
 
 ### 15.1. Banned AI Clichés (Tuyệt đối không dùng)
 - ❌ *"Unlock your potential"* / *"Elevate your trading journey"* / *"Your next move"*

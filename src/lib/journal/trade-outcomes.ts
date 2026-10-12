@@ -6,6 +6,8 @@ import { TradeResult } from "@prisma/client";
 export interface ClassifiableTrade {
     result?: TradeResult | null;
     pnl?: number | null;
+    commission?: number | null;
+    swap?: number | null;
     exitReason?: string | null;
 }
 
@@ -18,10 +20,10 @@ const BREAK_EVEN_EPSILON = 0.5; // Allow $0.50 leeway for break-even PnL when re
  *
  * Priority:
  * 1. Uses explicit `result` field (LOSS -> LOSS, WIN -> WIN, BREAK_EVEN/BE_PLUS -> BREAK_EVEN).
- * 2. Fallbacks to evaluating `pnl` if `result` is null or missing.
- *    - pnl < -EPSILON => LOSS
- *    - abs(pnl) <= EPSILON => BREAK_EVEN
- *    - pnl > EPSILON => WIN
+ * 2. Fallbacks to evaluating `pnl` (net of commission and swap) if `result` is null or missing.
+ *    - netPnl < -EPSILON => LOSS
+ *    - abs(netPnl) <= EPSILON => BREAK_EVEN
+ *    - netPnl > EPSILON => WIN
  */
 export function classifyTradeOutcome(trade: ClassifiableTrade): TradeOutcome {
     if (trade.result) {
@@ -31,15 +33,19 @@ export function classifyTradeOutcome(trade: ClassifiableTrade): TradeOutcome {
             return "BREAK_EVEN";
     }
 
-    // Fallback to PnL analysis
-    if (typeof trade.pnl === "number") {
-        if (trade.pnl < -BREAK_EVEN_EPSILON) {
+    // Fallback to Net PnL analysis
+    const netPnl =
+        typeof trade.pnl === "number"
+            ? trade.pnl + (trade.commission || 0) + (trade.swap || 0)
+            : null;
+    if (typeof netPnl === "number") {
+        if (netPnl < -BREAK_EVEN_EPSILON) {
             return "LOSS";
         }
-        if (Math.abs(trade.pnl) <= BREAK_EVEN_EPSILON) {
+        if (Math.abs(netPnl) <= BREAK_EVEN_EPSILON) {
             return "BREAK_EVEN";
         }
-        if (trade.pnl > BREAK_EVEN_EPSILON) {
+        if (netPnl > BREAK_EVEN_EPSILON) {
             return "WIN";
         }
     }

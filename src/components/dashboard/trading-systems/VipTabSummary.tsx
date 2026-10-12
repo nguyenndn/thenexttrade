@@ -42,13 +42,13 @@ export function VipTabSummary({ vipRequest, vipLink }: VipTabSummaryProps) {
     if (isPro) {
         return (
             <div className="space-y-4 p-2">
-                <div className="flex items-center gap-3 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20">
-                    <Crown className="h-6 w-6 text-emerald-500 shrink-0" />
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20">
+                    <Crown className="h-6 w-6 text-amber-500 shrink-0" />
                     <div>
-                        <p className="font-bold text-emerald-700 dark:text-emerald-400">
+                        <p className="font-bold text-amber-700 dark:text-amber-400">
                             VIP Active
                         </p>
-                        <p className="text-sm text-emerald-600/80 dark:text-emerald-400/70">
+                        <p className="text-sm text-amber-600/80 dark:text-amber-400/70">
                             You have full VIP access. Manage your accounts from
                             the Account Hub.
                         </p>
@@ -57,10 +57,11 @@ export function VipTabSummary({ vipRequest, vipLink }: VipTabSummaryProps) {
                 <div className="flex flex-col sm:flex-row gap-3">
                     <Link
                         href="/dashboard/accounts"
-                        className={cn(
-                            buttonVariants({ variant: "primary", size: "smd" }),
-                            "bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 border-none shadow-lg shadow-gold/20 hover:scale-105 transition-all duration-300 w-full sm:w-auto"
-                        )}
+                        className={buttonVariants({
+                            variant: "gold",
+                            size: "smd",
+                            className: "w-full sm:w-auto",
+                        })}
                     >
                         Go to Account Hub
                         <ExternalLink size={16} className="ml-2" />
@@ -70,7 +71,7 @@ export function VipTabSummary({ vipRequest, vipLink }: VipTabSummaryProps) {
                             href={vipLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#2AABEE] text-white font-bold text-sm shadow-lg shadow-[#2AABEE]/20 hover:bg-[#2298d4] transition-all hover:scale-105"
+                            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-[#2AABEE] text-white font-bold text-sm shadow-lg shadow-[#2AABEE]/20 hover:bg-[#2298d4] transition-all hover:scale-105"
                         >
                             <Send size={16} />
                             Join VIP Telegram
@@ -104,7 +105,7 @@ export function VipTabSummary({ vipRequest, vipLink }: VipTabSummaryProps) {
         <div className="space-y-6 p-2">
             {/* Header */}
             <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20 shrink-0">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20 shrink-0">
                     <Crown size={24} className="text-white" />
                 </div>
                 <div>
@@ -126,7 +127,7 @@ export function VipTabSummary({ vipRequest, vipLink }: VipTabSummaryProps) {
                     <div key={i} className="flex items-center gap-3">
                         <CheckCircle2
                             size={16}
-                            className="text-primary shrink-0"
+                            className="text-amber-500 shrink-0"
                         />
                         <span className="text-sm text-gray-700 dark:text-gray-300">
                             {benefit}
@@ -139,7 +140,11 @@ export function VipTabSummary({ vipRequest, vipLink }: VipTabSummaryProps) {
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <Link
                     href="/dashboard/accounts?action=add&intent=unlock-pro"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold text-sm hover:from-amber-600 hover:to-amber-700 transition-all shadow-lg shadow-amber-500/20"
+                    className={buttonVariants({
+                        variant: "gold",
+                        size: "md",
+                        className: "w-full sm:w-auto",
+                    })}
                 >
                     <Crown size={16} />
                     Get VIP Access Free
@@ -147,7 +152,7 @@ export function VipTabSummary({ vipRequest, vipLink }: VipTabSummaryProps) {
                 </Link>
                 <Link
                     href="/dashboard/accounts"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-dashboard text-gray-700 dark:text-gray-300 font-medium text-sm hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-dashboard text-gray-700 dark:text-gray-300 font-medium text-sm hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                 >
                     Manage Accounts
                 </Link>

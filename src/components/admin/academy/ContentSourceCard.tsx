@@ -74,7 +74,7 @@ export function ContentSourceCard({
     };
 
     return (
-        <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-4 space-y-3">
+        <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm p-4 space-y-3">
             <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider flex items-center gap-1.5">
                 <Bot size={13} />
                 AI Source Info

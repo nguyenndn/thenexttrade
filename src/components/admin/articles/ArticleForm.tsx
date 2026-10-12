@@ -95,7 +95,7 @@ function FormSelect({
                 <DropdownMenuTrigger asChild>
                     <Button
                         variant="outline"
-                        className="w-full flex justify-between items-center text-sm font-normal bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 px-3 py-2.5 h-auto text-left shadow-none rounded-xl focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all"
+                        className="w-full flex justify-between items-center text-sm font-normal bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 px-3 py-2.5 h-auto text-left shadow-none rounded-lg focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all"
                     >
                         <span
                             className={
@@ -471,7 +471,7 @@ export function ArticleForm({
             >
                 <span className="text-xs font-normal px-2 py-1 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 flex items-center gap-2">
                     {draftAutoSavedAt && (
-                        <span className="flex items-center gap-1 text-gray-500 border-r border-gray-300 pr-2 mr-1">
+                        <span className="flex items-center gap-1 text-gray-500 border-r border-gray-200 dark:border-white/10 pr-2 mr-1">
                             <Save size={12} /> Local:{" "}
                             {draftAutoSavedAt.toLocaleTimeString("en-US")}
                         </span>
@@ -500,7 +500,7 @@ export function ArticleForm({
                         size="icon"
                         onClick={confirmDelete}
                         disabled={isDeleting || isSubmitting}
-                        className="p-2 h-auto w-auto text-red-600 dark:text-red-400 font-medium bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-900/50 rounded-xl hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors"
+                        className="p-2 h-auto w-auto text-red-600 dark:text-red-400 font-medium bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-900/50 rounded-lg hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors"
                         title="Delete Article"
                         aria-label="Delete Article"
                     >
@@ -578,7 +578,7 @@ export function ArticleForm({
                     onClick={() => handleSubmit()}
                     disabled={isSubmitting}
                     variant="primary"
-                    className="flex items-center h-auto gap-2 shadow-lg shadow-primary/30 active:scale-95 active:translate-y-0 transition-all"
+                    className="flex items-center h-auto gap-2 shadow-lg shadow-amber-500/30 active:scale-95 active:translate-y-0 transition-all"
                 >
                     {isSubmitting ? (
                         <Loader2 size={18} className="animate-spin" />
@@ -590,7 +590,7 @@ export function ArticleForm({
             </AdminPageHeader>
 
             {hasUnsavedLocalDraft && (
-                <div className="bg-yellow-50 dark:bg-yellow-500/10 border-l-4 border-yellow-400 p-4 rounded-r-xl flex items-center justify-between mb-6 shadow-sm">
+                <div className="bg-yellow-50 dark:bg-yellow-500/10 border-l-4 border-yellow-400 p-4 rounded-r-lg flex items-center justify-between mb-6 shadow-sm">
                     <div className="flex items-center gap-3">
                         <AlertCircle
                             className="text-yellow-600 dark:text-yellow-400"
@@ -633,7 +633,7 @@ export function ArticleForm({
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 {/* Zenith Focus Editor - Left Column */}
                 <div className="lg:col-span-3 space-y-6">
-                    <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
+                    <div className="bg-white dark:bg-[#151925] rounded-lg p-6 border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
                         <div className="space-y-2">
                             <input
                                 type="text"
@@ -739,7 +739,7 @@ export function ArticleForm({
                     />
 
                     {/* SEO Settings */}
-                    <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
+                    <div className="bg-white dark:bg-[#151925] rounded-lg p-6 border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
                         <h3 className="font-bold text-gray-700 dark:text-white">
                             SEO Settings
                         </h3>
@@ -757,7 +757,7 @@ export function ArticleForm({
                                             metaTitle: e.target.value,
                                         })
                                     }
-                                    className="w-full p-2 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all"
+                                    className="w-full p-2 rounded-lg bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all"
                                     placeholder="SEO Title (defaults to article title)"
                                 />
                             </div>
@@ -773,7 +773,7 @@ export function ArticleForm({
                                             metaDescription: e.target.value,
                                         })
                                     }
-                                    className="w-full p-2 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all resize-none"
+                                    className="w-full p-2 rounded-lg bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all resize-none"
                                     rows={3}
                                     placeholder="Brief description for search engines..."
                                 />
@@ -784,7 +784,7 @@ export function ArticleForm({
 
                 {/* Visible Settings Sidebar - Right Column */}
                 <div className="lg:col-span-1 space-y-6">
-                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5 space-y-6">
+                    <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm p-5 space-y-6">
                         {/* Publish Settings */}
 
                         {/* Publish Action */}
@@ -946,7 +946,7 @@ export function ArticleForm({
                                     <input
                                         type="number"
                                         min={1}
-                                        className="w-full p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
+                                        className="w-full p-2.5 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
                                         value={formData.estimatedTime ?? ""}
                                         onChange={(e) =>
                                             setFormData({
@@ -967,7 +967,7 @@ export function ArticleForm({
                                 </label>
                                 <input
                                     type="datetime-local"
-                                    className="w-full p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
+                                    className="w-full p-2.5 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
                                     value={formData.publishedAt}
                                     onChange={(e) =>
                                         setFormData({
@@ -989,7 +989,7 @@ export function ArticleForm({
                             </div>
                             {formData.thumbnail ? (
                                 <div
-                                    className="relative aspect-video rounded-xl overflow-hidden group cursor-pointer"
+                                    className="relative aspect-video rounded-lg overflow-hidden group cursor-pointer"
                                     onClick={() => setIsMediaLibraryOpen(true)}
                                 >
                                     <img
@@ -1031,7 +1031,7 @@ export function ArticleForm({
                             ) : (
                                 <div
                                     onClick={() => setIsMediaLibraryOpen(true)}
-                                    className="aspect-video rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-primary bg-gray-50 dark:bg-black/20 flex flex-col items-center justify-center cursor-pointer transition-all group"
+                                    className="aspect-video rounded-lg border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-primary bg-gray-50 dark:bg-black/20 flex flex-col items-center justify-center cursor-pointer transition-all group"
                                 >
                                     <div className="p-3 bg-white dark:bg-white/5 rounded-full shadow-sm group-hover:scale-110 transition-transform mb-2 text-gray-500 group-hover:text-primary">
                                         <ImageIcon size={24} />
@@ -1207,7 +1207,7 @@ export function ArticleForm({
                                 </button>
                             </div>
                             <textarea
-                                className={`w-full p-3 rounded-xl border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all resize-none placeholder-gray-400 ${
+                                className={`w-full p-3 rounded-lg border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all resize-none placeholder-gray-400 ${
                                     autoExcerpt
                                         ? "bg-emerald-50/50 dark:bg-emerald-500/5 text-gray-500 dark:text-gray-400"
                                         : "bg-gray-50 dark:bg-black/20"

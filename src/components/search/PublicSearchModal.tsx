@@ -101,7 +101,7 @@ export function PublicSearchModal() {
                             />
                             <button
                                 onClick={handleSearch}
-                                className="px-5 py-2 rounded-full bg-primary text-white font-semibold text-sm hover:opacity-90 transition-opacity flex-shrink-0"
+                                className="px-5 py-2 rounded-full bg-gold hover:bg-amber-600 text-white font-semibold text-sm transition-colors flex-shrink-0"
                             >
                                 Search
                             </button>

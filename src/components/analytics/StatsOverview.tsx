@@ -66,7 +66,7 @@ export function StatsOverview({ stats }: StatsProps) {
                 return (
                     <div
                         key={idx}
-                        className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow"
+                        className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow"
                     >
                         <div className="flex items-start justify-between">
                             <div>
@@ -80,7 +80,7 @@ export function StatsOverview({ stats }: StatsProps) {
                                 </h3>
                             </div>
                             <div
-                                className={`p-3 rounded-xl ${card.bg} ${card.color}`}
+                                className={`p-3 rounded-lg ${card.bg} ${card.color}`}
                             >
                                 <Icon size={20} />
                             </div>
@@ -95,7 +95,7 @@ export function StatsOverview({ stats }: StatsProps) {
 export function DetailedStats({ stats }: StatsProps) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard flex justify-between items-center group">
+            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-dashboard flex justify-between items-center group">
                 <div>
                     <p className="text-sm text-gray-500 font-bold uppercase tracking-wider mb-1">
                         Avg Win
@@ -109,7 +109,7 @@ export function DetailedStats({ stats }: StatsProps) {
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard flex justify-between items-center group">
+            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-dashboard flex justify-between items-center group">
                 <div>
                     <p className="text-sm text-gray-500 font-bold uppercase tracking-wider mb-1">
                         Avg Loss
@@ -123,7 +123,7 @@ export function DetailedStats({ stats }: StatsProps) {
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard flex justify-between items-center">
+            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-dashboard flex justify-between items-center">
                 <div>
                     <p className="text-sm text-gray-500 font-bold uppercase tracking-wider mb-1">
                         Best Pair
@@ -134,7 +134,7 @@ export function DetailedStats({ stats }: StatsProps) {
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard flex justify-between items-center">
+            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-dashboard flex justify-between items-center">
                 <div>
                     <p className="text-sm text-gray-500 font-bold uppercase tracking-wider mb-1">
                         Worst Pair

@@ -66,7 +66,7 @@ export function MistakeFrequencyChart({ data }: MistakeFrequencyChartProps) {
                             if (active && payload && payload.length) {
                                 const data = payload[0].payload;
                                 return (
-                                    <div className="bg-[#1E2028]/95 backdrop-blur-md p-4 rounded-xl border border-dashboard dark:border-white/[0.08] shadow-xl">
+                                    <div className="bg-[#1E2028]/95 backdrop-blur-md p-4 rounded-lg border border-dashboard dark:border-white/[0.08] shadow-xl">
                                         <p className="font-black text-white mb-2 tracking-tight">
                                             {data.name}
                                         </p>

@@ -32,13 +32,13 @@ const ICON_MAP: Record<
 > = {
     Cable: {
         Icon: Cable,
-        gradient: "from-primary to-teal-400",
-        shadow: "shadow-primary/30",
+        gradient: "from-amber-400 to-amber-600",
+        shadow: "shadow-amber-500/30",
     },
     Rocket: {
         Icon: Rocket,
-        gradient: "from-primary to-teal-400",
-        shadow: "shadow-primary/30",
+        gradient: "from-amber-400 to-amber-600",
+        shadow: "shadow-amber-500/30",
     },
     FileText: {
         Icon: FileText,
@@ -223,14 +223,13 @@ export function MilestoneCelebrationModal() {
 
                 {/* Header with glow */}
                 <div className="relative px-6 pt-8 pb-6 text-center overflow-hidden">
-                    {/* Background glow */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-primary/10 to-transparent dark:from-primary/10 dark:via-primary/5 pointer-events-none" />
-                    <div className="absolute top-4 left-1/2 -translate-x-1/2 w-40 h-40 bg-primary/20 rounded-full blur-[60px] pointer-events-none" />
+                    {/* Background tint */}
+                    <div className="absolute inset-0 bg-primary/5 pointer-events-none" />
 
                     <div className="relative z-10">
                         {/* Milestone icon */}
                         <div
-                            className={`mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center shadow-lg ${shadow} mb-4 animate-bounce`}
+                            className={`mx-auto w-16 h-16 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center shadow-md ${shadow} mb-4`}
                         >
                             <Icon size={28} className="text-white" />
                         </div>
@@ -256,17 +255,19 @@ export function MilestoneCelebrationModal() {
                 <div className="px-6 pb-6 space-y-2">
                     <Button
                         variant="primary"
+                        size="smd"
                         onClick={() => handleCelebrate(true)}
-                        className="w-full h-12 font-bold shadow-lg shadow-primary/20 gap-2"
+                        className="w-full font-bold shadow-md shadow-amber-500/20 gap-2"
                     >
                         Check it out
-                        <ArrowRight size={16} />
+                        <ArrowRight size={14} />
                     </Button>
 
                     <Button
-                        variant="ghost"
+                        variant="outline"
+                        size="smd"
                         onClick={() => handleCelebrate(false)}
-                        className="w-full h-10 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                        className="w-full text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                     >
                         Got it!
                     </Button>

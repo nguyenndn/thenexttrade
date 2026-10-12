@@ -44,7 +44,7 @@ export function EmptyStateCTAs({
             <Link href={finalPrimaryHref}>
                 <Button
                     variant="primary"
-                    className="gap-2 px-5 h-10 text-sm font-bold rounded-xl shadow-sm shadow-primary/20 hover:shadow-md hover:shadow-primary/25 hover:-translate-y-px active:translate-y-0 transition-all duration-300"
+                    className="gap-2 px-5 h-10 text-sm font-bold rounded-lg shadow-sm shadow-amber-500/20 hover:shadow-md hover:shadow-amber-500/25 hover:-translate-y-px active:translate-y-0 transition-all duration-300"
                 >
                     <PrimaryIcon size={16} />
                     {finalPrimaryLabel}
@@ -53,7 +53,7 @@ export function EmptyStateCTAs({
             <Link href={secondaryHref}>
                 <Button
                     variant="outline"
-                    className="gap-2 px-5 h-10 text-sm font-bold rounded-xl border-dashboard hover:border-primary/30 hover:bg-primary/5 transition-all duration-300"
+                    className="gap-2 px-5 h-10 text-sm font-bold rounded-lg border-dashboard hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-gold dark:hover:text-amber-400 transition-all duration-300"
                 >
                     <GraduationCap size={16} />
                     {secondaryLabel}

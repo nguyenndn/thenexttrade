@@ -88,6 +88,8 @@ export async function getRuleViolations(
             id: true,
             symbol: true,
             pnl: true,
+            commission: true,
+            swap: true,
             lotSize: true,
             exitDate: true,
             entryDate: true,
@@ -114,8 +116,9 @@ export async function getRuleViolations(
         const violationDates: string[] = [];
         for (const [day, dayTrades] of tradesByDay) {
             const dailyLoss = dayTrades
-                .filter((t) => (t.pnl || 0) < 0)
-                .reduce((sum, t) => sum + Math.abs(t.pnl || 0), 0);
+                .map((t) => (t.pnl || 0) + (t.commission || 0) + (t.swap || 0))
+                .filter((pnl) => pnl < 0)
+                .reduce((sum, pnl) => sum + Math.abs(pnl), 0);
             if (dailyLoss > maxDailyLoss) violationDates.push(day);
         }
         if (violationDates.length > 0) {

@@ -2,7 +2,6 @@ import JournalList from "@/components/journal/JournalList";
 import { Metadata } from "next";
 import { getJournalEntries, getUserTags } from "@/actions/journal";
 import { getStrategies } from "@/actions/strategies";
-import { getTradePlans } from "@/actions/trade-plans";
 import { redirect } from "next/navigation";
 import { format, startOfMonth } from "date-fns";
 import { prisma } from "@/lib/prisma";
@@ -14,7 +13,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
     title: "Trading Journal & Execution Telemetry | TheNextTrade",
     description:
-        "Detailed trade logs, execution telemetry, trade planning, and performance verification.",
+        "Detailed trade logs, execution telemetry, and performance verification.",
 };
 
 export default async function JournalPage({
@@ -113,7 +112,7 @@ export default async function JournalPage({
         accountTimezonePromise,
     ]);
 
-    const [{ entries, meta, stats }, { strategies }, userTags, tradePlans] =
+    const [{ entries, meta, stats }, { strategies }, userTags] =
         await Promise.all([
             getJournalEntries(page, limit, {
                 accountId,
@@ -130,7 +129,6 @@ export default async function JournalPage({
             }),
             getStrategies(),
             getUserTags(),
-            getTradePlans(),
         ]);
 
     return (
@@ -142,7 +140,6 @@ export default async function JournalPage({
                 strategies={strategies}
                 userTags={userTags}
                 hasTradeData={tradingDataState.hasTradeData}
-                initialTradePlans={tradePlans}
             />
         </div>
     );

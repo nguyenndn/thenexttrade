@@ -79,7 +79,7 @@ export function LessonPreviewModal({
                         }}
                         className="fixed inset-0 z-[70] flex items-center justify-center p-4 pointer-events-none"
                     >
-                        <div className="bg-white dark:bg-[#1E2028] rounded-2xl border border-dashboard shadow-2xl w-full max-w-2xl pointer-events-auto overflow-hidden max-h-[90vh] flex flex-col">
+                        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-2xl w-full max-w-2xl pointer-events-auto overflow-hidden max-h-[90vh] flex flex-col">
                             {/* Header */}
                             <div className="relative bg-gradient-to-r from-primary/15 to-cyan-500/15 px-6 py-5 flex-shrink-0">
                                 <button
@@ -180,11 +180,12 @@ export function LessonPreviewModal({
                                     href="/auth/signup"
                                     className={buttonVariants({
                                         variant: "primary",
+                                        size: "smd",
                                         className:
-                                            "flex items-center justify-center gap-2 w-full px-6 py-3 rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02]",
+                                            "flex items-center justify-center gap-2 w-full font-bold shadow-md shadow-amber-500/25",
                                     })}
                                 >
-                                    <PlayCircle size={18} />
+                                    <PlayCircle size={15} />
                                     Sign Up to Continue
                                 </Link>
                                 <Link

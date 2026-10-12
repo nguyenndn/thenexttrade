@@ -192,7 +192,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* LEFT COLUMN: Basic Information */}
                 <div className="space-y-6">
-                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 space-y-6">
+                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-6 space-y-6">
                         <h3 className="text-lg font-bold text-gray-700 dark:text-white border-b border-gray-200 dark:border-white/10 pb-4">
                             Basic Information
                         </h3>
@@ -360,11 +360,11 @@ export function ProductForm({ initialData }: ProductFormProps) {
                 {/* RIGHT COLUMN: Product Assets (1/3 width) */}
                 <div className="space-y-6">
                     {/* Thumbnail */}
-                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 space-y-4">
+                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-6 space-y-4">
                         <h3 className="text-base font-bold text-gray-700 dark:text-white border-b border-gray-200 dark:border-white/10 pb-3">
                             Thumbnail
                         </h3>
-                        <div className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl text-center hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group relative flex flex-col items-center justify-center min-h-[360px] overflow-hidden">
+                        <div className="border-2 border-dashed border-gray-200 dark:border-white/10 rounded-lg text-center hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group relative flex flex-col items-center justify-center min-h-[360px] overflow-hidden">
                             <input
                                 type="file"
                                 accept="image/*"
@@ -409,7 +409,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                     </div>
 
                     {/* MT5 File */}
-                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 space-y-4">
+                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-6 space-y-4">
                         <div className="flex justify-between items-center border-b border-gray-200 dark:border-white/10 pb-3">
                             <h3 className="text-base font-bold text-gray-700 dark:text-white">
                                 MT5 File (.ex5)
@@ -420,7 +420,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                 </span>
                             )}
                         </div>
-                        <div className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl text-center hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group relative flex flex-col items-center justify-center min-h-[120px]">
+                        <div className="border-2 border-dashed border-gray-200 dark:border-white/10 rounded-lg text-center hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group relative flex flex-col items-center justify-center min-h-[120px]">
                             <input
                                 type="file"
                                 accept=".ex5"
@@ -441,7 +441,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                     </div>
 
                     {/* Info Note */}
-                    <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-xl flex items-start gap-3 text-gray-600 text-xs border border-gray-200 dark:border-white/10">
+                    <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-lg flex items-start gap-3 text-gray-600 text-xs border border-gray-200 dark:border-white/10">
                         <Info size={16} className="shrink-0 mt-0.5" />
                         <p>
                             Files are uploaded to secure storage. Uploading a

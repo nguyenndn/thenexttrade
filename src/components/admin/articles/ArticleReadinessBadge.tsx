@@ -38,7 +38,7 @@ export function ArticleReadinessBadge({
 
     return (
         <span
-            className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold ${color}`}
+            className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold ${color}`}
         >
             <span className="tabular-nums">{score}</span>
             <span className="opacity-70">·</span>

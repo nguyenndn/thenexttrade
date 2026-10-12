@@ -35,7 +35,7 @@ function AccountLabelDisplay({ account }: { account: TradingAccount }) {
     const accNumber = account.accountNumber ? `(${account.accountNumber})` : "";
     const platform = account.platform ? `[${account.platform}] ` : "";
 
-    // REAL usually text-[#00C888] (Breek primary)
+    // REAL usually text-primary (TheNextTrade primary)
     // DEMO usually text-red-500
     const typeColor =
         displayType === "REAL"
@@ -100,7 +100,6 @@ export function AccountSelector({
                 setAccounts(accs);
             })
             .catch((error) => {
-                console.error("Failed to load accounts", error);
                 toast.error(
                     error instanceof Error
                         ? error.message
@@ -211,11 +210,11 @@ export function AccountSelector({
                     role="combobox"
                     aria-expanded={open}
                     className={cn(
-                        "flex items-center h-10 gap-2 px-3 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
+                        "flex items-center h-10 gap-2 px-3 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-[#151925] border border-dashboard rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
                         className
                     )}
                 >
-                    <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
+                    <div className="p-1.5 bg-gold/10 text-gold dark:bg-amber-500/15 dark:text-amber-400 rounded-lg">
                         <Wallet size={16} />
                     </div>
                     <span className="flex-1 text-left font-medium overflow-hidden">

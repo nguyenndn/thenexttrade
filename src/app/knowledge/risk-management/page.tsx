@@ -22,7 +22,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
     title: "Complete Guide to Forex Risk Management | TheNextTrade",
     description:
-        "Master forex risk management with our comprehensive guide. Learn position sizing, drawdown analysis, risk of ruin, and use our free calculators to protect your trading capital.",
+        "Position sizing, drawdown and risk-of-ruin, with free calculators to protect your trading capital.",
     keywords: [
         "forex risk management",
         "position sizing",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Complete Guide to Forex Risk Management",
         description:
-            "Everything you need to know about protecting your trading capital. Free tools and guides.",
+            "How to size positions and cap drawdown. Free calculators included.",
         type: "article",
     },
 };
@@ -165,7 +165,7 @@ export default async function RiskManagementPage() {
             <main className="relative z-10 pt-28 pb-20">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* ── Breadcrumb Panel ── */}
-                    <div className="flex items-center gap-2.5 text-xs font-semibold bg-white/60 dark:bg-white/[0.01] border border-amber-900/10 rounded-xl px-4 py-2.5 mb-8 w-fit shadow-sm backdrop-blur-sm">
+                    <div className="flex items-center gap-2.5 text-xs font-semibold bg-white/60 dark:bg-white/[0.01] border border-amber-900/10 rounded-lg px-4 py-2.5 mb-8 w-fit shadow-sm backdrop-blur-sm">
                         <Link
                             href="/"
                             className="text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors shrink-0 flex items-center gap-1.5"
@@ -205,7 +205,7 @@ export default async function RiskManagementPage() {
 
                                 {/* Title with icon backdrop */}
                                 <div className="flex items-center gap-2.5 sm:gap-3">
-                                    <div className="p-2.5 bg-gold/10 text-gold border border-gold/20 rounded-xl shadow-sm shrink-0">
+                                    <div className="p-2.5 bg-gold/10 text-gold border border-gold/20 rounded-lg shadow-sm shrink-0">
                                         <Shield
                                             size={22}
                                             className="stroke-[2.5]"
@@ -230,7 +230,7 @@ export default async function RiskManagementPage() {
 
                             {/* Column Right: Glassmorphic Micro HUD Panel */}
                             <div className="md:col-span-5 lg:col-span-4">
-                                <div className="bg-white/80 dark:bg-white/[0.02] border border-amber-500/20 rounded-2xl p-5 shadow-lg relative backdrop-blur-md overflow-hidden group-hover:border-amber-500/35 transition-colors duration-300">
+                                <div className="bg-white/80 dark:bg-white/[0.02] border border-amber-500/20 rounded-lg p-5 shadow-lg relative backdrop-blur-md overflow-hidden group-hover:border-amber-500/35 transition-colors duration-300">
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/[0.04] dark:bg-amber-500/[0.02] rounded-full blur-2xl pointer-events-none" />
 
                                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3.5 font-heading">
@@ -274,10 +274,10 @@ export default async function RiskManagementPage() {
                         {PILLAR_SECTIONS.map((section, idx) => (
                             <section
                                 key={idx}
-                                className="bg-white/70 dark:bg-white/[0.02] border border-amber-900/10 rounded-2xl p-6 md:p-8 hover:border-amber-500/20 hover:bg-white/80 dark:hover:bg-white/[0.03] transition-all duration-300 shadow-sm"
+                                className="bg-white/70 dark:bg-white/[0.02] border border-amber-900/10 rounded-lg p-6 md:p-8 hover:border-amber-500/20 hover:bg-white/80 dark:hover:bg-white/[0.03] transition-all duration-300 shadow-sm"
                             >
                                 <h2 className="text-lg md:text-xl font-bold mb-4 flex items-center gap-3 text-slate-800 dark:text-white font-heading">
-                                    <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 text-sm font-black border border-amber-500/20">
+                                    <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 text-sm font-black border border-amber-500/20">
                                         {idx + 1}
                                     </span>
                                     {section.title}
@@ -292,7 +292,7 @@ export default async function RiskManagementPage() {
                     {/* ── Risk Management Tools Grid ── */}
                     <div className="mb-16">
                         <div className="flex items-center gap-3 mb-8">
-                            <div className="p-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-xl">
+                            <div className="p-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-lg">
                                 <Calculator
                                     size={20}
                                     className="stroke-[2.5]"
@@ -307,10 +307,10 @@ export default async function RiskManagementPage() {
                                 <Link
                                     key={tool.href}
                                     href={tool.href}
-                                    className="group flex items-start gap-4 p-5 rounded-2xl border border-amber-900/10 bg-white/70 dark:bg-white/[0.02] hover:border-amber-500/30 hover:bg-white/90 dark:hover:bg-[#11100C]/50 hover:shadow-lg hover:shadow-amber-500/[0.02] transition-all duration-300"
+                                    className="group flex items-start gap-4 p-5 rounded-lg border border-amber-900/10 bg-white/70 dark:bg-white/[0.02] hover:border-amber-500/30 hover:bg-white/90 dark:hover:bg-[#11100C]/50 hover:shadow-lg hover:shadow-amber-500/[0.02] transition-all duration-300"
                                 >
                                     <div
-                                        className={`p-2.5 rounded-xl ${tool.bg} shrink-0 border border-white/5`}
+                                        className={`p-2.5 rounded-lg ${tool.bg} shrink-0 border border-white/5`}
                                     >
                                         <tool.icon
                                             size={20}
@@ -338,7 +338,7 @@ export default async function RiskManagementPage() {
                     {relatedArticles.length > 0 && (
                         <div className="mb-16">
                             <div className="flex items-center gap-3 mb-8">
-                                <div className="p-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-xl">
+                                <div className="p-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-lg">
                                     <BookOpen
                                         size={20}
                                         className="stroke-[2.5]"
@@ -353,7 +353,7 @@ export default async function RiskManagementPage() {
                                     <Link
                                         key={article.slug}
                                         href={`/articles/${article.slug}`}
-                                        className="group p-5 rounded-2xl border border-amber-900/10 bg-white/70 dark:bg-white/[0.02] hover:border-amber-500/30 hover:bg-white/90 dark:hover:bg-[#11100C]/50 hover:shadow-md transition-all duration-300"
+                                        className="group p-5 rounded-lg border border-amber-900/10 bg-white/70 dark:bg-white/[0.02] hover:border-amber-500/30 hover:bg-white/90 dark:hover:bg-[#11100C]/50 hover:shadow-md transition-all duration-300"
                                     >
                                         <h4 className="font-extrabold text-slate-800 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-2 text-sm font-heading mb-2 leading-snug">
                                             {article.title}
@@ -370,26 +370,24 @@ export default async function RiskManagementPage() {
                     )}
 
                     {/* ── Academy Level 9 CTA ── */}
-                    <div className="bg-gradient-to-br from-amber-500/[0.06] to-amber-600/[0.02] border border-amber-500/20 rounded-2xl p-8 md:p-10 text-center relative overflow-hidden group">
+                    <div className="bg-gradient-to-br from-amber-500/[0.06] to-amber-600/[0.02] border border-amber-500/20 rounded-lg p-8 md:p-10 text-center relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/[0.05] rounded-full blur-3xl pointer-events-none" />
                         <h3 className="text-xl md:text-2xl font-black text-slate-800 dark:text-white mb-3 font-heading tracking-tight">
-                            Ready to Master Risk Management?
+                            Level 9: Risk Management Blueprint
                         </h3>
                         <p className="text-sm md:text-base text-slate-500 dark:text-gray-400 mb-6 max-w-md mx-auto font-semibold leading-relaxed">
-                            Our Academy includes a dedicated **Level 9: Risk
-                            Manager** within our 5-phase trading blueprint,
-                            loaded with deep-dive training on drawdown, ruin
-                            indices, and behavioral execution.
+                            A structured framework covering position sizing, drawdown control, risk-of-ruin math, and emotional discipline.
                         </p>
                         <Link
                             href="/academy"
                             className={buttonVariants({
                                 variant: "primary",
+                                size: "smd",
                                 className:
-                                    "items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-gold to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black shadow-lg shadow-gold/20 hover:shadow-gold/30 hover:scale-[1.02]",
+                                    "items-center gap-2 rounded-lg bg-gradient-to-r from-gold to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black shadow-lg shadow-gold/20 hover:shadow-gold/30 hover:scale-[1.02]",
                             })}
                         >
-                            <BookOpen size={18} className="stroke-[2.5]" />
+                            <BookOpen size={15} className="stroke-[2.5]" />
                             Explore the Academy
                         </Link>
                     </div>

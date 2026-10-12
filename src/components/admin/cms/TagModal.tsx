@@ -111,7 +111,7 @@ export function TagModal({ isOpen, onClose, onSuccess, tag }: TagModalProps) {
                     </label>
                     <input
                         {...register("name")}
-                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
+                        className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
                         placeholder="Scalping"
                     />
                     {errors.name && (
@@ -130,7 +130,7 @@ export function TagModal({ isOpen, onClose, onSuccess, tag }: TagModalProps) {
                     </label>
                     <input
                         {...register("slug")}
-                        className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
+                        className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
                         placeholder="scalping"
                     />
                     {errors.slug && (
@@ -155,7 +155,7 @@ export function TagModal({ isOpen, onClose, onSuccess, tag }: TagModalProps) {
                         variant="primary"
                         size="smd"
                         isLoading={isSubmitting}
-                        className="shadow-lg shadow-primary/30 px-6 font-bold"
+                        className="shadow-lg shadow-amber-500/30 px-6 font-bold"
                     >
                         {tag ? "Save Changes" : "Create Tag"}
                     </Button>

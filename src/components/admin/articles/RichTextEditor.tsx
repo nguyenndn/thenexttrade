@@ -159,14 +159,14 @@ export function RichTextEditor({
             }),
             Image.configure({
                 HTMLAttributes: {
-                    class: "rounded-xl shadow-lg max-w-full my-6 mx-auto block",
+                    class: "rounded-lg shadow-lg max-w-full my-6 mx-auto block",
                 },
             }),
             Youtube.configure({
                 controls: false,
                 nocookie: true,
                 HTMLAttributes: {
-                    class: "w-full rounded-xl shadow-lg aspect-video my-6",
+                    class: "w-full rounded-lg shadow-lg aspect-video my-6",
                 },
             }),
             Table.configure({
@@ -359,7 +359,7 @@ export function RichTextEditor({
         <div
             ref={editorContainerRef}
             className={`
- border border-gray-200 dark:border-white/10 dark:border-gray-800 rounded-xl overflow-hidden bg-white dark:bg-[#151925] flex flex-col shadow-sm
+ border border-gray-200 dark:border-white/10 dark:border-gray-800 rounded-lg overflow-hidden bg-white dark:bg-[#151925] flex flex-col shadow-sm
  ${isFullscreen ? "fixed inset-0 z-50 rounded-none border-0" : ""}
  ${className}
  `}
@@ -904,7 +904,7 @@ export function RichTextEditor({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4"
+                        className="relative bg-white dark:bg-[#1E2028] rounded-lg shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <h3 className="text-lg font-bold text-gray-700 dark:text-white">
@@ -921,7 +921,7 @@ export function RichTextEditor({
                                     setLinkDialogOpen(false);
                             }}
                             placeholder="https://example.com"
-                            className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                            className="w-full p-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
                         />
                         <div className="flex justify-end gap-2">
                             <Button
@@ -970,7 +970,7 @@ export function RichTextEditor({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4"
+                        className="relative bg-white dark:bg-[#1E2028] rounded-lg shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <h3 className="text-lg font-bold text-gray-700 dark:text-white">
@@ -987,7 +987,7 @@ export function RichTextEditor({
                                     setYoutubeDialogOpen(false);
                             }}
                             placeholder="https://www.youtube.com/watch?v=..."
-                            className="w-full p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                            className="w-full p-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
                         />
                         <div className="flex justify-end gap-2">
                             <Button

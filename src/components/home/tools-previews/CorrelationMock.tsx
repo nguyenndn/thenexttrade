@@ -18,7 +18,7 @@ export function CorrelationMock() {
     ];
 
     return (
-        <div className="h-44 w-full bg-slate-50 dark:bg-slate-900/80 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden border border-slate-200/80 dark:border-white/10 select-none cursor-pointer">
+        <div className="h-44 w-full bg-slate-50 dark:bg-slate-900/80 rounded-lg p-4 flex flex-col justify-between relative overflow-hidden border border-gray-200 dark:border-white/10 select-none cursor-pointer">
             {/* Decorative glow */}
             <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-full blur-2xl pointer-events-none" />
 
@@ -66,7 +66,7 @@ export function CorrelationMock() {
 
                                 // Color scaling based on value
                                 let cellBg =
-                                    "bg-slate-100 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700/60 text-slate-500 dark:text-slate-400";
+                                    "bg-slate-100 dark:bg-slate-800/60 border-gray-200 dark:border-slate-700/60 text-slate-500 dark:text-slate-400";
                                 if (!isOne) {
                                     if (isPositive) {
                                         cellBg =
@@ -81,7 +81,7 @@ export function CorrelationMock() {
                                     }
                                 } else {
                                     cellBg =
-                                        "bg-slate-200/50 dark:bg-slate-800/40 border-slate-300/50 dark:border-slate-700/40 text-slate-400 dark:text-slate-500 font-medium";
+                                        "bg-slate-200/50 dark:bg-slate-800/40 border-gray-200 dark:border-slate-700/40 text-slate-400 dark:text-slate-500 font-medium";
                                 }
 
                                 return (
@@ -111,7 +111,7 @@ export function CorrelationMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-500 flex justify-between items-center z-10 border-t border-slate-100 dark:border-slate-800/60 pt-2 font-mono">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-500 flex justify-between items-center z-10 border-t border-gray-200 dark:border-slate-800/60 pt-2 font-mono">
                 <span>180-day correlation coefficient</span>
                 <span>Auto-sync active</span>
             </div>

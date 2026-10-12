@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { PublicHeader } from "@/components/layout/PublicHeader";
@@ -39,7 +38,7 @@ import path from "path";
 export const metadata: Metadata = {
     title: "GoldScalperNinja Official Community — Free XAUUSD Signals & Gold Analysis",
     description:
-        "Join 12,000+ traders in the official GoldScalperNinja Telegram community. Free daily XAUUSD analysis, high-win signals, Price Action education, and MT5 EAs powered by TheNextTrade.",
+        "Join 12,000+ traders in the official GoldScalperNinja Telegram community. Free daily XAUUSD analysis, Price Action education, and MT5 EAs powered by TheNextTrade.",
     openGraph: {
         title: "GoldScalperNinja Telegram Community — Free Gold Signals & Analysis",
         description:
@@ -82,8 +81,8 @@ const freeFeatures = [
         href: TELEGRAM_URL,
         external: true,
         color: "text-amber-600 dark:text-gold",
-        bg: "bg-gradient-to-br from-amber-100 to-orange-50 dark:from-gold/15 dark:to-orange-500/5",
-        border: "border-amber-200/60 dark:border-gold/15",
+        bg: "bg-amber-500/10 dark:bg-gold/10",
+        border: "border-amber-500/20 dark:border-gold/20",
     },
     {
         icon: Send,
@@ -99,9 +98,9 @@ const freeFeatures = [
         cta: "Join Telegram free",
         href: TELEGRAM_URL,
         external: true,
-        color: "text-emerald-600 dark:text-primary",
-        bg: "bg-gradient-to-br from-emerald-100 to-teal-50 dark:from-primary/15 dark:to-teal-500/5",
-        border: "border-emerald-200/60 dark:border-primary/15",
+        color: "text-amber-600 dark:text-gold",
+        bg: "bg-amber-500/10 dark:bg-gold/10",
+        border: "border-amber-500/20 dark:border-gold/20",
     },
     {
         icon: BookOpen,
@@ -118,8 +117,8 @@ const freeFeatures = [
         href: "/academy",
         external: false,
         color: "text-amber-600 dark:text-gold",
-        bg: "bg-gradient-to-br from-amber-100 to-orange-50 dark:from-gold/15 dark:to-orange-500/5",
-        border: "border-amber-200/60 dark:border-gold/15",
+        bg: "bg-amber-500/10 dark:bg-gold/10",
+        border: "border-amber-500/20 dark:border-gold/20",
     },
     {
         icon: Cpu,
@@ -135,16 +134,16 @@ const freeFeatures = [
         cta: "Explore Trading Systems",
         href: "/trading-systems",
         external: false,
-        color: "text-emerald-600 dark:text-primary",
-        bg: "bg-gradient-to-br from-emerald-100 to-teal-50 dark:from-primary/15 dark:to-teal-500/5",
-        border: "border-emerald-200/60 dark:border-primary/15",
+        color: "text-amber-600 dark:text-gold",
+        bg: "bg-amber-500/10 dark:bg-gold/10",
+        border: "border-amber-500/20 dark:border-gold/20",
     },
 ];
 
 const vipBenefits = [
     { icon: TrendingUp, text: "3 - 7 Premium Signals daily" },
     { icon: BookOpen, text: "Ebook SMC (Smart Money Concept)" },
-    { icon: Bot, text: "EA Trade Manager & EA GoldScalperNinja" },
+    { icon: Bot, text: "EA Trade Manager & GoldScalperNinja EA" },
     { icon: Clock, text: "24/7 Trader Room" },
     { icon: BarChart3, text: "Advanced Signals, Insights & Indicators" },
     { icon: Headphones, text: "1:1 Technical Support" },
@@ -164,12 +163,12 @@ const platformLinks = [
     {
         title: "Trading System",
         description:
-            "Download EA GoldScalperNinja, indicators, and setup guides for your MT5 workflow.",
+            "Download GoldScalperNinja EA, indicators, and setup guides for your MT5 workflow.",
         icon: Bot,
         href: "/trading-systems",
         ctaText: "View Trading Systems",
-        color: "text-emerald-600 dark:text-primary",
-        bg: "bg-emerald-500/10 dark:bg-primary/15",
+        color: "text-amber-600 dark:text-gold",
+        bg: "bg-amber-500/10 dark:bg-gold/15",
     },
     {
         title: "Leaderboard & Trader Performance",
@@ -259,10 +258,10 @@ export default async function CommunityPage() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-transparent text-gray-700 dark:text-white overflow-hidden relative">
-            {/* Background Glows */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[#2AABEE]/5 dark:bg-[#2AABEE]/10 rounded-full blur-[120px] pointer-events-none" />
-            <div className="absolute top-1/3 right-0 w-[500px] h-[500px] bg-primary/5 dark:bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="min-h-screen bg-white dark:bg-transparent text-gray-700 dark:text-white overflow-hidden relative">
+            {/* Ambient Background Atmosphere & Technical Grid */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.08),transparent_75%)] dark:bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.12),transparent_75%)] pointer-events-none" />
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none" />
 
             <PublicHeader user={user} />
 
@@ -274,40 +273,20 @@ export default async function CommunityPage() {
 
                             {/* Left Column: Brand Story & High Impact Headline */}
                             <div className="lg:col-span-6 text-left space-y-6 md:space-y-8">
-                                {/* Official Brand Badge */}
-                                <div className="inline-flex max-w-full flex-wrap items-center gap-x-2.5 gap-y-1 px-4 py-2 rounded-full bg-[#2AABEE]/10 border border-[#2AABEE]/30 dark:border-[#2AABEE]/40 ring-4 ring-[#2AABEE]/5 shadow-sm">
-                                    <div className="w-6 h-6 rounded-full overflow-hidden shrink-0 ring-2 ring-[#2AABEE]">
-                                        <Image
-                                            src="/images/logo_ninja.png"
-                                            alt="GoldScalperNinja Logo"
-                                            width={24}
-                                            height={24}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    </div>
-                                    <span className="text-[10px] sm:text-xs font-black text-[#2AABEE] dark:text-[#38BDF8] uppercase tracking-normal sm:tracking-wider">
-                                        Official Telegram Community
-                                    </span>
-                                    <span className="flex h-2 w-2 relative">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-                                    </span>
-                                </div>
-
                                 {/* Headline */}
                                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-gray-900 dark:text-white leading-[1.08]">
-                                    Free Daily Gold Signals
-                                    <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 dark:from-amber-400 dark:via-orange-400 dark:to-amber-300 drop-shadow-sm">
-                                        That Actually Work
+                                    Free Daily Gold Signals{" "}
+                                    <span className="block text-gold">
+                                        &amp; Market Analysis
                                     </span>
                                 </h1>
 
                                 <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-xl">
-                                    Join the official <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="text-[#2AABEE] hover:underline font-bold">Public Telegram channel</a> community — 12,000+ traders sharing daily XAUUSD analysis, clear signals &amp; real trading experience. Powered by <strong className="text-gray-900 dark:text-white font-black">TheNextTrade</strong>, with Price Action insights, AI Chart Analysis &amp; automated MT5 EA systems.
+                                    Join the official <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="text-[#2AABEE] hover:underline font-bold">Public Telegram channel</a> community — 12,000+ traders sharing daily XAUUSD analysis, clear signals &amp; real trading experience. Powered by <strong className="text-gray-900 dark:text-white font-black">TheNextTrade</strong>, with Price Action insights, Chart Analysis &amp; automated MT5 EA systems.
                                 </p>
 
                                 {/* Live Metrics Ticker Pill */}
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 p-3.5 rounded-2xl bg-white/90 dark:bg-white/[0.04] border border-amber-200/80 dark:border-white/[0.08] shadow-sm backdrop-blur-md">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 p-3.5 rounded-lg bg-white/90 dark:bg-white/[0.04] border border-amber-200/80 dark:border-white/[0.08] shadow-sm backdrop-blur-md">
                                     <div className="text-left px-2">
                                         <span className="block text-[10px] font-black uppercase tracking-wider text-gray-400">Win Rate</span>
                                         <a
@@ -320,7 +299,7 @@ export default async function CommunityPage() {
                                             Verified live results
                                         </span>
                                     </div>
-                                    <div className="text-left px-2 sm:border-x sm:border-slate-200 dark:border-white/10">
+                                    <div className="text-left px-2 sm:border-x sm:border-gray-200 dark:border-white/10">
                                         <span className="block text-[10px] font-black uppercase tracking-wider text-gray-400">Daily Updates</span>
                                         <span className="text-sm sm:text-base font-black text-amber-600 dark:text-gold flex items-center gap-1">
                                             <Zap size={14} /> Real Insights
@@ -348,11 +327,12 @@ export default async function CommunityPage() {
                                         rel="noopener noreferrer"
                                         className={buttonVariants({
                                             variant: "secondary",
+                                            size: "smd",
                                             className:
-                                                "w-full px-4 py-3 font-black text-xs sm:text-sm rounded-xl shadow-md shadow-[#2AABEE]/20 hover:shadow-lg hover:shadow-[#2AABEE]/30 bg-[#2AABEE] hover:bg-[#2299d6] active:scale-[0.98] hover:scale-[1.01] text-white whitespace-nowrap",
+                                                "w-full font-black shadow-md shadow-[#2AABEE]/20 hover:shadow-lg hover:shadow-[#2AABEE]/30 bg-[#2AABEE] hover:bg-[#2299d6] active:scale-[0.98] hover:scale-[1.01] text-white whitespace-nowrap",
                                         })}
                                     >
-                                        <Send size={16} className="shrink-0" />
+                                        <Send size={14} className="shrink-0" />
                                         <span>Join Telegram Channel Free</span>
                                     </a>
                                     <a
@@ -360,14 +340,15 @@ export default async function CommunityPage() {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className={buttonVariants({
-                                            variant: "primary",
+                                            variant: "gold",
+                                            size: "smd",
                                             className:
-                                                "w-full px-4 py-3 font-black text-xs sm:text-sm rounded-xl shadow-md shadow-amber-500/15 hover:shadow-lg hover:shadow-amber-500/25 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-[0.98] hover:scale-[1.01] text-white whitespace-nowrap",
+                                                "w-full font-black whitespace-nowrap",
                                         })}
                                     >
-                                        <BarChart3 size={16} className="shrink-0" />
+                                        <BarChart3 size={14} className="shrink-0" />
                                         <span>See Today&apos;s Analysis</span>
-                                        <ArrowRight size={14} className="shrink-0" />
+                                        <ArrowRight size={13} className="shrink-0" />
                                     </a>
                                 </div>
 
@@ -385,13 +366,13 @@ export default async function CommunityPage() {
                         </p>
                     </ScrollReveal>
 
-                    {/* Community Proof Strip (Rebuilt for High-End WOW Aesthetics) */}
+                    {/* Community Proof Strip */}
                     <div className="mt-10 sm:mt-14">
                         <div className="mx-auto max-w-5xl relative group">
-                            {/* Ambient Glow Gradient backdrop */}
-                            <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-sky-500/20 rounded-2xl blur-md opacity-50 group-hover:opacity-100 transition duration-500" />
+                            {/* Ambient Subtle Glow backdrop */}
+                            <div className="absolute -inset-0.5 bg-gold/15 rounded-lg blur-md opacity-40 group-hover:opacity-75 transition duration-500" />
 
-                            <div className="relative rounded-2xl border border-gray-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0D111D]/80 p-2 sm:p-3 shadow-xl backdrop-blur-xl">
+                            <div className="relative rounded-lg border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0D111D]/80 p-2 sm:p-3 shadow-xl backdrop-blur-xl">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 divide-y lg:divide-y-0 lg:divide-x divide-gray-100 dark:divide-white/[0.06]">
                                     {[
                                         {
@@ -420,16 +401,15 @@ export default async function CommunityPage() {
                                             label: "Official Channel",
                                             sub: "Verified Access",
                                             icon: Shield,
-                                            color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
+                                            color: "text-amber-500 bg-amber-500/10 border-amber-500/20",
                                         },
                                     ].map((stat, idx) => (
                                         <div
                                             key={stat.label}
-                                            className={`group/item flex items-center gap-3.5 px-3 py-3.5 sm:px-4 sm:py-3.5 transition-all duration-300 rounded-xl hover:bg-gray-50/80 dark:hover:bg-white/[0.03] ${
-                                                idx !== 0 ? "pt-3.5 sm:pt-3.5" : ""
-                                            }`}
+                                            className={`group/item flex items-center gap-3.5 px-3 py-3.5 sm:px-4 sm:py-3.5 transition-all duration-300 rounded-lg hover:bg-gray-50/80 dark:hover:bg-white/[0.03] ${idx !== 0 ? "pt-3.5 sm:pt-3.5" : ""
+                                                }`}
                                         >
-                                            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${stat.color} shadow-sm group-hover/item:scale-110 transition-transform duration-300`}>
+                                            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border ${stat.color} shadow-sm group-hover/item:scale-110 transition-transform duration-300`}>
                                                 <stat.icon size={20} strokeWidth={2.2} />
                                             </div>
                                             <div className="min-w-0">
@@ -467,11 +447,11 @@ export default async function CommunityPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
                         {freeFeatures.map((feature, i) => (
                             <ScrollReveal key={feature.title} delay={0.08 * i} direction="up" className="h-full">
-                                <div className="group flex h-full flex-col justify-between rounded-2xl border border-slate-200/90 bg-white/90 p-6 sm:p-7 shadow-sm transition-all duration-300 hover:border-amber-300 hover:shadow-[0_14px_35px_rgba(15,23,42,0.07)] dark:border-white/[0.06] dark:bg-[#131622]/85 dark:hover:border-gold/35">
+                                <div className="group flex h-full flex-col justify-between rounded-lg border border-gray-200 bg-white/90 p-6 sm:p-7 shadow-sm transition-all duration-300 hover:border-amber-300 hover:shadow-[0_14px_35px_rgba(15,23,42,0.07)] dark:border-white/[0.06] dark:bg-[#131622]/85 dark:hover:border-gold/35">
                                     <div>
                                         <div className="flex items-start justify-between gap-3">
                                             <div className="flex items-start gap-3.5">
-                                                <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${feature.bg} ${feature.color} shadow-sm`}>
+                                                <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-lg ${feature.bg} ${feature.color} shadow-sm`}>
                                                     <feature.icon size={22} />
                                                 </div>
                                                 <div className="min-w-0">
@@ -495,7 +475,7 @@ export default async function CommunityPage() {
                                         </p>
 
                                         {/* Mockup Box */}
-                                        <div className="mt-4 rounded-xl border border-slate-200/80 bg-slate-50/90 p-4 dark:border-white/[0.06] dark:bg-white/[0.04]">
+                                        <div className="mt-4 rounded-lg border border-gray-200 bg-slate-50/90 p-4 dark:border-white/[0.06] dark:bg-white/[0.04]">
                                             {feature.title === "Daily Market Analysis" ? (
                                                 <div>
                                                     <div className="mb-2 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.16em] text-gray-400">
@@ -503,15 +483,15 @@ export default async function CommunityPage() {
                                                         <span className="text-amber-600 dark:text-gold font-bold">XAUUSD</span>
                                                     </div>
                                                     <div className="grid grid-cols-3 gap-2 text-center">
-                                                        <div className="rounded-lg bg-white/90 p-2 shadow-sm border border-slate-100 dark:border-white/[0.06] dark:bg-white/[0.06]">
+                                                        <div className="rounded-lg bg-white/90 p-2 shadow-sm border border-gray-200 dark:border-white/[0.06] dark:bg-white/[0.06]">
                                                             <span className="block text-[9px] text-gray-400 uppercase font-semibold">Bias</span>
                                                             <span className="mt-0.5 block text-xs font-black text-gray-900 dark:text-white">Bullish</span>
                                                         </div>
-                                                        <div className="rounded-lg bg-white/90 p-2 shadow-sm border border-slate-100 dark:border-white/[0.06] dark:bg-white/[0.06]">
+                                                        <div className="rounded-lg bg-white/90 p-2 shadow-sm border border-gray-200 dark:border-white/[0.06] dark:bg-white/[0.06]">
                                                             <span className="block text-[9px] text-gray-400 uppercase font-semibold">Zones</span>
                                                             <span className="mt-0.5 block text-xs font-black text-gray-900 dark:text-white">Entry / TP</span>
                                                         </div>
-                                                        <div className="rounded-lg bg-white/90 p-2 shadow-sm border border-slate-100 dark:border-white/[0.06] dark:bg-white/[0.06]">
+                                                        <div className="rounded-lg bg-white/90 p-2 shadow-sm border border-gray-200 dark:border-white/[0.06] dark:bg-white/[0.06]">
                                                             <span className="block text-[9px] text-gray-400 uppercase font-semibold">Context</span>
                                                             <span className="mt-0.5 block text-xs font-black text-gray-900 dark:text-white">Levels</span>
                                                         </div>
@@ -519,8 +499,8 @@ export default async function CommunityPage() {
                                                 </div>
                                             ) : feature.title === "Free Trading Signals" ? (
                                                 <div className="flex items-center justify-between gap-3 text-xs py-1">
-                                                    <span className="font-bold text-gray-900 dark:text-white">XAUUSD <span className="font-bold text-emerald-600 dark:text-primary">BUY</span></span>
-                                                    <span className="text-emerald-600 dark:text-primary font-bold">TP / SL set</span>
+                                                    <span className="font-bold text-gray-900 dark:text-white">XAUUSD <span className="font-bold text-amber-600 dark:text-gold">BUY</span></span>
+                                                    <span className="text-amber-600 dark:text-gold font-bold">TP / SL set</span>
                                                 </div>
                                             ) : feature.title === "Education & Experience" ? (
                                                 <div className="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 py-1">
@@ -532,7 +512,7 @@ export default async function CommunityPage() {
                                             ) : (
                                                 <div className="flex items-center justify-between gap-3 text-xs py-1">
                                                     <span className="font-bold text-gray-900 dark:text-white">GoldScalperNinja EA <span className="font-medium text-gray-500">& Systems</span></span>
-                                                    <span className="text-emerald-600 dark:text-primary font-bold">MT5 Systems</span>
+                                                    <span className="text-amber-600 dark:text-gold font-bold">MT5 Systems</span>
                                                 </div>
                                             )}
                                         </div>
@@ -541,7 +521,7 @@ export default async function CommunityPage() {
                                         <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2">
                                             {feature.highlights.map((h) => (
                                                 <span key={h} className="flex items-center gap-1.5 text-xs font-medium text-gray-600 dark:text-gray-400">
-                                                    <CheckCircle2 size={13} className="shrink-0 text-emerald-500" />
+                                                    <CheckCircle2 size={13} className="shrink-0 text-amber-500 dark:text-gold" />
                                                     <span className="truncate">{h}</span>
                                                 </span>
                                             ))}
@@ -553,7 +533,7 @@ export default async function CommunityPage() {
                                         <a
                                             href={
                                                 feature.title ===
-                                                "Daily Market Analysis"
+                                                    "Daily Market Analysis"
                                                     ? analysisUrl
                                                     : feature.href
                                             }
@@ -585,11 +565,11 @@ export default async function CommunityPage() {
                 {/* ═══════ 4. TRADER PRINCIPLES & TRUST ═══════ */}
                 <ScrollReveal>
                     <section className="px-4 sm:px-6 mb-10 sm:mb-16 max-w-6xl mx-auto">
-                        <div className="rounded-2xl sm:rounded-3xl border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#131622]/85 p-5 sm:p-7 md:p-9 relative overflow-hidden backdrop-blur-md shadow-sm">
-                            <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-500/[0.06] dark:bg-primary/[0.08] rounded-full blur-[80px] pointer-events-none" />
+                        <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#131622]/85 p-5 sm:p-7 md:p-9 relative overflow-hidden backdrop-blur-md shadow-sm">
+                            <div className="absolute top-0 right-0 w-72 h-72 bg-amber-500/[0.06] dark:bg-gold/[0.08] rounded-full blur-[80px] pointer-events-none" />
                             <div className="relative z-10 grid grid-cols-1 md:grid-cols-[auto_1fr] gap-5 md:gap-8 items-start">
                                 <div className="flex items-center gap-4 md:flex-col md:items-start">
-                                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/15 to-emerald-500/15 border border-amber-500/25 flex items-center justify-center text-amber-600 dark:text-gold shadow-sm shrink-0">
+                                    <div className="w-16 h-16 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center text-gold shadow-sm shrink-0">
                                         <GraduationCap size={28} />
                                     </div>
                                     <div>
@@ -601,16 +581,16 @@ export default async function CommunityPage() {
                                 </div>
                                 <div>
                                     <p className="text-xs sm:text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-                                        GoldScalperNinja is run by a Price Action &amp; Momentum Trader who believes trading education should be accessible — not locked behind expensive courses. Every signal follows the same disciplined plan: a pre-defined stop-loss, a max 1-2% risk per trade, and no over-leveraging.
+                                        TheNextTrade is run by a Price Action &amp; Momentum Trader who believes trading education should be accessible — not locked behind expensive courses. Every signal follows the same disciplined plan: a pre-defined stop-loss, a max 1-2% risk per trade, and no over-leveraging.
                                     </p>
-                                    <div className="mt-4 flex flex-wrap gap-2">
+                                    <div className="mt-4 grid grid-cols-2 lg:flex lg:flex-nowrap gap-2 items-center">
                                         {[
-                                            { icon: Shield, text: "Every signal has a defined SL" },
-                                            { icon: TrendingUp, text: "Max 1-2% risk per trade" },
-                                            { icon: CheckCircle2, text: "Verified results on the leaderboard" },
-                                            { icon: Bot, text: "Built on TheNextTrade &amp; MT5 EAs" },
+                                            { icon: Shield, text: "Defined Stop-Loss" },
+                                            { icon: TrendingUp, text: "Max 1-2% Risk / Trade" },
+                                            { icon: CheckCircle2, text: "Verified Leaderboard" },
+                                            { icon: Bot, text: "TheNextTrade & MT5 EAs" },
                                         ].map((chip) => (
-                                            <span key={chip.text} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 dark:bg-primary/10 border border-emerald-500/20 dark:border-primary/20 text-[11px] font-bold text-emerald-700 dark:text-primary">
+                                            <span key={chip.text} className="inline-flex items-center justify-center lg:justify-start gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 dark:bg-gold/10 border border-amber-500/20 dark:border-gold/20 text-[11px] font-bold text-amber-700 dark:text-gold whitespace-nowrap">
                                                 <chip.icon size={12} className="shrink-0" /> {chip.text}
                                             </span>
                                         ))}
@@ -634,26 +614,22 @@ export default async function CommunityPage() {
                     className="px-4 sm:px-6 mb-10 sm:mb-16 max-w-6xl mx-auto scroll-mt-16 md:scroll-mt-24"
                 >
                     <ScrollReveal>
-                        <div className="rounded-2xl sm:rounded-3xl border border-amber-500/35 dark:border-amber-500/30 p-5 sm:p-6 md:p-8 relative overflow-hidden bg-gradient-to-br from-amber-500/[0.08] via-amber-50/70 to-orange-500/[0.08] dark:from-transparent dark:to-transparent dark:bg-white/[0.04] shadow-[0_20px_50px_rgba(245,158,11,0.08)] dark:shadow-[0_0_50px_rgba(245,158,11,0.06)] backdrop-blur-md">
-                            {/* Futuristic Cyber-Grid Pattern */}
-                            <div className="absolute inset-0 bg-[linear-gradient(rgba(245,158,11,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(245,158,11,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.02)_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
-
-                            {/* Glowing Tech Mesh Backdrop */}
-                            <div className="absolute -top-20 -right-20 w-80 h-80 bg-sky-400/[0.12] dark:bg-sky-500/10 rounded-full blur-[100px] pointer-events-none" />
-                            <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-amber-400/[0.15] dark:bg-amber-500/10 rounded-full blur-[100px] pointer-events-none" />
+                        <div className="rounded-lg border border-gray-200 dark:border-white/10 p-5 sm:p-6 md:p-8 relative overflow-hidden bg-white/90 dark:bg-white/[0.03] shadow-sm backdrop-blur-md">
+                            {/* Ambient subtle glow */}
+                            <div className="absolute top-0 right-0 w-72 h-72 bg-gold/[0.04] rounded-full blur-[80px] pointer-events-none" />
 
                             <div className="relative z-10">
                                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-12 h-12 rounded-xl bg-gold/15 flex items-center justify-center shadow-[0_0_15px_rgba(245,158,11,0.15)]">
+                                        <div className="w-12 h-12 rounded-lg bg-gold/15 flex items-center justify-center shadow-sm">
                                             <Crown
                                                 size={24}
                                                 className="text-gold"
                                             />
                                         </div>
                                         <div>
-                                            <h2 className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-amber-800 to-amber-950 dark:from-white dark:via-amber-100 dark:to-amber-400">
-                                                VIP Access & Benefits
+                                            <h2 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">
+                                                VIP Access &amp; Benefits
                                             </h2>
                                             <p className="text-sm text-gray-600 dark:text-gray-400">
                                                 Premium trading access —{" "}
@@ -669,19 +645,20 @@ export default async function CommunityPage() {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className={buttonVariants({
-                                            variant: "primary",
+                                            variant: "gold",
+                                            size: "smd",
                                             className:
-                                                "px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-xs uppercase tracking-wider shadow-md hover:shadow-lg hover:scale-[1.02] shrink-0",
+                                                "font-black uppercase tracking-wider shrink-0",
                                         })}
                                     >
-                                        <Crown size={15} /> Unlock VIP Access
+                                        <Crown size={14} /> Get VIP Access
                                     </a>
                                 </div>
 
                                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/25 mb-5 shadow-[0_0_10px_rgba(245,158,11,0.05)]">
                                     <Shield size={14} className="text-gold" />
                                     <span className="text-xs font-bold text-amber-700 dark:text-amber-400">
-                                        No subscription • No hidden fees • Free forever
+                                        No subscription • No hidden fees
                                     </span>
                                 </div>
 
@@ -690,7 +667,7 @@ export default async function CommunityPage() {
                                     {vipBenefits.map((b) => (
                                         <div
                                             key={b.text}
-                                            className="flex items-center gap-3 bg-white/80 dark:bg-[#111625]/60 hover:bg-white/95 dark:hover:bg-[#151C30]/80 rounded-xl border border-amber-500/15 dark:border-white/[0.06] hover:border-amber-500/35 dark:hover:border-gold/30 p-3.5 shadow-[0_4px_12px_rgba(245,158,11,0.02)] transition-all duration-300"
+                                            className="flex items-center gap-3 bg-white/80 dark:bg-[#111625]/60 hover:bg-white/95 dark:hover:bg-[#151C30]/80 rounded-lg border border-amber-500/15 dark:border-white/[0.06] hover:border-amber-500/35 dark:hover:border-gold/30 p-3.5 shadow-[0_4px_12px_rgba(245,158,11,0.02)] transition-all duration-300"
                                         >
                                             <div className="w-9 h-9 rounded-lg bg-gold/10 flex items-center justify-center shrink-0">
                                                 <b.icon
@@ -711,12 +688,12 @@ export default async function CommunityPage() {
                                         <h3 className="text-sm font-black uppercase tracking-[0.16em] text-amber-700 dark:text-gold">
                                             3-Step VIP Activation Path
                                         </h3>
-                                        <span className="text-xs font-semibold text-emerald-600 dark:text-primary flex items-center gap-1">
+                                        <span className="text-xs font-semibold text-amber-600 dark:text-gold flex items-center gap-1">
                                             <Clock size={12} /> Same day access
                                         </span>
                                     </div>
                                     <div className="grid gap-3 md:grid-cols-3">
-                                        <div className="flex flex-col justify-between rounded-xl border border-amber-500/20 bg-white/80 p-4 dark:border-white/[0.08] dark:bg-white/[0.04]">
+                                        <div className="flex flex-col justify-between rounded-lg border border-amber-500/20 bg-white/80 p-4 dark:border-white/[0.08] dark:bg-white/[0.04]">
                                             <div>
                                                 <div className="flex items-center justify-between mb-2">
                                                     <span className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-500/15 text-xs font-black text-amber-700 dark:text-gold">
@@ -740,7 +717,7 @@ export default async function CommunityPage() {
                                             </a>
                                         </div>
 
-                                        <div className="flex flex-col justify-between rounded-xl border border-amber-500/20 bg-white/80 p-4 dark:border-white/[0.08] dark:bg-white/[0.04]">
+                                        <div className="flex flex-col justify-between rounded-lg border border-amber-500/20 bg-white/80 p-4 dark:border-white/[0.08] dark:bg-white/[0.04]">
                                             <div>
                                                 <div className="flex items-center justify-between mb-2">
                                                     <span className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-500/15 text-xs font-black text-amber-700 dark:text-gold">
@@ -764,20 +741,20 @@ export default async function CommunityPage() {
                                             </Link>
                                         </div>
 
-                                        <div className="flex flex-col justify-between rounded-xl border border-amber-500/20 bg-white/80 p-4 dark:border-white/[0.08] dark:bg-white/[0.04]">
+                                        <div className="flex flex-col justify-between rounded-lg border border-amber-500/20 bg-white/80 p-4 dark:border-white/[0.08] dark:bg-white/[0.04]">
                                             <div>
                                                 <div className="flex items-center justify-between mb-2">
-                                                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/15 text-xs font-black text-emerald-600 dark:text-primary">
+                                                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-500/15 text-xs font-black text-amber-700 dark:text-gold">
                                                         03
                                                     </span>
-                                                    <span className="text-[10px] uppercase font-bold text-emerald-600 dark:text-primary">Step 3</span>
+                                                    <span className="text-[10px] uppercase font-bold text-amber-600 dark:text-gold">Step 3</span>
                                                 </div>
                                                 <p className="text-sm font-bold text-gray-900 dark:text-white">Receive VIP access</p>
                                                 <p className="mt-1 text-xs leading-5 text-gray-600 dark:text-gray-400">
                                                     Once verified, you will be invited directly to the VIP Signals Channel & TraderRoom.
                                                 </p>
                                             </div>
-                                            <span className="mt-3 inline-flex items-center justify-center gap-1 text-xs font-bold text-emerald-600 dark:text-primary">
+                                            <span className="mt-3 inline-flex items-center justify-center gap-1 text-xs font-bold text-amber-600 dark:text-gold">
                                                 <CheckCircle2 size={13} />
                                                 <span>Access Unlocked</span>
                                             </span>
@@ -794,11 +771,12 @@ export default async function CommunityPage() {
                                             Need assistance? Contact our Telegram support team anytime.
                                         </p>
                                         <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className={buttonVariants({
-                                            variant: "primary",
+                                            variant: "gold",
+                                            size: "smd",
                                             className:
-                                                "min-h-11 shrink-0 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-5 py-3 text-sm font-black text-white shadow-lg shadow-amber-500/20 hover:shadow-md hover:shadow-amber-500/25 hover:from-amber-600 hover:to-orange-600",
+                                                "shrink-0 font-black",
                                         })}>
-                                            Request VIP Access <Send size={15} />
+                                            Request VIP Access <Send size={14} />
                                         </a>
                                     </div>
                                 </div>
@@ -815,23 +793,23 @@ export default async function CommunityPage() {
                                 Explore the Platform
                             </h2>
                             <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
-                                More than just a Telegram channel — a full trading ecosystem.
+                                A Telegram community with signals, analysis, and tools in one place.
                             </p>
                         </div>
                     </ScrollReveal>
 
-                    <div className="mb-10 rounded-2xl border border-amber-500/20 dark:border-white/[0.06] bg-white/80 dark:bg-[#131622]/60 p-4 sm:p-6 backdrop-blur-md">
+                    <div className="mb-10 rounded-lg border border-amber-500/20 dark:border-white/[0.06] bg-white/80 dark:bg-[#131622]/60 p-4 sm:p-6 backdrop-blur-md">
                         <p className="text-center text-xs font-black uppercase tracking-[0.16em] text-amber-600 dark:text-gold mb-5">
                             The Trader Growth Loop
                         </p>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                             {[
-                                { step: "01", title: "Join Free", desc: "Daily analysis &amp; signals in Telegram", icon: Send },
-                                { step: "02", title: "Learn", desc: "Price Action &amp; SMC in the Academy", icon: GraduationCap },
-                                { step: "03", title: "Automate", desc: "Run MT5 EAs &amp; Trading Systems", icon: Bot },
-                                { step: "04", title: "Level Up", desc: "Unlock VIP signals &amp; 1:1 support", icon: Crown },
+                                { step: "01", title: "Join Free", desc: "Daily analysis and signals in Telegram", icon: Send },
+                                { step: "02", title: "Learn", desc: "Price Action and SMC in the Academy", icon: GraduationCap },
+                                { step: "03", title: "Automate", desc: "Run MT5 EAs and Trading Systems", icon: Bot },
+                                { step: "04", title: "Level Up", desc: "Get VIP signals and 1:1 support", icon: Crown },
                             ].map((s) => (
-                                <div key={s.step} className="rounded-xl border border-slate-200/80 dark:border-white/[0.06] bg-white dark:bg-[#151925]/60 p-3.5 flex flex-col gap-1.5">
+                                <div key={s.step} className="rounded-lg border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-[#151925]/60 p-3.5 flex flex-col gap-1.5">
                                     <div className="flex items-center justify-between">
                                         <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/15 text-[10px] font-black text-amber-700 dark:text-gold">
                                             {s.step}
@@ -854,7 +832,7 @@ export default async function CommunityPage() {
                             >
                                 <Link
                                     href={p.href}
-                                    className="bg-white/80 dark:bg-[#131622]/60 rounded-2xl border border-amber-500/15 dark:border-white/[0.06] p-4 sm:p-5 hover:border-amber-500/35 dark:hover:border-gold/30 hover:shadow-[0_12px_30px_rgba(245,158,11,0.03)] transition-all duration-300 group flex flex-col h-full backdrop-blur-md"
+                                    className="bg-white/80 dark:bg-[#131622]/60 rounded-lg border border-amber-500/15 dark:border-white/[0.06] p-4 sm:p-5 hover:border-amber-500/35 dark:hover:border-gold/30 hover:shadow-[0_12px_30px_rgba(245,158,11,0.03)] transition-all duration-300 group flex flex-col h-full backdrop-blur-md"
                                 >
                                     <div className="flex items-center gap-3 mb-3">
                                         <div
@@ -944,17 +922,13 @@ export default async function CommunityPage() {
                 {/* ═══════ 8. BOTTOM CTA ═══════ */}
                 <section className="px-4 sm:px-6 mb-6 sm:mb-10 max-w-4xl mx-auto">
                     <ScrollReveal>
-                        <div className="rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-16 text-center border border-amber-500/35 dark:border-amber-500/30 bg-gradient-to-br from-amber-500/[0.08] via-amber-50/70 to-orange-500/[0.08] dark:from-transparent dark:to-transparent dark:bg-white/[0.04] shadow-[0_20px_50px_rgba(245,158,11,0.08)] dark:shadow-[0_0_60px_rgba(245,158,11,0.06)] relative overflow-hidden backdrop-blur-md">
-                            {/* Futuristic Cyber-Grid Pattern */}
-                            <div className="absolute inset-0 bg-[linear-gradient(rgba(245,158,11,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(245,158,11,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.02)_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
-
-                            {/* Glowing Tech Mesh Backdrop */}
-                            <div className="absolute -top-20 -right-20 w-80 h-80 bg-sky-400/[0.12] dark:bg-sky-500/10 rounded-full blur-[100px] pointer-events-none" />
-                            <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-amber-400/[0.15] dark:bg-amber-500/10 rounded-full blur-[100px] pointer-events-none" />
+                        <div className="rounded-lg p-6 sm:p-10 md:p-16 text-center border border-gray-200 dark:border-white/10 bg-white/90 dark:bg-white/[0.03] shadow-sm relative overflow-hidden backdrop-blur-md">
+                            {/* Ambient subtle glow */}
+                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-gold/[0.05] rounded-full blur-[90px] pointer-events-none" />
 
                             <div className="relative z-10 space-y-8">
-                                <h2 className="text-2xl sm:text-3xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-gray-900 via-gray-900 to-gray-700 dark:from-white dark:via-white dark:to-gray-300 leading-tight">
-                                    Ready to Join the Community?
+                                <h2 className="text-2xl sm:text-3xl md:text-5xl font-black tracking-tight text-gray-900 dark:text-white leading-tight">
+                                    Join the Community
                                 </h2>
                                 <p className="text-sm sm:text-base md:text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
                                     12,000+ traders are already learning and
@@ -968,24 +942,26 @@ export default async function CommunityPage() {
                                         rel="noopener noreferrer"
                                         className={buttonVariants({
                                             variant: "secondary",
+                                            size: "smd",
                                             className:
-                                                "px-6 py-3 font-bold text-sm rounded-xl shadow-lg shadow-sky-500/10 hover:shadow-sky-500/20 active:scale-95 hover:scale-[1.03] hover:opacity-95 bg-[#2AABEE] hover:bg-[#2299d6]",
+                                                "font-bold shadow-lg shadow-sky-500/10 hover:shadow-sky-500/20 active:scale-95 hover:scale-[1.03] hover:opacity-95 bg-[#2AABEE] hover:bg-[#2299d6]",
                                         })}
                                     >
-                                        <Send size={16} /> Join Telegram Free
+                                        <Send size={14} /> Join Telegram Free
                                     </a>
                                     <a
                                         href={BROKER_REGISTER_URL}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className={buttonVariants({
-                                            variant: "primary",
+                                            variant: "gold",
+                                            size: "smd",
                                             className:
-                                                "px-6 py-3 font-bold text-sm rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 hover:scale-[1.03] active:scale-95 hover:from-amber-600 hover:to-orange-600 text-white",
+                                                "font-bold",
                                         })}
                                     >
-                                        <Crown size={16} /> Unlock VIP Access{" "}
-                                        <ArrowRight size={14} />
+                                        <Crown size={14} /> Get VIP Access{" "}
+                                        <ArrowRight size={13} />
                                     </a>
                                 </div>
                                 <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">

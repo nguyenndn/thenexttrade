@@ -235,7 +235,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
                 <Button
                     onClick={handleSubmit}
                     disabled={isSubmitting}
-                    className="flex items-center gap-2 shadow-lg shadow-primary/30"
+                    className="flex items-center gap-2 shadow-lg shadow-amber-500/30"
                 >
                     {isSubmitting ? (
                         <Loader2 size={18} className="animate-spin" />
@@ -247,7 +247,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
             </AdminPageHeader>
 
             {/* Quiz Info */}
-            <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-200 dark:border-white/10 space-y-4">
+            <div className="bg-white dark:bg-[#151925] rounded-lg p-6 border border-gray-200 dark:border-white/10 space-y-4">
                 <input
                     className="w-full text-3xl font-bold bg-transparent border-b border-gray-200 dark:border-white/10 pb-4 focus:outline-none focus:border-primary"
                     placeholder="Quiz Title"
@@ -275,7 +275,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
                     <div className="space-y-6">
                         {questions.map((q, qIndex) => (
                             <SortableItem key={q.id} id={q.id}>
-                                <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-200 dark:border-white/10 relative group">
+                                <div className="bg-white dark:bg-[#151925] rounded-lg p-6 border border-gray-200 dark:border-white/10 relative group">
                                     <Button
                                         onClick={() => removeQuestion(qIndex)}
                                         variant="ghost"
@@ -331,7 +331,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
                                                     )}
                                                 </Button>
                                                 <input
-                                                    className="flex-1 bg-gray-50 dark:bg-white/5 px-4 py-2 rounded-xl text-sm border-transparent focus:outline-none focus:border-primary border"
+                                                    className="flex-1 bg-gray-50 dark:bg-white/5 px-4 py-2 rounded-lg text-sm border-transparent focus:outline-none focus:border-primary border"
                                                     placeholder={`Option ${oIndex + 1}`}
                                                     value={opt.text}
                                                     onChange={(e) =>
@@ -378,7 +378,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
             <Button
                 onClick={addQuestion}
                 variant="outline"
-                className="w-full py-6 rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 text-gray-500 font-bold hover:border-primary hover:text-primary hover:bg-transparent"
+                className="w-full py-6 rounded-lg border-2 border-dashed border-gray-200 dark:border-white/10 text-gray-500 font-bold hover:border-primary hover:text-primary hover:bg-transparent"
             >
                 <Plus size={20} /> Add Question
             </Button>

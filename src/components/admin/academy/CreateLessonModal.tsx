@@ -144,7 +144,7 @@ export function CreateLessonModal({
                             {...register("title")}
                             onChange={handleTitleChange}
                             aria-label="Lesson Title"
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                         />
                         {errors.title && (
                             <p className="text-red-500 text-xs">
@@ -161,7 +161,7 @@ export function CreateLessonModal({
                             {...register("slug")}
                             readOnly
                             aria-label="Lesson Slug"
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-4 py-2.5 text-sm outline-none text-gray-600 dark:text-gray-300 cursor-not-allowed"
+                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-4 py-2.5 text-sm outline-none text-gray-600 dark:text-gray-300 cursor-not-allowed"
                         />
                         {errors.slug && (
                             <p className="text-red-500 text-xs">
@@ -182,7 +182,7 @@ export function CreateLessonModal({
                         <input
                             {...register("videoUrl")}
                             aria-label="Video URL"
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                         />
                     </div>
                     <div className="space-y-0">
@@ -196,7 +196,7 @@ export function CreateLessonModal({
                             type="number"
                             {...register("duration")}
                             aria-label="Duration in minutes"
-                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                         />
                     </div>
                 </div>
@@ -219,7 +219,7 @@ export function CreateLessonModal({
                         variant="primary"
                         size="smd"
                         isLoading={isLoading}
-                        className="bg-primary hover:bg-[#00b078] text-white border-none shadow-lg shadow-primary/30 font-bold"
+                        className="bg-gold hover:bg-amber-600 text-white border-none shadow-md shadow-amber-500/20 font-bold"
                     >
                         Create Lesson
                     </Button>

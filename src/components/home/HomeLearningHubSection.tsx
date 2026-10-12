@@ -113,9 +113,9 @@ export function HomeLearningHubSection({
                         <Link
                             key={article.id}
                             href={`/articles/${article.slug}`}
-                            className="group relative bg-white dark:bg-card rounded-xl p-2 shadow-sm hover:shadow-lg transition-all duration-300 border border-dashboard hover:border-primary/30 flex flex-col"
+                            className="group relative bg-white dark:bg-card rounded-lg p-2 shadow-sm hover:shadow-lg transition-all duration-300 border border-dashboard hover:border-primary/30 flex flex-col"
                         >
-                            <div className="relative aspect-[16/9] rounded-xl overflow-hidden bg-gray-900">
+                            <div className="relative aspect-[16/9] rounded-lg overflow-hidden bg-gray-900">
                                 {article.thumbnail ? (
                                     <Image
                                         src={article.thumbnail}

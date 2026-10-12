@@ -84,7 +84,7 @@ export function WinLossComparisonChart({
                                 if (active && payload && payload.length) {
                                     const entry = payload[0].payload;
                                     return (
-                                        <div className="bg-white dark:bg-[#1E2028] p-3 border border-dashboard rounded-xl shadow-xl">
+                                        <div className="bg-white dark:bg-[#1E2028] p-3 border border-dashboard rounded-lg shadow-xl">
                                             <p className="text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">
                                                 {entry.name}
                                             </p>

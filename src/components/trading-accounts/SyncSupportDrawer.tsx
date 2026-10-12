@@ -184,7 +184,7 @@ export function SyncSupportDrawer({
                                 Track manual sync tickets or request direct assistance from the TNT operations team.
                             </SheetDescription>
                         </div>
-                        <SheetClose className="rounded-xl p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer">
+                        <SheetClose className="rounded-lg p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer">
                             <X size={18} />
                             <span className="sr-only">Close</span>
                         </SheetClose>
@@ -198,11 +198,11 @@ export function SyncSupportDrawer({
                             tabsId="sync-support-tabs"
                         >
                             <div className="overflow-x-auto scrollbar-hide flex">
-                                <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1 gap-1 w-full shrink-0">
+                                <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-1 gap-1 w-full shrink-0">
                                     <TabsTrigger
                                         value="list"
                                         className="flex-1 px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10 flex items-center justify-center gap-2 cursor-pointer transition-colors"
-                                        activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                        activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                                         activeTextClassName="!text-white"
                                     >
                                         <LifeBuoy
@@ -232,7 +232,7 @@ export function SyncSupportDrawer({
                                     <TabsTrigger
                                         value="create"
                                         className="flex-1 px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10 flex items-center justify-center gap-2 cursor-pointer transition-colors"
-                                        activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                        activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                                         activeTextClassName="!text-white"
                                     >
                                         <Plus
@@ -256,7 +256,7 @@ export function SyncSupportDrawer({
                     {activeTab === "list" ? (
                         tickets.length === 0 ? (
                             <div className="flex flex-col items-center justify-center text-center py-16 px-4 space-y-3">
-                                <div className="p-3.5 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                                <div className="p-3.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
                                     <LifeBuoy className="h-8 w-8" />
                                 </div>
                                 <div className="space-y-1">
@@ -271,7 +271,7 @@ export function SyncSupportDrawer({
                                     variant="outline"
                                     size="sm"
                                     onClick={() => setActiveTab("create")}
-                                    className="rounded-xl font-bold text-xs gap-1.5 border-amber-500/30 text-amber-700 dark:text-amber-300 hover:bg-amber-500/10"
+                                    className="rounded-lg font-bold text-xs gap-1.5 border-amber-500/30 text-amber-700 dark:text-amber-300 hover:bg-amber-500/10"
                                 >
                                     <Plus size={13} />
                                     Submit Request
@@ -296,10 +296,10 @@ export function SyncSupportDrawer({
                                         <div
                                             key={ticket.id}
                                             className={cn(
-                                                "rounded-2xl border p-4 space-y-3 transition-all",
+                                                "rounded-lg border p-4 space-y-3 transition-all",
                                                 isPending
                                                     ? "border-amber-500/30 bg-amber-500/[0.03] dark:border-amber-500/20"
-                                                    : "border-gray-200/80 bg-gray-50/50 dark:border-white/[0.06] dark:bg-white/[0.02]"
+                                                    : "border-gray-200 bg-gray-50/50 dark:border-white/[0.06] dark:bg-white/[0.02]"
                                             )}
                                         >
                                             <div className="flex items-center justify-between gap-2">
@@ -329,7 +329,7 @@ export function SyncSupportDrawer({
                                             </div>
 
                                             {/* 2x2 Specs Grid */}
-                                            <div className="rounded-xl border border-gray-200/60 bg-white/80 dark:border-white/5 dark:bg-[#1E2028]/60 p-2.5 text-xs grid grid-cols-2 gap-2 divide-x divide-gray-100 dark:divide-white/5">
+                                            <div className="rounded-lg border border-gray-200 bg-white/80 dark:border-white/5 dark:bg-[#1E2028]/60 p-2.5 text-xs grid grid-cols-2 gap-2 divide-x divide-gray-100 dark:divide-white/5">
                                                 <div className="space-y-0.5">
                                                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">
                                                         <Server size={10} /> Active Server
@@ -353,7 +353,7 @@ export function SyncSupportDrawer({
 
                                             {/* Notes / Message */}
                                             {ticket.notes && (
-                                                <div className="p-2.5 rounded-xl bg-gray-100/70 dark:bg-white/[0.03] text-[11px] text-gray-600 dark:text-gray-300 leading-relaxed italic">
+                                                <div className="p-2.5 rounded-lg bg-gray-100/70 dark:bg-white/[0.03] text-[11px] text-gray-600 dark:text-gray-300 leading-relaxed italic">
                                                     &ldquo;{ticket.notes}&rdquo;
                                                 </div>
                                             )}
@@ -365,7 +365,7 @@ export function SyncSupportDrawer({
                                                     size="sm"
                                                     disabled={isCancelling}
                                                     onClick={() => handleCancelTicket(ticket.id)}
-                                                    className="h-7 px-3 text-[11px] font-bold text-gray-500 hover:text-rose-600 hover:border-rose-300 rounded-xl"
+                                                    className="h-7 px-3 text-[11px] font-bold text-gray-500 hover:text-rose-600 hover:border-rose-300 rounded-lg"
                                                 >
                                                     {isCancelling
                                                         ? "Deleting..."
@@ -391,7 +391,7 @@ export function SyncSupportDrawer({
                                     <DropdownMenuTrigger asChild>
                                         <button
                                             type="button"
-                                            className="w-full flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 py-2.5 text-xs font-medium text-gray-900 transition-all hover:bg-gray-100/70 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 dark:border-white/10 dark:bg-[#1E2028] dark:text-white dark:hover:bg-white/10 cursor-pointer"
+                                            className="w-full flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50/50 px-3.5 py-2.5 text-xs font-medium text-gray-900 transition-all hover:bg-gray-100/70 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 dark:border-white/10 dark:bg-[#1E2028] dark:text-white dark:hover:bg-white/10 cursor-pointer"
                                         >
                                             <span className="truncate text-left">
                                                 {selectedAccountId === "manual" ? (
@@ -416,7 +416,7 @@ export function SyncSupportDrawer({
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent
                                         align="start"
-                                        className="w-[--radix-dropdown-menu-trigger-width] max-h-60 overflow-y-auto rounded-xl p-1.5 shadow-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] z-[60]"
+                                        className="w-[--radix-dropdown-menu-trigger-width] max-h-60 overflow-y-auto rounded-lg p-1.5 shadow-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] z-[60]"
                                     >
                                         {accounts.map((acc) => {
                                             const isSelected = selectedAccountId === acc.id;
@@ -474,8 +474,8 @@ export function SyncSupportDrawer({
 
                             {/* Account Matrix Summary or Manual Inputs */}
                             {!isManual && activeAccount && (
-                                <div className="rounded-xl border border-gray-200/80 bg-gray-50/70 p-3.5 text-xs dark:border-white/10 dark:bg-white/[0.02] space-y-2.5">
-                                    <div className="grid grid-cols-2 gap-3 divide-x divide-gray-200/60 dark:divide-white/10">
+                                <div className="rounded-lg border border-gray-200 bg-gray-50/70 p-3.5 text-xs dark:border-white/10 dark:bg-white/[0.02] space-y-2.5">
+                                    <div className="grid grid-cols-2 gap-3 divide-x divide-gray-200 dark:divide-white/10">
                                         <div>
                                             <span className="text-[10px] uppercase font-bold text-gray-400 block">
                                                 Broker & Server
@@ -524,7 +524,7 @@ export function SyncSupportDrawer({
                                             value={broker}
                                             onChange={(e) => setBroker(e.target.value)}
                                             required
-                                            className="w-full rounded-xl border border-gray-200 px-3 py-2 text-xs font-medium text-gray-900 dark:border-white/10 dark:bg-[#1E2028] dark:text-white focus:outline-none focus:border-amber-500"
+                                            className="w-full rounded-lg border border-dashboard px-3 py-2 text-xs font-medium text-gray-900 bg-gray-50 dark:border-white/10 dark:bg-[#151925] dark:text-white focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary transition-all"
                                         />
                                     </div>
                                     <div className="space-y-1">
@@ -536,7 +536,7 @@ export function SyncSupportDrawer({
                                             value={accountNumber}
                                             onChange={(e) => setAccountNumber(e.target.value)}
                                             required
-                                            className="w-full rounded-xl border border-gray-200 px-3 py-2 text-xs font-medium text-gray-900 dark:border-white/10 dark:bg-[#1E2028] dark:text-white focus:outline-none focus:border-amber-500 font-mono"
+                                            className="w-full rounded-lg border border-dashboard px-3 py-2 text-xs font-medium text-gray-900 bg-gray-50 dark:border-white/10 dark:bg-[#151925] dark:text-white focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary transition-all font-mono"
                                         />
                                     </div>
                                     <div className="col-span-2 space-y-1">
@@ -547,14 +547,14 @@ export function SyncSupportDrawer({
                                             type="text"
                                             value={server}
                                             onChange={(e) => setServer(e.target.value)}
-                                            className="w-full rounded-xl border border-gray-200 px-3 py-2 text-xs font-medium text-gray-900 dark:border-white/10 dark:bg-[#1E2028] dark:text-white focus:outline-none focus:border-amber-500"
+                                            className="w-full rounded-lg border border-dashboard px-3 py-2 text-xs font-medium text-gray-900 bg-gray-50 dark:border-white/10 dark:bg-[#151925] dark:text-white focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary transition-all"
                                         />
                                     </div>
                                 </div>
                             )}
 
                             {/* Security Notice */}
-                            <div className="rounded-xl border border-gray-200/70 bg-gray-50/50 p-2.5 flex items-center gap-2 text-[11px] text-gray-600 dark:border-white/5 dark:bg-white/[0.02] dark:text-gray-400">
+                            <div className="rounded-lg border border-gray-200 bg-gray-50/50 p-2.5 flex items-center gap-2 text-[11px] text-gray-600 dark:border-white/5 dark:bg-white/[0.02] dark:text-gray-400">
                                 <Lock className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
                                 <span>
                                     Investor password is read safely from your encrypted Cloud Sync credentials. Never submit master passwords.
@@ -570,7 +570,7 @@ export function SyncSupportDrawer({
                                     rows={3}
                                     value={notes}
                                     onChange={(e) => setNotes(e.target.value)}
-                                    className="w-full rounded-xl border border-gray-200 bg-transparent px-3 py-2 text-xs text-gray-900 focus:border-amber-500 focus:outline-none dark:border-white/10 dark:text-white"
+                                    className="w-full rounded-lg border border-dashboard bg-gray-50 px-3 py-2 text-xs text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/50 dark:border-white/10 dark:bg-[#151925] dark:text-white resize-none transition-all"
                                 />
                             </div>
 
@@ -580,7 +580,7 @@ export function SyncSupportDrawer({
                                         type="button"
                                         variant="outline"
                                         onClick={() => setActiveTab("list")}
-                                        className="rounded-xl h-9 px-4 text-xs font-semibold"
+                                        className="rounded-lg h-9 px-4 text-xs font-semibold"
                                     >
                                         Back to Tickets
                                     </Button>
@@ -588,7 +588,7 @@ export function SyncSupportDrawer({
                                 <Button
                                     type="submit"
                                     disabled={isPendingSubmit || (!isManual && !hasCredentials)}
-                                    className="rounded-xl h-9 px-5 text-xs font-bold gap-1.5 shadow-sm bg-amber-500 hover:bg-amber-600 text-white"
+                                    className="rounded-lg h-9 px-5 text-xs font-bold gap-1.5 shadow-sm bg-amber-500 hover:bg-amber-600 text-white"
                                 >
                                     {isPendingSubmit ? (
                                         <>

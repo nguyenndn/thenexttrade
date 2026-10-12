@@ -42,7 +42,7 @@ export default async function PendingAccountsPage() {
                 description="Approve or reject EA license requests."
                 backHref="/admin/trading-systems"
             >
-                <span className="bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 px-4 py-2 rounded-xl font-bold text-sm">
+                <span className="bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 px-4 py-2 rounded-lg font-bold text-sm">
                     {licenses.length} Requests
                 </span>
             </AdminPageHeader>

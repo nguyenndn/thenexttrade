@@ -2,6 +2,7 @@
 
 import type { LeaderboardEntry, LeaderboardType } from "../actions";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 
 interface TopMedalStripProps {
     entries: LeaderboardEntry[];
@@ -37,7 +38,7 @@ const RANK_CONFIGS = [
         badgeBg: "bg-slate-500",
         badgeText: "text-white",
         cardBg: "bg-slate-50/50 dark:bg-slate-500/5",
-        borderColor: "border-slate-300 dark:border-slate-600/50",
+        borderColor: "border-gray-200 dark:border-slate-600/50",
         hoverBorderColor:
             "hover:border-slate-400 dark:hover:border-slate-600/70",
         metricColor: "text-slate-700 dark:text-slate-200",
@@ -287,7 +288,7 @@ export function TopMedalStrip({
                     return (
                         <div
                             key={`empty-${rank}`}
-                            className="flex flex-col rounded-2xl border border-dashed border-dashboard bg-gray-50/20 dark:bg-white/[0.01] p-4 text-left select-none text-gray-400 dark:text-gray-500"
+                            className="flex flex-col rounded-xl border border-dashed border-dashboard bg-gray-50/20 dark:bg-white/[0.01] p-4 text-left select-none text-gray-400 dark:text-gray-500"
                         >
                             {/* Header placeholder */}
                             <div className="flex items-center justify-between gap-3">
@@ -325,11 +326,12 @@ export function TopMedalStrip({
                 const stats2x2 = get2x2Stats(entry, type);
 
                 return (
-                    <button
+                    <Button
+                        variant="ghost"
                         key={entry.userId}
                         onClick={() => onUserClick?.(entry)}
                         className={cn(
-                            "group flex flex-col rounded-2xl border p-4 text-left transition shadow-sm bg-white dark:bg-[#1E2028]",
+                            "group flex flex-col items-stretch h-auto rounded-xl border p-4 text-left transition shadow-sm bg-white dark:bg-[#1E2028] font-normal hover:bg-white dark:hover:bg-[#1E2028]",
                             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
                             config.borderColor,
                             config.hoverBorderColor,
@@ -411,7 +413,7 @@ export function TopMedalStrip({
                                 </div>
                             ))}
                         </div>
-                    </button>
+                    </Button>
                 );
             })}
         </div>

@@ -6,7 +6,7 @@ import { History, Activity } from "lucide-react";
 export function AiAuditLogPanel({ logs }: { logs: any[] }) {
     return (
         <div className="space-y-4">
-            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg shadow-sm overflow-hidden">
                 {logs.length === 0 ? (
                     <div className="p-12 text-center text-gray-500 dark:text-gray-400">
                         <History className="w-12 h-12 mx-auto mb-4 opacity-20" />
@@ -42,7 +42,7 @@ export function AiAuditLogPanel({ logs }: { logs: any[] }) {
                                     {log.detailsJson &&
                                         Object.keys(log.detailsJson).length >
                                             0 && (
-                                            <div className="mt-2 text-[10px] font-mono text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-black/20 p-2 rounded-xl border border-gray-200 dark:border-white/10 overflow-x-auto">
+                                            <div className="mt-2 text-[10px] font-mono text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-black/20 p-2 rounded-lg border border-gray-200 dark:border-white/10 overflow-x-auto">
                                                 {JSON.stringify(
                                                     log.detailsJson
                                                 )}

@@ -5,7 +5,6 @@ import { getAuthUser } from "@/lib/auth-cache";
 import { getUserTradingDataState } from "@/lib/trading-data-state";
 
 import DashboardClient from "./DashboardClient";
-import { TradingAlertBanner } from "@/components/dashboard/TradingAlertBanner";
 import {
     resolveAccountAndDates,
     getEmptyDashboardData,
@@ -58,13 +57,10 @@ async function DashboardLoader({
             getUserDashboards(),
         ]);
         return (
-            <>
-                <TradingAlertBanner />
-                <DashboardClient
-                    {...data}
-                    initialDashboards={initialDashboards}
-                />
-            </>
+            <DashboardClient
+                {...data}
+                initialDashboards={initialDashboards}
+            />
         );
     }
 
@@ -75,9 +71,6 @@ async function DashboardLoader({
     ]);
 
     return (
-        <>
-            <TradingAlertBanner />
-            <DashboardClient {...data} initialDashboards={initialDashboards} />
-        </>
+        <DashboardClient {...data} initialDashboards={initialDashboards} />
     );
 }

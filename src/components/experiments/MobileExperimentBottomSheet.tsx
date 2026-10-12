@@ -84,7 +84,7 @@ export function MobileExperimentBottomSheet({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 32 }}
                 transition={SPRING_SOFT}
-                className="w-full max-w-lg p-6 bg-white dark:bg-[#0B0E14] border-t sm:border border-gray-200 dark:border-slate-800 rounded-t-3xl sm:rounded-2xl shadow-2xl space-y-4 text-slate-900 dark:text-white"
+                className="w-full max-w-lg p-6 bg-white dark:bg-[#0B0E14] border-t sm:border border-gray-200 dark:border-slate-800 rounded-t-lg sm:rounded-lg shadow-2xl space-y-4 text-slate-900 dark:text-white"
             >
                 <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 pb-3">
                     <div className="flex items-center gap-2">
@@ -109,7 +109,7 @@ export function MobileExperimentBottomSheet({
                     </button>
                 </div>
 
-                <p className="text-xs text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-gray-200 dark:border-slate-800">
+                <p className="text-xs text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 p-3 rounded-lg border border-gray-200 dark:border-slate-800">
                     <strong>Instruction:</strong> {experiment.instruction}
                 </p>
 
@@ -136,7 +136,7 @@ export function MobileExperimentBottomSheet({
                         size="sm"
                         onClick={handleCancel}
                         disabled={isLoading}
-                        className="text-xs text-slate-500 hover:text-red-600 rounded-xl"
+                        className="text-xs text-slate-500 hover:text-red-600 rounded-lg"
                     >
                         Cancel
                     </Button>
@@ -147,7 +147,7 @@ export function MobileExperimentBottomSheet({
                             size="sm"
                             onClick={handleReview}
                             disabled={isLoading}
-                            className="bg-emerald-500 text-slate-950 font-bold text-xs gap-1 rounded-xl"
+                            className="bg-gold hover:bg-amber-600 text-white font-bold text-xs gap-1 rounded-lg shadow-md shadow-amber-500/20 border-none"
                         >
                             Review Results
                             <ArrowRight className="w-4 h-4" />

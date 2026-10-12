@@ -125,7 +125,7 @@ export function RejectLicenseModal({
 
                         {reason === "Other" && (
                             <textarea
-                                className="w-full min-h-[80px] px-4 py-3 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-red-500 outline-none text-sm transition-all text-gray-700 dark:text-white placeholder:text-gray-500"
+                                className="w-full min-h-[80px] px-4 py-3 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg focus:ring-2 focus:ring-red-500 outline-none text-sm transition-all text-gray-700 dark:text-white placeholder:text-gray-500"
                                 placeholder="Violation of terms regarding..."
                                 value={customReason}
                                 onChange={(e) =>
@@ -137,6 +137,14 @@ export function RejectLicenseModal({
                 </div>
 
                 <div className="flex justify-end gap-3">
+                    <Button
+                        variant="outline"
+                        size="smd"
+                        onClick={onClose}
+                        disabled={isLoading}
+                    >
+                        Cancel
+                    </Button>
                     <Button
                         variant="destructive"
                         size="smd"

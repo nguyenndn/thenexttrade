@@ -11,10 +11,10 @@ export default function Loading() {
                 {[...Array(6)].map((_, i) => (
                     <div
                         key={i}
-                        className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm"
+                        className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-6 shadow-sm"
                     >
                         <div className="flex items-center gap-4 mb-4">
-                            <div className="h-10 w-10 bg-gray-100 dark:bg-white/5 rounded-xl" />
+                            <div className="h-10 w-10 bg-gray-100 dark:bg-white/5 rounded-lg" />
                             <div className="h-4 w-24 bg-gray-200 dark:bg-white/10 rounded-lg" />
                         </div>
                         <div className="h-4 w-3/4 bg-gray-100 dark:bg-white/5 rounded-lg mb-2" />

@@ -45,7 +45,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
             >
                 <Button
                     onClick={() => setIsAnnouncementOpen(true)}
-                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl px-4 py-2 font-bold flex items-center gap-2 shadow-md shadow-amber-500/20"
+                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-lg px-4 py-2 font-bold flex items-center gap-2 shadow-md shadow-amber-500/20"
                 >
                     <Sparkles size={16} />
                     <span>Announce Release</span>
@@ -69,7 +69,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
             <EditProductView product={product} />
 
             {/* Recent Downloads */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 space-y-4">
+            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-6 space-y-4">
                 <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-3">
                     <h3 className="text-base font-bold text-gray-700 dark:text-white">
                         Recent Downloads

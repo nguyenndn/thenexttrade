@@ -53,7 +53,7 @@ const statusConfig: Record<
     },
     CLOSED: {
         label: "Closed",
-        color: "text-gray-600 bg-gray-500/10",
+        color: "text-gray-600 dark:text-gray-400 bg-gray-500/10",
         icon: AlertCircle,
     },
 };
@@ -165,10 +165,12 @@ export default function FeedbackPageClient({
             {/* Top Toolbar / Bulk Selection Bar */}
             <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard p-3 px-4 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="sm"
                         type="button"
                         onClick={toggleSelectAll}
-                        className="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:text-primary transition-colors cursor-pointer"
+                        className="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:text-primary transition-colors cursor-pointer h-auto p-1"
                     >
                         {isAllSelected ? (
                             <CheckSquare size={18} className="text-primary" />
@@ -183,15 +185,17 @@ export default function FeedbackPageClient({
                                 ? `${selectedIds.size} of ${feedbacks.length} selected`
                                 : `Select All (${feedbacks.length})`}
                         </span>
-                    </button>
+                    </Button>
                     {selectedIds.size > 0 && (
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="sm"
                             type="button"
                             onClick={() => setSelectedIds(new Set())}
-                            className="text-[11px] font-medium text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 underline cursor-pointer"
+                            className="text-[11px] font-medium text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 underline cursor-pointer h-auto p-0 hover:bg-transparent"
                         >
                             Deselect all
-                        </button>
+                        </Button>
                     )}
                 </div>
 
@@ -261,10 +265,12 @@ export default function FeedbackPageClient({
                         >
                             <div className="flex items-start justify-between gap-4">
                                 <div className="flex items-start gap-3">
-                                    <button
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
                                         type="button"
                                         onClick={() => toggleSelectItem(fb.id)}
-                                        className="mt-0.5 text-gray-400 hover:text-primary transition-colors cursor-pointer"
+                                        className="h-6 w-6 mt-0.5 text-gray-400 hover:text-primary transition-colors cursor-pointer hover:bg-transparent"
                                         aria-label={
                                             isSelected
                                                 ? "Deselect item"
@@ -279,7 +285,7 @@ export default function FeedbackPageClient({
                                         ) : (
                                             <Square size={18} />
                                         )}
-                                    </button>
+                                    </Button>
 
                                     <div>
                                         <div className="flex items-center gap-2.5 mb-1.5">
@@ -297,7 +303,7 @@ export default function FeedbackPageClient({
                                                     <Lightbulb size={16} />
                                                 )}
                                             </div>
-                                            <span className="text-xs font-bold uppercase tracking-wider text-gray-600">
+                                            <span className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-400">
                                                 {isBug
                                                     ? "Bug Report"
                                                     : "Feature Request"}

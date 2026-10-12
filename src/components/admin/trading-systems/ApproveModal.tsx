@@ -69,7 +69,7 @@ export function ApproveModal({ license, isOpen, onClose }: ApproveModalProps) {
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="bg-white dark:bg-[#1E2028] rounded-xl border-0 dark:border max-w-md">
+            <DialogContent className="bg-white dark:bg-[#1E2028] rounded-2xl border-0 dark:border max-w-md">
                 <DialogHeader>
                     <DialogTitle className="text-xl font-bold text-gray-700 dark:text-white">
                         Approve Account
@@ -129,7 +129,7 @@ export function ApproveModal({ license, isOpen, onClose }: ApproveModalProps) {
                             type="submit"
                             variant="primary"
                             size="smd"
-                            className="bg-primary hover:bg-[#00B078] text-white font-bold"
+                            className="bg-gold hover:bg-amber-600 text-white font-bold border-none shadow-md shadow-amber-500/20"
                             disabled={isSubmitting}
                         >
                             {isSubmitting && (

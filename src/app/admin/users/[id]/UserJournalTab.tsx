@@ -131,7 +131,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
         <div className="space-y-6">
             {/* KPI Summary Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-4 rounded-xl bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-lg bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
                     <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
                         Total Trades
                     </p>
@@ -143,7 +143,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                     </p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-lg bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
                     <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
                         Win Rate
                     </p>
@@ -155,7 +155,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                     </p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-lg bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
                     <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
                         Net P&L
                     </p>
@@ -174,7 +174,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                     </p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-lg bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
                     <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
                         Direction Bias
                     </p>
@@ -190,7 +190,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
             </div>
 
             {/* Filter Bar */}
-            <div className="p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
+            <div className="p-4 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
                 <div className="w-full md:max-w-xs">
                     <PremiumInput
                         icon={Search}
@@ -209,7 +209,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                                 type="button"
                                 onClick={() => setResultFilter(res)}
                                 className={cn(
-                                    "px-2.5 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer",
+                                    "px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors cursor-pointer",
                                     resultFilter === res
                                         ? "bg-white dark:bg-white/10 text-primary shadow-sm"
                                         : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
@@ -228,7 +228,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                                 type="button"
                                 onClick={() => setTypeFilter(t)}
                                 className={cn(
-                                    "px-2.5 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer",
+                                    "px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors cursor-pointer",
                                     typeFilter === t
                                         ? "bg-white dark:bg-white/10 text-primary shadow-sm"
                                         : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
@@ -242,7 +242,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
             </div>
 
             {/* Entries Table */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left border-collapse text-xs">
                         <thead className="bg-gray-50/70 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-[11px] font-bold uppercase tracking-wider text-gray-500">
@@ -346,12 +346,12 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                                             <td className="py-3 px-4">
                                                 <div className="flex items-center gap-1.5 flex-wrap">
                                                     {entry.strategy && (
-                                                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-primary/10 text-primary">
+                                                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-primary/10 text-primary">
                                                             {entry.strategy}
                                                         </span>
                                                     )}
                                                     {entry.tradePlan && (
-                                                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                                                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400">
                                                             Plan: {entry.tradePlan.setupName || "Linked"}
                                                         </span>
                                                     )}
@@ -381,12 +381,12 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
             {/* Trade Details Inspection Modal */}
             {selectedEntry && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in-0">
-                    <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto custom-scrollbar">
+                    <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-6 max-w-lg w-full shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto custom-scrollbar">
                         <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-white/10">
                             <div className="flex items-center gap-2.5">
                                 <span
                                     className={cn(
-                                        "px-2.5 py-1 rounded-md text-xs font-black uppercase tracking-wider",
+                                        "px-2.5 py-1 rounded-lg text-xs font-black uppercase tracking-wider",
                                         selectedEntry.type === "BUY"
                                             ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                                             : "bg-rose-500/10 text-rose-600 dark:text-rose-400"
@@ -409,7 +409,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                         </div>
 
                         {/* 2x2 Matrix Card */}
-                        <div className="grid grid-cols-2 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] divide-x divide-y divide-gray-200 dark:divide-white/10">
+                        <div className="grid grid-cols-2 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] divide-x divide-y divide-gray-200 dark:divide-white/10">
                             <div className="p-3">
                                 <span className="text-[10px] font-bold uppercase text-gray-400">Entry Price</span>
                                 <p className="font-mono text-sm font-bold text-gray-900 dark:text-white mt-0.5">
@@ -462,7 +462,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
 
                         {/* Trader Notes */}
                         {selectedEntry.notes && (
-                            <div className="p-3.5 rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/5 space-y-1">
+                            <div className="p-3.5 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/5 space-y-1">
                                 <span className="text-[10px] font-bold uppercase text-gray-400">Trader Notes</span>
                                 <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
                                     {selectedEntry.notes}
@@ -472,7 +472,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
 
                         {/* Psychology & Emotions */}
                         {(selectedEntry.emotionBefore || selectedEntry.emotionAfter || selectedEntry.notesPsychology) && (
-                            <div className="p-3.5 rounded-xl bg-purple-50/50 dark:bg-purple-500/5 border border-purple-200/50 dark:border-purple-500/10 space-y-1">
+                            <div className="p-3.5 rounded-lg bg-purple-50/50 dark:bg-purple-500/5 border border-purple-200/50 dark:border-purple-500/10 space-y-1">
                                 <span className="text-[10px] font-bold uppercase text-purple-600 dark:text-purple-400">
                                     Psychology & Emotions
                                 </span>

@@ -248,11 +248,11 @@ export function AccountCard({
                 return (
                     <Button
                         onClick={() => onUnlockPro(account)}
-                        className="flex h-8 min-w-[92px] items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 text-[11px] font-black text-white shadow-sm shadow-amber-500/20 transition-all hover:from-amber-600 hover:to-orange-600 hover:text-white border-0"
+                        className="flex h-8 min-w-[92px] items-center justify-center gap-1.5 rounded-lg bg-gold hover:bg-gold/90 text-black px-3.5 text-[11px] font-bold shadow-sm transition-colors border-0"
                         title="Apply for Pro"
                         aria-label="Activate Pro tier"
                     >
-                        <Crown size={11} />
+                        <Crown size={12} />
                         <span>Activate Pro</span>
                     </Button>
                 );
@@ -263,11 +263,11 @@ export function AccountCard({
             return (
                 <Button
                     onClick={() => onUnlockPro(account)}
-                    className="flex h-8 min-w-[92px] items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 text-[11px] font-black text-white shadow-sm shadow-amber-500/20 transition-all hover:from-amber-600 hover:to-orange-600 hover:text-white border-0"
+                    className="flex h-8 min-w-[92px] items-center justify-center gap-1.5 rounded-lg bg-gold hover:bg-gold/90 text-black px-3.5 text-[11px] font-bold shadow-sm transition-colors border-0"
                     title={elig.status === "REJECTED" ? "Re-apply for Pro" : "Apply for Pro"}
                     aria-label={elig.status === "REJECTED" ? "Re-apply for Pro access" : "Activate Pro tier"}
                 >
-                    <Crown size={11} />
+                    <Crown size={12} />
                     <span>{elig.status === "REJECTED" ? "Re-apply" : "Activate Pro"}</span>
                 </Button>
             );
@@ -276,7 +276,7 @@ export function AccountCard({
     }
 
     return (
-        <div className="group relative flex flex-col rounded-2xl transition-all duration-500 hover:shadow-lg bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] hover:border-gray-300 dark:hover:border-white/15">
+        <div className="group relative flex flex-col rounded-lg transition-all duration-500 hover:shadow-lg bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] hover:border-gray-300 dark:hover:border-white/15">
             {/* Left accent border */}
             <div
                 className="absolute left-0 top-3 bottom-3 w-[3px] rounded-r-full opacity-60 group-hover:opacity-100 transition-opacity z-10"
@@ -289,7 +289,7 @@ export function AccountCard({
                 <div className="flex items-center gap-1.5 mb-3 flex-wrap">
                     {accountType && (
                         <span
-                            className={`text-[9px] font-black px-2 py-[3px] rounded-xl uppercase tracking-[0.1em] border whitespace-nowrap ${
+                            className={`text-[9px] font-black px-2 py-[3px] rounded-lg uppercase tracking-[0.1em] border whitespace-nowrap ${
                                 isReal
                                     ? "bg-emerald-100 text-emerald-700 border-emerald-300 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/30"
                                     : "bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-500/15 dark:text-blue-400 dark:border-blue-500/30"
@@ -299,13 +299,13 @@ export function AccountCard({
                         </span>
                     )}
                     {account.accountNumber && (
-                        <span className="text-[9px] font-bold text-gray-600 dark:text-gray-300 tracking-wider whitespace-nowrap bg-gray-100 dark:bg-white/10 border border-gray-300 dark:border-white/15 px-2 py-[3px] rounded-xl tabular-nums">
+                        <span className="text-[9px] font-bold text-gray-600 dark:text-gray-300 tracking-wider whitespace-nowrap bg-gray-100 dark:bg-white/10 border border-gray-300 dark:border-white/15 px-2 py-[3px] rounded-lg tabular-nums">
                             #{account.accountNumber}
                         </span>
                     )}
                     {isSyncing ? (
                         <span
-                            className="inline-flex items-center gap-1 text-[9px] font-bold px-2 py-[3px] rounded-xl border whitespace-nowrap bg-amber-500/10 text-amber-700 border-amber-300 dark:bg-amber-500/15 dark:text-amber-400 dark:border-amber-500/30 shadow-sm"
+                            className="inline-flex items-center gap-1 text-[9px] font-bold px-2 py-[3px] rounded-lg border whitespace-nowrap bg-amber-500/10 text-amber-700 border-amber-300 dark:bg-amber-500/15 dark:text-amber-400 dark:border-amber-500/30 shadow-sm"
                             title="Sync in progress"
                         >
                             <RefreshCw size={9} className="animate-spin text-amber-500 shrink-0" />
@@ -315,7 +315,7 @@ export function AccountCard({
                         <button
                             type="button"
                             onClick={() => setIsCloudSyncOpen(true)}
-                            className="inline-flex items-center gap-1.5 text-[9px] font-bold px-2 py-[3px] rounded-xl border whitespace-nowrap bg-rose-500/10 text-rose-700 border-rose-300 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/30 shadow-sm hover:bg-rose-500/20 transition-colors cursor-pointer"
+                            className="inline-flex items-center gap-1.5 text-[9px] font-bold px-2 py-[3px] rounded-lg border whitespace-nowrap bg-rose-500/10 text-rose-700 border-rose-300 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/30 shadow-sm hover:bg-rose-500/20 transition-colors cursor-pointer"
                             title={formatSyncErrorMessage(latestJob)}
                         >
                             <span className="relative flex h-1.5 w-1.5 shrink-0">
@@ -327,7 +327,7 @@ export function AccountCard({
                     ) : syncMethod.variant !== "none" ? (
                         <span
                             className={cn(
-                                "inline-flex items-center gap-1 text-[9px] font-bold px-2 py-[3px] rounded-xl border whitespace-nowrap",
+                                "inline-flex items-center gap-1 text-[9px] font-bold px-2 py-[3px] rounded-lg border whitespace-nowrap",
                                 syncMethod.variant === "ea"
                                     ? "bg-amber-500/10 text-amber-700 border-amber-300 dark:bg-amber-500/15 dark:text-amber-400 dark:border-amber-500/30"
                                     : "bg-gray-100 text-gray-600 border-gray-300 dark:bg-white/10 dark:text-gray-400 dark:border-white/15"
@@ -340,7 +340,7 @@ export function AccountCard({
                     ) : null}
                     {account.useForLeaderboard && (
                         <span
-                            className="w-5 h-5 rounded-xl inline-flex items-center justify-center bg-yellow-100 border border-yellow-300 dark:bg-yellow-500/15 dark:border-yellow-500/30"
+                            className="w-5 h-5 rounded-lg inline-flex items-center justify-center bg-yellow-100 border border-yellow-300 dark:bg-yellow-500/15 dark:border-yellow-500/30"
                             title="Leaderboard Account"
                         >
                             <Trophy
@@ -351,7 +351,7 @@ export function AccountCard({
                     )}
                     {isMain && (
                         <span
-                            className="inline-flex items-center gap-1 px-1.5 py-[3px] rounded-xl text-[9px] font-black uppercase tracking-[0.1em] bg-gradient-to-r from-yellow-500/20 via-amber-500/25 to-yellow-500/20 text-yellow-600 dark:text-amber-400 border border-amber-500/40 shadow-sm shadow-amber-500/5"
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30"
                             title="Main Account"
                         >
                             <Star
@@ -372,18 +372,18 @@ export function AccountCard({
                                 variant="ghost"
                                 size="icon"
                                 aria-label="Account options"
-                                className="w-7 h-7 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 focus:outline-none shrink-0"
+                                className="w-7 h-7 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 focus:outline-none shrink-0"
                             >
                                 <MoreVertical size={14} />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
                             align="end"
-                            className="w-50 p-1.5 rounded-xl border-dashboard shadow-xl bg-white dark:bg-[#1E2028] z-[100]"
+                            className="w-50 p-1.5 rounded-lg border-dashboard shadow-xl bg-white dark:bg-[#1E2028] z-[100]"
                         >
                             <DropdownMenuItem
                                 onClick={() => onSettings(account)}
-                                className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors"
+                                className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors"
                             >
                                 <Settings size={15} className="text-gray-500" />
                                 <span>Account Settings</span>
@@ -392,7 +392,7 @@ export function AccountCard({
                                 <DropdownMenuItem
                                     onClick={() => onSetMain(account.id)}
                                     disabled={isMain}
-                                    className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     <Star
                                         size={15}
@@ -420,7 +420,7 @@ export function AccountCard({
                                             toast.error(err?.message || "Failed to stop sync.");
                                         }
                                     }}
-                                    className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-xl text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors"
+                                    className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors"
                                 >
                                     <X size={15} />
                                     <span>Cancel Sync</span>
@@ -450,7 +450,7 @@ export function AccountCard({
                                             );
                                         }
                                     }}
-                                    className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors"
+                                    className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors"
                                 >
                                     <Trophy
                                         size={15}
@@ -469,7 +469,7 @@ export function AccountCard({
                             )}
                             <DropdownMenuItem
                                 onClick={() => onDelete(account.id)}
-                                className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 focus:bg-red-50 dark:focus:bg-red-500/10 focus:text-red-600 transition-colors"
+                                className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 focus:bg-red-50 dark:focus:bg-red-500/10 focus:text-red-600 transition-colors"
                             >
                                 <Trash2 size={15} />
                                 <span>Delete Account</span>
@@ -536,7 +536,7 @@ export function AccountCard({
             </div>
 
             {/* Footer Status & Action Bar */}
-            <div className="relative z-10 mx-2 mb-2 rounded-xl border border-dashboard/70 bg-gray-50/80 p-2.5 dark:border-white/[0.06] dark:bg-white/[0.03]">
+            <div className="relative z-10 mx-2 mb-2 rounded-lg border border-dashboard/70 bg-gray-50/80 p-2.5 dark:border-white/[0.06] dark:bg-white/[0.03]">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                     {/* Status Chip (read-only) */}
                     {(() => {
@@ -544,7 +544,7 @@ export function AccountCard({
                         if (!isReal && accountType === "DEMO") {
                             return (
                                 <div
-                                    className="inline-flex h-8 items-center gap-1.5 rounded-xl border border-dashboard/80 bg-gray-100/80 px-2.5 text-gray-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-400"
+                                    className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-dashboard/80 bg-gray-100/80 px-2.5 text-gray-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-400"
                                     title="Demo Account - Standard Access"
                                 >
                                     <Info size={11} className="shrink-0 text-gray-400" />
@@ -564,7 +564,7 @@ export function AccountCard({
                             return (
                                 <div
                                     className={cn(
-                                        "inline-flex h-8 items-center gap-1.5 rounded-xl border px-2.5",
+                                        "inline-flex h-8 items-center gap-1.5 rounded-lg border px-2.5",
                                         config.className
                                     )}
                                     title={elig.description}
@@ -584,7 +584,7 @@ export function AccountCard({
                             proStatus === "NONE"
                         ) {
                             return (
-                                <div className="inline-flex h-8 items-center gap-1.5 rounded-xl border border-amber-200/80 bg-amber-50 px-2.5 text-amber-600 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-400">
+                                <div className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-amber-200/80 bg-amber-50 px-2.5 text-amber-600 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-400">
                                     <Crown size={10} className="shrink-0" />
                                     <span className="text-[10px] font-black uppercase tracking-wider">
                                         Pending
@@ -600,7 +600,7 @@ export function AccountCard({
                         return (
                             <div
                                 className={cn(
-                                    "inline-flex h-8 items-center gap-1.5 rounded-xl border px-2.5",
+                                    "inline-flex h-8 items-center gap-1.5 rounded-lg border px-2.5",
                                     configFb.className
                                 )}
                             >
@@ -631,7 +631,7 @@ export function AccountCard({
                                                 }
                                             );
                                         }}
-                                        className="flex h-8 items-center justify-center gap-1.5 rounded-xl bg-primary px-3.5 text-[11px] font-black text-white shadow-sm shadow-primary/20 transition-all hover:bg-primary/90 group/link"
+                                        className="flex h-8 items-center justify-center gap-1.5 rounded-lg bg-gold hover:bg-amber-600 px-3.5 text-[11px] font-black text-white shadow-sm shadow-amber-500/20 transition-all group/link"
                                     >
                                         <PenLine size={11} />
                                         <span>Log first trade</span>
@@ -657,7 +657,7 @@ export function AccountCard({
                                                 preferredSyncMethod
                                             );
                                         }}
-                                        className="flex h-8 items-center justify-center gap-1.5 rounded-xl bg-primary px-3.5 text-[11px] font-black text-white shadow-sm shadow-primary/20 transition-all hover:bg-primary/90 hover:text-white group/link border-0"
+                                        className="flex h-8 items-center justify-center gap-1.5 rounded-lg bg-gold hover:bg-amber-600 px-3.5 text-[11px] font-black text-white shadow-sm shadow-amber-500/20 transition-all hover:text-white group/link border-0"
                                         aria-label="Sync first trades"
                                     >
                                         {preferredSyncMethod === "EA_SYNC" ? (
@@ -674,7 +674,7 @@ export function AccountCard({
                                 )}
                                 <Link
                                     href={`/dashboard?accountId=${account.id}`}
-                                    className="flex h-8 items-center justify-center gap-1.5 rounded-xl border border-dashboard bg-white px-3 text-[11px] font-black text-gray-600 shadow-sm transition-all hover:bg-gray-50 dark:bg-white/5 dark:text-gray-400 dark:hover:bg-white/10 group/link"
+                                    className="flex h-8 items-center justify-center gap-1.5 rounded-lg border border-dashboard bg-white px-3 text-[11px] font-black text-gray-600 shadow-sm transition-all hover:bg-gray-50 dark:bg-white/5 dark:text-gray-400 dark:hover:bg-white/10 group/link"
                                     title="View Dashboard"
                                 >
                                     <ExternalLink
@@ -715,7 +715,7 @@ export function AccountCard({
                                             "text-xs font-bold transition-colors cursor-pointer",
                                             isLatestSyncFailed
                                                 ? "text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300"
-                                                : "text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
+                                                : "text-gold hover:text-amber-500 dark:text-amber-400 dark:hover:text-amber-300"
                                         )}
                                         title={isLatestSyncFailed ? "Sync failed - click to retry" : "Cloud Sync"}
                                     >

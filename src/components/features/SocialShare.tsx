@@ -244,7 +244,7 @@ export default function SocialShare({
     }
 
     return (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-white dark:bg-white/[0.02] border border-dashboard">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-lg bg-white dark:bg-white/[0.02] border border-dashboard">
             <h4 className="font-bold text-gray-700 dark:text-white text-xs uppercase tracking-widest text-center sm:text-left">
                 Share this article
             </h4>
@@ -254,7 +254,7 @@ export default function SocialShare({
                     href={shareLinks.facebook}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-9 h-9 flex items-center justify-center border border-dashboard dark:border-white/10 hover:bg-[#3b5998] hover:text-white hover:border-[#3b5998] text-gray-500 transition-all rounded-xl"
+                    className="w-9 h-9 flex items-center justify-center border border-dashboard dark:border-white/10 hover:bg-[#3b5998] hover:text-white hover:border-[#3b5998] text-gray-500 transition-all rounded-lg"
                     title="Share on Facebook"
                     aria-label="Share on Facebook"
                 >
@@ -264,7 +264,7 @@ export default function SocialShare({
                     href={shareLinks.x}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-9 h-9 flex items-center justify-center border border-dashboard dark:border-white/10 hover:bg-black hover:text-white hover:border-black text-gray-500 transition-all rounded-xl"
+                    className="w-9 h-9 flex items-center justify-center border border-dashboard dark:border-white/10 hover:bg-black hover:text-white hover:border-black text-gray-500 transition-all rounded-lg"
                     title="Share on X"
                     aria-label="Share on X"
                 >
@@ -274,7 +274,7 @@ export default function SocialShare({
                     href={shareLinks.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-9 h-9 flex items-center justify-center border border-dashboard dark:border-white/10 hover:bg-[#0077b5] hover:text-white hover:border-[#0077b5] text-gray-500 transition-all rounded-xl"
+                    className="w-9 h-9 flex items-center justify-center border border-dashboard dark:border-white/10 hover:bg-[#0077b5] hover:text-white hover:border-[#0077b5] text-gray-500 transition-all rounded-lg"
                     title="Share on LinkedIn"
                     aria-label="Share on LinkedIn"
                 >
@@ -284,7 +284,7 @@ export default function SocialShare({
                     href={shareLinks.telegram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-9 h-9 flex items-center justify-center border border-dashboard dark:border-white/10 hover:bg-[#0088cc] hover:text-white hover:border-[#0088cc] text-gray-500 transition-all rounded-xl"
+                    className="w-9 h-9 flex items-center justify-center border border-dashboard dark:border-white/10 hover:bg-[#0088cc] hover:text-white hover:border-[#0088cc] text-gray-500 transition-all rounded-lg"
                     title="Share on Telegram"
                     aria-label="Share on Telegram"
                 >
@@ -294,7 +294,7 @@ export default function SocialShare({
                     href={shareLinks.pinterest}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-9 h-9 flex items-center justify-center border border-dashboard dark:border-white/10 hover:bg-[#E60023] hover:text-white hover:border-[#E60023] text-gray-500 transition-all rounded-xl"
+                    className="w-9 h-9 flex items-center justify-center border border-dashboard dark:border-white/10 hover:bg-[#E60023] hover:text-white hover:border-[#E60023] text-gray-500 transition-all rounded-lg"
                     title="Share on Pinterest"
                     aria-label="Share on Pinterest"
                 >
@@ -304,7 +304,7 @@ export default function SocialShare({
                     variant="outline"
                     size="icon"
                     onClick={copyToClipboard}
-                    className="w-9 h-9 flex items-center justify-center border-dashboard dark:border-white/10 hover:border-gold hover:text-gold transition-all rounded-xl p-0"
+                    className="w-9 h-9 flex items-center justify-center border-dashboard dark:border-white/10 hover:border-gold hover:text-gold transition-all rounded-lg p-0"
                     aria-label="Copy Link"
                 >
                     {copied ? (

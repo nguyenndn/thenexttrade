@@ -69,12 +69,12 @@ export function TrustedPartners() {
                                         ? "noopener noreferrer"
                                         : undefined
                                 }
-                                className="flex flex-col justify-between p-5 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200/80 dark:border-white/5 hover:border-emerald-500/40 dark:hover:border-emerald-500/30 hover:shadow-lg transition-all duration-300 group cursor-pointer h-full"
+                                className="flex flex-col justify-between p-5 rounded-lg bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 hover:border-emerald-500/40 dark:hover:border-emerald-500/30 hover:shadow-lg transition-all duration-300 group cursor-pointer h-full"
                             >
                                 <div>
                                     {/* Top line with Logo & Badge */}
                                     <div className="flex items-start justify-between gap-4 mb-4">
-                                        <div className="w-12 h-12 rounded-xl bg-white border border-dashboard dark:border-white/10 flex items-center justify-center overflow-hidden shadow-sm p-1">
+                                        <div className="w-12 h-12 rounded-lg bg-white border border-dashboard dark:border-white/10 flex items-center justify-center overflow-hidden shadow-sm p-1">
                                             {item.logo ? (
                                                 <Image
                                                     src={item.logo}
@@ -112,7 +112,7 @@ export function TrustedPartners() {
                                     </div>
 
                                     {/* Features checklist */}
-                                    <ul className="mt-4 space-y-1 text-xs text-gray-600 dark:text-gray-400 font-medium border-t border-slate-100 dark:border-white/5 pt-3">
+                                    <ul className="mt-4 space-y-1 text-xs text-gray-600 dark:text-gray-400 font-medium border-t border-gray-200 dark:border-white/5 pt-3">
                                         {item.features
                                             .slice(0, 2)
                                             .map((feat, i) => (

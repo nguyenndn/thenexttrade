@@ -92,7 +92,7 @@ export function CalendarHeatmap({
     }
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard overflow-hidden">
             {/* Header — Month Navigation + Summary */}
             <div className="p-4 sm:p-5 border-b border-dashboard">
                 <div className="flex items-center justify-between mb-4">

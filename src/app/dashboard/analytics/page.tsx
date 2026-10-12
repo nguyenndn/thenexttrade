@@ -180,6 +180,8 @@ async function AnalyticsDataWrapper({
                 symbol: true,
                 type: true,
                 pnl: true,
+                commission: true,
+                swap: true,
                 entryDate: true,
                 exitDate: true,
                 result: true,
@@ -209,7 +211,16 @@ async function AnalyticsDataWrapper({
         id: t.id,
         symbol: t.symbol,
         type: t.type,
-        pnl: Number(t.pnl),
+        grossProfit: Number(t.pnl || 0),
+        commission: Number(t.commission || 0),
+        swap: Number(t.swap || 0),
+        pnl: Number(
+            (
+                (t.pnl || 0) +
+                (t.commission || 0) +
+                (t.swap || 0)
+            ).toFixed(2)
+        ),
         entryDate: t.entryDate.toISOString(),
         exitDate: t.exitDate ? t.exitDate.toISOString() : null,
         result: t.result || "BREAK_EVEN",

@@ -76,7 +76,7 @@ export function SyncHealthCenter({
                         variant="outline"
                         onClick={handleRefresh}
                         disabled={loading || isPending}
-                        className="flex items-center gap-1.5 h-8 rounded-xl border-dashboard bg-white dark:bg-white/[0.04] text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08]"
+                        className="flex items-center gap-1.5 h-8 rounded-lg border-dashboard bg-white dark:bg-white/[0.04] text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08]"
                     >
                         <RefreshCw
                             size={12}

@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { normalizeSyncApiKey } from "@/lib/utils/api-key";
 
 // ─── Types ──────────────────────────────────────────────────────────────────────
 
@@ -66,14 +67,15 @@ export async function resolveSyncAuth(
     // 1. Extract key from headers (prefer X-Sync-Key)
     const syncKey = request.headers.get("X-Sync-Key");
     const apiKey = request.headers.get("X-API-Key");
-    const key = syncKey || apiKey;
+    const rawKey = syncKey || apiKey;
+    const key = normalizeSyncApiKey(rawKey);
 
     if (!key) {
         return { success: false, error: "Missing API key", status: 401 };
     }
 
     // 2. Try user-level sync key first
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
         where: { syncApiKey: key },
         select: {
             id: true,
@@ -81,6 +83,18 @@ export async function resolveSyncAuth(
             name: true,
         },
     });
+
+    // Fallback if DB key was stored with different whitespace or case
+    if (!user && rawKey && rawKey.trim() !== key) {
+        user = await prisma.user.findUnique({
+            where: { syncApiKey: rawKey.trim() },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+            },
+        });
+    }
 
     if (user) {
         // User-level key found — resolve account if identity provided

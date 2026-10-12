@@ -10,7 +10,9 @@ import {
     Eye,
     EyeOff,
 } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 import {
     toggleLeaderboardVisibility,
     toggleAccountLeaderboardVisibility,
@@ -37,8 +39,8 @@ export function LeaderboardSidebar({ initialData }: LeaderboardSidebarProps) {
             try {
                 const newValue = await toggleLeaderboardVisibility();
                 setShowOnLeaderboard(newValue);
-            } catch (err) {
-                console.error("Failed to toggle global visibility:", err);
+            } catch {
+                toast.error("Failed to toggle global visibility");
             }
         });
     };
@@ -62,8 +64,8 @@ export function LeaderboardSidebar({ initialData }: LeaderboardSidebarProps) {
                             : acc
                     )
                 );
-            } catch (err) {
-                console.error("Failed to toggle account visibility:", err);
+            } catch {
+                toast.error("Failed to toggle account visibility");
             } finally {
                 setTogglingAccount(null);
             }
@@ -82,7 +84,7 @@ export function LeaderboardSidebar({ initialData }: LeaderboardSidebarProps) {
     return (
         <div className="space-y-6">
             {/* Privacy & Settings Card */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-2xl border border-dashboard dark:border-white/[0.08] shadow-sm p-6 space-y-6">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard dark:border-white/[0.08] shadow-sm p-6 space-y-6">
                 <div>
                     <h3 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">
                         My Accounts & Privacy Settings
@@ -106,6 +108,10 @@ export function LeaderboardSidebar({ initialData }: LeaderboardSidebarProps) {
                         </p>
                     </div>
                     <button
+                        type="button"
+                        role="switch"
+                        aria-checked={showOnLeaderboard}
+                        aria-label="Toggle leaderboard profile visibility"
                         onClick={handleGlobalVisibilityToggle}
                         disabled={isPending}
                         className={cn(
@@ -156,57 +162,44 @@ export function LeaderboardSidebar({ initialData }: LeaderboardSidebarProps) {
                                         </span>
                                     </div>
 
-                                    {/* Visibility Button Group */}
-                                    <div className="flex items-center bg-gray-200/60 dark:bg-white/10 rounded-lg p-0.5 border border-dashboard">
-                                        <button
-                                            onClick={() =>
-                                                handleAccountVisibilityToggle(
-                                                    account.id,
-                                                    account.useForLeaderboard
-                                                )
-                                            }
-                                            disabled={
-                                                togglingAccount === account.id
-                                            }
-                                            className={cn(
-                                                "p-1.5 rounded-lg transition-all duration-200 flex items-center justify-center",
+                                    {/* Visibility Toggle Button */}
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() =>
+                                            handleAccountVisibilityToggle(
+                                                account.id,
                                                 account.useForLeaderboard
-                                                    ? "bg-white dark:bg-white/10 text-emerald-600 dark:text-emerald-400 shadow-sm"
-                                                    : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                                            )}
-                                            title="Visible on Leaderboard"
-                                        >
-                                            {togglingAccount === account.id ? (
-                                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                                            ) : (
-                                                <Globe className="w-3.5 h-3.5" />
-                                            )}
-                                        </button>
-                                        <button
-                                            onClick={() =>
-                                                handleAccountVisibilityToggle(
-                                                    account.id,
-                                                    account.useForLeaderboard
-                                                )
-                                            }
-                                            disabled={
-                                                togglingAccount === account.id
-                                            }
-                                            className={cn(
-                                                "p-1.5 rounded-lg transition-all duration-200 flex items-center justify-center",
-                                                !account.useForLeaderboard
-                                                    ? "bg-white dark:bg-white/10 text-gray-700 dark:text-gray-300 shadow-sm"
-                                                    : "text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                                            )}
-                                            title="Hidden / Private"
-                                        >
-                                            {togglingAccount === account.id ? (
-                                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                                            ) : (
-                                                <Lock className="w-3.5 h-3.5" />
-                                            )}
-                                        </button>
-                                    </div>
+                                            )
+                                        }
+                                        disabled={
+                                            togglingAccount === account.id
+                                        }
+                                        className={cn(
+                                            "h-7 w-7 rounded-lg transition-all duration-200 flex items-center justify-center border",
+                                            account.useForLeaderboard
+                                                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20"
+                                                : "bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500 border-dashboard hover:text-gray-600 dark:hover:text-gray-300"
+                                        )}
+                                        aria-label={
+                                            account.useForLeaderboard
+                                                ? "Hide account from leaderboard"
+                                                : "Show account on leaderboard"
+                                        }
+                                        title={
+                                            account.useForLeaderboard
+                                                ? "Visible on Leaderboard (click to hide)"
+                                                : "Hidden / Private (click to show)"
+                                        }
+                                    >
+                                        {togglingAccount === account.id ? (
+                                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                        ) : account.useForLeaderboard ? (
+                                            <Globe className="w-3.5 h-3.5" />
+                                        ) : (
+                                            <Lock className="w-3.5 h-3.5" />
+                                        )}
+                                    </Button>
                                 </div>
 
                                 {/* Account Settings / Warning if parent hidden */}

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
 import { generateTradeHash } from "@/lib/importers";
 import { normalizeBrokerTimezone, parseBrokerNumber } from "@/lib/utils";
+import { normalizeSyncApiKey } from "@/lib/utils/api-key";
 
 const limiter = rateLimit({
     uniqueTokenPerInterval: 500,
@@ -49,9 +50,10 @@ interface AccountSync {
  */
 export async function POST(request: NextRequest) {
     try {
-        const syncApiKey =
+        const rawApiKey =
             request.headers.get("X-Sync-Key") ||
             request.headers.get("X-API-Key");
+        const syncApiKey = normalizeSyncApiKey(rawApiKey);
         if (!syncApiKey) {
             return NextResponse.json(
                 { error: "Missing sync API key" },
@@ -70,7 +72,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Auth user
-        const user = await prisma.user.findUnique({
+        let user = await prisma.user.findUnique({
             where: { syncApiKey },
             select: {
                 id: true,
@@ -84,6 +86,23 @@ export async function POST(request: NextRequest) {
                 },
             },
         });
+
+        if (!user && rawApiKey && rawApiKey.trim() !== syncApiKey) {
+            user = await prisma.user.findUnique({
+                where: { syncApiKey: rawApiKey.trim() },
+                select: {
+                    id: true,
+                    tradingAccounts: {
+                        select: {
+                            id: true,
+                            accountNumber: true,
+                            autoSync: true,
+                            platform: true,
+                        },
+                    },
+                },
+            });
+        }
 
         if (!user) {
             return NextResponse.json(
@@ -236,15 +255,15 @@ export async function POST(request: NextRequest) {
                         const isClosed =
                             exitDate && exitDate.getFullYear() > 1980;
 
-                        const pnl =
-                            (trade.profit || 0) +
-                            (trade.commission || 0) +
-                            (trade.swap || 0);
+                        const profit = Number(trade.profit) || 0;
+                        const commission = Number(trade.commission) || 0;
+                        const swap = Number(trade.swap) || 0;
+                        const netPnl = profit + commission + swap;
                         const status = isClosed ? "CLOSED" : "OPEN";
 
                         let result: any = null;
                         if (isClosed) {
-                            result = classifyTradeResult({ pnl });
+                            result = classifyTradeResult({ pnl: netPnl });
                         }
 
                         // Check existing
@@ -263,11 +282,11 @@ export async function POST(request: NextRequest) {
                                 data: {
                                     exitDate: isClosed ? exitDate : null,
                                     exitPrice: trade.closePrice || null,
-                                    pnl,
+                                    pnl: profit,
                                     status,
                                     result,
-                                    commission: trade.commission || 0,
-                                    swap: trade.swap || 0,
+                                    commission,
+                                    swap,
                                     stopLoss: trade.sl || null,
                                     takeProfit: trade.tp || null,
                                     magicNumber:
@@ -300,9 +319,9 @@ export async function POST(request: NextRequest) {
                                     exitDate: isClosed ? exitDate : null,
                                     exitPrice: trade.closePrice || null,
                                     lotSize: trade.lots,
-                                    pnl,
-                                    commission: trade.commission || 0,
-                                    swap: trade.swap || 0,
+                                    pnl: profit,
+                                    commission,
+                                    swap,
                                     stopLoss: trade.sl || null,
                                     takeProfit: trade.tp || null,
                                     status,

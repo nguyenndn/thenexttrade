@@ -242,7 +242,7 @@ export default function AcademyMap({
                                         isLocked
                                             ? "bg-gray-100 border-dashboard text-gray-500 dark:bg-gray-900 dark:text-gray-600 grayscale"
                                             : levelComplete
-                                              ? "bg-white dark:bg-gray-900 border-primary text-gray-700 dark:text-white shadow-primary/30"
+                                              ? "bg-white dark:bg-gray-900 border-gold text-gray-700 dark:text-white shadow-amber-500/30"
                                               : levelActive
                                                 ? "bg-white dark:bg-gray-900 border-cyan-500 text-gray-700 dark:text-white shadow-cyan-500/20"
                                                 : `bg-white dark:bg-gray-900 border-dashboard text-gray-700 dark:text-white`
@@ -254,7 +254,7 @@ export default function AcademyMap({
                                             className={cn(
                                                 "absolute inset-0 rounded-full blur-xl opacity-40",
                                                 levelComplete
-                                                    ? "bg-primary"
+                                                    ? "bg-gold"
                                                     : levelActive
                                                       ? "bg-cyan-500"
                                                       : cn(
@@ -272,7 +272,7 @@ export default function AcademyMap({
 
                                     {/* Complete checkmark overlay */}
                                     {levelComplete && (
-                                        <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary flex items-center justify-center z-20 shadow-lg">
+                                        <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-gold flex items-center justify-center z-20 shadow-lg shadow-amber-500/30">
                                             <CheckCircle
                                                 size={14}
                                                 className="text-white"
@@ -361,7 +361,7 @@ export default function AcademyMap({
                                                     >
                                                         <div
                                                             className={cn(
-                                                                "inline-flex items-center gap-3 py-2 px-3 sm:p-3 rounded-xl border transition-all cursor-pointer shadow-sm hover:shadow-md w-full",
+                                                                "inline-flex items-center gap-3 py-2 px-3 sm:p-3 rounded-lg border transition-all cursor-pointer shadow-sm hover:shadow-md w-full",
                                                                 isComplete
                                                                     ? "bg-green-50 dark:bg-green-500/5 border-primary/30 dark:border-primary/20 hover:border-primary"
                                                                     : isAwaitingQuiz

@@ -57,7 +57,7 @@ export function LicenseRowActions({
             <Button
                 size="sm"
                 onClick={() => setIsApproveOpen(true)}
-                className="bg-primary hover:bg-[#00B078] text-white border-none shadow-sm shadow-primary/20 hover:shadow-primary/40 px-3 py-1.5 h-auto rounded-lg text-xs font-bold transition-all"
+                className="bg-gold hover:bg-amber-600 text-white border-none shadow-sm shadow-amber-500/20 hover:shadow-amber-500/40 px-3 py-1.5 h-auto rounded-lg text-xs font-bold transition-all"
             >
                 <Check size={14} className="mr-1.5" />
                 Approve

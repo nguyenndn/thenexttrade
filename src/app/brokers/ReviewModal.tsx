@@ -74,7 +74,7 @@ export function ReviewBadge({ item }: { item: ReviewItem }) {
         <>
             <button
                 onClick={() => setOpen(true)}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-primary/10 hover:text-primary dark:hover:bg-primary/20 dark:hover:text-primary transition-all duration-200 cursor-pointer border border-transparent hover:border-primary/20"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-gold/10 hover:text-amber-600 dark:hover:bg-gold/20 dark:hover:text-gold transition-all duration-200 cursor-pointer border border-transparent hover:border-gold/25"
             >
                 <PenLine size={12} className="shrink-0" />
                 Our Review
@@ -141,15 +141,15 @@ function ReviewModal({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="relative w-full max-w-lg bg-white dark:bg-[#1A1C24] rounded-2xl border border-dashboard shadow-2xl overflow-hidden max-h-[85vh] flex flex-col"
+                className="relative w-full max-w-lg bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 shadow-2xl overflow-hidden max-h-[85vh] flex flex-col"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="p-5 pb-4 border-b border-dashboard flex items-center gap-4 shrink-0">
+                <div className="p-5 pb-4 border-b border-gray-200 dark:border-white/10 flex items-center gap-4 shrink-0">
                     <div
-                        className={`w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center overflow-hidden ${
+                        className={`w-12 h-12 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden ${
                             item.logo
-                                ? "bg-white border border-dashboard"
+                                ? "bg-white border border-gray-200 dark:border-white/10"
                                 : `bg-gradient-to-br ${item.color} text-white text-sm font-black`
                         }`}
                     >
@@ -234,10 +234,10 @@ function ReviewModal({
                     </div>
 
                     {/* Best For */}
-                    <div className="bg-primary/5 dark:bg-primary/10 border border-primary/10 dark:border-primary/20 rounded-xl p-4">
+                    <div className="bg-amber-500/5 dark:bg-gold/10 border border-amber-500/15 dark:border-gold/20 rounded-lg p-4">
                         <div className="flex items-center gap-2 mb-2">
-                            <Target size={14} className="text-primary" />
-                            <span className="text-xs font-bold text-primary uppercase tracking-wider">
+                            <Target size={14} className="text-amber-600 dark:text-gold" />
+                            <span className="text-xs font-bold text-amber-600 dark:text-gold uppercase tracking-wider">
                                 Best For
                             </span>
                         </div>
@@ -247,7 +247,7 @@ function ReviewModal({
                     </div>
 
                     {/* Verdict */}
-                    <div className="flex items-start gap-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl p-4">
+                    <div className="flex items-start gap-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-lg p-4">
                         <Award
                             size={18}
                             className="text-amber-500 mt-0.5 shrink-0"
@@ -260,19 +260,20 @@ function ReviewModal({
 
                 {/* Footer CTA */}
                 {hasUrl && (
-                    <div className="p-4 border-t border-dashboard shrink-0">
+                    <div className="p-4 border-t border-gray-200 dark:border-white/10 shrink-0">
                         <a
                             href={item.url!}
                             target="_blank"
                             rel="noopener noreferrer"
                             className={buttonVariants({
-                                variant: "primary",
+                                variant: "gold",
+                                size: "smd",
                                 className:
-                                    "flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gradient-to-r from-primary to-teal-500 text-white font-bold text-sm hover:opacity-90 shadow-lg shadow-primary/20",
+                                    "flex items-center justify-center gap-2 w-full font-bold",
                             })}
                         >
                             Open Account
-                            <ExternalLink size={14} />
+                            <ExternalLink size={13} />
                         </a>
                     </div>
                 )}

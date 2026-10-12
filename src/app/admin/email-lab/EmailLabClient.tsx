@@ -144,7 +144,7 @@ export function EmailLabClient({
             id: "vip_trial_ending_soon",
             title: "VIP Trial Ending Soon (Day 6)",
             description:
-                "Sent 24h before trial expires. Encourages connecting a funded MT5 account ($300+) on partner broker to keep Pro free.",
+                "Sent 24h before trial expires. Encourages connecting a funded MT5 account ($200+) on partner broker to keep Pro free.",
             sourceFile: "src/lib/services/vip-email-templates.ts",
             status: "active",
             statusLabel: "Active SMTP",
@@ -182,9 +182,9 @@ export function EmailLabClient({
         },
         {
             id: "vip_funding_grace",
-            title: "VIP Funding Grace (Balance < $300)",
+            title: "VIP Funding Grace (Balance < $200)",
             description:
-                "Sent when 30-day periodic recheck finds balance below $300. Starts 7-day grace period to top up to $300.",
+                "Sent when 30-day periodic recheck finds balance below $200. Starts 7-day grace period to top up to $200.",
             sourceFile: "src/lib/services/vip-email-templates.ts",
             status: "active",
             statusLabel: "Active SMTP",
@@ -347,19 +347,19 @@ export function EmailLabClient({
         switch (status) {
             case "active":
                 return (
-                    <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2.5 py-1 rounded-xl text-xs font-bold tracking-wide border border-amber-500/20">
+                    <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide border border-amber-500/20">
                         {label}
                     </span>
                 );
             case "supabase":
                 return (
-                    <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2.5 py-1 rounded-xl text-xs font-bold tracking-wide border border-amber-500/20">
+                    <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide border border-amber-500/20">
                         {label}
                     </span>
                 );
             case "needs_fix":
                 return (
-                    <span className="bg-red-500/10 text-red-500 px-2.5 py-1 rounded-xl text-xs font-bold tracking-wide border border-red-500/20">
+                    <span className="bg-red-500/10 text-red-500 px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide border border-red-500/20">
                         {label}
                     </span>
                 );
@@ -409,7 +409,7 @@ export function EmailLabClient({
             </div>
 
             {/* Warning block */}
-            <div className="bg-amber-500/[0.03] border border-amber-500/20 rounded-xl p-5 flex items-start gap-3.5">
+            <div className="bg-amber-500/[0.03] border border-amber-500/20 rounded-lg p-5 flex items-start gap-3.5">
                 <ShieldAlert
                     className="text-amber-500 shrink-0 mt-0.5"
                     size={20}
@@ -428,7 +428,7 @@ export function EmailLabClient({
             </div>
 
             {/* Recipient controller Card */}
-            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-6 shadow-sm">
                 <h3 className="text-base font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
                     <Mail size={18} className="text-amber-500" />
                     Recipient Configuration
@@ -448,7 +448,7 @@ export function EmailLabClient({
                             <Info size={14} className="text-amber-500" />
                             Custom recipient is locked by environment config.
                             Sending only to default:{" "}
-                            <code className="text-gray-700 dark:text-gray-300 font-bold bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded-xl text-xs">
+                            <code className="text-gray-700 dark:text-gray-300 font-bold bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded-lg text-xs">
                                 {defaultRecipient}
                             </code>
                             .
@@ -467,7 +467,7 @@ export function EmailLabClient({
                 <button
                     type="button"
                     onClick={() => setActiveTab("all")}
-                    className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${activeTab === "all"
+                    className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "all"
                             ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20"
                             : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
                         }`}
@@ -478,7 +478,7 @@ export function EmailLabClient({
                 <button
                     type="button"
                     onClick={() => setActiveTab("vip")}
-                    className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${activeTab === "vip"
+                    className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "vip"
                             ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20"
                             : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
                         }`}
@@ -489,7 +489,7 @@ export function EmailLabClient({
                 <button
                     type="button"
                     onClick={() => setActiveTab("ea_academy")}
-                    className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${activeTab === "ea_academy"
+                    className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "ea_academy"
                             ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20"
                             : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
                         }`}
@@ -501,7 +501,7 @@ export function EmailLabClient({
                 <button
                     type="button"
                     onClick={() => setActiveTab("reports")}
-                    className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${activeTab === "reports"
+                    className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "reports"
                             ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20"
                             : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
                         }`}
@@ -513,7 +513,7 @@ export function EmailLabClient({
                 <button
                     type="button"
                     onClick={() => setActiveTab("onboarding")}
-                    className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${activeTab === "onboarding"
+                    className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "onboarding"
                             ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20"
                             : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
                         }`}
@@ -524,7 +524,7 @@ export function EmailLabClient({
                 <button
                     type="button"
                     onClick={() => setActiveTab("auth")}
-                    className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${activeTab === "auth"
+                    className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "auth"
                             ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20"
                             : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
                         }`}
@@ -553,7 +553,7 @@ export function EmailLabClient({
                             return (
                                 <div
                                     key={template.id}
-                                    className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-all group"
+                                    className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-all group"
                                 >
                                     <div className="space-y-3">
                                         <div className="flex justify-between items-start gap-2">
@@ -568,7 +568,7 @@ export function EmailLabClient({
                                         <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed min-h-[48px]">
                                             {template.description}
                                         </p>
-                                        <div className="text-xs font-mono text-gray-400 bg-gray-50 dark:bg-white/[0.02] p-2 rounded-xl truncate">
+                                        <div className="text-xs font-mono text-gray-400 bg-gray-50 dark:bg-white/[0.02] p-2 rounded-lg truncate">
                                             {template.sourceFile}
                                         </div>
                                     </div>
@@ -577,7 +577,7 @@ export function EmailLabClient({
                                         <div className="grid grid-cols-2 gap-2">
                                             <Button
                                                 variant="outline"
-                                                className="w-full text-xs font-semibold py-2 px-3 rounded-xl flex items-center justify-center gap-1.5"
+                                                className="w-full text-xs font-semibold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5"
                                                 isLoading={isPreviewLoading}
                                                 onClick={() =>
                                                     handlePreview(
@@ -591,7 +591,7 @@ export function EmailLabClient({
                                             </Button>
 
                                             <Button
-                                                className="w-full text-xs font-bold py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-sm shadow-amber-500/20"
+                                                className="w-full text-xs font-bold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-sm shadow-amber-500/20"
                                                 isLoading={loading}
                                                 onClick={() =>
                                                     handleSend(
@@ -606,7 +606,7 @@ export function EmailLabClient({
 
                                         {res && (
                                             <div
-                                                className={`p-2.5 rounded-xl text-xs font-medium flex gap-1.5 items-start ${res.success
+                                                className={`p-2.5 rounded-lg text-xs font-medium flex gap-1.5 items-start ${res.success
                                                         ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
                                                         : "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"
                                                     }`}
@@ -649,7 +649,7 @@ export function EmailLabClient({
                             {supabaseTemplates.length} templates
                         </span>
                     </h2>
-                    <div className="bg-amber-500/[0.02] border border-amber-500/15 rounded-xl p-5 flex items-start gap-3.5">
+                    <div className="bg-amber-500/[0.02] border border-amber-500/15 rounded-lg p-5 flex items-start gap-3.5">
                         <Info className="text-amber-500 shrink-0 mt-0.5" size={20} />
                         <p className="text-sm text-amber-700 dark:text-amber-400 leading-relaxed font-medium">
                             Auth emails are managed and dispatched directly by the{" "}
@@ -669,7 +669,7 @@ export function EmailLabClient({
                             return (
                                 <div
                                     key={template.id}
-                                    className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-all group"
+                                    className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-all group"
                                 >
                                     <div className="space-y-3">
                                         <div className="flex justify-between items-start gap-2">
@@ -684,7 +684,7 @@ export function EmailLabClient({
                                         <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed min-h-[48px]">
                                             {template.description}
                                         </p>
-                                        <div className="text-xs font-mono text-gray-400 bg-gray-50 dark:bg-white/[0.02] p-2 rounded-xl truncate">
+                                        <div className="text-xs font-mono text-gray-400 bg-gray-50 dark:bg-white/[0.02] p-2 rounded-lg truncate">
                                             {template.sourceFile}
                                         </div>
                                     </div>
@@ -693,7 +693,7 @@ export function EmailLabClient({
                                         <div className="grid grid-cols-2 gap-2">
                                             <Button
                                                 variant="outline"
-                                                className="w-full text-xs font-semibold py-2 px-3 rounded-xl flex items-center justify-center gap-1.5"
+                                                className="w-full text-xs font-semibold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5"
                                                 isLoading={isPreviewLoading}
                                                 onClick={() =>
                                                     handlePreview(
@@ -707,7 +707,7 @@ export function EmailLabClient({
                                             </Button>
 
                                             <Button
-                                                className="w-full text-xs font-bold py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-sm shadow-amber-500/20"
+                                                className="w-full text-xs font-bold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-sm shadow-amber-500/20"
                                                 isLoading={loading}
                                                 onClick={() =>
                                                     handleSend(
@@ -722,7 +722,7 @@ export function EmailLabClient({
 
                                         {res && (
                                             <div
-                                                className={`p-2.5 rounded-xl text-xs font-medium flex gap-1.5 items-start ${res.success
+                                                className={`p-2.5 rounded-lg text-xs font-medium flex gap-1.5 items-start ${res.success
                                                         ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
                                                         : "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"
                                                     }`}

@@ -89,7 +89,7 @@ function CurrencyDropdown({
                     <Button
                         type="button"
                         variant="ghost"
-                        className="w-full px-4 py-3.5 h-auto rounded-xl bg-white dark:bg-white/5 border border-dashboard hover:bg-gray-50 dark:hover:bg-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-gray-700 dark:text-white flex items-center justify-between"
+                        className="w-full px-4 py-3.5 h-auto rounded-lg bg-white dark:bg-white/5 border border-dashboard hover:bg-gray-50 dark:hover:bg-white/10 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-gray-700 dark:text-white flex items-center justify-between"
                     >
                         <span className="font-bold text-base flex items-center gap-2">
                             {info?.flag} {info?.code} - {info?.name}
@@ -216,7 +216,7 @@ export function CurrencyConverter() {
                         onChange={(e) =>
                             setAmount(parseFloat(e.target.value) || 0)
                         }
-                        className="w-full px-4 py-3.5 bg-white dark:bg-white/5 border border-dashboard rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none font-bold text-lg text-gray-700 dark:text-white transition-all hover:border-gray-300 dark:hover:border-white/20"
+                        className="w-full px-4 py-3.5 bg-white dark:bg-white/5 border border-dashboard rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none font-bold text-lg text-gray-700 dark:text-white transition-all hover:border-gray-300 dark:hover:border-white/20"
                     />
                 </div>
 
@@ -237,7 +237,7 @@ export function CurrencyConverter() {
                         variant="primary"
                         size="icon"
                         onClick={swap}
-                        className="h-11 w-11 rounded-full bg-primary text-white hover:bg-primary/80 shadow-lg shadow-primary/25"
+                        className="h-11 w-11 rounded-full bg-gold text-white hover:bg-amber-600 shadow-md shadow-amber-500/20 border-none"
                         aria-label="Swap currencies"
                     >
                         <ArrowUpDown size={20} />
@@ -256,43 +256,39 @@ export function CurrencyConverter() {
             </div>
 
             {/* ── Right Panel: Result ── */}
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-teal-500 to-cyan-600 p-6 md:p-8 flex flex-col justify-between min-h-[400px]">
-                {/* Decorative glows */}
-                <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-[60px] -mr-12 -mt-12 pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-40 h-40 bg-cyan-400/20 rounded-full blur-[50px] -ml-10 -mb-10 pointer-events-none" />
-                <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-teal-300/10 rounded-full blur-[40px] pointer-events-none" />
-
+            <div className="relative overflow-hidden rounded-lg bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 p-6 md:p-8 flex flex-col justify-between min-h-[400px] shadow-sm">
                 {/* Result Content */}
                 <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center">
-                    <p className="text-xs font-bold text-white/60 uppercase tracking-[0.2em] mb-4">
+                    <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] mb-4">
                         Converted Amount
                     </p>
 
                     {loading ? (
                         <RefreshCw
                             size={32}
-                            className="text-white/60 animate-spin"
+                            className="text-gray-400 animate-spin"
                         />
                     ) : result ? (
                         <>
-                            <p className="text-3xl sm:text-5xl font-black text-white tracking-tight font-mono">
+                            <p className="text-3xl sm:text-5xl font-black text-gray-900 dark:text-white tracking-tight font-mono">
                                 {toSymbol}
                                 {result.converted.toLocaleString("en-US", {
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2,
                                 })}
                             </p>
-                            <p className="text-white/60 mt-3 text-sm font-medium">
+                            <p className="text-gray-600 dark:text-gray-400 mt-3 text-sm font-medium">
                                 1 {from} = {result.rate.toFixed(4)} {to}
                             </p>
-                            <div className="mt-3 px-3 py-1 rounded-full bg-white/15 border border-white/20 text-[10px] font-bold text-white/80 uppercase tracking-wider">
-                                Live Rates
+                            <div className="mt-3 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                Live Telemetry Rates
                             </div>
                         </>
                     ) : error ? (
-                        <p className="text-white/70 font-bold">{error}</p>
+                        <p className="text-red-500 dark:text-red-400 font-bold">{error}</p>
                     ) : (
-                        <p className="text-white/40 text-lg font-medium">
+                        <p className="text-gray-500 dark:text-gray-400 text-lg font-medium">
                             Enter amount to convert
                         </p>
                     )}
@@ -301,19 +297,19 @@ export function CurrencyConverter() {
                 {/* Rate Details */}
                 {result && (
                     <div className="relative z-10 mt-6 space-y-2">
-                        <div className="bg-white/10 backdrop-blur-sm rounded-xl px-5 py-3 flex items-center justify-between border border-white/10">
-                            <span className="text-sm text-white/70 font-medium">
+                        <div className="bg-white dark:bg-white/[0.04] rounded-lg px-5 py-3 flex items-center justify-between border border-gray-200 dark:border-white/[0.08] shadow-sm dark:shadow-none">
+                            <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">
                                 Exchange Rate
                             </span>
-                            <span className="font-black text-white text-lg font-mono">
+                            <span className="font-black text-gray-900 dark:text-white text-lg font-mono">
                                 {result.rate.toFixed(4)}
                             </span>
                         </div>
-                        <div className="bg-white/10 backdrop-blur-sm rounded-xl px-5 py-3 flex items-center justify-between border border-white/10">
-                            <span className="text-sm text-white/70 font-medium">
+                        <div className="bg-white dark:bg-white/[0.04] rounded-lg px-5 py-3 flex items-center justify-between border border-gray-200 dark:border-white/[0.08] shadow-sm dark:shadow-none">
+                            <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">
                                 Inverse Rate
                             </span>
-                            <span className="font-black text-white text-lg font-mono">
+                            <span className="font-black text-gray-900 dark:text-white text-lg font-mono">
                                 {inverseRate.toFixed(4)}
                             </span>
                         </div>

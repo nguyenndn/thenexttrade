@@ -44,12 +44,12 @@ export function AcademyLevelCard({
     const remainingModules = Math.max(0, moduleCount - previewModules.length);
 
     return (
-        <div className="group flex flex-col justify-between bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm hover:shadow-md hover:border-gray-300 dark:hover:border-white/20 transition-all">
+        <div className="group flex flex-col justify-between bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-5 shadow-sm hover:shadow-md hover:border-gray-300 dark:hover:border-white/20 transition-all">
             {/* Header: Order, Stage, Access & Actions */}
             <div>
                 <div className="flex items-start justify-between gap-2 mb-3">
                     <div className="flex items-center gap-2.5 flex-wrap">
-                        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-500/10 to-teal-500/20 border border-cyan-500/20 flex items-center justify-center shrink-0">
+                        <div className="w-11 h-11 rounded-lg bg-gradient-to-br from-cyan-500/10 to-teal-500/20 border border-cyan-500/20 flex items-center justify-center shrink-0">
                             <span className="text-base font-black text-cyan-600 dark:text-cyan-400">
                                 {String(level.order).padStart(2, "0")}
                             </span>
@@ -88,7 +88,7 @@ export function AcademyLevelCard({
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent
-                                className="w-36 p-1 rounded-xl"
+                                className="w-36 p-1 rounded-lg"
                                 align="end"
                             >
                                 <Button
@@ -121,7 +121,7 @@ export function AcademyLevelCard({
                 </p>
 
                 {/* 2x2 Specs Matrix Card */}
-                <div className="grid grid-cols-2 divide-x divide-y divide-gray-200 dark:divide-white/10 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/60 dark:bg-white/[0.02] mb-4 overflow-hidden">
+                <div className="grid grid-cols-2 divide-x divide-y divide-gray-200 dark:divide-white/10 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/60 dark:bg-white/[0.02] mb-4 overflow-hidden">
                     {/* Matrix Cell 1: Modules */}
                     <div className="p-2.5">
                         <div className="flex items-center gap-1.5 text-[11px] font-semibold text-gray-400 dark:text-gray-500 mb-0.5">

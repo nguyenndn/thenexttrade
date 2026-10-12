@@ -17,7 +17,7 @@ export function BusinessHealthPanel({ data }: Props) {
     };
 
     return (
-        <div className="bg-white/50 dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 backdrop-blur-sm">
+        <div className="bg-white/50 dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-6 backdrop-blur-sm">
             <h3 className="text-lg font-black text-slate-800 dark:text-white flex items-center gap-2">
                 <DollarSign className="w-5 h-5 text-emerald-500" />
                 Trading Business Health
@@ -29,9 +29,9 @@ export function BusinessHealthPanel({ data }: Props) {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* IB Referrals */}
-                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500 text-white flex items-center justify-center shrink-0 shadow-xs">
                             <Users className="w-5 h-5" />
                         </div>
                         <div className="min-w-0 flex-1">
@@ -54,9 +54,9 @@ export function BusinessHealthPanel({ data }: Props) {
                 </div>
 
                 {/* Funded Accounts */}
-                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-green-600 text-white flex items-center justify-center shrink-0 shadow-xs">
                             <CreditCard className="w-5 h-5" />
                         </div>
                         <div className="min-w-0 flex-1">
@@ -79,9 +79,9 @@ export function BusinessHealthPanel({ data }: Props) {
                 </div>
 
                 {/* System Assets */}
-                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center shrink-0 shadow-xs">
                             <DollarSign className="w-5 h-5" />
                         </div>
                         <div className="min-w-0 flex-1">

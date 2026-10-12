@@ -151,6 +151,8 @@ export function AddAccountModal({
             setCopied(false);
             setFreeAccountNumber("");
             setFreeServer("");
+            setFreeBroker("");
+            setInvestorPassword("");
 
             setSelectedBroker(null);
             setAccountStatus(null);
@@ -492,7 +494,7 @@ export function AddAccountModal({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="relative z-10 bg-white dark:bg-[#1E2028] rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-dashboard shadow-2xl cursor-default flex flex-col"
+                className="relative z-10 bg-white dark:bg-[#1E2028] rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-dashboard shadow-2xl cursor-default flex flex-col"
             >
                 {/* 0. UPGRADE-PRO STEP — prefilled from existing account */}
                 {step === "upgrade-pro" && sourceAccount && (
@@ -504,13 +506,13 @@ export function AddAccountModal({
                         )}
                         <div className="p-6 space-y-4">
                             {error && (
-                                <div className="p-3 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-sm text-red-700 dark:text-red-400 flex items-center gap-2">
+                                <div className="p-3 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-sm text-red-700 dark:text-red-400 flex items-center gap-2">
                                     <AlertCircle size={16} /> {error}
                                 </div>
                             )}
 
                             {/* Read-only account summary */}
-                            <div className="rounded-xl border border-amber-200/60 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 p-5 space-y-4">
+                            <div className="rounded-lg border border-amber-200/60 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 p-5 space-y-4">
                                 <p className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 text-center">
                                     Account to Upgrade
                                 </p>
@@ -545,7 +547,7 @@ export function AddAccountModal({
                             </div>
 
                             {/* VIP requires the account to be registered under our IB */}
-                            <div className="rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 p-4 space-y-3">
+                            <div className="rounded-lg border border-amber-200 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 p-4 space-y-3">
                                 <p className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
                                     <AlertTriangle size={14} /> VIP requires
                                     registration under our IB
@@ -647,7 +649,7 @@ export function AddAccountModal({
 
                             <div className="flex justify-end pt-2">
                                 <Button
-                                    variant="primary"
+                                    variant="gold"
                                     size="smd"
                                     onClick={handleUpgradeSubmit}
                                     disabled={
@@ -688,10 +690,17 @@ export function AddAccountModal({
                         <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                             <button
                                 role="button"
-                                onClick={() => setStep("free-create")}
-                                className="flex flex-col items-start gap-4 p-6 rounded-2xl border-2 border-dashboard hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/5 transition-all text-left group cursor-pointer bg-transparent w-full"
+                                onClick={() => {
+                                    setName("");
+                                    setFreeAccountNumber("");
+                                    setFreeServer("");
+                                    setFreeBroker("");
+                                    setInvestorPassword("");
+                                    setStep("free-create");
+                                }}
+                                className="flex flex-col items-start gap-4 p-6 rounded-lg border-2 border-dashboard hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/5 transition-all text-left group cursor-pointer bg-transparent w-full"
                             >
-                                <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                                     <Wallet
                                         size={24}
                                         className="text-gray-600 dark:text-gray-300"
@@ -710,12 +719,12 @@ export function AddAccountModal({
                             <button
                                 role="button"
                                 onClick={() => setStep("pro-broker")}
-                                className="flex flex-col items-start gap-4 p-6 rounded-2xl border-2 border-amber-200 dark:border-amber-500/30 hover:border-amber-400 dark:hover:border-amber-500/50 bg-amber-50/50 dark:bg-amber-500/5 hover:bg-amber-50 dark:hover:bg-amber-500/10 transition-all text-left group cursor-pointer w-full"
+                                className="flex flex-col items-start gap-4 p-6 rounded-lg border-2 border-amber-200 dark:border-amber-500/30 hover:border-amber-400 dark:hover:border-amber-500/50 bg-amber-50/50 dark:bg-amber-500/5 hover:bg-amber-50 dark:hover:bg-amber-500/10 transition-all text-left group cursor-pointer w-full"
                             >
-                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg shadow-amber-500/20">
+                                <div className="w-12 h-12 rounded-lg bg-gold flex items-center justify-center shadow-md shadow-amber-500/10">
                                     <Check
                                         size={24}
-                                        className="text-white"
+                                        className="text-black"
                                         strokeWidth={3}
                                     />
                                 </div>
@@ -737,11 +746,44 @@ export function AddAccountModal({
                 {step === "free-create" && (
                     <>
                         {renderHeader("Free Account Details")}
-                        <div className="p-6 space-y-6">
+                        <form
+                            autoComplete="off"
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                handleCreateFree();
+                            }}
+                            className="p-6 space-y-6"
+                        >
+                            {/* Hidden dummy fields to neutralize browser credentials auto-fill heuristics */}
+                            <input
+                                type="text"
+                                name="prevent_autofill_username"
+                                id="prevent_autofill_username"
+                                tabIndex={-1}
+                                autoComplete="off"
+                                aria-hidden="true"
+                                className="sr-only pointer-events-none"
+                            />
+                            <input
+                                type="password"
+                                name="prevent_autofill_password"
+                                id="prevent_autofill_password"
+                                tabIndex={-1}
+                                autoComplete="new-password"
+                                aria-hidden="true"
+                                className="sr-only pointer-events-none"
+                            />
+
                             <PremiumInput
+                                id="tnt-trading-account-name"
+                                name="tnt_trading_account_name"
                                 label="Account Name"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
+                                autoComplete="off"
+                                data-lpignore="true"
+                                data-1p-ignore="true"
+                                data-form-type="other"
                                 prefix={
                                     <Popover
                                         open={colorPickerOpen}
@@ -767,7 +809,7 @@ export function AddAccountModal({
                                             </button>
                                         </PopoverTrigger>
                                         <PopoverContent
-                                            className="w-64 p-3 bg-white dark:bg-[#1E2028] border border-dashboard shadow-2xl rounded-2xl z-[150]"
+                                            className="w-64 p-3 bg-white dark:bg-[#1E2028] border border-dashboard shadow-2xl rounded-lg z-[150]"
                                             align="start"
                                             sideOffset={8}
                                         >
@@ -822,6 +864,8 @@ export function AddAccountModal({
                             />
 
                             <PremiumInput
+                                id="tnt-mt5-account-number"
+                                name="tnt_mt5_account_number"
                                 label="MT5 Account Number"
                                 value={freeAccountNumber}
                                 onChange={(e) =>
@@ -829,6 +873,10 @@ export function AddAccountModal({
                                         e.target.value.replace(/\D/g, "")
                                     )
                                 }
+                                autoComplete="off"
+                                data-lpignore="true"
+                                data-1p-ignore="true"
+                                data-form-type="other"
                                 helperText="Find this in MT5 → Navigator → Accounts. Required for Trade Manager sync."
                             />
 
@@ -857,21 +905,27 @@ export function AddAccountModal({
                                     </span>
                                 </div>
                                 <PremiumInput
+                                    id="tnt-investor-password"
+                                    name="tnt_investor_password"
                                     type="password"
                                     label="Investor Password (Passview)"
                                     value={investorPassword}
                                     onChange={(e) => setInvestorPassword(e.target.value)}
+                                    autoComplete="new-password"
+                                    data-lpignore="true"
+                                    data-1p-ignore="true"
+                                    data-form-type="other"
                                     helperText="Read-only investor password. Enables automated 24/7 trade sync without VPS or EA."
                                 />
                             </div>
 
                             <div className="flex gap-3 pt-2">
                                 <Button
+                                    type="submit"
                                     variant="primary"
                                     size="smd"
-                                    onClick={handleCreateFree}
                                     disabled={isPending}
-                                    className="flex-1 font-bold shadow-lg shadow-primary/20"
+                                    className="flex-1 font-bold shadow-lg shadow-amber-500/20"
                                 >
                                     {isPending ? (
                                         <>
@@ -886,7 +940,7 @@ export function AddAccountModal({
                                     )}
                                 </Button>
                             </div>
-                        </div>
+                        </form>
                     </>
                 )}
 
@@ -919,7 +973,7 @@ export function AddAccountModal({
                                     {hasCloudSync ? (
                                         <div className="space-y-4">
                                             {/* Cloud Sync Status Card */}
-                                            <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20 space-y-3">
+                                            <div className="p-4 rounded-lg bg-emerald-500/5 border border-emerald-500/20 space-y-3">
                                                 <div className="flex items-center justify-between">
                                                     <div className="flex items-center gap-2">
                                                         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -936,8 +990,8 @@ export function AddAccountModal({
                                                     Your investor password is securely stored with AES-256 encryption. Initial synchronization for the past 30 days has been dispatched to the automated worker queue.
                                                 </p>
                                                 {/* 2x2 Matrix Specs */}
-                                                <div className="rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard divide-y divide-gray-200/60 dark:divide-white/5 text-xs overflow-hidden">
-                                                    <div className="grid grid-cols-2 divide-x divide-gray-200/60 dark:divide-white/5">
+                                                <div className="rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard divide-y divide-gray-200 dark:divide-white/5 text-xs overflow-hidden">
+                                                    <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/5">
                                                         <div className="px-3.5 py-2">
                                                             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
                                                                 Account
@@ -962,7 +1016,7 @@ export function AddAccountModal({
                                             </div>
 
                                             {/* Optional EA API Key disclosure */}
-                                            <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-dashboard flex items-center justify-between text-xs">
+                                            <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-lg border border-dashboard flex items-center justify-between text-xs">
                                                 <div className="min-w-0 pr-2">
                                                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
                                                         Sync API Key (Optional)
@@ -989,7 +1043,7 @@ export function AddAccountModal({
                                     ) : (
                                         <>
                                             {/* API Key — always shown */}
-                                            <div className="p-4 bg-gray-50 dark:bg-[#1E2028] rounded-xl border border-dashboard">
+                                            <div className="p-4 bg-gray-50 dark:bg-[#1E2028] rounded-lg border border-dashboard">
                                                 <p className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">
                                                     Your Sync API Key
                                                 </p>
@@ -1090,7 +1144,7 @@ export function AddAccountModal({
                                                     onSuccess(createdAccount);
                                                 }
                                             }}
-                                            className="w-full font-bold shadow-lg shadow-primary/20 gap-2"
+                                            className="w-full font-bold shadow-lg shadow-amber-500/20 gap-2"
                                         >
                                             {primaryCtaLabel}
                                             <ArrowRight size={16} />
@@ -1122,7 +1176,7 @@ export function AddAccountModal({
                             "Step 1 of 4: Choose your broker"
                         )}
                         <div className="p-6 space-y-4">
-                            <div className="p-3 mb-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-xs text-amber-700 dark:text-amber-400 flex gap-2">
+                            <div className="p-3 mb-2 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-xs text-amber-700 dark:text-amber-400 flex gap-2">
                                 <AlertCircle
                                     size={14}
                                     className="shrink-0 mt-0.5"
@@ -1143,7 +1197,7 @@ export function AddAccountModal({
                                             onClick={() =>
                                                 handleSelectBroker(broker)
                                             }
-                                            className="group flex flex-col items-center justify-center gap-3 p-6 rounded-xl border border-dashboard hover:border-amber-400 dark:hover:border-amber-500/50 bg-white dark:bg-[#1E2028] hover:shadow-lg transition-all text-center"
+                                            className="group flex flex-col items-center justify-center gap-3 p-6 rounded-lg border border-dashboard hover:border-amber-400 dark:hover:border-amber-500/50 bg-white dark:bg-[#1E2028] hover:shadow-lg transition-all text-center"
                                         >
                                             <div className="h-16 flex items-center justify-center">
                                                 <Image
@@ -1151,7 +1205,7 @@ export function AddAccountModal({
                                                     alt={info.name}
                                                     width={90}
                                                     height={60}
-                                                    className="rounded-xl object-contain max-h-14 w-auto dark:brightness-0 dark:invert"
+                                                    className="rounded-lg object-contain max-h-14 w-auto dark:brightness-0 dark:invert"
                                                 />
                                             </div>
                                             <div>
@@ -1194,7 +1248,7 @@ export function AddAccountModal({
                                             "_blank"
                                         );
                                     }}
-                                    className={`flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all text-center ${accountStatus === "new"
+                                    className={`flex flex-col items-center gap-3 p-5 rounded-lg border-2 transition-all text-center ${accountStatus === "new"
                                             ? "border-amber-400 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-500/5"
                                             : "border-dashboard hover:border-amber-300 dark:hover:border-amber-500/20 bg-white dark:bg-[#1E2028]"
                                         }`}
@@ -1216,7 +1270,7 @@ export function AddAccountModal({
                                 </button>
                                 <button
                                     onClick={() => setAccountStatus("existing")}
-                                    className={`flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all text-center ${accountStatus === "existing"
+                                    className={`flex flex-col items-center gap-3 p-5 rounded-lg border-2 transition-all text-center ${accountStatus === "existing"
                                             ? "border-blue-400 dark:border-blue-500/40 bg-blue-50 dark:bg-blue-500/5"
                                             : "border-dashboard hover:border-blue-300 dark:hover:border-blue-500/20 bg-white dark:bg-[#1E2028]"
                                         }`}
@@ -1239,7 +1293,7 @@ export function AddAccountModal({
                             </div>
 
                             {accountStatus === "existing" && (
-                                <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-500/5 border border-blue-200 dark:border-blue-500/15 space-y-3">
+                                <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-500/5 border border-blue-200 dark:border-blue-500/15 space-y-3">
                                     <p className="text-sm font-bold text-blue-700 dark:text-blue-400">
                                         How to transfer IB — {brokerInfo.name}
                                     </p>
@@ -1315,7 +1369,7 @@ export function AddAccountModal({
                             )}
 
                             {accountStatus === "new" && (
-                                <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/15 space-y-3">
+                                <div className="p-4 rounded-lg bg-amber-50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/15 space-y-3">
                                     <p className="text-sm font-bold text-amber-700 dark:text-amber-400">
                                         How to set up your {brokerInfo.name} account
                                     </p>
@@ -1338,7 +1392,7 @@ export function AddAccountModal({
                                         variant="primary"
                                         size="smd"
                                         onClick={() => setStep("pro-details")}
-                                        className="gap-2 font-bold px-6 min-w-[160px] shadow-lg shadow-primary/20"
+                                        className="gap-2 font-bold px-6 min-w-[160px] shadow-lg shadow-amber-500/20"
                                     >
                                         Continue <ArrowRight size={16} />
                                     </Button>
@@ -1357,7 +1411,7 @@ export function AddAccountModal({
                         )}
                         <div className="p-6 space-y-4">
                             {error && (
-                                <div className="p-3 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-sm text-red-700 dark:text-red-400 flex items-center gap-2">
+                                <div className="p-3 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-sm text-red-700 dark:text-red-400 flex items-center gap-2">
                                     <AlertCircle size={16} /> {error}
                                 </div>
                             )}
@@ -1403,7 +1457,7 @@ export function AddAccountModal({
                                         <CountrySelect
                                             value={country}
                                             onChange={setCountry}
-                                            className="h-[42px] px-3.5 py-2.5 rounded-xl bg-gray-50 dark:bg-[#151925] border border-dashboard text-sm font-medium text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-none active:scale-100"
+                                            className="h-[42px] px-3.5 py-2.5 rounded-lg bg-gray-50 dark:bg-[#151925] border border-dashboard text-sm font-medium text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-none active:scale-100"
                                         />
                                     </div>
                                 )}
@@ -1439,7 +1493,7 @@ export function AddAccountModal({
                                         setError(null);
                                         setStep("pro-review");
                                     }}
-                                    className="gap-2 font-bold px-6 min-w-[160px] shadow-lg shadow-primary/20"
+                                    className="gap-2 font-bold px-6 min-w-[160px] shadow-lg shadow-amber-500/20"
                                 >
                                     Review <ArrowRight size={16} />
                                 </Button>
@@ -1457,11 +1511,11 @@ export function AddAccountModal({
                         )}
                         <div className="p-6 space-y-6">
                             {error && (
-                                <div className="p-3 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-sm text-red-700 dark:text-red-400 flex items-center gap-2">
+                                <div className="p-3 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-sm text-red-700 dark:text-red-400 flex items-center gap-2">
                                     <AlertCircle size={16} /> {error}
                                 </div>
                             )}
-                            <div className="rounded-xl border border-dashboard bg-gray-50 dark:bg-[#1E2028] p-5">
+                            <div className="rounded-lg border border-dashboard bg-gray-50 dark:bg-[#1E2028] p-5">
                                 <div className="grid grid-cols-3 divide-x divide-dashboard">
                                     <div className="text-center px-2">
                                         <p className="text-[10px] text-gray-500 uppercase mb-1">
@@ -1550,7 +1604,7 @@ export function AddAccountModal({
 
                             <div className="flex justify-end gap-3">
                                 <Button
-                                    variant="primary"
+                                    variant="gold"
                                     size="smd"
                                     onClick={handleProSubmit}
                                     disabled={isPending || !turnstileToken}
@@ -1591,7 +1645,7 @@ export function AddAccountModal({
                         </p>
 
                         <div className="text-left mt-6">
-                            <div className="p-4 bg-emerald-500/10 dark:bg-emerald-500/5 rounded-xl border border-emerald-500/20 text-center">
+                            <div className="p-4 bg-emerald-500/10 dark:bg-emerald-500/5 rounded-lg border border-emerald-500/20 text-center">
                                 <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
                                     Use your global{" "}
                                     <strong className="font-bold">

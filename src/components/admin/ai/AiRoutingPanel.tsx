@@ -78,7 +78,7 @@ export function AiRoutingPanel({
     return (
         <div className="space-y-4">
             {isAdding && (
-                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-5 shadow-sm">
                     <h3 className="text-gray-900 dark:text-white font-medium mb-4">
                         New Routing Policy
                     </h3>
@@ -88,8 +88,8 @@ export function AiRoutingPanel({
                                 Policy Name
                             </label>
                             <input
-                                placeholder="e.g. Default Free Tier"
-                                className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
+                                
+                                className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
                                 value={form.name}
                                 onChange={(e) =>
                                     setForm({ ...form, name: e.target.value })
@@ -305,7 +305,7 @@ export function AiRoutingPanel({
                             </label>
                             <input
                                 type="number"
-                                className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
+                                className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
                                 value={form.timeoutMs}
                                 onChange={(e) =>
                                     setForm({
@@ -391,7 +391,7 @@ export function AiRoutingPanel({
                                     </label>
                                     <input
                                         type="number"
-                                        className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
+                                        className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
                                         value={form.maxAttempts}
                                         onChange={(e) =>
                                             setForm({
@@ -430,11 +430,11 @@ export function AiRoutingPanel({
                 {policies.map((policy) => (
                     <div
                         key={policy.id}
-                        className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm"
+                        className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-5 shadow-sm"
                     >
                         <div className="flex justify-between items-start mb-4">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-500">
+                                <div className="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-500">
                                     <Route className="w-5 h-5" />
                                 </div>
                                 <div>
@@ -531,7 +531,7 @@ export function AiRoutingPanel({
                     </div>
                 ))}
                 {policies.length === 0 && (
-                    <div className="text-center py-12 text-sm text-gray-500 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
+                    <div className="text-center py-12 text-sm text-gray-500 bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm">
                         No routing policies configured. The system will use
                         default routing.
                     </div>

@@ -58,14 +58,14 @@ function LoginSuccessOverlay({
             style={{ margin: 0 }}
         >
             {/* Light mode: warm amber radial glow */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(217,154,38,0.12)_0%,rgba(217,154,38,0.04)_40%,transparent_70%)] dark:bg-[radial-gradient(ellipse_at_center,rgba(0,200,136,0.08)_0%,rgba(0,200,136,0.02)_40%,transparent_70%)] pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(217,154,38,0.12)_0%,rgba(217,154,38,0.04)_40%,transparent_70%)] dark:bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.08)_0%,rgba(245,158,11,0.02)_40%,transparent_70%)] pointer-events-none" />
             {/* Secondary glow */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(16,185,129,0.06)_0%,transparent_50%)] dark:bg-[radial-gradient(ellipse_at_30%_20%,rgba(247,201,72,0.04)_0%,transparent_50%)] pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(245,158,11,0.06)_0%,transparent_50%)] dark:bg-[radial-gradient(ellipse_at_30%_20%,rgba(247,201,72,0.04)_0%,transparent_50%)] pointer-events-none" />
 
             <div className="flex flex-col items-center space-y-8 max-w-md px-6 text-center z-10 animate-in fade-in duration-500">
                 {/* Logo with glow */}
                 <div className="relative mb-2">
-                    <div className="absolute inset-0 scale-[2.5] rounded-full bg-gradient-to-r from-amber-400/20 via-primary/15 to-amber-400/20 dark:from-primary/20 dark:via-emerald-500/10 dark:to-primary/20 blur-3xl animate-pulse" />
+                    <div className="absolute inset-0 scale-[2.5] rounded-full bg-gradient-to-r from-amber-400/20 via-amber-500/15 to-amber-400/20 dark:from-amber-500/20 dark:via-amber-400/10 dark:to-amber-500/20 blur-3xl animate-pulse" />
                     <div className="relative scale-[1.6]">
                         <Logo />
                     </div>
@@ -75,7 +75,7 @@ function LoginSuccessOverlay({
                 <div className="space-y-3 animate-in slide-in-from-bottom-3 duration-700 delay-200 fill-mode-both">
                     <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
                         Welcome back,{" "}
-                        <span className="text-primary">{name}</span>
+                        <span className="text-gold">{name}</span>
                     </h2>
                     <p className="text-sm sm:text-base text-slate-500 dark:text-gray-400 font-medium">
                         {redirectTo === "/onboarding"
@@ -88,7 +88,7 @@ function LoginSuccessOverlay({
                 <div className="w-full max-w-xs sm:w-64 animate-in fade-in duration-500 delay-400 fill-mode-both">
                     <div className="h-1.5 bg-amber-900/10 dark:bg-white/[0.08] rounded-full overflow-hidden">
                         <div
-                            className="h-full rounded-full bg-gradient-to-r from-amber-500 via-primary to-emerald-400 dark:from-primary dark:via-emerald-400 dark:to-primary shadow-[0_0_16px_rgba(0,200,136,0.45),0_0_4px_rgba(0,200,136,0.7)] transition-all duration-2200 ease-login"
+                            className="h-full rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 dark:from-amber-500 dark:via-amber-400 dark:to-amber-500 shadow-[0_0_16px_rgba(245,158,11,0.45),0_0_4px_rgba(245,158,11,0.7)] transition-all duration-2200 ease-login"
                             style={{ width: `${progress}%` }}
                         />
                     </div>
@@ -117,7 +117,7 @@ export default function LoginPage() {
         "h-12 bg-white/80 border-amber-900/10 text-slate-900 text-sm sm:text-base py-3 placeholder:text-slate-400 focus:bg-white focus:border-amber-400 focus:ring-amber-300/30 dark:bg-black/20 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-black/25 dark:focus:border-amber-300/60 dark:focus:ring-amber-300/20 transition-colors";
 
     const primaryButtonClassName =
-        "w-full h-12 sm:h-14 rounded-xl border-none bg-[linear-gradient(135deg,#F8D46B_0%,#D99A26_45%,#8A5A13_100%)] text-sm sm:text-base font-black text-white shadow-[0_18px_36px_rgba(217,154,38,0.32)] hover:shadow-[0_20px_44px_rgba(217,154,38,0.42)] active:scale-[0.99] transition-transform";
+        "w-full h-12 sm:h-14 rounded-lg border-none bg-[linear-gradient(135deg,#F8D46B_0%,#D99A26_45%,#8A5A13_100%)] text-sm sm:text-base font-black text-white shadow-[0_18px_36px_rgba(217,154,38,0.32)] hover:shadow-[0_20px_44px_rgba(217,154,38,0.42)] active:scale-[0.99] transition-transform";
 
     useEffect(() => {
         setIsHydrated(true);
@@ -176,7 +176,7 @@ export default function LoginPage() {
 
     return (
         <>
-            <div className="w-full max-w-[440px] sm:max-w-[480px] mx-auto rounded-2xl border border-amber-900/10 bg-white/85 p-5 sm:p-7 md:p-8 shadow-[0_28px_90px_rgba(88,64,27,0.18)] backdrop-blur-xl transition-colors duration-300 dark:border-amber-300/15 dark:bg-[#11100C]/90 dark:shadow-[0_28px_90px_rgba(0,0,0,0.45)]">
+            <div className="w-full max-w-[440px] sm:max-w-[480px] mx-auto rounded-lg border border-amber-900/10 bg-white/85 p-5 sm:p-7 md:p-8 shadow-[0_28px_90px_rgba(88,64,27,0.18)] backdrop-blur-xl transition-colors duration-300 dark:border-amber-300/15 dark:bg-[#11100C]/90 dark:shadow-[0_28px_90px_rgba(0,0,0,0.45)]">
                 <div className="flex justify-center mb-4 sm:mb-5">
                     <Logo />
                 </div>
@@ -189,7 +189,7 @@ export default function LoginPage() {
                     </h1>
                 </div>
 
-                <div className="flex rounded-xl border border-amber-900/10 bg-[#F8F1E3] p-1 mb-5 sm:mb-6 dark:bg-white/[0.06]">
+                <div className="flex rounded-lg border border-amber-900/10 bg-[#F8F1E3] p-1 mb-5 sm:mb-6 dark:bg-white/[0.06]">
                     <button
                         type="button"
                         onClick={() => switchMode("password")}

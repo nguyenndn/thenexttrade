@@ -24,10 +24,10 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
     // State for timeframe selection in S&D Zone tab
     const [selectedSdTf, setSelectedSdTf] = useState("M5");
 
-    // State for GSN Phoenix Grid active strategy
+    // State for GSN - Apex Gold Sentinel active strategy
     const [activeStrategy, setActiveStrategy] = useState("ATR SOFT");
 
-    // States for GSN Phoenix Grid panel toggles
+    // States for GSN - Apex Gold Sentinel panel toggles
     const [eaOn, setEaOn] = useState(true);
     const [buyOn, setBuyOn] = useState(true);
     const [sellOn, setSellOn] = useState(true);
@@ -165,12 +165,12 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                             cycle: "border-emerald-400 bg-slate-900 text-emerald-300",
                         }[
                             button.state as
-                                | "disabled"
-                                | "active"
-                                | "buy"
-                                | "sell"
-                                | "danger"
-                                | "cycle"
+                            | "disabled"
+                            | "active"
+                            | "buy"
+                            | "sell"
+                            | "danger"
+                            | "cycle"
                         ];
 
                         return (
@@ -247,11 +247,10 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                             <div
                                 key={tab.label}
                                 onClick={() => setActiveMockTab(tab.label)}
-                                className={`border px-1 py-1.5 flex items-center justify-center gap-1 text-center text-[9.5px] sm:text-[11px] font-black uppercase tracking-wider cursor-pointer select-none transition-all rounded-[2px] ${
-                                    isActive
+                                className={`border px-1 py-1.5 flex items-center justify-center gap-1 text-center text-[9.5px] sm:text-[11px] font-black uppercase tracking-wider cursor-pointer select-none transition-all rounded-[2px] ${isActive
                                         ? "border-b-[3px] border-b-[#ffd21f] border-t-slate-700 border-x-slate-700 bg-[#0e1422] text-[#ffd21f]"
                                         : "border-slate-750 bg-[#161e2b] hover:bg-[#1a2332] text-white"
-                                }`}
+                                    }`}
                             >
                                 <Icon
                                     size={12}
@@ -453,9 +452,8 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                     ].map((button) => (
                                         <div
                                             key={button.label}
-                                            className={`${button.className} ${
-                                                button.colSpan || "py-1 text-[9.5px]"
-                                            } flex min-h-6 items-center justify-center px-1 text-center font-black uppercase whitespace-nowrap transition-colors cursor-pointer select-none rounded-[2px]`}
+                                            className={`${button.className} ${button.colSpan || "py-1 text-[9.5px]"
+                                                } flex min-h-6 items-center justify-center px-1 text-center font-black uppercase whitespace-nowrap transition-colors cursor-pointer select-none rounded-[2px]`}
                                         >
                                             {button.label}
                                         </div>
@@ -587,11 +585,10 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                         <div
                                             key={tf}
                                             onClick={() => setSelectedSdTf(tf)}
-                                            className={`cursor-pointer border px-2 py-0.5 text-[10px] font-black transition-colors rounded-none ${
-                                                selectedSdTf === tf
+                                            className={`cursor-pointer border px-2 py-0.5 text-[10px] font-black transition-colors rounded-none ${selectedSdTf === tf
                                                     ? "border-blue-500 text-white bg-blue-600"
                                                     : "border-slate-800 text-slate-400 bg-slate-900/40 hover:text-white"
-                                            }`}
+                                                }`}
                                         >
                                             {tf}
                                         </div>
@@ -1170,11 +1167,10 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                                     ].map((item) => (
                                         <div
                                             key={item.label}
-                                            className={`border text-center text-[10px] font-black py-0.5 cursor-pointer select-none rounded-[2px] transition-colors ${
-                                                item.isRed
+                                            className={`border text-center text-[10px] font-black py-0.5 cursor-pointer select-none rounded-[2px] transition-colors ${item.isRed
                                                     ? "border-red-900 bg-red-950/20 text-[#ff3b5c] hover:bg-red-900/30"
                                                     : "border-slate-700 bg-[#161e2b] text-slate-300 hover:bg-[#1f2a3c]"
-                                            }`}
+                                                }`}
                                         >
                                             {item.label}
                                         </div>
@@ -1214,7 +1210,7 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
         return (
             <div className="mx-auto w-full lg:w-[385px] [zoom:0.9] sm:[zoom:1.1] lg:[zoom:1.2] border-2 border-[#f7b500] bg-[#10141b] p-1 text-left font-mono text-[9px] text-white shadow-2xl shadow-gold/10 lg:mx-0">
                 <div className="border-b-2 border-[#f7b500] bg-[#10141b] py-1 text-center text-[17px] font-black leading-none text-[#ffe100]">
-                    GSN PHOENIX GRID
+                    GSN - Apex Gold Sentinel
                 </div>
 
                 <div className="flex items-center justify-center gap-1.5 border-b-2 border-[#f7b500] bg-white py-1.5 text-center text-[11px] font-black uppercase text-[#111827]">
@@ -1279,11 +1275,10 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                             <div
                                 key={label}
                                 onClick={() => setActiveStrategy(label)}
-                                className={`min-h-7 px-1.5 py-1 flex items-center justify-center text-center text-[10.5px] font-black uppercase cursor-pointer select-none transition-colors rounded-lg ${
-                                    isActive
+                                className={`min-h-7 px-1.5 py-1 flex items-center justify-center text-center text-[10.5px] font-black uppercase cursor-pointer select-none transition-colors rounded-lg ${isActive
                                         ? "bg-[#ffde17] text-[#111827] font-extrabold"
                                         : "bg-[#151b24] text-white hover:bg-[#1a202b]"
-                                }`}
+                                    }`}
                             >
                                 {label}
                             </div>
@@ -1374,42 +1369,38 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                     </div>
                     <div
                         onClick={() => setEaOn(!eaOn)}
-                        className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-lg ${
-                            eaOn
+                        className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-lg ${eaOn
                                 ? "bg-emerald-500 text-white hover:bg-emerald-600"
                                 : "bg-slate-800 text-slate-500 border border-slate-700"
-                        }`}
+                            }`}
                     >
                         EA: {eaOn ? "ON" : "OFF"}
                     </div>
                     <div className="col-span-2 grid grid-cols-3 gap-1">
                         <div
                             onClick={() => setBuyOn(!buyOn)}
-                            className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-lg ${
-                                buyOn
+                            className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-lg ${buyOn
                                     ? "bg-emerald-500 text-white hover:bg-emerald-600"
                                     : "bg-slate-800 text-slate-500 border border-slate-700"
-                            }`}
+                                }`}
                         >
                             BUY: {buyOn ? "ON" : "OFF"}
                         </div>
                         <div
                             onClick={() => setSellOn(!sellOn)}
-                            className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-lg ${
-                                sellOn
+                            className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-lg ${sellOn
                                     ? "bg-red-500 text-white hover:bg-red-650"
                                     : "bg-slate-800 text-slate-500 border border-slate-700"
-                            }`}
+                                }`}
                         >
                             SELL: {sellOn ? "ON" : "OFF"}
                         </div>
                         <div
                             onClick={() => setHedgeOn(!hedgeOn)}
-                            className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-lg ${
-                                hedgeOn
+                            className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-lg ${hedgeOn
                                     ? "bg-cyan-600 text-white hover:bg-cyan-700"
                                     : "bg-slate-800 text-slate-500 border border-slate-700"
-                            }`}
+                                }`}
                         >
                             HEDGE: {hedgeOn ? "ON" : "OFF"}
                         </div>
@@ -1419,11 +1410,10 @@ export function TradingSystemMockPanel({ slug }: MockPanelProps) {
                     </div>
                     <div
                         onClick={() => setLastRoundOn(!lastRoundOn)}
-                        className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-lg ${
-                            lastRoundOn
+                        className={`flex min-h-7 items-center justify-center px-1.5 text-center text-[10px] font-black uppercase transition-colors cursor-pointer select-none rounded-lg ${lastRoundOn
                                 ? "bg-[#ffde17] text-[#111827]"
                                 : "bg-slate-600 text-white hover:bg-slate-700"
-                        }`}
+                            }`}
                     >
                         Last Round: {lastRoundOn ? "ON" : "OFF"}
                     </div>

@@ -52,7 +52,7 @@ const FAQ_GROUPS = [
         items: [
             {
                 question: "What is TheNextTrade?",
-                answer: "TheNextTrade is a trading operating system built to solve the execution paradox: traders know the rules, but fail to follow them under market pressure. We provide automated MT5 trade telemetry, an AI Behavioral Leak Radar, targeted risk calculators, and structured education to protect your capital and build consistent discipline.",
+                answer: "TheNextTrade is a trading journal and tools platform. It helps you follow your own rules by showing you where you break them. We provide automated MT5 trade telemetry, an AI Behavioral Leak Radar, targeted risk calculators, and structured education to protect your capital and build consistent discipline.",
             },
             {
                 question: "Is the platform free to use?",
@@ -117,12 +117,12 @@ const FAQ_GROUPS = [
                 answer: "Yes! You can connect and manage multiple MT5 trading accounts under a single TheNextTrade workspace, allowing you to track prop firm accounts, personal accounts, and different strategies separately or aggregated.",
             },
             {
-                question: "How do I unlock EA GoldScalperNinja, Trade Manager, and Phoenix Grid for free?",
-                answer: "All MT5 trading systems can be unlocked with zero upfront cost through our verified broker partner path. Once your account is active and verified, license keys and downloads become accessible directly inside your dashboard.",
+                question: "How do I get GoldScalperNinja EA, GSN Trade Manager, and GSN - Apex Gold Sentinel for free?",
+                answer: "All MT5 trading systems are available with zero upfront cost through our verified broker partner path. Once your account is active and verified, license keys and downloads become accessible directly inside your dashboard.",
             },
             {
                 question: "Do I need a VPS for MT5 automation?",
-                answer: "For automated execution systems like EA GoldScalperNinja and GSN Phoenix Grid, a Windows VPS is recommended to ensure 24/5 continuous connectivity. For GSN Trade Manager, it can be run locally during your active manual trading hours.",
+                answer: "For automated execution systems like GoldScalperNinja EA and GSN - Apex Gold Sentinel, a Windows VPS is recommended to ensure 24/5 continuous connectivity. For GSN Trade Manager, it can be run locally during your active manual trading hours.",
             },
             {
                 question: "What is the recommended minimum balance to run the EAs?",
@@ -134,7 +134,7 @@ const FAQ_GROUPS = [
             },
             {
                 question: "Do these EAs pause during high-impact news?",
-                answer: "Yes, both EA GoldScalperNinja and GSN Phoenix Grid include a built-in Economic News Filter that automatically pauses opening new orders around major events like NFP, CPI, and FOMC rate releases.",
+                answer: "Yes, both GoldScalperNinja EA and GSN - Apex Gold Sentinel include a built-in Economic News Filter that automatically pauses opening new orders around major events like NFP, CPI, and FOMC rate releases.",
             },
         ],
     },
@@ -201,9 +201,10 @@ export default function FAQPage() {
     const allQuestions = FAQ_GROUPS.flatMap((group) => group.items);
 
     return (
-        <div className="min-h-screen bg-[#F7F4EC] dark:bg-transparent text-gray-700 dark:text-white overflow-hidden relative flex flex-col justify-between">
-            {/* Premium brand background */}
-            <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.14)_0%,rgba(255,255,255,0.70)_34%,rgba(16,185,129,0.08)_100%)] dark:bg-[linear-gradient(135deg,rgba(43,35,68,0.55)_0%,rgba(255,255,255,0.02)_34%,rgba(16,185,129,0.04)_100%)] pointer-events-none" />
+        <div className="min-h-screen bg-white dark:bg-transparent text-gray-700 dark:text-white overflow-hidden relative flex flex-col justify-between">
+            {/* Ambient Background Atmosphere & Technical Grid */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.08),transparent_75%)] dark:bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.12),transparent_75%)] pointer-events-none" />
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none" />
 
             {/* Structured data */}
             <JsonLd
@@ -236,7 +237,7 @@ export default function FAQPage() {
 
                     {/* Page Header */}
                     <div className="text-center mb-12">
-                        <div className="inline-flex items-center justify-center p-3 rounded-xl bg-gold/10 text-gold mb-4 ring-4 ring-gold/5">
+                        <div className="inline-flex items-center justify-center p-3 rounded-lg bg-gold/10 text-gold mb-4 ring-4 ring-gold/5">
                             <HelpCircle size={40} strokeWidth={1.5} />
                         </div>
                         <h1 className="text-3xl md:text-5xl font-black tracking-tight text-gray-800 dark:text-white mb-4">
@@ -244,7 +245,7 @@ export default function FAQPage() {
                             <span className="text-gold">Questions</span>
                         </h1>
                         <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-medium">
-                            Everything you need to know about TheNextTrade platform, trade journal sync, MT5 trading systems, academy, and risk management.
+                            Answers about the platform, MT5 sync, trading systems, education, and risk management.
                         </p>
                     </div>
 
@@ -253,11 +254,11 @@ export default function FAQPage() {
                         {FAQ_GROUPS.map((group) => (
                             <div
                                 key={group.id}
-                                className="relative p-6 rounded-2xl border border-gray-200/60 dark:border-white/10 bg-white/50 dark:bg-[#12172a]/30 backdrop-blur-md"
+                                className="relative p-6 rounded-lg border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-[#12172a]/30 backdrop-blur-md"
                             >
                                 <div className="flex items-center gap-3 mb-6">
                                     <div
-                                        className={`w-10 h-10 rounded-xl ${group.bg} ${group.color} flex items-center justify-center shrink-0`}
+                                        className={`w-10 h-10 rounded-lg ${group.bg} ${group.color} flex items-center justify-center shrink-0`}
                                     >
                                         <group.icon size={20} />
                                     </div>
@@ -276,7 +277,7 @@ export default function FAQPage() {
                     </div>
 
                     {/* Bottom CTA Block */}
-                    <div className="mt-16 text-center p-8 rounded-2xl border border-gold/25 dark:border-gold/15 bg-gradient-to-r from-gold/[0.03] to-amber-500/[0.01] dark:from-gold/[0.02] dark:to-transparent backdrop-blur-md">
+                    <div className="mt-16 text-center p-8 rounded-lg border border-gold/25 dark:border-gold/15 bg-gradient-to-r from-gold/[0.03] to-amber-500/[0.01] dark:from-gold/[0.02] dark:to-transparent backdrop-blur-md">
                         <h3 className="text-lg font-black text-gray-800 dark:text-white">
                             Still have questions?
                         </h3>
@@ -288,8 +289,9 @@ export default function FAQPage() {
                                 href="/contact"
                                 className={buttonVariants({
                                     variant: "outline",
+                                    size: "smd",
                                     className:
-                                        "rounded-xl font-bold px-6 border-gold/30 hover:border-gold hover:bg-gold/5 dark:text-slate-200",
+                                        "rounded-lg font-bold border-gold/30 hover:border-gold hover:bg-gold/5 dark:text-slate-200",
                                 })}
                             >
                                 Contact Support
@@ -300,8 +302,9 @@ export default function FAQPage() {
                                 rel="noopener noreferrer"
                                 className={buttonVariants({
                                     variant: "primary",
+                                    size: "smd",
                                     className:
-                                        "rounded-xl font-bold px-6 bg-gold hover:bg-amber-600 text-white",
+                                        "rounded-lg font-bold bg-gold hover:bg-amber-600 text-white",
                                 })}
                             >
                                 Join Telegram

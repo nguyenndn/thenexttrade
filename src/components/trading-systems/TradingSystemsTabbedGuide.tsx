@@ -83,7 +83,7 @@ export function TradingSystemsTabbedGuide({ primaryCtaUrl }: TabbedGuideProps) {
     const steps = activeTab === "access" ? ACCESS_STEPS : INSTALLATION_STEPS;
 
     return (
-        <section className="mb-12 rounded-[2.5rem] border border-gold/15 bg-white/80 p-6 shadow-lg shadow-gold/[0.02] dark:border-white/10 dark:bg-[#111318]/45 sm:p-10 relative overflow-hidden">
+        <section className="mb-12 rounded-lg border border-gold/15 bg-white/80 p-6 shadow-lg shadow-gold/[0.02] dark:border-white/10 dark:bg-[#111318]/45 sm:p-10 relative overflow-hidden">
             <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-gold/5 rounded-full blur-[100px] pointer-events-none" />
             <div className="absolute -top-20 -right-20 w-80 h-80 bg-gold/5 rounded-full blur-[100px] pointer-events-none" />
 
@@ -113,7 +113,7 @@ export function TradingSystemsTabbedGuide({ primaryCtaUrl }: TabbedGuideProps) {
                         className="w-full sm:w-auto"
                     >
                         <div className="overflow-x-auto scrollbar-hide flex w-full sm:w-auto">
-                            <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1 gap-1 w-full sm:w-auto shrink-0 flex">
+                            <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-1 gap-1 w-full sm:w-auto shrink-0 flex">
                                 {[
                                     {
                                         id: "access",
@@ -132,8 +132,8 @@ export function TradingSystemsTabbedGuide({ primaryCtaUrl }: TabbedGuideProps) {
                                             key={tab.id}
                                             value={tab.id}
                                             className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10 flex-1 sm:flex-none justify-center gap-1.5"
-                                            activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md border-0"
-                                            activeTextClassName="!text-white"
+                                            activeIndicatorClassName="!bg-gold shadow-sm border-0"
+                                            activeTextClassName="!text-slate-950 font-bold"
                                         >
                                             <IconComp size={12} />
                                             <span>{tab.label}</span>
@@ -153,14 +153,14 @@ export function TradingSystemsTabbedGuide({ primaryCtaUrl }: TabbedGuideProps) {
                     return (
                         <div
                             key={item.step}
-                            className="rounded-2xl border border-gray-200/60 bg-white/70 p-5 dark:border-white/10 dark:bg-white/[0.01] flex flex-col justify-between min-h-[160px] shadow-sm hover:border-gold/30 hover:shadow-md transition-all duration-300 relative overflow-hidden group"
+                            className="rounded-lg border border-gray-200 bg-white/70 p-5 dark:border-white/10 dark:bg-white/[0.01] flex flex-col justify-between min-h-[160px] shadow-sm hover:border-gold/30 hover:shadow-md transition-all duration-300 relative overflow-hidden group"
                         >
                             {/* Visual glow on card hover */}
                             <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
                             <div className="flex items-center justify-between mb-4 relative z-10">
                                 {StepIcon ? (
-                                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gold/10 text-gold border border-gold/15">
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gold/10 text-gold border border-gold/15">
                                         <StepIcon
                                             size={16}
                                             className="stroke-[2.5]"
@@ -193,9 +193,10 @@ export function TradingSystemsTabbedGuide({ primaryCtaUrl }: TabbedGuideProps) {
                     <Link
                         href={primaryCtaUrl}
                         className={buttonVariants({
-                            variant: "primary",
+                            variant: "gold",
+                            size: "smd",
                             className:
-                                "rounded-xl bg-gold hover:bg-amber-600 px-6 py-3 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-gold/20 hover:shadow-gold/30 active:scale-[0.98] group",
+                                "font-black uppercase tracking-wider group",
                         })}
                     >
                         Start Eligibility Check

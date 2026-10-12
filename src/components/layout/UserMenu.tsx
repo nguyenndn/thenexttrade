@@ -88,8 +88,8 @@ export function UserMenu({
         return (
             <div className="flex items-center gap-3 animate-pulse">
                 {/* Beautiful clean skeleton for header buttons matching exact sizes */}
-                <div className="w-12 h-6 bg-gray-200 dark:bg-slate-700/50 rounded-xl" />
-                <div className="w-24 h-9 bg-gray-300 dark:bg-slate-700/70 rounded-xl" />
+                <div className="w-12 h-6 bg-gray-200 dark:bg-slate-700/50 rounded-lg" />
+                <div className="w-24 h-9 bg-gray-300 dark:bg-slate-700/70 rounded-lg" />
             </div>
         );
     }
@@ -101,8 +101,9 @@ export function UserMenu({
                     href="/auth/login"
                     className={buttonVariants({
                         variant: "ghost",
+                        size: "smd",
                         className:
-                            "px-3 xl:px-4 py-2 text-sm font-semibold whitespace-nowrap rounded-xl text-gray-800 hover:text-amber-600 hover:bg-transparent dark:text-gray-300 dark:hover:text-amber-300 dark:hover:bg-transparent",
+                            "px-3 xl:px-4 text-xs font-semibold whitespace-nowrap rounded-lg text-gray-800 hover:text-amber-600 hover:bg-transparent dark:text-gray-300 dark:hover:text-amber-300 dark:hover:bg-transparent",
                     })}
                 >
                     Login
@@ -111,8 +112,9 @@ export function UserMenu({
                     href="/auth/signup"
                     className={buttonVariants({
                         variant: "primary",
+                        size: "smd",
                         className:
-                            "px-4 xl:px-6 py-2 text-sm font-bold whitespace-nowrap rounded-xl bg-amber-500 text-white shadow-sm shadow-amber-500/20 hover:bg-amber-600 hover:shadow-amber-500/20",
+                            "px-4 xl:px-5 text-xs font-bold whitespace-nowrap rounded-lg bg-amber-500 text-white shadow-sm shadow-amber-500/20 hover:bg-amber-600 hover:shadow-amber-500/20",
                     })}
                 >
                     Sign Up Free
@@ -163,7 +165,7 @@ export function UserMenu({
                     exit={{ opacity: 0, scale: 0.95, y: -4 }}
                     transition={SPRING_SOFT}
                     style={{ transformOrigin: "top right" }}
-                    className="absolute right-0 mt-3 w-60 bg-white dark:bg-[#151925] rounded-xl shadow-2xl border border-dashboard overflow-hidden z-50"
+                    className="absolute right-0 mt-3 w-60 bg-white dark:bg-[#151925] rounded-lg shadow-2xl border border-dashboard overflow-hidden z-50"
                 >
                     {/* Header Info */}
                     <div className="p-4 border-b border-dashboard bg-gray-50/50 dark:bg-white/5">
@@ -232,7 +234,7 @@ export function UserMenu({
                                     })
                                 )
                             }
-                            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors text-sm text-left"
+                            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors text-sm text-left"
                         >
                             <Search size={15} className="shrink-0" />
                             <span>Search...</span>
@@ -244,7 +246,7 @@ export function UserMenu({
                         <Link
                             href="/get-started"
                             onClick={() => setIsOpen(false)}
-                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-400/10 transition-colors group"
+                            className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-400/10 transition-colors group"
                         >
                             <Flame
                                 size={18}
@@ -262,7 +264,7 @@ export function UserMenu({
                         {variant !== "dashboard" ? (
                             <Link
                                 href={dashboardUrl}
-                                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group"
+                                className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group"
                             >
                                 <LayoutDashboard
                                     size={18}
@@ -284,7 +286,7 @@ export function UserMenu({
                                     <Link
                                         href="/admin/settings"
                                         onClick={() => setIsOpen(false)}
-                                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                                        className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                                     >
                                         <Settings
                                             size={18}
@@ -296,7 +298,7 @@ export function UserMenu({
                                     <Link
                                         href="/dashboard/settings"
                                         onClick={() => setIsOpen(false)}
-                                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                                        className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                                     >
                                         <Settings
                                             size={18}
@@ -312,10 +314,11 @@ export function UserMenu({
                     <div className="p-2 border-t border-dashboard">
                         <Button
                             variant="ghost"
+                            size="smd"
                             onClick={() => signout()}
-                            className="flex w-full justify-start items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                            className="flex w-full justify-start items-center gap-2.5 px-3 rounded-lg text-xs font-semibold text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
                         >
-                            <LogOut size={18} />
+                            <LogOut size={16} />
                             Log Out
                         </Button>
                     </div>

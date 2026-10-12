@@ -147,9 +147,9 @@ export function ProductList({ products }: ProductListProps) {
     return (
         <div className="flex flex-col h-full">
             {/* Toolbar Card */}
-            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col md:flex-row gap-4 mb-6">
+            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-4 shadow-sm flex flex-col md:flex-row gap-4 mb-6">
                 {/* Search */}
-                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md h-[38px]">
+                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md h-[38px]">
                     <Search
                         size={16}
                         className="text-gray-500"
@@ -218,10 +218,10 @@ export function ProductList({ products }: ProductListProps) {
             </div>
 
             {/* Content Section - Data Table Card */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm flex flex-col relative w-full flex-1">
+            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm flex flex-col relative w-full flex-1">
                 {/* Empty State */}
                 {sortedProducts.length === 0 ? (
-                    <div className="text-center py-24 bg-white dark:bg-[#1E2028] rounded-xl">
+                    <div className="text-center py-24 bg-white dark:bg-[#1E2028] rounded-lg">
                         <div className="w-20 h-20 mx-auto bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mb-6">
                             <Bot
                                 size={40}
@@ -307,7 +307,7 @@ export function ProductList({ products }: ProductListProps) {
                                         >
                                             <td className="px-8 py-4">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/10 flex items-center justify-center shrink-0 overflow-hidden shadow-sm border border-gray-200 dark:border-white/10 group-hover:shadow-md transition-all">
+                                                    <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-white/10 flex items-center justify-center shrink-0 overflow-hidden shadow-sm border border-gray-200 dark:border-white/10 group-hover:shadow-md transition-all">
                                                         {product.thumbnail ? (
                                                             <img
                                                                 src={

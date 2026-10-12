@@ -26,7 +26,7 @@ export function WinLossChart({ data }: WinLossProps) {
 
     if (chartData.length === 0) {
         return (
-            <div className="h-[300px] flex items-center justify-center text-gray-500 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-dashboard">
+            <div className="h-[300px] flex items-center justify-center text-gray-500 bg-gray-50 dark:bg-white/5 rounded-lg border border-dashed border-dashboard">
                 No trades recorded.
             </div>
         );

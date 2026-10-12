@@ -58,7 +58,7 @@ const pageGuides: Record<string, PageGuide> = {
     "/dashboard/analytics": {
         icon: "📈",
         title: "Analytics Hub",
-        description: "Deep dive into your trading performance.",
+        description: "Audit detailed trading telemetry and analytics.",
         tips: [
             "Equity curve, pair analysis & day-of-week patterns",
             "Switch tabs for Reports, Mistakes & Intelligence",
@@ -73,13 +73,14 @@ const pageGuides: Record<string, PageGuide> = {
             "Filter by account and date range for specifics",
         ],
     },
-    "/dashboard/psychology": {
+    "/dashboard/intelligence": {
         icon: "🧠",
-        title: "Psychology Tracker",
-        description: "Track your emotional state and trading mindset.",
+        title: "Trading Intelligence",
+        description:
+            "Execution leak radar, discipline scoring, and behavioral pattern detection.",
         tips: [
-            "Log your emotions before and after trades",
-            "Identify patterns between mindset and results",
+            "Monitor automated tilt detection and revenge trading patterns",
+            "Identify edge leaks and rule violation telemetry",
         ],
     },
     "/dashboard/academy": {
@@ -163,15 +164,15 @@ export function PageWelcomeGuide() {
                     : "opacity-100 translate-y-0 scale-100"
             )}
         >
-            <div className="bg-white dark:bg-[#1A1D27] rounded-2xl border border-dashboard shadow-2xl shadow-black/10 dark:shadow-black/40 overflow-hidden">
-                {/* Gradient accent bar */}
-                <div className="h-1 bg-gradient-to-r from-primary via-emerald-400 to-teal-500" />
+            <div className="bg-white dark:bg-[#1A1D27] rounded-lg border border-dashboard shadow-2xl shadow-black/10 dark:shadow-black/40 overflow-hidden">
+                {/* Accent bar */}
+                <div className="h-1 bg-gold" />
 
                 <div className="p-5">
                     {/* Header */}
                     <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-3">
-                            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 text-xl">
+                            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 text-xl">
                                 {guide.icon}
                             </div>
                             <div>
@@ -211,9 +212,9 @@ export function PageWelcomeGuide() {
                     {/* Action */}
                     <button
                         onClick={handleDismiss}
-                        className="w-full px-4 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-primary to-emerald-500 rounded-xl hover:opacity-90 transition-opacity shadow-sm"
+                        className="w-full px-4 py-2.5 text-xs font-bold text-white bg-gold hover:bg-amber-600 rounded-lg transition-colors shadow-sm"
                     >
-                        Got it! 👍
+                        Got It
                     </button>
                 </div>
             </div>

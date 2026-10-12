@@ -139,7 +139,12 @@ export async function POST(request: NextRequest) {
                     takeProfit: trade.takeProfit,
                     status: isClosed ? "CLOSED" : "OPEN",
                     result: isClosed
-                        ? classifyTradeResult({ pnl: trade.profit })
+                        ? classifyTradeResult({
+                              pnl:
+                                  (trade.profit || 0) +
+                                  (trade.commission || 0) +
+                                  (trade.swap || 0),
+                          })
                         : null,
                     externalTicket: trade.ticket,
                     syncSource: "EA_HISTORY",

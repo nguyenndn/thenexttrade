@@ -5,7 +5,7 @@
 //+------------------------------------------------------------------+
 #property copyright "Copyright 2026, TheNextTrade"
 #property link "https://thenexttrade.com"
-#property version "1.06"
+#property version "1.07"
 #property description "Auto sync closed MT5 trades to TheNextTrade Trading Journal"
 
 //--- Input parameters
@@ -131,7 +131,7 @@ int OnInit() {
 
   //--- Show initialization info
   Print("==============================================");
-  Print("TheNextTrade Trade Sync EA v1.06 initialized");
+  Print("TheNextTrade Trade Sync EA v1.07 initialized");
   Print("Account: ", g_AccountNumber);
   Print("Broker: ", AccountInfoString(ACCOUNT_COMPANY));
   Print("Server: ", AccountInfoString(ACCOUNT_SERVER));
@@ -392,7 +392,7 @@ void CreatePanel() {
               CLR_HEADER_TEXT, 11, true);
 
   //--- Version badge (right aligned)
-  CreateLabel(PANEL_LOGO, x + panelWidth - 48, y + 17, "v1.06", CLR_LABEL, 9,
+  CreateLabel(PANEL_LOGO, x + panelWidth - 48, y + 17, "v1.07", CLR_LABEL, 9,
               false);
 
   //--- Content area starts after header
@@ -1053,12 +1053,17 @@ void ProcessSyncBatch() {
     double stopLoss = HistoryDealGetDouble(ticket, DEAL_SL);
     double takeProfit = HistoryDealGetDouble(ticket, DEAL_TP);
     double fbSL = 0;
-    double fbTP = 0;
+    double posProfit = 0;
+    double posComm = 0;
+    double posSwap = 0;
 
-    if (!FindOpeningDealWithSLTP(positionId, openPrice, openTime, tradeType, fbSL, fbTP)) {
+    if (!FindOpeningDealWithSLTP(positionId, openPrice, openTime, tradeType, fbSL, fbTP, posProfit, posComm, posSwap)) {
       openPrice = closePrice;
       openTime = closeTime;
       tradeType = fallbackType;
+      posProfit = HistoryDealGetDouble(ticket, DEAL_PROFIT);
+      posComm = HistoryDealGetDouble(ticket, DEAL_COMMISSION);
+      posSwap = HistoryDealGetDouble(ticket, DEAL_SWAP);
     }
 
     if (stopLoss == 0) stopLoss = fbSL;
@@ -1086,9 +1091,9 @@ void ProcessSyncBatch() {
         positionId, HistoryDealGetString(ticket, DEAL_SYMBOL), tradeType, 
         HistoryDealGetDouble(ticket, DEAL_VOLUME), openPrice, (long)openTime, 
         closePrice, (long)closeTime, stopLoss, takeProfit,
-        HistoryDealGetDouble(ticket, DEAL_PROFIT), 
-        HistoryDealGetDouble(ticket, DEAL_COMMISSION), 
-        HistoryDealGetDouble(ticket, DEAL_SWAP));
+        posProfit, 
+        posComm, 
+        posSwap);
 
     count++;
     g_SyncIndex++;
@@ -1098,7 +1103,7 @@ void ProcessSyncBatch() {
 
   if (count > 0) {
     string json = StringFormat(
-        "{\"trades\":%s,\"eaVersion\":\"1.06\",\"clientTime\":\"%s\",\"accountNumber\":\"%s\"}",
+        "{\"trades\":%s,\"eaVersion\":\"1.07\",\"clientTime\":\"%s\",\"accountNumber\":\"%s\"}",
         tradesJson, TimeToString(TimeCurrent(), TIME_DATE | TIME_SECONDS), g_AccountNumber);
 
     if (SendTradesToServer(json, count)) {
@@ -1344,16 +1349,21 @@ bool SyncSingleTrade(ulong dealTicket) {
   double takeProfit = HistoryDealGetDouble(dealTicket, DEAL_TP);
   
   double fbSL = 0;
-  double fbTP = 0;
+  double posProfit = 0;
+  double posComm = 0;
+  double posSwap = 0;
 
   if (FindOpeningDealWithSLTP(positionId, openPrice, openTime, tradeType,
-                              fbSL, fbTP)) {
+                              fbSL, fbTP, posProfit, posComm, posSwap)) {
     if (stopLoss == 0) stopLoss = fbSL;
     if (takeProfit == 0) takeProfit = fbTP;
+    profit = posProfit;
+    commission = posComm;
+    swap = posSwap;
                               
     Print("Found opening deal - Price: ", openPrice,
           " Time: ", TimeToString(openTime), " SL: ", stopLoss,
-          " TP: ", takeProfit);
+          " TP: ", takeProfit, " Profit: ", profit, " Comm: ", commission, " Swap: ", swap);
   } else {
     //--- Fallback: use close price as open price
     openPrice = closePrice;
@@ -1382,7 +1392,7 @@ bool SyncSingleTrade(ulong dealTicket) {
       "\"commission\":%.2f,"
       "\"swap\":%.2f"
       "}],"
-      "\"eaVersion\":\"1.05\","
+      "\"eaVersion\":\"1.07\","
       "\"clientTime\":\"%s\","
       "\"accountNumber\":\"%s\""
       "}",
@@ -1411,7 +1421,9 @@ bool FindOpeningDeal(long positionId, double &openPrice, datetime &openTime,
 //+------------------------------------------------------------------+
 bool FindOpeningDealWithSLTP(long positionId, double &openPrice,
                              datetime &openTime, int &tradeType,
-                             double &stopLoss, double &takeProfit) {
+                             double &stopLoss, double &takeProfit,
+                             double &totalProfit, double &totalCommission,
+                             double &totalSwap) {
   //--- Select all history for this position
   if (!HistorySelectByPosition(positionId)) {
     //--- Fallback to full history
@@ -1420,9 +1432,12 @@ bool FindOpeningDealWithSLTP(long positionId, double &openPrice,
 
   stopLoss = 0;
   takeProfit = 0;
+  totalProfit = 0;
+  totalCommission = 0;
+  totalSwap = 0;
   bool foundOpening = false;
 
-  //--- PASS 1: Find opening deal info
+  //--- PASS 1: Find opening deal info and sum profit/commission/swap across all position deals
   int totalDeals = HistoryDealsTotal();
   for (int i = 0; i < totalDeals; i++) {
     ulong ticket = HistoryDealGetTicket(i);
@@ -1433,18 +1448,21 @@ bool FindOpeningDealWithSLTP(long positionId, double &openPrice,
     if (dealPosId != positionId)
       continue;
 
+    totalProfit += HistoryDealGetDouble(ticket, DEAL_PROFIT);
+    totalCommission += HistoryDealGetDouble(ticket, DEAL_COMMISSION);
+    totalSwap += HistoryDealGetDouble(ticket, DEAL_SWAP);
+
     ENUM_DEAL_ENTRY entry =
         (ENUM_DEAL_ENTRY)HistoryDealGetInteger(ticket, DEAL_ENTRY);
 
     //--- Found opening deal
-    if (entry == DEAL_ENTRY_IN) {
+    if (entry == DEAL_ENTRY_IN && !foundOpening) {
       openPrice = HistoryDealGetDouble(ticket, DEAL_PRICE);
       openTime = (datetime)HistoryDealGetInteger(ticket, DEAL_TIME);
       ENUM_DEAL_TYPE type =
           (ENUM_DEAL_TYPE)HistoryDealGetInteger(ticket, DEAL_TYPE);
       tradeType = (type == DEAL_TYPE_BUY) ? 0 : 1;
       foundOpening = true;
-      break;
     }
   }
 
@@ -1482,6 +1500,17 @@ bool FindOpeningDealWithSLTP(long positionId, double &openPrice,
   }
 
   return true;
+}
+
+//+------------------------------------------------------------------+
+//| Backward compatible overload without profit/commission/swap refs |
+//+------------------------------------------------------------------+
+bool FindOpeningDealWithSLTP(long positionId, double &openPrice,
+                             datetime &openTime, int &tradeType,
+                             double &stopLoss, double &takeProfit) {
+  double p = 0, c = 0, s = 0;
+  return FindOpeningDealWithSLTP(positionId, openPrice, openTime, tradeType,
+                                 stopLoss, takeProfit, p, c, s);
 }
 
 //+------------------------------------------------------------------+

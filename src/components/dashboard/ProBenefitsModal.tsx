@@ -19,6 +19,8 @@ import {
     Send,
 } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 interface Benefit {
     icon: React.ElementType;
@@ -152,13 +154,13 @@ export function ProBenefitsModal({
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 32 }}
                         transition={SPRING_SOFT}
-                        className="relative z-10 w-full sm:max-w-lg max-h-[92dvh] overflow-y-auto rounded-t-3xl sm:rounded-2xl bg-white dark:bg-[#1E2028] shadow-2xl border border-dashboard dark:border-white/[0.08] flex flex-col"
+                        className="relative z-10 w-full sm:max-w-lg max-h-[92dvh] overflow-y-auto rounded-t-2xl sm:rounded-2xl bg-white dark:bg-[#1E2028] shadow-2xl border border-dashboard dark:border-white/[0.08] flex flex-col"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Header */}
                         <div className="sticky top-0 z-10 flex items-start justify-between gap-3 bg-white dark:bg-[#1E2028] border-b border-dashboard dark:border-white/[0.08] px-5 pt-5 pb-4">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20">
                                     <Crown className="h-5 w-5 text-amber-600 dark:text-amber-400" />
                                 </div>
                                 <div>
@@ -174,13 +176,15 @@ export function ProBenefitsModal({
                                     </p>
                                 </div>
                             </div>
-                            <button
+                            <Button
+                                variant="ghost"
+                                size="icon"
                                 onClick={onClose}
                                 aria-label="Close modal"
-                                className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                className="mt-0.5 h-8 w-8 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10"
                             >
                                 <X className="h-4 w-4" />
-                            </button>
+                            </Button>
                         </div>
 
                         {/* Body */}
@@ -194,7 +198,7 @@ export function ProBenefitsModal({
                                         {section.items.map((item) => (
                                             <div
                                                 key={item.title}
-                                                className={`flex gap-3 rounded-xl p-3 transition-colors ${
+                                                className={`flex gap-3 rounded-lg p-3 transition-colors ${
                                                     item.highlight
                                                         ? "bg-amber-50/40 dark:bg-amber-500/[0.04] border border-amber-500/25 dark:border-amber-500/20"
                                                         : "bg-gray-50/70 dark:bg-white/[0.02] border border-dashboard dark:border-white/[0.06]"
@@ -236,7 +240,7 @@ export function ProBenefitsModal({
                                     href={vipLink}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#2AABEE] px-4 py-2.5 text-[13px] font-bold text-white shadow-sm shadow-[#2AABEE]/20 transition-all hover:bg-[#2298d4] hover:shadow-md hover:shadow-[#2AABEE]/25 active:scale-[0.98]"
+                                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#2AABEE] px-4 py-2.5 text-[13px] font-bold text-white shadow-sm shadow-[#2AABEE]/20 transition-all hover:bg-[#2298d4] hover:shadow-md hover:shadow-[#2AABEE]/25 active:scale-[0.98]"
                                 >
                                     <Send className="h-3.5 w-3.5" />
                                     Join Pro Telegram
@@ -253,7 +257,10 @@ export function ProBenefitsModal({
                                 <Link
                                     href="/dashboard/accounts?action=add&intent=unlock-pro"
                                     onClick={onClose}
-                                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-4 py-2.5 text-[13px] font-bold text-white shadow-sm shadow-amber-500/20 transition-all active:scale-[0.98]"
+                                    className={buttonVariants({
+                                        variant: "gold",
+                                        className: "w-full text-[13px] py-2.5",
+                                    })}
                                 >
                                     Apply for Partner Pro
                                     <ArrowRight className="h-3.5 w-3.5" />

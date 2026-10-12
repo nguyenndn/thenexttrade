@@ -4,11 +4,6 @@ import { renderToString } from "react-dom/server";
 import { HomeTrustMetrics } from "./HomeTrustMetrics";
 import { MissionManifestoHeader } from "./discipline-os/MissionManifestoHeader";
 import { DisciplineCockpit } from "./discipline-os/DisciplineCockpit";
-import {
-    Pillar1MicroCard,
-    Pillar2MicroCard,
-    Pillar3MicroCard,
-} from "./discipline-os/CockpitTelemetry";
 
 describe("HomeTrustMetrics (Unified Discipline OS Section)", () => {
     it("renders the full section with Manifesto and Cockpit", () => {
@@ -23,18 +18,18 @@ describe("HomeTrustMetrics (Unified Discipline OS Section)", () => {
         expect(html).toContain("The Discipline OS");
         expect(html).toContain("Ending Emotional Trading · The 3-Pillar Foundation");
 
-        // 3. The 3 Foundational Pillars (Exact Option 3 Content)
-        expect(html).toContain("Pillar 01 · Cognitive Freedom");
-        expect(html).toContain("Eliminate Manual Friction");
+        // 3. The 3 Foundational Pillars (plain trader language, not invented jargon)
+        expect(html).toContain("Pillar 01 · No More Manual Logging");
+        expect(html).toContain("Every Trade, Logged Automatically");
         expect(html).toContain("Manual trade logging fails because human willpower runs out after red days.");
 
-        expect(html).toContain("Pillar 02 · Radical Transparency");
-        expect(html).toContain("Expose Every Hidden Leak");
+        expect(html).toContain("Pillar 02 · It Names The Mistake");
+        expect(html).toContain("Flags Revenge Sizing");
         expect(html).toContain("You cannot fix what you refuse to see.");
 
-        expect(html).toContain("Pillar 03 · Behavioral Mastery");
-        expect(html).toContain("10-Trade Action Cycles");
-        expect(html).toContain("Discipline is not motivation — it is programmed behavior.");
+        expect(html).toContain("Pillar 03 · One Fix At A Time");
+        expect(html).toContain("One Rule Per 10 Trades");
+        expect(html).toContain("Discipline is a routine, not motivation. We turn each flaw into a 10-trade rule to practise.");
 
         // 4. Clean Institutional Pillars (Cluttered micro-cards removed for clarity)
         expect(html).not.toContain("0 Friction");
@@ -42,10 +37,10 @@ describe("HomeTrustMetrics (Unified Discipline OS Section)", () => {
         expect(html).not.toContain("8/10 On Track");
 
         // 5. Value Flow Footer
-        expect(html).toContain("1. Cognitive Freedom");
-        expect(html).toContain("2. Radical Transparency");
-        expect(html).toContain("3. Behavioral Mastery");
-        expect(html).toContain("Start Your Discipline Loop (Sync MT5)");
+        expect(html).toContain("1. Auto-log");
+        expect(html).toContain("2. Spot the leak");
+        expect(html).toContain("3. Fix it");
+        expect(html).toContain("Sync My MT5 — Free");
     });
 
     it("renders MissionManifestoHeader correctly as Option 1 Editorial Quote Bridge", () => {
@@ -61,25 +56,21 @@ describe("HomeTrustMetrics (Unified Discipline OS Section)", () => {
         expect(html).toContain("The Discipline OS");
         expect(html).toContain("Every Trader Has An Edge. Most Just Lose It To");
         expect(html).toContain("Unchecked Human Emotion");
-        expect(html).toContain("Pillar 01 · Cognitive Freedom");
-        expect(html).toContain("Pillar 02 · Radical Transparency");
-        expect(html).toContain("Pillar 03 · Behavioral Mastery");
-        expect(html).toContain("Eliminate Manual Friction");
-        expect(html).toContain("Expose Every Hidden Leak");
-        expect(html).toContain("10-Trade Action Cycles");
+        expect(html).toContain("Pillar 01 · No More Manual Logging");
+        expect(html).toContain("Pillar 02 · It Names The Mistake");
+        expect(html).toContain("Pillar 03 · One Fix At A Time");
+        expect(html).toContain("Every Trade, Logged Automatically");
+        expect(html).toContain("Flags Revenge Sizing");
+        expect(html).toContain("One Rule Per 10 Trades");
     });
 
-    it("renders standalone Option 3 micro-cards", () => {
-        const p1Html = renderToString(<Pillar1MicroCard />);
-        expect(p1Html).toContain("Live MT5 Cloud Sync");
-        expect(p1Html).toContain("0 Friction");
-
-        const p2Html = renderToString(<Pillar2MicroCard />);
-        expect(p2Html).toContain("Psychology Radar");
-        expect(p2Html).toContain("10+ Leaks Caught");
-
-        const p3Html = renderToString(<Pillar3MicroCard />);
-        expect(p3Html).toContain("Habit Ladder");
-        expect(p3Html).toContain("8/10 On Track");
+    it("never renders fabricated usage statistics", () => {
+        // These strings were invented numbers presented as if they were the
+        // visitor's own data. The component holding them was deleted; this
+        // guard keeps them from quietly returning through any other surface.
+        const html = renderToString(<HomeTrustMetrics />);
+        expect(html).not.toContain("8/10 On Track");
+        expect(html).not.toContain("10+ Leaks Caught");
+        expect(html).not.toContain("0 Friction");
     });
 });

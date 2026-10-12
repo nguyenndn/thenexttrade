@@ -17,9 +17,9 @@ const TABS: {
         type: "trading",
         label: "Trading",
         icon: BarChart3,
-        activeColor: "text-primary dark:text-emerald-400",
+        activeColor: "text-amber-600 dark:text-gold",
         activeBg:
-            "bg-primary/10 dark:bg-primary/15 border-primary/25 dark:border-primary/20",
+            "bg-gold/10 dark:bg-gold/15 border-gold/30 dark:border-gold/25",
     },
     {
         type: "xp",
@@ -69,7 +69,7 @@ export function LeaderboardTabs({
     return (
         <div
             className={cn(
-                "bg-white dark:bg-[#1E2028] p-1.5 rounded-xl border border-dashboard dark:border-white/[0.08] shadow-sm h-auto",
+                "bg-white dark:bg-[#1E2028] p-1.5 rounded-lg border border-dashboard dark:border-white/[0.08] shadow-sm h-auto",
                 equalWidth
                     ? "w-full flex lg:w-auto lg:inline-flex"
                     : "w-auto inline-flex"

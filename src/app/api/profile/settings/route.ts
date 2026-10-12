@@ -58,12 +58,17 @@ export async function GET() {
         true;
 
     const emailPreferences = getEmailPreferences(dbUser?.settings);
+    const payoutWallet =
+        (userSettings?.payoutWallet as {
+            network: "BEP20" | "TRC20" | "ERC20";
+            address: string;
+        } | null) || null;
 
     if (!profile) {
-        return NextResponse.json({ ...base, showTradingStyle, emailPreferences });
+        return NextResponse.json({ ...base, showTradingStyle, emailPreferences, payoutWallet });
     }
 
-    return NextResponse.json({ ...profile, showTradingStyle, emailPreferences });
+    return NextResponse.json({ ...profile, showTradingStyle, emailPreferences, payoutWallet });
 }
 
 export async function PUT(request: Request) {
@@ -128,40 +133,88 @@ export async function PUT(request: Request) {
         });
     }
 
-    await prisma.profile.upsert({
-        where: { userId: user.id },
-        update: {
-            isPublicProfile: Boolean(body.isPublicProfile),
-            showTradeScore: Boolean(body.showTradeScore),
-            showBadges: Boolean(body.showBadges),
-            showPairStats: Boolean(body.showPairStats),
-            showSessionStats: Boolean(body.showSessionStats),
-            profileHeadline: body.profileHeadline
-                ? String(body.profileHeadline).slice(0, 160)
-                : null,
-            showMoney: Boolean(body.showMoney),
-            showBroker: Boolean(body.showBroker),
-            showAccountNumber: Boolean(body.showAccountNumber),
-            showRealName: Boolean(body.showRealName),
-            showPercentMetrics: body.showPercentMetrics !== false,
-        },
-        create: {
-            userId: user.id,
-            isPublicProfile: Boolean(body.isPublicProfile),
-            showTradeScore: Boolean(body.showTradeScore),
-            showBadges: Boolean(body.showBadges),
-            showPairStats: Boolean(body.showPairStats),
-            showSessionStats: Boolean(body.showSessionStats),
-            profileHeadline: body.profileHeadline
-                ? String(body.profileHeadline).slice(0, 160)
-                : null,
-            showMoney: Boolean(body.showMoney),
-            showBroker: Boolean(body.showBroker),
-            showAccountNumber: Boolean(body.showAccountNumber),
-            showRealName: Boolean(body.showRealName),
-            showPercentMetrics: body.showPercentMetrics !== false,
-        },
-    });
+    // Persist payout wallet inside User.settings, merging
+    // with the stored blob so unrelated settings keys survive.
+    if (body.payoutWallet !== undefined) {
+        const dbUser = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: { settings: true },
+        });
+        const settings = (dbUser?.settings as Record<string, unknown>) || {};
+
+        let validWallet: { network: "BEP20" | "TRC20" | "ERC20"; address: string } | null = null;
+        if (body.payoutWallet && typeof body.payoutWallet === "object") {
+            const network = String(body.payoutWallet.network || "BEP20").toUpperCase();
+            const address = String(body.payoutWallet.address || "").trim();
+            if (["BEP20", "TRC20", "ERC20"].includes(network) && address.length >= 24) {
+                validWallet = {
+                    network: network as "BEP20" | "TRC20" | "ERC20",
+                    address,
+                };
+            }
+        }
+
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                settings: {
+                    ...settings,
+                    payoutWallet: validWallet,
+                },
+            },
+        });
+    }
+
+    const hasProfileFields = [
+        "isPublicProfile",
+        "showTradeScore",
+        "showBadges",
+        "showPairStats",
+        "showSessionStats",
+        "profileHeadline",
+        "showMoney",
+        "showBroker",
+        "showAccountNumber",
+        "showRealName",
+        "showPercentMetrics",
+    ].some((k) => k in body);
+
+    if (hasProfileFields) {
+        await prisma.profile.upsert({
+            where: { userId: user.id },
+            update: {
+                isPublicProfile: Boolean(body.isPublicProfile),
+                showTradeScore: Boolean(body.showTradeScore),
+                showBadges: Boolean(body.showBadges),
+                showPairStats: Boolean(body.showPairStats),
+                showSessionStats: Boolean(body.showSessionStats),
+                profileHeadline: body.profileHeadline
+                    ? String(body.profileHeadline).slice(0, 160)
+                    : null,
+                showMoney: Boolean(body.showMoney),
+                showBroker: Boolean(body.showBroker),
+                showAccountNumber: Boolean(body.showAccountNumber),
+                showRealName: Boolean(body.showRealName),
+                showPercentMetrics: body.showPercentMetrics !== false,
+            },
+            create: {
+                userId: user.id,
+                isPublicProfile: Boolean(body.isPublicProfile),
+                showTradeScore: Boolean(body.showTradeScore),
+                showBadges: Boolean(body.showBadges),
+                showPairStats: Boolean(body.showPairStats),
+                showSessionStats: Boolean(body.showSessionStats),
+                profileHeadline: body.profileHeadline
+                    ? String(body.profileHeadline).slice(0, 160)
+                    : null,
+                showMoney: Boolean(body.showMoney),
+                showBroker: Boolean(body.showBroker),
+                showAccountNumber: Boolean(body.showAccountNumber),
+                showRealName: Boolean(body.showRealName),
+                showPercentMetrics: body.showPercentMetrics !== false,
+            },
+        });
+    }
 
     return NextResponse.json({ success: true });
 }

@@ -116,8 +116,8 @@ export function DashboardFilter({
                     );
                     router.replace(`?${params.toString()}`);
                     return;
-                } catch (e) {
-                    console.error("Failed to parse saved date range", e);
+                } catch {
+                    // Fall through to default date range
                 }
             }
 
@@ -135,9 +135,10 @@ export function DashboardFilter({
         const params = new URLSearchParams(searchParams.toString());
 
         if (
-            range.start.getFullYear() === 2025 &&
-            range.start.getMonth() === 0 &&
-            range.start.getDate() === 1
+            range.start.getFullYear() <= 2020 ||
+            (range.start.getFullYear() === 2025 &&
+                range.start.getMonth() === 0 &&
+                range.start.getDate() === 1)
         ) {
             params.delete("from");
             params.delete("to");
@@ -260,7 +261,7 @@ export function DashboardFilter({
                         currentAccountId === "all"
                     }
                     variant="outline"
-                    className="flex items-center gap-1.5 h-10 px-3.5 text-[13px] font-medium border-gray-200 dark:border-[#382F1D] text-slate-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] hover:bg-gray-50 dark:hover:bg-white/5 active:scale-95 transition-all shadow-sm rounded-xl shrink-0"
+                    className="flex items-center gap-1.5 h-10 px-3.5 text-[13px] font-medium border-gray-200 dark:border-[#382F1D] text-slate-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] hover:bg-gray-50 dark:hover:bg-white/5 active:scale-95 transition-all shadow-sm rounded-lg shrink-0"
                     title="Sync Account Now"
                 >
                     <RefreshCw
@@ -275,13 +276,16 @@ export function DashboardFilter({
 
                 <Popover open={isOpen} onOpenChange={handleOpenChange}>
                     <PopoverTrigger asChild>
-                        <button
+                        <Button
+                            variant="outline"
+                            size="icon"
                             className={cn(
-                                "relative flex items-center justify-center w-10 h-10 border rounded-xl transition-all shadow-sm shrink-0 outline-none select-none",
+                                "relative flex items-center justify-center w-10 h-10 border rounded-lg transition-all shadow-sm shrink-0 select-none",
                                 hasActiveFilters
                                     ? "bg-amber-500 text-white border-amber-500 hover:bg-amber-600 shadow-amber-500/20"
                                     : "bg-white dark:bg-[#1E2028] border-gray-200 dark:border-[#382F1D] text-slate-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5"
                             )}
+                            aria-label="Advanced Filters"
                             title={
                                 hasActiveFilters
                                     ? `${activeFilterCount} active filters`
@@ -294,11 +298,11 @@ export function DashboardFilter({
                                     {activeFilterCount}
                                 </span>
                             )}
-                        </button>
+                        </Button>
                     </PopoverTrigger>
                     <PopoverContent
                         align="start"
-                        className="w-[330px] sm:w-[340px] border border-gray-200 dark:border-[#382F1D] bg-white dark:bg-[#1C1E24] shadow-2xl rounded-2xl p-4"
+                        className="w-[330px] sm:w-[340px] border border-gray-200 dark:border-[#382F1D] bg-white dark:bg-[#1C1E24] shadow-2xl rounded-xl p-4"
                     >
                         {/* Header */}
                         <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-100 dark:border-gray-800/60">
@@ -312,14 +316,16 @@ export function DashboardFilter({
                                     </span>
                                 )}
                             </div>
-                            <button
+                            <Button
                                 type="button"
+                                variant="ghost"
+                                size="icon"
                                 onClick={() => setIsOpen(false)}
                                 aria-label="Close filters"
                                 className="w-6 h-6 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                             >
                                 <X size={15} />
-                            </button>
+                            </Button>
                         </div>
 
                         <form
@@ -334,23 +340,25 @@ export function DashboardFilter({
                                     <label className="text-xs font-semibold text-slate-500 dark:text-slate-400">
                                         Direction
                                     </label>
-                                    <div className="grid grid-cols-3 gap-1 bg-slate-100 dark:bg-white/5 p-1 rounded-xl">
+                                    <div className="grid grid-cols-3 gap-1 bg-slate-100 dark:bg-white/5 p-1 rounded-lg">
                                         {["", "BUY", "SELL"].map((val) => (
-                                            <button
+                                            <Button
                                                 key={val}
                                                 type="button"
+                                                variant="ghost"
+                                                size="sm"
                                                 onClick={() =>
                                                     setDirection(val)
                                                 }
                                                 className={cn(
-                                                    "py-1.5 text-xs font-bold rounded-lg transition-all outline-none select-none",
+                                                    "py-1.5 h-auto text-xs font-bold rounded-lg transition-all select-none",
                                                     direction === val
-                                                        ? "bg-white dark:bg-[#1E2028] text-amber-500 shadow-sm"
+                                                        ? "bg-white dark:bg-[#1E2028] text-amber-500 shadow-sm hover:bg-white dark:hover:bg-[#1E2028]"
                                                         : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
                                                 )}
                                             >
                                                 {val || "ALL"}
-                                            </button>
+                                            </Button>
                                         ))}
                                     </div>
                                 </div>
@@ -360,7 +368,7 @@ export function DashboardFilter({
                                     <label className="text-xs font-semibold text-slate-500 dark:text-slate-400">
                                         Trade Outcome
                                     </label>
-                                    <div className="grid grid-cols-4 gap-1 bg-slate-100 dark:bg-white/5 p-1 rounded-xl">
+                                    <div className="grid grid-cols-4 gap-1 bg-slate-100 dark:bg-white/5 p-1 rounded-lg">
                                         {[
                                             { label: "ALL", value: "" },
                                             { label: "WIN", value: "WIN" },
@@ -370,21 +378,23 @@ export function DashboardFilter({
                                                 value: "BREAK_EVEN",
                                             },
                                         ].map((item) => (
-                                            <button
+                                            <Button
                                                 key={item.value}
                                                 type="button"
+                                                variant="ghost"
+                                                size="sm"
                                                 onClick={() =>
                                                     setResult(item.value)
                                                 }
                                                 className={cn(
-                                                    "py-1.5 text-xs font-bold rounded-lg transition-all outline-none select-none",
+                                                    "py-1.5 h-auto text-xs font-bold rounded-lg transition-all select-none",
                                                     result === item.value
-                                                        ? "bg-white dark:bg-[#1E2028] text-amber-500 shadow-sm"
+                                                        ? "bg-white dark:bg-[#1E2028] text-amber-500 shadow-sm hover:bg-white dark:hover:bg-[#1E2028]"
                                                         : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
                                                 )}
                                             >
                                                 {item.label}
-                                            </button>
+                                            </Button>
                                         ))}
                                     </div>
                                 </div>
@@ -394,21 +404,23 @@ export function DashboardFilter({
                                     <label className="text-xs font-semibold text-slate-500 dark:text-slate-400">
                                         Trade Source
                                     </label>
-                                    <div className="grid grid-cols-3 gap-1 bg-slate-100 dark:bg-white/5 p-1 rounded-xl">
+                                    <div className="grid grid-cols-3 gap-1 bg-slate-100 dark:bg-white/5 p-1 rounded-lg">
                                         {["", "MANUAL", "AUTO"].map((val) => (
-                                            <button
+                                            <Button
                                                 key={val}
                                                 type="button"
+                                                variant="ghost"
+                                                size="sm"
                                                 onClick={() => setSource(val)}
                                                 className={cn(
-                                                    "py-1.5 text-xs font-bold rounded-lg transition-all outline-none select-none",
+                                                    "py-1.5 h-auto text-xs font-bold rounded-lg transition-all select-none",
                                                     source === val
-                                                        ? "bg-white dark:bg-[#1E2028] text-amber-500 shadow-sm"
+                                                        ? "bg-white dark:bg-[#1E2028] text-amber-500 shadow-sm hover:bg-white dark:hover:bg-[#1E2028]"
                                                         : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
                                                 )}
                                             >
                                                 {val || "ALL"}
-                                            </button>
+                                            </Button>
                                         ))}
                                     </div>
                                 </div>
@@ -425,8 +437,7 @@ export function DashboardFilter({
                                                 e.target.value.toUpperCase()
                                             )
                                         }
-                                        placeholder="e.g. XAUUSD"
-                                        className="h-9 rounded-xl font-mono uppercase text-xs"
+                                        className="h-9 rounded-lg font-mono uppercase text-xs"
                                     />
                                 </div>
 
@@ -448,8 +459,7 @@ export function DashboardFilter({
                                                     );
                                                 setMagicNumber(cleanVal);
                                             }}
-                                            placeholder="e.g. 12345"
-                                            className="h-9 rounded-xl font-mono text-xs"
+                                            className="h-9 rounded-lg font-mono text-xs"
                                         />
                                     </div>
                                     <div className="space-y-1.5">
@@ -461,8 +471,7 @@ export function DashboardFilter({
                                             onChange={(e) =>
                                                 setComment(e.target.value)
                                             }
-                                            placeholder="comment..."
-                                            className="h-9 rounded-xl text-xs"
+                                            className="h-9 rounded-lg text-xs"
                                         />
                                     </div>
                                 </div>
@@ -475,14 +484,14 @@ export function DashboardFilter({
                                     onClick={handleResetFilters}
                                     variant="outline"
                                     size="sm"
-                                    className="flex-1 text-xs h-9 rounded-xl font-medium"
+                                    className="flex-1 text-xs h-9 rounded-lg font-medium"
                                 >
                                     Reset
                                 </Button>
                                 <Button
                                     type="submit"
                                     size="sm"
-                                    className="flex-1 bg-amber-500 text-white hover:bg-amber-600 text-xs h-9 rounded-xl font-semibold shadow-sm active:scale-95 transition-all"
+                                    className="flex-1 bg-amber-500 text-white hover:bg-amber-600 text-xs h-9 rounded-lg font-semibold shadow-sm active:scale-95 transition-all"
                                 >
                                     Apply
                                 </Button>

@@ -118,7 +118,7 @@ export function ArticleVotesAuditModal() {
             <Button
                 variant="outline"
                 onClick={handleOpen}
-                className="rounded-xl gap-1.5 text-xs font-semibold border-gray-200 dark:border-white/10"
+                className="rounded-lg gap-1.5 text-xs font-semibold border-gray-200 dark:border-white/10"
             >
                 <ThumbsUp size={14} className="text-primary" />
                 Audit Helpful Votes
@@ -126,7 +126,7 @@ export function ArticleVotesAuditModal() {
 
             {isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
                         {/* Header */}
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
@@ -144,7 +144,7 @@ export function ArticleVotesAuditModal() {
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setIsOpen(false)}
-                                className="rounded-xl p-2"
+                                className="rounded-lg p-2"
                                 aria-label="Close modal"
                             >
                                 <X size={18} />
@@ -153,19 +153,19 @@ export function ArticleVotesAuditModal() {
 
                         {/* Summary Bar */}
                         <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
-                            <div className="p-3 rounded-xl border border-gray-200 bg-gray-50/50 dark:border-white/10 dark:bg-white/[0.02]">
+                            <div className="p-3 rounded-lg border border-gray-200 bg-gray-50/50 dark:border-white/10 dark:bg-white/[0.02]">
                                 <span className="text-[10px] font-bold text-gray-400 uppercase block">Total Recorded Votes</span>
                                 <span className="text-xl font-black text-gray-900 dark:text-white mt-1 block">
                                     {totalVotes}
                                 </span>
                             </div>
-                            <div className="p-3 rounded-xl border border-gray-200 bg-gray-50/50 dark:border-white/10 dark:bg-white/[0.02]">
+                            <div className="p-3 rounded-lg border border-gray-200 bg-gray-50/50 dark:border-white/10 dark:bg-white/[0.02]">
                                 <span className="text-[10px] font-bold text-gray-400 uppercase block">Voted Articles</span>
                                 <span className="text-xl font-black text-primary mt-1 block">
                                     {items.length}
                                 </span>
                             </div>
-                            <div className="p-3 rounded-xl border border-gray-200 bg-gray-50/50 dark:border-white/10 dark:bg-white/[0.02] col-span-2 sm:col-span-1">
+                            <div className="p-3 rounded-lg border border-gray-200 bg-gray-50/50 dark:border-white/10 dark:bg-white/[0.02] col-span-2 sm:col-span-1">
                                 <span className="text-[10px] font-bold text-gray-400 uppercase block">Spam Defense Status</span>
                                 <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-1 block flex items-center gap-1">
                                     <CheckCircle2 size={14} /> One Vote Per User Enforced
@@ -182,7 +182,7 @@ export function ArticleVotesAuditModal() {
                                 </div>
                             ) : items.length > 0 ? (
                                 <div className="space-y-3">
-                                    <div className="rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden divide-y divide-gray-200 dark:divide-white/10">
+                                    <div className="rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden divide-y divide-gray-200 dark:divide-white/10">
                                         {items.map((art) => (
                                             <div
                                                 key={art.articleId}
@@ -193,11 +193,11 @@ export function ArticleVotesAuditModal() {
                                                         <h4 className="font-bold text-gray-900 dark:text-white truncate">
                                                             {art.articleTitle}
                                                         </h4>
-                                                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-primary/10 text-primary uppercase">
+                                                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-primary/10 text-primary uppercase">
                                                             {art.voteCount} {art.voteCount === 1 ? "Vote" : "Votes"}
                                                         </span>
                                                         {art.recentVoteCount24h > 3 && (
-                                                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 flex items-center gap-1">
+                                                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 flex items-center gap-1">
                                                                 <AlertTriangle size={12} /> High Velocity ({art.recentVoteCount24h} in 24h)
                                                             </span>
                                                         )}
@@ -239,7 +239,7 @@ export function ArticleVotesAuditModal() {
 
                         {/* Voter Sub-Inspector Modal */}
                         {selectedArticle && (
-                            <div className="mt-4 p-4 rounded-xl border border-gray-200 bg-gray-50/50 dark:border-white/10 dark:bg-white/[0.02]">
+                            <div className="mt-4 p-4 rounded-lg border border-gray-200 bg-gray-50/50 dark:border-white/10 dark:bg-white/[0.02]">
                                 <div className="flex items-center justify-between mb-3">
                                     <h4 className="text-xs font-bold uppercase text-gray-700 dark:text-gray-300">
                                         Voters for: <span className="text-primary">{selectedArticle.articleTitle}</span>
@@ -276,7 +276,7 @@ export function ArticleVotesAuditModal() {
                                                     handleDeleteSingleVote(selectedArticle.articleId, voter.voteId)
                                                 }
                                                 disabled={isPending}
-                                                className="h-6 px-2 text-[10px] text-rose-600 hover:text-rose-700 hover:bg-rose-50 border-rose-200 rounded-md"
+                                                className="h-6 px-2 text-[10px] text-rose-600 hover:text-rose-700 hover:bg-rose-50 border-rose-200 rounded-lg"
                                             >
                                                 Purge Vote
                                             </Button>
@@ -287,7 +287,7 @@ export function ArticleVotesAuditModal() {
                         )}
 
                         <div className="mt-6 flex justify-end border-t border-gray-200 pt-4 dark:border-white/10">
-                            <Button variant="outline" onClick={() => setIsOpen(false)} className="rounded-xl">
+                            <Button variant="outline" onClick={() => setIsOpen(false)} className="rounded-lg">
                                 Close
                             </Button>
                         </div>

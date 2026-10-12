@@ -82,7 +82,7 @@ export function SyncFilterToolbar({
                     tabsId={tabsId}
                 >
                     <div className="overflow-x-auto scrollbar-hide flex">
-                        <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1 gap-1 shrink-0">
+                        <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-1 gap-1 shrink-0">
                             {statusTabs.map((tab) => {
                                 const isActive = activeStatus === tab.key;
                                 const Icon = tab.icon;
@@ -91,7 +91,7 @@ export function SyncFilterToolbar({
                                         key={tab.key}
                                         value={tab.key}
                                         className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10 flex items-center gap-2 cursor-pointer transition-colors"
-                                        activeIndicatorClassName="!bg-gradient-to-r from-primary to-teal-500 shadow-md border-0"
+                                        activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
                                         activeTextClassName="!text-white"
                                     >
                                         {Icon && (
@@ -124,7 +124,7 @@ export function SyncFilterToolbar({
             )}
 
             {/* Standalone Toolbar Card (Breek UI Guide Section 13.4, 13.5, 13.6) */}
-            <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
+            <div className="bg-white dark:bg-[#1E2028] p-4 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
                 {/* Search Input (Section 13.4: 38px height) */}
                 <form
                     onSubmit={(e) => {
@@ -133,7 +133,7 @@ export function SyncFilterToolbar({
                     }}
                     className="w-full md:w-96"
                 >
-                    <div className="flex items-center gap-2 px-3.5 py-2 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors w-full h-[38px]">
+                    <div className="flex items-center gap-2 px-3.5 py-2 bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors w-full h-[38px]">
                         <Search size={16} className="text-gray-400 shrink-0" />
                         <input
                             type="text"
@@ -168,7 +168,7 @@ export function SyncFilterToolbar({
                                 <DropdownMenuTrigger asChild>
                                     <Button
                                         variant="outline"
-                                        className="h-[38px] gap-1.5 rounded-xl px-3 text-xs font-bold"
+                                        className="h-[38px] gap-1.5 rounded-lg px-3 text-xs font-bold"
                                     >
                                         {selectedType?.label || "All Types"}
                                         <ChevronDown size={14} className="opacity-60" />
@@ -182,7 +182,7 @@ export function SyncFilterToolbar({
                                             className={cn(
                                                 "cursor-pointer text-xs font-semibold",
                                                 typeValue === option.value &&
-                                                    "bg-primary/10 text-primary font-bold"
+                                                    "bg-amber-500/10 text-gold dark:text-amber-400 font-bold"
                                             )}
                                         >
                                             {option.label}
@@ -201,7 +201,7 @@ export function SyncFilterToolbar({
                                 <DropdownMenuTrigger asChild>
                                     <Button
                                         variant="outline"
-                                        className="h-[38px] gap-1.5 rounded-xl px-3 text-xs font-bold"
+                                        className="h-[38px] gap-1.5 rounded-lg px-3 text-xs font-bold"
                                     >
                                         {selectedRange?.label || "All Time"}
                                         <ChevronDown size={14} className="opacity-60" />
@@ -215,7 +215,7 @@ export function SyncFilterToolbar({
                                             className={cn(
                                                 "cursor-pointer text-xs font-semibold",
                                                 rangeValue === option.value &&
-                                                    "bg-primary/10 text-primary font-bold"
+                                                    "bg-amber-500/10 text-gold dark:text-amber-400 font-bold"
                                             )}
                                         >
                                             {option.label}
@@ -233,7 +233,7 @@ export function SyncFilterToolbar({
                         size="icon"
                         onClick={onRefresh}
                         aria-label="Refresh list"
-                        className="h-[38px] w-[38px] min-w-[38px] aspect-square rounded-xl shrink-0 cursor-pointer"
+                        className="h-[38px] w-[38px] min-w-[38px] aspect-square rounded-lg shrink-0 cursor-pointer"
                     >
                         <RefreshCw
                             size={14}

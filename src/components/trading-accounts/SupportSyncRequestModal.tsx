@@ -142,7 +142,7 @@ export function SupportSyncRequestModal({
                             <DropdownMenuTrigger asChild>
                                 <button
                                     type="button"
-                                    className="w-full flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 py-2.5 text-xs font-medium text-gray-900 transition-all hover:bg-gray-100/70 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 dark:border-white/10 dark:bg-[#1E2028] dark:text-white dark:hover:bg-white/10 cursor-pointer"
+                                    className="w-full flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50/50 px-3.5 py-2.5 text-xs font-medium text-gray-900 transition-all hover:bg-gray-100/70 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 dark:border-white/10 dark:bg-[#1E2028] dark:text-white dark:hover:bg-white/10 cursor-pointer"
                                 >
                                     <span className="truncate text-left">
                                         {selectedAccountId === "manual" ? (
@@ -165,7 +165,7 @@ export function SupportSyncRequestModal({
                             </DropdownMenuTrigger>
                             <DropdownMenuContent
                                 align="start"
-                                className="w-[--radix-dropdown-menu-trigger-width] max-h-60 overflow-y-auto rounded-xl p-1.5 shadow-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]"
+                                className="w-[--radix-dropdown-menu-trigger-width] max-h-60 overflow-y-auto rounded-lg p-1.5 shadow-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]"
                             >
                                 {accounts.map((acc) => {
                                     const isSelected = selectedAccountId === acc.id;
@@ -223,8 +223,8 @@ export function SupportSyncRequestModal({
 
                     {/* Account Summary or Manual Inputs */}
                     {!isManual && activeAccount && (
-                        <div className="rounded-xl border border-gray-200/80 bg-gray-50/70 p-3.5 text-xs dark:border-white/10 dark:bg-white/[0.02] space-y-2">
-                            <div className="grid grid-cols-2 gap-3 divide-x divide-gray-200/60 dark:divide-white/10">
+                        <div className="rounded-lg border border-gray-200 bg-gray-50/70 p-3.5 text-xs dark:border-white/10 dark:bg-white/[0.02] space-y-2">
+                            <div className="grid grid-cols-2 gap-3 divide-x divide-gray-200 dark:divide-white/10">
                                 <div>
                                     <span className="text-[10px] uppercase font-bold text-gray-400 block">
                                         Broker & Server
@@ -273,7 +273,7 @@ export function SupportSyncRequestModal({
                                     value={broker}
                                     onChange={(e) => setBroker(e.target.value)}
                                     required
-                                    className="w-full rounded-xl border border-gray-200 px-3 py-2 text-xs font-medium text-gray-900 dark:border-white/10 dark:bg-[#1E2028] dark:text-white"
+                                    className="w-full rounded-lg border border-dashboard px-3 py-2 text-xs font-medium text-gray-900 bg-gray-50 dark:border-white/10 dark:bg-[#151925] dark:text-white focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary transition-all"
                                 />
                             </div>
                             <div className="space-y-1">
@@ -285,7 +285,7 @@ export function SupportSyncRequestModal({
                                     value={accountNumber}
                                     onChange={(e) => setAccountNumber(e.target.value)}
                                     required
-                                    className="w-full rounded-xl border border-gray-200 px-3 py-2 text-xs font-medium text-gray-900 dark:border-white/10 dark:bg-[#1E2028] dark:text-white"
+                                    className="w-full rounded-lg border border-dashboard px-3 py-2 text-xs font-medium text-gray-900 bg-gray-50 dark:border-white/10 dark:bg-[#151925] dark:text-white focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary transition-all font-mono"
                                 />
                             </div>
                             <div className="col-span-2 space-y-1">
@@ -296,14 +296,14 @@ export function SupportSyncRequestModal({
                                     type="text"
                                     value={server}
                                     onChange={(e) => setServer(e.target.value)}
-                                    className="w-full rounded-xl border border-gray-200 px-3 py-2 text-xs font-medium text-gray-900 dark:border-white/10 dark:bg-[#1E2028] dark:text-white"
+                                    className="w-full rounded-lg border border-dashboard px-3 py-2 text-xs font-medium text-gray-900 bg-gray-50 dark:border-white/10 dark:bg-[#151925] dark:text-white focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary transition-all"
                                 />
                             </div>
                         </div>
                     )}
 
                     {/* Security Notice: No Password */}
-                    <div className="rounded-xl border border-gray-200/70 bg-gray-50/50 p-2.5 flex items-center gap-2 text-[11px] text-gray-600 dark:border-white/5 dark:bg-white/[0.02] dark:text-gray-400">
+                    <div className="rounded-lg border border-gray-200 bg-gray-50/50 p-2.5 flex items-center gap-2 text-[11px] text-gray-600 dark:border-white/5 dark:bg-white/[0.02] dark:text-gray-400">
                         <Lock className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
                         <span>
                             Investor password is read safely from your encrypted Cloud Sync credentials. Never submit master passwords.
@@ -319,7 +319,7 @@ export function SupportSyncRequestModal({
                             rows={2}
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
-                            className="w-full rounded-xl border border-gray-200 bg-transparent px-3 py-2 text-xs text-gray-900 focus:border-amber-500 focus:outline-none dark:border-white/10 dark:text-white"
+                            className="w-full rounded-lg border border-dashboard bg-gray-50 px-3 py-2 text-xs text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/50 dark:border-white/10 dark:bg-[#151925] dark:text-white resize-none transition-all"
                         />
                     </div>
 
@@ -328,14 +328,14 @@ export function SupportSyncRequestModal({
                             type="button"
                             variant="outline"
                             onClick={onClose}
-                            className="rounded-xl h-9 px-4 text-xs font-semibold"
+                            className="rounded-lg h-9 px-4 text-xs font-semibold"
                         >
                             Cancel
                         </Button>
                         <Button
                             type="submit"
                             disabled={isPending || (!isManual && !hasCredentials)}
-                            className="rounded-xl h-9 px-4 text-xs font-bold gap-1.5 shadow-sm"
+                            className="rounded-lg h-9 px-4 text-xs font-bold gap-1.5 shadow-sm"
                         >
                             {isPending ? "Submitting..." : "Submit Support Request"}
                         </Button>

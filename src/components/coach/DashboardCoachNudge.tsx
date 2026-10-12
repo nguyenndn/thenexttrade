@@ -129,7 +129,7 @@ export function DashboardCoachNudge({
             {/* Compact Top-Level One-Line Bar */}
             {!hideTrigger && (
                 <DialogTrigger asChild>
-                    <button className="w-full text-left relative overflow-hidden rounded-xl border border-amber-500/20 dark:border-gold/15 bg-gradient-to-r from-amber-500/[0.04] to-yellow-500/[0.02] dark:from-gold/[0.02] dark:to-transparent backdrop-blur-md px-4 py-2.5 flex items-center justify-between gap-4 shadow-sm hover:border-amber-500/35 hover:shadow-md transition-all duration-300 group cursor-pointer">
+                    <button className="w-full text-left relative overflow-hidden rounded-lg border border-amber-500/20 dark:border-gold/15 bg-gradient-to-r from-amber-500/[0.04] to-yellow-500/[0.02] dark:from-gold/[0.02] dark:to-transparent backdrop-blur-md px-4 py-2.5 flex items-center justify-between gap-4 shadow-sm hover:border-amber-500/35 hover:shadow-md transition-all duration-300 group cursor-pointer">
                         {/* Glowing highlight animation */}
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-500/[0.03] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
 
@@ -186,7 +186,7 @@ export function DashboardCoachNudge({
                 <div className="space-y-6 w-full">
                     {/* Primary Next Best Action Card */}
                     <div
-                        className="p-4 bg-gradient-to-br from-amber-500/[0.04] to-yellow-500/[0.01] border border-amber-500/20 dark:border-gold/10 rounded-xl space-y-3 relative overflow-hidden w-full"
+                        className="p-4 bg-gradient-to-br from-amber-500/[0.04] to-yellow-500/[0.01] border border-amber-500/20 dark:border-gold/10 rounded-lg space-y-3 relative overflow-hidden w-full"
                         style={{
                             whiteSpace: "normal",
                             wordBreak: "break-word",
@@ -309,7 +309,7 @@ export function DashboardCoachNudge({
                                 </h4>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                                     {coachPlan.keepDoing?.length > 0 && (
-                                        <div className="space-y-2 p-3 bg-emerald-500/[0.03] border border-emerald-500/20 rounded-xl">
+                                        <div className="space-y-2 p-3 bg-emerald-500/[0.03] border border-emerald-500/20 rounded-lg">
                                             <h5 className="text-xs font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
                                                 <UserCheck size={14} /> What's
                                                 Working
@@ -342,7 +342,7 @@ export function DashboardCoachNudge({
                                         </div>
                                     )}
                                     {coachPlan.fixNext?.length > 0 && (
-                                        <div className="space-y-2 p-3 bg-red-500/[0.03] border border-red-500/20 rounded-xl">
+                                        <div className="space-y-2 p-3 bg-red-500/[0.03] border border-red-500/20 rounded-lg">
                                             <h5 className="text-xs font-bold text-red-700 dark:text-red-400 flex items-center gap-1.5">
                                                 <AlertTriangle size={14} />{" "}
                                                 Needs Fix
@@ -393,7 +393,7 @@ export function DashboardCoachNudge({
                                         return (
                                             <div
                                                 key={rec.id}
-                                                className="flex items-start justify-between gap-4 p-3 bg-gray-50/50 dark:bg-white/[0.01] border border-dashboard rounded-xl hover:border-amber-500/20 dark:hover:border-gold/20 transition-all duration-300 w-full"
+                                                className="flex items-start justify-between gap-4 p-3 bg-gray-50/50 dark:bg-white/[0.01] border border-dashboard rounded-lg hover:border-amber-500/20 dark:hover:border-gold/20 transition-all duration-300 w-full"
                                                 style={{
                                                     whiteSpace: "normal",
                                                     wordBreak: "break-word",

@@ -23,7 +23,7 @@ interface MT5ExecutionToolkitSectionProps {
 const PRODUCTS = [
     {
         icon: Bot,
-        title: "EA GoldScalperNinja",
+        title: "GoldScalperNinja EA",
         slug: "goldscalperninja",
         description:
             "An MT5 Expert Advisor built for XAUUSD workflows, structured entries, and disciplined execution support.",
@@ -39,7 +39,7 @@ const PRODUCTS = [
     },
     {
         icon: Bot,
-        title: "GSN Phoenix Grid",
+        title: "GSN - Apex Gold Sentinel",
         slug: "gsn-phoenix-grid",
         description:
             "Advanced grid and hedge recovery system built for experienced traders.",
@@ -108,10 +108,10 @@ export function MT5ExecutionToolkitSection({
                                 href={eligibilityHref}
                                 className="w-full sm:flex-1 group"
                             >
-                                <Button className="w-full min-h-12 px-7 rounded-xl bg-gold hover:bg-amber-600 text-white font-black text-sm shadow-[0_10px_24px_rgba(245,158,11,0.22)] hover:shadow-[0_14px_30px_rgba(245,158,11,0.3)] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap">
+                                <Button size="smd" className="w-full rounded-lg bg-gold hover:bg-amber-600 text-white font-black shadow-[0_10px_24px_rgba(245,158,11,0.22)] hover:shadow-[0_14px_30px_rgba(245,158,11,0.3)] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap">
                                     Check Unlock Eligibility
                                     <ShieldCheck
-                                        size={16}
+                                        size={14}
                                         className="text-yellow-200 group-hover:scale-110 transition-transform duration-300"
                                     />
                                 </Button>
@@ -122,7 +122,8 @@ export function MT5ExecutionToolkitSection({
                             >
                                 <Button
                                     variant="outline"
-                                    className="w-full min-h-12 px-7 rounded-xl bg-white/90 dark:bg-white/[0.03] border border-gold/35 dark:border-gold/25 hover:border-gold hover:bg-gold/[0.08] dark:hover:bg-gold/[0.06] text-gray-800 dark:text-gray-200 hover:text-gray-950 dark:hover:text-white font-black text-sm shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
+                                    size="smd"
+                                    className="w-full rounded-lg bg-white/90 dark:bg-white/[0.03] border border-gold/35 dark:border-gold/25 hover:border-gold hover:bg-gold/[0.08] dark:hover:bg-gold/[0.06] text-gray-800 dark:text-gray-200 hover:text-gray-950 dark:hover:text-white font-black shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
                                 >
                                     View Trading Systems{" "}
                                     <ArrowRight
@@ -143,9 +144,9 @@ export function MT5ExecutionToolkitSection({
                     {/* ── Right Column: Product Cards ── */}
                     <div className="flex flex-col gap-4">
                         {/* Toolkit Preview Container */}
-                        <div className="rounded-3xl border border-gold/15 dark:border-gold/10 bg-white/80 dark:bg-[#111318]/60 p-4 sm:p-5 shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.3)] overflow-hidden">
+                        <div className="rounded-lg border border-gold/15 dark:border-gold/10 bg-white/80 dark:bg-[#111318]/60 p-4 sm:p-5 shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.3)] overflow-hidden">
                             {/* Container Header */}
-                            <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-200/60 dark:border-white/5">
+                            <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-200 dark:border-white/5">
                                 <div className="flex items-center gap-1.5">
                                     <div className="w-2 h-2 rounded-full bg-gold animate-pulse" />
                                     <span className="text-[9px] font-black uppercase tracking-[0.15em] text-gold">
@@ -167,10 +168,10 @@ export function MT5ExecutionToolkitSection({
                                         <Link
                                             key={product.title}
                                             href={`/trading-systems/${product.slug}`}
-                                            className="group flex gap-4 rounded-xl border border-gray-200 bg-white/90 p-4 shadow-sm transition-all duration-300 hover:border-gold/35 hover:bg-gold/[0.03] hover:shadow-md dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-gold/25 dark:hover:bg-gold/[0.04] cursor-pointer"
+                                            className="group flex gap-4 rounded-lg border border-gray-200 bg-white/90 p-4 shadow-sm transition-all duration-300 hover:border-gold/35 hover:bg-gold/[0.03] hover:shadow-md dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-gold/25 dark:hover:bg-gold/[0.04] cursor-pointer"
                                         >
                                             <div
-                                                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-gold shadow-sm ring-1 ${product.accentRing} transition-transform duration-300 group-hover:scale-105 dark:bg-white/[0.06]`}
+                                                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-white text-gold shadow-sm ring-1 ${product.accentRing} transition-transform duration-300 group-hover:scale-105 dark:bg-white/[0.06]`}
                                             >
                                                 <Icon
                                                     size={18}

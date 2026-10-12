@@ -130,11 +130,11 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-2xl w-full max-w-lg mx-4 p-6"
+                        className="relative bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-2xl w-full max-w-lg mx-4 p-6"
                     >
                 {/* Header */}
                 <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                         <UserPlus size={20} className="text-primary" />
                     </div>
                     <div>
@@ -161,7 +161,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
                             <input
                                 {...register("name")}
                                 placeholder="John Doe"
-                                className="w-full h-11 pl-10 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
+                                className="w-full h-11 pl-10 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-lg text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
                             />
                         </div>
                         {errors.name && (
@@ -185,7 +185,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
                                 {...register("email")}
                                 type="email"
                                 placeholder="user@example.com"
-                                className="w-full h-11 pl-10 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
+                                className="w-full h-11 pl-10 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-lg text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
                             />
                         </div>
                         {errors.email && (
@@ -210,7 +210,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
                                     {...register("password")}
                                     type="password"
                                     placeholder="••••••"
-                                    className="w-full h-11 pl-10 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
+                                    className="w-full h-11 pl-10 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-lg text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
                                 />
                             </div>
                             {errors.password && (
@@ -232,7 +232,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
                                     {...register("confirmPassword")}
                                     type="password"
                                     placeholder="••••••"
-                                    className="w-full h-11 pl-10 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
+                                    className="w-full h-11 pl-10 pr-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-lg text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
                                 />
                             </div>
                             {errors.confirmPassword && (
@@ -257,7 +257,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
                                         onValueChange={field.onChange}
                                         defaultValue={field.value}
                                     >
-                                        <SelectTrigger className="w-full h-11 px-4 bg-gray-50 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-700 dark:text-white focus:outline-none focus:border-primary/50 transition-colors">
+                                        <SelectTrigger className="w-full h-11 px-4 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg text-sm text-gray-700 dark:text-white focus:outline-none focus:border-primary/50 transition-colors">
                                             <SelectValue placeholder="Select a role" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -315,7 +315,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
                             size="smd"
                             onClick={handleClose}
                             disabled={isLoading}
-                            className="font-bold text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white"
+                            className="font-bold"
                         >
                             Cancel
                         </Button>

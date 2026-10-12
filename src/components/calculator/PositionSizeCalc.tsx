@@ -41,7 +41,7 @@ export function PositionSizeCalc() {
         <div className="grid lg:grid-cols-12 gap-8">
             {/* Input Section */}
             <div className="lg:col-span-7 space-y-6">
-                <div className="bg-blue-50 dark:bg-blue-500/10 p-4 rounded-xl flex items-start gap-3 border border-blue-100 dark:border-blue-500/20">
+                <div className="bg-blue-50 dark:bg-blue-500/10 p-4 rounded-lg flex items-start gap-3 border border-blue-100 dark:border-blue-500/20">
                     <Info className="text-blue-500 shrink-0 mt-0.5" size={18} />
                     <p className="text-sm text-blue-700 dark:text-blue-300">
                         Calculate optimal lot size to risk exactly{" "}
@@ -137,7 +137,7 @@ export function PositionSizeCalc() {
                     />
                 </CalcResultGrid>
 
-                <div className="bg-white dark:bg-white/5 rounded-xl p-3 border border-dashboard hover:border-primary/30 transition-colors">
+                <div className="bg-white dark:bg-white/5 rounded-lg p-3 border border-dashboard hover:border-primary/30 transition-colors">
                     <div className="flex justify-between text-sm">
                         <span className="text-gray-600 dark:text-gray-300">
                             Pip Value (Standard)

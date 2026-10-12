@@ -143,7 +143,7 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                                 size="icon"
                                 aria-label="Edit quiz settings"
                                 onClick={() => setIsSettingsModalOpen(true)}
-                                className="p-1.5 h-auto w-auto text-gray-500 hover:text-primary hover:bg-primary/10 rounded-xl transition-all"
+                                className="p-1.5 h-auto w-auto text-gray-500 hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -171,7 +171,7 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                     <div className="flex items-center gap-3">
                         <Button
                             onClick={() => setIsImportModalOpen(true)}
-                            className="bg-primary hover:bg-[#00B078] text-white border-none shadow-lg shadow-primary/40 rounded-xl px-4 flex items-center gap-2"
+                            className="bg-gold hover:bg-amber-600 text-white border-none shadow-md shadow-amber-500/20 rounded-lg px-4 flex items-center gap-2"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -196,7 +196,7 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                                 setEditingQuestion(null);
                                 setIsModalOpen(true);
                             }}
-                            className="bg-blue-500 hover:bg-blue-600 text-white border-none shadow-lg shadow-blue-500/40 rounded-xl px-6 flex items-center gap-2"
+                            className="bg-blue-500 hover:bg-blue-600 text-white border-none shadow-lg shadow-blue-500/40 rounded-lg px-6 flex items-center gap-2"
                         >
                             <Plus size={20} />
                             Add New Question
@@ -234,20 +234,20 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
             </DndContext>
 
             {questions.length === 0 && (
-                <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10 w-full mx-auto">
+                <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-lg border border-dashed border-gray-200 dark:border-white/10 w-full mx-auto">
                     <p className="text-gray-600 mb-4">
                         No questions added yet.
                     </p>
                     <div className="flex justify-center gap-3">
                         <Button
                             onClick={() => setIsImportModalOpen(true)}
-                            className="bg-primary hover:bg-[#00B078] text-white border-none shadow-lg shadow-primary/40 rounded-xl px-4"
+                            className="bg-gold hover:bg-amber-600 text-white border-none shadow-md shadow-amber-500/20 rounded-lg px-4"
                         >
                             Select from Bank
                         </Button>
                         <Button
                             onClick={() => setIsModalOpen(true)}
-                            className="bg-blue-500 hover:bg-blue-600 text-white border-none shadow-lg shadow-blue-500/40 rounded-xl px-6"
+                            className="bg-blue-500 hover:bg-blue-600 text-white border-none shadow-lg shadow-blue-500/40 rounded-lg px-6"
                         >
                             Create First Question
                         </Button>

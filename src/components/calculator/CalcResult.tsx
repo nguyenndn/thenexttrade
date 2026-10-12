@@ -20,9 +20,9 @@ export function CalcResultPrimary({
     return (
         <div
             className={cn(
-                "relative overflow-hidden rounded-2xl p-6",
-                "bg-gradient-to-br from-primary to-teal-500",
-                "shadow-lg shadow-primary/25",
+                "relative overflow-hidden rounded-lg p-6",
+                "bg-gradient-to-br from-amber-500 to-amber-600",
+                "shadow-lg shadow-amber-500/25",
                 className
             )}
         >
@@ -66,7 +66,7 @@ export function CalcResultCard({
     return (
         <div
             className={cn(
-                "rounded-xl p-4 text-center",
+                "rounded-lg p-4 text-center",
                 "bg-gray-50 dark:bg-white/5",
                 "border border-dashboard ",
                 "hover:border-primary/30 transition-colors duration-200",

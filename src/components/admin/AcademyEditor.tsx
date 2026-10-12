@@ -146,7 +146,7 @@ export function AcademyEditor({ initialLevels }: AcademyEditorProps) {
             {levels.map((level) => (
                 <div
                     key={level.id}
-                    className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm"
+                    className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm"
                 >
                     {/* Level Headers are static for now, or could be draggable if we add a wrapper */}
                     <div className="p-4 bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
@@ -179,7 +179,7 @@ export function AcademyEditor({ initialLevels }: AcademyEditorProps) {
                                         id={module.id}
                                         className="mb-4"
                                     >
-                                        <div className="border border-gray-200 dark:border-white/10 rounded-xl p-4 bg-white dark:bg-transparent">
+                                        <div className="border border-gray-200 dark:border-white/10 rounded-lg p-4 bg-white dark:bg-transparent">
                                             <div className="flex items-center justify-between mb-3">
                                                 <div className="flex items-center gap-2">
                                                     <Folder

@@ -6,7 +6,7 @@ export function PreviewImproveView() {
     return (
         <div className="h-full flex flex-col justify-between gap-2 animate-in fade-in duration-300">
             {/* Top: AI Weekly Coach Action Card */}
-            <div className="p-2.5 rounded-xl bg-gold/[0.08] dark:bg-gold/[0.04] border border-gold/30 shadow-[0_8px_20px_rgba(245,158,11,0.08)] flex-1 flex flex-col justify-between">
+            <div className="p-2.5 rounded-lg bg-gold/[0.08] dark:bg-gold/[0.04] border border-gold/30 shadow-[0_8px_20px_rgba(245,158,11,0.08)] flex-1 flex flex-col justify-between">
                 <div className="flex items-center justify-between mb-1 shrink-0">
                     <div className="flex items-center gap-1.5">
                         <Bot size={12} className="text-gold" />
@@ -19,7 +19,7 @@ export function PreviewImproveView() {
                     </span>
                 </div>
 
-                <div className="p-2 rounded-xl bg-white/90 dark:bg-white/[0.03] border border-gold/20 mb-1">
+                <div className="p-2 rounded-lg bg-white/90 dark:bg-white/[0.03] border border-gold/20 mb-1">
                     <span className="text-[8px] text-gray-500 font-bold uppercase tracking-wider block mb-0.5">
                         High Priority Rule Fix
                     </span>
@@ -41,7 +41,7 @@ export function PreviewImproveView() {
             {/* Middle: Trading Persona & Discipline Score */}
             <div className="grid grid-cols-2 gap-2 shrink-0">
                 {/* Persona */}
-                <div className="p-2 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/10 shadow-sm flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 shadow-sm flex items-center gap-2">
                     <div className="w-7 h-7 rounded-lg bg-gold/10 text-gold flex items-center justify-center shrink-0">
                         <Award size={14} />
                     </div>
@@ -56,7 +56,7 @@ export function PreviewImproveView() {
                 </div>
 
                 {/* Discipline Score */}
-                <div className="p-2 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-200/60 dark:border-white/10 shadow-sm flex items-center justify-between">
+                <div className="p-2 rounded-lg bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 shadow-sm flex items-center justify-between">
                     <div>
                         <span className="text-[8px] text-gray-400 font-bold uppercase block">
                             Discipline Score
@@ -65,14 +65,14 @@ export function PreviewImproveView() {
                             94 / 100
                         </span>
                     </div>
-                    <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">
+                    <span className="px-1.5 py-0.5 rounded-lg text-[8px] font-black uppercase bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">
                         Top 5%
                     </span>
                 </div>
             </div>
 
             {/* Bottom: Next action cycle bar */}
-            <div className="px-2.5 py-1.5 rounded-xl bg-gray-50/80 dark:bg-white/[0.02] border border-gray-200/50 dark:border-white/5 flex items-center justify-between text-[10px] shrink-0">
+            <div className="px-2.5 py-1.5 rounded-lg bg-gray-50/80 dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 flex items-center justify-between text-[10px] shrink-0">
                 <div className="flex items-center gap-1.5">
                     <Target size={11} className="text-gold" />
                     <span className="text-gray-600 dark:text-gray-300 font-medium">

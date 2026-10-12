@@ -25,7 +25,7 @@ export function DataConfidenceBadge({
 
     const size = typeof confidence === "object" ? confidence.sampleSize : sampleSize ?? 0;
 
-    let badgeColor = "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700";
+    let badgeColor = "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-gray-200 dark:border-slate-700";
     let icon = <Info className="w-3.5 h-3.5" />;
     let label = "Low Confidence";
 
@@ -42,7 +42,7 @@ export function DataConfidenceBadge({
         icon = <AlertCircle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />;
         label = "Early Observation";
     } else {
-        badgeColor = "bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-200 dark:hover:bg-slate-800";
+        badgeColor = "bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-400 border-gray-200 dark:border-slate-800 hover:bg-slate-200 dark:hover:bg-slate-800";
         icon = <AlertCircle className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />;
         label = "Insufficient Sample";
     }

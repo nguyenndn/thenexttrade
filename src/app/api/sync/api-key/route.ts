@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
-import crypto from "crypto";
+import { generateSyncApiKey, maskSyncApiKey } from "@/lib/utils/api-key";
 
 /**
  * GET /api/sync/api-key
@@ -37,9 +37,7 @@ export async function GET() {
 
         return NextResponse.json({
             hasKey: !!user.syncApiKey,
-            key: user.syncApiKey
-                ? `tnt_${user.syncApiKey.slice(4, 8)}...${user.syncApiKey.slice(-4)}`
-                : null,
+            key: user.syncApiKey ? maskSyncApiKey(user.syncApiKey) : null,
             fullKey: user.syncApiKey,
             createdAt: user.syncApiKeyCreatedAt,
         });
@@ -69,9 +67,8 @@ export async function POST() {
             );
         }
 
-        // Generate new key: tnt_ prefix + 48 random hex chars = 52 chars total
-        const randomPart = crypto.randomBytes(24).toString("hex");
-        const syncApiKey = `tnt_${randomPart}`;
+        // Generate new key: TNT-XXXX-XXXX-XXXX (17 chars, unambiguous Crockford Base32)
+        const syncApiKey = generateSyncApiKey();
 
         await prisma.user.update({
             where: { id: authUser.id },

@@ -12,10 +12,10 @@ const steps = [
         level: "Lvl 1-2",
         color: "text-slate-600 dark:text-slate-400",
         bg: "bg-slate-100 dark:bg-slate-800/60",
-        border: "border-slate-200 dark:border-slate-800/80",
+        border: "border-gray-200 dark:border-slate-800/80",
         hoverBorder: "hover:border-slate-400/50 dark:hover:border-slate-600/50",
         gradient: "from-slate-400 to-slate-500",
-        badge: "bg-slate-100 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700",
+        badge: "bg-slate-100 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 border-gray-200 dark:border-slate-700",
         glow: "rgba(148,163,184,0.15)",
     },
     {
@@ -163,7 +163,7 @@ export function LearningPathTimeline() {
                             delay: cardDelay,
                             ease: "easeOut",
                         }}
-                        className={`relative z-10 group overflow-hidden bg-white dark:bg-[#1E2028] p-4 pt-5 rounded-xl border ${step.border} ${step.hoverBorder} transition-all duration-300 w-full max-w-sm md:w-[30%] lg:w-auto mx-auto md:mx-0 shadow-sm hover:shadow-lg ${step.shadow || ""}`}
+                        className={`relative z-10 group overflow-hidden bg-white dark:bg-[#1E2028] p-4 pt-5 rounded-lg border ${step.border} ${step.hoverBorder} transition-all duration-300 w-full max-w-sm md:w-[30%] lg:w-auto mx-auto md:mx-0 shadow-sm hover:shadow-lg ${step.shadow || ""}`}
                         style={{
                             boxShadow: `0 2px 12px ${step.glow}`,
                         }}
@@ -175,7 +175,7 @@ export function LearningPathTimeline() {
 
                         {/* Icon */}
                         <motion.div
-                            className={`w-12 h-12 rounded-xl ${step.bg} ${step.color} flex items-center justify-center mb-3 mx-auto`}
+                            className={`w-12 h-12 rounded-lg ${step.bg} ${step.color} flex items-center justify-center mb-3 mx-auto`}
                             initial={{ rotate: -15, scale: 0.5 }}
                             animate={isInView ? { rotate: 0, scale: 1 } : {}}
                             transition={{
@@ -205,7 +205,7 @@ export function LearningPathTimeline() {
 
                         {/* Glow on hover */}
                         <div
-                            className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 pointer-events-none"
+                            className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 pointer-events-none"
                             style={{ boxShadow: `0 0 30px ${step.glow}` }}
                         />
                     </motion.div>

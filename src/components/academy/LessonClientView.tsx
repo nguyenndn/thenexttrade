@@ -180,7 +180,7 @@ export default function LessonClientView({
                 <div className="lg:col-span-2 space-y-4">
                     {/* Video Player */}
                     {videoId && (
-                        <div className="relative aspect-video rounded-xl overflow-hidden bg-gray-900 border border-dashboard shadow-lg">
+                        <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-900 border border-dashboard shadow-lg">
                             <iframe
                                 src={`https://www.youtube.com/embed/${videoId}`}
                                 title={lesson.title}
@@ -193,7 +193,7 @@ export default function LessonClientView({
                     )}
 
                     {/* Article Content Card */}
-                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm overflow-hidden">
                         <div className="px-6 lg:px-8 pt-6 lg:pt-8 pb-4">
                             <h1 className="text-2xl lg:text-3xl font-black text-gray-700 dark:text-white leading-tight tracking-tight">
                                 {lesson.title}
@@ -201,7 +201,7 @@ export default function LessonClientView({
                         </div>
                         <div className="h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
                         <article
-                            className="p-6 lg:p-8 prose prose-base dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-h2:text-xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-dashboard dark:prose-h2:border-white/5 prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3 prose-p:leading-relaxed prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-semibold prose-img:rounded-xl prose-img:shadow-md prose-img:mx-auto prose-blockquote:border-l-primary prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-white/5 prose-blockquote:rounded-r-xl prose-blockquote:py-1 prose-blockquote:px-2 prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-strong:text-gray-700 dark:prose-strong:text-white prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:rounded-xl prose-pre:p-5 prose-pre:text-sm prose-pre:leading-relaxed prose-pre:overflow-x-auto prose-code:bg-gray-100 dark:prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm prose-code:font-semibold prose-code:text-gray-800 dark:prose-code:text-gray-200 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-gray-100 [&_pre_code]:font-mono [&_table]:w-full [&_table]:border-collapse [&_th]:bg-gray-50 dark:[&_th]:bg-white/5 [&_th]:px-4 [&_th]:py-2 [&_th]:text-left [&_th]:font-bold [&_th]:border [&_th]:border-dashboard dark:[&_th]:border-white/10 [&_td]:px-4 [&_td]:py-2 [&_td]:border [&_td]:border-dashboard dark:[&_td]:border-white/10 [&_figure]:text-center [&_figure]:my-8 [&_figcaption]:text-center [&_figcaption]:italic [&_figcaption]:text-sm [&_figcaption]:text-gray-500 dark:[&_figcaption]:text-gray-400 [&_figcaption]:mt-3 lesson-footer-compact"
+                            className="p-6 lg:p-8 prose prose-base dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-h2:text-xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-dashboard dark:prose-h2:border-white/5 prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3 prose-p:leading-relaxed prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-semibold prose-img:rounded-lg prose-img:shadow-md prose-img:mx-auto prose-blockquote:border-l-primary prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-white/5 prose-blockquote:rounded-r-lg prose-blockquote:py-1 prose-blockquote:px-2 prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-strong:text-gray-700 dark:prose-strong:text-white prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:rounded-lg prose-pre:p-5 prose-pre:text-sm prose-pre:leading-relaxed prose-pre:overflow-x-auto prose-code:bg-gray-100 dark:prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm prose-code:font-semibold prose-code:text-gray-800 dark:prose-code:text-gray-200 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-gray-100 [&_pre_code]:font-mono [&_table]:w-full [&_table]:border-collapse [&_th]:bg-gray-50 dark:[&_th]:bg-white/5 [&_th]:px-4 [&_th]:py-2 [&_th]:text-left [&_th]:font-bold [&_th]:border [&_th]:border-dashboard dark:[&_th]:border-white/10 [&_td]:px-4 [&_td]:py-2 [&_td]:border [&_td]:border-dashboard dark:[&_td]:border-white/10 [&_figure]:text-center [&_figure]:my-8 [&_figcaption]:text-center [&_figcaption]:italic [&_figcaption]:text-sm [&_figcaption]:text-gray-500 dark:[&_figcaption]:text-gray-400 [&_figcaption]:mt-3 lesson-footer-compact"
                             dangerouslySetInnerHTML={{
                                 __html: DOMPurify.sanitize(lesson.content),
                             }}
@@ -209,7 +209,7 @@ export default function LessonClientView({
                     </div>
 
                     {/* Completion + Navigation */}
-                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-6 flex items-center justify-between gap-4">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm p-6 flex items-center justify-between gap-4">
                         {prevLesson ? (
                             <Link
                                 href={lessonPath(prevLesson.slug)}
@@ -229,7 +229,7 @@ export default function LessonClientView({
                                 "group rounded-full font-bold px-8 shadow-lg transition-all",
                                 isCompleted
                                     ? "bg-green-50 dark:bg-green-900/10 text-green-600 border-green-200 dark:border-green-800/30 cursor-default"
-                                    : "bg-primary hover:bg-[#00B078] text-white shadow-primary/20",
+                                    : "bg-gold hover:bg-amber-600 text-white shadow-amber-500/20",
                                 !isCompleted && !completing && "hover:scale-105"
                             )}
                         >
@@ -270,7 +270,7 @@ export default function LessonClientView({
                 {/* ── Sidebar ── */}
                 <div className="space-y-4">
                     {/* Module Info Card */}
-                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5 space-y-3">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm p-5 space-y-3">
                         <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
                             Current Module
                         </h3>
@@ -311,7 +311,7 @@ export default function LessonClientView({
                     </div>
 
                     {/* Lesson List Card */}
-                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm overflow-hidden">
                         <div className="p-4 border-b border-dashboard flex items-center justify-between">
                             <h3 className="font-bold text-sm text-gray-700 dark:text-white">
                                 Lessons in Module
@@ -544,7 +544,7 @@ export default function LessonClientView({
             {/* Mobile Menu Button (floating) */}
             <button
                 onClick={() => setMobileMenuOpen(true)}
-                className="lg:hidden fixed bottom-20 right-4 z-50 w-12 h-12 rounded-full bg-primary text-white shadow-lg shadow-primary/30 flex items-center justify-center hover:bg-[#00B078] transition-colors"
+                className="lg:hidden fixed bottom-20 right-4 z-50 w-12 h-12 rounded-full bg-gold text-white shadow-lg shadow-amber-500/30 flex items-center justify-center hover:bg-amber-600 transition-colors"
                 aria-label="Open lesson menu"
             >
                 <Menu size={20} />
@@ -568,7 +568,7 @@ export default function LessonClientView({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="bg-white dark:bg-[#1a1f2e] rounded-2xl shadow-2xl border border-dashboard p-6 mx-4 max-w-sm text-center"
+                        className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow-2xl border border-dashboard p-6 mx-4 max-w-sm text-center"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
@@ -593,7 +593,7 @@ export default function LessonClientView({
                             <button
                                 onClick={() => setLockedDialogLesson(null)}
                                 autoFocus
-                                className="px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-[#00B078] transition-colors shadow-lg shadow-primary/20"
+                                className="px-5 py-2.5 rounded-lg bg-gold text-white text-sm font-semibold hover:bg-amber-600 transition-colors shadow-lg shadow-amber-500/20"
                             >
                                 Got it!
                             </button>

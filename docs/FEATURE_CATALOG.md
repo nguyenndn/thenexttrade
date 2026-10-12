@@ -76,7 +76,7 @@ Any feature that supports this loop is justified. Any feature that competes with
 | `/faq` | Answer common objections | 4 key homepage FAQs plus full FAQ page | Overlong homepage FAQ |
 | `/trading-style` | Self-diagnose trading personality | Welcome screen first, 14 questions, in-memory state, archetype diagnosis, CTA to save/signup | Auto-jumping to Q1 on refresh, stale localStorage, raw percentage leakage |
 | `/community` | Sell GoldScalperNinja Telegram/community | 10 curated posts/tab (Forex, Crypto, Indices, Commodities), Randomizer, Media Lightbox, broker setup | Rebranding whole platform to GoldScalperNinja |
-| `/trading-systems` | Sell EA/tool ecosystem responsibly | GoldScalperNinja, Trade Manager, GSN Phoenix Grid, unlock path, guides | Fake performance simulator/backtest claims |
+| `/trading-systems` | Sell EA/tool ecosystem responsibly | GoldScalperNinja, Trade Manager, GSN - Apex Gold Sentinel, unlock path, guides | Fake performance simulator/backtest claims |
 | `/trading-systems/[slug]` | Explain one system deeply | Mockup, features, setup, risk controls, docs/download path | Unsupported products like Partner Toolkit |
 | `/brokers` | Compare trusted broker/exchange/VPS options | Broker cards, reviews, affiliate context | Prop firm tab |
 | `/tools` and `/tools/*` | SEO and trader utility | Small calculator set, focused tool pages, economic calendar | Letting tools dominate homepage |

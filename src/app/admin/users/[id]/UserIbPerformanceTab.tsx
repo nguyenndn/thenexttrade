@@ -70,8 +70,8 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
         <div className="space-y-6">
             {/* Overview stats cards */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm flex items-center gap-4">
-                    <div className="p-3 bg-blue-500/10 text-blue-500 rounded-xl">
+                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-5 shadow-sm flex items-center gap-4">
+                    <div className="p-3 bg-blue-500/10 text-blue-500 rounded-lg">
                         <Users size={22} />
                     </div>
                     <div>
@@ -93,8 +93,8 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm flex items-center gap-4">
-                    <div className="p-3 bg-green-500/10 text-green-500 rounded-xl">
+                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-5 shadow-sm flex items-center gap-4">
+                    <div className="p-3 bg-green-500/10 text-green-500 rounded-lg">
                         <Layers size={22} />
                     </div>
                     <div>
@@ -113,8 +113,8 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm flex items-center gap-4">
-                    <div className="p-3 bg-purple-500/10 text-purple-500 rounded-xl">
+                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-5 shadow-sm flex items-center gap-4">
+                    <div className="p-3 bg-purple-500/10 text-purple-500 rounded-lg">
                         <FileSpreadsheet size={22} />
                     </div>
                     <div>
@@ -139,7 +139,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                 {/* IB Leads & Activity */}
                 <div className="xl:col-span-2 space-y-6">
                     {/* IB Leads table */}
-                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
                         <div className="p-4 sm:p-5 border-b border-gray-200 dark:border-white/10">
                             <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
                                 <Users size={16} className="text-primary" />{" "}
@@ -234,7 +234,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                     </div>
 
                     {/* IB Activity Snapshots */}
-                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
                         <div className="p-4 sm:p-5 border-b border-gray-200 dark:border-white/10">
                             <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
                                 <LineChart
@@ -347,7 +347,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                 </div>
 
                 {/* Right column: generated reports */}
-                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm flex flex-col">
+                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm flex flex-col">
                     <div className="p-4 sm:p-5 border-b border-gray-200 dark:border-white/10">
                         <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
                             <FileSpreadsheet

@@ -26,7 +26,7 @@ interface CertificateShareModalProps {
 
 /**
  * Share modal for earned certificates: copy-link + QR code + native share.
- * Mirrors Premium card styling (rounded-xl, backdrop blur, lucide icons).
+ * Mirrors Premium card styling (rounded-lg, backdrop blur, lucide icons).
  */
 export function CertificateShareModal({
     open,
@@ -111,13 +111,13 @@ export function CertificateShareModal({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative w-full max-w-sm rounded-2xl bg-white dark:bg-[#1E2028] border border-dashboard shadow-2xl"
+                        className="relative w-full max-w-sm rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     >
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 pt-6 pb-4">
                     <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-teal-600 flex items-center justify-center">
+                        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-teal-600 flex items-center justify-center">
                             <Share2 size={16} className="text-white" />
                         </div>
                         <div>
@@ -140,7 +140,7 @@ export function CertificateShareModal({
 
                 {/* Body */}
                 <div className="px-6 pb-6 space-y-4">
-                    <div className="flex items-center gap-2 rounded-xl bg-primary/5 dark:bg-primary/10 border border-primary/20 px-3.5 py-2.5">
+                    <div className="flex items-center gap-2 rounded-lg bg-primary/5 dark:bg-primary/10 border border-primary/20 px-3.5 py-2.5">
                         <Award size={14} className="text-primary shrink-0" />
                         <p className="text-[11px] font-semibold text-gray-600 dark:text-gray-300 leading-snug">
                             {subtitle}
@@ -149,7 +149,7 @@ export function CertificateShareModal({
 
                     {/* QR code */}
                     <div className="flex flex-col items-center gap-2">
-                        <div className="rounded-2xl bg-white p-3.5 border border-dashboard shadow-sm">
+                        <div className="rounded-lg bg-white p-3.5 border border-dashboard shadow-sm">
                             <QRCodeSVG
                                 value={shareUrl}
                                 size={128}
@@ -164,7 +164,7 @@ export function CertificateShareModal({
                     </div>
 
                     {/* Link row */}
-                    <div className="flex items-center gap-2 rounded-xl bg-gray-50 dark:bg-white/5 border border-dashboard px-3.5 py-2.5">
+                    <div className="flex items-center gap-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-dashboard px-3.5 py-2.5">
                         <Link2 size={14} className="text-gray-400 shrink-0" />
                         <span className="flex-1 text-xs font-semibold text-gray-600 dark:text-gray-300 truncate">
                             {shareUrl}

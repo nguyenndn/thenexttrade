@@ -81,7 +81,7 @@ export function DayTradeList({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="relative z-10 bg-white dark:bg-[#1E2028] w-full max-w-md rounded-xl shadow-2xl border border-dashboard flex flex-col max-h-[95vh] overflow-hidden cursor-default"
+                className="relative z-10 bg-white dark:bg-[#1E2028] w-full max-w-md rounded-lg shadow-2xl border border-dashboard flex flex-col max-h-[95vh] overflow-hidden cursor-default"
             >
                 {/* Close Button Header (No Border) */}
                 <div className="px-6 pt-6 pb-2 relative shrink-0">

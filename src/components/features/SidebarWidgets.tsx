@@ -41,7 +41,7 @@ async function RecentPostsWidget() {
     const articles = await getRecentPosts();
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-2xl shadow-sm border border-dashboard overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-lg shadow-sm border border-dashboard overflow-hidden">
             {/* Accent top stripe */}
             <div className="h-1 bg-gradient-to-r from-gold to-amber-500" />
 
@@ -59,7 +59,7 @@ async function RecentPostsWidget() {
                         <Link
                             key={article.id}
                             href={`/articles/${article.slug}`}
-                            className="flex gap-3 group items-center p-2 -mx-2 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                            className="flex gap-3 group items-center p-2 -mx-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                         >
                             <div className="relative w-14 h-14 overflow-hidden rounded-full border-2 border-dashboard group-hover:border-gold transition-all shrink-0 shadow-sm">
                                 {article.thumbnail ? (
@@ -171,7 +171,7 @@ function TopBrokersWidget() {
     if (brokers.length === 0) return null;
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-2xl shadow-sm border border-dashboard overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-lg shadow-sm border border-dashboard overflow-hidden">
             {/* Accent top stripe */}
             <div className="h-1 bg-gradient-to-r from-gold to-amber-500" />
 
@@ -312,7 +312,7 @@ function TopBrokersWidget() {
                                         href={broker.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl bg-gradient-to-r from-gold to-amber-600 text-white text-[11px] font-bold hover:brightness-110 shadow-sm shadow-gold/20 transition-all"
+                                        className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-gradient-to-r from-gold to-amber-600 text-white text-[11px] font-bold hover:brightness-110 shadow-sm shadow-gold/20 transition-all"
                                     >
                                         Open Account
                                         <ArrowRight size={11} />

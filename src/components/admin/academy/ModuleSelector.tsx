@@ -81,7 +81,7 @@ export function ModuleSelector({
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
-                    "w-full flex items-center justify-between gap-2 p-2.5 rounded-xl text-sm transition-all text-left",
+                    "w-full flex items-center justify-between gap-2 p-2.5 rounded-lg text-sm transition-all text-left",
                     "bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 ",
                     "hover:border-gray-300 dark:hover:border-white/20",
                     isOpen && "ring-2 ring-primary/20 border-primary",
@@ -119,7 +119,7 @@ export function ModuleSelector({
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={SPRING_SOFT}
                     style={{ transformOrigin: "top" }}
-                    className="absolute z-50 mt-1 w-full bg-white dark:bg-[#1a1e2e] border border-gray-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden"
+                    className="absolute z-50 mt-1 w-full bg-white dark:bg-[#1a1e2e] border border-gray-200 dark:border-white/10 rounded-lg shadow-xl overflow-hidden"
                 >
                     {/* Search */}
                     <div className="p-2 border-b border-gray-200 dark:border-white/10">

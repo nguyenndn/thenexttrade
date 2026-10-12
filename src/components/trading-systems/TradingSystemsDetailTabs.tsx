@@ -59,19 +59,17 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
         { id: "risk", label: "Risk Controls", icon: ShieldAlert },
     ] as const;
 
-    const gradientActive =
+    const activeTabIndicator =
         {
-            gold: "!bg-gradient-to-r from-gold to-amber-600 shadow-md border-0",
-            blue: "!bg-gradient-to-r from-blue-500 to-indigo-600 shadow-md border-0",
-            emerald:
-                "!bg-gradient-to-r from-emerald-500 to-teal-600 shadow-md border-0",
-        }[colorTheme] ||
-        "!bg-gradient-to-r from-gold to-amber-600 shadow-md border-0";
+            gold: "!bg-gold shadow-sm border-0",
+            blue: "!bg-blue-600 shadow-sm border-0",
+            emerald: "!bg-emerald-600 shadow-sm border-0",
+        }[colorTheme] || "!bg-gold shadow-sm border-0";
 
     return (
         <section
             id="system-technicals"
-            className="relative mx-auto w-full max-w-7xl overflow-hidden rounded-3xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 md:p-8 shadow-sm backdrop-blur"
+            className="relative mx-auto w-full max-w-7xl overflow-hidden rounded-lg border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 md:p-8 shadow-sm backdrop-blur"
         >
             <div className="relative z-10">
                 <Tabs
@@ -96,7 +94,7 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                         </div>
 
                         <div className="overflow-x-auto scrollbar-hide flex w-full lg:w-auto">
-                            <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0 flex w-full sm:w-auto">
+                            <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-1.5 gap-1 shrink-0 flex w-full sm:w-auto">
                                 {tabs.map((tab) => {
                                     const Icon = tab.icon;
                                     return (
@@ -105,9 +103,13 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                                             value={tab.id}
                                             className="px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10 flex-1 sm:flex-none shrink-0 justify-center gap-1.5"
                                             activeIndicatorClassName={
-                                                gradientActive
+                                                activeTabIndicator
                                             }
-                                            activeTextClassName="!text-white"
+                                            activeTextClassName={
+                                                colorTheme === "gold"
+                                                    ? "!text-slate-950 font-bold"
+                                                    : "!text-white font-bold"
+                                            }
                                         >
                                             <Icon size={15} className="shrink-0" />
                                             <span>{tab.label}</span>
@@ -125,7 +127,7 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                                     <div
                                         key={idx}
                                         className={cn(
-                                            "rounded-2xl border border-gray-200/50 dark:border-white/10 bg-white/40 dark:bg-[#151822]/45 p-5 space-y-3 transition-all duration-300 relative overflow-hidden group",
+                                            "rounded-lg border border-gray-200 dark:border-white/10 bg-white/40 dark:bg-[#151822]/45 p-5 space-y-3 transition-all duration-300 relative overflow-hidden group",
                                             colorTheme === "gold" &&
                                                 "hover:border-gold/30 hover:shadow-md",
                                             colorTheme === "blue" &&
@@ -137,7 +139,7 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                                         <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
                                         <div
                                             className={cn(
-                                                "flex h-9 w-9 items-center justify-center rounded-xl relative z-10 border",
+                                                "flex h-9 w-9 items-center justify-center rounded-lg relative z-10 border",
                                                 colorTheme === "gold" &&
                                                     "bg-gold/10 text-gold border-gold/15",
                                                 colorTheme === "blue" &&
@@ -164,7 +166,7 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                                 {specItems.map((item) => (
                                     <div
                                         key={item.label}
-                                        className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925]/60 p-5 shadow-sm"
+                                        className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925]/60 p-5 shadow-sm"
                                     >
                                         <p className="mb-4 text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
                                             {item.label}
@@ -182,7 +184,7 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                                 {system.logic.map((item, index) => (
                                     <div
                                         key={item}
-                                        className="flex gap-4 rounded-2xl border border-emerald-200 dark:border-emerald-500/10 bg-emerald-50/70 dark:bg-emerald-500/5 p-5 animate-in fade-in slide-in-from-bottom-2 duration-300"
+                                        className="flex gap-4 rounded-lg border border-emerald-200 dark:border-emerald-500/10 bg-emerald-50/70 dark:bg-emerald-500/5 p-5 animate-in fade-in slide-in-from-bottom-2 duration-300"
                                     >
                                         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-xs font-black text-white">
                                             {index + 1}
@@ -200,7 +202,7 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                                 {system.riskControls.map((item) => (
                                     <div
                                         key={item.title}
-                                        className="flex gap-4 rounded-2xl border border-amber-200 dark:border-amber-500/10 bg-amber-50/70 dark:bg-amber-500/5 p-5 animate-in fade-in slide-in-from-bottom-2 duration-300"
+                                        className="flex gap-4 rounded-lg border border-amber-200 dark:border-amber-500/10 bg-amber-50/70 dark:bg-amber-500/5 p-5 animate-in fade-in slide-in-from-bottom-2 duration-300"
                                     >
                                         <ShieldAlert className="mt-1 h-5 w-5 shrink-0 text-amber-500" />
                                         <div>

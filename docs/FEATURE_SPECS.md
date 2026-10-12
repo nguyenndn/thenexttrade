@@ -1380,7 +1380,7 @@ Expected behavior:
 - Admin can review pending accounts/licenses.
 - Products have files/versions.
 - Broker settings affect eligibility/sync behavior as designed.
-- Current product catalog should cover GoldScalperNinja, Trade Manager, and GSN Phoenix Grid.
+- Current product catalog should cover GoldScalperNinja, Trade Manager, and GSN - Apex Gold Sentinel.
 - Do not mention `Partner Toolkit` unless a real product is added.
 
 Code paths:

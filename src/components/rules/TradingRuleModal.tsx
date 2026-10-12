@@ -160,9 +160,9 @@ export function TradingRuleModal({
                             Rule Title
                         </label>
                         <PremiumInput
-                            placeholder="e.g. Stop after 2 consecutive losses"
                             {...register("title")}
                             error={errors.title?.message}
+                            helperText="Define an unambiguous rule (e.g. maximum loss limit or minimum risk-to-reward ratio)"
                         />
                     </div>
 
@@ -174,7 +174,7 @@ export function TradingRuleModal({
                         <textarea
                             placeholder="Provide context on why this rule exists..."
                             {...register("description")}
-                            className="w-full min-h-[80px] p-3 rounded-xl border border-gray-300 dark:border-white/10 bg-transparent text-sm text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                            className="w-full min-h-[80px] p-3 rounded-lg border border-dashboard dark:border-white/10 bg-gray-50 dark:bg-[#151925] text-sm text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none"
                         />
                     </div>
 
@@ -192,7 +192,7 @@ export function TradingRuleModal({
                                         onValueChange={field.onChange}
                                         value={field.value}
                                     >
-                                        <SelectTrigger className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#1E2028] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                                        <SelectTrigger className="w-full h-10 px-3 border border-dashboard dark:border-white/10 rounded-lg bg-gray-50 dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
                                             <SelectValue placeholder="Select Category" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -220,7 +220,7 @@ export function TradingRuleModal({
                                         onValueChange={field.onChange}
                                         value={field.value}
                                     >
-                                        <SelectTrigger className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#1E2028] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                                        <SelectTrigger className="w-full h-10 px-3 border border-dashboard dark:border-white/10 rounded-lg bg-gray-50 dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
                                             <SelectValue placeholder="Select Severity" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -248,7 +248,7 @@ export function TradingRuleModal({
                                         onValueChange={field.onChange}
                                         value={field.value}
                                     >
-                                        <SelectTrigger className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#1E2028] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                                        <SelectTrigger className="w-full h-10 px-3 border border-dashboard dark:border-white/10 rounded-lg bg-gray-50 dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
                                             <SelectValue placeholder="Select Account" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -279,7 +279,7 @@ export function TradingRuleModal({
                                         onValueChange={field.onChange}
                                         value={field.value}
                                     >
-                                        <SelectTrigger className="w-full h-10 p-2 border border-gray-300 dark:border-white/10 rounded-xl bg-white dark:bg-[#1E2028] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                                        <SelectTrigger className="w-full h-10 px-3 border border-dashboard dark:border-white/10 rounded-lg bg-gray-50 dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
                                             <SelectValue placeholder="Select Strategy" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -304,7 +304,7 @@ export function TradingRuleModal({
                             size="smd"
                             onClick={onClose}
                             disabled={isPending}
-                            className="border-gray-300 dark:border-white/10 font-bold"
+                            className="font-bold"
                         >
                             Cancel
                         </Button>

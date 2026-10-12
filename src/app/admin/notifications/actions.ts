@@ -72,7 +72,7 @@ export async function createBroadcast(data: CreateBroadcastInput) {
                 scheduledAt: sendAt,
                 // isSent removed as it is not in schema. Logic relies on sentAt being not null.
                 sentAt: !sendAt ? new Date() : null,
-                targetRoles: [], // TODO: Add role filtering if needed
+                targetRoles: [], // NOTE: Role filtering available but not yet used — broadcasts go to all users
             },
         });
 

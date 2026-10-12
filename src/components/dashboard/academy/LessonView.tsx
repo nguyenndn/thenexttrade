@@ -128,7 +128,7 @@ export default function LessonView({
                 <Link href="/dashboard/academy">
                     <Button
                         variant="outline"
-                        className="rounded-xl font-bold border-dashboard bg-white dark:bg-[#151925] hover:bg-gray-50 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300"
+                        className="rounded-lg font-bold border-dashboard bg-white dark:bg-[#151925] hover:bg-gray-50 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300"
                     >
                         <ArrowLeft size={16} />
                         Back to Map
@@ -140,8 +140,8 @@ export default function LessonView({
                 {/* Main Content Area */}
                 <div className="xl:col-span-8 space-y-6">
                     {/* Content Card */}
-                    <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-xl p-6 md:p-8 shadow-sm">
-                        <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:text-gray-700 dark:prose-headings:text-white prose-headings:font-bold prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-700 dark:prose-strong:text-white prose-img:rounded-xl prose-img:shadow-xl prose-pre:bg-gray-900 prose-pre:text-white prose-pre:p-4 prose-pre:rounded-xl">
+                    <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-lg p-6 md:p-8 shadow-sm">
+                        <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:text-gray-700 dark:prose-headings:text-white prose-headings:font-bold prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-700 dark:prose-strong:text-white prose-img:rounded-lg prose-img:shadow-xl prose-pre:bg-gray-900 prose-pre:text-white prose-pre:p-4 prose-pre:rounded-lg">
                             <Markdown>{lesson.content}</Markdown>
                         </div>
 
@@ -170,7 +170,7 @@ export default function LessonView({
                                     onClick={handleComplete}
                                     variant="outline"
                                     aria-label="Go to next lesson"
-                                    className="rounded-xl font-bold border-dashboard text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
+                                    className="rounded-lg font-bold border-dashboard text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
                                 >
                                     Next <ChevronRight size={20} />
                                 </Button>
@@ -180,7 +180,7 @@ export default function LessonView({
                                     variant="primary"
                                     disabled={completing}
                                     aria-label="Complete this lesson"
-                                    className="font-bold rounded-xl bg-[#00C888] hover:bg-[#00B078] text-white shadow-lg hover:shadow-[#00C888]/25 transition-all"
+                                    className="font-bold rounded-lg bg-gold hover:bg-amber-600 text-white shadow-md shadow-amber-500/20 border-none transition-all"
                                 >
                                     {completing
                                         ? "Processing..."
@@ -217,7 +217,7 @@ export default function LessonView({
                 {/* Right Sidebar - Course Structure */}
                 <div className="xl:col-span-4 space-y-6 sticky top-24">
                     {/* Module Progress Card */}
-                    <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-xl p-6 shadow-sm overflow-hidden relative">
+                    <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-lg p-6 shadow-sm overflow-hidden relative">
                         <div className="relative z-10">
                             <p className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-2">
                                 Current Module
@@ -249,9 +249,9 @@ export default function LessonView({
                                             key={l.id}
                                             href={`/dashboard/academy/lessons/${l.slug}`}
                                             className={cn(
-                                                "flex items-center gap-4 p-3 rounded-xl transition-all relative group",
+                                                "flex items-center gap-4 p-3 rounded-lg transition-all relative group",
                                                 isActive
-                                                    ? "bg-primary/10 text-primary"
+                                                    ? "bg-amber-500/10 text-gold font-bold"
                                                     : "text-gray-600 hover:bg-gray-50 dark:hover:bg-white/5"
                                             )}
                                         >
@@ -260,9 +260,9 @@ export default function LessonView({
                                                 className={cn(
                                                     "w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 z-10 transition-colors border-2",
                                                     isActive
-                                                        ? "bg-primary border-primary text-white"
+                                                        ? "bg-gold border-amber-500 text-white shadow-sm shadow-amber-500/30"
                                                         : itemCompleted
-                                                          ? "bg-white dark:bg-[#151925] border-primary text-primary"
+                                                          ? "bg-white dark:bg-[#151925] border-gold text-gold"
                                                           : "bg-white dark:bg-[#151925] border-dashboard text-gray-300"
                                                 )}
                                             >

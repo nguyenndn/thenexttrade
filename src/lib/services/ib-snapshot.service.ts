@@ -126,7 +126,7 @@ export async function generateActivitySnapshots() {
                     }),
                 },
                 _count: true,
-                _sum: { lotSize: true, pnl: true },
+                _sum: { lotSize: true, pnl: true, commission: true, swap: true },
             }),
             prisma.journalEntry.findFirst({
                 where: {
@@ -143,7 +143,10 @@ export async function generateActivitySnapshots() {
 
         const tradeCount = tradeStats._count;
         const closedLotVolume = tradeStats._sum.lotSize || 0;
-        const netPnl = tradeStats._sum.pnl || 0;
+        const netPnl =
+            (tradeStats._sum.pnl || 0) +
+            (tradeStats._sum.commission || 0) +
+            (tradeStats._sum.swap || 0);
 
         // Estimate IB revenue using symbol rates and CONFIRMED IB attribution (Doc #3)
         let estimatedIbRevenue = 0;

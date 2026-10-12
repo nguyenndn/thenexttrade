@@ -71,6 +71,8 @@ function ToggleSwitch({
     return (
         <button
             type="button"
+            role="switch"
+            aria-checked={enabled}
             onClick={disabled ? undefined : onToggle}
             disabled={disabled}
             aria-label={enabled ? "Disable" : "Enable"}
@@ -112,7 +114,7 @@ function PrivacyToggleCard({
     return (
         <div
             className={`
-      flex items-center justify-between gap-4 p-4 rounded-xl border transition-all
+      flex items-center justify-between gap-4 p-4 rounded-lg border transition-all
       ${
           enabled
               ? "bg-white dark:bg-[#0B0E14] border-dashboard"
@@ -248,11 +250,11 @@ export default function ProfileClient({
     return (
         <div className="space-y-6">
             {/* Profile Settings Card (Header + Toggle + Headline) */}
-            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#0B0E14] rounded-lg border border-dashboard shadow-sm overflow-hidden">
                 {/* Header + Toggle Row */}
                 <div className="p-5 flex items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                             <Globe size={24} className="text-primary" />
                         </div>
                         <div>
@@ -298,18 +300,20 @@ export default function ProfileClient({
                                                         />
                                                         Public Page
                                                     </Link>
-                                                    <button
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
                                                         type="button"
                                                         onClick={() =>
                                                             setIsPreviewOpen(
                                                                 true
                                                             )
                                                         }
-                                                        className="inline-flex items-center gap-1 text-xs text-amber-500 hover:underline font-bold"
+                                                        className="inline-flex items-center gap-1 text-xs text-amber-500 hover:underline font-bold h-auto p-0 hover:bg-transparent"
                                                     >
                                                         <Eye size={11} />
                                                         Live Preview Card
-                                                    </button>
+                                                    </Button>
                                                 </span>
                                             )}
                                     </>
@@ -366,7 +370,6 @@ export default function ProfileClient({
                             </span>
                         </div>
                         <PremiumInput
-                            placeholder='e.g., "Swing Trader | London Session Specialist"'
                             value={settings.profileHeadline || ""}
                             onChange={(e) => {
                                 setSettings((prev) => ({
@@ -386,7 +389,7 @@ export default function ProfileClient({
 
             {/* Privacy Controls (only when public) */}
             {settings.isPublicProfile && (
-                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm overflow-hidden">
+                <div className="bg-white dark:bg-[#0B0E14] rounded-lg border border-dashboard shadow-sm overflow-hidden">
                     {/* Section Header */}
                     <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -473,20 +476,22 @@ export default function ProfileClient({
                                             currentActivePreset === preset;
 
                                         return (
-                                            <button
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
                                                 key={preset}
                                                 type="button"
                                                 onClick={() =>
                                                     handlePresetSelect(preset)
                                                 }
-                                                className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all ${
+                                                className={`px-3 py-2 h-auto rounded-lg text-xs font-bold border transition-all ${
                                                     isSelected
-                                                        ? "bg-primary/10 border-primary text-primary shadow-sm"
-                                                        : "bg-white dark:bg-[#151925] border-dashboard hover:border-gray-400 text-gray-600 dark:text-gray-300"
+                                                        ? "bg-amber-500/10 border-amber-500 text-gold dark:text-amber-400 font-bold shadow-sm shadow-amber-500/10 hover:bg-amber-500/15"
+                                                        : "bg-white dark:bg-[#151925] border-dashboard hover:border-amber-400/40 text-gray-600 dark:text-gray-300"
                                                 }`}
                                             >
                                                 {labelMap[preset]}
-                                            </button>
+                                            </Button>
                                         );
                                     });
                                 })()}
@@ -546,7 +551,7 @@ export default function ProfileClient({
 
             {/* Data Privacy Controls (only when public) */}
             {settings.isPublicProfile && isPrivacyPresetsEnabled() && (
-                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm overflow-hidden">
+                <div className="bg-white dark:bg-[#0B0E14] rounded-lg border border-dashboard shadow-sm overflow-hidden">
                     <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className="w-9 h-9 rounded-lg bg-amber-500/10 dark:bg-amber-500/10 flex items-center justify-center">
@@ -623,7 +628,7 @@ export default function ProfileClient({
 
             {/* Save Button when profile is private (no Privacy Controls card shown) */}
             {!settings.isPublicProfile && (
-                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm overflow-hidden">
+                <div className="bg-white dark:bg-[#0B0E14] rounded-lg border border-dashboard shadow-sm overflow-hidden">
                     <div className="px-5 py-4 flex justify-end">
                         <Button
                             type="button"
@@ -644,7 +649,7 @@ export default function ProfileClient({
             )}
 
             <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-                <DialogContent className="max-w-[490px] w-full p-0 overflow-hidden bg-white dark:bg-[#11141d] border-dashboard dark:border-white/[0.08] rounded-3xl shadow-2xl max-h-[94vh] flex flex-col">
+                <DialogContent className="max-w-[490px] w-full p-0 overflow-hidden bg-white dark:bg-[#11141d] border-dashboard dark:border-white/[0.08] rounded-2xl shadow-2xl max-h-[94vh] flex flex-col">
                     <div className="p-4 px-6 border-b border-dashboard dark:border-white/[0.08] flex-shrink-0">
                         <DialogHeader>
                             <DialogTitle className="text-base font-black text-gray-800 dark:text-white flex items-center gap-2">
@@ -681,12 +686,12 @@ export default function ProfileClient({
                                 badges: [
                                     {
                                         name: "Trader",
-                                        icon: "📈",
+                                        icon: "TrendingUp",
                                         earnedAt: new Date(),
                                     },
                                     {
                                         name: "Risk Manager",
-                                        icon: "🛡️",
+                                        icon: "ShieldCheck",
                                         earnedAt: new Date(),
                                     },
                                 ],

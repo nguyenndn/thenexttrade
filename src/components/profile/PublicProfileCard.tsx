@@ -5,17 +5,32 @@ import {
     Share2,
     Check,
     Shield,
+    ShieldCheck,
     Award,
     Brain,
     Clock,
     ArrowUpRight,
     Zap,
+    TrendingUp,
+    Star,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useRef, useCallback } from "react";
 import { format } from "date-fns";
 import type { PublicProfileData } from "@/lib/profile-queries";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
+
+const BADGE_ICON_MAP: Record<string, React.ElementType> = {
+    TrendingUp,
+    ShieldCheck,
+    Shield,
+    Star,
+    Award,
+    Flame,
+    Zap,
+};
 
 function useTilt() {
     const ref = useRef<HTMLDivElement>(null);
@@ -109,14 +124,14 @@ export function PublicProfileCard({
                 className="z-10 w-full max-w-[430px] transition-transform duration-200 ease-out will-change-transform"
                 style={{ transformStyle: "preserve-3d" }}
             >
-                <div className="rounded-3xl bg-gradient-to-br from-amber-500 via-yellow-300 to-orange-600 p-[2px] shadow-2xl shadow-amber-900/20">
-                    <div className="relative overflow-hidden rounded-[22px] border border-amber-100/80 bg-white dark:bg-card">
+                <div className="rounded-lg border border-amber-500/30 bg-white dark:bg-[#151925] shadow-xl shadow-amber-500/5">
+                    <div className="relative overflow-hidden rounded-lg bg-white dark:bg-[#151925]">
                         <div className="pointer-events-none absolute inset-0 z-10 bg-[linear-gradient(120deg,rgba(251,191,36,0.05),transparent_38%,rgba(255,255,255,0.18)_70%,transparent)] dark:bg-[linear-gradient(120deg,rgba(251,191,36,0.08),transparent_38%,rgba(255,255,255,0.04)_70%,transparent)]" />
 
                         <div className="relative z-20 flex items-center justify-between px-6 pt-5">
                             <div className="flex items-center gap-2">
                                 <Zap size={12} className="text-amber-600" />
-                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-800">
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-800 dark:text-amber-400">
                                     Trading Card
                                 </span>
                             </div>
@@ -125,8 +140,8 @@ export function PublicProfileCard({
 
                         <div className="relative z-20 px-6 pb-4 pt-5">
                             <div className="flex items-center gap-4">
-                                <div className="shrink-0 rounded-full bg-gradient-to-br from-amber-500 via-yellow-300 to-orange-600 p-[2px] shadow-lg shadow-amber-900/15">
-                                    <div className="h-16 w-16 overflow-hidden rounded-full bg-white p-[2px] dark:bg-card">
+                                <div className="shrink-0 rounded-full border border-amber-500/40 bg-amber-500/5 p-[2px] shadow-sm">
+                                    <div className="h-16 w-16 overflow-hidden rounded-full bg-white p-[2px] dark:bg-[#151925]">
                                         {profile.image ? (
                                             <Image
                                                 src={profile.image}
@@ -136,7 +151,7 @@ export function PublicProfileCard({
                                                 className="h-full w-full rounded-full object-cover"
                                             />
                                         ) : (
-                                            <div className="flex h-full w-full items-center justify-center rounded-full bg-amber-50 text-2xl font-black text-amber-300">
+                                            <div className="flex h-full w-full items-center justify-center rounded-full bg-amber-50 dark:bg-amber-500/10 text-2xl font-black text-amber-500">
                                                 {profile.name
                                                     .charAt(0)
                                                     .toUpperCase()}
@@ -146,14 +161,14 @@ export function PublicProfileCard({
                                 </div>
 
                                 <div className="min-w-0 flex-1">
-                                    <h1 className="truncate text-2xl font-black leading-none tracking-tight text-slate-800">
+                                    <h1 className="truncate text-2xl font-black leading-none tracking-tight text-slate-800 dark:text-white">
                                         {profile.name}
                                     </h1>
                                     <div className="mt-1.5 flex items-center gap-2">
-                                        <span className="text-sm font-medium text-slate-600">
+                                        <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
                                             @{profile.username}
                                         </span>
-                                        <span className="rounded-full bg-gradient-to-r from-amber-500 to-orange-600 px-2 py-0.5 text-[9px] font-black tracking-wide text-white shadow-sm shadow-amber-700/20">
+                                        <span className="rounded-full bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[9px] font-black tracking-wide text-amber-600 dark:text-amber-400">
                                             LV {profile.level}
                                         </span>
                                         {profile.streak >= 3 && (
@@ -172,7 +187,7 @@ export function PublicProfileCard({
                                 </p>
                             )}
 
-                            <div className="mt-4 rounded-xl border border-amber-100 bg-amber-50/55 px-3 py-2.5">
+                            <div className="mt-4 rounded-lg border border-amber-100 bg-amber-50/55 px-3 py-2.5">
                                 <div className="flex items-center justify-between gap-3">
                                     <span className="text-[9px] font-black uppercase tracking-[0.18em] text-amber-800">
                                         Public data window
@@ -195,7 +210,7 @@ export function PublicProfileCard({
                             </div>
                         </div>
 
-                        <div className="mx-6 h-[1px] bg-gradient-to-r from-amber-500 via-yellow-300 to-orange-600 opacity-40" />
+                        <div className="mx-6 h-[1px] bg-gradient-to-r from-transparent via-amber-500/25 to-transparent" />
 
                         <div className="relative z-20 px-6 py-5">
                             <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -341,18 +356,25 @@ export function PublicProfileCard({
                                             </span>
                                         </div>
                                         <div className="flex flex-wrap gap-1.5">
-                                            {profile.badges.map((badge, i) => (
-                                                <span
-                                                    key={i}
-                                                    className="inline-flex items-center gap-1 rounded-lg border border-amber-100 bg-amber-50/70 px-2.5 py-1.5 text-[11px] font-bold text-slate-600"
-                                                    title={`${badge.name} - ${format(new Date(badge.earnedAt), "MMM d, yyyy")}`}
-                                                >
-                                                    <span className="text-sm">
-                                                        {badge.icon}
+                                            {profile.badges.map((badge, i) => {
+                                                const BadgeIcon = BADGE_ICON_MAP[badge.icon];
+                                                return (
+                                                    <span
+                                                        key={i}
+                                                        className="inline-flex items-center gap-1.5 rounded-lg border border-amber-100 bg-amber-50/70 px-2.5 py-1.5 text-[11px] font-bold text-slate-600"
+                                                        title={`${badge.name} - ${format(new Date(badge.earnedAt), "MMM d, yyyy")}`}
+                                                    >
+                                                        {BadgeIcon ? (
+                                                            <BadgeIcon size={13} className="text-amber-600 shrink-0" />
+                                                        ) : (
+                                                            <span className="text-sm">
+                                                                {badge.icon}
+                                                            </span>
+                                                        )}
+                                                        {badge.name}
                                                     </span>
-                                                    {badge.name}
-                                                </span>
-                                            ))}
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </>
@@ -410,7 +432,7 @@ export function PublicProfileCard({
                                                 Know Your Style →
                                             </Link>
                                         </div>
-                                        <div className="flex items-center justify-between gap-2 rounded-xl border border-amber-500/30 bg-gradient-to-r from-amber-500/[0.08] to-yellow-500/[0.04] px-3.5 py-2.5 dark:border-amber-500/20">
+                                        <div className="flex items-center justify-between gap-2 rounded-lg border border-amber-500/20 bg-amber-500/[0.04] px-3.5 py-2.5 dark:border-amber-500/20">
                                             <div className="flex items-center gap-2.5 min-w-0">
                                                 <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gold text-white shadow-sm shadow-gold/30">
                                                     <Award size={15} />
@@ -463,10 +485,13 @@ export function PublicProfileCard({
             <div className="relative z-20 mt-8 text-center">
                 <Link
                     href={`/auth/signup?ref=${profile.username}`}
-                    className="inline-flex items-center gap-2 rounded-xl bg-gold hover:bg-amber-600 px-6 py-3 text-sm font-black text-white shadow-lg shadow-gold/25 transition-all hover:scale-[1.03] active:scale-[0.97] border-0"
+                    className={cn(
+                        buttonVariants({ variant: "gold", size: "smd" }),
+                        "gap-2 font-black shadow-lg shadow-gold/25 transition-all hover:scale-[1.03] active:scale-[0.97]"
+                    )}
                 >
                     Join TheNextTrade
-                    <ArrowUpRight size={16} />
+                    <ArrowUpRight size={14} />
                 </Link>
                 <p className="mt-2 text-sm font-medium text-amber-900/70 dark:text-amber-200/70">
                     Track, analyze, and improve your trading

@@ -77,7 +77,7 @@ export function TradeJournalPreviewSection({
                     align="center"
                     title="From raw MT5 execution to funded consistency"
                     highlight="funded consistency"
-                    description="Connect your broker in 60 seconds. Let the algorithm uncover where you bleed profit."
+                    description="Zero manual journaling. Connect your MT5 account and let the algorithm isolate your costliest trading leaks."
                     className="mb-8 sm:mb-10"
                 />
 
@@ -100,15 +100,15 @@ export function TradeJournalPreviewSection({
                                         key={step.id}
                                         type="button"
                                         onClick={() => setActiveStep(step.id)}
-                                        className={`group w-full flex items-start gap-3.5 rounded-2xl p-3.5 sm:p-4 text-left transition-all duration-300 relative border ${
+                                        className={`group w-full flex items-start gap-3.5 rounded-lg p-3.5 sm:p-4 text-left transition-all duration-300 relative border ${
                                             isActive
                                                 ? "border-gold bg-white dark:bg-white/[0.05] shadow-[0_10px_24px_rgba(229,165,10,0.14)] ring-1 ring-gold/40"
-                                                : "border-gray-200/80 bg-white/70 dark:border-white/10 dark:bg-white/[0.02] hover:border-gold/30 hover:bg-white dark:hover:bg-white/[0.04]"
+                                                : "border-gray-200 bg-white/70 dark:border-white/10 dark:bg-white/[0.02] hover:border-gold/30 hover:bg-white dark:hover:bg-white/[0.04]"
                                         }`}
                                     >
                                         {/* Icon Container */}
                                         <div
-                                            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all duration-300 ${
+                                            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-all duration-300 ${
                                                 isActive
                                                     ? "bg-gold text-white shadow-md shadow-gold/20 scale-105"
                                                     : "bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 group-hover:text-gold group-hover:bg-gold/10"
@@ -171,12 +171,12 @@ export function TradeJournalPreviewSection({
                                 }
                                 className="w-full sm:flex-1 group"
                             >
-                                <Button className="w-full min-h-12 px-4 sm:px-6 rounded-xl bg-gold hover:bg-amber-600 text-white font-extrabold text-sm shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap">
+                                <Button size="smd" className="w-full rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap">
                                     {isLoggedIn ? (
                                         <>
                                             Go to Dashboard{" "}
                                             <LayoutDashboard
-                                                size={16}
+                                                size={14}
                                                 className="text-yellow-200 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300"
                                             />
                                         </>
@@ -184,7 +184,7 @@ export function TradeJournalPreviewSection({
                                         <>
                                             Start Free Journal{" "}
                                             <Zap
-                                                size={16}
+                                                size={14}
                                                 className="text-yellow-200 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300"
                                             />
                                         </>
@@ -197,11 +197,12 @@ export function TradeJournalPreviewSection({
                             >
                                 <Button
                                     variant="outline"
-                                    className="w-full min-h-12 px-4 sm:px-6 rounded-xl bg-white/90 dark:bg-white/[0.03] border border-gold/35 dark:border-gold/25 hover:border-gold hover:bg-gold/[0.08] dark:hover:bg-gold/[0.06] text-gray-800 dark:text-gray-200 hover:text-gray-950 dark:hover:text-white font-extrabold text-sm shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
+                                    size="smd"
+                                    className="w-full rounded-lg bg-white/90 dark:bg-white/[0.03] border border-gold/35 dark:border-gold/25 hover:border-gold hover:bg-gold/[0.08] dark:hover:bg-gold/[0.06] text-gray-800 dark:text-gray-200 hover:text-gray-950 dark:hover:text-white font-extrabold shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
                                 >
                                     View Setup Path{" "}
                                     <ArrowRight
-                                        size={16}
+                                        size={14}
                                         className="group-hover:translate-x-1 transition-transform duration-300"
                                     />
                                 </Button>
@@ -211,13 +212,13 @@ export function TradeJournalPreviewSection({
 
                     {/* Right Column: Interactive Live Cockpit Console (Equal Height with Left Column) */}
                     <div className="lg:col-span-7 flex flex-col h-full">
-                        <div className="relative p-3.5 sm:p-4 rounded-3xl border border-gold/25 dark:border-gold/15 bg-white/90 dark:bg-[#111318] shadow-[0_20px_50px_rgba(15,23,42,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.45)] backdrop-blur-md overflow-hidden flex flex-col justify-between h-full">
+                        <div className="relative p-3.5 sm:p-4 rounded-lg border border-gold/25 dark:border-gold/15 bg-white/90 dark:bg-[#111318] shadow-[0_20px_50px_rgba(15,23,42,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.45)] backdrop-blur-md overflow-hidden flex flex-col justify-between h-full">
                             {/* Subtle Ambient Decorative Glows */}
                             <div className="absolute -top-12 -left-12 w-48 h-48 bg-gold/15 dark:bg-gold/5 rounded-full blur-3xl pointer-events-none" />
                             <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
                             {/* App Window Header Bar */}
-                            <div className="flex items-center justify-between gap-1.5 sm:gap-2 px-1.5 py-1 border-b border-gray-200/80 dark:border-white/10 mb-2.5 shrink-0">
+                            <div className="flex items-center justify-between gap-1.5 sm:gap-2 px-1.5 py-1 border-b border-gray-200 dark:border-white/10 mb-2.5 shrink-0">
                                 <div className="flex items-center gap-1.5 shrink-0">
                                     <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
                                     <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
@@ -231,7 +232,7 @@ export function TradeJournalPreviewSection({
                                             key={step.id}
                                             type="button"
                                             onClick={() => setActiveStep(step.id)}
-                                            className={`text-[9px] sm:text-[10px] font-bold px-2 sm:px-2.5 py-1 rounded-md transition-all whitespace-nowrap ${
+                                            className={`text-[9px] sm:text-[10px] font-bold px-2 sm:px-2.5 py-1 rounded-lg transition-all whitespace-nowrap ${
                                                 activeStep === step.id
                                                     ? "bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm border border-gold/30"
                                                     : "text-gray-500 hover:text-gray-800 dark:hover:text-gray-200"
@@ -243,14 +244,18 @@ export function TradeJournalPreviewSection({
                                     ))}
                                 </div>
 
-                                <div className="flex items-center gap-1 text-[9px] sm:text-[10px] font-bold text-emerald-600 dark:text-emerald-400 shrink-0">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                    <span className="hidden sm:inline">LIVE DATA</span>
+                                {/* Labelled PREVIEW, not LIVE DATA. Every figure in
+                                    the panel below is a static mock — calling it live
+                                    is a claim we cannot back, and the traders who
+                                    notice are the ones we most want to keep. */}
+                                <div className="flex items-center gap-1 text-[9px] sm:text-[10px] font-bold text-amber-600 dark:text-gold shrink-0">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                                    <span className="hidden sm:inline">PREVIEW</span>
                                 </div>
                             </div>
 
-                            {/* Interactive Screens Body */}
-                            <div className="flex-1 flex flex-col justify-between overflow-hidden min-h-[220px]">
+                            {/* Interactive Screens Body - Fixed height ensures no tab-switching layout jump */}
+                            <div className="w-full h-[265px] sm:h-[275px] overflow-hidden">
                                 {activeStep === 0 && <PreviewConnectView />}
                                 {activeStep === 1 && <PreviewAnalyzeView />}
                                 {activeStep === 2 && <PreviewImproveView />}

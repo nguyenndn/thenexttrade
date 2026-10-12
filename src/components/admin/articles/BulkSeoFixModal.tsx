@@ -203,7 +203,7 @@ export function BulkSeoFixModal({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 w-full max-w-4xl max-h-[85vh] flex flex-col shadow-xl"
+                className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 w-full max-w-4xl max-h-[85vh] flex flex-col shadow-xl"
             >
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10">
@@ -273,7 +273,7 @@ export function BulkSeoFixModal({
                             {suggestions.map((s) => (
                                 <div
                                     key={s.articleId}
-                                    className={`rounded-xl border p-4 transition-colors ${
+                                    className={`rounded-lg border p-4 transition-colors ${
                                         selected.has(s.articleId)
                                             ? "border-primary/30 bg-primary/5"
                                             : "border-gray-200 dark:border-white/10 "

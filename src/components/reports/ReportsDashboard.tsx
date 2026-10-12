@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { format, startOfMonth, endOfMonth, subMonths } from "date-fns";
+import { format, startOfMonth, endOfMonth, subMonths, isSameDay } from "date-fns";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import {
     FileText,
     Download,
@@ -307,11 +308,11 @@ export function ReportsDashboard() {
                             key={report.id}
                             onClick={() => handleSelectType(report.id)}
                             className={`
-                  relative text-left p-3 sm:p-4 lg:p-3 h-full min-h-[120px] rounded-xl border transition-all duration-300 group flex flex-col items-start justify-start whitespace-normal hover:bg-white dark:hover:bg-[#1E2028] font-normal overflow-hidden
+                  relative text-left p-3 sm:p-4 lg:p-3 h-full min-h-[120px] rounded-lg border transition-all duration-300 group flex flex-col items-start justify-start whitespace-normal hover:bg-white dark:hover:bg-[#1E2028] font-normal overflow-hidden
                   ${
                       isSelected
-                          ? "border-primary bg-primary/5 shadow-sm hover:bg-primary/5"
-                          : "border-dashboard bg-white dark:bg-[#1E2028] hover:border-primary/50 hover:shadow-sm"
+                          ? "border-amber-500/50 bg-amber-500/[0.04] shadow-sm hover:bg-amber-500/[0.06]"
+                          : "border-dashboard bg-white dark:bg-[#1E2028] hover:border-amber-500/40 hover:shadow-sm"
                   }
                 `}
                         >
@@ -321,8 +322,8 @@ export function ReportsDashboard() {
                       p-2 rounded-lg transition-all duration-300 shadow-sm
                       ${
                           isSelected
-                              ? "bg-primary text-white"
-                              : "bg-gray-50 dark:bg-white/5 text-gray-600 group-hover:bg-primary/10 group-hover:text-primary"
+                              ? "bg-gold text-white"
+                              : "bg-gray-50 dark:bg-white/5 text-gray-600 group-hover:bg-amber-500/10 group-hover:text-gold"
                       }
                     `}
                                 >
@@ -342,7 +343,7 @@ export function ReportsDashboard() {
                                 ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
                                 : report.format === "json"
                                   ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
-                                  : "bg-primary/10 text-primary dark:text-primary border-primary/20"
+                                  : "bg-amber-500/10 text-gold border-amber-500/20"
                       }
                     `}
                                 >
@@ -364,7 +365,7 @@ export function ReportsDashboard() {
             {isReviewType && (
                 <div className="animate-in fade-in duration-500 space-y-4">
                     {/* Generate Report Button */}
-                    <div className="flex items-center justify-between bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-4 shadow-sm">
+                    <div className="flex items-center justify-between bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard p-4 shadow-sm">
                         <div>
                             <p className="text-sm font-bold text-gray-700 dark:text-white">
                                 {selectedType === "weekly-review"
@@ -395,7 +396,7 @@ export function ReportsDashboard() {
                     {/* No-data inline notice */}
                     {lastGenerateResult?.code === "NO_TRADES_THIS_WEEK" &&
                         selectedType === "weekly-review" && (
-                            <div className="flex items-start gap-3 bg-amber-50 dark:bg-amber-900/15 border border-amber-200 dark:border-amber-500/20 rounded-xl p-4">
+                            <div className="flex items-start gap-3 bg-amber-50 dark:bg-amber-900/15 border border-amber-200 dark:border-amber-500/20 rounded-lg p-4">
                                 <AlertTriangle
                                     size={18}
                                     className="text-amber-500 mt-0.5 shrink-0"
@@ -428,9 +429,9 @@ export function ReportsDashboard() {
 
                     {/* Mission reward panel */}
                     {lastGenerateResult?.missionReward?.claimable && (
-                        <div className="flex items-center gap-3 bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-xl p-4">
-                            <div className="p-2 bg-primary/10 rounded-lg">
-                                <Trophy size={18} className="text-primary" />
+                        <div className="flex items-center gap-3 bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
+                            <div className="p-2 bg-amber-500/10 rounded-lg">
+                                <Trophy size={18} className="text-amber-500" />
                             </div>
                             <div className="flex-1">
                                 <p className="text-sm font-bold text-gray-800 dark:text-white">
@@ -451,8 +452,8 @@ export function ReportsDashboard() {
                         </div>
                     )}
                     {reviewLoading ? (
-                        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-12 text-center shadow-sm">
-                            <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4" />
+                        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard p-12 text-center shadow-sm">
+                            <div className="animate-spin w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full mx-auto mb-4" />
                             <p className="text-sm text-gray-500">
                                 Loading reports...
                             </p>
@@ -474,9 +475,9 @@ export function ReportsDashboard() {
             {/* Export Controls (for PDF/CSV types) */}
             {isExportType && (
                 <>
-                    <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow">
+                    <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow">
                         <h3 className="font-black text-gray-700 dark:text-white mb-6 flex items-center gap-3 text-lg tracking-tight">
-                            <div className="p-2 bg-primary/10 text-primary rounded-xl">
+                            <div className="p-2 bg-amber-500/10 text-amber-500 rounded-lg">
                                 <Calendar size={20} />
                             </div>
                             Configure Report Range
@@ -500,7 +501,7 @@ export function ReportsDashboard() {
                                                 start: new Date(e.target.value),
                                             })
                                         }
-                                        className="w-full rounded-xl border border-dashboard bg-white dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-bold text-gray-700 dark:text-white"
+                                        className="w-full h-11 rounded-lg border border-dashboard bg-white dark:bg-white/5 px-4 text-sm outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all font-bold text-gray-700 dark:text-white"
                                     />
                                 </div>
                                 <div>
@@ -519,7 +520,7 @@ export function ReportsDashboard() {
                                                 end: new Date(e.target.value),
                                             })
                                         }
-                                        className="w-full rounded-xl border border-dashboard bg-white dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-bold text-gray-700 dark:text-white"
+                                        className="w-full h-11 rounded-lg border border-dashboard bg-white dark:bg-white/5 px-4 text-sm outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all font-bold text-gray-700 dark:text-white"
                                     />
                                 </div>
                             </div>
@@ -528,7 +529,7 @@ export function ReportsDashboard() {
                                 <Button
                                     onClick={handleGenerate}
                                     isLoading={isGenerating}
-                                    className="w-full xl:w-auto"
+                                    className="w-full xl:w-auto h-11 px-6 rounded-lg font-bold"
                                 >
                                     {!isGenerating && (
                                         <Download size={20} strokeWidth={2.5} />
@@ -585,18 +586,29 @@ export function ReportsDashboard() {
                                             end: now,
                                         }),
                                     },
-                                ].map((preset) => (
-                                    <Button
-                                        variant="outline"
-                                        key={preset.label}
-                                        onClick={() =>
-                                            setDateRange(preset.fn())
-                                        }
-                                        className="px-4 py-2 text-[11px] font-black uppercase tracking-wider bg-transparent border-2 border-dashboard/80 dark:border-slate-800 hover:border-primary/60 dark:hover:border-primary/50 text-slate-500 dark:text-slate-400 hover:text-primary hover:dark:text-primary hover:bg-primary/5 dark:hover:bg-primary/10 rounded-xl transition-all duration-300"
-                                    >
-                                        {preset.label}
-                                    </Button>
-                                ))}
+                                ].map((preset) => {
+                                    const presetRange = preset.fn();
+                                    const isActive =
+                                        isSameDay(dateRange.start, presetRange.start) &&
+                                        isSameDay(dateRange.end, presetRange.end);
+                                    return (
+                                        <button
+                                            type="button"
+                                            key={preset.label}
+                                            onClick={() =>
+                                                setDateRange(presetRange)
+                                            }
+                                            className={cn(
+                                                "px-4 py-2 text-[11px] font-black uppercase tracking-wider rounded-lg border-2 transition-all duration-200 active:scale-95 cursor-pointer",
+                                                isActive
+                                                    ? "border-amber-500 bg-amber-500/10 text-amber-500 dark:border-amber-400 dark:text-amber-400 dark:bg-amber-500/15 shadow-sm shadow-amber-500/10"
+                                                    : "border-dashboard/80 dark:border-slate-800 bg-transparent text-slate-500 dark:text-slate-400 hover:border-amber-500 hover:text-amber-500 hover:bg-amber-500/5 dark:hover:border-amber-400 dark:hover:text-amber-400 dark:hover:bg-amber-500/10"
+                                            )}
+                                        >
+                                            {preset.label}
+                                        </button>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
@@ -613,7 +625,7 @@ export function ReportsDashboard() {
                     {csvPreview &&
                         (selectedType === "trades" ||
                             selectedType === "tax") && (
-                            <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-xl border border-dashboard shadow-sm animate-in fade-in duration-500">
+                            <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-lg border border-dashboard shadow-sm animate-in fade-in duration-500">
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                                     <div>
                                         <h3 className="font-black text-gray-700 dark:text-white text-lg tracking-tight">

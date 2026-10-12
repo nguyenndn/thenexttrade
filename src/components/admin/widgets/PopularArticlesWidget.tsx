@@ -31,7 +31,7 @@ export function PopularArticlesWidget({ articles }: { articles: Article[] }) {
     const maxViews = Math.max(...articles.map((a) => a.views), 1);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
             <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
                 <TrendingUp
                     className="w-5 h-5 text-emerald-500"
@@ -53,7 +53,7 @@ export function PopularArticlesWidget({ articles }: { articles: Article[] }) {
                         >
                             <Link
                                 href={`/admin/articles/${article.id}/edit`}
-                                className="block p-3 rounded-xl border border-gray-200 dark:border-white/10 hover:border-emerald-500/30 hover:bg-emerald-50/5 transition-all group"
+                                className="block p-3 rounded-lg border border-gray-200 dark:border-white/10 hover:border-emerald-500/30 hover:bg-emerald-50/5 transition-all group"
                             >
                                 <div className="flex items-start justify-between gap-2">
                                     <div className="font-medium text-gray-800 dark:text-gray-200 line-clamp-2 text-sm group-hover:text-emerald-500 transition-colors">
@@ -77,7 +77,7 @@ export function PopularArticlesWidget({ articles }: { articles: Article[] }) {
                                         className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full"
                                     />
                                 </div>
-                                <div className="mt-2 text-xs text-gray-600 dark:text-gray-600">
+                                <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
                                     by {article.author.name || "Unknown"}
                                 </div>
                             </Link>

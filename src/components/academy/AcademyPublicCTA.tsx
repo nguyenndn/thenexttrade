@@ -15,11 +15,12 @@ export function AcademyPublicCTA({
                 href="/dashboard/academy"
                 className={buttonVariants({
                     variant: "primary",
+                    size: "smd",
                     className:
-                        "px-8 py-3.5 rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white font-bold text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105 transition-all duration-300",
+                        "rounded-full bg-gold hover:bg-amber-600 text-white font-bold shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-105 transition-all duration-300",
                 })}
             >
-                <PlayCircle size={20} />
+                <PlayCircle size={15} />
                 Continue Learning
             </Link>
         );
@@ -30,11 +31,12 @@ export function AcademyPublicCTA({
             href="/auth/login"
             className={buttonVariants({
                 variant: "primary",
+                size: "smd",
                 className:
-                    "px-8 py-3.5 rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white font-bold text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105 transition-all duration-300",
+                    "rounded-full bg-gold hover:bg-amber-600 text-white font-bold shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-105 transition-all duration-300",
             })}
         >
-            <PlayCircle size={20} />
+            <PlayCircle size={15} />
             Explore the Curriculum
         </Link>
     );

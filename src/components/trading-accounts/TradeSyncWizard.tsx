@@ -306,7 +306,7 @@ export function TradeSyncWizard({
                                 <div
                                     onClick={() => setSyncMethod("EA_SYNC")}
                                     className={cn(
-                                        "relative rounded-xl border-2 p-5 cursor-pointer transition-all duration-200 group flex flex-col justify-between h-56",
+                                        "relative rounded-lg border-2 p-5 cursor-pointer transition-all duration-200 group flex flex-col justify-between h-56",
                                         syncMethod === "EA_SYNC"
                                             ? "border-amber-500 bg-amber-500/[0.03] dark:bg-amber-500/[0.05] shadow-lg shadow-amber-500/5"
                                             : "border-dashboard bg-transparent hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.01]"
@@ -357,7 +357,7 @@ export function TradeSyncWizard({
                                 <div
                                     onClick={() => setSyncMethod("MANUAL")}
                                     className={cn(
-                                        "relative rounded-xl border-2 p-5 cursor-pointer transition-all duration-200 group flex flex-col justify-between h-56",
+                                        "relative rounded-lg border-2 p-5 cursor-pointer transition-all duration-200 group flex flex-col justify-between h-56",
                                         syncMethod === "MANUAL"
                                             ? "border-amber-500 bg-amber-500/[0.03] dark:bg-amber-500/[0.05] shadow-lg shadow-amber-500/5"
                                             : "border-dashboard bg-transparent hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.01]"
@@ -410,7 +410,7 @@ export function TradeSyncWizard({
                     {step === 2 && (
                         <div className="space-y-4">
                             {isMobile && syncMethod === "EA_SYNC" && (
-                                <div className="p-4 rounded-xl border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 space-y-3">
+                                <div className="p-4 rounded-lg border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 space-y-3">
                                     <div className="flex gap-2.5 items-start">
                                         <Monitor size={18} className="mt-0.5 shrink-0 text-amber-500" />
                                         <div>
@@ -497,7 +497,7 @@ export function TradeSyncWizard({
                             )}
 
                             {/* API Key Panel */}
-                            <div className="rounded-xl border border-dashboard bg-gray-50/50 dark:bg-white/[0.02] p-4">
+                            <div className="rounded-lg border border-dashboard bg-gray-50/50 dark:bg-white/[0.02] p-4">
                                 <div className="flex items-center gap-2 mb-3">
                                     <Key size={16} className="text-amber-500" />
                                     <h3 className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
@@ -586,7 +586,7 @@ export function TradeSyncWizard({
                             </div>
 
                             {/* Account Reference Panel */}
-                            <div className="rounded-xl border border-dashboard p-4 bg-white dark:bg-white/[0.01]">
+                            <div className="rounded-lg border border-dashboard p-4 bg-white dark:bg-white/[0.01]">
                                 <div className="flex items-center justify-between mb-3">
                                     <div className="flex items-center gap-2">
                                         <Info
@@ -615,11 +615,12 @@ export function TradeSyncWizard({
                                         </div>
                                         <Button
                                             type="button"
-                                            variant="primary"
+                                            variant="gold"
+                                            size="smd"
                                             onClick={() => {
                                                 onOpenAddAccount?.(syncMethod);
                                             }}
-                                            className="w-full sm:w-auto h-11 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 border-none text-xs font-black text-white shadow-lg shadow-amber-500/20 active:scale-95 transition-all flex items-center justify-center mx-auto"
+                                            className="w-full sm:w-auto mx-auto"
                                         >
                                             <Plus
                                                 size={14}
@@ -658,7 +659,7 @@ export function TradeSyncWizard({
                     {step === 3 && (
                         <div className="space-y-4">
                             {isMobile && syncMethod === "EA_SYNC" && (
-                                <div className="p-4 rounded-xl border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 space-y-3">
+                                <div className="p-4 rounded-lg border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 space-y-3">
                                     <div className="flex gap-2.5 items-start">
                                         <Monitor size={18} className="mt-0.5 shrink-0 text-amber-500" />
                                         <div>
@@ -744,7 +745,7 @@ export function TradeSyncWizard({
                                 </div>
                             )}
 
-                            <div className="rounded-xl border border-dashboard bg-amber-500/[0.02] p-4 text-xs space-y-3">
+                            <div className="rounded-lg border border-dashboard bg-amber-500/[0.02] p-4 text-xs space-y-3">
                                 <h3 className="font-bold text-gray-800 dark:text-white flex items-center gap-2">
                                     <CheckCircle2 className="w-4 h-4 text-amber-500" />
                                     Configure MT5 allowed URLs (Crucial Step)
@@ -784,7 +785,7 @@ export function TradeSyncWizard({
                             </div>
 
                             {/* Confirmation Checkbox */}
-                            <label className="flex items-start gap-3 p-4 rounded-xl border border-primary/20 bg-primary/[0.02] cursor-pointer group hover:bg-primary/[0.04] transition-colors">
+                            <label className="flex items-start gap-3 p-4 rounded-lg border border-primary/20 bg-primary/[0.02] cursor-pointer group hover:bg-primary/[0.04] transition-colors">
                                 <input
                                     type="checkbox"
                                     checked={isConfirmed}
@@ -823,7 +824,7 @@ export function TradeSyncWizard({
                             </div>
 
                             {/* Status Checks */}
-                            <div className="rounded-xl border border-dashboard p-4 space-y-3">
+                            <div className="rounded-lg border border-dashboard p-4 space-y-3">
                                 {isCheckingStatus ? (
                                     <div className="flex items-center justify-center py-8 gap-2">
                                         <Loader2
@@ -896,7 +897,7 @@ export function TradeSyncWizard({
 
                             {/* Result messages */}
                             {syncStatus && allChecksPassed && (
-                                <div className="flex items-start gap-2 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200/50 dark:border-emerald-500/20">
+                                <div className="flex items-start gap-2 p-4 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200/50 dark:border-emerald-500/20">
                                     <CheckCircle2
                                         size={16}
                                         className="text-emerald-500 shrink-0 mt-0.5"
@@ -916,7 +917,7 @@ export function TradeSyncWizard({
 
                             {syncStatus && !allChecksPassed && (
                                 <div className="space-y-3">
-                                    <div className="flex items-start gap-2 p-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/50 dark:border-amber-500/20">
+                                    <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200/50 dark:border-amber-500/20">
                                         <AlertCircle
                                             size={14}
                                             className="text-amber-500 shrink-0 mt-0.5"
@@ -944,8 +945,9 @@ export function TradeSyncWizard({
                     {step > 1 ? (
                         <Button
                             variant="outline"
+                            size="smd"
                             onClick={handleBack}
-                            className="rounded-xl h-11 px-5 flex items-center gap-1.5 font-bold"
+                            className="flex items-center gap-1.5 font-bold"
                         >
                             <ArrowLeft size={14} />
                             Back
@@ -953,8 +955,9 @@ export function TradeSyncWizard({
                     ) : (
                         <Button
                             variant="outline"
+                            size="smd"
                             onClick={onClose}
-                            className="rounded-xl h-11 px-5 font-bold"
+                            className="font-bold"
                         >
                             Cancel
                         </Button>
@@ -963,6 +966,8 @@ export function TradeSyncWizard({
                     {/* Next / Continue / Finish Button */}
                     {syncMethod === "MANUAL" && step === 1 ? (
                         <Button
+                            variant="gold"
+                            size="smd"
                             onClick={() => {
                                 onClose();
                                 if (onOpenAddAccount) {
@@ -971,20 +976,17 @@ export function TradeSyncWizard({
                                     window.location.href = "/dashboard/journal?action=log-trade";
                                 }
                             }}
-                            className="h-11 px-6 rounded-xl font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-500/20 flex items-center gap-2"
+                            className="font-bold flex items-center gap-2"
                         >
                             Continue <ArrowRight size={14} />
                         </Button>
                     ) : (
                         <Button
+                            variant="gold"
+                            size="smd"
                             disabled={step === 3 && !isConfirmed}
                             onClick={handleNext}
-                            className={cn(
-                                "h-11 px-6 rounded-xl font-bold flex items-center gap-2 transition-all",
-                                step === 3 && !isConfirmed
-                                    ? "opacity-50 cursor-not-allowed bg-gray-200 dark:bg-white/10 text-gray-400"
-                                    : "bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-500/20"
-                            )}
+                            className="font-bold flex items-center gap-2"
                         >
                             {step === 4
                                 ? allChecksPassed
@@ -993,7 +995,7 @@ export function TradeSyncWizard({
                                 : step === 3
                                   ? "Continue to Verify"
                                   : "Continue"}
-                            {step < 4 && <ArrowRight size={14} />}
+                            <ArrowRight size={14} />
                         </Button>
                     )}
                 </div>

@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Loader2, FileText, BookOpen, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 interface SearchResult {
     id: string;
@@ -40,8 +41,8 @@ export default function SearchClient() {
                 );
                 const data = await res.json();
                 setResults(data.data || []);
-            } catch (error) {
-                console.error("Search error", error);
+            } catch {
+                setResults([]);
             } finally {
                 setIsLoading(false);
             }
@@ -89,14 +90,14 @@ export default function SearchClient() {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div>
-                <h1 className="text-xl font-bold text-gray-700 dark:text-white">
-                    Search Results
-                </h1>
-                <p className="text-gray-600 text-sm mt-1">
-                    Found {results.length} results for "{query}"
-                </p>
-            </div>
+            <PageHeader
+                title="Search Results"
+                description={
+                    query
+                        ? `Found ${results.length} results for "${query}"`
+                        : "Search across platform guides and documentation"
+                }
+            />
 
             {/* Results Area */}
             <div className="space-y-4">
@@ -119,7 +120,7 @@ export default function SearchClient() {
                                     >
                                         <div className="flex items-start gap-4">
                                             <div
-                                                className={`p-3 rounded-xl shrink-0 ${
+                                                className={`p-3 rounded-lg shrink-0 ${
                                                     result.type === "article"
                                                         ? "bg-blue-50 text-blue-500 dark:bg-blue-500/10"
                                                         : "bg-purple-50 text-purple-500 dark:bg-purple-500/10"
@@ -183,7 +184,7 @@ export default function SearchClient() {
                                 <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-2">
                                     No results found
                                 </h3>
-                                <p className="text-gray-600">
+                                <p className="text-gray-600 dark:text-gray-400">
                                     Try adjusting your search terms or check for
                                     typos.
                                 </p>

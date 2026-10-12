@@ -140,7 +140,7 @@ export function SyncHealthBadge({
     return (
         <div
             className={cn(
-                "flex items-center gap-3 p-3 rounded-xl border transition-colors",
+                "flex items-center gap-3 p-3 rounded-lg border transition-colors",
                 config.bgColor,
                 config.borderColor
             )}
@@ -199,7 +199,7 @@ export function SyncHealthBadge({
                         className={cn(
                             "h-8 px-3 rounded-lg text-xs font-bold shrink-0 transition-all",
                             health.status === "no_trades_yet" &&
-                                "bg-primary text-white border-primary hover:bg-primary/90 hover:text-white",
+                                "bg-gold text-white border-amber-500 hover:bg-amber-600 hover:text-white",
                             health.status === "disconnected" &&
                                 "bg-red-500 text-white border-red-500 hover:bg-red-600 hover:text-white"
                         )}
@@ -213,7 +213,7 @@ export function SyncHealthBadge({
                     className={cn(
                         "h-8 px-3 rounded-lg text-xs font-bold shrink-0 transition-all",
                         health.status === "no_trades_yet" &&
-                            "bg-primary text-white border-primary hover:bg-primary/90 hover:text-white",
+                            "bg-gold text-white border-amber-500 hover:bg-amber-600 hover:text-white",
                         health.status === "disconnected" &&
                             "bg-red-500 text-white border-red-500 hover:bg-red-600 hover:text-white"
                     )}

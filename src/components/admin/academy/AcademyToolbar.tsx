@@ -68,7 +68,7 @@ export function AcademyToolbar({
                         onChange={(e) => onSearchChange(e.target.value)}
                         placeholder="Search levels, modules, lessons..."
                         aria-label="Search levels, modules, lessons"
-                        className="w-full pl-10 pr-10 py-2.5 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-800 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
+                        className="w-full pl-10 pr-10 py-2.5 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg text-sm text-gray-800 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
                     />
                     {searchQuery && (
                         <button
@@ -85,7 +85,7 @@ export function AcademyToolbar({
                 {/* Right controls: Filter, Sort, View, Add */}
                 <div className="flex flex-wrap items-center gap-2">
                     {/* Access Filter Pills */}
-                    <div className="flex items-center p-1 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl">
+                    <div className="flex items-center p-1 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg">
                         <button
                             type="button"
                             onClick={() => onAccessFilterChange("ALL")}
@@ -113,8 +113,8 @@ export function AcademyToolbar({
                             onClick={() => onAccessFilterChange("MEMBER")}
                             className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
                                 accessFilter === "MEMBER"
-                                    ? "bg-primary text-white shadow-sm shadow-primary/30"
-                                    : "text-gray-500 hover:text-primary dark:hover:text-primary"
+                                    ? "bg-gold text-white shadow-sm shadow-amber-500/30"
+                                    : "text-gray-500 hover:text-gold dark:hover:text-gold"
                             }`}
                         >
                             Member
@@ -127,7 +127,7 @@ export function AcademyToolbar({
                             <Button
                                 variant="outline"
                                 size="sm"
-                                className="h-10 px-3.5 gap-2 border-gray-200 dark:border-white/10 rounded-xl text-xs font-semibold text-gray-700 dark:text-gray-200"
+                                className="h-10 px-3.5 gap-2 border-gray-200 dark:border-white/10 rounded-lg text-xs font-semibold text-gray-700 dark:text-gray-200"
                                 aria-label="Sort options"
                             >
                                 <ArrowUpDown size={14} className="text-gray-500" />
@@ -137,7 +137,7 @@ export function AcademyToolbar({
                                 </span>
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-56 p-1 rounded-xl">
+                        <DropdownMenuContent align="end" className="w-56 p-1 rounded-lg">
                             {(Object.keys(SORT_LABELS) as SortOption[]).map(
                                 (option) => (
                                     <DropdownMenuItem
@@ -156,7 +156,7 @@ export function AcademyToolbar({
                     </DropdownMenu>
 
                     {/* View Mode Switcher */}
-                    <div className="flex items-center p-1 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl">
+                    <div className="flex items-center p-1 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg">
                         <button
                             type="button"
                             onClick={() => onViewModeChange("grid")}
@@ -201,7 +201,7 @@ export function AcademyToolbar({
                     {/* Add New Level Button */}
                     <Button
                         onClick={onAddNew}
-                        className="h-10 px-4 gap-2 font-bold shadow-md shadow-primary/20 rounded-xl"
+                        className="h-10 px-4 gap-2 font-bold shadow-md shadow-amber-500/20 rounded-lg"
                     >
                         <Plus size={16} strokeWidth={2.5} />
                         <span>Add Level</span>

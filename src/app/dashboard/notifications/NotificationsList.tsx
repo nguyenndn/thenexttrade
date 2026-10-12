@@ -2,11 +2,13 @@
 
 import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 import {
     getNotificationConfig,
     cleanNotificationTitle,
@@ -101,14 +103,16 @@ export function NotificationsList({ initialNotifications }: Props) {
                         {notifications.length} notification
                         {notifications.length !== 1 ? "s" : ""}
                     </p>
-                    <button
+                    <Button
+                        variant="outline"
+                        size="smd"
                         onClick={handleDeleteAll}
                         disabled={isPending}
-                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800/50 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="text-red-600 dark:text-red-400 border-red-200 dark:border-red-800/50 hover:bg-red-50 dark:hover:bg-red-900/20 font-bold gap-2"
                     >
-                        <Trash2 size={16} />
+                        <Trash2 size={14} />
                         {isPending ? "Deleting..." : "Clear All"}
-                    </button>
+                    </Button>
                 </div>
             )}
 
@@ -181,27 +185,42 @@ export function NotificationsList({ initialNotifications }: Props) {
                                             <div className="flex items-center gap-4 mt-2">
                                                 {n.link &&
                                                     n.link !== "/dashboard" && (
-                                                        <a
-                                                            href={n.link}
-                                                            onClick={(e) =>
-                                                                e.stopPropagation()
-                                                            }
-                                                            className="inline-flex items-center text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
-                                                        >
-                                                            Take Action →
-                                                        </a>
+                                                        n.link.startsWith("/") ? (
+                                                            <Link
+                                                                href={n.link}
+                                                                onClick={(e) =>
+                                                                    e.stopPropagation()
+                                                                }
+                                                                className="inline-flex items-center text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
+                                                            >
+                                                                Take Action →
+                                                            </Link>
+                                                        ) : (
+                                                            <a
+                                                                href={n.link}
+                                                                onClick={(e) =>
+                                                                    e.stopPropagation()
+                                                                }
+                                                                className="inline-flex items-center text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
+                                                            >
+                                                                Take Action →
+                                                            </a>
+                                                        )
                                                     )}
-                                                <button
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    type="button"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         toggleExpand(n.id);
                                                     }}
-                                                    className="text-xs font-semibold text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
+                                                    className="h-auto p-0 text-xs font-semibold text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 hover:bg-transparent"
                                                 >
                                                     {expandedIds[n.id]
                                                         ? "Show less"
                                                         : "Read more"}
-                                                </button>
+                                                </Button>
                                             </div>
                                         </div>
                                     </div>

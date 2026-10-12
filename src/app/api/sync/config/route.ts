@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
+import { normalizeSyncApiKey } from "@/lib/utils/api-key";
 
 const limiter = rateLimit({
     uniqueTokenPerInterval: 500,
@@ -14,9 +15,10 @@ const limiter = rateLimit({
  */
 export async function GET(request: NextRequest) {
     try {
-        const syncApiKey =
+        const rawApiKey =
             request.headers.get("X-Sync-Key") ||
             request.headers.get("X-API-Key");
+        const syncApiKey = normalizeSyncApiKey(rawApiKey);
         if (!syncApiKey) {
             return NextResponse.json(
                 { error: "Missing sync API key" },
@@ -34,7 +36,7 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const user = await prisma.user.findUnique({
+        let user = await prisma.user.findUnique({
             where: { syncApiKey },
             select: {
                 id: true,
@@ -49,6 +51,24 @@ export async function GET(request: NextRequest) {
                 },
             },
         });
+
+        if (!user && rawApiKey && rawApiKey.trim() !== syncApiKey) {
+            user = await prisma.user.findUnique({
+                where: { syncApiKey: rawApiKey.trim() },
+                select: {
+                    id: true,
+                    tradingAccounts: {
+                        select: {
+                            id: true,
+                            accountNumber: true,
+                            autoSync: true,
+                            syncOpenTrades: true,
+                            resyncRequest: true,
+                        },
+                    },
+                },
+            });
+        }
 
         if (!user) {
             return NextResponse.json(

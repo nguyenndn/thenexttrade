@@ -226,6 +226,8 @@ export async function getStrategyPerformance() {
                 strategy: true,
                 result: true,
                 pnl: true,
+                commission: true,
+                swap: true,
             },
         });
 
@@ -256,12 +258,15 @@ export async function getStrategyPerformance() {
             }
 
             const stats = statsMap.get(strategyName)!;
+            const netPnl =
+                (trade.pnl || 0) +
+                (trade.commission || 0) +
+                (trade.swap || 0);
             stats.totalTrades++;
-            stats.totalPnL += trade.pnl || 0;
+            stats.totalPnL += netPnl;
             if (trade.result === "WIN") stats.winCount++;
-            if ((trade.pnl || 0) > 0) stats.grossProfit += trade.pnl || 0;
-            if ((trade.pnl || 0) < 0)
-                stats.grossLoss += Math.abs(trade.pnl || 0);
+            if (netPnl > 0) stats.grossProfit += netPnl;
+            if (netPnl < 0) stats.grossLoss += Math.abs(netPnl);
         });
 
         // Fetch user strategies to map isPlaybook and color
@@ -281,9 +286,9 @@ export async function getStrategyPerformance() {
                         stat.totalTrades > 0
                             ? (stat.winCount / stat.totalTrades) * 100
                             : 0,
-                    totalPnL: stat.totalPnL,
+                    totalPnL: Number(stat.totalPnL.toFixed(2)),
                     avgPnL:
-                        stat.totalTrades > 0 ? stat.totalPnL / stat.totalTrades : 0,
+                        stat.totalTrades > 0 ? Number((stat.totalPnL / stat.totalTrades).toFixed(2)) : 0,
                     profitFactor:
                         stat.grossLoss > 0
                             ? stat.grossProfit / stat.grossLoss
@@ -299,7 +304,13 @@ export async function getStrategyPerformance() {
         // Calculate overall Playbook vs Discretionary comparison
         const allClosedTrades = await prisma.journalEntry.findMany({
             where: { userId: user.id, status: "CLOSED" },
-            select: { strategy: true, result: true, pnl: true },
+            select: {
+                strategy: true,
+                result: true,
+                pnl: true,
+                commission: true,
+                swap: true,
+            },
         });
 
         let pbTrades = 0, pbWins = 0, pbPnL = 0, pbGrossProfit = 0, pbGrossLoss = 0;
@@ -308,7 +319,10 @@ export async function getStrategyPerformance() {
         for (const t of allClosedTrades) {
             const meta = t.strategy ? strategyMetaMap.get(t.strategy) : null;
             const isPb = meta?.isPlaybook === true;
-            const pnl = t.pnl || 0;
+            const pnl =
+                (t.pnl || 0) +
+                (t.commission || 0) +
+                (t.swap || 0);
             const isWin = t.result === "WIN";
 
             if (isPb) {

@@ -156,7 +156,7 @@ export function UserProfileCard({ entry, onClose }: UserProfileCardProps) {
                         {stats.map((stat) => (
                             <div
                                 key={stat.label}
-                                className="flex flex-col items-center gap-1 p-3 rounded-xl bg-gray-50 dark:bg-white/5"
+                                className="flex flex-col items-center gap-1 p-3 rounded-lg bg-gray-50 dark:bg-white/5"
                             >
                                 <stat.icon size={16} className={stat.color} />
                                 <span className="text-sm font-black text-gray-700 dark:text-white tabular-nums">

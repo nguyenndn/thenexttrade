@@ -3,6 +3,7 @@
 import { useProAccess } from "./ProProvider";
 import { Crown, Lock, ArrowRight, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/Button";
 import type { ReactNode } from "react";
 
 interface ProGateProps {
@@ -58,7 +59,7 @@ function ProTeaser({ feature }: { feature?: string }) {
     const label = feature ? featureLabels[feature] || feature : "This feature";
 
     return (
-        <div className="relative overflow-hidden rounded-xl border border-dashboard bg-white dark:bg-[#1E2028]">
+        <div className="relative overflow-hidden rounded-lg border border-dashboard bg-white dark:bg-[#1E2028]">
             {/* Blurred background decoration */}
             <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-purple-500/5" />
             <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-amber-500/10 blur-3xl" />
@@ -78,11 +79,17 @@ function ProTeaser({ feature }: { feature?: string }) {
 
                 <Link
                     href="/dashboard/accounts?action=add&intent=unlock-pro"
-                    className="mt-6 inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-amber-500/20 transition-all hover:shadow-amber-500/40 hover:from-amber-600 hover:to-orange-700"
+                    className="mt-6 inline-block"
                 >
-                    <Crown className="h-4 w-4" />
-                    Unlock Pro Free
-                    <ArrowRight className="h-4 w-4" />
+                    <Button
+                        variant="primary"
+                        size="md"
+                        className="gap-2 font-bold"
+                    >
+                        <Crown className="h-4 w-4" />
+                        Unlock Pro Free
+                        <ArrowRight className="h-4 w-4" />
+                    </Button>
                 </Link>
 
                 <p className="mt-3 text-xs text-gray-400 dark:text-gray-500">

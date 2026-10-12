@@ -84,7 +84,7 @@ export function SyncHealthAccountRow({
 
     return (
         <div
-            className={`p-4 rounded-xl border transition-all ${getStatusBgColor(account.health.status)}`}
+            className={`p-4 rounded-lg border transition-all ${getStatusBgColor(account.health.status)}`}
         >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 {/* Info */}
