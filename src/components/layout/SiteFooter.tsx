@@ -329,14 +329,7 @@ export function SiteFooter() {
                                             Trading Systems
                                         </Link>
                                     </li>
-                                    <li>
-                                        <Link
-                                            href="/edge"
-                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
-                                        >
-                                            About Edge Gamification
-                                        </Link>
-                                    </li>
+
                                     <li>
                                         <Link
                                             href="/about"
@@ -385,14 +378,7 @@ export function SiteFooter() {
                                             Trading Systems
                                         </Link>
                                     </li>
-                                    <li>
-                                        <Link
-                                            href="/edge"
-                                            className="text-sm font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
-                                        >
-                                            About Edge Gamification
-                                        </Link>
-                                    </li>
+
                                     <li>
                                         <Link
                                             href="/about"

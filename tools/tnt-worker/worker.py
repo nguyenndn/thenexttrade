@@ -526,6 +526,45 @@ def close_mt5_terminal(cfg=None, target_pid=None):
         logger.info("🚪 MT5 terminal process closed cleanly.")
 
 
+def ensure_mt5_initialized(cfg):
+    """
+    Ensure MT5 terminal is running and connected via IPC (Warm Terminal).
+    If already connected, does nothing and returns (True, "Already connected") immediately.
+    """
+    if not MT5_AVAILABLE:
+        return False, "MetaTrader5 library is not installed or not supported on this OS."
+
+    try:
+        term_info = mt5.terminal_info()
+        if term_info is not None:
+            return True, "Already connected"
+    except Exception:
+        pass
+
+    mt5_custom_path = cfg.get("mt5_path")
+    init_kwargs = {}
+    if mt5_custom_path and os.path.exists(mt5_custom_path):
+        init_kwargs["path"] = mt5_custom_path
+
+    logger.info(f"🔌 Connecting to MT5 terminal (Path: '{mt5_custom_path or 'Default MetaTrader 5'}')...")
+    try:
+        if not mt5.initialize(**init_kwargs):
+            logger.warning("⚠️ Initial MT5 connection attempt failed. Cleaning up stale instance and retrying...")
+            close_mt5_terminal(cfg)
+            time.sleep(1.0)
+            if not mt5.initialize(**init_kwargs):
+                last_err = mt5.last_error()
+                err_msg = f"Failed to connect to MT5 terminal: {last_err}. Please ensure MetaTrader 5 is installed."
+                logger.error(f"❌ {err_msg}")
+                return False, err_msg
+        logger.info("✅ MT5 terminal connected via IPC (Warm state).")
+        return True, "OK"
+    except Exception as exc:
+        err_msg = f"Exception initializing MT5: {exc}"
+        logger.error(f"❌ {err_msg}")
+        return False, err_msg
+
+
 def check_mt5_live_connection(login_id, expected_server=None):
     """
     Verify that MT5 terminal is online and actively authenticated with the target broker server.
@@ -555,7 +594,7 @@ def check_mt5_live_connection(login_id, expected_server=None):
     return True, acc_info, term_info, "OK"
 
 
-def build_closed_positions(deals_records, open_tickets=None):
+def build_closed_positions(deals_records, open_tickets=None, deal_lookup_fn=None):
     """
     Reconstruct fully-CLOSED positions from raw MT5 history deals.
 
@@ -569,7 +608,18 @@ def build_closed_positions(deals_records, open_tickets=None):
         OPEN via positions_get, once CLOSED here) with the same ticket -> the
         backend deduped them and overwrote the OPEN row.
 
+    FALLBACK MECHANISM:
+      When a position was opened outside the requested date range (e.g. swing trade,
+      or rangeFrom set to last 7 days but position was opened weeks ago), ``in_deal``
+      is missing. This causes loss of entry commission (ECN brokers charge at DEAL_ENTRY_IN)
+      and loses the original open price / time.
+      If ``in_deal`` is None, the fallback queries the full position lifecycle via
+      ``deal_lookup_fn(pid)`` or ``mt5.history_deals_get(position=pid)`` to retrieve
+      the original opening deal and all related deals, ensuring 100% accurate commission,
+      swap, lots, and open time/price.
+
     ``open_tickets``: iterable of position tickets that are still OPEN.
+    ``deal_lookup_fn``: optional callable(position_id) returning iterable of deals for fallback.
     Returns a list of payload dicts (same shape the submit API expects).
     """
     if not deals_records:
@@ -611,6 +661,43 @@ def build_closed_positions(deals_records, open_tickets=None):
         if pid in open_tickets:
             # Still open (only a partial close so far) -> reported by positions_get.
             continue
+
+        # --- FALLBACK MECHANISM ---
+        # If in_deal is None, position was opened before the queried date range.
+        # Fallback to query all historical deals for this position ticket.
+        if in_deal is None:
+            full_pos_deals = None
+            if deal_lookup_fn is not None:
+                try:
+                    full_pos_deals = deal_lookup_fn(pid)
+                except Exception as exc:
+                    logger.warning(f"⚠️ Fallback deal lookup failed for position #{pid}: {exc}")
+            elif MT5_AVAILABLE:
+                try:
+                    full_pos_deals = mt5.history_deals_get(position=pid)
+                except Exception as exc:
+                    logger.debug(f"Direct mt5.history_deals_get(position={pid}) failed: {exc}")
+
+            if full_pos_deals:
+                # Merge any missing deals (e.g. DEAL_ENTRY_IN) into all_deals
+                existing_tickets = {getattr(x, "ticket", None) for x in rec["all_deals"]}
+                for fd in full_pos_deals:
+                    f_ticket = getattr(fd, "ticket", None)
+                    if f_ticket is None or f_ticket not in existing_tickets:
+                        rec["all_deals"].append(fd)
+                        if f_ticket is not None:
+                            existing_tickets.add(f_ticket)
+
+                    f_entry = int(getattr(fd, "entry", -1))
+                    if f_entry == 0:  # DEAL_ENTRY_IN
+                        if in_deal is None or int(getattr(fd, "time", 0)) <= int(getattr(in_deal, "time", 0)):
+                            in_deal = fd
+                            rec["in_deal"] = fd
+                        rec["in_vol"] += float(getattr(fd, "volume", 0.0))
+                    elif f_entry in (1, 2, 3):
+                        if out_deal is None or int(getattr(fd, "time", 0)) >= int(getattr(out_deal, "time", 0)):
+                            out_deal = fd
+                            rec["out_deal"] = fd
 
         symbol = out_deal.symbol
         if in_deal:
@@ -707,12 +794,6 @@ def process_job(cfg, job, on_progress=None):
         notify("Invalid account number format", status="FAILED")
         return
 
-    # Ensure any previous broken IPC state is reset
-    try:
-        mt5.shutdown()
-    except Exception:
-        pass
-
     # Ensure broker server files and network access points are ready in MT5 terminal.
     # (Pre-initialize pass — best effort on the configured exe's terminal dir.)
     notify(f"Verifying broker network for '{server}'...", status="PROCESSING")
@@ -726,30 +807,13 @@ def process_job(cfg, job, on_progress=None):
         report_fail(cfg, job_id, "SERVERS_DAT_PROVISION_FAILED", err_msg)
         return
 
-    # 1. Attach to MT5 terminal via clean IPC (do NOT pass credentials to initialize)
-    mt5_custom_path = cfg.get("mt5_path")
-    init_kwargs = {}
-    if mt5_custom_path and os.path.exists(mt5_custom_path):
-        init_kwargs["path"] = mt5_custom_path
-
+    # 1. Attach to MT5 terminal via clean IPC (Warm Terminal pattern)
     notify(f"Connecting to MT5 terminal...", status="PROCESSING")
-    logger.info(f"🔌 Connecting to MT5 terminal (Path: '{mt5_custom_path or 'Default MetaTrader 5'}')...")
-
-    if not mt5.initialize(**init_kwargs):
-        # Edge Case 2: Auto-recovery from zombied/hanging MT5 instance
-        logger.warning("⚠️ Initial MT5 connection attempt failed. Cleaning up stale instance and retrying...")
-        close_mt5_terminal(cfg)
-        time.sleep(1.5)
-        if not mt5.initialize(**init_kwargs):
-            last_err = mt5.last_error()
-            err_msg = f"Failed to connect to MT5 terminal: {last_err}. Please ensure MetaTrader 5 is installed and running."
-            logger.error(f"❌ {err_msg}")
-            notify("MT5 initialization failed", status="FAILED", details=err_msg)
-            report_fail(cfg, job_id, "MT5_INIT_FAILED", err_msg)
-            close_mt5_terminal(cfg)
-            return
-
-    logger.info("✅ MT5 terminal connected via IPC.")
+    ok, init_err = ensure_mt5_initialized(cfg)
+    if not ok:
+        notify("MT5 initialization failed", status="FAILED", details=init_err)
+        report_fail(cfg, job_id, "MT5_INIT_FAILED", init_err)
+        return
 
     # Edge Case 4: Track worker's specific MT5 PID to avoid killing Admin's other MT5 terminals
     worker_mt5_pid = None
@@ -815,20 +879,27 @@ def process_job(cfg, job, on_progress=None):
         is_ready = False
         account_info = None
 
-        # Give MT5 up to 10s to complete background login/handshake if terminal was just launched
-        for wait_i in range(10):
-            is_ready, account_info, term_info, reason = check_mt5_live_connection(login_id, server)
-            if is_ready:
-                logger.info(f"⚡ MT5 is already online and active on target account #{account_num} ({account_info.server}).")
-                break
-            if wait_i == 0 or wait_i % 3 == 0:
-                logger.info(f"⏳ {reason}. Waiting for MT5 network connection ({wait_i + 1}/10s)...")
-            time.sleep(1)
+        # Fast-check: if already connected to target account, confirm session in <= 1.5s
+        try:
+            curr_acc = mt5.account_info()
+            if curr_acc and getattr(curr_acc, "login", None) == login_id:
+                for wait_i in range(3):
+                    is_ready, account_info, term_info, reason = check_mt5_live_connection(login_id, server)
+                    if is_ready:
+                        logger.info(f"⚡ MT5 is already online and active on target account #{account_num} ({account_info.server}).")
+                        break
+                    time.sleep(0.5)
+            else:
+                # Terminal is on another account or unauthenticated; proceed immediately to login
+                is_ready = False
+        except Exception:
+            is_ready = False
 
-        # 3. If not yet online on the target account, perform explicit mt5.login
+        # 3. If not yet online on the target account, perform fast mt5.login
         if not is_ready:
             last_login_err = None
-            max_attempts = 5
+            max_attempts = 3
+            reason = "Login failed"
             for attempt in range(max_attempts):
                 # Edge Case 3: Check if user/admin cancelled sync on web dashboard mid-flight
                 if attempt > 0 and check_job_cancelled(cfg, job_id):
@@ -839,7 +910,8 @@ def process_job(cfg, job, on_progress=None):
                 notify(f"Logging into #{account_num} on '{server}' [Attempt {attempt + 1}/{max_attempts}]...", status="PROCESSING")
                 logger.info(f"🔐 [Attempt {attempt + 1}/{max_attempts}] Handshake with account #{account_num} on server '{server}'...")
                 try:
-                    login_ok = mt5.login(login=login_id, password=str(password), server=str(server), timeout=15000)
+                    # 6000ms timeout for warm MT5
+                    login_ok = mt5.login(login=login_id, password=str(password), server=str(server), timeout=6000)
                 except Exception as login_exc:
                     logger.warning(f"⚠️ Exception calling mt5.login: {login_exc}")
                     login_ok = False
@@ -848,7 +920,7 @@ def process_job(cfg, job, on_progress=None):
                     last_login_err = mt5.last_error()
                     err_code = last_login_err[0] if isinstance(last_login_err, tuple) else None
                     err_desc = str(last_login_err[1] if isinstance(last_login_err, tuple) and len(last_login_err) > 1 else last_login_err).lower()
-                    logger.warning(f"⚠️ mt5.login returned False [error: {last_login_err}]. Waiting for connection...")
+                    logger.warning(f"⚠️ mt5.login returned False [error: {last_login_err}].")
 
                     # Edge Case 1: Immediately detect invalid password/credentials vs network timeout
                     is_auth_error = (
@@ -889,9 +961,9 @@ def process_job(cfg, job, on_progress=None):
                         report_fail(cfg, job_id, "SERVERS_DAT_PROVISION_FAILED", server_err_msg)
                         return
 
-                # Wait up to 8 seconds for terminal to complete authentication after login call
-                for poll_i in range(8):
-                    time.sleep(1)
+                # Wait up to 3.5 seconds (7 x 0.5s) for terminal to complete handshake after login call
+                for poll_i in range(7):
+                    time.sleep(0.5)
                     is_ready, account_info, term_info, reason = check_mt5_live_connection(login_id, server)
                     if is_ready:
                         break
@@ -899,8 +971,8 @@ def process_job(cfg, job, on_progress=None):
                 if is_ready:
                     break
 
-                logger.warning(f"⚠️ Handshake attempt {attempt + 1}/{max_attempts} not authenticated: {reason}. Retrying in 2s...")
-                time.sleep(2)
+                logger.warning(f"⚠️ Handshake attempt {attempt + 1}/{max_attempts} not authenticated: {reason}. Retrying in 1s...")
+                time.sleep(1.0)
 
             if not is_ready:
                 err_code = last_login_err[0] if isinstance(last_login_err, tuple) else None
@@ -947,6 +1019,15 @@ def process_job(cfg, job, on_progress=None):
         if open_positions:
             for pos in open_positions:
                 deal_type = "BUY" if pos.type == 0 else "SELL"
+                # Fallback: Query entry deals for open position to record entry commission
+                open_comm = 0.0
+                try:
+                    p_deals = mt5.history_deals_get(position=pos.ticket)
+                    if p_deals:
+                        open_comm = sum(float(getattr(d, "commission", 0.0)) for d in p_deals)
+                except Exception as exc:
+                    logger.debug(f"Could not fetch entry deals for open position #{pos.ticket}: {exc}")
+
                 positions_payload.append({
                     "ticket": pos.ticket,
                     "symbol": pos.symbol,
@@ -960,7 +1041,7 @@ def process_job(cfg, job, on_progress=None):
                     "tp": float(pos.tp) if pos.tp else None,
                     "profit": float(pos.profit),
                     "swap": float(pos.swap),
-                    "commission": 0.0,
+                    "commission": open_comm,
                     "comment": str(pos.comment or ""),
                 })
 
@@ -985,7 +1066,11 @@ def process_job(cfg, job, on_progress=None):
                     logger.info(f"⚡ History deals synced from broker ({len(deals_records)} deals).")
                     break
 
-        closed_payload = build_closed_positions(deals_records, open_tickets)
+        closed_payload = build_closed_positions(
+            deals_records,
+            open_tickets,
+            deal_lookup_fn=lambda pid: mt5.history_deals_get(position=pid) if MT5_AVAILABLE else None,
+        )
         positions_payload.extend(closed_payload)
 
         open_cnt = len(open_positions or [])
@@ -1019,8 +1104,8 @@ def process_job(cfg, job, on_progress=None):
         notify(f"Unexpected error: {exc}", status="FAILED", details=str(exc))
         report_fail(cfg, job_id, "UNEXPECTED_ERROR", str(exc))
     finally:
-        close_mt5_terminal(cfg, target_pid=worker_mt5_pid)
-        logger.info("🔌 MT5 terminal closed and connection released cleanly.")
+        # Keep MT5 terminal warm in background for immediate reuse by next sync jobs!
+        logger.info("⚡ MT5 terminal connection kept warm and ready for subsequent sync requests.")
 
 
 # ==========================================
@@ -1050,6 +1135,10 @@ class WorkerThread(threading.Thread):
                 "password": "—",
                 "mode": "—",
             })
+
+        # Pre-warm MT5 terminal once on worker start so first job has 0s cold-start latency
+        if MT5_AVAILABLE:
+            ensure_mt5_initialized(self.cfg)
 
         poll_interval = max(3, int(self.cfg.get("poll_interval", 10)))
 
@@ -1081,7 +1170,8 @@ class WorkerThread(threading.Thread):
                 logger.error(f"Unexpected error in polling loop: {e}")
                 time.sleep(poll_interval)
 
-        logger.info("Worker stopped.")
+        logger.info("Worker stopped. Releasing MT5 terminal cleanly...")
+        close_mt5_terminal(self.cfg)
         if self.on_status_change:
             self.on_status_change("stopped")
         if self.on_task_update:
@@ -1473,6 +1563,7 @@ def launch_gui():
         if worker_thread and worker_thread.is_alive():
             worker_thread.stop()
             worker_thread = None
+            close_mt5_terminal(get_form_cfg())
             update_status_ui("stopped")
         else:
             current_cfg = get_form_cfg()
@@ -1799,6 +1890,7 @@ def launch_gui():
     def on_close():
         if worker_thread and worker_thread.is_alive():
             worker_thread.stop()
+        close_mt5_terminal(cfg)
         root.destroy()
 
     root.protocol("WM_DELETE_WINDOW", on_close)
@@ -1828,6 +1920,7 @@ def run_headless():
         print("\nShutting down worker gracefully...")
         worker.stop()
         worker.join()
+        close_mt5_terminal(cfg)
 
 
 def run_diagnose():

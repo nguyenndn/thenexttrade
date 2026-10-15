@@ -154,6 +154,7 @@ function getMainValue(
             return `${entry.value} days`;
         case "academy":
             return `${entry.value} lessons`;
+        case "sprint":
         case "trading": {
             if (sortBy === "percentage") {
                 const winRateVal =
@@ -216,6 +217,28 @@ function get2x2Stats(entry: LeaderboardEntry, type: LeaderboardType) {
                 },
                 { label: "Level", value: `Level ${entry.level}` },
             ];
+        case "sprint": {
+            const winRateVal =
+                entry.winRate !== undefined ? entry.winRate : entry.value;
+            const prizeLabel =
+                entry.rank === 1
+                    ? "$500 Cash"
+                    : entry.rank === 2
+                      ? "$300 Cash"
+                      : "$200 Cash";
+            return [
+                { label: "Sprint Prize", value: prizeLabel },
+                { label: "Win Rate", value: `${winRateVal}%` },
+                { label: "Total Trades", value: `${entry.totalTrades}` },
+                {
+                    label: "Total PnL",
+                    value:
+                        entry.pnl >= 0
+                            ? `+$${entry.pnl.toFixed(0)}`
+                            : `-$${Math.abs(entry.pnl).toFixed(0)}`,
+                },
+            ];
+        }
         case "trading": {
             const winRateVal =
                 entry.winRate !== undefined ? entry.winRate : entry.value;
@@ -257,10 +280,12 @@ function getEmptySlotLabel(type: LeaderboardType): string {
             return "Keep your daily streak to claim this place.";
         case "academy":
             return "Complete lessons to claim this place.";
+        case "sprint":
+            return "Trade with your partner broker account to claim this podium spot & prize.";
         case "trading":
             return "Improve your win rate to claim this place.";
         default:
-            return "Start earning Edge to claim this place.";
+            return "Trade and qualify to claim this place.";
     }
 }
 

@@ -12,10 +12,11 @@ import { LeaderboardMethodologyModal } from "./LeaderboardMethodologyModal";
 import type { LeaderboardEntry, LeaderboardType, PeriodFilter } from "../actions";
 
 const TAB_TITLES: Record<string, string> = {
-    xp: "Edge Ranking",
-    streak: "Streak Leaderboard",
+    sprint: "Trading Sprint Live Rankings",
+    xp: "Trading Sprint Live Rankings",
+    streak: "Consistency Streak Leaderboard",
     academy: "Academy Leaderboard",
-    trading: "Trading Leaderboard",
+    trading: "All Performance Leaderboard",
 };
 
 interface LeaderboardContentProps {
@@ -57,11 +58,13 @@ export function LeaderboardContent({
                                 Top Performers
                             </h3>
                             <p className="text-xs text-gray-500">
-                                The current leaders in this ranking ({period}).
+                                {type === "sprint"
+                                    ? "Active contenders for the $1,000 monthly prize pool."
+                                    : `The current leaders in this ranking (${period}).`}
                             </p>
                         </div>
                     </div>
-                    {type === "trading" && (
+                    {(type === "trading" || type === "sprint") && (
                         <div className="shrink-0">
                             <LeaderboardFilter
                                 currentSortBy={sortBy}
@@ -93,7 +96,7 @@ export function LeaderboardContent({
                             <h3 className="text-sm font-bold text-gray-700 dark:text-white">
                                 {TAB_TITLES[type] || "Rankings"}
                             </h3>
-                            {type === "trading" && (
+                            {(type === "trading" || type === "sprint") && (
                                 <p className="text-xs text-gray-500">
                                     All participants with min. 10 closed trades ({period})
                                 </p>

@@ -76,3 +76,6 @@ graphify-out/
 
 # scratch
 scratch/
+
+# cookies / auth tokens
+*cookie*

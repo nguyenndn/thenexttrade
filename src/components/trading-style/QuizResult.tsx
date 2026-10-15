@@ -133,24 +133,24 @@ export function QuizResult({
             </div>
 
             {/* 6 Core Dimensions Spider / Bar Breakdown */}
-            <div className="rounded-lg border border-gray-200 bg-white/80 p-5 shadow-sm backdrop-blur-sm dark:border-white/10 dark:bg-[#151925]/80">
-                <h3 className="mb-4 text-xs font-black uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">
+            <div className="rounded-xl border border-gray-200 bg-white/80 p-5 shadow-sm backdrop-blur-sm sm:p-6 dark:border-white/10 dark:bg-[#151925]/80">
+                <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                     Your profile across 6 core dimensions
                 </h3>
                 <DimensionBars scores={dimensions} />
             </div>
 
-            {/* Prescribed Tailored Solutions (Diagnostic Selling Box) */}
-            <PrescriptionCard archetype={archetype} />
+            {/* Prescribed Tailored Solutions (Behavioral Correction Plan) */}
+            <PrescriptionCard archetype={archetype} columns={3} />
 
-            {/* Archetype Detailed Analysis Card (Strengths, Weaknesses, Mistakes, Focus) */}
-            <div className="rounded-lg border border-gray-200 bg-white/80 p-5 shadow-sm backdrop-blur-sm dark:border-white/10 dark:bg-[#151925]/80">
-                <ArchetypeCard archetype={archetype} />
+            {/* Archetype Detailed Analysis Card (Strengths, Weaknesses, Mistakes, Focus, Moves) */}
+            <div className="rounded-xl border border-gray-200 bg-white/80 p-5 shadow-sm backdrop-blur-sm sm:p-6 dark:border-white/10 dark:bg-[#151925]/80">
+                <ArchetypeCard archetype={archetype} showMoves={true} />
             </div>
 
             {/* Full Report Markdown */}
-            <div className="rounded-lg border border-gray-200 bg-white/80 p-5 shadow-sm backdrop-blur-sm dark:border-white/10 dark:bg-[#151925]/80">
-                <h3 className="mb-3 flex items-center gap-1.5 text-xs font-black uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">
+            <div className="rounded-xl border border-gray-200 bg-white/80 p-5 shadow-sm backdrop-blur-sm sm:p-6 dark:border-white/10 dark:bg-[#151925]/80">
+                <h3 className="mb-3 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                     <BookMarked size={14} /> Your full report
                 </h3>
                 <div className="prose prose-sm max-w-none prose-headings:text-gray-900 prose-headings:dark:text-white prose-li:my-0.5 prose-p:text-gray-600 prose-p:dark:text-gray-300">
@@ -159,7 +159,7 @@ export function QuizResult({
             </div>
 
             {/* Conversion CTA Box (Prescription Model Activation) */}
-            <div className="rounded-lg border border-amber-500/30 bg-gradient-to-b from-amber-500/[0.06] via-amber-500/[0.02] to-transparent p-6 text-center shadow-sm dark:border-amber-500/25">
+            <div className="rounded-xl border border-amber-500/30 bg-amber-500/[0.04] p-6 text-center shadow-sm dark:border-amber-500/25 dark:bg-amber-500/[0.05]">
                 {isLoggedIn ? (
                     saved ? (
                         <div className="flex flex-col items-center gap-3">
@@ -168,7 +168,7 @@ export function QuizResult({
                                 <span>Saved to your profile and active in Settings</span>
                             </div>
                             <p className="text-xs text-gray-600 dark:text-gray-400 max-w-md">
-                                Your trading archetype is now synced. You can access your prescribed tools, MT5 setup, and academy modules directly from your dashboard.
+                                Your trading archetype is now synced. You can access your prescribed tools, MT5 setup, and rulebook protocols directly from your dashboard.
                             </p>
                             <Link
                                 href="/dashboard/settings/trading-style"
@@ -179,7 +179,7 @@ export function QuizResult({
                         </div>
                     ) : (
                         <div className="flex flex-col items-center gap-3">
-                            <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-black uppercase tracking-wider text-amber-800 dark:text-gold">
+                            <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-gold">
                                 <Sparkles size={13} />
                                 1-Click Profile Save
                             </div>
@@ -200,7 +200,7 @@ export function QuizResult({
                     )
                 ) : (
                     <div className="flex flex-col items-center gap-3">
-                        <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-black uppercase tracking-wider text-amber-800 dark:text-gold">
+                        <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-gold">
                             <Sparkles size={13} />
                             Tailored Solution Access
                         </div>
@@ -208,7 +208,7 @@ export function QuizResult({
                             Apply Your Prescribed Solutions & Save Style
                         </h4>
                         <p className="text-sm font-medium text-gray-600 dark:text-gray-300 max-w-lg">
-                            Create a free account to instantly bind this diagnosis to your profile, unlock your prescribed MT5 tools & lessons, and track your execution discipline.
+                            Create a free account to instantly bind this diagnosis to your profile, unlock your prescribed MT5 tools & rulebooks, and track your execution discipline.
                         </p>
                         <div className="mt-2 flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto">
                             <Button
@@ -232,12 +232,15 @@ export function QuizResult({
 
             {/* Retake Action */}
             <div className="text-center">
-                <button
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
                     onClick={onRetake}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 transition hover:text-gray-800 dark:text-gray-400 dark:hover:text-white"
+                    className="gap-1.5 text-xs font-bold text-gray-600 dark:text-gray-300"
                 >
-                    <RotateCcw size={13} /> Retake the test
-                </button>
+                    <RotateCcw size={13} /> Retake Assessment
+                </Button>
             </div>
         </div>
     );

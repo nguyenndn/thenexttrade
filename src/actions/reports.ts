@@ -178,8 +178,8 @@ export async function generateMyWeeklyReview(accountId?: string) {
                                   (sum, m) => sum + m.def.xpReward,
                                   0
                               ),
-                              ctaHref: "/dashboard/missions",
-                              ctaLabel: "Claim Edge",
+                              ctaHref: "/dashboard/leaderboard",
+                              ctaLabel: "View Leaderboard",
                           }
                         : null,
             };
@@ -222,8 +222,8 @@ export async function generateMyWeeklyReview(accountId?: string) {
                               (sum, m) => sum + m.def.xpReward,
                               0
                           ),
-                          ctaHref: "/dashboard/missions",
-                          ctaLabel: "Claim Edge",
+                          ctaHref: "/dashboard/leaderboard",
+                          ctaLabel: "View Leaderboard",
                       }
                     : null,
         };

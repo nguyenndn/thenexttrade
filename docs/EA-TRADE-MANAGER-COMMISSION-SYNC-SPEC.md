@@ -51,9 +51,110 @@ $$\text{Net PnL (Server tính)} = \text{Total Gross Profit} + \text{Total Commis
 
 ---
 
-## 3. Đặc Tả API Payload Phía Server TheNextTrade
+## 3. Cơ Chế Fallback (The Fallback Mechanism) - Bảo Đảm 100% Phí Hoa Hồng & Lịch Sử
 
-### 3.1. Endpoint Tiếp Nhận Trade
+### 3.1. Chức năng Fallback là gì?
+**Cơ chế Fallback (Deep Position-Level Deal Lifecycle Recovery)** là thuật toán dự phòng tự động truy xuất ngược toàn bộ vòng đời khớp lệnh ở cấp độ Position (Vị thế). Khi quá trình đồng bộ (sync) theo khoảng thời gian thông thường (Time-range Query hoặc Incremental Sync) phát hiện một vị thế đã đóng hoặc đang mở nhưng **bị khuyết lượt khớp lệnh vào lệnh ban đầu (`DEAL_ENTRY_IN`)**, hệ thống sẽ **ngay lập tức kích hoạt cơ chế Fallback** để truy vấn trực tiếp toàn bộ chuỗi Deal thuộc riêng `POSITION_ID` đó từ cội nguồn lịch sử của Broker.
+
+Nhờ cơ chế này, hệ thống khôi phục hoàn chỉnh:
+- Đúng giá vào lệnh ban đầu (`openPrice`) và thời điểm mở vị thế (`openTime`).
+- Đúng hướng giao dịch gốc (`BUY`/`SELL`) và tổng khối lượng thực tế (`lots`).
+- **Quan trọng nhất:** Thu thập trọn vẹn 100% phí hoa hồng mở lệnh (`DEAL_COMMISSION` tại Deal IN) và các deal khớp từng phần (`Partial Close deals`), bảo đảm không bị mất hoặc tính thiếu dù chỉ $0.01.
+
+---
+
+### 3.2. Ba trường hợp thực tế bắt buộc phải kích hoạt Fallback
+
+| STT | Trường hợp thực tế | Nguyên nhân kỹ thuật | Hậu quả nếu KHÔNG có Fallback |
+|---|---|---|---|
+| **1** | **Swing Trade / Lệnh mở ngoài Date Range** | Trader mở lệnh swing cách đây 20 ngày, hôm nay lệnh mới đóng. Khi user chọn sync "Hôm nay" hoặc "7 ngày qua", hàm `history_deals_get(from, to)` hoặc `HistorySelect(from, to)` chỉ trả về deal đóng hôm nay (`DEAL_ENTRY_OUT`). Deal mở (`DEAL_ENTRY_IN`) nằm ngoài khoảng thời gian truy vấn nên bị bỏ sót. | - Mất 100% phí Commission mở lệnh (các sàn ECN/Raw Spread như Exness, IC Markets trừ toàn bộ commission lúc mở lệnh).<br>- `openPrice` và `openTime` bị gán nhầm thành giá/giờ đóng lệnh.<br>- Chiều lệnh (BUY/SELL) bị suy diễn ngược từ deal đóng thay vì chuẩn xác từ deal vào. |
+| **2** | **Lệnh đang mở (Active Open Positions)** | Hàm `positions_get()` của MT5 trả về danh sách vị thế đang chạy nhưng trường `commission` của đối tượng `Position` luôn là `0.0`. Trong khi đó, tài khoản ECN đã bị broker trừ tiền hoa hồng ngay thời điểm Deal IN khớp. | - Dashboard hiển thị Commission = 0.0.<br>- Floating Net PnL bị tính ảo (cao hơn thực tế), trader tưởng đang có lãi nhưng thực tế tài khoản đã bị trừ phí. |
+| **3** | **Broker phân mảnh lịch sử / Server Cache trễ** | Một số Broker lưu trữ lịch sử theo phân vùng thời gian (partitions) hoặc khi terminal mới khởi động, bộ đệm History Deals tổng chưa kịp tải đầy đủ các deal quá khứ. | - Lệnh đóng xuất hiện nhưng không liên kết được với Deal vào lệnh, dẫn đến vị thế bị khuyết thiếu thông số. |
+
+---
+
+### 3.3. Quy trình xử lý Fallback trong Python Headless Worker (`tools/tnt-worker/worker.py`)
+
+Trong ứng dụng Python Cloud Sync Worker, Fallback được hiện thực hóa ở 2 điểm chốt chặn then chốt:
+
+#### A. Khôi phục Deal IN cho lệnh đã đóng (`build_closed_positions`):
+Khi duyệt qua các deal trong khoảng thời gian sync, nếu phát hiện một Position đã có Deal đóng (`out_deal`) nhưng `in_deal is None`:
+1. Kích hoạt `deal_lookup_fn(pid)` hoặc gọi trực tiếp:
+   ```python
+   full_pos_deals = mt5.history_deals_get(position=pid)
+   ```
+   Hàm này của MetaTrader 5 API bỏ qua bộ lọc thời gian `from_timestamp` / `to_timestamp`, truy xuất trực tiếp toàn bộ các deals trong lịch sử của riêng Position ID đó từ máy chủ broker.
+2. Quét mảng `full_pos_deals`:
+   - Tìm deal có `entry == 0` (`DEAL_ENTRY_IN`) để khôi phục: `openTime`, `openPrice`, `in_vol` (lots) và chiều lệnh gốc `BUY`/`SELL`.
+   - Hợp nhất (merge) các deals còn thiếu vào danh sách `all_deals` của Position (chống trùng lặp bằng deal `ticket`).
+3. Tính tổng tài chính chuẩn xác:
+   $$\text{tot\_comm} = \sum \text{deal.commission} \quad \text{(đã bao gồm đầy đủ Deal IN)}$$
+   $$\text{tot\_profit} = \sum \text{deal.profit}$$
+   $$\text{tot\_swap} = \sum \text{deal.swap}$$
+
+#### B. Thu thập Commission cho lệnh đang mở (`open_positions`):
+Khi quét danh sách lệnh đang chạy từ `mt5.positions_get()` trong `process_job`:
+```python
+# Lấy phí commission đã trừ ngay tại Deal IN của lệnh đang mở
+open_comm = 0.0
+try:
+    p_deals = mt5.history_deals_get(position=pos.ticket)
+    if p_deals:
+        open_comm = sum(float(getattr(d, "commission", 0.0)) for d in p_deals)
+except Exception as exc:
+    logger.debug(f"Could not fetch entry deals for open position #{pos.ticket}: {exc}")
+```
+Đưa `open_comm` vào trường `commission` của payload gửi lên API TheNextTrade thay vì gán cứng `0.0`.
+
+---
+
+### 3.4. Quy trình xử lý Fallback trong MQL5 EA Trade Manager
+
+Trong EA chạy trên MT5 (`TheNextTrade_TradeSync.mq5`), cơ chế Fallback được thiết lập theo mô hình 2 tầng bảo vệ:
+
+```cpp
+//+------------------------------------------------------------------+
+//| Fallback Mechanism trong MQL5 EA Trade Manager                   |
+//+------------------------------------------------------------------+
+// TẦNG 1: Ưu tiên truy vấn nhanh gọn theo Position ID
+if (!HistorySelectByPosition(positionId)) {
+    // TẦNG 2 (FALLBACK): Nếu Broker không hỗ trợ hoặc trả về false,
+    // nạp toàn bộ lịch sử từ thời điểm 0 (epoch) đến hiện tại
+    HistorySelect(0, TimeCurrent());
+}
+
+// Kiểm tra bổ sung: Nếu duyệt xong vẫn không thấy DEAL_ENTRY_IN (foundOpening == false)
+if (!foundOpening) {
+    // Kích hoạt Fallback sâu: ép MT5 Terminal nạp toàn bộ deals từ ngày 0
+    HistorySelect(0, TimeCurrent());
+    int totalDeals = HistoryDealsTotal();
+    for (int i = 0; i < totalDeals; i++) {
+        ulong ticket = HistoryDealGetTicket(i);
+        if (ticket == 0) continue;
+        if (HistoryDealGetInteger(ticket, DEAL_POSITION_ID) == positionId) {
+            // Cộng dồn lại commission và tìm DEAL_ENTRY_IN
+            // ...
+        }
+    }
+}
+```
+
+---
+
+### 3.5. Bảng So Sánh Hiệu Quả Trước và Sau Khi Có Fallback
+
+| Tiêu chí | Trước khi có Fallback ❌ | Sau khi có Fallback ✅ |
+|---|---|---|
+| **Lệnh Swing Trade (mở ngoài date range)** | Thiếu 100% Commission vào lệnh. `openPrice` bị sai thành `closePrice`. | Đầy đủ 100% Commission 2 chiều. Khôi phục chính xác `openPrice`, `openTime`. |
+| **Lệnh Partial Close (đóng từng phần dài ngày)** | Mất các deal mở ban đầu, sai lệch lot size thực tế. | Khôi phục trọn vẹn toàn bộ các deal nhánh, tính đúng tổng volume đã trade. |
+| **Lệnh Active đang mở (Floating)** | `commission = 0.0` (mặc định của MT5 position). | Ghi nhận chính xác số tiền commission sàn đã trừ vào Balance ngay khi mở lệnh. |
+| **Độ tin cậy của Trading Journal** | Net PnL bị lệch từ vài dollar đến hàng chục dollar so với MT5 Terminal. | Net PnL khớp chính xác tuyệt đối từng cent ($) với MT5 Terminal. |
+
+---
+
+## 4. Đặc Tả API Payload Phía Server TheNextTrade
+
+### 4.1. Endpoint Tiếp Nhận Trade
 - **URL:** `POST https://thenexttrade.com/api/ea/trades` *(hoặc `/api/ea/history` khi sync lịch sử)*
 - **Headers:**
   ```http
@@ -62,7 +163,7 @@ $$\text{Net PnL (Server tính)} = \text{Total Gross Profit} + \text{Total Commis
   ```
   *(Lưu ý: Có thể dùng header `X-Sync-Key` hoặc `X-API-Key`)*
 
-### 3.2. Cấu Trúc JSON Payload Chuẩn
+### 4.2. Cấu Trúc JSON Payload Chuẩn
 ```json
 {
   "trades": [
@@ -88,7 +189,7 @@ $$\text{Net PnL (Server tính)} = \text{Total Gross Profit} + \text{Total Commis
 }
 ```
 
-### 3.3. Giải Thích Các Trường Trong Object `trades`
+### 4.3. Giải Thích Các Trường Trong Object `trades`
 | Trường | Kiểu dữ liệu | Mô tả |
 |---|---|---|
 | `ticket` | `string` | **Position ID** (lấy từ `DEAL_POSITION_ID`). Giúp gom các deal partial close thành 1 trade duy nhất trên Journal. |
@@ -107,11 +208,11 @@ $$\text{Net PnL (Server tính)} = \text{Total Gross Profit} + \text{Total Commis
 
 ---
 
-## 4. Mã Nguồn MQL5 Mẫu (Implementation Code)
+## 5. Mã Nguồn MQL5 Mẫu (Implementation Code)
 
 Dưới đây là các hàm MQL5 chuẩn đã được kiểm nghiệm thực tế từ `TheNextTrade_TradeSync.mq5`. Hãy đưa các hàm này vào EA Trade Manager.
 
-### 4.1. Hàm Trích Xuất Dữ Liệu Position (Core Function)
+### 5.1. Hàm Trích Xuất Dữ Liệu Position (Core Function)
 Hàm này thực hiện 2-pass:
 - **Pass 1:** Duyệt toàn bộ deal của position để cộng dồn Gross Profit, Commission 2 chiều, Swap, và tìm deal mở (`DEAL_ENTRY_IN`).
 - **Pass 2:** Quét ngược `HistoryOrdersTotal()` để tìm lệnh sửa SL/TP gần nhất của position.
@@ -203,7 +304,9 @@ bool FindOpeningDealWithSLTP(long positionId,
 
 ---
 
-### 4.2. Hàm Đồng Bộ Một Lệnh Vừa Đóng (`SyncSingleTrade`)
+---
+
+### 5.2. Hàm Đồng Bộ Một Lệnh Vừa Đóng (`SyncSingleTrade`)
 
 ```cpp
 //+------------------------------------------------------------------+
@@ -272,7 +375,7 @@ bool SyncSingleTrade(ulong dealTicket, string apiUrl, string apiKey, string acco
 
 ---
 
-### 4.3. Bắt Sự Kiện Thời Gian Thực Qua `OnTradeTransaction`
+### 5.3. Bắt Sự Kiện Thời Gian Thực Qua `OnTradeTransaction`
 Tránh gọi `WebRequest` trực tiếp trong `OnTradeTransaction` vì lệnh WebRequest là hàm blocking, có thể làm lag luồng xử lý lệnh thị trường của EA Trade Manager. Sử dụng cờ hiệu (flag) để `OnTimer()` thực hiện:
 
 ```cpp
@@ -300,7 +403,7 @@ void OnTradeTransaction(const MqlTradeTransaction &trans,
 
 ---
 
-## 5. Checklist Kiểm Thử Dành Cho Developer (QA Verification)
+## 6. Checklist Kiểm Thử Dành Cho Developer (QA Verification)
 
 Sau khi Gemini AI bên kia cập nhật code cho EA Trade Manager, hãy kiểm tra theo các kịch bản sau:
 
@@ -314,13 +417,16 @@ Sau khi Gemini AI bên kia cập nhật code cho EA Trade Manager, hãy kiểm t
 - [ ] **3. Kiểm thử đóng một phần (Partial Close):**
   - Mở lệnh 0.2 lot $\rightarrow$ Đóng trước 0.1 lot $\rightarrow$ Đóng tiếp 0.1 lot còn lại.
   - Cả 2 lần đóng phải được tính toán commission tương ứng theo từng phần mà không bị nhân đôi hoặc bỏ sót.
-- [ ] **4. Kiểm tra Net PnL trên TheNextTrade Journal:**
+- [ ] **4. Kiểm thử Cơ chế Fallback cho Swing Trade (Mở trước Date Range):**
+  - Đóng 1 lệnh swing đã mở từ nhiều ngày trước (nằm ngoài phạm vi sync thông thường).
+  - Kiểm tra xem Fallback có tự động truy xuất Deal IN của lệnh swing đó không: JSON gửi lên phải mang đúng `openPrice` ngày mở và đầy đủ `commission` mở lệnh.
+- [ ] **5. Kiểm tra Net PnL trên TheNextTrade Journal:**
   - So sánh: $\text{Journal PnL} = \text{Gross Profit} + \text{Commission} + \text{Swap}$.
   - Con số này phải khớp chính xác đến từng cent ($) so với cột Profit cuối cùng trên MT5 Terminal.
 
 ---
 
-## 6. SYSTEM PROMPT MẪU ĐỂ GỬI CHO GEMINI AI CỦA BẠN
+## 7. SYSTEM PROMPT MẪU ĐỂ GỬI CHO GEMINI AI CỦA BẠN
 
 *(Anh có thể copy nguyên đoạn văn bản bên dưới để gửi cho bạn Gemini AI đang code EA Trade Manager)*
 
@@ -337,8 +443,9 @@ Yêu cầu cập nhật:
    - totalCommission: Tổng commission của cả deal IN lẫn deal OUT.
    - totalSwap: Tổng swap của position.
    - Quét HistoryOrdersTotal để lấy giá trị SL và TP mới nhất.
-2. Cập nhật cấu trúc JSON gửi lên POST /api/ea/trades với đầy đủ 3 trường: "profit", "commission", "swap".
-3. Tích hợp bắt sự kiện qua OnTradeTransaction (TRADE_TRANSACTION_DEAL_ADD với DEAL_ENTRY_OUT) và gửi bất đồng bộ qua OnTimer để không gây nghẽn luồng quản lý lệnh.
+2. Tích hợp Cơ chế Fallback: Nếu HistorySelectByPosition(positionId) không trả về deal hoặc thiếu Deal IN (do broker phân mảnh hoặc lệnh swing trade), tự động gọi fallback HistorySelect(0, TimeCurrent()) để quét tìm lại deal IN gốc, đảm bảo không bỏ sót phí mở lệnh.
+3. Cập nhật cấu trúc JSON gửi lên POST /api/ea/trades với đầy đủ 3 trường: "profit", "commission", "swap".
+4. Tích hợp bắt sự kiện qua OnTradeTransaction (TRADE_TRANSACTION_DEAL_ADD với DEAL_ENTRY_OUT) và gửi bất đồng bộ qua OnTimer để không gây nghẽn luồng quản lý lệnh.
 
 Vui lòng tham khảo chi tiết tài liệu đặc tả kỹ thuật và code MQL5 mẫu tại file docs/EA-TRADE-MANAGER-COMMISSION-SYNC-SPEC.md để thực hiện cập nhật chính xác.
 ```

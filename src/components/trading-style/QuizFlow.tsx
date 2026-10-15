@@ -90,7 +90,7 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                 transition={{ duration: 0.4 }}
                 className="mx-auto max-w-3xl text-center pt-0 pb-8 sm:pb-12"
             >
-                {/* Headline with Gold gradient accent on Fix Your Leaks (2 clean lines) */}
+                {/* Headline with Gold accent on Fix Your Leaks (2 clean lines) */}
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[64px] font-black tracking-tight text-gray-950 dark:text-white leading-[1.08]">
                     Know Your Style.
                     <span className="block text-gold mt-1">

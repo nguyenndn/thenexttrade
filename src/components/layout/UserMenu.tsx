@@ -25,7 +25,6 @@ import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
 import { NotificationBell } from "@/components/layout/NotificationBell";
 import { CommandPaletteTrigger } from "@/components/search/CommandPalette";
 import { getTierProgress } from "@/lib/tier-utils";
-import { EdgeInfoModal } from "@/components/gamification/EdgeInfoModal";
 
 /** Read last_account_id cookie and return a pre-built dashboard URL to skip the redirect hop. */
 function useDashboardUrl(): string {
@@ -55,7 +54,6 @@ export function UserMenu({
     isLoading = false,
 }: UserMenuProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const [isEdgeModalOpen, setIsEdgeModalOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const pathname = usePathname();
     const dashboardUrl = useDashboardUrl();
@@ -176,13 +174,11 @@ export function UserMenu({
                             </span>
                         </h4>
 
-                        {/* Edge & Tier */}
-                        <button
+                        {/* Rank & Tier Link to Leaderboard */}
+                        <Link
+                            href="/dashboard/leaderboard?type=mystats"
                             className="mt-3 flex items-center gap-2 hover:opacity-80 transition-opacity w-full text-left"
-                            onClick={() => {
-                                setIsOpen(false);
-                                setIsEdgeModalOpen(true);
-                            }}
+                            onClick={() => setIsOpen(false)}
                         >
                             <span
                                 className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border"
@@ -197,9 +193,9 @@ export function UserMenu({
                                 {tierProgress.current.label}
                             </span>
                             <span className="text-xs font-bold text-gray-600 dark:text-gray-300">
-                                {userXp.toLocaleString()} Edge
+                                {tierProgress.current.label} Rank
                             </span>
-                        </button>
+                        </Link>
 
                         {/* Progress bar */}
                         {tierProgress.next && (
@@ -325,11 +321,6 @@ export function UserMenu({
                 </motion.div>
             )}
             </AnimatePresence>
-
-            <EdgeInfoModal
-                isOpen={isEdgeModalOpen}
-                onClose={() => setIsEdgeModalOpen(false)}
-            />
         </div>
     );
 }

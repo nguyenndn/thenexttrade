@@ -132,12 +132,13 @@ export const dashboardMenuItems = [
     },
 
     // --- GROWTH ---
-    {
-        name: "Academy",
-        href: "/dashboard/academy",
-        icon: GraduationCap,
-        requiresTradeData: false,
-    },
+    // Temporarily hidden: Academy (will be reopened later per user request)
+    // {
+    //     name: "Academy",
+    //     href: "/dashboard/academy",
+    //     icon: GraduationCap,
+    //     requiresTradeData: false,
+    // },
     {
         name: "Leaderboard",
         href: "/dashboard/leaderboard",
@@ -148,12 +149,6 @@ export const dashboardMenuItems = [
         name: "Trading Systems",
         href: "/dashboard/trading-systems",
         icon: Bot,
-        requiresTradeData: false,
-    },
-    {
-        name: "Edge Missions",
-        href: "/dashboard/missions",
-        icon: Target,
         requiresTradeData: false,
     },
     {
@@ -216,6 +211,7 @@ export const adminMenuItems = [
             { name: "Trader Monitor", href: "/admin/ib/traders" },
             { name: "Trader Behavior", href: "/admin/users/behavior" },
             { name: "Sync Requests", href: "/admin/ib/sync-requests" },
+            { name: "Competitions", href: "/admin/competitions" },
             { name: "Loyalty & Rewards", href: "/admin/loyalty" },
         ],
     },
@@ -279,11 +275,12 @@ export const dashboardMenuGroups = [
         label: "More",
         icon: MoreHorizontal,
         items: [
-            {
-                name: "Academy",
-                href: "/dashboard/academy",
-                icon: GraduationCap,
-            },
+            // Temporarily hidden: Academy (will be reopened later per user request)
+            // {
+            //     name: "Academy",
+            //     href: "/dashboard/academy",
+            //     icon: GraduationCap,
+            // },
             {
                 name: "Leaderboard",
                 href: "/dashboard/leaderboard",

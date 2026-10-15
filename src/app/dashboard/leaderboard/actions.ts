@@ -5,8 +5,10 @@ import { Prisma } from "@prisma/client";
 import { createClient } from "@/lib/supabase/server";
 import { getTier, getPercentile, getTierProgress } from "@/lib/gamification";
 
+import { revalidatePath } from "next/cache";
+
 export type LeaderboardType =
-    "xp" | "streak" | "academy" | "trading" | "mystats";
+    "sprint" | "trading" | "xp" | "streak" | "academy" | "mystats";
 
 export interface LeaderboardEntry {
     rank: number;
@@ -64,6 +66,100 @@ async function getCurrentUserId(): Promise<string | null> {
     return user?.id ?? null;
 }
 
+export async function getActiveCompetition() {
+    try {
+        const competition = await prisma.competition.findFirst({
+            where: {
+                status: { in: ["ACTIVE", "UPCOMING"] },
+            },
+            include: {
+                _count: {
+                    select: { participants: true },
+                },
+            },
+            orderBy: { startDate: "asc" },
+        });
+        return competition;
+    } catch (error) {
+        console.error("getActiveCompetition error:", error);
+        return null;
+    }
+}
+
+export async function joinCompetition(
+    competitionId: string,
+    tradingAccountId: string
+) {
+    const userId = await getCurrentUserId();
+    if (!userId) return { error: "Please log in to join the competition." };
+
+    const account = await prisma.tradingAccount.findFirst({
+        where: { id: tradingAccountId, userId },
+    });
+
+    if (!account) {
+        return { error: "Trading account not found or unauthorized." };
+    }
+
+    try {
+        const participant = await prisma.competitionParticipant.upsert({
+            where: {
+                competitionId_userId: {
+                    competitionId,
+                    userId,
+                },
+            },
+            update: {
+                tradingAccountId,
+            },
+            create: {
+                competitionId,
+                userId,
+                tradingAccountId,
+            },
+        });
+
+        await prisma.tradingAccount.update({
+            where: { id: tradingAccountId },
+            data: { useForLeaderboard: true },
+        });
+
+        revalidatePath("/dashboard/leaderboard");
+        return { success: true, participant };
+    } catch (error: any) {
+        console.error("joinCompetition error:", error);
+        return { error: error.message || "Failed to join competition." };
+    }
+}
+
+export async function getUserCompetitionEnrollment(competitionId: string) {
+    const userId = await getCurrentUserId();
+    if (!userId) return null;
+
+    try {
+        return await prisma.competitionParticipant.findUnique({
+            where: {
+                competitionId_userId: {
+                    competitionId,
+                    userId,
+                },
+            },
+            include: {
+                tradingAccount: {
+                    select: {
+                        id: true,
+                        name: true,
+                        accountNumber: true,
+                        broker: true,
+                    },
+                },
+            },
+        });
+    } catch {
+        return null;
+    }
+}
+
 export type PeriodFilter = "7D" | "30D" | "90D" | "ALL";
 
 export async function getLeaderboard(
@@ -75,6 +171,13 @@ export async function getLeaderboard(
     const userId = await getCurrentUserId();
 
     switch (type) {
+        case "sprint": {
+            const activeComp = await getActiveCompetition();
+            const cutoff = activeComp?.startDate ? new Date(activeComp.startDate) : undefined;
+            const minTrades = activeComp?.minTrades ?? 10;
+            const effectiveSortBy = activeComp?.scoringMetric === "win_rate" ? "percentage" : sortBy;
+            return getTradingLeaderboard(userId, limit, effectiveSortBy, "30D", cutoff, minTrades);
+        }
         case "xp":
             return getXpLeaderboard(userId, limit);
         case "streak":
@@ -84,7 +187,7 @@ export async function getLeaderboard(
         case "trading":
             return getTradingLeaderboard(userId, limit, sortBy, period);
         default:
-            return getXpLeaderboard(userId, limit);
+            return getTradingLeaderboard(userId, limit, sortBy, "30D");
     }
 }
 
@@ -380,17 +483,23 @@ async function getTradingLeaderboard(
     userId: string | null,
     limit: number,
     sortBy: "percentage" | "currency" = "currency",
-    period: PeriodFilter = "30D"
+    period: PeriodFilter = "30D",
+    competitionCutoff?: Date,
+    competitionMinTrades?: number
 ): Promise<LeaderboardResponse> {
     let cutoffDate = new Date(0);
     const now = Date.now();
-    if (period === "7D") {
+    if (competitionCutoff) {
+        cutoffDate = competitionCutoff;
+    } else if (period === "7D") {
         cutoffDate = new Date(now - 7 * 24 * 60 * 60 * 1000);
     } else if (period === "30D") {
         cutoffDate = new Date(now - 30 * 24 * 60 * 60 * 1000);
     } else if (period === "90D") {
         cutoffDate = new Date(now - 90 * 24 * 60 * 60 * 1000);
     }
+
+    const minTrades = competitionMinTrades ?? 10;
 
     // Check if current user has a leaderboard account
     let hasLeaderboardAccount = true;
@@ -427,7 +536,7 @@ async function getTradingLeaderboard(
  AND je."exitDate" >= ${cutoffDate}
  AND je.status = 'CLOSED'
  GROUP BY u.id, u.name, u.image, u.xp, u.level
- HAVING COUNT(*) >= 10
+ HAVING COUNT(*) >= ${minTrades}
  ORDER BY ${sortBy === "percentage" ? Prisma.raw('"winRate"') : Prisma.raw('"totalPnl"')} DESC, "totalTrades" DESC, u."updatedAt" DESC
  LIMIT ${limit}
  `;

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Trophy, Flame, GraduationCap, BarChart3, User } from "lucide-react";
+import { Trophy, Flame, BarChart3, User } from "lucide-react";
 import type { LeaderboardType } from "../actions";
 
 const TABS: {
@@ -12,42 +12,36 @@ const TABS: {
     icon: React.ElementType;
     activeColor: string;
     activeBg: string;
+    badge?: string;
 }[] = [
     {
-        type: "trading",
-        label: "Trading",
-        icon: BarChart3,
-        activeColor: "text-amber-600 dark:text-gold",
-        activeBg:
-            "bg-gold/10 dark:bg-gold/15 border-gold/30 dark:border-gold/25",
-    },
-    {
-        type: "xp",
-        label: "Edge Ranking",
+        type: "sprint",
+        label: "Trading Sprints",
         icon: Trophy,
         activeColor: "text-amber-600 dark:text-amber-400",
         activeBg:
             "bg-amber-500/10 dark:bg-amber-400/10 border-amber-500/25 dark:border-amber-400/20",
+        badge: "LIVE",
+    },
+    {
+        type: "trading",
+        label: "All Performance",
+        icon: BarChart3,
+        activeColor: "text-blue-600 dark:text-blue-400",
+        activeBg:
+            "bg-blue-500/10 dark:bg-blue-400/10 border-blue-500/25 dark:border-blue-400/20",
     },
     {
         type: "streak",
-        label: "Streak",
+        label: "Discipline Streak",
         icon: Flame,
         activeColor: "text-orange-600 dark:text-orange-400",
         activeBg:
             "bg-orange-500/10 dark:bg-orange-400/10 border-orange-500/25 dark:border-orange-400/20",
     },
     {
-        type: "academy",
-        label: "Academy",
-        icon: GraduationCap,
-        activeColor: "text-emerald-600 dark:text-emerald-400",
-        activeBg:
-            "bg-emerald-500/10 dark:bg-emerald-400/10 border-emerald-500/25 dark:border-emerald-400/20",
-    },
-    {
         type: "mystats",
-        label: "My Stats",
+        label: "My Telemetry",
         icon: User,
         activeColor: "text-sky-600 dark:text-sky-400",
         activeBg:
@@ -58,13 +52,22 @@ const TABS: {
 interface LeaderboardTabsProps {
     activeType: LeaderboardType;
     equalWidth?: boolean;
+    hasActiveCompetition?: boolean;
 }
 
 export function LeaderboardTabs({
     activeType,
     equalWidth = true,
+    hasActiveCompetition = false,
 }: LeaderboardTabsProps) {
     const searchParams = useSearchParams();
+
+    const visibleTabs = TABS.filter((tab) => {
+        if (tab.type === "sprint") {
+            return hasActiveCompetition;
+        }
+        return true;
+    });
 
     return (
         <div
@@ -75,7 +78,7 @@ export function LeaderboardTabs({
                     : "w-auto inline-flex"
             )}
         >
-            {TABS.map((tab) => {
+            {visibleTabs.map((tab) => {
                 const isActive = activeType === tab.type;
                 const Icon = tab.icon;
                 const tabParams = new URLSearchParams(searchParams.toString());
@@ -95,6 +98,11 @@ export function LeaderboardTabs({
                     >
                         <Icon size={15} className="shrink-0" />
                         <span>{tab.label}</span>
+                        {tab.badge && (
+                            <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                                {tab.badge}
+                            </span>
+                        )}
                     </Link>
                 );
             })}

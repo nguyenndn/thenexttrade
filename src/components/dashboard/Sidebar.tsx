@@ -5,9 +5,8 @@ import { usePathname } from "next/navigation";
 import { Logo } from "@/components/ui/Logo";
 import { cn } from "@/lib/utils";
 import { dashboardMenuItems } from "@/config/navigation";
-import { Menu, LogOut, ChevronDown } from "lucide-react";
+import { ChevronDown, LogOut } from "lucide-react";
 import { useState, useEffect, useMemo, useRef } from "react";
-import { useClaimableCount } from "@/hooks/useClaimableCount";
 import { signout } from "@/app/auth/actions";
 import { useFeatureFlags } from "@/lib/dashboard-context";
 import { Button } from "@/components/ui/Button";
@@ -35,7 +34,6 @@ interface SidebarItemComponentProps {
     isExpanded: boolean;
     onToggle: () => void;
     activeHref: string | null;
-    claimableCount?: number;
 }
 
 // Extracted component to follow Rules of Hooks
@@ -47,7 +45,6 @@ function SidebarItemComponent({
     isExpanded,
     onToggle,
     activeHref,
-    claimableCount,
 }: SidebarItemComponentProps) {
     const Icon = item.icon;
     const hasSubItems = item.items && item.items.length > 0;
@@ -121,13 +118,6 @@ function SidebarItemComponent({
                     {!collapsed && (
                         <span className="flex-1 text-sm nav-menu-text relative z-10 pointer-events-none whitespace-nowrap overflow-hidden text-ellipsis flex items-center justify-between">
                             {item.name}
-                            {item.name === "Missions" &&
-                                claimableCount !== undefined &&
-                                claimableCount > 0 && (
-                                    <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
-                                        {claimableCount}
-                                    </span>
-                                )}
                         </span>
                     )}
 
@@ -144,23 +134,9 @@ function SidebarItemComponent({
                     )}
 
                     {collapsed && (
-                        <>
-                            {item.name === "Missions" &&
-                                claimableCount !== undefined &&
-                                claimableCount > 0 && (
-                                    <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-[#1E2028]" />
-                                )}
-                            <div className="absolute left-full ml-4 px-3 py-2 bg-gray-900 text-white text-xs font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none shadow-xl border border-white/10 flex items-center gap-2">
-                                {item.name}
-                                {item.name === "Missions" &&
-                                    claimableCount !== undefined &&
-                                    claimableCount > 0 && (
-                                        <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                                            {claimableCount}
-                                        </span>
-                                    )}
-                            </div>
-                        </>
+                        <div className="absolute left-full ml-4 px-3 py-2 bg-gray-900 text-white text-xs font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none shadow-xl border border-white/10 flex items-center gap-2">
+                            {item.name}
+                        </div>
                     )}
                 </div>
             </div>
@@ -213,8 +189,6 @@ export function Sidebar({
     // const [collapsed, setCollapsed] = useState(false); // Removed local state
     const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
     const { disabledFlags, loaded: flagsLoaded } = useFeatureFlags();
-
-    const claimableCount = useClaimableCount();
 
     // Filter out items with disabled feature flags (hide flagged items until loaded)
     const visibleItems = useMemo(
@@ -352,11 +326,6 @@ export function Sidebar({
                                     );
                                 }}
                                 activeHref={activeHref}
-                                claimableCount={
-                                    item.name === "Missions"
-                                        ? claimableCount
-                                        : undefined
-                                }
                             />
                         </div>
                     );

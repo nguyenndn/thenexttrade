@@ -121,6 +121,29 @@ describe("computeDimensionScores", () => {
         // q7a, q8a, q9a, q10a, q14a all carry +deltas) → must land above 70.
         expect(scores.process_routine).toBeGreaterThan(70);
     });
+
+    it("verifies Q8 profit management reflects emotional control and risk discipline", () => {
+        const baseAnswers = {
+            q1: "c",
+            q2: "b",
+            q3: "a",
+            q4: "b",
+            q5: "c",
+            q6: "b",
+            q7: "a",
+            q9: "b",
+            q10: "b",
+            q11: "b",
+            q12: "b",
+            q13: "b",
+            q14: "b",
+        };
+        const panicScore = computeDimensionScores({ ...baseAnswers, q8: "b" });
+        const disciplinedScore = computeDimensionScores({ ...baseAnswers, q8: "c" });
+
+        expect(disciplinedScore.risk_discipline).toBeGreaterThan(panicScore.risk_discipline);
+        expect(disciplinedScore.emotional_control).toBeGreaterThan(panicScore.emotional_control);
+    });
 });
 
 describe("buildReportMarkdown", () => {

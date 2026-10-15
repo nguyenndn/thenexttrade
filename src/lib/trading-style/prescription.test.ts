@@ -50,15 +50,15 @@ describe("Archetype Prescription Model", () => {
         }
     });
 
-    it("provides valid recommended Academy lessons with /academy/ routes", () => {
+    it("provides valid behavioral rewiring rules with /dashboard/rules routes", () => {
         for (const id of allArchetypeIds) {
             const { lesson } = ARCHETYPES[id].prescription;
             expect(lesson.name).toBeTruthy();
             expect(lesson.tagline).toBeTruthy();
             expect(lesson.why).toBeTruthy();
-            expect(lesson.badge).toBeTruthy();
-            expect(lesson.actionLabel).toBeTruthy();
-            expect(lesson.href).toMatch(/^\/academy\//);
+            expect(lesson.badge).toBe("Rulebook Protocol");
+            expect(lesson.actionLabel).toBe("Review Rules");
+            expect(lesson.href).toBe("/dashboard/rules");
         }
     });
 });

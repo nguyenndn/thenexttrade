@@ -16,6 +16,7 @@ import {
     Settings,
     Compass,
     Target,
+    Trophy,
     User,
 } from "lucide-react";
 
@@ -85,13 +86,13 @@ const steps: StepDef[] = [
     },
     {
         id: "habit",
-        title: "Build the daily habit",
+        title: "Track your rank & competition",
         description:
-            "Daily check-in and missions keep the improvement loop visible.",
-        href: "/dashboard/missions",
-        cta: "View missions",
-        icon: Target,
-        completed: (progress) => progress.hasMissionComplete,
+            "See your verified performance and compete on the live leaderboard.",
+        href: "/dashboard/leaderboard",
+        cta: "View leaderboard",
+        icon: Trophy,
+        completed: (progress) => progress.hasMissionComplete || progress.totalTrades >= 5,
     },
 ];
 

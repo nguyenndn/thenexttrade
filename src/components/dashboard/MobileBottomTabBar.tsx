@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useClaimableCount } from "@/hooks/useClaimableCount";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X, Bug, Lightbulb } from "lucide-react";
@@ -16,7 +15,6 @@ export function MobileBottomTabBar() {
     const pathname = usePathname();
     const [openGroup, setOpenGroup] = useState<string | null>(null);
     const { disabledFlags, loaded: flagsLoaded } = useFeatureFlags();
-    const claimableCount = useClaimableCount();
 
     // Determine which groups to use based on the path
     const isAdmin = pathname?.startsWith("/admin");
@@ -255,11 +253,6 @@ export function MobileBottomTabBar() {
                                 >
                                     {group.label}
                                 </span>
-                                {/* Red dot for claimable missions */}
-                                {group.label === "More" &&
-                                    claimableCount > 0 && (
-                                        <span className="absolute top-2 right-1/2 translate-x-4 w-2 h-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-[#1E2028]" />
-                                    )}
                             </Button>
                         );
                     })}

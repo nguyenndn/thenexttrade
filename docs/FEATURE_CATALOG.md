@@ -105,7 +105,7 @@ Any feature that supports this loop is justified. Any feature that competes with
 | `/dashboard/reports/weekly` | One weekly action | Keep doing, fix next, checklist | Extra Weekly Focus block if it duplicates action plan |
 | `/dashboard/rules` | Rulebook and goals | Rules, goals, compliance, promote successful experiments | Hidden route/menu |
 | `/dashboard/missions` | Habits and Edge | Daily check-in, missions, progress | Making missions first task before data |
-| `/dashboard/academy` | Logged-in learning | Continue learning, stalled-learning reminder | Rebuilding public Academy inside dashboard |
+| `/dashboard/academy` | Logged-in learning | Continue learning, stalled-learning reminder | Rebuilding public Academy inside dashboard (Temporarily hidden in navigation) |
 | `/dashboard/settings/trading-style` | Manage saved style & retake | Archetype summary, 6 dimensions, in-dashboard retake flow | Redirecting out of dashboard to public quiz |
 | `/dashboard/settings/profile` | Public profile & privacy | Mutually exclusive presets, Trading Style toggle, Live 3D Card modal | Multi-preset active bugs, modal vertical clipping |
 | `/dashboard/settings/*` | Account/security/referrals/sync settings | Focused tabs, real data | Fake referral earnings or dead sync copy |

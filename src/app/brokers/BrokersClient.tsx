@@ -22,7 +22,6 @@ const CATEGORIES = [
         icon: Building2,
         data: partnersData.brokers,
         cta: "Open Account",
-        depositLabel: "Min Deposit",
         gridCols: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3", // 9 brokers -> 3 rows x 3 columns (3x3 grid)
     },
     {
@@ -31,7 +30,6 @@ const CATEGORIES = [
         icon: Bitcoin,
         data: partnersData.cryptoExchanges,
         cta: "Start Trading",
-        depositLabel: "Min Deposit",
         gridCols: "grid-cols-1 md:grid-cols-3 lg:grid-cols-3", // 3 crypto exchanges -> 1 row x 3 columns
     },
 ];
@@ -64,18 +62,16 @@ function StarRating({ rating }: { rating: number }) {
 function PartnerCard({
     item,
     ctaLabel,
-    depositLabel,
 }: {
     item: (typeof CATEGORIES)[number]["data"]["items"][number];
     ctaLabel: string;
-    depositLabel: string;
 }) {
     const hasUrl = item.url && item.url !== "#";
 
     return (
         <div className="group bg-white/80 dark:bg-[#151925]/80 rounded-lg border border-gray-200 dark:border-white/10 hover:border-amber-500/40 dark:hover:border-gold/40 hover:shadow-[0_12px_32px_rgba(245,158,11,0.08)] dark:hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-300 overflow-hidden flex flex-col backdrop-blur-sm relative h-full">
             {/* Header: Logo + Info inline */}
-            <div className="p-5 pb-4 flex items-center gap-4">
+            <div className="p-5 pb-4 flex items-center gap-4 border-b border-gray-100 dark:border-white/[0.06]">
                 <div
                     className={`w-14 h-14 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden p-1 ${item.logo
                             ? "bg-white border border-gray-100 dark:border-white/10 shadow-sm"
@@ -121,57 +117,6 @@ function PartnerCard({
                 </div>
             </div>
 
-            {/* Specs Bar */}
-            {(item.minDeposit || item.maxLeverage || item.regulation) &&
-                (() => {
-                    const specCount = [
-                        item.minDeposit,
-                        item.maxLeverage,
-                        item.regulation,
-                    ].filter(Boolean).length;
-                    const gridCols =
-                        specCount === 1
-                            ? "grid-cols-1"
-                            : specCount === 2
-                                ? "grid-cols-2"
-                                : "grid-cols-3";
-                    return (
-                        <div
-                            className={`grid ${gridCols} divide-x divide-gray-200 dark:divide-white/[0.06] bg-gray-50/60 dark:bg-white/[0.02] border-y border-gray-200 dark:border-white/[0.06]`}
-                        >
-                            {item.minDeposit && (
-                                <div className="py-3 px-2 text-center">
-                                    <div className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">
-                                        {depositLabel}
-                                    </div>
-                                    <div className="text-sm font-bold text-gray-800 dark:text-white mt-0.5 truncate">
-                                        {item.minDeposit}
-                                    </div>
-                                </div>
-                            )}
-                            {item.maxLeverage && (
-                                <div className="py-3 px-2 text-center">
-                                    <div className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">
-                                        Leverage
-                                    </div>
-                                    <div className="text-sm font-bold text-gray-800 dark:text-white mt-0.5 truncate">
-                                        {item.maxLeverage}
-                                    </div>
-                                </div>
-                            )}
-                            {item.regulation && (
-                                <div className="py-3 px-2 text-center">
-                                    <div className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">
-                                        Regulation
-                                    </div>
-                                    <div className="text-sm font-bold text-gray-800 dark:text-white mt-0.5 truncate" title={item.regulation}>
-                                        {item.regulation}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    );
-                })()}
 
             {/* Features */}
             {item.features && item.features.length > 0 && (
@@ -292,7 +237,6 @@ export default function BrokersClient() {
                                         key={item.name}
                                         item={item}
                                         ctaLabel={cat.cta}
-                                        depositLabel={cat.depositLabel}
                                     />
                                 ))}
                         </div>

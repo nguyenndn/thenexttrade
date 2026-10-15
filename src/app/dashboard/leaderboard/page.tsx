@@ -4,31 +4,36 @@ import { getAuthUser } from "@/lib/auth-cache";
 import {
     getLeaderboard,
     getLeaderboardSidebarData,
+    getActiveCompetition,
+    getUserCompetitionEnrollment,
     type LeaderboardType,
     type PeriodFilter,
 } from "./actions";
+import { getTradingAccounts } from "@/actions/accounts";
 import { LeaderboardTabs } from "./components/LeaderboardTabs";
 import { LeaderboardContent } from "./components/LeaderboardContent";
 import { MyStatsView } from "./components/MyStatsView";
 import { TradingSetupModal } from "./components/TradingSetupModal";
 import { RankUpModal } from "./components/RankUpModal";
 import { LeaderboardSidebar } from "./components/LeaderboardSidebar";
+import { TradingSprintBanner } from "./components/TradingSprintBanner";
 
 import { getTier } from "@/lib/gamification";
 import { PageHeader } from "@/components/ui/PageHeader";
 
 const VALID_TYPES: LeaderboardType[] = [
+    "sprint",
+    "trading",
     "xp",
     "streak",
     "academy",
-    "trading",
     "mystats",
 ];
 
 export const metadata = {
-    title: "Leaderboard | TheNextTrade",
+    title: "Leaderboard & Trading Sprints | TheNextTrade",
     description:
-        "See where you stand in the community. Track your Edge, streak, and trading performance.",
+        "Compete on verified MT5 trading sprints, track execution discipline, and climb the live community leaderboard.",
 };
 
 interface PageProps {
@@ -37,7 +42,11 @@ interface PageProps {
 
 export default async function LeaderboardPage({ searchParams }: PageProps) {
     const params = await searchParams;
-    const rawType = params.type || "trading";
+    let rawType = params.type || "trading";
+    if (rawType === "xp") {
+        rawType = "trading";
+    }
+
     const rawSortBy = params.sortBy || "currency";
     const sortBy = (rawSortBy === "percentage" ? "percentage" : "currency") as
         "percentage" | "currency";
@@ -47,6 +56,15 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
         ? (rawPeriod as PeriodFilter)
         : "30D";
 
+    // Fetch active competition status from DB
+    const activeCompetition = await getActiveCompetition();
+    const hasActiveCompetition = Boolean(activeCompetition);
+
+    // If user asked for sprint but no active competition exists, redirect to trading
+    if (rawType === "sprint" && !hasActiveCompetition) {
+        redirect("/dashboard/leaderboard?type=trading");
+    }
+
     if (!VALID_TYPES.includes(rawType as LeaderboardType)) {
         redirect("/dashboard/leaderboard?type=trading");
     }
@@ -54,7 +72,26 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
     const type = rawType as LeaderboardType;
     const user = await getAuthUser();
 
-    // For mystats, fetch XP leaderboard data to get rank info
+    // Fetch user enrollment and trading accounts if active competition exists
+    let userEnrollment = null;
+    let userAccounts: Array<{
+        id: string;
+        name: string;
+        accountNumber?: string | null;
+        broker?: string | null;
+        balance?: number;
+    }> = [];
+
+    if (activeCompetition && user) {
+        const [enrollment, accountsRes] = await Promise.all([
+            getUserCompetitionEnrollment(activeCompetition.id),
+            getTradingAccounts(1, 50),
+        ]);
+        userEnrollment = enrollment;
+        userAccounts = accountsRes.accounts;
+    }
+
+    // For mystats, fetch XP leaderboard data to get rank info; for sprint, fetch trading data
     const fetchType = type === "mystats" ? "xp" : type;
     const leaderboard = await getLeaderboard(fetchType, 50, sortBy, period);
     const sidebarData = await getLeaderboardSidebarData();
@@ -73,15 +110,13 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
                   tier: getTier(leaderboard.myRank.tierProgress.current.minXp),
                   value: leaderboard.myRank.value,
                   label:
-                      fetchType === "xp"
-                          ? "Edge"
-                          : fetchType === "streak"
-                            ? "days"
-                            : fetchType === "academy"
-                              ? "lessons"
-                              : sortBy === "percentage"
-                                ? "%"
-                                : "$",
+                      fetchType === "streak"
+                          ? "days"
+                          : fetchType === "academy"
+                            ? "lessons"
+                            : sortBy === "percentage"
+                              ? "%"
+                              : "$",
                   level: 0,
                   lessonsCompleted: 0,
                   studyTimeMinutes: 0,
@@ -94,21 +129,34 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
     const isMyStats = type === "mystats";
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-6">
             <PageHeader
-                title="Leaderboard"
-                description="See where you stand in the community."
+                title="Trading Arena & Leaderboard"
+                description="Live institutional execution telemetry, monthly battles, and discipline rankings."
             />
+
+            {/* Trading Sprint Banner (Dynamically shown ONLY when active competition exists) */}
+            {type === "sprint" && activeCompetition && (
+                <TradingSprintBanner
+                    competition={activeCompetition}
+                    userEnrollment={userEnrollment}
+                    userAccounts={userAccounts}
+                    isLoggedIn={Boolean(user)}
+                />
+            )}
 
             {/* Tabs */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <Suspense fallback={null}>
-                    <LeaderboardTabs activeType={type} />
+                    <LeaderboardTabs
+                        activeType={type}
+                        hasActiveCompetition={hasActiveCompetition}
+                    />
                 </Suspense>
             </div>
 
-            {/* Setup Prompt for Trading */}
-            {type === "trading" &&
+            {/* Setup Prompt for Trading & Sprint */}
+            {(type === "trading" || type === "sprint") &&
                 user &&
                 !leaderboard.hasLeaderboardAccount && <TradingSetupModal />}
 

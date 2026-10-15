@@ -435,18 +435,15 @@ export function ReportsDashboard() {
                             </div>
                             <div className="flex-1">
                                 <p className="text-sm font-bold text-gray-800 dark:text-white">
-                                    Mission Complete!
+                                    Weekly Review Generated!
                                 </p>
                                 <p className="text-xs text-gray-600 dark:text-gray-400">
-                                    Your weekly review completed a mission.
-                                    Claim{" "}
-                                    {lastGenerateResult.missionReward.totalEdge}{" "}
-                                    Edge when you're ready.
+                                    Your execution telemetry and discipline have been updated.
                                 </p>
                             </div>
-                            <Link href="/dashboard/missions">
+                            <Link href="/dashboard/leaderboard">
                                 <Button variant="primary" size="smd">
-                                    Claim Edge
+                                    View Leaderboard
                                 </Button>
                             </Link>
                         </div>

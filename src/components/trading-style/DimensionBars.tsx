@@ -44,18 +44,18 @@ export function DimensionBars({ scores }: DimensionBarsProps) {
     };
 
     return (
-        <div className="space-y-3">
+        <div className="space-y-4">
             {sorted.map((dim) => {
                 const value = Math.round(scores[dim.id] ?? 50);
                 const label = flagLabel(dim.id);
                 return (
-                    <div key={dim.id}>
-                        <div className="mb-1 flex items-center justify-between gap-3">
-                            <div className="min-w-0">
-                                <span className="text-sm font-bold text-gray-800 dark:text-white">
+                    <div key={dim.id} className="space-y-1.5">
+                        <div className="flex items-center justify-between gap-3">
+                            <div className="min-w-0 flex flex-wrap items-baseline gap-x-2">
+                                <span className="text-sm font-bold text-gray-900 dark:text-white">
                                     {dim.name}
                                 </span>
-                                <span className="ml-2 text-xs font-semibold text-gray-400 dark:text-gray-500">
+                                <span className="text-xs font-medium text-gray-400 dark:text-gray-500">
                                     {dim.lowPole} → {dim.highPole}
                                 </span>
                             </div>
@@ -63,21 +63,21 @@ export function DimensionBars({ scores }: DimensionBarsProps) {
                                 {label && (
                                     <span
                                         className={cn(
-                                            "rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wider",
+                                            "rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider",
                                             label === "Needs work"
-                                                ? "bg-[#D9531A]/10 text-[#D9531A] dark:text-[#E5673B]"
-                                                : "bg-[#4E9A5B]/10 text-[#4E9A5B] dark:text-[#5CB86B]",
+                                                ? "bg-rose-500/10 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400"
+                                                : "bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400",
                                         )}
                                     >
                                         {label}
                                     </span>
                                 )}
-                                <span className="w-9 text-right text-sm font-black tabular-nums text-gray-900 dark:text-white">
+                                <span className="w-8 text-right text-sm font-bold font-mono tabular-nums text-gray-900 dark:text-white">
                                     {value}
                                 </span>
                             </div>
                         </div>
-                        <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-200/70 dark:bg-white/[0.06]">
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-white/[0.06]">
                             <div
                                 className={cn(
                                     "h-full rounded-full transition-all duration-700",

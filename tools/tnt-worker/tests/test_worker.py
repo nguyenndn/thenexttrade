@@ -119,6 +119,62 @@ class TestBuildClosedPositions(unittest.TestCase):
         self.assertEqual(row["openTime"], 3000, msg="open time falls back to close time")
         self.assertAlmostEqual(row["openPrice"], 1.12)
 
+    def test_fallback_lookup_recovers_out_of_range_opening_deal_and_commission(self):
+        """
+        When opening deal lies outside the query window, deal_lookup_fn recovers
+        DEAL_ENTRY_IN, restores true open time/price/type, and captures opening commission.
+        """
+        # Range deals only contain the closing deal (e.g. closed today)
+        range_deals = [
+            make_deal(
+                ticket=102,
+                position_id=99,
+                entry=1,  # DEAL_ENTRY_OUT
+                type=1,   # DEAL_TYPE_SELL (closing a BUY)
+                volume=0.5,
+                time=5000,
+                price=2650.00,
+                profit=150.0,
+                swap=-2.5,
+                commission=0.0,  # ECN broker charged commission at entry
+                comment="tp",
+            ),
+        ]
+
+        # Full historical deals retrieved by fallback lookup
+        historical_deals = [
+            make_deal(
+                ticket=101,
+                position_id=99,
+                entry=0,  # DEAL_ENTRY_IN
+                type=0,   # DEAL_TYPE_BUY
+                volume=0.5,
+                time=1000,
+                price=2620.00,
+                profit=0.0,
+                swap=0.0,
+                commission=-3.5,  # Opening commission
+                comment="ea_open",
+            ),
+            range_deals[0],
+        ]
+
+        lookup_mock = lambda pid: historical_deals if pid == 99 else []
+
+        result = worker.build_closed_positions(range_deals, open_tickets=set(), deal_lookup_fn=lookup_mock)
+        self.assertEqual(len(result), 1)
+        row = result[0]
+        self.assertEqual(row["ticket"], 99)
+        self.assertEqual(row["type"], "BUY")
+        self.assertAlmostEqual(row["lots"], 0.5)
+        self.assertEqual(row["openTime"], 1000)
+        self.assertAlmostEqual(row["openPrice"], 2620.00)
+        self.assertEqual(row["closeTime"], 5000)
+        self.assertAlmostEqual(row["closePrice"], 2650.00)
+        self.assertAlmostEqual(row["profit"], 150.0)
+        self.assertAlmostEqual(row["swap"], -2.5)
+        self.assertAlmostEqual(row["commission"], -3.5, msg="Commission must include opening deal commission from fallback")
+
     def test_trash_and_open_only_rows_are_skipped(self):
         """Balance/without-position rows and in-only (never-closed-in-range) rows are dropped."""
         deals = [

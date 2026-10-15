@@ -80,6 +80,7 @@ model User {
   insightSnapshots         TraderInsightSnapshot[]
   improvementExperiments   ImprovementExperiment[]
   loyaltyClaims            LoyaltyClaim[]
+  competitionParticipants  CompetitionParticipant[]
 
   @@index([createdAt])
   @@index([email])
@@ -444,6 +445,7 @@ model TradingAccount {
   capitalSnapshots         TradingAccountCapitalSnapshot[]
   insightSnapshots         TraderInsightSnapshot[]
   improvementExperiments   ImprovementExperiment[]
+  competitionParticipants  CompetitionParticipant[]
   fundingVerifiedAt        DateTime?                 @map("funding_verified_at") @db.Timestamptz(6)
   fundingAmount            Float?                    @map("funding_amount")
   fundingLastVerifiedAt    DateTime?                 @map("funding_last_verified_at") @db.Timestamptz(6)
@@ -2155,4 +2157,58 @@ model LoyaltyClaim {
   @@index([claimedAt])
   @@map("loyalty_claims")
 }
+
+enum CompetitionStatus {
+  DRAFT
+  UPCOMING
+  ACTIVE
+  ENDED
+  CANCELLED
+}
+
+model Competition {
+  id              String                  @id @default(cuid())
+  title           String                  @db.VarChar(200)
+  slug            String                  @unique @db.VarChar(200)
+  description     String?                 @db.Text
+  rules           String?                 @db.Text
+  status          CompetitionStatus       @default(DRAFT)
+  startDate       DateTime                @map("start_date") @db.Timestamptz(6)
+  endDate         DateTime                @map("end_date") @db.Timestamptz(6)
+  prizePool       Float                   @default(0) @map("prize_pool")
+  prizes          Json?
+  minTrades       Int                     @default(10) @map("min_trades")
+  maxDrawdown     Float?                  @default(10.0) @map("max_drawdown")
+  eligibleBrokers String?                 @default("ALL") @map("eligible_brokers")
+  scoringMetric   String                  @default("currency") @map("scoring_metric")
+  createdAt       DateTime                @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime                @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  participants    CompetitionParticipant[]
+
+  @@index([status])
+  @@index([startDate, endDate])
+  @@map("competitions")
+}
+
+model CompetitionParticipant {
+  id               String         @id @default(cuid())
+  competitionId    String         @map("competition_id")
+  userId           String         @map("user_id") @db.Uuid
+  tradingAccountId String         @map("trading_account_id")
+  isDisqualified   Boolean        @default(false) @map("is_disqualified")
+  disqualifyReason String?        @map("disqualify_reason")
+  joinedAt         DateTime       @default(now()) @map("joined_at") @db.Timestamptz(6)
+
+  competition      Competition    @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tradingAccount   TradingAccount @relation(fields: [tradingAccountId], references: [id], onDelete: Cascade)
+
+  @@unique([competitionId, userId])
+  @@unique([competitionId, tradingAccountId])
+  @@index([competitionId])
+  @@index([userId])
+  @@map("competition_participants")
+}
+
 
