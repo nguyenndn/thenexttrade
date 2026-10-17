@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { generateApiKey, generateSyncApiKey } from "@/lib/utils/api-key";
+import { notifyAdminsOfNewAccount } from "@/lib/admin/admin-notification.server";
+import { getUserProAccess } from "@/lib/pro-access";
 
 // GET - List user's trading accounts
 export async function GET(request: NextRequest) {
@@ -129,6 +131,23 @@ export async function POST(request: NextRequest) {
         // Legacy per-account key for backward compatibility (hidden from UI)
         const legacyApiKey = generateApiKey();
 
+        // Enforce account connection quota: Free tier is limited to 2 accounts
+        const existingCount = await prisma.tradingAccount.count({
+            where: { userId: user.id },
+        });
+
+        if (existingCount >= 2) {
+            const proAccess = await getUserProAccess(user.id);
+            if (!proAccess.isPro) {
+                return NextResponse.json(
+                    {
+                        error: "Free tier is limited to 2 connected accounts. Upgrade to Partner Pro for unlimited accounts.",
+                    },
+                    { status: 403 }
+                );
+            }
+        }
+
         // Reject duplicate account numbers within the same user.
         if (accountNumber) {
             const existing = await prisma.tradingAccount.findFirst({
@@ -156,6 +175,18 @@ export async function POST(request: NextRequest) {
                 accountNumber,
                 apiKey: legacyApiKey,
             },
+        });
+
+        // Notify Admins about the newly connected account (awaited so the
+        // write can't be dropped when the serverless function freezes)
+        await notifyAdminsOfNewAccount({
+            accountId: account.id,
+            userId: user.id,
+            broker,
+            accountNumber,
+            server: null,
+            userEmail: user.email,
+            userName: user.name,
         });
 
         return NextResponse.json({

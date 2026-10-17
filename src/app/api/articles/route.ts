@@ -260,7 +260,9 @@ export async function POST(request: Request) {
             focusKeyword,
             schemaType: schemaType || "ARTICLE",
             estimatedTime: parsedEstimatedTime,
-            publishedAt: parsedPublishedAt,
+            publishedAt:
+                parsedPublishedAt ??
+                (status === "PUBLISHED" ? new Date() : null),
             authorId: user.id,
             // AI Content Pipeline metadata
             tone: body.tone || null,

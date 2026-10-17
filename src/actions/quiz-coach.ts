@@ -5,7 +5,7 @@ import { executeAiGateway } from "@/lib/ai-gateway/provider-router";
 import { reserveAiRequest } from "@/lib/ai-gateway/quota-service";
 import { randomUUID } from "node:crypto";
 
-export async function getQuizAIExplanation(
+async function getQuizAIExplanation(
     questionText: string,
     selectedOptionText: string,
     correctOptionText: string

@@ -59,12 +59,17 @@ export async function DELETE(
             const relativePath = media.url
                 .replace(/^\//, "")
                 .replace(/\//g, path.sep); // uploads\filename.ext
-            const absolutePath = path.join(
+            const uploadsRoot = path.resolve(process.cwd(), "public", "uploads");
+            const absolutePath = path.resolve(
                 process.cwd(),
                 "public",
                 relativePath
             );
-            await unlink(absolutePath);
+            if (absolutePath.startsWith(uploadsRoot + path.sep)) {
+                await unlink(absolutePath);
+            } else {
+                console.warn("Refusing to delete file outside public/uploads:", absolutePath);
+            }
         } catch (err) {
             console.warn("Could not delete file from disk:", err);
         }

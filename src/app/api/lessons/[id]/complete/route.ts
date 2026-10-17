@@ -46,6 +46,7 @@ export async function POST(
                                         orderBy: { order: "asc" },
                                         select: {
                                             lessons: {
+                                                where: { status: "published" },
                                                 orderBy: { order: "asc" },
                                                 select: { id: true },
                                             },
@@ -168,14 +169,18 @@ export async function POST(
                 });
             }
 
-            xpResult = await addXP(userId, xpAmount);
-            await recordEdgeEventOnce({
+            const recordedLessonEvent = await recordEdgeEventOnce({
                 userId,
                 eventType: "LESSON_COMPLETE",
                 sourceType: "Lesson",
                 sourceId: id,
                 xpAwarded: xpAmount,
             });
+            if (recordedLessonEvent !== null) {
+                xpResult = await addXP(userId, xpAmount);
+            } else {
+                xpAmount = 0;
+            }
         }
 
         // Check for 'STUDIOUS' Badge (Completed 5 lessons)

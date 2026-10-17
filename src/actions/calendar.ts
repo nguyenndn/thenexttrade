@@ -25,15 +25,31 @@ export async function getCalendarPerformance(
             return { success: false, error: "Unauthorized" };
         }
 
-        const monthDate = parseISO(monthStr);
-        const start = startOfMonth(monthDate);
-        const end = endOfMonth(monthDate);
+        // Support both 'yyyy-MM' / 'yyyy-MM-dd' and ISO strings without local timezone shift
+        const ymMatch = monthStr.match(/^(\d{4})-(\d{2})/);
+        let year: number;
+        let monthIndex: number;
+        if (ymMatch && monthStr.length <= 10) {
+            year = Number(ymMatch[1]);
+            monthIndex = Number(ymMatch[2]) - 1;
+        } else {
+            const parsed = parseISO(monthStr);
+            if (isNaN(parsed.getTime())) {
+                return { success: false, error: "Invalid month date" };
+            }
+            year = parsed.getFullYear();
+            monthIndex = parsed.getMonth();
+        }
+        const start = new Date(Date.UTC(year, monthIndex, 1, 0, 0, 0, 0));
+        const end = new Date(
+            Date.UTC(year, monthIndex + 1, 0, 23, 59, 59, 999)
+        );
 
         // Fetch all closed trades for the month
         const trades = await db.journalEntry.findMany({
             where: {
                 userId: user.id,
-                ...(accountId ? { accountId } : {}),
+                ...(accountId && accountId !== "all" ? { accountId } : {}),
                 status: "CLOSED",
                 exitDate: {
                     gte: start,
@@ -135,7 +151,23 @@ export async function saveDailyNote(
             return { success: false, error: "Unauthorized" };
         }
 
-        const date = startOfDay(parseISO(dateStr));
+        const ymdMatch = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+        const date = ymdMatch
+            ? new Date(
+                  Date.UTC(
+                      Number(ymdMatch[1]),
+                      Number(ymdMatch[2]) - 1,
+                      Number(ymdMatch[3]),
+                      0,
+                      0,
+                      0,
+                      0
+                  )
+              )
+            : startOfDay(parseISO(dateStr));
+        if (isNaN(date.getTime())) {
+            return { success: false, error: "Invalid date" };
+        }
 
         const upserted = await db.tradingDayNote.upsert({
             where: {

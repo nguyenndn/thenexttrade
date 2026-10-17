@@ -17,14 +17,14 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
     title: "TheNextTrade - All-in-One Forex Trading OS, Playbook & Journal",
     description:
-        "Turn your trade history into consistent edge with TheNextTrade. Automated MT5 Trade Journal, Playbook Studio, 18 free forex calculators, and structured Academy.",
+        "Turn your trade history into consistent edge with TheNextTrade. Automated MT5 Trade Journal, Playbook Studio, 17 free forex calculators, and structured Academy.",
     alternates: {
         canonical: "/",
     },
     openGraph: {
         title: "TheNextTrade - All-in-One Forex Trading OS, Playbook & Journal",
         description:
-            "Automated MT5 Trade Journal, Playbook Studio, 18 free forex calculators, and structured 3-level Academy.",
+            "Automated MT5 Trade Journal, Playbook Studio, 17 free forex calculators, and structured 3-level Academy.",
         url: "https://thenexttrade.com",
         siteName: "TheNextTrade",
         images: [
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "TheNextTrade - All-in-One Forex Trading OS",
         description:
-            "Automated MT5 Trade Journal, Playbook Studio, 18 free forex calculators, and structured 3-level Academy.",
+            "Automated MT5 Trade Journal, Playbook Studio, 17 free forex calculators, and structured 3-level Academy.",
         images: ["/og-image.jpg"],
     },
 };

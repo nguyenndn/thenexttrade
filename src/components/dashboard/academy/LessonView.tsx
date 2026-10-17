@@ -56,12 +56,6 @@ export default function LessonView({
         }
 
         setCompleting(true);
-        confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 },
-            colors: ["hsl(var(--primary))", "#ffffff", "#fbbf24"],
-        });
 
         try {
             const res = await fetch(`/api/lessons/${lesson.id}/complete`, {
@@ -71,6 +65,12 @@ export default function LessonView({
             });
 
             if (res.ok) {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ["hsl(var(--primary))", "#ffffff", "#fbbf24"],
+                });
                 setIsCompleted(true);
                 trackEvent("complete_lesson", {
                     lessonTitle: lesson.title,
@@ -78,6 +78,9 @@ export default function LessonView({
                 });
                 toast.success("Great! You've completed this lesson.");
                 setTimeout(moveToNext, 1500);
+            } else {
+                const errData = await res.json().catch(() => null);
+                toast.error(errData?.error || "Failed to mark lesson complete.");
             }
         } catch (error: any) {
             toast.error(
@@ -91,10 +94,10 @@ export default function LessonView({
     };
 
     const moveToNext = () => {
-        if (nextLesson) {
+        if (isLastLesson && quiz) {
+            router.push(`/dashboard/academy/quiz/${quiz.id}`);
+        } else if (nextLesson) {
             router.push(`/dashboard/academy/lessons/${nextLesson.slug}`);
-        } else if (isLastLesson && quiz) {
-            router.push(`/dashboard/academy`);
         } else {
             router.push(`/dashboard/academy`);
         }

@@ -9,6 +9,10 @@ export const metadata: Metadata = {
     title: "You're Offline | TheNextTrade",
     description:
         "You appear to be offline. Please check your internet connection.",
+    robots: {
+        index: false,
+        follow: false,
+    },
 };
 
 export default function OfflinePage() {

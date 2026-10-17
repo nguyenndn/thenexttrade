@@ -5,12 +5,21 @@ import { z } from "zod";
 
 const updateSchema = z.object({
     name: z.string().min(1).max(100).optional(),
-    description: z.string().optional(),
-    rules: z.string().optional(),
+    description: z.string().nullable().optional(),
+    rules: z.string().nullable().optional(),
     color: z
         .string()
         .regex(/^#[0-9A-Fa-f]{6}$/)
         .optional(),
+    isPlaybook: z.boolean().optional(),
+    setupType: z.string().nullable().optional(),
+    timeframes: z.array(z.string()).optional(),
+    pairs: z.array(z.string()).optional(),
+    idealEntry: z.string().nullable().optional(),
+    idealStopLoss: z.string().nullable().optional(),
+    idealTakeProfit: z.string().nullable().optional(),
+    riskRewardMin: z.number().min(0).nullable().optional(),
+    referenceImages: z.array(z.string()).optional(),
 });
 
 export async function GET(
@@ -76,9 +85,31 @@ export async function PATCH(
             return NextResponse.json({ error: "Not found" }, { status: 404 });
         }
 
-        const strategy = await prisma.strategy.update({
-            where: { id },
-            data: validation.data,
+        const newName = validation.data.name;
+        if (newName && newName !== existing.name) {
+            const duplicate = await prisma.strategy.findUnique({
+                where: { userId_name: { userId: user.id, name: newName } },
+                select: { id: true },
+            });
+            if (duplicate) {
+                return NextResponse.json(
+                    { error: "Strategy with this name already exists" },
+                    { status: 409 }
+                );
+            }
+        }
+
+        const strategy = await prisma.$transaction(async (tx) => {
+            if (newName && newName !== existing.name) {
+                await tx.journalEntry.updateMany({
+                    where: { userId: user.id, strategy: existing.name },
+                    data: { strategy: newName },
+                });
+            }
+            return tx.strategy.update({
+                where: { id },
+                data: validation.data,
+            });
         });
 
         return NextResponse.json({ strategy });

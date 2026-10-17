@@ -3,6 +3,7 @@ export const revalidate = 86400; // Cache sitemap statically for 24 hours
 import { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { getBaseUrl } from "@/lib/url";
+import { TRADING_SYSTEMS_DATA } from "@/config/trading-systems-data";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = getBaseUrl();
@@ -63,18 +64,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         "/tools/market-hours",
     ];
 
+    const STATIC_RELEASE_DATE = new Date("2026-10-01T00:00:00.000Z");
+
+    const tradingSystemRoutes = TRADING_SYSTEMS_DATA.map(
+        (sys) => `/trading-systems/${sys.slug}`
+    );
+
     const routes = [
         ...mainRoutes.map((r) => ({
             url: `${baseUrl}${r.path}`,
-            lastModified: new Date(),
+            lastModified: STATIC_RELEASE_DATE,
             changeFrequency: r.frequency,
             priority: r.priority,
         })),
         ...toolRoutes.map((path) => ({
             url: `${baseUrl}${path}`,
-            lastModified: new Date(),
+            lastModified: STATIC_RELEASE_DATE,
             changeFrequency: "monthly" as const,
             priority: 0.8,
+        })),
+        ...tradingSystemRoutes.map((path) => ({
+            url: `${baseUrl}${path}`,
+            lastModified: STATIC_RELEASE_DATE,
+            changeFrequency: "monthly" as const,
+            priority: 0.85,
         })),
     ];
 
@@ -112,35 +125,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
     }));
 
-    // 4. Fetch Categories
-    const categories = await prisma.category.findMany({
-        select: { slug: true, updatedAt: true },
-    });
-
-    const categoryUrls = categories.map((cat) => ({
-        url: `${baseUrl}/knowledge?category=${cat.slug}`,
-        lastModified: cat.updatedAt,
-        changeFrequency: "weekly" as const,
-        priority: 0.9,
-    }));
-
-    // 5. Fetch Tags
-    const tags = await prisma.tag.findMany({
-        select: { slug: true },
-    });
-
-    const tagUrls = tags.map((tag) => ({
-        url: `${baseUrl}/knowledge?tag=${tag.slug}`,
-        lastModified: new Date(), // Tags don't have updatedAt, use current date
-        changeFrequency: "weekly" as const,
-        priority: 0.6,
-    }));
-
     return [
         ...routes,
-        ...categoryUrls,
         ...articleUrls,
         ...lessonUrls,
-        ...tagUrls,
     ];
 }

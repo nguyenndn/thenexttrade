@@ -42,3 +42,19 @@
 - [ ] 6.3 Slide-over drawer component: Create `AdminTicketDetailDrawer.tsx` with credentials inspector, 1-click copy, and resolve/fail actions.
 - [ ] 6.4 Unified client UI: Refactor `client.tsx` to render a single data table with Type badges, relative time, unified status, and drawer integration; remove `SupportTicketsTab.tsx`.
 - [ ] 6.5 Quality & Typecheck: Run `npx tsc --noEmit` and `npm run lint`.
+
+## 7. Admin User Detail Tab Refinement & Cleanup (/admin/users/[id])
+- [x] 7.1 Tab 1 Overview (`UserOverviewTab.tsx`): Delete `Achievements & Badges`, clean `User Activity` into 3-metric strip, filter out raw `type === "trade"` timeline entries.
+- [x] 7.2 Tab 2 Journal & Trades (`UserJournalTab.tsx`): Add Account dropdown filter and clear record counter indicator.
+- [x] 7.3 Tab 3 Accounts (`UserAccountsList.tsx`): Add 1-click copy utility for `Server · Account #`.
+- [x] 7.4 Tab 5 Coaching & Analytics (`UserDetailTabsWrapper.tsx` & `page.tsx`): Consolidate into 2 focused sub-tabs (`Playbooks & Rules` + `Reports & Notes`), prune unused `improvementExperiments`/`edgeEvents` queries.
+- [x] 7.5 Quality Gate: Run `npx tsc --noEmit`, `npm run lint`, and `npx vitest run`.
+
+## 8. Graceful Free Plan Transition on Pro Revocation (Phương án A)
+- [x] 8.1 Pro Status Normalization: Updated `pro-access.ts` to map revoked / non-entitled statuses to `NONE` (Free Tier) cleanly.
+- [x] 8.2 Dashboard VIP Status Widget: Updated `VipStatusWidget.tsx` to display neutral "Free Tier" with Crown icon instead of "Access Suspended" banner.
+- [x] 8.3 Mobile Pro Status Banner: Removed disciplinary "VIP Revoked" red badge from `MobileProStatusBanner.tsx`, smoothly falling back to Free Plan upgrade prompt.
+- [x] 8.4 Account Card Badges: Updated `AccountCard.tsx` `STATUS_CHIP.REVOKED` to neutral Free chip.
+- [x] 8.5 Admin Revoke Action: Updated `revokeProAccess` in `src/actions/vip-request.ts` to set approved `vipRequest` to `REJECTED` and post polite notification.
+- [x] 8.6 Quality & Verification Gate: Run `npx tsc --noEmit` (0 errors), `npm run lint` (0 errors), and `npx vitest run` (76/76 test files passed, 486 unit tests passed).
+

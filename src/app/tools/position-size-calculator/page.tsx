@@ -7,6 +7,8 @@ const tool = getToolBySlug("position-size-calculator")!;
 
 export const metadata: Metadata = getToolMetadata("position-size-calculator");
 
+export const revalidate = 86400;
+
 export default function PositionSizeCalculatorPage() {
     return (
         <ToolPageLayout tool={tool}>

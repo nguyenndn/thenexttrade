@@ -71,20 +71,30 @@ function getCellColor(val: number, isDiagonal: boolean): string {
 export function CorrelationMatrix() {
     const [matrix, setMatrix] = useState<number[][] | null>(null);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const [period, setPeriod] = useState(30);
 
     const fetchCorrelation = useCallback(async () => {
         setLoading(true);
+        setError(null);
         try {
             const res = await fetch(
                 `/api/tools/correlation?pairs=${PAIRS.join(",")}&period=${period}`
             );
             const data = await res.json();
-            if (data.success) {
+            if (data.success && Array.isArray(data.matrix)) {
                 setMatrix(data.matrix);
+            } else {
+                setError(
+                    data.error ||
+                        "Unable to calculate correlation matrix. Please try again."
+                );
             }
         } catch (err) {
             console.error("Correlation error:", err);
+            setError(
+                "Failed to fetch correlation data. Please check your network and try again."
+            );
         } finally {
             setLoading(false);
         }
@@ -101,6 +111,7 @@ export function CorrelationMatrix() {
                             onClick={() => {
                                 setPeriod(p.value);
                                 setMatrix(null);
+                                setError(null);
                             }}
                             className={cn(
                                 "relative px-4 py-2 rounded-lg text-xs font-bold border transition-colors z-10",
@@ -139,8 +150,26 @@ export function CorrelationMatrix() {
                 </Button>
             </div>
 
+            {/* ── Error State ── */}
+            {error && !loading && (
+                <div className="text-center py-10 px-4 rounded-xl border border-red-500/20 bg-red-500/5 space-y-4">
+                    <p className="text-sm font-semibold text-red-600 dark:text-red-400">
+                        {error}
+                    </p>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={fetchCorrelation}
+                        className="rounded-lg"
+                    >
+                        <RefreshCw size={14} className="mr-2" />
+                        Retry Calculation
+                    </Button>
+                </div>
+            )}
+
             {/* ── Empty State ── */}
-            {!matrix && !loading && (
+            {!matrix && !loading && !error && (
                 <div className="text-center py-16 text-gray-500">
                     <p className="text-lg font-bold mb-2">
                         Select period & click Calculate
@@ -182,7 +211,7 @@ export function CorrelationMatrix() {
 
                                 {/* Cells */}
                                 {PAIRS.map((colPair, j) => {
-                                    const val = matrix[i][j];
+                                    const val = matrix[i]?.[j] ?? 0;
                                     const isDiagonal = i === j;
                                     const pct = Math.round(val * 100);
 
@@ -235,11 +264,11 @@ export function CorrelationMatrix() {
                 <div className="space-y-4">
                     <div className="flex flex-wrap items-center justify-center gap-5 text-xs text-gray-600 dark:text-gray-300">
                         <div className="flex items-center gap-1.5">
-                            <div className="w-4 h-4 rounded-fullbg-green-600 dark:bg-teal-600" />
+                            <div className="w-4 h-4 rounded-full bg-green-600 dark:bg-teal-600" />
                             <span>Strong +</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <div className="w-4 h-4 rounded-fullbg-green-100 dark:bg-teal-700/70 border border-green-200 dark:border-transparent" />
+                            <div className="w-4 h-4 rounded-full bg-green-100 dark:bg-teal-700/70 border border-green-200 dark:border-transparent" />
                             <span>Weak +</span>
                         </div>
                         <div className="flex items-center gap-1.5">
@@ -247,11 +276,11 @@ export function CorrelationMatrix() {
                             <span>None</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <div className="w-4 h-4 rounded-fullbg-red-100 dark:bg-red-800/70 border border-red-200 dark:border-transparent" />
+                            <div className="w-4 h-4 rounded-full bg-red-100 dark:bg-red-800/70 border border-red-200 dark:border-transparent" />
                             <span>Weak −</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <div className="w-4 h-4 rounded-fullbg-red-600 dark:bg-red-700" />
+                            <div className="w-4 h-4 rounded-full bg-red-600 dark:bg-red-700" />
                             <span>Strong −</span>
                         </div>
                     </div>

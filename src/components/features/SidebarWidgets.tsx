@@ -86,6 +86,7 @@ async function RecentPostsWidget() {
                                         month: "short",
                                         day: "numeric",
                                         year: "numeric",
+                                        timeZone: "UTC",
                                     })}
                                 </span>
                             </div>

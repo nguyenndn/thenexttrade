@@ -61,11 +61,18 @@ export default function LessonClientView({
             : `/academy/lesson/${slug}`;
     const academyPath = isDashboard ? "/dashboard/academy" : "/academy";
 
+    const effectiveCompletedIds = useMemo(() => {
+        if (isCompleted && !completedLessonIds.includes(lesson.id)) {
+            return [...completedLessonIds, lesson.id];
+        }
+        return completedLessonIds;
+    }, [completedLessonIds, isCompleted, lesson.id]);
+
     const currentIndex = courseLessons.findIndex(
         (l: any) => l.id === lesson.id
     );
     const completedInModule = courseLessons.filter((l: any) =>
-        completedLessonIds.includes(l.id)
+        effectiveCompletedIds.includes(l.id)
     ).length;
 
     // Precompute which lesson indexes are unlocked (O(n) instead of O(n²))
@@ -74,12 +81,12 @@ export default function LessonClientView({
         for (let i = 1; i < courseLessons.length; i++) {
             const allPrevDone = courseLessons
                 .slice(0, i)
-                .every((l: any) => completedLessonIds.includes(l.id));
+                .every((l: any) => effectiveCompletedIds.includes(l.id));
             if (allPrevDone) set.add(i);
             else break; // Sequential: if one isn't done, none after are unlocked
         }
         return set;
-    }, [courseLessons, completedLessonIds]);
+    }, [courseLessons, effectiveCompletedIds]);
 
     const handleComplete = async () => {
         setCompleting(true);
@@ -103,14 +110,19 @@ export default function LessonClientView({
                 });
 
                 setTimeout(() => {
-                    if (nextLesson) router.push(lessonPath(nextLesson.slug));
-                    else if (isLastLesson && quiz)
+                    if (isLastLesson && quiz) {
                         router.push(
                             isDashboard
                                 ? `/dashboard/academy/quiz/${quiz.id}`
                                 : `/academy/quiz/${quiz.id}`
                         );
+                    } else if (nextLesson) {
+                        router.push(lessonPath(nextLesson.slug));
+                    }
                 }, 1500);
+            } else {
+                const errData = await res.json().catch(() => null);
+                toast.error(errData?.error || "Failed to mark lesson complete.");
             }
         } catch (error: any) {
             console.error(error);
@@ -324,7 +336,7 @@ export default function LessonClientView({
                             {courseLessons.map((l: any, idx: number) => {
                                 const isActive = l.id === lesson.id;
                                 const isLessonCompleted =
-                                    completedLessonIds.includes(l.id);
+                                    effectiveCompletedIds.includes(l.id);
                                 // Sequential lock: unlocked if all previous lessons are completed
                                 const isUnlocked = unlockedIndexes.has(idx);
                                 const isLocked =
@@ -407,7 +419,7 @@ export default function LessonClientView({
                             (() => {
                                 const allLessonsCompleted = courseLessons.every(
                                     (l: any) =>
-                                        completedLessonIds.includes(l.id)
+                                        effectiveCompletedIds.includes(l.id)
                                 );
                                 return (
                                     <div className="p-4 border-t border-dashboard">
@@ -482,7 +494,7 @@ export default function LessonClientView({
                             {courseLessons.map((l: any, idx: number) => {
                                 const mobileUnlocked = unlockedIndexes.has(idx);
                                 const mobileCompleted =
-                                    completedLessonIds.includes(l.id);
+                                    effectiveCompletedIds.includes(l.id);
                                 const mobileLocked =
                                     !mobileUnlocked &&
                                     l.id !== lesson.id &&

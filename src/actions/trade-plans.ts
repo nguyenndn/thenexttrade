@@ -46,6 +46,19 @@ export async function createTradePlan(data: z.infer<typeof tradePlanSchema>) {
     if (!parsed.success) return { error: "Invalid trade plan details" };
 
     try {
+        const normalizedAccountId =
+            !parsed.data.accountId || parsed.data.accountId === "none"
+                ? null
+                : parsed.data.accountId;
+
+        if (normalizedAccountId) {
+            const acct = await prisma.tradingAccount.findFirst({
+                where: { id: normalizedAccountId, userId: user.id },
+                select: { id: true },
+            });
+            if (!acct) return { error: "Invalid trading account" };
+        }
+
         const plan = await prisma.tradePlan.create({
             data: {
                 userId: user.id,
@@ -62,7 +75,7 @@ export async function createTradePlan(data: z.infer<typeof tradePlanSchema>) {
                 emotionBefore: parsed.data.emotionBefore || null,
                 confidenceLevel: parsed.data.confidenceLevel || null,
                 ruleChecklist: parsed.data.ruleChecklist || null,
-                accountId: parsed.data.accountId || null,
+                accountId: normalizedAccountId,
                 status: "PLANNED",
                 ...(parsed.data.snapshotData && {
                     tradeCheckSnapshot: {
@@ -70,7 +83,7 @@ export async function createTradePlan(data: z.infer<typeof tradePlanSchema>) {
                             userId: user.id,
                             snapshotData: parsed.data.snapshotData,
                             passed: parsed.data.snapshotPassed || false,
-                            accountId: parsed.data.accountId || null,
+                            accountId: normalizedAccountId,
                         },
                     },
                 }),
@@ -202,6 +215,12 @@ export async function linkPlanToTrade(planId: string, journalEntryId: string) {
                 error: `Cannot link trade plan in ${currentPlan.status} state`,
             };
         }
+
+        const entry = await prisma.journalEntry.findFirst({
+            where: { id: journalEntryId, userId: user.id },
+            select: { id: true },
+        });
+        if (!entry) return { error: "Journal entry not found" };
 
         const plan = await prisma.tradePlan.update({
             where: { id: planId, userId: user.id },

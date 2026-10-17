@@ -1,4 +1,6 @@
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { getAuthUser } from "@/lib/auth-cache";
 import { StrategyManager } from "@/components/strategies/StrategyManager";
 import { getStrategies, getStrategyPerformance } from "@/actions/strategies";
 
@@ -13,6 +15,11 @@ export default async function StrategiesPage({
 }: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+    const user = await getAuthUser();
+    if (!user) {
+        redirect("/auth/login");
+    }
+
     const resolvedParams = await searchParams;
     const page =
         typeof resolvedParams.page === "string"

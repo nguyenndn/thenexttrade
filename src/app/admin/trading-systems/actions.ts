@@ -54,7 +54,7 @@ export async function createEAProduct(data: CreateEAProductInput) {
 
         const newProduct = await prisma.eAProduct.create({
             data: {
-                ...data,
+                ...validated.data,
                 isActive: true,
                 totalDownloads: 0,
             },
@@ -100,7 +100,7 @@ export async function updateEAProduct(
 
         await prisma.eAProduct.update({
             where: { id: productId },
-            data: data,
+            data: validated.data,
         });
 
         await prisma.auditLog.create({
@@ -109,7 +109,7 @@ export async function updateEAProduct(
                 action: "PRODUCT_UPDATED",
                 targetType: "EAProduct",
                 targetId: productId,
-                details: JSON.parse(JSON.stringify({ changes: data })),
+                details: JSON.parse(JSON.stringify({ changes: validated.data })),
             },
         });
 
@@ -173,6 +173,14 @@ export async function uploadEAFile(
         const file = formData.get("file") as File;
         if (!file) return { success: false, error: "No file provided" };
 
+        const safeFileName = file.name
+            .split(/[\\/]/)
+            .pop()!
+            .replace(/[^a-zA-Z0-9._-]/g, "_");
+        if (!safeFileName) {
+            return { success: false, error: "Invalid file name" };
+        }
+
         const product = await prisma.eAProduct.findUnique({
             where: { id: productId },
         });
@@ -187,20 +195,20 @@ export async function uploadEAFile(
         const folder =
             platform === "MT4" ? "mt4" : platform === "MT5" ? "mt5" : "";
         const name = folder
-            ? `${folder}/${file.name}`
-            : `thumbnail_${file.name}`;
+            ? `${folder}/${safeFileName}`
+            : `thumbnail_${safeFileName}`;
         
         let path = "";
         let finalUrl = "";
 
         if (platform === "THUMBNAIL") {
-            const publicUrl = await uploadPublicAsset(buffer, `trading-systems/${productId}`, file.name, file.type || "image/png");
+            const publicUrl = await uploadPublicAsset(buffer, `trading-systems/${product.id}`, safeFileName, file.type || "image/png");
             if (!publicUrl) {
                 return { success: false, error: "Thumbnail upload failed" };
             }
             finalUrl = publicUrl;
         } else {
-            path = `trading-systems/${productId}/${name}`;
+            path = `trading-systems/${product.id}/${name}`;
             const success = await uploadProtectedAsset(buffer, path, file.type || "application/octet-stream");
             if (!success) {
                 return { success: false, error: "Protected file upload failed" };

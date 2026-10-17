@@ -7,6 +7,8 @@ const tool = getToolBySlug("currency-converter")!;
 
 export const metadata: Metadata = getToolMetadata("currency-converter");
 
+export const revalidate = 86400;
+
 export default function CurrencyConverterPage() {
     return (
         <ToolPageLayout tool={tool}>

@@ -6,17 +6,18 @@ import {
     Mail,
     Clock,
     ShieldCheck,
-    Award,
-    LineChart,
-    Key,
     Globe,
     WalletCards,
     CircleDollarSign,
     RefreshCw,
+    Activity,
 } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
-import { Button } from "@/components/ui/Button";
 import { QuickActions } from "./QuickActions";
+import { AdminNotes } from "./AdminNotes";
+import { UserIdCopyBadge } from "./UserIdCopyBadge";
+import { UserAccountsList } from "./UserAccountsList";
+import { UserLicensesList } from "./UserLicensesList";
 import { getCountryName, normalizeCountryCode } from "@/lib/country-utils";
 import { UserVipProTab } from "./UserVipProTab";
 import { UserIbPerformanceTab } from "./UserIbPerformanceTab";
@@ -25,7 +26,6 @@ import { UserDetailTabsWrapper } from "./UserDetailTabsWrapper";
 import { UserJournalTab } from "./UserJournalTab";
 import { UserTradePlansTab } from "./UserTradePlansTab";
 import { UserRulesGoalsTab } from "./UserRulesGoalsTab";
-import { UserGrowthCoachTab } from "./UserGrowthCoachTab";
 import { UserReportsNotesTab } from "./UserReportsNotesTab";
 import {
     computeCapitalBreakdown,
@@ -37,7 +37,6 @@ import { UserNarrativeSummary } from "@/components/admin/users/UserNarrativeSumm
 import { classifyUser } from "@/lib/admin/behavior/classify.server";
 import { computeTraderSignals } from "@/lib/coach/signal-engine.server";
 import { BehaviorClassification } from "@/lib/admin/behavior/types";
-import { AccountIbAttributionBadge } from "@/components/admin/users/AccountIbAttributionBadge";
 
 export const dynamic = "force-dynamic";
 
@@ -209,10 +208,12 @@ export default async function UserDetailPage({
                 orderBy: { createdAt: "desc" },
             },
             proEntitlements: {
+                where: { status: { not: "REVOKED" } },
                 orderBy: { createdAt: "desc" },
                 include: {
                     tradingAccount: {
                         select: {
+                            id: true,
                             name: true,
                             accountNumber: true,
                         },
@@ -295,22 +296,6 @@ export default async function UserDetailPage({
                     },
                 },
             },
-            improvementExperiments: {
-                orderBy: { createdAt: "desc" },
-            },
-            coachActionPlans: {
-                orderBy: { createdAt: "desc" },
-                include: {
-                    items: { orderBy: { position: "asc" } },
-                },
-            },
-            missionProgress: {
-                orderBy: { createdAt: "desc" },
-            },
-            edgeEvents: {
-                take: 50,
-                orderBy: { createdAt: "desc" },
-            },
             tradingDayNotes: {
                 take: 50,
                 orderBy: { date: "desc" },
@@ -339,8 +324,6 @@ export default async function UserDetailPage({
                     strategies: true,
                     tradingRules: true,
                     traderGoals: true,
-                    improvementExperiments: true,
-                    coachActionPlans: true,
                     tradingDayNotes: true,
                 },
             },
@@ -354,19 +337,6 @@ export default async function UserDetailPage({
         ? new Date(lastSession.lastActive)
         : null;
     const countryCode = normalizeCountryCode(user.profile?.country);
-
-    const licenseStatusStyles: Record<string, string> = {
-        PENDING:
-            "bg-yellow-100 text-yellow-700 dark:bg-yellow-500/20 dark:text-yellow-400",
-        APPROVED:
-            "bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400",
-        REJECTED:
-            "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400",
-        EXPIRED:
-            "bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-500",
-        SUSPENDED:
-            "bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400",
-    };
 
     const serializedUser = JSON.parse(JSON.stringify(user));
     const capital = computeCapitalBreakdown(user.tradingAccounts);
@@ -413,14 +383,7 @@ export default async function UserDetailPage({
                 title={`User Detail - ${user.email || "No email"}`}
                 description={`${user.name || "Unnamed User"} · Joined ${format(new Date(user.createdAt), "MMM d, yyyy")}`}
                 backHref="/admin/users"
-            >
-                <Button
-                    variant="outline"
-                    className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600 dark:border-red-500/20 dark:hover:bg-red-500/10"
-                >
-                    Ban User
-                </Button>
-            </AdminPageHeader>
+            />
 
             <section className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925]">
                 <div className="grid grid-cols-1 divide-y divide-gray-200 dark:divide-white/10 sm:grid-cols-2 sm:divide-y-0 xl:grid-cols-4">
@@ -584,28 +547,35 @@ export default async function UserDetailPage({
                                     </span>
                                 </div>
                                 <div className="flex min-w-0 items-center gap-2.5 text-sm">
-                                    <Award
+                                    <ShieldCheck
                                         size={15}
                                         className="text-gray-500 shrink-0"
                                     />
                                     <span className="font-medium text-gray-700 dark:text-white text-xs">
-                                        Lv.{user.level} · {user.xp} Edge
+                                        Role: {user.profile?.role || "USER"}
                                     </span>
                                 </div>
                                 <div className="flex min-w-0 items-center gap-2.5 text-sm">
-                                    <Globe
+                                    <Activity
                                         size={15}
                                         className="text-gray-500 shrink-0"
                                     />
                                     <span className="font-medium text-gray-700 dark:text-white text-xs">
                                         {lastActive
-                                            ? formatDistanceToNow(lastActive, {
+                                            ? `Active ${formatDistanceToNow(lastActive, {
                                                   addSuffix: true,
-                                              })
-                                            : "Never"}
+                                              })}`
+                                            : "Never active"}
                                     </span>
                                 </div>
                             </div>
+                        </div>
+
+                        <div className="border-t border-gray-200 dark:border-white/10 px-6 py-2.5 bg-gray-50/40 dark:bg-white/[0.02] flex items-center justify-between">
+                            <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                                User ID
+                            </span>
+                            <UserIdCopyBadge userId={user.id} />
                         </div>
 
                         <QuickActions
@@ -616,144 +586,13 @@ export default async function UserDetailPage({
                         />
                     </div>
 
-                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
-                        <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
-                            <h3 className="text-base font-bold text-gray-700 dark:text-white">
-                                Trading Accounts
-                            </h3>
-                            <span className="text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-lg">
-                                {user._count.tradingAccounts} Total
-                            </span>
-                        </div>
-                        {user.tradingAccounts.length > 0 ? (
-                            <div className="divide-y divide-gray-200 dark:divide-white/10">
-                                {user.tradingAccounts.slice(0, 5).map((acc) => (
-                                    <div
-                                        key={acc.id}
-                                        className="flex items-center justify-between gap-4 p-4 transition-colors hover:bg-gray-50/50 dark:hover:bg-white/[0.02] sm:px-6"
-                                    >
-                                        <div className="flex min-w-0 items-center gap-3">
-                                            <div className="p-2 bg-gray-100 dark:bg-white/5 rounded-lg text-gray-600 max-sm:hidden">
-                                                <LineChart size={16} />
-                                            </div>
-                                            <div className="min-w-0">
-                                                <p className="flex items-center gap-2 text-sm font-bold text-gray-700 dark:text-white">
-                                                    <span className="truncate">
-                                                        {acc.name ||
-                                                            "Unnamed Account"}
-                                                    </span>
-                                                    {acc.accountType ===
-                                                        "DEMO" ||
-                                                    acc.server
-                                                        ?.toLowerCase()
-                                                        .includes("demo") ? (
-                                                        <span className="shrink-0 text-[11px] font-bold bg-yellow-100 dark:bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 px-1.5 py-0.5 rounded-lg uppercase tracking-widest">
-                                                            Demo
-                                                        </span>
-                                                    ) : (
-                                                        <span className="shrink-0 text-[11px] font-bold bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400 px-1.5 py-0.5 rounded-lg uppercase tracking-widest">
-                                                            Real
-                                                        </span>
-                                                    )}
-                                                </p>
-                                                <p className="mt-0.5 truncate text-[11px] uppercase tracking-wider text-gray-600">
-                                                    {acc.broker ||
-                                                        "Unknown Broker"}{" "}
-                                                    · {acc.platform || "MT4"}{" "}
-                                                    {acc.accountNumber
-                                                        ? `· #${acc.accountNumber}`
-                                                        : ""}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="shrink-0 text-right flex flex-col items-end gap-1">
-                                            <div className="flex items-center gap-2">
-                                                <AccountIbAttributionBadge
-                                                    accountId={acc.id}
-                                                    initialAttribution={acc.ibAttribution}
-                                                    userId={user.id}
-                                                    accountNumber={acc.accountNumber}
-                                                />
-                                                <p className="text-sm font-black text-gray-700 dark:text-white">
-                                                    $
-                                                    {acc.balance?.toFixed(2) ||
-                                                        "0.00"}
-                                                </p>
-                                            </div>
-                                            <span
-                                                className={`inline-block text-[11px] font-bold uppercase tracking-wider ${
-                                                    acc.status === "CONNECTED"
-                                                        ? "text-green-500"
-                                                        : "text-gray-500"
-                                                }`}
-                                            >
-                                                {acc.status}
-                                            </span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="p-8 text-center">
-                                <p className="text-sm text-gray-600">
-                                    No trading accounts linked yet.
-                                </p>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
-                        <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
-                            <h3 className="text-base font-bold text-gray-700 dark:text-white flex items-center gap-2">
-                                <Key size={18} className="text-gray-500" /> EA
-                                Licenses
-                            </h3>
-                            <span className="text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-lg">
-                                {user._count.EALicenses} Total
-                            </span>
-                        </div>
-                        {user.EALicenses.length > 0 ? (
-                            <div className="divide-y divide-gray-200 dark:divide-white/10">
-                                {user.EALicenses.slice(0, 5).map((lic) => (
-                                    <div
-                                        key={lic.id}
-                                        className="flex items-center justify-between gap-4 p-4 transition-colors hover:bg-gray-50/50 dark:hover:bg-white/[0.02] sm:px-6"
-                                    >
-                                        <div className="flex min-w-0 items-center gap-3">
-                                            <div className="p-2 bg-gray-100 dark:bg-white/5 rounded-lg text-gray-600 max-sm:hidden">
-                                                <Key size={16} />
-                                            </div>
-                                            <div className="min-w-0">
-                                                <p className="truncate text-sm font-bold text-gray-700 dark:text-white">
-                                                    {lic.broker} · #
-                                                    {lic.accountNumber}
-                                                </p>
-                                                <p className="mt-0.5 truncate text-[11px] text-gray-600">
-                                                    {lic.startDate
-                                                        ? `Since ${format(new Date(lic.startDate), "MMM d, yyyy")}`
-                                                        : "Pending approval"}
-                                                    {lic.expiryDate
-                                                        ? ` · Expires ${format(new Date(lic.expiryDate), "MMM d, yyyy")}`
-                                                        : " · Lifetime"}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <span
-                                            className={`shrink-0 text-[11px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-widest ${licenseStatusStyles[lic.status] || "bg-gray-100 text-gray-600"}`}
-                                        >
-                                            {lic.status}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="p-8 text-center">
-                                <p className="text-sm text-gray-600">
-                                    No EA licenses registered.
-                                </p>
-                            </div>
-                        )}
-                    </div>
+                    <AdminNotes
+                        userId={user.id}
+                        initialNotes={
+                            (user.settings as Record<string, string>)
+                                ?.adminNotes || ""
+                        }
+                    />
                 </div>
 
                 <div className="min-w-0">
@@ -762,14 +601,16 @@ export default async function UserDetailPage({
                         overviewContent={
                             <UserOverviewTab user={serializedUser} />
                         }
-                        vipProContent={<UserVipProTab user={serializedUser} />}
-                        ibPerformanceContent={
-                            <UserIbPerformanceTab user={serializedUser} />
-                        }
                         journalContent={
                             <UserJournalTab
                                 entries={serializedUser.journalEntries || []}
                                 totalCount={user._count.journalEntries}
+                            />
+                        }
+                        accountsContent={
+                            <UserAccountsList
+                                accounts={serializedUser.tradingAccounts || []}
+                                userId={user.id}
                             />
                         }
                         tradePlansContent={
@@ -778,19 +619,20 @@ export default async function UserDetailPage({
                                 strategies={serializedUser.strategies || []}
                             />
                         }
+                        vipProContent={<UserVipProTab user={serializedUser} />}
+                        licensesContent={
+                            <UserLicensesList
+                                licenses={serializedUser.EALicenses || []}
+                            />
+                        }
+                        ibPerformanceContent={
+                            <UserIbPerformanceTab user={serializedUser} />
+                        }
                         rulesGoalsContent={
                             <UserRulesGoalsTab
                                 rules={serializedUser.tradingRules || []}
                                 goals={serializedUser.traderGoals || []}
                                 ruleChecks={serializedUser.ruleChecks || []}
-                            />
-                        }
-                        growthCoachContent={
-                            <UserGrowthCoachTab
-                                missionProgress={serializedUser.missionProgress || []}
-                                edgeEvents={serializedUser.edgeEvents || []}
-                                experiments={serializedUser.improvementExperiments || []}
-                                coachPlans={serializedUser.coachActionPlans || []}
                             />
                         }
                         reportsNotesContent={
@@ -802,9 +644,12 @@ export default async function UserDetailPage({
                         }
                         counts={{
                             journal: user._count.journalEntries,
+                            accounts: user._count.tradingAccounts,
                             plans: (user._count.tradePlans || 0) + (user._count.strategies || 0),
+                            vip: user._count.vipRequests + (serializedUser.proEntitlements?.length || 0),
+                            licenses: user._count.EALicenses,
+                            ib: user._count.ibLeads,
                             rules: (user._count.tradingRules || 0) + (user._count.traderGoals || 0),
-                            growth: (user._count.improvementExperiments || 0) + (user._count.coachActionPlans || 0),
                             reports: (user._count.tradingReports || 0) + (user._count.tradingDayNotes || 0),
                         }}
                     />

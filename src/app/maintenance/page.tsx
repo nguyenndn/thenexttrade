@@ -3,10 +3,16 @@ import { Cog, Star } from "lucide-react";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 
-export const metadata = {
-    title: "System Upgrade | The Next Trade",
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "System Upgrade | TheNextTrade",
     description:
         "We're currently upgrading our platform. Please check back shortly.",
+    robots: {
+        index: false,
+        follow: false,
+    },
 };
 
 export default async function MaintenancePage() {
@@ -87,7 +93,7 @@ export default async function MaintenancePage() {
                         We're Upgrading
                     </h1>
                     <p className="text-slate-500 text-[15px] mb-10 leading-relaxed font-medium max-w-[90%] mx-auto">
-                        The Next Trade platform is currently undergoing
+                        TheNextTrade platform is currently undergoing
                         scheduled maintenance to bring you powerful new features
                         and better performance.
                     </p>

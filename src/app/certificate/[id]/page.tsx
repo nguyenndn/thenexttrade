@@ -27,9 +27,13 @@ export async function generateMetadata({
     return {
         title: `Certificate | ${data.displayName} | TheNextTrade`,
         description,
+        alternates: {
+            canonical: `/certificate/${id}`,
+        },
         openGraph: {
             title: `Certificate | ${data.displayName} | TheNextTrade`,
             description,
+            url: `/certificate/${id}`,
             images: [`/api/og/certificate/${id}`],
             type: "website",
         },
@@ -55,6 +59,7 @@ export default async function CertificatePage({
         year: "numeric",
         month: "long",
         day: "numeric",
+        timeZone: "UTC",
     });
 
     return (

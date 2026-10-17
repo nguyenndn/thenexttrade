@@ -84,11 +84,32 @@ export function TradingRuleModal({
     // Load values when editing
     useEffect(() => {
         if (ruleToEdit) {
+            const validCategories: RuleFormValues["category"][] = [
+                "RISK",
+                "ENTRY",
+                "EXIT",
+                "PSYCHOLOGY",
+                "SESSION",
+                "MANAGEMENT",
+            ];
+            const normalizedCategory: RuleFormValues["category"] =
+                validCategories.includes(ruleToEdit.category)
+                    ? ruleToEdit.category
+                    : "RISK";
+            const validSeverities: RuleFormValues["severity"][] = [
+                "LOW",
+                "MEDIUM",
+                "HIGH",
+            ];
+            const normalizedSeverity: RuleFormValues["severity"] =
+                validSeverities.includes(ruleToEdit.severity)
+                    ? ruleToEdit.severity
+                    : "MEDIUM";
             reset({
                 title: ruleToEdit.title,
                 description: ruleToEdit.description || "",
-                category: ruleToEdit.category,
-                severity: ruleToEdit.severity,
+                category: normalizedCategory,
+                severity: normalizedSeverity,
                 accountId: ruleToEdit.accountId || "all",
                 strategyId: ruleToEdit.strategyId || "all",
                 isActive: ruleToEdit.isActive !== false,

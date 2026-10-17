@@ -7,6 +7,8 @@ const tool = getToolBySlug("correlation-matrix")!;
 
 export const metadata: Metadata = getToolMetadata("correlation-matrix");
 
+export const revalidate = 86400;
+
 export default function CorrelationMatrixPage() {
     return (
         <ToolPageLayout tool={tool}>

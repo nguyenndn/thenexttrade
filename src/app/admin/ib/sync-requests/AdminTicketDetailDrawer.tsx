@@ -56,7 +56,7 @@ export function AdminTicketDetailDrawer({
     onClose,
     onUpdated,
 }: AdminTicketDetailDrawerProps) {
-    const [isPassviewMasked, setIsPassviewMasked] = useState(false);
+    const [isPassviewMasked, setIsPassviewMasked] = useState(true);
     const [isResolving, setIsResolving] = useState(false);
     const [isFailDialogOpen, setIsFailDialogOpen] = useState(false);
     const [failReason, setFailReason] = useState("");

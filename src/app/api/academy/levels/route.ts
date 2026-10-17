@@ -6,7 +6,7 @@ import { z } from "zod";
 const levelSchema = z.object({
     title: z.string().min(3),
     description: z.string().optional(),
-    order: z.number().int(),
+    order: z.number().int().optional(),
 });
 
 export async function GET() {
@@ -47,11 +47,30 @@ export async function POST(request: Request) {
         const body = await request.json();
         const validatedData = levelSchema.parse(body);
 
+        let order = validatedData.order;
+        if (order === undefined) {
+            const lastLevel = await prisma.level.findFirst({
+                orderBy: { order: "desc" },
+                select: { order: true },
+            });
+            order = (lastLevel?.order ?? 0) + 1;
+        }
+
         const level = await prisma.level.create({
-            data: validatedData,
+            data: {
+                title: validatedData.title,
+                description: validatedData.description,
+                order,
+            },
         });
         return NextResponse.json(level, { status: 201 });
     } catch (error) {
+        if (error instanceof z.ZodError) {
+            return NextResponse.json(
+                { error: error.issues[0]?.message || "Invalid input" },
+                { status: 400 }
+            );
+        }
         return NextResponse.json(
             { error: "Failed to create level" },
             { status: 500 }

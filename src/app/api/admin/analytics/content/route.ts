@@ -12,11 +12,26 @@ export async function GET(request: NextRequest) {
     const auth = await requireAdmin();
     if (auth instanceof NextResponse) return auth;
 
+    const fromParam = request.nextUrl.searchParams.get("from");
+    const toParam = request.nextUrl.searchParams.get("to");
     const period = request.nextUrl.searchParams.get("period") || "7d";
     const days = period === "90d" ? 90 : period === "30d" ? 30 : 7;
 
-    const since = new Date();
-    since.setDate(since.getDate() - days);
+    let since = new Date();
+    let until = new Date();
+    if (fromParam && toParam) {
+        const parsedFrom = new Date(fromParam);
+        const parsedTo = new Date(toParam);
+        if (!isNaN(parsedFrom.getTime()) && !isNaN(parsedTo.getTime())) {
+            since = parsedFrom;
+            until = new Date(parsedTo);
+            until.setHours(23, 59, 59, 999);
+        } else {
+            since.setDate(since.getDate() - days);
+        }
+    } else {
+        since.setDate(since.getDate() - days);
+    }
 
     try {
         // Get article-level pageviews by matching pathname pattern /articles/*
@@ -29,6 +44,7 @@ export async function GET(request: NextRequest) {
  SELECT pathname, COUNT(*)::bigint as views
  FROM page_views
  WHERE "createdAt" >= ${since}
+ AND "createdAt" <= ${until}
  AND pathname LIKE '/articles/%'
  AND pathname NOT LIKE '/articles/create%'
  GROUP BY pathname

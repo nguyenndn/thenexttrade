@@ -38,10 +38,25 @@ export async function createSupportSyncTicket(input: CreateSupportSyncInput) {
         };
     }
 
+    let verifiedTradingAccountId: string | null = null;
+    if (input.tradingAccountId) {
+        const acct = await prisma.tradingAccount.findFirst({
+            where: { id: input.tradingAccountId, userId: user.id },
+            select: { id: true },
+        });
+        if (!acct) {
+            return {
+                success: false,
+                error: "Invalid trading account.",
+            };
+        }
+        verifiedTradingAccountId = acct.id;
+    }
+
     const ticket = await prisma.supportSyncTicket.create({
         data: {
             userId: user.id,
-            tradingAccountId: input.tradingAccountId || null,
+            tradingAccountId: verifiedTradingAccountId,
             broker: input.broker.trim(),
             accountNumber: input.accountNumber.trim(),
             server: input.server?.trim() || null,

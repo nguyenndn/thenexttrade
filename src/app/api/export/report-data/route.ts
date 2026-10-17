@@ -34,6 +34,26 @@ export async function GET(request: NextRequest) {
             ? endOfDay(parseISO(endDateParam))
             : endOfMonth(now);
 
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+            return NextResponse.json(
+                { error: "Invalid startDate or endDate" },
+                { status: 400 }
+            );
+        }
+        if (startDate > endDate) {
+            return NextResponse.json(
+                { error: "startDate must be on or before endDate" },
+                { status: 400 }
+            );
+        }
+        const maxRangeMs = 366 * 24 * 60 * 60 * 1000;
+        if (endDate.getTime() - startDate.getTime() > maxRangeMs) {
+            return NextResponse.json(
+                { error: "Date range cannot exceed 366 days" },
+                { status: 400 }
+            );
+        }
+
         // Fetch trades
         const trades = await prisma.journalEntry.findMany({
             where: {

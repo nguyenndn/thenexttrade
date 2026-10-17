@@ -7,6 +7,8 @@ const tool = getToolBySlug("margin-calculator")!;
 
 export const metadata: Metadata = getToolMetadata("margin-calculator");
 
+export const revalidate = 86400;
+
 export default function MarginCalculatorPage() {
     return (
         <ToolPageLayout tool={tool}>

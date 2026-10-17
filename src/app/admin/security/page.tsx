@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 import {
     ShieldAlert,
     RefreshCw,
@@ -254,12 +255,16 @@ export default function SecurityDashboard() {
                 }),
             });
             if (res.ok) {
+                toast.success(`Blocked IP ${blockForm.ip.trim()}`);
                 setShowBlockModal(false);
                 setBlockForm({ ip: "", reason: "", duration: "" });
                 fetchData();
+            } else {
+                const errData = await res.json().catch(() => null);
+                toast.error(errData?.error || "Failed to block IP");
             }
         } catch {
-            /* silent */
+            toast.error("Failed to block IP");
         } finally {
             setBlocking(false);
         }
@@ -270,9 +275,15 @@ export default function SecurityDashboard() {
             const res = await fetch(`/api/admin/security/blocked-ips/${id}`, {
                 method: "DELETE",
             });
-            if (res.ok) fetchData();
+            if (res.ok) {
+                toast.success("IP unblocked");
+                fetchData();
+            } else {
+                const errData = await res.json().catch(() => null);
+                toast.error(errData?.error || "Failed to unblock IP");
+            }
         } catch {
-            /* silent */
+            toast.error("Failed to unblock IP");
         }
     }
 

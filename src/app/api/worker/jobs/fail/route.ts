@@ -3,20 +3,28 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { notifyAdminsOfSyncFailure } from "@/lib/admin/admin-notification.server";
 
-const WORKER_KEY =
-    process.env.WORKER_API_KEY ||
-    process.env.MT5_WORKER_KEY ||
-    "tnt-worker-secret-key-2026";
-
 export async function POST(request: NextRequest) {
     try {
+        const configuredWorkerKey =
+            process.env.WORKER_API_KEY || process.env.MT5_WORKER_KEY;
+
+        if (!configuredWorkerKey) {
+            console.error(
+                "[Worker Auth] Worker authentication is misconfigured: neither WORKER_API_KEY nor MT5_WORKER_KEY is set in environment."
+            );
+            return NextResponse.json(
+                { error: "Server worker authentication is not configured" },
+                { status: 503 }
+            );
+        }
+
         const authHeader =
             request.headers.get("x-worker-key") ||
             request.headers.get("authorization");
         if (
             !authHeader ||
-            (authHeader !== WORKER_KEY &&
-                authHeader !== `Bearer ${WORKER_KEY}`)
+            (authHeader !== configuredWorkerKey &&
+                authHeader !== `Bearer ${configuredWorkerKey}`)
         ) {
             return NextResponse.json(
                 { error: "Unauthorized worker access" },

@@ -16,7 +16,10 @@ export async function GET(
     try {
         const plan = await prisma.tradePlan.findFirst({
             where: { id, userId: user.id },
-            include: { account: true, journalEntry: true },
+            include: {
+                account: { select: { id: true, name: true } },
+                journalEntry: true,
+            },
         });
 
         if (!plan)
@@ -43,9 +46,40 @@ export async function PUT(
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     try {
-        const body = await request.json();
-        const plan = await prisma.tradePlan.update({
+        const existing = await prisma.tradePlan.findFirst({
             where: { id, userId: user.id },
+            select: { id: true },
+        });
+        if (!existing) {
+            return NextResponse.json(
+                { error: "Plan not found" },
+                { status: 404 }
+            );
+        }
+
+        const body = await request.json();
+        const normalizedAccountId =
+            body.accountId === undefined
+                ? undefined
+                : !body.accountId || body.accountId === "none"
+                  ? null
+                  : String(body.accountId);
+
+        if (normalizedAccountId) {
+            const acct = await prisma.tradingAccount.findFirst({
+                where: { id: normalizedAccountId, userId: user.id },
+                select: { id: true },
+            });
+            if (!acct) {
+                return NextResponse.json(
+                    { error: "Invalid trading account" },
+                    { status: 403 }
+                );
+            }
+        }
+
+        const plan = await prisma.tradePlan.update({
+            where: { id },
             data: {
                 symbol: body.symbol,
                 type: body.type,
@@ -60,7 +94,9 @@ export async function PUT(
                 emotionBefore: body.emotionBefore,
                 confidenceLevel: body.confidenceLevel,
                 ruleChecklist: body.ruleChecklist,
-                accountId: body.accountId,
+                ...(normalizedAccountId !== undefined
+                    ? { accountId: normalizedAccountId }
+                    : {}),
                 status: body.status,
             },
         });
@@ -84,9 +120,15 @@ export async function DELETE(
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     try {
-        await prisma.tradePlan.delete({
+        const deleted = await prisma.tradePlan.deleteMany({
             where: { id, userId: user.id },
         });
+        if (deleted.count === 0) {
+            return NextResponse.json(
+                { error: "Plan not found" },
+                { status: 404 }
+            );
+        }
         return NextResponse.json({ success: true });
     } catch {
         return NextResponse.json(

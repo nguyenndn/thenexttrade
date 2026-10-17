@@ -12,13 +12,38 @@ const defaultReactions = {
 // Global in-memory storage for live reactions count & visitor reaction logs
 // (Will persist during server lifetime and sync across all clients)
 let liveReactions = { ...defaultReactions };
+const MAX_VISITOR_ENTRIES = 1000;
 const visitorReactionsMap = new Map<string, Record<string, boolean>>();
+
+function getVisitorState(id: string): Record<string, boolean> {
+    const state = visitorReactionsMap.get(id);
+    if (!state) return {};
+    // Refresh LRU order on access
+    visitorReactionsMap.delete(id);
+    visitorReactionsMap.set(id, state);
+    return state;
+}
+
+function setVisitorState(id: string, state: Record<string, boolean>) {
+    const sanitizedId = typeof id === "string" ? id.slice(0, 64) : "anonymous_guest";
+    if (visitorReactionsMap.has(sanitizedId)) {
+        visitorReactionsMap.delete(sanitizedId);
+    } else if (visitorReactionsMap.size >= MAX_VISITOR_ENTRIES) {
+        // Evict oldest entry to prevent heap memory exhaustion DoS
+        const oldestKey = visitorReactionsMap.keys().next().value;
+        if (oldestKey !== undefined) {
+            visitorReactionsMap.delete(oldestKey);
+        }
+    }
+    visitorReactionsMap.set(sanitizedId, state);
+}
 
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
-    const visitorId = searchParams.get("visitorId") || "";
+    const rawId = searchParams.get("visitorId") || "";
+    const visitorId = rawId ? rawId.slice(0, 64) : "";
 
-    const userReactions = visitorId ? visitorReactionsMap.get(visitorId) || {} : {};
+    const userReactions = visitorId ? getVisitorState(visitorId) : {};
 
     return NextResponse.json({
         success: true,
@@ -32,12 +57,15 @@ export async function POST(req: Request) {
         const body = await req.json();
         const { key, visitorId } = body;
 
-        if (!key || !liveReactions.hasOwnProperty(key)) {
+        if (!key || !Object.prototype.hasOwnProperty.call(liveReactions, key)) {
             return NextResponse.json({ error: "Invalid reaction key" }, { status: 400 });
         }
 
-        const id = visitorId || "anonymous_guest";
-        const currentVisitorState = visitorReactionsMap.get(id) || {};
+        const rawId =
+            typeof visitorId === "string" && visitorId.trim()
+                ? visitorId.trim().slice(0, 64)
+                : "anonymous_guest";
+        const currentVisitorState = { ...getVisitorState(rawId) };
         const isAlreadyReacted = !!currentVisitorState[key];
 
         // Toggle logic: +1 if not reacted, -1 if already reacted
@@ -49,7 +77,7 @@ export async function POST(req: Request) {
             currentVisitorState[key] = true;
         }
 
-        visitorReactionsMap.set(id, currentVisitorState);
+        setVisitorState(rawId, currentVisitorState);
 
         return NextResponse.json({
             success: true,

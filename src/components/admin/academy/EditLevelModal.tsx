@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Dialog, DialogContent } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
@@ -23,9 +24,17 @@ export function EditLevelModal({
     onClose,
     level,
 }: EditLevelModalProps) {
+    const router = useRouter();
     const [title, setTitle] = useState(level.title);
     const [description, setDescription] = useState(level.description || "");
     const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        if (isOpen) {
+            setTitle(level.title);
+            setDescription(level.description || "");
+        }
+    }, [level, isOpen]);
 
     const handleSave = async () => {
         if (!title.trim()) {
@@ -38,9 +47,10 @@ export function EditLevelModal({
             const res = await updateLevel(level.id, { title, description });
             if (res.success) {
                 toast.success("Level updated successfully");
+                router.refresh();
                 onClose();
             } else {
-                toast.error("Failed to update level");
+                toast.error(res.error || "Failed to update level");
             }
         } catch (error: any) {
             toast.error(

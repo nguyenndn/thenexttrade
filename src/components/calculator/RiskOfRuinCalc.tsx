@@ -18,6 +18,15 @@ export function RiskOfRuinCalc() {
         const r = inputs.riskPerTrade / 100;
         const rr = inputs.rewardRisk;
 
+        if (r <= 0 || inputs.ruinThreshold <= 0) {
+            return {
+                ror: 0,
+                expectancy: 0,
+                edge: 0,
+                survival: 100,
+            };
+        }
+
         const expectancy = W * rr * r - L * r;
         const edge = W * rr - L;
         const capitalUnits = inputs.ruinThreshold / 100 / r;
@@ -30,11 +39,13 @@ export function RiskOfRuinCalc() {
             ror = Math.pow(Math.max(0, base), capitalUnits) * 100;
         }
 
+        const finalRor = isNaN(ror) ? 0 : Math.min(Math.max(0, ror), 100);
+
         return {
-            ror: Math.min(ror, 100),
-            expectancy: expectancy * 100,
-            edge,
-            survival: 100 - Math.min(ror, 100),
+            ror: finalRor,
+            expectancy: isNaN(expectancy) ? 0 : expectancy * 100,
+            edge: isNaN(edge) ? 0 : edge,
+            survival: 100 - finalRor,
         };
     }, [inputs]);
 

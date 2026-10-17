@@ -39,12 +39,16 @@ export async function POST(request: Request) {
         const validatedData = categorySchema.parse(body);
 
         // Auto slug
-        let slug =
-            validatedData.slug ||
-            validatedData.name
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, "-")
-                .replace(/^-|-$/g, "");
+        const slug = (validatedData.slug || validatedData.name)
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-|-$/g, "");
+        if (!slug) {
+            return NextResponse.json(
+                { error: "Category name/slug must contain alphanumeric characters" },
+                { status: 400 }
+            );
+        }
         // Ensure slug uniqueness
         const existing = await prisma.category.findUnique({ where: { slug } });
         if (existing) {

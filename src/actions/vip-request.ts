@@ -469,6 +469,7 @@ export async function grantGracePeriod(
         },
     });
 
+    revalidatePath(`/admin/users/${userId}`);
     revalidatePath("/admin/ib/pipeline");
     revalidatePath("/dashboard/accounts");
     revalidatePath("/dashboard/trading-systems");
@@ -476,13 +477,16 @@ export async function grantGracePeriod(
 }
 
 /**
- * Revoke Pro access for a specific trading account.
- * If no tradingAccountId, revokes all entitlements for the user.
+ * Revoke Pro access for a specific trading account or entitlement.
+ * - If entitlementId is provided: revokes that specific entitlement by primary key.
+ * - If tradingAccountId is provided: revokes the entitlement associated with that account.
+ * - If neither is provided: revokes all active/grace entitlements for the user.
  */
 export async function revokeProAccess(
     userId: string,
     reason?: string,
-    tradingAccountId?: string
+    tradingAccountId?: string,
+    entitlementId?: string
 ) {
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
@@ -492,54 +496,117 @@ export async function revokeProAccess(
     });
     if (profile?.role !== "ADMIN") return { error: "Forbidden" };
 
-    if (tradingAccountId) {
-        // Revoke specific account
-        await prisma.proEntitlement.upsert({
-            where: { tradingAccountId },
-            create: {
-                userId,
-                tradingAccountId,
-                status: "REVOKED",
-                lastReviewedAt: new Date(),
-                reviewedBy: user.id,
-                adminNote: reason || null,
-            },
-            update: {
-                status: "REVOKED",
-                expiresAt: null,
-                lastReviewedAt: new Date(),
-                reviewedBy: user.id,
-                adminNote: reason || null,
-            },
+    let effectiveTradingAccountId: string | null = null;
+
+    // 1. If entitlementId is provided directly, hard delete by primary key
+    if (entitlementId) {
+        const ent = await prisma.proEntitlement.findUnique({
+            where: { id: entitlementId },
+            select: { id: true, tradingAccountId: true },
         });
+        if (ent) {
+            effectiveTradingAccountId = ent.tradingAccountId;
+            await prisma.proEntitlement.deleteMany({
+                where: { id: ent.id },
+            });
+        }
+    } else if (tradingAccountId) {
+        // Defensive check: was a ProEntitlement ID accidentally passed as tradingAccountId?
+        const entByCandidateId = await prisma.proEntitlement.findUnique({
+            where: { id: tradingAccountId },
+            select: { id: true, tradingAccountId: true },
+        });
+
+        if (entByCandidateId) {
+            effectiveTradingAccountId = entByCandidateId.tradingAccountId;
+            await prisma.proEntitlement.deleteMany({
+                where: { id: entByCandidateId.id },
+            });
+        } else {
+            // It is an actual tradingAccountId
+            effectiveTradingAccountId = tradingAccountId;
+            await prisma.proEntitlement.deleteMany({
+                where: { tradingAccountId },
+            });
+        }
     } else {
-        // Revoke all user entitlements (legacy)
-        await prisma.proEntitlement.updateMany({
+        // Revoke all user entitlements (legacy/global) -> hard delete
+        await prisma.proEntitlement.deleteMany({
             where: { userId },
-            data: {
-                status: "REVOKED",
-                expiresAt: null,
-                lastReviewedAt: new Date(),
-                reviewedBy: user.id,
-                adminNote: reason || null,
-            },
         });
+    }
+
+    // Clean up any APPROVED vipRequest for this account/user to avoid stale approved state
+    try {
+        if (effectiveTradingAccountId) {
+            await prisma.vipRequest.updateMany({
+                where: {
+                    tradingAccountId: effectiveTradingAccountId,
+                    status: "APPROVED",
+                },
+                data: {
+                    status: "REJECTED",
+                    rejectReason: reason || "Access revoked by admin",
+                    reviewedAt: new Date(),
+                    reviewedBy: user.id,
+                },
+            });
+        } else {
+            await prisma.vipRequest.updateMany({
+                where: {
+                    userId,
+                    status: "APPROVED",
+                },
+                data: {
+                    status: "REJECTED",
+                    rejectReason: reason || "Access revoked by admin",
+                    reviewedAt: new Date(),
+                    reviewedBy: user.id,
+                },
+            });
+        }
+    } catch (err) {
+        console.error("Failed to update vipRequest status during revokeProAccess:", err);
+    }
+
+    // Also revoke product-level access for canonical products
+    try {
+        const { revokeUserProductAccess } = await import(
+            "@/lib/admin/ib/product-usage.server"
+        );
+        await revokeUserProductAccess({
+            adminUserId: user.id,
+            targetUserId: userId,
+            productSlug: "goldscalperninja",
+            tradingAccountId: effectiveTradingAccountId,
+        });
+        await revokeUserProductAccess({
+            adminUserId: user.id,
+            targetUserId: userId,
+            productSlug: "trade-manager",
+            tradingAccountId: effectiveTradingAccountId,
+        });
+    } catch (err) {
+        console.error("Failed to revoke product access during revokeProAccess:", err);
     }
 
     await prisma.notification.create({
         data: {
             userId,
             type: NotificationType.VIP_REJECTED,
-            title: "VIP Access Revoked",
+            title: "Pro Access Updated",
             message: reason
-                ? `Your VIP access has been revoked. Reason: ${reason}`
-                : "Your VIP access has been revoked. Contact support for details.",
-            priority: NotificationPriority.HIGH,
+                ? `Your account plan has been updated to Free Tier. Reason: ${reason}`
+                : "Your account plan has been updated to Free Tier. You can apply again anytime with an eligible trading account.",
+            priority: NotificationPriority.NORMAL,
             link: NOTIFICATION_ROUTES.VIP_ACCOUNTS,
         },
     });
 
+    revalidatePath(`/admin/users/${userId}`);
     revalidatePath("/admin/ib/pipeline");
+    revalidatePath("/admin/ib/traders");
+    revalidatePath("/dashboard");
     revalidatePath("/dashboard/accounts");
     revalidatePath("/dashboard/trading-systems");
     return { success: true };
@@ -619,6 +686,7 @@ export async function grantManualPro(
         }
     }
 
+    revalidatePath(`/admin/users/${userId}`);
     revalidatePath("/admin/ib/pipeline");
     revalidatePath("/dashboard/accounts");
     revalidatePath("/dashboard/trading-systems");

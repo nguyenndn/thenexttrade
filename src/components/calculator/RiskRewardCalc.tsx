@@ -231,7 +231,7 @@ export function RiskRewardCalc() {
                                     <div
                                         className="bg-red-500 rounded-l-lg flex items-center justify-center text-[10px] font-bold text-white"
                                         style={{
-                                            width: `${Math.min(50, (result.riskPips / (result.riskPips + result.rewardPips)) * 100)}%`,
+                                            width: `${result.riskPips + result.rewardPips > 0 ? Math.min(50, (result.riskPips / (result.riskPips + result.rewardPips)) * 100) : 50}%`,
                                         }}
                                     >
                                         SL

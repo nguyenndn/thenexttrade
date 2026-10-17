@@ -78,9 +78,30 @@ export async function PUT(
             focusKeyword,
         } = body;
 
+        const VALID_STATUSES = ["DRAFT", "PUBLISHED", "PENDING", "ARCHIVED"];
+        if (status !== undefined && !VALID_STATUSES.includes(status)) {
+            return NextResponse.json(
+                { error: "Invalid status" },
+                { status: 400 }
+            );
+        }
+
         const data: any = {};
         if (title) data.title = title;
-        if (slug) data.slug = slug;
+        if (slug !== undefined) {
+            const normalizedSlug = String(slug)
+                .trim()
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-|-$/g, "");
+            if (!normalizedSlug) {
+                return NextResponse.json(
+                    { error: "Invalid slug" },
+                    { status: 400 }
+                );
+            }
+            data.slug = normalizedSlug;
+        }
         if (content) data.content = content;
         if (excerpt !== undefined) data.excerpt = excerpt;
         if (thumbnail !== undefined) data.thumbnail = thumbnail;
@@ -98,13 +119,43 @@ export async function PUT(
         if (metaDescription !== undefined)
             data.metaDescription = metaDescription;
         if (focusKeyword !== undefined) data.focusKeyword = focusKeyword;
-        if (publishedAt !== undefined)
-            data.publishedAt = publishedAt ? new Date(publishedAt) : null;
+        if (publishedAt !== undefined) {
+            if (publishedAt) {
+                const parsedDate = new Date(publishedAt);
+                if (Number.isNaN(parsedDate.getTime())) {
+                    return NextResponse.json(
+                        { error: "publishedAt must be a valid date" },
+                        { status: 400 }
+                    );
+                }
+                data.publishedAt = parsedDate;
+            } else {
+                data.publishedAt = null;
+            }
+        } else if (status === "PUBLISHED") {
+            const current = await prisma.article.findUnique({
+                where: { id: params.id },
+                select: { publishedAt: true },
+            });
+            if (current && !current.publishedAt) {
+                data.publishedAt = new Date();
+            }
+        }
         if (body.schemaType !== undefined) data.schemaType = body.schemaType;
-        if (body.estimatedTime !== undefined)
-            data.estimatedTime = body.estimatedTime
-                ? parseInt(body.estimatedTime)
-                : null;
+        if (body.estimatedTime !== undefined) {
+            if (body.estimatedTime === null || body.estimatedTime === "") {
+                data.estimatedTime = null;
+            } else {
+                const parsedTime = parseInt(body.estimatedTime, 10);
+                if (Number.isNaN(parsedTime)) {
+                    return NextResponse.json(
+                        { error: "estimatedTime must be a number" },
+                        { status: 400 }
+                    );
+                }
+                data.estimatedTime = parsedTime;
+            }
+        }
 
         // AI Content Pipeline metadata
         if (body.tone !== undefined) data.tone = body.tone || null;
@@ -153,8 +204,17 @@ export async function DELETE(
     if (auth instanceof NextResponse) return auth;
 
     try {
-        await prisma.article.delete({
-            where: { id: params.id },
+        await prisma.$transaction(async (tx) => {
+            await tx.comment.updateMany({
+                where: { articleId: params.id },
+                data: { parentId: null },
+            });
+            await tx.comment.deleteMany({
+                where: { articleId: params.id },
+            });
+            await tx.article.delete({
+                where: { id: params.id },
+            });
         });
 
         return NextResponse.json({ success: true });

@@ -8,8 +8,30 @@ export async function GET(request: Request) {
     // if "next" is in param, use it as the redirect URL
     let next = searchParams.get("next") ?? "/dashboard";
 
-    // Open redirect protection: next must start with / and not start with //
-    if (!next.startsWith("/") || next.startsWith("//")) {
+    // Strict open redirect protection:
+    // Destination must start with exactly one '/', must not contain backslashes ('\' or '/\'),
+    // must not be protocol-relative ('//'), and must parse strictly as a relative path under current origin.
+    const isSafeRelativePath = (path: string): boolean => {
+        if (
+            !path.startsWith("/") ||
+            path.startsWith("//") ||
+            path.includes("\\") ||
+            path.includes("/\\") ||
+            /^\/\s/.test(path) ||
+            /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(path.slice(1))
+        ) {
+            return false;
+        }
+
+        try {
+            const parsed = new URL(path, "http://localhost");
+            return parsed.origin === "http://localhost" && parsed.pathname.startsWith("/");
+        } catch {
+            return false;
+        }
+    };
+
+    if (!isSafeRelativePath(next)) {
         next = "/dashboard";
     }
 

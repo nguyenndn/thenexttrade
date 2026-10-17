@@ -7,6 +7,8 @@ const tool = getToolBySlug("risk-of-ruin-calculator")!;
 
 export const metadata: Metadata = getToolMetadata("risk-of-ruin-calculator");
 
+export const revalidate = 86400;
+
 export default function RiskOfRuinCalculatorPage() {
     return (
         <ToolPageLayout tool={tool}>

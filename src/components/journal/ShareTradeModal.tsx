@@ -52,13 +52,13 @@ export function ShareTradeModal({
     }, [open]);
 
     const [mode, setMode] = useState<"basic" | "full">(
-        (entry.shareMode as "basic" | "full") || "full"
+        (entry?.shareMode as "basic" | "full") || "full"
     );
     const [description, setDescription] = useState(
-        entry.shareDescription || ""
+        entry?.shareDescription || ""
     );
     const [descriptionOpen, setDescriptionOpen] = useState(
-        !!entry.shareDescription
+        !!entry?.shareDescription
     );
     const [copied, setCopied] = useState(false);
 
@@ -69,15 +69,34 @@ export function ShareTradeModal({
     const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
     // Track what was last saved to detect real changes (fixes Full→Basic→Full not saving)
-    const savedModeRef = useRef(entry.shareMode || "full");
-    const savedDescRef = useRef(entry.shareDescription || "");
+    const savedModeRef = useRef<"basic" | "full">(
+        (entry?.shareMode as "basic" | "full") || "full"
+    );
+    const savedDescRef = useRef<string>(entry?.shareDescription || "");
+    const activeEntryIdRef = useRef<string | null>(entry?.id || null);
+
+    // Reset local state and saved refs when switching to a different trade entry
+    useEffect(() => {
+        if (!entry?.id) return;
+        if (activeEntryIdRef.current !== entry.id) {
+            const nextMode = (entry.shareMode as "basic" | "full") || "full";
+            const nextDesc = entry.shareDescription || "";
+            activeEntryIdRef.current = entry.id;
+            savedModeRef.current = nextMode;
+            savedDescRef.current = nextDesc;
+            setMode(nextMode);
+            setDescription(nextDesc);
+            setDescriptionOpen(!!nextDesc);
+            setLastSaved(null);
+        }
+    }, [entry?.id, entry?.shareMode, entry?.shareDescription]);
 
     // Screenshot state
     const [isCapturing, setIsCapturing] = useState(false);
     const cardRef = useRef<HTMLDivElement>(null);
 
     const handleDownload = async () => {
-        if (!cardRef.current) return;
+        if (!cardRef.current || !entry) return;
 
         try {
             setIsCapturing(true);
@@ -119,6 +138,8 @@ export function ShareTradeModal({
     useEffect(() => {
         if (
             open &&
+            entry?.id &&
+            activeEntryIdRef.current === entry.id &&
             (debouncedDescription !== savedDescRef.current ||
                 mode !== savedModeRef.current)
         ) {
@@ -133,7 +154,7 @@ export function ShareTradeModal({
                 setLastSaved(new Date());
             });
         }
-    }, [mode, debouncedDescription, entry.id, open]);
+    }, [mode, debouncedDescription, entry?.id, open]);
 
     if (!entry) return null;
 

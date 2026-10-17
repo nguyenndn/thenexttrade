@@ -19,7 +19,7 @@ interface LoyaltyDashboardClientProps {
 
 export function LoyaltyDashboardClient({ initialProgress }: LoyaltyDashboardClientProps) {
   const router = useRouter();
-  const [progress] = useState<UserLoyaltyProgress>(initialProgress);
+  const progress = initialProgress;
   const [walletRequiredTier, setWalletRequiredTier] = useState<LoyaltyTierItem | null>(null);
   const [successModalData, setSuccessModalData] = useState<{
     tier: LoyaltyTierItem;

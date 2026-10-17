@@ -7,6 +7,8 @@ const tool = getToolBySlug("risk-reward-calculator")!;
 
 export const metadata: Metadata = getToolMetadata("risk-reward-calculator");
 
+export const revalidate = 86400;
+
 export default function RiskRewardCalculatorPage() {
     return (
         <ToolPageLayout tool={tool}>

@@ -192,7 +192,13 @@ export function GoalModal({ isOpen, onClose, onSuccess }: GoalModalProps) {
                         <PremiumInput
                             type="number"
                             {...register("targetValue", {
-                                valueAsNumber: true,
+                                setValueAs: (v) =>
+                                    v === "" ||
+                                    v === null ||
+                                    v === undefined ||
+                                    Number.isNaN(Number(v))
+                                        ? null
+                                        : Number(v),
                             })}
                             error={errors.targetValue?.message}
                         />

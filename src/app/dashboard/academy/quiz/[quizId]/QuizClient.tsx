@@ -106,11 +106,18 @@ export function QuizClient({
     }, [draftKey]);
 
     const draft = loadDraft();
+    const maxQuestionIndex = Math.max(0, quiz.questions.length - 1);
+    const initialQuestionIndex =
+        typeof draft?.currentQuestion === "number" &&
+        Number.isInteger(draft.currentQuestion) &&
+        draft.currentQuestion >= 0
+            ? Math.min(draft.currentQuestion, maxQuestionIndex)
+            : 0;
     const [currentQuestion, setCurrentQuestion] = useState(
-        draft?.currentQuestion ?? 0
+        initialQuestionIndex
     );
     const [answers, setAnswers] = useState<Record<string, string>>(
-        draft?.answers ?? {}
+        draft?.answers && typeof draft.answers === "object" ? draft.answers : {}
     );
     const [submitting, setSubmitting] = useState(false);
     const [result, setResult] = useState<{
@@ -145,8 +152,11 @@ export function QuizClient({
 
     const question = quiz.questions[currentQuestion];
     const totalQuestions = quiz.questions.length;
-    const isLastQuestion = currentQuestion === totalQuestions - 1;
-    const allAnswered = Object.keys(answers).length === totalQuestions;
+    const isLastQuestion =
+        totalQuestions === 0 || currentQuestion >= totalQuestions - 1;
+    const allAnswered =
+        totalQuestions > 0 &&
+        quiz.questions.every((q) => Boolean(answers[q.id]));
     const selectedOption = question ? answers[question.id] : undefined;
 
     const handleSelectOption = (optionId: string) => {
@@ -576,8 +586,11 @@ export function QuizClient({
                                 <div className="px-6 lg:px-8 pt-5 pb-2">
                                     <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
                                         <span>
-                                            Question {currentQuestion + 1} of{" "}
-                                            {totalQuestions}
+                                            Question{" "}
+                                            {totalQuestions > 0
+                                                ? currentQuestion + 1
+                                                : 0}{" "}
+                                            of {totalQuestions}
                                         </span>
                                         <span>
                                             {Object.keys(answers).length}{" "}
@@ -588,7 +601,7 @@ export function QuizClient({
                                         <div
                                             className="h-full bg-primary rounded-full transition-all duration-300"
                                             style={{
-                                                width: `${((currentQuestion + 1) / totalQuestions) * 100}%`,
+                                                width: `${totalQuestions > 0 ? ((currentQuestion + 1) / totalQuestions) * 100 : 0}%`,
                                             }}
                                         />
                                     </div>

@@ -22,6 +22,8 @@ import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { DynamicFirefly } from "@/components/ui/DynamicFirefly";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
     title: "About TheNextTrade — From Blown Accounts to Disciplined Execution",
     description:

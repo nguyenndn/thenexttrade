@@ -7,6 +7,8 @@ const tool = getToolBySlug("pivot-point-calculator")!;
 
 export const metadata: Metadata = getToolMetadata("pivot-point-calculator");
 
+export const revalidate = 86400;
+
 export default function PivotPointCalculatorPage() {
     return (
         <ToolPageLayout tool={tool}>

@@ -7,11 +7,6 @@ import { POPULAR_MT5_SERVERS } from "@/lib/constants/mt5-servers";
 import { detectBroker } from "@/lib/ea/broker-detection";
 import { isCentAccount, isCentSymbol, normalizeLotSize } from "@/lib/utils/cent-account";
 
-const WORKER_KEY =
-    process.env.WORKER_API_KEY ||
-    process.env.MT5_WORKER_KEY ||
-    "tnt-worker-secret-key-2026";
-
 interface DealPayload {
     ticket: number | string;
     order?: number | string;
@@ -32,13 +27,26 @@ interface DealPayload {
 
 export async function POST(request: NextRequest) {
     try {
+        const configuredWorkerKey =
+            process.env.WORKER_API_KEY || process.env.MT5_WORKER_KEY;
+
+        if (!configuredWorkerKey) {
+            console.error(
+                "[Worker Auth] Worker authentication is misconfigured: neither WORKER_API_KEY nor MT5_WORKER_KEY is set in environment."
+            );
+            return NextResponse.json(
+                { error: "Server worker authentication is not configured" },
+                { status: 503 }
+            );
+        }
+
         const authHeader =
             request.headers.get("x-worker-key") ||
             request.headers.get("authorization");
         if (
             !authHeader ||
-            (authHeader !== WORKER_KEY &&
-                authHeader !== `Bearer ${WORKER_KEY}`)
+            (authHeader !== configuredWorkerKey &&
+                authHeader !== `Bearer ${configuredWorkerKey}`)
         ) {
             return NextResponse.json(
                 { error: "Unauthorized worker access" },

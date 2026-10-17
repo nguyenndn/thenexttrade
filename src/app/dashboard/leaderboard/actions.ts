@@ -228,6 +228,105 @@ async function getEnrichedStats(
     return result;
 }
 
+interface ProfilePrivacyInfo {
+    userId: string;
+    showRealName: boolean;
+    showMoney: boolean;
+    username: string | null;
+}
+
+async function getProfilePrivacyMap(
+    userIds: string[]
+): Promise<Map<string, ProfilePrivacyInfo>> {
+    if (userIds.length === 0) return new Map();
+    try {
+        const profiles = await prisma.profile.findMany({
+            where: { userId: { in: userIds } },
+            select: {
+                userId: true,
+                showRealName: true,
+                showMoney: true,
+                username: true,
+            },
+        });
+        return new Map(profiles.map((p) => [p.userId, p]));
+    } catch (err) {
+        console.error("[Leaderboard] Error fetching profile privacy settings:", err);
+        return new Map();
+    }
+}
+
+function maskLeaderboardEntry(
+    raw: {
+        rank: number;
+        userId: string;
+        name: string;
+        avatar: string | null;
+        tier: ReturnType<typeof getTier>;
+        value: number;
+        label: string;
+        level: number;
+        lessonsCompleted: number;
+        studyTimeMinutes: number;
+        percentile: number;
+        totalTrades: number;
+        pnl: number;
+        winRate?: number;
+    },
+    privacy: ProfilePrivacyInfo | undefined,
+    callerUserId: string | null
+): LeaderboardEntry {
+    const isCallerLoggedIn = !!callerUserId;
+    const isCurrentUser = isCallerLoggedIn && callerUserId === raw.userId;
+    const showRealName = privacy?.showRealName ?? false;
+    const showMoney = privacy?.showMoney ?? false;
+
+    // 1. Name masking:
+    // If not caller's own entry, check privacy settings:
+    // If showRealName is false or caller is anonymous, mask real user name
+    let displayName: string;
+    if (isCurrentUser) {
+        displayName = raw.name || privacy?.username || `Trader #${raw.userId.slice(0, 6)}`;
+    } else if (!isCallerLoggedIn || !showRealName) {
+        displayName = privacy?.username || `Trader #${raw.userId.slice(0, 6)}`;
+    } else {
+        displayName = raw.name || privacy?.username || `Trader #${raw.userId.slice(0, 6)}`;
+    }
+
+    // 2. User ID masking:
+    // Mask internal user UUIDs for anonymous callers so private user IDs are not leaked
+    const safeUserId = isCallerLoggedIn ? raw.userId : `trader_${raw.userId.slice(0, 8)}`;
+
+    // 3. PnL / Money masking:
+    // If showMoney is false or caller is not logged in, mask exact dollar PnL
+    const canShowMoney = isCurrentUser || (isCallerLoggedIn && showMoney);
+    const safePnl = canShowMoney ? raw.pnl : 0;
+
+    let safeValue = raw.value;
+    let safeLabel = raw.label;
+    if (raw.label === "$" && !canShowMoney) {
+        if (raw.winRate !== undefined) {
+            safeValue = raw.winRate;
+            safeLabel = "%";
+        } else {
+            safeValue = 0;
+        }
+    }
+
+    // 4. Avatar: conceal for anonymous scrapers if name is hidden
+    const safeAvatar = !isCallerLoggedIn && !showRealName ? null : raw.avatar;
+
+    return {
+        ...raw,
+        userId: safeUserId,
+        name: displayName,
+        avatar: safeAvatar,
+        value: safeValue,
+        label: safeLabel,
+        pnl: safePnl,
+    };
+}
+
 async function getXpLeaderboard(
     userId: string | null,
     limit: number
@@ -244,23 +343,32 @@ async function getXpLeaderboard(
     });
 
     const userIds = users.map((u) => u.id);
-    const enriched = await getEnrichedStats(userIds);
+    const [enriched, privacyMap] = await Promise.all([
+        getEnrichedStats(userIds),
+        getProfilePrivacyMap(userIds),
+    ]);
 
-    const data: LeaderboardEntry[] = users.map((u, i) => ({
-        rank: i + 1,
-        userId: u.id,
-        name: u.name || "Unknown",
-        avatar: u.image,
-        tier: getTier(u.xp),
-        value: u.xp,
-        label: "Edge",
-        level: u.level,
-        lessonsCompleted: enriched[u.id]?.lessonsCompleted ?? 0,
-        studyTimeMinutes: enriched[u.id]?.studyTimeMinutes ?? 0,
-        percentile: getPercentile(i + 1, total),
-        totalTrades: 0,
-        pnl: 0,
-    }));
+    const data: LeaderboardEntry[] = users.map((u, i) =>
+        maskLeaderboardEntry(
+            {
+                rank: i + 1,
+                userId: u.id,
+                name: u.name || "Unknown",
+                avatar: u.image,
+                tier: getTier(u.xp),
+                value: u.xp,
+                label: "Edge",
+                level: u.level,
+                lessonsCompleted: enriched[u.id]?.lessonsCompleted ?? 0,
+                studyTimeMinutes: enriched[u.id]?.studyTimeMinutes ?? 0,
+                percentile: getPercentile(i + 1, total),
+                totalTrades: 0,
+                pnl: 0,
+            },
+            privacyMap.get(u.id),
+            userId
+        )
+    );
 
     let myRank: LeaderboardResponse["myRank"] = null;
     let rivals = null;
@@ -357,23 +465,32 @@ async function getStreakLeaderboard(
     });
 
     const userIds = users.map((u) => u.id);
-    const enriched = await getEnrichedStats(userIds);
+    const [enriched, privacyMap] = await Promise.all([
+        getEnrichedStats(userIds),
+        getProfilePrivacyMap(userIds),
+    ]);
 
-    const data: LeaderboardEntry[] = users.map((u, i) => ({
-        rank: i + 1,
-        userId: u.id,
-        name: u.name || "Unknown",
-        avatar: u.image,
-        tier: getTier(u.xp),
-        value: u.streak,
-        label: "days",
-        level: u.level,
-        lessonsCompleted: enriched[u.id]?.lessonsCompleted ?? 0,
-        studyTimeMinutes: enriched[u.id]?.studyTimeMinutes ?? 0,
-        percentile: getPercentile(i + 1, total),
-        totalTrades: 0,
-        pnl: 0,
-    }));
+    const data: LeaderboardEntry[] = users.map((u, i) =>
+        maskLeaderboardEntry(
+            {
+                rank: i + 1,
+                userId: u.id,
+                name: u.name || "Unknown",
+                avatar: u.image,
+                tier: getTier(u.xp),
+                value: u.streak,
+                label: "days",
+                level: u.level,
+                lessonsCompleted: enriched[u.id]?.lessonsCompleted ?? 0,
+                studyTimeMinutes: enriched[u.id]?.studyTimeMinutes ?? 0,
+                percentile: getPercentile(i + 1, total),
+                totalTrades: 0,
+                pnl: 0,
+            },
+            privacyMap.get(u.id),
+            userId
+        )
+    );
 
     let myRank = null;
     let rivals = null;
@@ -433,22 +550,30 @@ async function getAcademyLeaderboard(
  `;
 
     const total = results.length;
+    const userIds = results.map((r) => r.userId);
+    const privacyMap = await getProfilePrivacyMap(userIds);
 
-    const data: LeaderboardEntry[] = results.map((r, i) => ({
-        rank: i + 1,
-        userId: r.userId,
-        name: r.name || "Unknown",
-        avatar: r.image,
-        tier: getTier(r.xp),
-        value: Number(r.count),
-        label: "lessons",
-        level: r.level,
-        lessonsCompleted: Number(r.count),
-        studyTimeMinutes: Number(r.studyMinutes ?? 0),
-        percentile: getPercentile(i + 1, total),
-        totalTrades: 0,
-        pnl: 0,
-    }));
+    const data: LeaderboardEntry[] = results.map((r, i) =>
+        maskLeaderboardEntry(
+            {
+                rank: i + 1,
+                userId: r.userId,
+                name: r.name || "Unknown",
+                avatar: r.image,
+                tier: getTier(r.xp),
+                value: Number(r.count),
+                label: "lessons",
+                level: r.level,
+                lessonsCompleted: Number(r.count),
+                studyTimeMinutes: Number(r.studyMinutes ?? 0),
+                percentile: getPercentile(i + 1, total),
+                totalTrades: 0,
+                pnl: 0,
+            },
+            privacyMap.get(r.userId),
+            userId
+        )
+    );
 
     let myRank = null;
     let rivals = null;
@@ -544,27 +669,36 @@ async function getTradingLeaderboard(
     const total = results.length;
 
     const enrichedUserIds = results.map((r) => r.userId);
-    const enriched = await getEnrichedStats(enrichedUserIds);
+    const [enriched, privacyMap] = await Promise.all([
+        getEnrichedStats(enrichedUserIds),
+        getProfilePrivacyMap(enrichedUserIds),
+    ]);
 
-    const data: LeaderboardEntry[] = results.map((r, i) => ({
-        rank: i + 1,
-        userId: r.userId,
-        name: r.name || "Unknown",
-        avatar: r.image,
-        tier: getTier(r.xp),
-        value:
-            sortBy === "percentage"
-                ? Number(r.winRate)
-                : Number(r.totalPnl ?? 0),
-        label: sortBy === "percentage" ? "%" : "$",
-        level: r.level,
-        lessonsCompleted: enriched[r.userId]?.lessonsCompleted ?? 0,
-        studyTimeMinutes: enriched[r.userId]?.studyTimeMinutes ?? 0,
-        percentile: getPercentile(i + 1, total),
-        totalTrades: Number(r.totalTrades),
-        pnl: Number(r.totalPnl ?? 0),
-        winRate: Number(r.winRate),
-    }));
+    const data: LeaderboardEntry[] = results.map((r, i) =>
+        maskLeaderboardEntry(
+            {
+                rank: i + 1,
+                userId: r.userId,
+                name: r.name || "Unknown",
+                avatar: r.image,
+                tier: getTier(r.xp),
+                value:
+                    sortBy === "percentage"
+                        ? Number(r.winRate)
+                        : Number(r.totalPnl ?? 0),
+                label: sortBy === "percentage" ? "%" : "$",
+                level: r.level,
+                lessonsCompleted: enriched[r.userId]?.lessonsCompleted ?? 0,
+                studyTimeMinutes: enriched[r.userId]?.studyTimeMinutes ?? 0,
+                percentile: getPercentile(i + 1, total),
+                totalTrades: Number(r.totalTrades),
+                pnl: Number(r.totalPnl ?? 0),
+                winRate: Number(r.winRate),
+            },
+            privacyMap.get(r.userId),
+            userId
+        )
+    );
 
     let myRank = null;
     let rivals = null;
@@ -619,6 +753,15 @@ async function getRivals(
         select: { id: true, name: true, image: true, xp: true, [field]: true },
     });
 
+    const rivalUserIds: string[] = [];
+    if (aboveUser?.id && typeof aboveUser.id === "string") {
+        rivalUserIds.push(aboveUser.id);
+    }
+    if (belowUser?.id && typeof belowUser.id === "string") {
+        rivalUserIds.push(belowUser.id);
+    }
+    const privacyMap = await getProfilePrivacyMap(rivalUserIds);
+
     const mapToEntry = (
         u: {
             id: string;
@@ -630,21 +773,25 @@ async function getRivals(
         rank: number
     ): LeaderboardEntry | null => {
         if (!u) return null;
-        return {
-            rank,
-            userId: u.id,
-            name: u.name || "Unknown",
-            avatar: u.image,
-            tier: getTier(u.xp),
-            value: (u[field] as number) ?? 0,
-            label: field === "xp" ? "Edge" : "days",
-            level: 0,
-            lessonsCompleted: 0,
-            studyTimeMinutes: 0,
-            percentile: 0,
-            totalTrades: 0,
-            pnl: 0,
-        };
+        return maskLeaderboardEntry(
+            {
+                rank,
+                userId: u.id,
+                name: u.name || "Unknown",
+                avatar: u.image,
+                tier: getTier(u.xp),
+                value: (u[field] as number) ?? 0,
+                label: field === "xp" ? "Edge" : "days",
+                level: 0,
+                lessonsCompleted: 0,
+                studyTimeMinutes: 0,
+                percentile: 0,
+                totalTrades: 0,
+                pnl: 0,
+            },
+            privacyMap.get(u.id),
+            userId
+        );
     };
 
     const myRank =

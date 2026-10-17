@@ -29,6 +29,7 @@ export default async function MyLearningPage() {
                         id: true,
                         title: true,
                         lessons: {
+                            where: { status: "published" },
                             select: {
                                 id: true,
                                 title: true,

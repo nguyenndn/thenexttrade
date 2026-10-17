@@ -7,6 +7,8 @@ const tool = getToolBySlug("live-market-rates")!;
 
 export const metadata: Metadata = getToolMetadata("live-market-rates");
 
+export const revalidate = 86400;
+
 export default function LiveMarketRatesPage() {
     return (
         <ToolPageLayout tool={tool}>

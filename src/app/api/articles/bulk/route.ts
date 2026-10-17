@@ -38,8 +38,17 @@ export async function POST(request: Request) {
         }
 
         if (action === "delete") {
-            await prisma.article.deleteMany({
-                where: { id: { in: ids } },
+            await prisma.$transaction(async (tx) => {
+                await tx.comment.updateMany({
+                    where: { articleId: { in: ids } },
+                    data: { parentId: null },
+                });
+                await tx.comment.deleteMany({
+                    where: { articleId: { in: ids } },
+                });
+                await tx.article.deleteMany({
+                    where: { id: { in: ids } },
+                });
             });
             return NextResponse.json({ success: true, count: ids.length });
         }
@@ -53,9 +62,17 @@ export async function POST(request: Request) {
                     { status: 400 }
                 );
             }
-            await prisma.article.updateMany({
-                where: { id: { in: ids } },
-                data: { status: value },
+            await prisma.$transaction(async (tx) => {
+                if (value === "PUBLISHED") {
+                    await tx.article.updateMany({
+                        where: { id: { in: ids }, publishedAt: null },
+                        data: { publishedAt: new Date() },
+                    });
+                }
+                await tx.article.updateMany({
+                    where: { id: { in: ids } },
+                    data: { status: value },
+                });
             });
             return NextResponse.json({ success: true, count: ids.length });
         }

@@ -131,7 +131,7 @@ export function AccountListClient({
         initialMainId ?? null
     );
 
-    const MAX_FREE_ACCOUNTS = 3;
+    const MAX_FREE_ACCOUNTS = 2;
     const isPro = proAccess.isPro;
     const isFreeLimitReached =
         !isPro && initialAccounts.length >= MAX_FREE_ACCOUNTS;
@@ -387,7 +387,7 @@ export function AccountListClient({
             handledParamsRef.current = paramsKey;
             if (isAddAction && !isProIntent && isFreeLimitReached) {
                 toast.info(
-                    "Free tier is limited to 3 connected accounts. Upgrade to Partner Pro for unlimited accounts."
+                    "Free tier is limited to 2 connected accounts. Upgrade to Partner Pro for unlimited accounts."
                 );
                 setActiveModal({ type: "FREE_VS_PRO" });
                 const newParams = new URLSearchParams(searchParams.toString());
@@ -553,7 +553,7 @@ export function AccountListClient({
                         onClick={() => {
                             if (isFreeLimitReached) {
                                 toast.info(
-                                    "Free tier is limited to 3 connected accounts. Upgrade to Partner Pro for unlimited accounts."
+                                    "Free tier is limited to 2 connected accounts. Upgrade to Partner Pro for unlimited accounts."
                                 );
                                 setActiveModal({ type: "FREE_VS_PRO" });
                                 return;
@@ -887,7 +887,7 @@ export function AccountListClient({
                 onOpenAddAccount={(method) => {
                     if (isFreeLimitReached) {
                         toast.info(
-                            "Free tier is limited to 3 connected accounts. Upgrade to Partner Pro for unlimited accounts."
+                            "Free tier is limited to 2 connected accounts. Upgrade to Partner Pro for unlimited accounts."
                         );
                         setActiveModal({ type: "FREE_VS_PRO" });
                         return;
@@ -943,7 +943,7 @@ export function AccountListClient({
                                 {[
                                     {
                                         name: "Connected MT5 accounts",
-                                        free: "Up to 3 accounts",
+                                        free: "Up to 2 accounts",
                                         pro: "Unlimited",
                                     },
                                     {
@@ -1006,7 +1006,7 @@ export function AccountListClient({
                                         </td>
                                         <td className="w-1/4 px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center gap-2 whitespace-nowrap">
-                                                {row.free === "Up to 3 accounts" && (
+                                                {row.free === "Up to 2 accounts" && (
                                                     <Users className="w-4 h-4 text-gray-400 shrink-0" />
                                                 )}
                                                 {row.free === "Included" && (
@@ -1027,7 +1027,7 @@ export function AccountListClient({
                                                                 "Locked"
                                                                 ? "text-gray-500 font-medium"
                                                                 : row.free ===
-                                                                    "Up to 3 accounts"
+                                                                    "Up to 2 accounts"
                                                                     ? "text-gray-900 dark:text-gray-200 font-semibold"
                                                                     : "text-amber-700 dark:text-amber-400 font-medium"
                                                     }

@@ -9,6 +9,7 @@ import { getAccountsProEligibility } from "@/lib/pro-eligibility";
 import { getUserProAccess } from "@/lib/pro-access";
 import { POPULAR_MT5_SERVERS } from "@/lib/constants/mt5-servers";
 import { detectBroker } from "@/lib/ea/broker-detection";
+import { notifyAdminsOfNewAccount } from "@/lib/admin/admin-notification.server";
 
 const accountSchema = z.object({
     name: z.string().min(1).max(50),
@@ -105,6 +106,10 @@ export async function getTradingAccounts(page = 1, limit = 12) {
             where: {
                 userId: user.id,
                 tradingAccountId: null,
+                OR: [
+                    { accountNumber: null, broker: null },
+                    { source: "MANUAL_ADMIN" },
+                ],
                 status: { in: ["ACTIVE", "GRACE"] },
             },
             select: { status: true, source: true, expiresAt: true },
@@ -256,16 +261,16 @@ export async function createTradingAccount(
     } = validation.data;
 
     try {
-        // Enforce account connection quota: Free tier is limited to 3 accounts
+        // Enforce account connection quota: Free tier is limited to 2 accounts
         const existingCount = await prisma.tradingAccount.count({
             where: { userId: user.id },
         });
 
-        if (existingCount >= 3) {
+        if (existingCount >= 2) {
             const proAccess = await getUserProAccess(user.id);
             if (!proAccess.isPro) {
                 return {
-                    error: "Free tier is limited to 3 connected accounts. Upgrade to Partner Pro for unlimited accounts.",
+                    error: "Free tier is limited to 2 connected accounts. Upgrade to Partner Pro for unlimited accounts.",
                 };
             }
         }
@@ -346,6 +351,18 @@ export async function createTradingAccount(
                 apiKey: legacyApiKey,
                 color: color || "hsl(var(--primary))",
             },
+        });
+
+        // Notify Admins about the newly connected account (awaited so the
+        // write can't be dropped when the serverless function freezes)
+        await notifyAdminsOfNewAccount({
+            accountId: account.id,
+            userId: user.id,
+            broker: resolvedBroker,
+            accountNumber: accountNumber || null,
+            server: server || null,
+            userEmail: user.email,
+            userName: user.name,
         });
 
         revalidatePath("/dashboard/accounts");

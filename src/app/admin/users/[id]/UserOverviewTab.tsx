@@ -4,10 +4,8 @@ import {
     FileText,
     Download,
     Monitor,
-    Trophy,
 } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
-import { AdminNotes } from "./AdminNotes";
 
 interface UserOverviewTabProps {
     user: {
@@ -70,7 +68,7 @@ interface UserOverviewTabProps {
             expiryDate: Date | string | null;
             createdAt: Date | string;
         }>;
-        badges: Array<{
+        badges?: Array<{
             id: string;
             badge: {
                 name: string;
@@ -92,7 +90,7 @@ interface UserOverviewTabProps {
             quizAttempts: number;
             comments: number;
             eaDownloads: number;
-            badges: number;
+            badges?: number;
             sessions: number;
             journalEntries: number;
         };
@@ -100,7 +98,7 @@ interface UserOverviewTabProps {
 }
 
 export function UserOverviewTab({ user }: UserOverviewTabProps) {
-    // Build Unified Timeline
+    // Build Unified Timeline (Key Milestones only - trade logs filtered to prevent drowning)
     const timelineEvents = [
         ...user.tradingAccounts.map((acc) => ({
             id: `acc-${acc.id}`,
@@ -121,20 +119,6 @@ export function UserOverviewTab({ user }: UserOverviewTabProps) {
             icon: Download,
             color: "text-orange-500",
             bg: "bg-orange-500/10",
-        })),
-        ...user.journalEntries.map((trade) => ({
-            id: `trade-${trade.id}`,
-            date: new Date(trade.createdAt),
-            type: "trade",
-            title: `Logged a ${trade.type} trade on ${trade.symbol}`,
-            description: `Account: ${trade.account?.name || "N/A"} · ${trade.pnl && trade.pnl > 0 ? "Profit" : "Loss"}: $${Math.abs(trade.pnl || 0).toFixed(2)}`,
-            icon: LineChart,
-            color:
-                trade.pnl && trade.pnl > 0 ? "text-green-500" : "text-red-500",
-            bg:
-                trade.pnl && trade.pnl > 0
-                    ? "bg-green-500/10"
-                    : "bg-red-500/10",
         })),
         ...user.progress.map((prog) => ({
             id: `prog-${prog.id}`,
@@ -175,128 +159,67 @@ export function UserOverviewTab({ user }: UserOverviewTabProps) {
 
     return (
         <div className="space-y-6">
-            <div className="space-y-6">
-                {/* Compact user activity summary */}
-                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-4 sm:p-6 overflow-hidden">
-                    <h3 className="text-base font-bold text-gray-700 dark:text-white border-b border-gray-200 dark:border-white/10 pb-3 mb-4">
-                        User Activity
-                    </h3>
+            {/* Compact user activity summary */}
+            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-4 sm:p-6 overflow-hidden">
+                <h3 className="text-base font-bold text-gray-700 dark:text-white border-b border-gray-200 dark:border-white/10 pb-3 mb-4">
+                    User Activity
+                </h3>
 
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                        {[
-                            {
-                                icon: GraduationCap,
-                                color: "text-blue-600 dark:text-blue-400",
-                                bg: "bg-blue-100 dark:bg-blue-500/20",
-                                label: "Academy",
-                                values: [
-                                    `${user._count.progress} Lessons`,
-                                    `${user._count.quizAttempts} Quizzes`,
-                                ],
-                            },
-                            {
-                                icon: LineChart,
-                                color: "text-green-600 dark:text-green-400",
-                                bg: "bg-green-100 dark:bg-green-500/20",
-                                label: "Trading",
-                                values: [
-                                    `${user._count.tradingAccounts} Accounts`,
-                                    `${user._count.journalEntries} Trades`,
-                                ],
-                            },
-                            {
-                                icon: FileText,
-                                color: "text-indigo-600 dark:text-indigo-400",
-                                bg: "bg-indigo-100 dark:bg-indigo-500/20",
-                                label: "Engagement",
-                                values: [
-                                    `${user._count.comments} Comments`,
-                                    `${user.streak} Day Streak`,
-                                ],
-                            },
-                            {
-                                icon: Download,
-                                color: "text-orange-600 dark:text-orange-400",
-                                bg: "bg-orange-100 dark:bg-orange-500/20",
-                                label: "Products",
-                                values: [
-                                    `${user._count.eaDownloads} Downloads`,
-                                    `${user._count.EALicenses} Licenses`,
-                                ],
-                            },
-                        ].map((stat) => (
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    {[
+                        {
+                            icon: GraduationCap,
+                            color: "text-blue-600 dark:text-blue-400",
+                            bg: "bg-blue-100 dark:bg-blue-500/20",
+                            label: "Academy",
+                            values: [
+                                `${user._count.progress} Lessons`,
+                                `${user._count.quizAttempts} Quizzes`,
+                            ],
+                        },
+                        {
+                            icon: Download,
+                            color: "text-orange-600 dark:text-orange-400",
+                            bg: "bg-orange-100 dark:bg-orange-500/20",
+                            label: "Products & Licenses",
+                            values: [
+                                `${user._count.eaDownloads} Downloads`,
+                                `${user._count.EALicenses} Licenses`,
+                            ],
+                        },
+                        {
+                            icon: FileText,
+                            color: "text-indigo-600 dark:text-indigo-400",
+                            bg: "bg-indigo-100 dark:bg-indigo-500/20",
+                            label: "Engagement",
+                            values: [
+                                `${user._count.comments} Comments`,
+                                `${user.streak} Day Streak`,
+                            ],
+                        },
+                    ].map((stat) => (
+                        <div
+                            key={stat.label}
+                            className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 p-3 text-center dark:bg-white/5"
+                        >
                             <div
-                                key={stat.label}
-                                className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 p-3 text-center dark:bg-white/5"
+                                className={`p-1 ${stat.bg} ${stat.color} rounded-lg w-max mx-auto mb-1.5`}
                             >
-                                <div
-                                    className={`p-1 ${stat.bg} ${stat.color} rounded-lg w-max mx-auto mb-1.5`}
+                                <stat.icon size={14} />
+                            </div>
+                            <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">
+                                {stat.label}
+                            </p>
+                            {stat.values.map((v) => (
+                                <p
+                                    key={v}
+                                    className="text-[11px] font-medium text-gray-600 dark:text-gray-300"
                                 >
-                                    <stat.icon size={14} />
-                                </div>
-                                <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">
-                                    {stat.label}
+                                    {v}
                                 </p>
-                                {stat.values.map((v) => (
-                                    <p
-                                        key={v}
-                                        className="text-[11px] font-medium text-gray-600 dark:text-gray-300"
-                                    >
-                                        {v}
-                                    </p>
-                                ))}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Achievements & Admin Notes — side by side */}
-                <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-                    {/* Achievements */}
-                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden">
-                        <div className="px-4 sm:px-6 py-3 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
-                            <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
-                                <Trophy size={16} className="text-amber-500" />{" "}
-                                Achievements
-                            </h3>
-                            <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-lg">
-                                {user._count.badges}
-                            </span>
+                            ))}
                         </div>
-                        {user.badges.length > 0 ? (
-                            <div className="p-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
-                                {user.badges.map((ub) => (
-                                    <div
-                                        key={ub.id}
-                                        className="flex flex-col items-center gap-1 p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-primary/30 transition-colors group"
-                                        title={ub.badge.description || ""}
-                                    >
-                                        <div className="p-1.5 bg-amber-50 dark:bg-amber-500/10 text-amber-500 rounded-lg group-hover:scale-110 transition-transform">
-                                            <Trophy size={14} />
-                                        </div>
-                                        <p className="text-[9px] font-bold text-gray-700 dark:text-gray-300 text-center leading-tight truncate w-full">
-                                            {ub.badge.name}
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="p-6 text-center">
-                                <p className="text-xs text-gray-600">
-                                    No achievements yet.
-                                </p>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Admin Notes — Interactive */}
-                    <AdminNotes
-                        userId={user.id}
-                        initialNotes={
-                            (user.settings as Record<string, string>)
-                                ?.adminNotes || ""
-                        }
-                    />
+                    ))}
                 </div>
             </div>
 

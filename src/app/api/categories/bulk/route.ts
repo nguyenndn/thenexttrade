@@ -31,8 +31,26 @@ export async function POST(request: Request) {
             );
         }
 
-        await prisma.category.deleteMany({
-            where: { id: { in: ids } },
+        const articlesCount = await prisma.article.count({
+            where: { categoryId: { in: ids } },
+        });
+        if (articlesCount > 0) {
+            return NextResponse.json(
+                {
+                    error: "Cannot delete categories that still contain articles. Please reassign articles first.",
+                },
+                { status: 400 }
+            );
+        }
+
+        await prisma.$transaction(async (tx) => {
+            await tx.category.updateMany({
+                where: { parentId: { in: ids } },
+                data: { parentId: null },
+            });
+            await tx.category.deleteMany({
+                where: { id: { in: ids } },
+            });
         });
 
         return NextResponse.json({ success: true, count: ids.length });

@@ -43,6 +43,7 @@ export async function GET(request: NextRequest) {
             pendingVipRequests,
             recentVipRequests,
             dbNotifications,
+            unreadDbCount,
         ] = await Promise.all([
             prisma.eALicense.count({
                 where: { status: AccountStatus.PENDING },
@@ -67,6 +68,9 @@ export async function GET(request: NextRequest) {
                 where: { userId: user.id, isRead: false },
                 orderBy: { createdAt: "desc" },
                 take: limit,
+            }),
+            prisma.notification.count({
+                where: { userId: user.id, isRead: false },
             }),
         ]);
 
@@ -114,7 +118,7 @@ export async function GET(request: NextRequest) {
             .slice(0, limit);
 
         const unreadCount =
-            pendingLicenses + pendingVipRequests + dbNotifications.length;
+            pendingLicenses + pendingVipRequests + unreadDbCount;
 
         return NextResponse.json(
             createSuccessResponse({

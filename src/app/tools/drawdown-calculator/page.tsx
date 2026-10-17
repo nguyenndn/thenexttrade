@@ -7,6 +7,8 @@ const tool = getToolBySlug("drawdown-calculator")!;
 
 export const metadata: Metadata = getToolMetadata("drawdown-calculator");
 
+export const revalidate = 86400;
+
 export default function DrawdownCalculatorPage() {
     return (
         <ToolPageLayout tool={tool}>

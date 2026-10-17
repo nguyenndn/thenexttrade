@@ -9,14 +9,14 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "18 Free Professional Forex Trading Calculators & Tools | TheNextTrade",
+    title: "17 Free Professional Forex Trading Calculators & Tools | TheNextTrade",
     description:
         "Free forex calculators: position size, pip value, margin, risk/reward, Fibonacci, and drawdown. No sign-up needed.",
     alternates: {
         canonical: "/tools",
     },
     openGraph: {
-        title: "18 Free Professional Forex Trading Calculators & Tools",
+        title: "17 Free Professional Forex Trading Calculators & Tools",
         description:
             "Free forex calculators: position size, pip value, margin, risk/reward, Fibonacci, and drawdown. No sign-up needed.",
         url: "/tools",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: "summary_large_image",
-        title: "18 Free Professional Forex Trading Calculators & Tools",
+        title: "17 Free Professional Forex Trading Calculators & Tools",
         description:
             "Position Size, Pip Value, Margin, Risk/Reward, and Fibonacci calculators for Forex traders.",
     },

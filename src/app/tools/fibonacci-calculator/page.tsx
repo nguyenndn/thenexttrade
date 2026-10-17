@@ -7,6 +7,8 @@ const tool = getToolBySlug("fibonacci-calculator")!;
 
 export const metadata: Metadata = getToolMetadata("fibonacci-calculator");
 
+export const revalidate = 86400;
+
 export default function FibonacciCalculatorPage() {
     return (
         <ToolPageLayout tool={tool}>

@@ -1,4 +1,6 @@
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { getAuthUser } from "@/lib/auth-cache";
 import { ReportsDashboard } from "@/components/reports/ReportsDashboard";
 import { TabBar } from "@/components/ui/TabBar";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -9,7 +11,12 @@ export const metadata: Metadata = {
     description: "Export execution logs, comprehensive audit reports, and trade history in PDF and CSV formats.",
 };
 
-export default function ReportsPage() {
+export default async function ReportsPage() {
+    const user = await getAuthUser();
+    if (!user) {
+        redirect("/auth/login");
+    }
+
     return (
         <div className="space-y-4">
             <PageHeader

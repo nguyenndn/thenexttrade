@@ -29,6 +29,7 @@ export default function QuizRunnerPage() {
     const [answers, setAnswers] = useState<Record<string, string>>({}); // valid: questionId -> optionId
     const [results, setResults] = useState<any>(null);
     const [submitting, setSubmitting] = useState(false);
+    const [showAuthModal, setShowAuthModal] = useState(false);
 
     useEffect(() => {
         // Fetch User logic
@@ -55,7 +56,8 @@ export default function QuizRunnerPage() {
     }, [quizId, router]);
 
     const handleSelectOption = (optionId: string) => {
-        const question = quiz.questions[currentQuestionIndex];
+        const question = quiz?.questions?.[currentQuestionIndex];
+        if (!question?.id) return;
         setAnswers({
             ...answers,
             [question.id]: optionId,
@@ -63,6 +65,7 @@ export default function QuizRunnerPage() {
     };
 
     const handleNext = () => {
+        if (!quiz?.questions?.length) return;
         if (currentQuestionIndex < quiz.questions.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
         } else {
@@ -72,7 +75,7 @@ export default function QuizRunnerPage() {
 
     const handleSubmit = async () => {
         if (!userId) {
-            toast.error("Please sign in to submit your quiz.");
+            setShowAuthModal(true);
             return;
         }
 
@@ -175,9 +178,47 @@ export default function QuizRunnerPage() {
         );
     }
 
+    if (!quiz.questions || !Array.isArray(quiz.questions) || quiz.questions.length === 0) {
+        return (
+            <div className="min-h-screen bg-gray-50 dark:bg-transparent flex flex-col">
+                <div className="bg-white dark:bg-[#151925] px-6 py-4 border-b border-dashboard flex items-center justify-between">
+                    <Link
+                        href="/academy"
+                        className="text-gray-600 hover:text-gray-700 dark:hover:text-white"
+                        aria-label="Go back to course map"
+                    >
+                        <ArrowLeft />
+                    </Link>
+                </div>
+                <div className="flex-1 flex items-center justify-center p-6">
+                    <div className="bg-white dark:bg-[#151925] rounded-xl p-8 max-w-md w-full text-center shadow-xl border border-dashboard space-y-4">
+                        <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+                            No Questions Available
+                        </h2>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">
+                            This quiz does not have any questions available yet. Please check back later.
+                        </p>
+                        <Link
+                            href="/academy"
+                            className={buttonVariants({
+                                variant: "outline",
+                                className:
+                                    "w-full py-2.5 rounded-lg border border-dashboard font-bold hover:bg-gray-100 dark:hover:bg-white/5",
+                            })}
+                        >
+                            Back to Academy
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     const currentQ = quiz.questions[currentQuestionIndex];
+    if (!currentQ) return null;
+
     const progress = ((currentQuestionIndex + 1) / quiz.questions.length) * 100;
-    const isSelected = !!answers[currentQ.id];
+    const isSelected = !!(currentQ.id && answers[currentQ.id]);
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-transparent flex flex-col">
@@ -209,7 +250,7 @@ export default function QuizRunnerPage() {
                     </h2>
 
                     <div className="space-y-4">
-                        {currentQ.options.map((opt: any) => {
+                        {currentQ.options?.map((opt: any) => {
                             const isActive = answers[currentQ.id] === opt.id;
                             return (
                                 <div
@@ -277,6 +318,43 @@ export default function QuizRunnerPage() {
                     </Button>
                 </div>
             </div>
+
+            {/* Auth prompt modal for guests */}
+            {showAuthModal && (
+                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="bg-white dark:bg-[#151925] rounded-xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl border border-dashboard space-y-6">
+                        <div className="w-14 h-14 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto">
+                            <Trophy size={28} />
+                        </div>
+                        <div className="space-y-2">
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                                Sign In to Submit Quiz
+                            </h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                                Your answers are recorded. Please sign in or create an account to submit your score and earn Academy XP.
+                            </p>
+                        </div>
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            <Button
+                                variant="outline"
+                                onClick={() => setShowAuthModal(false)}
+                                className="flex-1 rounded-lg"
+                            >
+                                Review Answers
+                            </Button>
+                            <Link
+                                href={`/auth/login?redirect=/academy/quiz/${quizId}`}
+                                className={buttonVariants({
+                                    variant: "primary",
+                                    className: "flex-1 rounded-lg font-bold",
+                                })}
+                            >
+                                Sign In
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

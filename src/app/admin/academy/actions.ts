@@ -7,8 +7,20 @@ import { requireAdminAuth } from "@/lib/auth-cache";
 export async function deleteLevel(levelId: string) {
     try {
         await requireAdminAuth();
-        await prisma.level.delete({
-            where: { id: levelId },
+        await prisma.$transaction(async (tx) => {
+            await tx.comment.updateMany({
+                where: { lesson: { module: { levelId } } },
+                data: { parentId: null },
+            });
+            await tx.comment.deleteMany({
+                where: { lesson: { module: { levelId } } },
+            });
+            await tx.quiz.deleteMany({
+                where: { module: { levelId } },
+            });
+            await tx.level.delete({
+                where: { id: levelId },
+            });
         });
         revalidatePath("/admin/academy");
         return { success: true };

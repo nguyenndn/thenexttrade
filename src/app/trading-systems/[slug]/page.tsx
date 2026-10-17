@@ -1,12 +1,13 @@
 import React from "react";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { getSystemBySlug } from "@/config/trading-systems-data";
+import { getSystemBySlug, TRADING_SYSTEMS_DATA } from "@/config/trading-systems-data";
 import { TradingSystemsPageShell } from "@/components/trading-systems/TradingSystemsPageShell";
 import { TradingSystemsDetailTabs } from "@/components/trading-systems/TradingSystemsDetailTabs";
 import { TradingSystemMockPanel } from "@/components/trading-systems/TradingSystemMockPanel";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
+import { JsonLd } from "@/components/seo/JsonLd";
 import {
     ArrowLeft,
     Shield,
@@ -21,6 +22,12 @@ import {
 import DOMPurify from "isomorphic-dompurify";
 import { buttonVariants } from "@/components/ui/button-variants";
 import type { Metadata } from "next";
+
+export function generateStaticParams() {
+    return TRADING_SYSTEMS_DATA.map((sys) => ({
+        slug: sys.slug,
+    }));
+}
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -50,6 +57,21 @@ export async function generateMetadata({
     return {
         title: `${system.title} Specs & Parameters | TheNextTrade`,
         description: system.description,
+        alternates: {
+            canonical: `/trading-systems/${system.slug}`,
+        },
+        openGraph: {
+            title: `${system.title} Specs & Parameters | TheNextTrade`,
+            description: system.description,
+            url: `/trading-systems/${system.slug}`,
+            siteName: "TheNextTrade",
+            type: "website",
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: `${system.title} Specs & Parameters | TheNextTrade`,
+            description: system.description,
+        },
     };
 }
 
@@ -90,6 +112,23 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
 
     return (
         <TradingSystemsPageShell maxWidth="max-w-7xl">
+            <JsonLd
+                type="SoftwareApplication"
+                data={{
+                    name: system.title,
+                    description: system.description,
+                    operatingSystem: "Windows, MetaTrader 5",
+                    applicationCategory: "FinanceApplication",
+                    softwareVersion: displayVersion,
+                    offers: {
+                        "@type": "Offer",
+                        price: "0",
+                        priceCurrency: "USD",
+                        availability: "https://schema.org/InStock",
+                        description: "Available for eligible partner accounts",
+                    },
+                }}
+            />
             {/* Back button & Breadcrumbs */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                 <Link

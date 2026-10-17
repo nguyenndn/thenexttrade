@@ -16,10 +16,18 @@ import {
     CheckCircle2,
     XCircle,
     SlidersHorizontal,
+    ChevronDown,
+    WalletCards,
 } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
 interface JournalEntryItem {
@@ -62,7 +70,24 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [resultFilter, setResultFilter] = useState<string>("ALL");
     const [typeFilter, setTypeFilter] = useState<string>("ALL");
+    const [accountFilter, setAccountFilter] = useState<string>("ALL");
     const [selectedEntry, setSelectedEntry] = useState<JournalEntryItem | null>(null);
+
+    // Extract unique connected accounts present in journal
+    const availableAccounts = useMemo(() => {
+        const accMap = new Map<string, string>();
+        entries.forEach((e) => {
+            if (e.account?.id) {
+                const label = e.account.name || e.account.broker || `Account ${e.account.id.slice(0, 6)}`;
+                if (!accMap.has(e.account.id)) {
+                    accMap.set(e.account.id, label);
+                }
+            }
+        });
+        return Array.from(accMap.entries()).map(([id, label]) => ({ id, label }));
+    }, [entries]);
+
+    const hasManualEntries = useMemo(() => entries.some((e) => !e.account?.id), [entries]);
 
     // Compute stats
     const stats = useMemo(() => {
@@ -123,9 +148,19 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
 
             const matchesType = typeFilter === "ALL" || entry.type === typeFilter;
 
-            return matchesQuery && matchesResult && matchesType;
+            const matchesAccount =
+                accountFilter === "ALL" ||
+                (accountFilter === "MANUAL" ? !entry.account?.id : entry.account?.id === accountFilter);
+
+            return matchesQuery && matchesResult && matchesType && matchesAccount;
         });
-    }, [entries, searchQuery, resultFilter, typeFilter]);
+    }, [entries, searchQuery, resultFilter, typeFilter, accountFilter]);
+
+    const activeAccountLabel = useMemo(() => {
+        if (accountFilter === "ALL") return "All Accounts";
+        if (accountFilter === "MANUAL") return "Manual Logs";
+        return availableAccounts.find((a) => a.id === accountFilter)?.label || "Account";
+    }, [accountFilter, availableAccounts]);
 
     return (
         <div className="space-y-6">
@@ -136,10 +171,12 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                         Total Trades
                     </p>
                     <p className="text-xl font-black text-gray-900 dark:text-white mt-1">
-                        {totalCount}
+                        {totalCount.toLocaleString()}
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
-                        Showing {entries.length} recent
+                        {filteredEntries.length !== entries.length
+                            ? `Filtered: ${filteredEntries.length} of ${entries.length} recent`
+                            : `Showing latest ${entries.length} of ${totalCount.toLocaleString()}`}
                     </p>
                 </div>
 
@@ -201,6 +238,50 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                 </div>
 
                 <div className="flex items-center gap-2 flex-wrap w-full md:w-auto justify-end">
+                    {/* Account Dropdown Filter */}
+                    {(availableAccounts.length > 0 || hasManualEntries) && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-8 px-2.5 text-xs font-semibold gap-1.5 border-gray-200 dark:border-white/10"
+                                >
+                                    <WalletCards size={13} className="text-gray-400" />
+                                    <span className="truncate max-w-[130px]">
+                                        {activeAccountLabel}
+                                    </span>
+                                    <ChevronDown size={12} className="text-gray-400 shrink-0" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-52">
+                                <DropdownMenuItem
+                                    onClick={() => setAccountFilter("ALL")}
+                                    className={cn("text-xs cursor-pointer", accountFilter === "ALL" && "font-bold text-primary")}
+                                >
+                                    All Accounts ({entries.length})
+                                </DropdownMenuItem>
+                                {availableAccounts.map((acc) => (
+                                    <DropdownMenuItem
+                                        key={acc.id}
+                                        onClick={() => setAccountFilter(acc.id)}
+                                        className={cn("text-xs cursor-pointer", accountFilter === acc.id && "font-bold text-primary")}
+                                    >
+                                        {acc.label}
+                                    </DropdownMenuItem>
+                                ))}
+                                {hasManualEntries && (
+                                    <DropdownMenuItem
+                                        onClick={() => setAccountFilter("MANUAL")}
+                                        className={cn("text-xs cursor-pointer", accountFilter === "MANUAL" && "font-bold text-primary")}
+                                    >
+                                        Manual Logs
+                                    </DropdownMenuItem>
+                                )}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
+
                     {/* Result Filter */}
                     <div className="flex rounded-lg border border-gray-200 dark:border-white/10 p-0.5 bg-gray-50 dark:bg-white/[0.03]">
                         {["ALL", "WIN", "LOSS"].map((res) => (

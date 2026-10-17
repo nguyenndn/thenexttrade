@@ -32,8 +32,16 @@ export async function POST(request: Request) {
             );
         }
 
-        await prisma.comment.deleteMany({
-            where: { id: { in: ids } },
+        await prisma.$transaction(async (tx) => {
+            await tx.comment.updateMany({
+                where: {
+                    OR: [{ id: { in: ids } }, { parentId: { in: ids } }],
+                },
+                data: { parentId: null },
+            });
+            await tx.comment.deleteMany({
+                where: { id: { in: ids } },
+            });
         });
 
         return NextResponse.json({ success: true, count: ids.length });

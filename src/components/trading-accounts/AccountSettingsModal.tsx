@@ -29,7 +29,6 @@ import {
     PopoverContent,
 } from "@/components/ui/popover";
 import { updateTradingAccount } from "@/actions/accounts";
-import { updateTradingRules } from "@/actions/trading-rules";
 import { saveCloudSyncCredentials, getCloudSyncStatus } from "@/actions/cloud-sync";
 import {
     BROKER_INFO,
@@ -96,22 +95,14 @@ export function AccountSettingsModal({
     const [hasCredentials, setHasCredentials] = useState(Boolean(account.credential));
     const [isSaving, setIsSaving] = useState(false);
 
-    // Trading Protection Rules state
-    const [maxDailyLoss, setMaxDailyLoss] = useState<string>(
-        account.maxDailyLoss?.toString() || ""
-    );
-    const [maxDailyTrades, setMaxDailyTrades] = useState<string>(
-        account.maxDailyTrades?.toString() || ""
-    );
-    const [maxRiskPercent, setMaxRiskPercent] = useState<string>(
-        account.maxRiskPercent?.toString() || ""
-    );
-
     // Fetch fresh cloud sync credential status on open
     useEffect(() => {
         if (!isOpen || !account?.id) return;
         let isMounted = true;
+        setName(account.name || "");
         setServer(account.server || "");
+        setColor(account.color || "hsl(var(--primary))");
+        setInvestorPassword("");
 
         getCloudSyncStatus(account.id)
             .then((res) => {
@@ -125,7 +116,7 @@ export function AccountSettingsModal({
         return () => {
             isMounted = false;
         };
-    }, [isOpen, account?.id]);
+    }, [isOpen, account?.id, account?.name, account?.server, account?.color]);
 
     // Body scroll lock
     useEffect(() => {
@@ -155,23 +146,7 @@ export function AccountSettingsModal({
 
             if (result.error) throw new Error(result.error);
 
-            // 2. Save Trading Rules
-            const rulesResult = await updateTradingRules(account.id, {
-                maxDailyLoss: maxDailyLoss ? parseFloat(maxDailyLoss) : null,
-                maxDailyTrades: maxDailyTrades
-                    ? parseInt(maxDailyTrades)
-                    : null,
-                maxRiskPercent: maxRiskPercent
-                    ? parseFloat(maxRiskPercent)
-                    : null,
-                cooldownAfterLosses: null,
-            });
-
-            if (rulesResult.error) {
-                toast.error("Failed to save trading rules");
-            }
-
-            // 3. Save Investor Password if provided
+            // 2. Save Investor Password if provided
             if (investorPassword.trim()) {
                 const credResult = await saveCloudSyncCredentials(
                     account.id,
@@ -181,6 +156,8 @@ export function AccountSettingsModal({
 
                 if (!credResult.success) {
                     toast.error(credResult.error || "Failed to update investor password");
+                    onUpdate();
+                    return;
                 } else {
                     setHasCredentials(true);
                     setInvestorPassword("");
@@ -446,44 +423,6 @@ export function AccountSettingsModal({
                         </div>
                     </div>
 
-                    {/* Capital Preservation Guardrails */}
-                    <div className="space-y-4 pt-2 border-t border-dashboard">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                                <h3 className="text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">
-                                    Capital Preservation Guardrails
-                                </h3>
-                            </div>
-                            <span className="text-[9px] font-black bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-lg tracking-wider uppercase">
-                                Optional
-                            </span>
-                        </div>
-                        <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed -mt-1">
-                            Set hard risk limits to prevent revenge trading and drawdowns. System will dispatch breach alerts to your Notification Bell when approaching thresholds.
-                        </p>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <PremiumInput
-                                label={`Daily Loss (${account.currency || "USD"})`}
-                                type="number"
-                                value={maxDailyLoss}
-                                onChange={(e) => setMaxDailyLoss(e.target.value)}
-                            />
-                            <PremiumInput
-                                label="Max Trades / Day"
-                                type="number"
-                                value={maxDailyTrades}
-                                onChange={(e) => setMaxDailyTrades(e.target.value)}
-                            />
-                            <PremiumInput
-                                label="Max Risk % / Trade"
-                                type="number"
-                                value={maxRiskPercent}
-                                onChange={(e) => setMaxRiskPercent(e.target.value)}
-                            />
-                        </div>
-                    </div>
 
                     {/* API Configuration */}
                     <div className="space-y-3 pt-2 border-t border-dashboard">

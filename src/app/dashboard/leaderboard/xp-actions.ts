@@ -18,23 +18,26 @@ export async function awardLessonXP(lessonId: string) {
     const userId = await getCurrentUserId();
     if (!userId) return null;
 
-    // Check if lesson was already completed (avoid double awarding)
+    if (!lessonId || typeof lessonId !== "string") return null;
+
+    // Check if lesson is completed
     const progress = await prisma.userProgress.findFirst({
         where: { userId, lessonId, isCompleted: true },
     });
 
     if (!progress) return null;
 
-    const result = await addXP(userId, XP_AWARDS.LESSON_COMPLETE);
-
-    const { recordEdgeEvent } = await import("@/lib/edge-awards");
-    await recordEdgeEvent({
+    const { recordEdgeEventOnce } = await import("@/lib/edge-awards");
+    const recordedEvent = await recordEdgeEventOnce({
         userId,
         eventType: "LESSON_COMPLETE",
         sourceType: "Lesson",
         sourceId: lessonId,
         xpAwarded: XP_AWARDS.LESSON_COMPLETE,
     });
+    if (recordedEvent === null) return null;
+
+    const result = await addXP(userId, XP_AWARDS.LESSON_COMPLETE);
 
     // Check badge milestones
     const completedCount = await prisma.userProgress.count({
@@ -53,16 +56,33 @@ export async function awardQuizXP(quizId: string) {
     const userId = await getCurrentUserId();
     if (!userId) return null;
 
-    const result = await addXP(userId, XP_AWARDS.QUIZ_PASS);
+    if (!quizId || typeof quizId !== "string") return null;
 
-    const { recordEdgeEvent } = await import("@/lib/edge-awards");
-    await recordEdgeEvent({
+    // 1. Verify that the quiz exists AND the user has actually passed it
+    const passedAttempt = await prisma.userQuizAttempt.findFirst({
+        where: {
+            userId,
+            quizId,
+            passed: true,
+        },
+        orderBy: { score: "desc" },
+        select: { id: true, score: true },
+    });
+    if (!passedAttempt) return null;
+
+    // 2. Atomically record the quiz pass event once (prevents concurrent race condition)
+    const { recordEdgeEventOnce } = await import("@/lib/edge-awards");
+    const recordedEvent = await recordEdgeEventOnce({
         userId,
         eventType: "QUIZ_PASS",
         sourceType: "Quiz",
         sourceId: quizId,
         xpAwarded: XP_AWARDS.QUIZ_PASS,
+        metadata: { score: passedAttempt.score },
     });
+    if (recordedEvent === null) return null;
+
+    const result = await addXP(userId, XP_AWARDS.QUIZ_PASS);
 
     return result;
 }
@@ -71,6 +91,37 @@ export async function awardQuizXP(quizId: string) {
 export async function awardJournalXP() {
     const userId = await getCurrentUserId();
     if (!userId) return null;
+
+    // 1. Verify that the user has created a trade or journal entry recently (within last 24 hours)
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const recentEntry = await prisma.journalEntry.findFirst({
+        where: {
+            userId,
+            createdAt: { gte: oneDayAgo },
+        },
+        orderBy: { createdAt: "desc" },
+    });
+    if (!recentEntry) return null;
+
+    // 2. Verify that journal XP was not already awarded today (daily cooldown)
+    const recentAward = await prisma.edgeEvent.findFirst({
+        where: {
+            userId,
+            eventType: "JOURNAL_ENTRY",
+            createdAt: { gte: oneDayAgo },
+        },
+    });
+    if (recentAward) return null;
+
+    const { recordEdgeEventOnce } = await import("@/lib/edge-awards");
+    const recordedEvent = await recordEdgeEventOnce({
+        userId,
+        eventType: "JOURNAL_ENTRY",
+        sourceType: "JournalEntry",
+        sourceId: recentEntry.id,
+        xpAwarded: XP_AWARDS.JOURNAL_ENTRY,
+    });
+    if (recordedEvent === null) return null;
 
     const result = await addXP(userId, XP_AWARDS.JOURNAL_ENTRY);
 

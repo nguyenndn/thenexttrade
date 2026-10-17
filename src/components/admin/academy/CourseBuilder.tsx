@@ -218,7 +218,7 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
 
     // --- Edit Handlers ---
     const handleEditLesson = (lessonId: string) => {
-        router.push(`/admin/ai-studio/lessons/${lessonId}`);
+        router.push(`/admin/academy/lessons/${lessonId}/edit`);
     };
 
     // --- Create Handlers (Optimistic) ---

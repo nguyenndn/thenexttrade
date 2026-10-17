@@ -8,7 +8,6 @@ import {
     Download,
     Users,
     Briefcase,
-    Settings,
     CheckCircle2,
     XCircle,
     ArrowRight,
@@ -97,15 +96,6 @@ const quickActions = [
         textColor: "text-amber-500",
         bgColor: "bg-amber-50 dark:bg-amber-500/10",
         borderColor: "hover:border-amber-500/30",
-    },
-    {
-        title: "System Settings",
-        description: "Global licensing rules",
-        href: "/admin/trading-systems/settings",
-        icon: Settings,
-        textColor: "text-emerald-500",
-        bgColor: "bg-emerald-50 dark:bg-emerald-500/10",
-        borderColor: "hover:border-emerald-500/30",
     },
 ];
 
@@ -203,7 +193,7 @@ export function EADashboardClient({
                                             Management Shortcuts
                                         </h3>
                                     </div>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                         {quickActions.map((action) => (
                                             <Link
                                                 key={action.href}

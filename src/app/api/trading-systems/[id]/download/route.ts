@@ -118,7 +118,15 @@ export async function GET(
                 productId: product.id,
                 platform: platform,
                 version: product.version,
+                ipAddress:
+                    request.headers.get("x-forwarded-for") || "unknown",
+                userAgent: request.headers.get("user-agent"),
             },
+        });
+
+        await prisma.eAProduct.update({
+            where: { id: product.id },
+            data: { totalDownloads: { increment: 1 } },
         });
 
         // Record product usage event (DOWNLOAD) and update EAProductAccess

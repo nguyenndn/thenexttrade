@@ -372,7 +372,7 @@ export function IbOverviewClient({
 
                         {/* Trade Manager Active */}
                         <Link
-                            href="/admin/ib/traders?syncSource=EA"
+                            href="/admin/ib/traders?syncSource=EA_SYNC"
                             className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md hover:border-cyan-500/30 transition-all space-y-2 group block"
                         >
                             <div className="flex items-center justify-between">

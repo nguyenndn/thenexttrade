@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import { recordEdgeEventOnce } from "@/lib/edge-awards";
+import { addXP, XP_AWARDS } from "@/lib/gamification";
 
 export async function POST(
     request: Request,
@@ -37,10 +38,10 @@ export async function POST(
                 { status: 404 }
             );
 
-        // GUARD: Verify all module lessons are completed before allowing submission
+        // GUARD: Verify all published module lessons are completed before allowing submission
         if (quiz.moduleId) {
             const moduleLessons = await prisma.lesson.findMany({
-                where: { moduleId: quiz.moduleId },
+                where: { moduleId: quiz.moduleId, status: "published" },
                 select: { id: true },
             });
             const completedCount = await prisma.userProgress.count({
@@ -72,7 +73,7 @@ export async function POST(
 
         // Calculate score
         quiz.questions.forEach((q) => {
-            const userOptionId = answers[q.id];
+            const userOptionId = answers?.[q.id];
             const correctOption = q.options.find((o) => o.isCorrect);
             if (correctOption && userOptionId === correctOption.id) {
                 correctCount++;
@@ -93,14 +94,17 @@ export async function POST(
         });
 
         if (passed) {
-            await recordEdgeEventOnce({
+            const recordedEvent = await recordEdgeEventOnce({
                 userId,
                 eventType: "QUIZ_PASS",
                 sourceType: "Quiz",
                 sourceId: quiz.id,
-                xpAwarded: 0,
+                xpAwarded: XP_AWARDS.QUIZ_PASS,
                 metadata: { score },
             });
+            if (recordedEvent !== null) {
+                await addXP(userId, XP_AWARDS.QUIZ_PASS);
+            }
         }
 
         // ── AUTO-GRANT CERTIFICATE ──

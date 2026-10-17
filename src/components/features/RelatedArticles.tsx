@@ -65,6 +65,7 @@ export default async function RelatedArticles({
                                         month: "short",
                                         day: "numeric",
                                         year: "numeric",
+                                        timeZone: "UTC",
                                     })}
                                 </span>
                             </div>

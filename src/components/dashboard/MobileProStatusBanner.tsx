@@ -1,7 +1,7 @@
 "use client";
 
 import { useProAccess } from "@/components/pro/ProProvider";
-import { Crown, Timer, Shield, AlertTriangle, ArrowRight } from "lucide-react";
+import { Crown, Timer, AlertTriangle, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
@@ -89,7 +89,7 @@ export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge
             realAccounts.every((a) => a.status === "NONE"));
 
     const currentStatus =
-        hasNoPartnerAccounts || rawStatus === "NONE" ? "NONE" : rawStatus;
+        hasNoPartnerAccounts || rawStatus === "NONE" || rawStatus === "REVOKED" ? "NONE" : rawStatus;
     const isPro = currentStatus === "NONE" ? false : (activeAccount ? activeAccount.isPro : proAccess.isPro);
     const expiresAt = activeAccount
         ? activeAccount.expiresAt
@@ -142,20 +142,6 @@ export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge
         );
     }
 
-    if (currentStatus === "REVOKED") {
-        return (
-            <div className="md:hidden mb-3 flex items-center gap-2 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 px-3 py-2">
-                <Shield className="h-4 w-4 text-red-600 dark:text-red-400 shrink-0" />
-                <span className="text-xs font-bold text-red-700 dark:text-red-400 flex-1">
-                    VIP Revoked
-                </span>
-                <span className="text-[10px] text-red-500 dark:text-red-400/70">
-                    Contact support
-                </span>
-            </div>
-        );
-    }
-
     if (currentStatus === "EXPIRED") {
         return (
             <div className="md:hidden mb-3 flex items-center gap-2 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 px-3 py-2">
@@ -185,7 +171,7 @@ export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge
                     href="/dashboard/accounts?action=add&intent=unlock-pro"
                     className="shrink-0 flex items-center gap-0.5 text-[10px] font-bold text-amber-600 dark:text-amber-400 hover:underline"
                 >
-                    Apply for VIP Access <ArrowRight className="h-3 w-3" />
+                    Apply for Partner Pro <ArrowRight className="h-3 w-3" />
                 </Link>
             </div>
         );

@@ -9,8 +9,8 @@ import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 
 // --- Validation Schemas ---
 const createBroadcastSchema = z.object({
-    title: z.string().min(1, "Title is required").max(100),
-    message: z.string().min(1, "Message is required").max(1000),
+    title: z.string().trim().min(1, "Title is required").max(100),
+    message: z.string().trim().min(1, "Message is required").max(1000),
     type: z.nativeEnum(NotificationType),
     priority: z.nativeEnum(NotificationPriority),
     link: z
@@ -57,7 +57,7 @@ export async function createBroadcast(data: CreateBroadcastInput) {
         }
 
         const { title, message, type, priority, link, targetUserIds, sendAt } =
-            data;
+            validated.data;
         const notificationLink = link?.trim() || NOTIFICATION_ROUTES.DASHBOARD;
 
         // 1. Create Broadcast Record (admin_broadcasts)
@@ -70,21 +70,15 @@ export async function createBroadcast(data: CreateBroadcastInput) {
                 link: notificationLink,
                 createdBy: user.id,
                 scheduledAt: sendAt,
-                // isSent removed as it is not in schema. Logic relies on sentAt being not null.
                 sentAt: !sendAt ? new Date() : null,
-                targetRoles: [], // NOTE: Role filtering available but not yet used — broadcasts go to all users
+                targetAll: !targetUserIds || targetUserIds.length === 0,
+                targetRoles: [],
+                targetUserIds: targetUserIds || [],
             },
         });
 
         // 2. If sending immediately (!sendAt)
         if (!sendAt) {
-            // Logic to distribute notifications to users
-            // This can be heavy if many users. Ideally use a background job/cron for distribution.
-            // But for < few thousand users, direct insert might be okay or chunked.
-            // Specification says: "Scheduled Cron: Every 5 min checks for pending broadcasts".
-            // But here we are saying "isSent: true" if immediate.
-            // We should probably Insert into Notification table right now if immediate.
-
             const whereClause =
                 targetUserIds && targetUserIds.length > 0
                     ? { id: { in: targetUserIds } }
@@ -96,14 +90,12 @@ export async function createBroadcast(data: CreateBroadcastInput) {
             });
 
             if (users.length > 0) {
-                // Chunk the inserts (same strategy as the scheduled-broadcast
-                // cron) so a large user base doesn't build one giant statement
-                // and block the request.
                 const CHUNK_SIZE = 1000;
                 for (let i = 0; i < users.length; i += CHUNK_SIZE) {
                     await prisma.notification.createMany({
                         data: users.slice(i, i + CHUNK_SIZE).map((u) => ({
                             userId: u.id,
+                            broadcastId: broadcast.id,
                             type,
                             title,
                             message,
@@ -114,6 +106,11 @@ export async function createBroadcast(data: CreateBroadcastInput) {
                     });
                 }
             }
+
+            await prisma.adminBroadcast.update({
+                where: { id: broadcast.id },
+                data: { totalRecipients: users.length },
+            });
         }
 
         revalidatePath("/admin/notifications");
@@ -130,9 +127,15 @@ export async function deleteBroadcast(broadcastId: string) {
         const { isAuthorized } = await checkAdmin();
         if (!isAuthorized) return { success: false, error: "Unauthorized" };
 
-        await prisma.adminBroadcast.delete({
-            where: { id: broadcastId },
-        });
+        await prisma.$transaction([
+            prisma.notification.updateMany({
+                where: { broadcastId },
+                data: { broadcastId: null },
+            }),
+            prisma.adminBroadcast.delete({
+                where: { id: broadcastId },
+            }),
+        ]);
 
         revalidatePath("/admin/notifications");
         return { success: true };

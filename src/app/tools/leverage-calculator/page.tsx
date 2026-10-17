@@ -7,6 +7,8 @@ const tool = getToolBySlug("leverage-calculator")!;
 
 export const metadata: Metadata = getToolMetadata("leverage-calculator");
 
+export const revalidate = 86400;
+
 export default function LeverageCalculatorPage() {
     return (
         <ToolPageLayout tool={tool}>

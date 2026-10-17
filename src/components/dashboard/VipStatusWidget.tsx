@@ -89,16 +89,15 @@ const statusConfig: Record<string, StatusStyle> = {
             "bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20",
     },
     REVOKED: {
-        label: "Access Suspended",
-        description: "Contact support for assistance.",
-        icon: Shield,
+        label: "Free Tier",
+        description: "Apply for Partner Pro with an eligible broker account.",
+        icon: Crown,
         cardBg: "bg-white dark:bg-[#1E2028]",
-        cardBorder: "border-red-500/30 dark:border-red-500/30",
-        iconBg: "bg-red-500/10 dark:bg-red-500/15",
-        iconColor: "text-red-600 dark:text-red-400",
+        cardBorder: "border-dashboard dark:border-white/[0.08]",
+        iconBg: "bg-gray-100 dark:bg-white/[0.06]",
+        iconColor: "text-gray-500 dark:text-gray-400",
         labelColor: "text-gray-900 dark:text-white",
-        badgeClass:
-            "bg-red-500/10 text-red-700 dark:text-red-400 border border-red-500/20",
+        badgeClass: "",
     },
     NONE: {
         label: "Free Tier",
@@ -119,7 +118,7 @@ const accountStatusBadge: Record<string, string> = {
     GRACE: "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400",
     EXPIRED:
         "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400",
-    REVOKED: "bg-red-100 dark:bg-red-500/15 text-red-700 dark:text-red-400",
+    REVOKED: "bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400",
     NONE: "bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400",
 };
 
@@ -245,7 +244,7 @@ export function VipStatusWidget() {
             realAccounts.every((a) => a.status === "NONE"));
 
     const status =
-        hasNoPartnerAccounts || rawStatus === "NONE" ? "NONE" : rawStatus;
+        hasNoPartnerAccounts || rawStatus === "NONE" || rawStatus === "REVOKED" ? "NONE" : rawStatus;
     const isPro = status === "NONE" ? false : (activeAccount ? activeAccount.isPro : proAccess.isPro);
     const expiresAt = activeAccount
         ? activeAccount.expiresAt
@@ -551,11 +550,11 @@ export function VipStatusWidget() {
         );
     }
 
-    // ─── GRACE / EXPIRED / REVOKED ───────────────────────────────────────────────
+    // ─── GRACE / EXPIRED ────────────────────────────────────────────────────────
     const borderClass: Record<string, string> = {
         GRACE: "border-amber-500/30 dark:border-amber-500/30",
         EXPIRED: "border-amber-500/30 dark:border-amber-500/30",
-        REVOKED: "border-red-500/30 dark:border-red-500/30",
+        REVOKED: "border-dashboard dark:border-white/10",
     };
 
     return (
@@ -611,9 +610,8 @@ export function VipStatusWidget() {
                 )}
 
                 {/* CTAs */}
-                {!isPro &&
-                    (status === "EXPIRED" || status === "REVOKED") && (
-                        <Link
+                {!isPro && status === "EXPIRED" && (
+                    <Link
                             href="/dashboard/accounts?action=add&intent=unlock-pro"
                             className={buttonVariants({
                                 variant: "gold",

@@ -61,6 +61,7 @@ export function EconomicCalendarClient() {
     const [selectedTimezone, setSelectedTimezone] = useState("Asia/Bangkok");
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
     const [filters, setFilters] = useState<CalendarFilters>(DEFAULT_FILTERS);
+    const [mounted, setMounted] = useState(false);
 
     const fetchEvents = async () => {
         setIsLoading(true);
@@ -96,6 +97,7 @@ export function EconomicCalendarClient() {
     };
 
     useEffect(() => {
+        setMounted(true);
         fetchEvents();
         async function loadSettings() {
             const { getCalendarSettings } = await import("./actions");
@@ -374,7 +376,7 @@ export function EconomicCalendarClient() {
                     <div className="flex-1 grid grid-cols-7 gap-0.5 md:gap-1 text-center">
                         {weekDays.map((day) => {
                             const isSelected = isSameDay(day, selectedDate);
-                            const isToday = isSameDay(day, new Date());
+                            const isToday = mounted ? isSameDay(day, new Date()) : false;
 
                             return (
                                 <Button

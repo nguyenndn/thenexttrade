@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import ProfileClient from "./ProfileClient";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
@@ -8,11 +9,7 @@ export default async function PublicProfilePage() {
     const user = await getAuthUser();
 
     if (!user) {
-        return (
-            <div className="py-8 text-center text-gray-600 dark:text-gray-300">
-                <p>Please log in to access profile settings.</p>
-            </div>
-        );
+        redirect("/auth/login");
     }
 
     const profile = await prisma.profile.findUnique({

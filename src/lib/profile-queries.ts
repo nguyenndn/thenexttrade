@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 import {
     getKeyStats,
@@ -80,10 +81,22 @@ export interface PublicProfileData {
 // QUERIES
 // ============================================================================
 
+const UUID_REGEX =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function isValidUuid(id: string): boolean {
+    return typeof id === "string" && UUID_REGEX.test(id);
+}
+
 async function getSessionPreference(
     userId: string
 ): Promise<{ name: string; percentage: number } | null> {
-    const result = await prisma.$queryRaw`
+    if (!isValidUuid(userId)) {
+        return null;
+    }
+
+    try {
+        const result = await prisma.$queryRaw`
  SELECT
  "trading_session" as "session",
  COUNT(*) as "cnt"
@@ -97,10 +110,10 @@ async function getSessionPreference(
  LIMIT 1
  `;
 
-    const row = (result as any[])[0];
-    if (!row) return null;
+        const row = (result as any[])[0];
+        if (!row) return null;
 
-    const totalResult = await prisma.$queryRaw`
+        const totalResult = await prisma.$queryRaw`
  SELECT COUNT(*) as "total"
  FROM "JournalEntry"
  WHERE "userId" = ${userId}::uuid
@@ -109,22 +122,25 @@ async function getSessionPreference(
  AND "exitDate" >= NOW() - INTERVAL '90 days'
  `;
 
-    const totalRow = (totalResult as any[])[0];
-    const total = Number(totalRow?.total || 1);
+        const totalRow = (totalResult as any[])[0];
+        const total = Number(totalRow?.total || 1);
 
-    return {
-        name: row.session,
-        percentage: Math.round((Number(row.cnt) / total) * 100),
-    };
+        return {
+            name: row.session,
+            percentage: Math.round((Number(row.cnt) / total) * 100),
+        };
+    } catch (error) {
+        console.error("Error in getSessionPreference:", error);
+        return null;
+    }
 }
 
 // ============================================================================
 // MAIN
 // ============================================================================
 
-export async function getPublicProfileData(
-    username: string
-): Promise<PublicProfileData | null> {
+export const getPublicProfileData = cache(
+    async (username: string): Promise<PublicProfileData | null> => {
     const profile = await prisma.profile.findUnique({
         where: { username },
         include: {
@@ -305,4 +321,4 @@ export async function getPublicProfileData(
             showPercentMetrics: profile.showPercentMetrics,
         },
     };
-}
+});

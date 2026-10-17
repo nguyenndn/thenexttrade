@@ -157,7 +157,7 @@ export function calculateMargin(input: MarginInput) {
         // USD is the base currency (e.g., USDJPY, USDCAD, USDCHF)
         // Position value is in USD. So 1 lot = $100,000.
         positionValue = lotSize * contractSize;
-        requiredMargin = positionValue / leverage;
+        requiredMargin = leverage > 0 ? positionValue / leverage : 0;
     } else if (
         p.endsWith("USD") ||
         p === "US30" ||
@@ -167,7 +167,7 @@ export function calculateMargin(input: MarginInput) {
         // USD is the quote currency (e.g., EURUSD, GBPUSD, XAUUSD)
         // Position value in USD = Lot Size * Contract Size * currentPrice
         positionValue = lotSize * contractSize * currentPrice;
-        requiredMargin = positionValue / leverage;
+        requiredMargin = leverage > 0 ? positionValue / leverage : 0;
     } else {
         // For cross pairs (e.g., EURJPY, GBPJPY, EURGBP)
         // Position Value in Base Currency = Lot Size * Contract Size.
@@ -188,7 +188,7 @@ export function calculateMargin(input: MarginInput) {
             positionValue = positionValueInBase * (currentPrice / 1.5);
         }
 
-        requiredMargin = positionValue / leverage;
+        requiredMargin = leverage > 0 ? positionValue / leverage : 0;
     }
 
     return {
@@ -224,7 +224,7 @@ export function calculateProfitLoss(input: ProfitLossInput) {
         profitLoss = profitLossInQuote;
     } else if (p.startsWith("USD")) {
         // XXX is USD, we convert by dividing the quote profit by the exitPrice (the exchange rate of XXX/YYY)
-        profitLoss = profitLossInQuote / exitPrice;
+        profitLoss = exitPrice > 0 ? profitLossInQuote / exitPrice : 0;
     } else {
         // Crosses
         if (p.includes("JPY")) {

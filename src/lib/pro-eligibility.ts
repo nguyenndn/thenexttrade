@@ -127,7 +127,33 @@ export async function getAccountProEligibility(
         });
     }
 
-    // 1b. Active ProEntitlement at user/global level
+    // 1b. Check if this account matches an unlinked approved ProEntitlement
+    if (account.broker && account.accountNumber) {
+        const unlinkedMatch = await prisma.proEntitlement.findFirst({
+            where: {
+                userId,
+                tradingAccountId: null,
+                accountNumber: account.accountNumber,
+                broker: { equals: account.broker, mode: "insensitive" },
+                status: { in: ["ACTIVE", "GRACE"] },
+            },
+            select: { id: true, status: true },
+        });
+        if (unlinkedMatch) {
+            // Auto-link silently in background
+            prisma.proEntitlement
+                .update({
+                    where: { id: unlinkedMatch.id },
+                    data: { tradingAccountId: account.id },
+                })
+                .catch(() => {});
+            return buildResult("PRO_ACTIVE", true, {
+                proEntitlementId: unlinkedMatch.id,
+            });
+        }
+    }
+
+    // 1c. Active ProEntitlement at true user/global level (manual admin grant)
     const globalEntitlement =
         cachedContext?.globalEntitlement !== undefined
             ? cachedContext.globalEntitlement
@@ -135,6 +161,10 @@ export async function getAccountProEligibility(
                   where: {
                       userId,
                       tradingAccountId: null,
+                      OR: [
+                          { accountNumber: null, broker: null },
+                          { source: "MANUAL_ADMIN" },
+                      ],
                       status: { in: ["ACTIVE", "GRACE"] },
                   },
                   select: { id: true, status: true },
@@ -213,6 +243,10 @@ export async function getAccountsProEligibility(
             where: {
                 userId,
                 tradingAccountId: null,
+                OR: [
+                    { accountNumber: null, broker: null },
+                    { source: "MANUAL_ADMIN" },
+                ],
                 status: { in: ["ACTIVE", "GRACE"] },
             },
             select: { id: true, status: true },

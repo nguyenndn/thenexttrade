@@ -32,10 +32,10 @@ export async function POST(
             );
         }
 
-        // 2. Get current highest order in target quiz
+        // 2. Verify target quiz exists and get current highest question order
         const targetQuiz = await prisma.quiz.findUnique({
             where: { id },
-            include: { _count: { select: { questions: true } } },
+            select: { id: true },
         });
 
         if (!targetQuiz) {
@@ -45,7 +45,13 @@ export async function POST(
             );
         }
 
-        let nextOrder = (targetQuiz._count?.questions || 0) + 1;
+        const lastQuestion = await prisma.question.findFirst({
+            where: { quizId: id },
+            orderBy: { order: "desc" },
+            select: { order: true },
+        });
+
+        let nextOrder = (lastQuestion?.order || 0) + 1;
 
         // 3. Transactionally create copies
         const createPromises = sourceQuestions.map((sourceQ) => {
@@ -73,6 +79,12 @@ export async function POST(
             questions: newQuestions,
         });
     } catch (error) {
+        if (error instanceof z.ZodError) {
+            return NextResponse.json(
+                { error: error.issues[0]?.message || "Invalid input" },
+                { status: 400 }
+            );
+        }
         console.error("[QUIZ_IMPORT]", error);
         return NextResponse.json({ error: "Internal Error" }, { status: 500 });
     }

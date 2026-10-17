@@ -5,12 +5,21 @@ import { z } from "zod";
 
 const strategySchema = z.object({
     name: z.string().min(1).max(100),
-    description: z.string().optional(),
-    rules: z.string().optional(),
+    description: z.string().nullable().optional(),
+    rules: z.string().nullable().optional(),
     color: z
         .string()
         .regex(/^#[0-9A-Fa-f]{6}$/)
         .optional(),
+    isPlaybook: z.boolean().optional(),
+    setupType: z.string().nullable().optional(),
+    timeframes: z.array(z.string()).optional(),
+    pairs: z.array(z.string()).optional(),
+    idealEntry: z.string().nullable().optional(),
+    idealStopLoss: z.string().nullable().optional(),
+    idealTakeProfit: z.string().nullable().optional(),
+    riskRewardMin: z.number().min(0).nullable().optional(),
+    referenceImages: z.array(z.string()).optional(),
 });
 
 export async function GET(request: NextRequest) {
@@ -92,7 +101,21 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const { name, description, rules, color } = validation.data;
+        const {
+            name,
+            description,
+            rules,
+            color,
+            isPlaybook,
+            setupType,
+            timeframes,
+            pairs,
+            idealEntry,
+            idealStopLoss,
+            idealTakeProfit,
+            riskRewardMin,
+            referenceImages,
+        } = validation.data;
 
         const existing = await prisma.strategy.findUnique({
             where: { userId_name: { userId: user.id, name } },
@@ -109,9 +132,18 @@ export async function POST(request: NextRequest) {
             data: {
                 userId: user.id,
                 name,
-                description,
-                rules,
+                description: description || null,
+                rules: rules || null,
                 color: color || "#6366F1",
+                isPlaybook: isPlaybook ?? false,
+                setupType: setupType || null,
+                timeframes: timeframes || [],
+                pairs: pairs || [],
+                idealEntry: idealEntry || null,
+                idealStopLoss: idealStopLoss || null,
+                idealTakeProfit: idealTakeProfit || null,
+                riskRewardMin: riskRewardMin ?? null,
+                referenceImages: referenceImages || [],
             },
         });
 

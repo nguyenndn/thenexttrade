@@ -95,9 +95,12 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
 
         setIsDeleting(true);
         try {
-            await fetch(`/api/academy/questions/${questionToDelete}`, {
+            const res = await fetch(`/api/academy/questions/${questionToDelete}`, {
                 method: "DELETE",
             });
+            if (!res.ok) {
+                throw new Error("Failed to delete question");
+            }
             setQuestions(
                 questions.filter((q: any) => q.id !== questionToDelete)
             );

@@ -18,7 +18,12 @@ const optionSchema = z.object({
 
 const schema = z.object({
     text: z.string().min(1, "Question text is required"),
-    options: z.array(optionSchema).min(2, "At least 2 options required"),
+    options: z
+        .array(optionSchema)
+        .min(2, "At least 2 options required")
+        .refine((opts) => opts.some((o) => o.isCorrect), {
+            message: "At least one option must be marked as correct",
+        }),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -53,7 +58,7 @@ export function QuestionModal({
         defaultValues: {
             text: "",
             options: [
-                { text: "", isCorrect: false },
+                { text: "", isCorrect: true },
                 { text: "", isCorrect: false },
             ],
         },
@@ -80,7 +85,7 @@ export function QuestionModal({
             reset({
                 text: "",
                 options: [
-                    { text: "", isCorrect: false },
+                    { text: "", isCorrect: true },
                     { text: "", isCorrect: false },
                 ],
             });

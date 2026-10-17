@@ -365,36 +365,6 @@ export async function getAdminSyncRequests(params: SyncRequestFilterParams = {})
 
     const successRate = totalAll > 0 ? ((completedCount / totalAll) * 100).toFixed(1) : "100.0";
 
-    // Enrich support tickets with investor credentials for slide-over drawer inspection
-    const enrichedTickets = await Promise.all(
-        ticketsRaw.map(async (ticket) => {
-            let targetAccountId = ticket.tradingAccountId;
-            if (!targetAccountId) {
-                const matched = await prisma.tradingAccount.findFirst({
-                    where: {
-                        userId: ticket.userId,
-                        accountNumber: ticket.accountNumber,
-                    },
-                    select: { id: true },
-                });
-                targetAccountId = matched?.id || null;
-            }
-
-            let investorPassword: string | null = null;
-            if (targetAccountId) {
-                const pwRes = await getInvestorPasswordForAccount(targetAccountId);
-                if (pwRes.ok) {
-                    investorPassword = pwRes.password;
-                }
-            }
-
-            return {
-                ...ticket,
-                investorPassword,
-            };
-        })
-    );
-
     const mappedJobs: UnifiedSyncItem[] = jobsRaw.map((job) => ({
         id: job.id,
         type: "CLOUD_SYNC",
@@ -437,7 +407,7 @@ export async function getAdminSyncRequests(params: SyncRequestFilterParams = {})
         },
     }));
 
-    const mappedTickets: UnifiedSyncItem[] = enrichedTickets.map((ticket) => ({
+    const mappedTickets: UnifiedSyncItem[] = ticketsRaw.map((ticket) => ({
         id: ticket.id,
         type: "SUPPORT_TICKET",
         user: {
@@ -469,8 +439,8 @@ export async function getAdminSyncRequests(params: SyncRequestFilterParams = {})
             notes: ticket.notes,
             scheduledFor: ticket.scheduledFor?.toISOString() || null,
             verifiedAt: ticket.verifiedAt?.toISOString() || null,
-            investorPassword: ticket.investorPassword || null,
-            hasInvestorPassword: Boolean(ticket.investorPassword),
+            investorPassword: null,
+            hasInvestorPassword: false,
         },
     }));
 
@@ -479,7 +449,48 @@ export async function getAdminSyncRequests(params: SyncRequestFilterParams = {})
     );
 
     const totalFiltered = allCombined.length;
-    const paginatedItems = allCombined.slice(skip, skip + limit);
+    const rawPaginatedItems = allCombined.slice(skip, skip + limit);
+
+    // Enrich only paginated support tickets with investor credentials for slide-over drawer inspection
+    const paginatedItems = await Promise.all(
+        rawPaginatedItems.map(async (item) => {
+            if (item.type !== "SUPPORT_TICKET" || !item.supportTicket) {
+                return item;
+            }
+            let targetAccountId = item.account.id;
+            if (!targetAccountId) {
+                const matched = await prisma.tradingAccount.findFirst({
+                    where: {
+                        userId: item.user.id,
+                        accountNumber: item.account.accountNumber,
+                    },
+                    select: { id: true },
+                });
+                targetAccountId = matched?.id || null;
+            }
+
+            let investorPassword: string | null = null;
+            if (targetAccountId) {
+                const pwRes = await getInvestorPasswordForAccount(targetAccountId);
+                if (pwRes.ok) {
+                    investorPassword = pwRes.password;
+                }
+            }
+
+            return {
+                ...item,
+                account: {
+                    ...item.account,
+                    id: targetAccountId,
+                },
+                supportTicket: {
+                    ...item.supportTicket,
+                    investorPassword,
+                    hasInvestorPassword: Boolean(investorPassword),
+                },
+            };
+        })
+    );
 
     return {
         success: true,
@@ -544,6 +555,14 @@ export async function cancelSyncJobAdmin(jobId: string) {
         return { success: false, error: "Forbidden: Admin access required" };
     }
 
+    const job = await prisma.mt5ImportJob.findUnique({
+        where: { id: jobId },
+        select: { id: true },
+    });
+    if (!job) {
+        return { success: false, error: "Sync job not found" };
+    }
+
     await prisma.mt5ImportJob.update({
         where: { id: jobId },
         data: {
@@ -571,13 +590,28 @@ export async function resolveSupportTicketAdmin(ticketId: string, notes?: string
         return { success: false, error: "Forbidden: Admin access required" };
     }
 
+    const ticket = await prisma.supportSyncTicket.findUnique({
+        where: { id: ticketId },
+        select: { notes: true },
+    });
+    if (!ticket) {
+        return { success: false, error: "Support ticket not found" };
+    }
+
+    const resolvedNote = notes?.trim() ? `[Resolved] ${notes.trim()}` : undefined;
+    const updatedNotes = resolvedNote
+        ? ticket.notes
+            ? `${resolvedNote} ${ticket.notes}`
+            : resolvedNote
+        : undefined;
+
     const resolvedTicket = await prisma.supportSyncTicket.update({
         where: { id: ticketId },
         data: {
             status: "VERIFIED",
             verifiedAt: new Date(),
             verifiedBy: user.id,
-            notes: notes ? `[Resolved] ${notes}` : undefined,
+            notes: updatedNotes,
         },
         select: { userId: true, broker: true, accountNumber: true },
     });
@@ -611,9 +645,12 @@ export async function markTicketFailedAdmin(ticketId: string, reason?: string) {
         where: { id: ticketId },
         select: { notes: true },
     });
+    if (!ticket) {
+        return { success: false, error: "Support ticket not found" };
+    }
 
     const failedNote = reason?.trim() ? `[Failed: ${reason.trim()}]` : "[Failed: Unable to sync manually]";
-    const updatedNotes = ticket?.notes ? `${failedNote} ${ticket.notes}` : failedNote;
+    const updatedNotes = ticket.notes ? `${failedNote} ${ticket.notes}` : failedNote;
 
     const failedTicket = await prisma.supportSyncTicket.update({
         where: { id: ticketId },

@@ -77,33 +77,37 @@ export async function fetchAdminCompetitions() {
 }
 
 export async function createCompetition(input: CreateCompetitionInput) {
-    await verifyAdmin();
-
-    if (!input.title || !input.startDate || !input.endDate) {
-        return { error: "Title, start date, and end date are required." };
-    }
-
-    const start = new Date(input.startDate);
-    const end = new Date(input.endDate);
-
-    if (end <= start) {
-        return { error: "End date must be after start date." };
-    }
-
-    const slug =
-        input.slug?.trim() ||
-        input.title
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/(^-|-$)/g, "") + `-${Date.now().toString().slice(-4)}`;
-
-    const defaultPrizes: CompetitionPrizeItem[] = [
-        { rank: 1, reward: `$${Math.round(input.prizePool * 0.5)}`, title: "Champion" },
-        { rank: 2, reward: `$${Math.round(input.prizePool * 0.3)}`, title: "Runner-up" },
-        { rank: 3, reward: `$${Math.round(input.prizePool * 0.2)}`, title: "Podium" },
-    ];
-
     try {
+        await verifyAdmin();
+
+        if (!input.title || !input.startDate || !input.endDate) {
+            return { error: "Title, start date, and end date are required." };
+        }
+
+        const start = new Date(input.startDate);
+        const end = new Date(input.endDate);
+
+        if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+            return { error: "Invalid start or end date." };
+        }
+
+        if (end <= start) {
+            return { error: "End date must be after start date." };
+        }
+
+        const slug =
+            input.slug?.trim() ||
+            input.title
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/(^-|-$)/g, "") + `-${Date.now().toString().slice(-4)}`;
+
+        const defaultPrizes: CompetitionPrizeItem[] = [
+            { rank: 1, reward: `$${Math.round(input.prizePool * 0.5)}`, title: "Champion" },
+            { rank: 2, reward: `$${Math.round(input.prizePool * 0.3)}`, title: "Runner-up" },
+            { rank: 3, reward: `$${Math.round(input.prizePool * 0.2)}`, title: "Podium" },
+        ];
+
         const created = await prisma.competition.create({
             data: {
                 title: input.title,
@@ -138,24 +142,51 @@ export async function updateCompetition(
     id: string,
     input: Partial<CreateCompetitionInput>
 ) {
-    await verifyAdmin();
-
-    const data: any = {};
-    if (input.title) data.title = input.title;
-    if (input.slug) data.slug = input.slug;
-    if (input.description !== undefined) data.description = input.description;
-    if (input.rules !== undefined) data.rules = input.rules;
-    if (input.status) data.status = input.status;
-    if (input.startDate) data.startDate = new Date(input.startDate);
-    if (input.endDate) data.endDate = new Date(input.endDate);
-    if (input.prizePool !== undefined) data.prizePool = Number(input.prizePool);
-    if (input.prizes) data.prizes = input.prizes;
-    if (input.minTrades !== undefined) data.minTrades = Number(input.minTrades);
-    if (input.maxDrawdown !== undefined) data.maxDrawdown = Number(input.maxDrawdown);
-    if (input.eligibleBrokers !== undefined) data.eligibleBrokers = input.eligibleBrokers;
-    if (input.scoringMetric) data.scoringMetric = input.scoringMetric;
-
     try {
+        await verifyAdmin();
+
+        const existing = await prisma.competition.findUnique({
+            where: { id },
+            select: { startDate: true, endDate: true },
+        });
+        if (!existing) {
+            return { error: "Competition not found." };
+        }
+
+        const data: any = {};
+        if (input.title) data.title = input.title;
+        if (input.slug) data.slug = input.slug;
+        if (input.description !== undefined) data.description = input.description;
+        if (input.rules !== undefined) data.rules = input.rules;
+        if (input.status) data.status = input.status;
+        if (input.startDate) {
+            const parsedStart = new Date(input.startDate);
+            if (Number.isNaN(parsedStart.getTime())) {
+                return { error: "Invalid start date." };
+            }
+            data.startDate = parsedStart;
+        }
+        if (input.endDate) {
+            const parsedEnd = new Date(input.endDate);
+            if (Number.isNaN(parsedEnd.getTime())) {
+                return { error: "Invalid end date." };
+            }
+            data.endDate = parsedEnd;
+        }
+
+        const effectiveStart: Date = data.startDate ?? existing.startDate;
+        const effectiveEnd: Date = data.endDate ?? existing.endDate;
+        if (effectiveEnd <= effectiveStart) {
+            return { error: "End date must be after start date." };
+        }
+
+        if (input.prizePool !== undefined) data.prizePool = Number(input.prizePool);
+        if (input.prizes) data.prizes = input.prizes;
+        if (input.minTrades !== undefined) data.minTrades = Number(input.minTrades);
+        if (input.maxDrawdown !== undefined) data.maxDrawdown = Number(input.maxDrawdown);
+        if (input.eligibleBrokers !== undefined) data.eligibleBrokers = input.eligibleBrokers;
+        if (input.scoringMetric) data.scoringMetric = input.scoringMetric;
+
         const updated = await prisma.competition.update({
             where: { id },
             data,
@@ -175,9 +206,9 @@ export async function toggleCompetitionStatus(
     id: string,
     status: CompetitionStatus
 ) {
-    await verifyAdmin();
-
     try {
+        await verifyAdmin();
+
         const updated = await prisma.competition.update({
             where: { id },
             data: { status },
@@ -194,9 +225,9 @@ export async function toggleCompetitionStatus(
 }
 
 export async function deleteCompetition(id: string) {
-    await verifyAdmin();
-
     try {
+        await verifyAdmin();
+
         await prisma.competition.delete({
             where: { id },
         });

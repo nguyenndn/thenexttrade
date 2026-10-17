@@ -37,21 +37,60 @@ export async function resetUserPassword(userId: string) {
         if (!isAuthorized || !admin)
             return { success: false, error: "Unauthorized" };
 
-        const targetUser = await prisma.user.findUnique({
-            where: { id: userId },
-            select: { email: true },
-        });
+        const [targetUser, adminRecord] = await Promise.all([
+            prisma.user.findUnique({
+                where: { id: userId },
+                select: { email: true, name: true },
+            }),
+            prisma.user.findUnique({
+                where: { id: admin.id },
+                select: { name: true, email: true },
+            }),
+        ]);
 
         if (!targetUser?.email)
             return { success: false, error: "User has no email" };
 
         const supabaseAdmin = getSupabaseAdmin();
-        const { error } = await supabaseAdmin.auth.admin.generateLink({
-            type: "recovery",
-            email: targetUser.email,
-        });
+        const { data: linkData, error } =
+            await supabaseAdmin.auth.admin.generateLink({
+                type: "recovery",
+                email: targetUser.email,
+            });
 
         if (error) return { success: false, error: error.message };
+
+        const resetUrl = linkData?.properties?.action_link;
+        if (!resetUrl) {
+            return {
+                success: false,
+                error: "Failed to generate password recovery link",
+            };
+        }
+
+        const {
+            buildAdminResetPasswordEmailHtml,
+            sendEmailWithDetails,
+        } = await import("@/lib/services/email.service");
+
+        const html = buildAdminResetPasswordEmailHtml({
+            userName: targetUser.name || targetUser.email.split("@")[0],
+            adminName: adminRecord?.name || admin.email || "TheNextTrade Admin",
+            resetUrl,
+        });
+
+        const emailRes = await sendEmailWithDetails({
+            to: targetUser.email,
+            subject: "🛡️ Password Recovery Link from TheNextTrade Admin",
+            html,
+        });
+
+        if (!emailRes.success) {
+            return {
+                success: false,
+                error: emailRes.error || "Failed to send password reset email",
+            };
+        }
 
         await prisma.auditLog.create({
             data: {

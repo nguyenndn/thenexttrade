@@ -28,6 +28,11 @@ export async function GET(request: Request) {
                       },
                   }
                 : undefined,
+            include: {
+                _count: {
+                    select: { articles: true },
+                },
+            },
             orderBy: { name: "asc" },
             ...(query ? { take: 10 } : {}),
         });
@@ -46,7 +51,14 @@ export async function POST(request: Request) {
     if (auth instanceof NextResponse) return auth;
 
     try {
-        const { name } = await request.json();
+        const body = await request.json();
+        const name = typeof body?.name === "string" ? body.name.trim() : "";
+        if (!name) {
+            return NextResponse.json(
+                { error: "Tag name is required" },
+                { status: 400 }
+            );
+        }
 
         // Simple slugify
         const slug = name
@@ -54,10 +66,22 @@ export async function POST(request: Request) {
             .replace(/[^a-z0-9]+/g, "-")
             .replace(/^-|-$/g, "");
 
+        if (!slug) {
+            return NextResponse.json(
+                { error: "Tag name must contain alphanumeric characters" },
+                { status: 400 }
+            );
+        }
+
         const tag = await prisma.tag.upsert({
             where: { slug },
             update: {},
             create: { name, slug },
+            include: {
+                _count: {
+                    select: { articles: true },
+                },
+            },
         });
 
         return NextResponse.json(tag);

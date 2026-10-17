@@ -28,9 +28,13 @@ export async function generateMetadata({
     return {
         title: `${displayName} (@${username}) | TheNextTrade`,
         description,
+        alternates: {
+            canonical: `/trader/${username}`,
+        },
         openGraph: {
             title: `${displayName} | TheNextTrade`,
             description,
+            url: `/trader/${username}`,
             images: [`/api/og/trader/${username}`],
             type: "profile",
         },

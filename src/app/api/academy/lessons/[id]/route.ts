@@ -89,8 +89,17 @@ export async function DELETE(
 
     try {
         const { id } = await params;
-        await prisma.lesson.delete({
-            where: { id },
+        await prisma.$transaction(async (tx) => {
+            await tx.comment.updateMany({
+                where: { lessonId: id },
+                data: { parentId: null },
+            });
+            await tx.comment.deleteMany({
+                where: { lessonId: id },
+            });
+            await tx.lesson.delete({
+                where: { id },
+            });
         });
 
         return NextResponse.json({ message: "Lesson deleted" });

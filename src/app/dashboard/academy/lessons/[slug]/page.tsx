@@ -15,16 +15,24 @@ export async function generateMetadata({
         where: { slug },
         select: {
             title: true,
+            status: true,
             metaDescription: true,
             module: { select: { title: true } },
         },
     });
 
+    const isPublished = lesson?.status === "published";
+
     return {
-        title: lesson ? `${lesson.title} | Academy` : "Lesson Not Found",
+        title:
+            lesson && isPublished
+                ? `${lesson.title} | Academy`
+                : "Lesson Not Found",
         description:
-            lesson?.metaDescription ||
-            (lesson ? `${lesson.title} - ${lesson.module.title}` : undefined),
+            lesson && isPublished
+                ? lesson.metaDescription ||
+                  `${lesson.title} - ${lesson.module.title}`
+                : undefined,
     };
 }
 
@@ -53,6 +61,7 @@ export default async function DashboardLessonPage({
                                     orderBy: { order: "asc" },
                                     include: {
                                         lessons: {
+                                            where: { status: "published" },
                                             orderBy: { order: "asc" },
                                             select: {
                                                 id: true,
@@ -67,6 +76,7 @@ export default async function DashboardLessonPage({
                         },
                         quiz: true,
                         lessons: {
+                            where: { status: "published" },
                             orderBy: { order: "asc" },
                             select: {
                                 id: true,
@@ -85,7 +95,7 @@ export default async function DashboardLessonPage({
         }),
     ]);
 
-    if (!lesson) return notFound();
+    if (!lesson || lesson.status !== "published") return notFound();
 
     const courseLessons = lesson.module.lessons;
     const quiz = lesson.module.quiz;

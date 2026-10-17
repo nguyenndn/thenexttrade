@@ -38,9 +38,12 @@ async function getWriterPersona(): Promise<string> {
 
 async function getToneInstructions(tone: string): Promise<string> {
     if (!tone) return "";
-    const content = await loadFileContent(
-        path.join(process.cwd(), "content", "tones", `${tone}.md`)
-    );
+    const safeTone = path.basename(tone).replace(/[^a-zA-Z0-9_-]/g, "");
+    if (!safeTone) return "";
+    const tonesDir = path.resolve(process.cwd(), "content", "tones");
+    const targetPath = path.resolve(tonesDir, `${safeTone}.md`);
+    if (!targetPath.startsWith(tonesDir + path.sep)) return "";
+    const content = await loadFileContent(targetPath);
     return content;
 }
 
@@ -562,26 +565,42 @@ export async function POST(req: NextRequest) {
             }
         }
 
-        // 6. Replace image placeholders with actual <img> tags
+        // 6. Replace image placeholders with actual <img> tags (escape attributes to prevent XSS)
+        const escapeAttr = (str: string) =>
+            (str || "")
+                .replace(/&/g, "&amp;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+        const isSafeImageUrl = (rawUrl: string) => {
+            const trimmed = (rawUrl || "").trim();
+            return /^https?:\/\//i.test(trimmed) || trimmed.startsWith("/");
+        };
+
         let finalContent = parsed.content || "";
         const usedImages = new Set<number>();
 
         for (const img of allImages) {
             if (finalContent.includes(img.placeholder)) {
-                finalContent = finalContent.replace(
-                    img.placeholder,
-                    `<img src="${img.url}" alt="${img.alt}" style="max-width:100%;border-radius:8px;margin:16px 0" />`
-                );
+                if (isSafeImageUrl(img.url)) {
+                    finalContent = finalContent.replace(
+                        img.placeholder,
+                        `<img src="${escapeAttr(img.url)}" alt="${escapeAttr(img.alt)}" style="max-width:100%;border-radius:8px;margin:16px 0" />`
+                    );
+                } else {
+                    finalContent = finalContent.replace(img.placeholder, "");
+                }
                 usedImages.add(allImages.indexOf(img));
             }
         }
 
         // Append unused images before Quick Recap
         const unusedImgs = allImages
-            .filter((_, i) => !usedImages.has(i))
+            .filter((img, i) => !usedImages.has(i) && isSafeImageUrl(img.url))
             .map(
                 (img) =>
-                    `<img src="${img.url}" alt="${img.alt}" style="max-width:100%;border-radius:8px;margin:16px 0" />`
+                    `<img src="${escapeAttr(img.url)}" alt="${escapeAttr(img.alt)}" style="max-width:100%;border-radius:8px;margin:16px 0" />`
             )
             .join("");
 

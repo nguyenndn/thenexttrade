@@ -7,6 +7,8 @@ const tool = getToolBySlug("currency-heat-map")!;
 
 export const metadata: Metadata = getToolMetadata("currency-heat-map");
 
+export const revalidate = 86400;
+
 export default function CurrencyHeatMapPage() {
     return (
         <ToolPageLayout tool={tool}>

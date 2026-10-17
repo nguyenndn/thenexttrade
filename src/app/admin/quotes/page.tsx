@@ -55,11 +55,13 @@ export default function AdminQuotesPage() {
         setLoading(true);
         try {
             const res = await fetch(`/api/quotes?type=${activeTab}`);
+            if (!res.ok) throw new Error("Failed to fetch quotes");
             const data = await res.json();
-            setQuotes(data);
+            setQuotes(Array.isArray(data) ? data : []);
         } catch (err) {
             console.error("Failed to fetch quotes:", err);
             toast.error("Failed to load quotes");
+            setQuotes([]);
         } finally {
             setLoading(false);
         }
@@ -147,7 +149,7 @@ export default function AdminQuotesPage() {
 
     async function handleToggleActive(quote: Quote) {
         try {
-            await fetch("/api/quotes", {
+            const res = await fetch("/api/quotes", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -155,9 +157,14 @@ export default function AdminQuotesPage() {
                     isActive: !quote.isActive,
                 }),
             });
+            if (!res.ok) throw new Error("Failed to update quote status");
+            toast.success(
+                !quote.isActive ? "Quote activated" : "Quote deactivated"
+            );
             fetchQuotes();
-        } catch (err) {
+        } catch (err: any) {
             console.error("Failed to toggle quote:", err);
+            toast.error(err?.message || "Failed to update quote status");
         }
     }
 

@@ -10,9 +10,15 @@ const optionUpdateSchema = z.object({
 });
 
 const questionUpdateSchema = z.object({
-    text: z.string().min(1).optional(),
+    text: z.string().trim().min(1).optional(),
     order: z.number().int().optional(),
-    options: z.array(optionUpdateSchema).optional(),
+    options: z
+        .array(optionUpdateSchema)
+        .min(2, "At least 2 options required")
+        .refine((opts) => opts.some((o) => o.isCorrect), {
+            message: "At least one option must be marked as correct",
+        })
+        .optional(),
 });
 
 // PUT: Update question and its options (Full Sync)
@@ -63,16 +69,25 @@ export async function PUT(
                     },
                 });
 
-                // Upsert options
+                // Upsert options (scoped to questionId: id to prevent cross-question tampering)
                 for (const opt of options) {
                     if (opt.id) {
-                        await tx.option.update({
-                            where: { id: opt.id },
+                        const updated = await tx.option.updateMany({
+                            where: { id: opt.id, questionId: id },
                             data: {
                                 text: opt.text,
                                 isCorrect: opt.isCorrect,
                             },
                         });
+                        if (updated.count === 0) {
+                            await tx.option.create({
+                                data: {
+                                    questionId: id,
+                                    text: opt.text,
+                                    isCorrect: opt.isCorrect,
+                                },
+                            });
+                        }
                     } else {
                         await tx.option.create({
                             data: {

@@ -111,14 +111,14 @@ const PRO_STATUS_CONFIG: Record<string, { label: string; className: string }> =
                 "bg-amber-50 text-amber-600 border-amber-200/80 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20",
         },
         REVOKED: {
-            label: "Revoked",
+            label: "Free",
             className:
-                "bg-red-50 text-red-500 border-red-200/80 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20",
+                "bg-gray-50 text-gray-500 border-dashboard/80 dark:bg-white/5 dark:text-gray-400",
         },
         NONE: {
             label: "Free",
             className:
-                "bg-gray-50 text-gray-500 border-dashboard/80 dark:bg-white/5 dark:text-gray-400 ",
+                "bg-gray-50 text-gray-500 border-dashboard/80 dark:bg-white/5 dark:text-gray-400",
         },
     };
 

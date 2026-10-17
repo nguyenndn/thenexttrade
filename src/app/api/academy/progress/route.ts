@@ -48,6 +48,17 @@ export async function POST(request: Request) {
         const body = await request.json();
         const { lessonId, isCompleted } = progressSchema.parse(body);
 
+        const lesson = await prisma.lesson.findFirst({
+            where: { id: lessonId, status: "published" },
+            select: { id: true },
+        });
+        if (!lesson) {
+            return NextResponse.json(
+                { error: "Lesson not found" },
+                { status: 404 }
+            );
+        }
+
         const progress = await prisma.userProgress.upsert({
             where: {
                 userId_lessonId: {
@@ -71,7 +82,7 @@ export async function POST(request: Request) {
     } catch (error) {
         if (error instanceof z.ZodError) {
             return NextResponse.json(
-                { error: "Invalid data", details: (error as any).errors },
+                { error: "Invalid data", details: error.issues },
                 { status: 400 }
             );
         }

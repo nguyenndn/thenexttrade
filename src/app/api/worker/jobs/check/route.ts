@@ -1,25 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-const WORKER_KEY =
-    process.env.WORKER_API_KEY ||
-    process.env.MT5_WORKER_KEY ||
-    "tnt-worker-secret-key-2026";
-
-/**
- * GET /api/worker/jobs/check?jobId=<id>
- * Allows TNT Worker to check mid-flight if a job was cancelled by the trader
- * or administrator on the web dashboard.
- */
 export async function GET(request: NextRequest) {
     try {
+        const configuredWorkerKey =
+            process.env.WORKER_API_KEY || process.env.MT5_WORKER_KEY;
+
+        if (!configuredWorkerKey) {
+            console.error(
+                "[Worker Auth] Worker authentication is misconfigured: neither WORKER_API_KEY nor MT5_WORKER_KEY is set in environment."
+            );
+            return NextResponse.json(
+                { error: "Server worker authentication is not configured" },
+                { status: 503 }
+            );
+        }
+
         const authHeader =
             request.headers.get("x-worker-key") ||
             request.headers.get("authorization");
         if (
             !authHeader ||
-            (authHeader !== WORKER_KEY &&
-                authHeader !== `Bearer ${WORKER_KEY}`)
+            (authHeader !== configuredWorkerKey &&
+                authHeader !== `Bearer ${configuredWorkerKey}`)
         ) {
             return NextResponse.json(
                 { error: "Unauthorized worker access" },

@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
 import { AuthUser } from "@/lib/auth-types";
-import { useTheme } from "@/components/providers/ThemeProvider";
 import { Search } from "lucide-react";
 
 import { DesktopNav } from "@/components/layout/DesktopNav";
@@ -24,8 +23,6 @@ export function PublicHeader({
     user: initialUser,
     profile,
 }: PublicHeaderProps) {
-    const { theme, toggleTheme } = useTheme();
-    const isDark = theme === "dark";
     const pathname = usePathname();
     const isSearchPage = pathname === "/search";
 
@@ -135,15 +132,7 @@ export function PublicHeader({
                         <button
                             onClick={handleSearchClick}
                             aria-label="Search website (Ctrl+K)"
-                            className={`
-      relative w-9 h-9 p-0 flex items-center justify-center rounded-full transition-all duration-300
-      focus:outline-none focus:ring-2 focus:ring-amber-500/40 cursor-pointer
-      ${
-          isDark
-              ? "bg-slate-800/80 border-2 border-slate-700 text-gold hover:bg-slate-700/80 hover:text-amber-300 hover:border-gold/50"
-              : "bg-white border-2 border-dashboard text-gold hover:bg-gray-50 hover:text-amber-600 hover:border-gold/50"
-      }
-    `}
+                            className="relative w-9 h-9 p-0 flex items-center justify-center rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber-500/40 cursor-pointer bg-white dark:bg-slate-800/80 border-2 border-dashboard dark:border-slate-700 text-gold hover:bg-gray-50 dark:hover:bg-slate-700/80 hover:text-amber-600 dark:hover:text-amber-300 hover:border-gold/50"
                         >
                             <Search
                                 className="w-[18px] h-[18px]"
@@ -167,7 +156,7 @@ export function PublicHeader({
                             onClick={() =>
                                 setIsMobileMenuOpen(!isMobileMenuOpen)
                             }
-                            className={`lg:hidden p-2 rounded-lg ${isDark ? "text-white hover:bg-amber-400/10 hover:text-amber-300" : "text-gray-700 hover:bg-amber-50 hover:text-amber-600"}`}
+                            className="lg:hidden p-2 rounded-lg text-gray-700 dark:text-white hover:bg-amber-50 dark:hover:bg-amber-400/10 hover:text-amber-600 dark:hover:text-amber-300"
                             aria-label="Toggle menu"
                         >
                             {isMobileMenuOpen ? (

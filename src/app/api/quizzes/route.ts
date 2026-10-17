@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
-import { requireAdminAuth } from "@/lib/auth-cache";
+import { requireAdmin } from "@/lib/api-auth";
 import { z } from "zod";
 
 const quizSchema = z.object({
@@ -23,6 +23,9 @@ const quizSchema = z.object({
 });
 
 export async function GET() {
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
+
     try {
         const quizzes = await prisma.quiz.findMany({
             include: {
@@ -40,8 +43,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+    const auth = await requireAdmin();
+    if (auth instanceof NextResponse) return auth;
+
     try {
-        await requireAdminAuth();
         const body = await request.json();
         const validatedData = quizSchema.parse(body);
 

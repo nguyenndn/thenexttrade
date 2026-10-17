@@ -112,8 +112,8 @@ export async function POST(req: Request) {
         else if (newStreak === 100) totalXpAwarded += 1500;
         else if (newStreak === 365) totalXpAwarded += 5000;
 
-        const { recordEdgeEvent } = await import("@/lib/edge-awards");
-        await recordEdgeEvent({
+        const { recordEdgeEventOnce } = await import("@/lib/edge-awards");
+        await recordEdgeEventOnce({
             userId: user.id,
             eventType: "CHECKIN",
             sourceType: "DailyCheckIn",

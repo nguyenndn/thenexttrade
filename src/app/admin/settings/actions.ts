@@ -14,6 +14,14 @@ export async function updateProfile(formData: FormData) {
         return { error: "Unauthorized" };
     }
 
+    const profile = await prisma.profile.findUnique({
+        where: { userId: user.id },
+        select: { role: true },
+    });
+    if (profile?.role !== "ADMIN") {
+        return { error: "Forbidden — admin access required" };
+    }
+
     const fullName = ((formData.get("fullName") as string) || "").trim();
     const imageFile = formData.get("image") as File;
 

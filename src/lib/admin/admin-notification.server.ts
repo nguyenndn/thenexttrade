@@ -51,6 +51,62 @@ export async function notifyAdminsOfVipRequest(params: NotifyVipRequestParams) {
     }
 }
 
+interface NotifyNewAccountParams {
+    accountId: string;
+    userId: string;
+    broker?: string | null;
+    accountNumber?: string | null;
+    server?: string | null;
+    userEmail?: string | null;
+    userName?: string | null;
+}
+
+/**
+ * Sends in-app notification to all ADMIN users whenever a trader connects
+ * a new trading account (Free, Partner Pro or API flow), so the admin hub
+ * always reflects new account activity even when no VIP request is created.
+ */
+export async function notifyAdminsOfNewAccount(params: NotifyNewAccountParams) {
+    try {
+        const admins = await prisma.profile.findMany({
+            where: { role: "ADMIN" },
+            select: { userId: true },
+        });
+
+        if (!admins.length) return;
+
+        const traderIdentifier =
+            params.userName || params.userEmail || "A trader";
+        const brokerLabel = params.broker || "Unknown broker";
+        const accountLabel = params.accountNumber
+            ? ` #${params.accountNumber}`
+            : "";
+        const title = `New Trading Account: ${brokerLabel}${
+            params.accountNumber ? ` (${params.accountNumber})` : ""
+        }`;
+        const serverStr = params.server ? ` • Server: ${params.server}` : "";
+        const message = `${traderIdentifier} connected a new trading account (${brokerLabel}${accountLabel})${serverStr}.`;
+
+        const notificationsData = admins.map((admin) => ({
+            userId: admin.userId,
+            type: NotificationType.ANNOUNCEMENT,
+            title,
+            message,
+            link: `${NOTIFICATION_ROUTES.ADMIN_USERS}/${params.userId}`,
+            priority: NotificationPriority.NORMAL,
+            dedupeKey: `admin-new-account-${params.accountId}-${admin.userId}`,
+        }));
+
+        await prisma.notification.createMany({
+            data: notificationsData,
+            skipDuplicates: true,
+        });
+    } catch (error) {
+        console.error("[notifyAdminsOfNewAccount error]:", error);
+        // Non-blocking: we log and allow parent action to succeed
+    }
+}
+
 interface NotifySyncFailureParams {
     jobId: string;
     userId: string;

@@ -179,7 +179,7 @@ npx tsc --noEmit    → 0 errors
 | `auto_preview.py` | `.agents/scripts/auto_preview.py` | Auto preview         |
 
 ### Slash Commands (Skills)
-Key commands: `/audit`, `/push_code`, `/debug`, `/optimize`, `/qa`, `/code_review`, `/dev`
+Key commands: `/think`, `/audit`, `/push_code`, `/debug`, `/optimize`, `/qa`, `/code_review`, `/dev`
 
 ---
 
@@ -189,6 +189,6 @@ Key commands: `/audit`, `/push_code`, `/debug`, `/optimize`, `/qa`, `/code_revie
 `orchestrator` · `project-planner` · `frontend-specialist` · `backend-specialist` · `database-architect` · `security-auditor` · `seo-specialist` · `debugger` · `performance-optimizer` · `product-manager` · `documentation-writer` · `explorer-agent` · `code-archaeologist`
 
 ### Key Skills
-`clean-code` · `brainstorming` · `frontend-design` · `tailwind-patterns` · `react-best-practices` · `plan` · `testing-patterns` · `systematic-debugging` · `vulnerability-scanner` · `seo-fundamentals` · `performance-profiling`
+`think` · `clean-code` · `brainstorming` · `frontend-design` · `tailwind-patterns` · `react-best-practices` · `plan` · `testing-patterns` · `systematic-debugging` · `vulnerability-scanner` · `seo-fundamentals` · `performance-profiling`
 
 ---

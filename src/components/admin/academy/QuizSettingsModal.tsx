@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import {
     Dialog,
@@ -27,6 +27,13 @@ export function QuizSettingsModal({
     const [title, setTitle] = useState(quiz.title);
     const [description, setDescription] = useState(quiz.description || "");
     const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        if (isOpen) {
+            setTitle(quiz.title);
+            setDescription(quiz.description || "");
+        }
+    }, [quiz, isOpen]);
 
     const handleSave = async () => {
         if (!title.trim()) return toast.error("Title is required");

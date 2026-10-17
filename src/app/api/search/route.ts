@@ -216,6 +216,7 @@ export async function GET(request: Request) {
                 if (user) {
                     const lessons = await prisma.lesson.findMany({
                         where: {
+                            status: "published",
                             OR: [
                                 {
                                     title: {
@@ -251,7 +252,7 @@ export async function GET(request: Request) {
                             type: "lesson",
                             id: lesson.id,
                             title: lesson.title,
-                            slug: `/academy/lesson/${lesson.slug}`,
+                            slug: `/dashboard/academy/lessons/${lesson.slug}`,
                             description: `Lesson in ${lesson.module.level.title} - ${lesson.module.title}`,
                             image: null,
                             date: lesson.updatedAt,

@@ -1,9 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { ShieldX, Home, ArrowLeft, LogIn } from "lucide-react";
+import { ShieldX, Home, LogIn } from "lucide-react";
 
-export const metadata = {
-    title: "403 — Access Denied | The Next Trade",
+export const metadata: Metadata = {
+    title: "403 — Access Denied | TheNextTrade",
     description: "You do not have permission to access this page.",
+    robots: {
+        index: false,
+        follow: false,
+    },
 };
 
 export default function ForbiddenPage() {

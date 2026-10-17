@@ -403,17 +403,31 @@ export async function saveTradeRuleChecks(
             where: { journalEntryId, userId: user.id },
         });
 
-        // Create new checks
+        // Create new checks (only for rules owned by this user)
         if (checks.length > 0) {
-            await prisma.tradeRuleCheck.createMany({
-                data: checks.map((c) => ({
-                    userId: user.id,
-                    journalEntryId,
-                    tradingRuleId: c.tradingRuleId,
-                    status: c.status,
-                    note: c.note || null,
-                })),
+            const requestedRuleIds = Array.from(
+                new Set(checks.map((c) => c.tradingRuleId))
+            );
+            const ownedRules = await prisma.tradingRule.findMany({
+                where: { id: { in: requestedRuleIds }, userId: user.id },
+                select: { id: true },
             });
+            const ownedRuleIdSet = new Set(ownedRules.map((r) => r.id));
+            const validChecks = checks.filter((c) =>
+                ownedRuleIdSet.has(c.tradingRuleId)
+            );
+
+            if (validChecks.length > 0) {
+                await prisma.tradeRuleCheck.createMany({
+                    data: validChecks.map((c) => ({
+                        userId: user.id,
+                        journalEntryId,
+                        tradingRuleId: c.tradingRuleId,
+                        status: c.status,
+                        note: c.note || null,
+                    })),
+                });
+            }
         }
 
         revalidatePath("/dashboard/journal");
@@ -439,7 +453,7 @@ export async function getRulesComplianceStats() {
     // Group checks by rule ID and status
     const checkGroups = await prisma.tradeRuleCheck.groupBy({
         by: ["tradingRuleId", "status"],
-        where: { tradingRuleId: { in: ruleIds } },
+        where: { userId: user.id, tradingRuleId: { in: ruleIds } },
         _count: { _all: true },
     });
 

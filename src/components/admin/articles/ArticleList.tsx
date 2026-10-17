@@ -263,7 +263,10 @@ export const ArticleList = memo(function ArticleList({
                 }),
             });
 
-            if (!res.ok) throw new Error("Bulk action failed");
+            if (!res.ok) {
+                const errData = await res.json().catch(() => null);
+                throw new Error(errData?.error || "Bulk action failed");
+            }
 
             // Refresh data
             router.refresh();
@@ -300,11 +303,16 @@ export const ArticleList = memo(function ArticleList({
         setIsSavingQuickEdit(true);
 
         try {
-            await fetch(`/api/articles/${quickEditId}`, {
+            const res = await fetch(`/api/articles/${quickEditId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(quickEditData),
             });
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => null);
+                throw new Error(errData?.error || "Failed to update article");
+            }
 
             setArticles(
                 articles.map((a) =>

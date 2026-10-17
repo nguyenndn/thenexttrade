@@ -7,6 +7,8 @@ const tool = getToolBySlug("compounding-calculator")!;
 
 export const metadata: Metadata = getToolMetadata("compounding-calculator");
 
+export const revalidate = 86400;
+
 export default function CompoundingCalculatorPage() {
     return (
         <ToolPageLayout tool={tool}>

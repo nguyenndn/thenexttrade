@@ -421,29 +421,32 @@ export async function proxy(request: NextRequest) {
 
             // Fire and forget — don't await, don't block response
             const collectUrl = new URL("/api/analytics/collect", INTERNAL_BASE_URL);
-            fetch(collectUrl.toString(), {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-internal-analytics": process.env.ANALYTICS_SECRET || "1",
-                },
-                body: JSON.stringify({
-                    pathname,
-                    referrer: request.headers.get("referer") || null,
-                    country: geo.country,
-                    city: geo.city,
-                    region: geo.region,
-                    device: ua.device,
-                    browser: ua.browser,
-                    os: ua.os,
-                    sessionId,
-                    utmSource,
-                    utmMedium,
-                    utmCampaign,
-                }),
-            }).catch(() => {
-                /* silently fail — analytics should never break the app */
-            });
+            const analyticsSecret = process.env.ANALYTICS_SECRET;
+            if (analyticsSecret) {
+                fetch(collectUrl.toString(), {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-internal-analytics": analyticsSecret,
+                    },
+                    body: JSON.stringify({
+                        pathname,
+                        referrer: request.headers.get("referer") || null,
+                        country: geo.country,
+                        city: geo.city,
+                        region: geo.region,
+                        device: ua.device,
+                        browser: ua.browser,
+                        os: ua.os,
+                        sessionId,
+                        utmSource,
+                        utmMedium,
+                        utmCampaign,
+                    }),
+                }).catch(() => {
+                    /* silently fail — analytics should never break the app */
+                });
+            }
         }
     }
 
@@ -460,6 +463,6 @@ export const config = {
          * - Static assets (svg, png, jpg, etc.)
          * - robots.txt, sitemap.xml, feed.xml
          */
-        "/((?!_next/static|_next/image|articles/|favicon.ico|images/|uploads/|robots\\.txt|sitemap\\.xml|feed\\.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml)$).*)",
+        "/((?!_next/static|_next/image|favicon.ico|images/|uploads/|robots\\.txt|sitemap\\.xml|feed\\.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml)$).*)",
     ],
 };

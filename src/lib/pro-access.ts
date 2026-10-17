@@ -185,6 +185,7 @@ export async function getAccountProAccess(
         select: {
             id: true,
             broker: true,
+            accountNumber: true,
             balance: true,
             currency: true,
             server: true,
@@ -210,27 +211,61 @@ export async function getAccountProAccess(
         },
     });
 
-    // If no active/grace account-level entitlement, check for global user-level entitlement
+    // If no active/grace account-level entitlement, check for matching unlinked entitlement or global user-level entitlement
     if (
         !entitlement ||
         (entitlement.status !== "ACTIVE" && entitlement.status !== "GRACE")
     ) {
-        const globalEntitlement = await prisma.proEntitlement.findFirst({
-            where: {
-                userId,
-                tradingAccountId: null,
-                status: { in: ["ACTIVE", "GRACE"] },
-            },
-            select: {
-                id: true,
-                status: true,
-                source: true,
-                expiresAt: true,
-            },
-            orderBy: { createdAt: "desc" },
-        });
-        if (globalEntitlement) {
-            entitlement = globalEntitlement;
+        let unlinkedMatch = null;
+        if (account.accountNumber && account.broker) {
+            unlinkedMatch = await prisma.proEntitlement.findFirst({
+                where: {
+                    userId,
+                    tradingAccountId: null,
+                    accountNumber: account.accountNumber,
+                    broker: { equals: account.broker, mode: "insensitive" },
+                    status: { in: ["ACTIVE", "GRACE"] },
+                },
+                select: {
+                    id: true,
+                    status: true,
+                    source: true,
+                    expiresAt: true,
+                },
+            });
+            if (unlinkedMatch) {
+                prisma.proEntitlement
+                    .update({
+                        where: { id: unlinkedMatch.id },
+                        data: { tradingAccountId },
+                    })
+                    .catch(() => {});
+                entitlement = unlinkedMatch;
+            }
+        }
+
+        if (!unlinkedMatch) {
+            const globalEntitlement = await prisma.proEntitlement.findFirst({
+                where: {
+                    userId,
+                    tradingAccountId: null,
+                    OR: [
+                        { accountNumber: null, broker: null },
+                        { source: "MANUAL_ADMIN" },
+                    ],
+                    status: { in: ["ACTIVE", "GRACE"] },
+                },
+                select: {
+                    id: true,
+                    status: true,
+                    source: true,
+                    expiresAt: true,
+                },
+                orderBy: { createdAt: "desc" },
+            });
+            if (globalEntitlement) {
+                entitlement = globalEntitlement;
+            }
         }
     }
 
@@ -351,7 +386,10 @@ export async function getAccountProAccess(
 
     return {
         isPro: effectiveIsPro,
-        status: entitlement!.status,
+        status:
+            entitlement?.status === "ACTIVE" || entitlement?.status === "GRACE"
+                ? entitlement.status
+                : "NONE",
         source: entitlement!.source,
         expiresAt: entitlement!.expiresAt,
         policyState,
@@ -540,7 +578,7 @@ export async function getUserProAccess(
                 tradingAccountId: e.tradingAccountId,
                 accountName: e.tradingAccount?.name || "Unknown",
                 broker: e.tradingAccount?.broker || e.broker || null,
-                status: e.status,
+                status: isAccountPro ? e.status : ("NONE" as const),
                 isPro: isAccountPro,
                 source: e.source,
                 expiresAt: e.expiresAt,
@@ -567,12 +605,13 @@ export async function getUserProAccess(
     // Unlinked entitlements
     const unlinked = entitlements.filter((e) => !e.tradingAccountId);
     for (const e of unlinked) {
+        const isAccountPro = e.status === "ACTIVE" || e.status === "GRACE";
         accounts.push({
             tradingAccountId: "",
             accountName: e.broker ? `${e.broker} (unlinked)` : "Unlinked",
             broker: e.broker || null,
-            status: e.status,
-            isPro: e.status === "ACTIVE" || e.status === "GRACE",
+            status: isAccountPro ? e.status : ("NONE" as const),
+            isPro: isAccountPro,
             source: e.source,
             expiresAt: e.expiresAt,
         });
@@ -657,8 +696,6 @@ export async function getUserProAccess(
         aggregateStatus = "ACTIVE";
     } else if (proStatuses.some((a) => a.status === "EXPIRED")) {
         aggregateStatus = "EXPIRED";
-    } else if (proStatuses.some((a) => a.status === "REVOKED")) {
-        aggregateStatus = "REVOKED";
     } else {
         aggregateStatus = "NONE";
     }

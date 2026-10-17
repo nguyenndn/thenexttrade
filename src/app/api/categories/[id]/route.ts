@@ -67,6 +67,13 @@ export async function PUT(
         const body = await request.json();
         const validatedData = updateCategorySchema.parse(body);
 
+        if (validatedData.parentId && validatedData.parentId === id) {
+            return NextResponse.json(
+                { error: "A category cannot be its own parent" },
+                { status: 400 }
+            );
+        }
+
         // If slug is provided, check for uniqueness
         if (validatedData.slug && validatedData.slug !== existing.slug) {
             const slugExists = await prisma.category.findFirst({
@@ -91,17 +98,19 @@ export async function PUT(
                 .replace(/[^a-z0-9]+/g, "-")
                 .replace(/^-|-$/g, "");
 
-            // Check if auto-generated slug conflicts
-            const slugConflict = await prisma.category.findFirst({
-                where: {
-                    slug: newSlug,
-                    id: { not: id },
-                },
-            });
+            if (newSlug) {
+                // Check if auto-generated slug conflicts
+                const slugConflict = await prisma.category.findFirst({
+                    where: {
+                        slug: newSlug,
+                        id: { not: id },
+                    },
+                });
 
-            // Only update slug if no conflict
-            if (!slugConflict) {
-                updateData.slug = newSlug;
+                // Only update slug if no conflict
+                if (!slugConflict) {
+                    updateData.slug = newSlug;
+                }
             }
         }
 
@@ -165,7 +174,13 @@ export async function DELETE(
             );
         }
 
-        await prisma.category.delete({ where: { id } });
+        await prisma.$transaction(async (tx) => {
+            await tx.category.updateMany({
+                where: { parentId: id },
+                data: { parentId: null },
+            });
+            await tx.category.delete({ where: { id } });
+        });
 
         return NextResponse.json({
             success: true,

@@ -282,8 +282,8 @@ export function LiveMarketRates() {
                 {filteredPairs.map((pair) => {
                     const rate = rates[pair.symbol];
                     const decimals = getDecimals(pair.symbol);
-                    const isUp = rate && rate.changePercent > 0;
-                    const isDown = rate && rate.changePercent < 0;
+                    const isUp = typeof rate?.changePercent === "number" && rate.changePercent > 0;
+                    const isDown = typeof rate?.changePercent === "number" && rate.changePercent < 0;
 
                     return (
                         <div
@@ -328,7 +328,9 @@ export function LiveMarketRates() {
                                           : "text-gray-700 dark:text-white"
                                 )}
                             >
-                                {rate ? rate.price.toFixed(decimals) : "—"}
+                                {rate && typeof rate.price === "number"
+                                    ? rate.price.toFixed(decimals)
+                                    : "—"}
                             </p>
 
                             {/* Change % */}
@@ -342,7 +344,7 @@ export function LiveMarketRates() {
                                           : "text-gray-500"
                                 )}
                             >
-                                {rate
+                                {rate && typeof rate.changePercent === "number"
                                     ? `${rate.changePercent > 0 ? "+" : ""}${rate.changePercent.toFixed(2)}%`
                                     : "Loading..."}
                             </p>

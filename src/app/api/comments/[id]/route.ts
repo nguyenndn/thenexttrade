@@ -51,8 +51,14 @@ export async function DELETE(
             );
         }
 
-        await prisma.comment.delete({
-            where: { id: commentId },
+        await prisma.$transaction(async (tx) => {
+            await tx.comment.updateMany({
+                where: { parentId: commentId },
+                data: { parentId: null },
+            });
+            await tx.comment.delete({
+                where: { id: commentId },
+            });
         });
 
         return NextResponse.json({ success: true });

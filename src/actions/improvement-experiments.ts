@@ -192,7 +192,7 @@ export async function addExperimentAsTradingRule(experimentId: string) {
             accountId: experiment.accountId,
             title: experiment.title,
             description: experiment.instruction,
-            category: "RISK_EXECUTION",
+            category: "RISK",
             severity: "MEDIUM",
             isActive: true,
         },

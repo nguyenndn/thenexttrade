@@ -68,6 +68,7 @@ interface UserVipProTabProps {
         }>;
         proEntitlements: Array<{
             id: string;
+            tradingAccountId?: string | null;
             status: "ACTIVE" | "GRACE" | "REVOKED" | "EXPIRED";
             source: string;
             broker: string | null;
@@ -77,6 +78,7 @@ interface UserVipProTabProps {
             expiresAt: string | Date | null;
             adminNote: string | null;
             tradingAccount?: {
+                id?: string;
                 name: string | null;
                 accountNumber: string | null;
             } | null;
@@ -128,6 +130,10 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
         MANUAL: "Granted by Admin",
         SYSTEM: "Granted by System",
     };
+
+    const activeEntitlements = user.proEntitlements.filter(
+        (e) => e.status !== "REVOKED"
+    );
 
     // VIP Actions
     const handleApproveVip = async (requestId: string) => {
@@ -203,7 +209,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
 
     const handleRevokePro = async (
         entitlementId: string,
-        tradingAccountId?: string
+        tradingAccountId?: string | null
     ) => {
         if (!revokeReason.trim()) {
             toast.error("Please provide a reason for revoking");
@@ -214,7 +220,8 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
             const res = await revokeProAccess(
                 user.id,
                 revokeReason,
-                tradingAccountId
+                tradingAccountId || undefined,
+                entitlementId
             );
             if (res.success) {
                 toast.success("Product access removed.");
@@ -522,13 +529,13 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                             </p>
                         </div>
                         <span className="text-xs font-bold text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-lg">
-                            {user.proEntitlements.length} Records
+                            {activeEntitlements.length} Records
                         </span>
                     </div>
 
-                    {user.proEntitlements.length > 0 ? (
+                    {activeEntitlements.length > 0 ? (
                         <div className="divide-y divide-gray-200 dark:divide-white/10 flex-1">
-                            {user.proEntitlements.map((ent) => (
+                            {activeEntitlements.map((ent) => (
                                 <div
                                     key={ent.id}
                                     className="p-5 space-y-4 hover:bg-gray-50/20 dark:hover:bg-white/[0.01] transition-colors"
@@ -656,11 +663,9 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                                             onClick={() =>
                                                                 handleRevokePro(
                                                                     ent.id,
-                                                                    ent.broker
-                                                                        ? ent.id
-                                                                        : undefined
+                                                                    ent.tradingAccountId || ent.tradingAccount?.id || null
                                                                 )
-                                                            } // Use actual accountId if applicable
+                                                            }
                                                             disabled={
                                                                 loading ===
                                                                 `revoke-pro-${ent.id}`

@@ -92,8 +92,20 @@ export async function DELETE(
 
     try {
         const { id } = await props.params;
-        await prisma.level.delete({
-            where: { id },
+        await prisma.$transaction(async (tx) => {
+            await tx.comment.updateMany({
+                where: { lesson: { module: { levelId: id } } },
+                data: { parentId: null },
+            });
+            await tx.comment.deleteMany({
+                where: { lesson: { module: { levelId: id } } },
+            });
+            await tx.quiz.deleteMany({
+                where: { module: { levelId: id } },
+            });
+            await tx.level.delete({
+                where: { id },
+            });
         });
 
         return NextResponse.json({ message: "Level deleted" });

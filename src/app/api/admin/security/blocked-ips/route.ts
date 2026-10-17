@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isIP } from "node:net";
 import { prisma } from "@/lib/prisma";
 import { requireSuperAdmin } from "@/lib/api-auth";
 import { blockIP } from "@/lib/security-logger";
@@ -48,11 +49,26 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Validate IP format (basic)
+        // Validate IP format (IPv4 or IPv6)
         const ipTrimmed = ip.trim();
-        if (ipTrimmed.length < 7 || ipTrimmed.length > 45) {
+        if (isIP(ipTrimmed) === 0) {
             return NextResponse.json(
-                { error: "Invalid IP address" },
+                { error: "Invalid IPv4 or IPv6 address" },
+                { status: 400 }
+            );
+        }
+
+        const callerIp =
+            request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+            request.headers.get("x-real-ip")?.trim();
+        if (
+            ipTrimmed === "127.0.0.1" ||
+            ipTrimmed === "::1" ||
+            ipTrimmed === "0.0.0.0" ||
+            (callerIp && ipTrimmed === callerIp)
+        ) {
+            return NextResponse.json(
+                { error: "Cannot block loopback or your own IP address" },
                 { status: 400 }
             );
         }

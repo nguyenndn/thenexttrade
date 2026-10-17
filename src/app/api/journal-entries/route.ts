@@ -42,6 +42,8 @@ const journalEntrySchema = z.object({
     emotionAfter: z.string().optional().nullable(),
     confidenceLevel: z.number().int().min(1).max(5).optional().nullable(),
     followedPlan: z.boolean().optional().nullable(),
+    playbookGrade: z.string().max(10).optional().nullable(),
+    playbookComplianceScore: z.number().min(0).max(100).optional().nullable(),
     notesPsychology: z.string().optional().nullable(),
     ruleChecks: z
         .array(
@@ -68,6 +70,10 @@ export async function POST(request: Request) {
         const validatedData = journalEntrySchema.parse(body);
         const { ruleChecks, tradePlanId, ...rest } = validatedData as any;
 
+        if (rest.accountId === "none" || rest.accountId === "") {
+            rest.accountId = null;
+        }
+
         // accountId must stay within the user's own accounts
         if (rest.accountId) {
             const acct = await prisma.tradingAccount.findFirst({
@@ -89,19 +95,33 @@ export async function POST(request: Request) {
         });
 
         if (ruleChecks && ruleChecks.length > 0) {
-            await prisma.tradeRuleCheck.createMany({
-                data: ruleChecks.map((c: any) => ({
-                    userId: user.id,
-                    journalEntryId: entry.id,
-                    tradingRuleId: c.tradingRuleId,
-                    status: c.status,
-                    note: c.note || null,
-                })),
+            const requestedRuleIds = Array.from(
+                new Set(ruleChecks.map((c: any) => c.tradingRuleId))
+            ) as string[];
+            const ownedRules = await prisma.tradingRule.findMany({
+                where: { id: { in: requestedRuleIds }, userId: user.id },
+                select: { id: true },
             });
+            const ownedRuleIdSet = new Set(ownedRules.map((r) => r.id));
+            const validRuleChecks = ruleChecks.filter((c: any) =>
+                ownedRuleIdSet.has(c.tradingRuleId)
+            );
+
+            if (validRuleChecks.length > 0) {
+                await prisma.tradeRuleCheck.createMany({
+                    data: validRuleChecks.map((c: any) => ({
+                        userId: user.id,
+                        journalEntryId: entry.id,
+                        tradingRuleId: c.tradingRuleId,
+                        status: c.status,
+                        note: c.note || null,
+                    })),
+                });
+            }
         }
 
         if (tradePlanId) {
-            await prisma.tradePlan.update({
+            await prisma.tradePlan.updateMany({
                 where: { id: tradePlanId, userId: user.id },
                 data: {
                     journalEntryId: entry.id,

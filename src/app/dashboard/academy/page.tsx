@@ -48,8 +48,14 @@ export default async function UserAcademyDashboard() {
         lastProgress,
         lastQuizAttempt,
     ] = await Promise.all([
-        prisma.userProgress.count({ where: { userId, isCompleted: true } }),
-        prisma.lesson.count(),
+        prisma.userProgress.count({
+            where: {
+                userId,
+                isCompleted: true,
+                lesson: { status: "published" },
+            },
+        }),
+        prisma.lesson.count({ where: { status: "published" } }),
         prisma.level.findMany({
             include: {
                 modules: {
@@ -57,7 +63,11 @@ export default async function UserAcademyDashboard() {
                         id: true,
                         title: true,
                         description: true,
-                        _count: { select: { lessons: true } },
+                        _count: {
+                            select: {
+                                lessons: { where: { status: "published" } },
+                            },
+                        },
                         quiz: {
                             select: {
                                 id: true,
@@ -119,7 +129,11 @@ export default async function UserAcademyDashboard() {
         }),
         prisma.level.count(),
         prisma.userProgress.findFirst({
-            where: { userId, isCompleted: true },
+            where: {
+                userId,
+                isCompleted: true,
+                lesson: { status: "published" },
+            },
             orderBy: { completedAt: "desc" },
             select: { completedAt: true },
         }),

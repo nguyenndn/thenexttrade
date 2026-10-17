@@ -7,6 +7,8 @@ const tool = getToolBySlug("profit-loss-calculator")!;
 
 export const metadata: Metadata = getToolMetadata("profit-loss-calculator");
 
+export const revalidate = 86400;
+
 export default function ProfitLossCalculatorPage() {
     return (
         <ToolPageLayout tool={tool}>

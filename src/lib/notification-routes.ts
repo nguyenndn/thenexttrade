@@ -1,6 +1,7 @@
 export const NOTIFICATION_ROUTES = {
     DASHBOARD: "/dashboard",
     ADMIN_DASHBOARD: "/admin",
+    ADMIN_USERS: "/admin/users", // Admin user detail: `${ADMIN_USERS}/${userId}`
     EA_DASHBOARD: "/dashboard/trading-systems",
     VIP_ACCOUNTS: "/dashboard/accounts",
     VIP_UNLOCK_PRO: "/dashboard/accounts?intent=unlock-pro",

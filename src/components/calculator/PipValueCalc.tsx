@@ -18,7 +18,8 @@ export function PipValueCalc() {
 
     const pipValuePerMicro = PIP_VALUES[pair.toUpperCase()] || 0.1;
     const pipValuePerStandard = pipValuePerMicro * 100;
-    const totalValue = pipValuePerStandard * lotSize;
+    const safeLotSize = Math.max(0, isNaN(lotSize) ? 0 : lotSize);
+    const totalValue = pipValuePerStandard * safeLotSize;
 
     const currSymbol = getCurrencySymbol(accountCurrency);
 
@@ -97,7 +98,7 @@ export function PipValueCalc() {
                 <p className="text-center text-sm text-gray-600 dark:text-gray-300 -mt-1">
                     For{" "}
                     <span className="font-bold text-gray-700 dark:text-white">
-                        {lotSize}
+                        {safeLotSize}
                     </span>{" "}
                     lot(s) of {pair}
                 </p>

@@ -27,11 +27,7 @@ export default function TermsOfServicePage() {
                     Terms of Service
                 </h1>
                 <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000">
-                    Last updated:{" "}
-                    {new Date().toLocaleDateString("en-US", {
-                        month: "long",
-                        year: "numeric",
-                    })}
+                    Last updated: October 2026
                 </p>
             </div>
 

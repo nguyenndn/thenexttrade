@@ -118,23 +118,38 @@ export async function submitClaimReward(input: ClaimRewardInput): Promise<{
       }
     }
 
-    // 5. Create Claim Record
-    await prisma.loyaltyClaim.create({
-      data: {
+    // 5. Create or Re-Submit (if previously REJECTED) Claim Record
+    const claimPayload = {
+      tierName: targetTier.name,
+      requiredLots: targetTier.requiredLots,
+      actualLots: totalLots,
+      rewardType: targetTier.rewardType,
+      rewardTitle: targetTier.rewardTitle,
+      cashAmount: targetTier.cashAmount,
+      payoutMethod: "USDT",
+      network,
+      usdtAddress: cleanAddress,
+      payoutDetails: note ? { note } : undefined,
+      status: "PENDING" as const,
+      adminNote: null,
+      txHash: null,
+      processedBy: null,
+      processedAt: null,
+    };
+
+    await prisma.loyaltyClaim.upsert({
+      where: {
+        userId_level: {
+          userId: user.id,
+          level: targetTier.level,
+        },
+      },
+      create: {
         userId: user.id,
         level: targetTier.level,
-        tierName: targetTier.name,
-        requiredLots: targetTier.requiredLots,
-        actualLots: totalLots,
-        rewardType: targetTier.rewardType,
-        rewardTitle: targetTier.rewardTitle,
-        cashAmount: targetTier.cashAmount,
-        payoutMethod: "USDT",
-        network,
-        usdtAddress: cleanAddress,
-        payoutDetails: note ? { note } : undefined,
-        status: "PENDING",
+        ...claimPayload,
       },
+      update: claimPayload,
     });
 
     // 6. Notify user of claim receipt

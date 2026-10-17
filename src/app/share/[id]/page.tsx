@@ -1,3 +1,5 @@
+import { cache } from "react";
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { TradeShareCard } from "@/components/journal/TradeShareCard";
 import { Button } from "@/components/ui/Button";
@@ -15,10 +17,8 @@ interface SharePageProps {
     }>;
 }
 
-export default async function SharePage({ params }: SharePageProps) {
-    const { id } = await params;
-
-    const trade = await prisma.journalEntry.findUnique({
+const getSharedTrade = cache(async (id: string) => {
+    return prisma.journalEntry.findUnique({
         where: { id },
         include: {
             user: {
@@ -47,6 +47,64 @@ export default async function SharePage({ params }: SharePageProps) {
             },
         },
     });
+});
+
+export async function generateMetadata({
+    params,
+}: SharePageProps): Promise<Metadata> {
+    const { id } = await params;
+    const trade = await getSharedTrade(id);
+
+    const shareMode = trade?.shareMode?.toLowerCase();
+    if (
+        !trade ||
+        !shareMode ||
+        shareMode === "private" ||
+        shareMode === "none" ||
+        !["basic", "full"].includes(shareMode)
+    ) {
+        return {
+            title: "Trade Not Found | TheNextTrade",
+            robots: { index: false, follow: false },
+        };
+    }
+
+    const profile = trade.user?.profile;
+    const displayName = profile?.showRealName
+        ? trade.user?.name || "Trader"
+        : profile?.username
+          ? `@${profile.username}`
+          : "Trader";
+
+    const title = `Trade Share: ${trade.symbol} ${trade.type} by ${displayName} | TheNextTrade`;
+    const description = `View closed trade analysis on ${trade.symbol} (${trade.type}) shared by ${displayName} on TheNextTrade.`;
+
+    return {
+        title,
+        description,
+        robots: { index: false, follow: false },
+        alternates: {
+            canonical: `/share/${id}`,
+        },
+        openGraph: {
+            title,
+            description,
+            url: `/share/${id}`,
+            siteName: "TheNextTrade",
+            type: "website",
+        },
+        twitter: {
+            card: "summary_large_image",
+            title,
+            description,
+        },
+    };
+}
+
+export default async function SharePage({ params }: SharePageProps) {
+    const { id } = await params;
+
+    const trade = await getSharedTrade(id);
 
     if (!trade) {
         return notFound();

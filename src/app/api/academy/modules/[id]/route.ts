@@ -50,8 +50,20 @@ export async function DELETE(
 
     try {
         const { id } = await props.params;
-        await prisma.module.delete({
-            where: { id },
+        await prisma.$transaction(async (tx) => {
+            await tx.comment.updateMany({
+                where: { lesson: { moduleId: id } },
+                data: { parentId: null },
+            });
+            await tx.comment.deleteMany({
+                where: { lesson: { moduleId: id } },
+            });
+            await tx.quiz.deleteMany({
+                where: { moduleId: id },
+            });
+            await tx.module.delete({
+                where: { id },
+            });
         });
 
         return NextResponse.json({ message: "Module deleted" });

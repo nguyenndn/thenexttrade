@@ -95,8 +95,8 @@ export async function PATCH(request: NextRequest) {
                 data: { isRead: true },
             });
         } else {
-            await prisma.notification.update({
-                where: { id: id, userId: user.id }, // Ensure ownership
+            await prisma.notification.updateMany({
+                where: { id: String(id), userId: user.id }, // Ensure ownership without P2025 throw
                 data: { isRead: true },
             });
         }

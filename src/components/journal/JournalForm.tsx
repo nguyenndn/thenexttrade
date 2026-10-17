@@ -324,7 +324,10 @@ export default function JournalForm({
                 swap: formData.swap !== "" && formData.swap !== null ? parseFloat(formData.swap) : null,
                 result: formData.result || null,
                 strategy: formData.strategy || null,
-                accountId: formData.accountId || null,
+                accountId:
+                    formData.accountId && formData.accountId !== "none"
+                        ? formData.accountId
+                        : null,
                 tags: formData.tags || [],
                 // Psychology
                 emotionBefore: formData.emotionBefore || null,
@@ -469,11 +472,11 @@ export default function JournalForm({
                                 Trading Account
                             </label>
                             <Select
-                                value={formData.accountId}
+                                value={formData.accountId || "none"}
                                 onValueChange={(value) =>
                                     setFormData((prev) => ({
                                         ...prev,
-                                        accountId: value,
+                                        accountId: value === "none" ? "" : value,
                                     }))
                                 }
                                 disabled={isSynced || isEditMode}
@@ -1565,11 +1568,7 @@ export default function JournalForm({
                                             alt={`Screenshot ${idx + 1}`}
                                             className="w-full h-full object-cover"
                                             onError={(e) => {
-                                                const target = e.currentTarget;
-                                                const parent = target.parentElement;
-                                                if (parent) {
-                                                    parent.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-white/5 text-gray-500 text-sm p-4 text-center">Image failed to load<br/><span class="text-xs opacity-60 break-all">${imgUrl}</span></div>`;
-                                                }
+                                                e.currentTarget.style.display = "none";
                                             }}
                                         />
                                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">

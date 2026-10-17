@@ -175,7 +175,7 @@ export function ProfitLossCalc() {
                         />
                         <CalcResultCard
                             label="Price Change"
-                            value={`${((Math.abs(inputs.exitPrice - inputs.entryPrice) / inputs.entryPrice) * 100).toFixed(3)}%`}
+                            value={`${inputs.entryPrice > 0 ? ((Math.abs(inputs.exitPrice - inputs.entryPrice) / inputs.entryPrice) * 100).toFixed(3) : "0.000"}%`}
                         />
                     </div>
                 </div>

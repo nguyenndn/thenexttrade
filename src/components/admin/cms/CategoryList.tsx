@@ -151,7 +151,10 @@ export default function CategoryList({ hideHeader }: { hideHeader?: boolean }) {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ ids: Array.from(selectedIds) }),
             });
-            if (!res.ok) throw new Error("Bulk delete failed");
+            if (!res.ok) {
+                const errData = await res.json().catch(() => null);
+                throw new Error(errData?.error || "Bulk delete failed");
+            }
             toast.success(`Deleted ${selectedIds.size} categories`);
             setSelectedIds(new Set());
             setIsBulkConfirmOpen(false);

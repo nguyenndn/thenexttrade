@@ -7,6 +7,8 @@ const tool = getToolBySlug("pip-value-calculator")!;
 
 export const metadata: Metadata = getToolMetadata("pip-value-calculator");
 
+export const revalidate = 86400;
+
 export default function PipValueCalculatorPage() {
     return (
         <ToolPageLayout tool={tool}>

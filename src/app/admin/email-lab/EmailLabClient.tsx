@@ -253,7 +253,47 @@ export function EmailLabClient({
             category: "ea_academy",
         },
 
-
+        // ── Reports & Reviews ──
+        {
+            id: "weekly_report_ready",
+            title: "Weekly Trading Report Ready",
+            description:
+                "Dispatches weekly performance breakdown, win rate, net PnL, and behavioral review summary.",
+            sourceFile: "src/lib/services/email.service.ts",
+            status: "active",
+            statusLabel: "Active SMTP",
+            category: "reports",
+        },
+        {
+            id: "monthly_report_ready",
+            title: "Monthly Trading Report Ready",
+            description:
+                "Dispatches monthly performance recap, risk compliance metrics, and top trading pairs.",
+            sourceFile: "src/lib/services/email.service.ts",
+            status: "active",
+            statusLabel: "Active SMTP",
+            category: "reports",
+        },
+        {
+            id: "weekly_no_trades",
+            title: "Weekly No-Trades Nudge",
+            description:
+                "Sent when a trader has zero closed trades during the week to check sync status or encourage journaling.",
+            sourceFile: "src/lib/services/email.service.ts",
+            status: "active",
+            statusLabel: "Active SMTP",
+            category: "reports",
+        },
+        {
+            id: "monthly_no_trades",
+            title: "Monthly No-Trades Nudge",
+            description:
+                "Sent when a trader has zero closed trades during the month to re-engage account sync.",
+            sourceFile: "src/lib/services/email.service.ts",
+            status: "active",
+            statusLabel: "Active SMTP",
+            category: "reports",
+        },
 
         // ── Streamlined 3-Step Onboarding Sequence ──
         {

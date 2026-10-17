@@ -125,6 +125,31 @@ describe("POST /api/lessons/[id]/complete", () => {
         const body = await res.json();
 
         expect(res.status).toBe(200);
+        expect(prisma.lesson.findUnique).toHaveBeenCalledWith(
+            expect.objectContaining({
+                where: { id: "l1" },
+                select: expect.objectContaining({
+                    module: {
+                        select: {
+                            level: {
+                                select: {
+                                    modules: {
+                                        orderBy: { order: "asc" },
+                                        select: {
+                                            lessons: {
+                                                where: { status: "published" },
+                                                orderBy: { order: "asc" },
+                                                select: { id: true },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                }),
+            })
+        );
         expect(prisma.userProgress.upsert).toHaveBeenCalledOnce();
         expect(addXP).toHaveBeenCalledWith("user-1", XP_AWARDS.LESSON_COMPLETE);
         expect(recordEdgeEventOnce).toHaveBeenCalledWith(

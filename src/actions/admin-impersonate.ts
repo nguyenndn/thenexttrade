@@ -9,16 +9,18 @@ export async function impersonateUserAction(targetUserId: string) {
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
 
+    const adminUserId = user.originalAdminId || user.id;
+
     // Verify real user is admin
     const profile = await prisma.profile.findUnique({
-        where: { userId: user.id },
+        where: { userId: adminUserId },
         select: { role: true },
     });
     if (profile?.role !== "ADMIN") {
         return { error: "Forbidden: Administrator privilege required" };
     }
 
-    if (user.id === targetUserId) {
+    if (adminUserId === targetUserId) {
         return { error: "Cannot impersonate yourself" };
     }
 
@@ -42,7 +44,7 @@ export async function impersonateUserAction(targetUserId: string) {
     try {
         await prisma.auditLog.create({
             data: {
-                adminId: user.id,
+                adminId: adminUserId,
                 action: "IMPERSONATE_USER_START",
                 targetType: "USER",
                 targetId: targetUserId,
@@ -58,17 +60,17 @@ export async function impersonateUserAction(targetUserId: string) {
 }
 
 export async function stopImpersonatingAction() {
+    const user = await getAuthUser();
     const cookieStore = await cookies();
     const impersonatedId = cookieStore.get("impersonate_user_id")?.value;
 
     cookieStore.delete("impersonate_user_id");
 
-    const user = await getAuthUser();
-    if (user && impersonatedId) {
+    if (user?.originalAdminId && impersonatedId) {
         try {
             await prisma.auditLog.create({
                 data: {
-                    adminId: user.id,
+                    adminId: user.originalAdminId,
                     action: "IMPERSONATE_USER_STOP",
                     targetType: "USER",
                     targetId: impersonatedId,

@@ -13,8 +13,20 @@ export const metadata: Metadata = {
     title: "The Trader's Ascent | TheNextTrade Academy",
     description:
         "12 structured levels from liquidity models to risk math and execution discipline. The zero-fluff forex curriculum built for consistent funded traders.",
+    alternates: {
+        canonical: "/academy",
+    },
     openGraph: {
         title: "The Trader's Ascent - Zero to Pro",
+        description: "Master market structure, liquidity mechanics, and cold risk math.",
+        url: "/academy",
+        siteName: "TheNextTrade",
+        images: ["/academy-og.jpg"],
+        type: "website",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "The Trader's Ascent | TheNextTrade Academy",
         description: "Master market structure, liquidity mechanics, and cold risk math.",
         images: ["/academy-og.jpg"],
     },

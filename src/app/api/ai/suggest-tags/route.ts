@@ -24,7 +24,9 @@ export async function POST(req: NextRequest) {
             orderBy: { name: "asc" },
         });
 
-        const tagNames = existingTags.map((t) => t.name).join(", ");
+        const tagListForPrompt = existingTags
+            .map((t) => `${t.id}: "${t.name}"`)
+            .join("\n");
 
         // Strip HTML from content for cleaner analysis
         const plainContent = (content || "")
@@ -37,8 +39,8 @@ export async function POST(req: NextRequest) {
 Analyze the article below and suggest the most relevant tags from the EXISTING tag list. 
 Also suggest up to 3 NEW tags if no existing tag covers an important topic in the article.
 
-## EXISTING TAGS (pick from these first):
-${tagNames}
+## EXISTING TAGS (format: ID: "Name" — pick from these first):
+${tagListForPrompt || "(none)"}
 
 ## ARTICLE:
 Title: ${title || "Untitled"}
@@ -85,20 +87,34 @@ IMPORTANT: existingTagIds must contain actual IDs from the existing tags list. O
             parsed = JSON.parse(cleaned);
         }
 
-        // Validate existing tag IDs
-        const validExistingIds =
-            parsed.existingTagIds?.filter((id) =>
-                existingTags.some((t) => t.id === id)
-            ) || [];
+        // Validate existing tag IDs (also fallback-match by name or slug if LLM returned name instead of ID)
+        const validExistingIds: string[] = [];
+        for (const rawIdOrName of parsed.existingTagIds || []) {
+            if (typeof rawIdOrName !== "string") continue;
+            const normalized = rawIdOrName.trim().toLowerCase();
+            const match = existingTags.find(
+                (t) =>
+                    t.id === rawIdOrName.trim() ||
+                    t.name.toLowerCase() === normalized ||
+                    t.slug.toLowerCase() === normalized
+            );
+            if (match && !validExistingIds.includes(match.id)) {
+                validExistingIds.push(match.id);
+            }
+        }
 
         // Create new tags
         const createdTags: { id: string; name: string }[] = [];
-        if (parsed.newTagNames?.length) {
-            for (const name of parsed.newTagNames.slice(0, 3)) {
+        if (Array.isArray(parsed.newTagNames) && parsed.newTagNames.length) {
+            for (const rawName of parsed.newTagNames.slice(0, 3)) {
+                if (typeof rawName !== "string") continue;
+                const name = rawName.trim();
                 const slug = name
                     .toLowerCase()
                     .replace(/[^a-z0-9]+/g, "-")
                     .replace(/^-|-$/g, "");
+
+                if (!slug) continue;
 
                 // Skip if a tag with this slug already exists
                 const existing = existingTags.find((t) => t.slug === slug);
@@ -109,10 +125,14 @@ IMPORTANT: existingTagIds must contain actual IDs from the existing tags list. O
                     continue;
                 }
 
-                const tag = await prisma.tag.create({
-                    data: { name, slug },
+                const tag = await prisma.tag.upsert({
+                    where: { slug },
+                    update: {},
+                    create: { name, slug },
                 });
-                createdTags.push({ id: tag.id, name: tag.name });
+                if (!createdTags.some((t) => t.id === tag.id) && !validExistingIds.includes(tag.id)) {
+                    createdTags.push({ id: tag.id, name: tag.name });
+                }
             }
         }
 

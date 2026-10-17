@@ -256,6 +256,12 @@ export async function createJournalEntry(data: z.infer<typeof journalSchema>) {
     if (!validation.success) return { error: "Invalid data" };
 
     try {
+        const account = await prisma.tradingAccount.findFirst({
+            where: { id: validation.data.accountId, userId: user.id },
+            select: { id: true },
+        });
+        if (!account) return { error: "Invalid trading account" };
+
         const entry = await prisma.journalEntry.create({
             data: {
                 ...validation.data,
@@ -397,8 +403,23 @@ export async function bulkDeleteJournalEntries(ids: string[]) {
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
 
+    if (!Array.isArray(ids) || ids.length === 0) {
+        return { error: "No entries selected" };
+    }
+
     try {
-        await prisma.journalEntry.deleteMany({
+        await prisma.tradePlan.updateMany({
+            where: {
+                journalEntryId: { in: ids },
+                userId: user.id,
+            },
+            data: {
+                journalEntryId: null,
+                status: "PLANNED",
+            },
+        });
+
+        const deleted = await prisma.journalEntry.deleteMany({
             where: {
                 id: { in: ids },
                 userId: user.id,
@@ -406,7 +427,7 @@ export async function bulkDeleteJournalEntries(ids: string[]) {
         });
 
         revalidatePath("/dashboard/journal");
-        return { success: true, count: ids.length };
+        return { success: true, count: deleted.count };
     } catch (error) {
         return { error: "Failed to delete entries" };
     }
@@ -725,13 +746,20 @@ export async function getDayDetails(date: string, accountId?: string) {
 }
 
 export async function getTradeMarketContext(symbol: string, entryDate: string) {
+    const user = await getAuthUser();
+    if (!user) return { success: false, events: [] };
+
     try {
+        const parsedDate = new Date(entryDate);
+        if (isNaN(parsedDate.getTime())) {
+            return { success: false, events: [] };
+        }
         const { getMatchingEconomicEventsForTrade } = await import(
             "@/lib/services/economic-calendar"
         );
         const events = await getMatchingEconomicEventsForTrade(
             symbol,
-            new Date(entryDate),
+            parsedDate,
             4
         );
         return {

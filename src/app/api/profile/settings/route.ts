@@ -81,8 +81,13 @@ export async function PUT(request: Request) {
     // Persist email preferences inside User.settings.emailPreferences,
     // merging with the stored blob so unrelated settings keys survive.
     if (body.emailPreferences && typeof body.emailPreferences === "object") {
+        const dbUser = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: { settings: true },
+        });
+        const settings = (dbUser?.settings as Record<string, unknown>) || {};
         const incoming = body.emailPreferences as Record<string, unknown>;
-        const existing = getEmailPreferences(undefined);
+        const existing = getEmailPreferences(dbUser?.settings);
         const merged: Record<string, boolean> = { ...existing };
         for (const key of Object.keys(DEFAULT_EMAIL_PREFERENCES) as Array<
             keyof typeof DEFAULT_EMAIL_PREFERENCES
@@ -92,11 +97,6 @@ export async function PUT(request: Request) {
             }
         }
 
-        const dbUser = await prisma.user.findUnique({
-            where: { id: user.id },
-            select: { settings: true },
-        });
-        const settings = (dbUser?.settings as Record<string, unknown>) || {};
         await prisma.user.update({
             where: { id: user.id },
             data: {
@@ -165,45 +165,45 @@ export async function PUT(request: Request) {
         });
     }
 
-    const hasProfileFields = [
+    const profileBooleanKeys = [
         "isPublicProfile",
         "showTradeScore",
         "showBadges",
         "showPairStats",
         "showSessionStats",
-        "profileHeadline",
         "showMoney",
         "showBroker",
         "showAccountNumber",
         "showRealName",
         "showPercentMetrics",
-    ].some((k) => k in body);
+    ] as const;
+
+    const hasProfileFields =
+        profileBooleanKeys.some((k) => k in body) || "profileHeadline" in body;
 
     if (hasProfileFields) {
+        const partialUpdate: Record<string, unknown> = {};
+        for (const key of profileBooleanKeys) {
+            if (key in body) {
+                partialUpdate[key] = Boolean(body[key]);
+            }
+        }
+        if ("profileHeadline" in body) {
+            partialUpdate.profileHeadline = body.profileHeadline
+                ? String(body.profileHeadline).slice(0, 160)
+                : null;
+        }
+
         await prisma.profile.upsert({
             where: { userId: user.id },
-            update: {
-                isPublicProfile: Boolean(body.isPublicProfile),
-                showTradeScore: Boolean(body.showTradeScore),
-                showBadges: Boolean(body.showBadges),
-                showPairStats: Boolean(body.showPairStats),
-                showSessionStats: Boolean(body.showSessionStats),
-                profileHeadline: body.profileHeadline
-                    ? String(body.profileHeadline).slice(0, 160)
-                    : null,
-                showMoney: Boolean(body.showMoney),
-                showBroker: Boolean(body.showBroker),
-                showAccountNumber: Boolean(body.showAccountNumber),
-                showRealName: Boolean(body.showRealName),
-                showPercentMetrics: body.showPercentMetrics !== false,
-            },
+            update: partialUpdate,
             create: {
                 userId: user.id,
                 isPublicProfile: Boolean(body.isPublicProfile),
                 showTradeScore: Boolean(body.showTradeScore),
-                showBadges: Boolean(body.showBadges),
-                showPairStats: Boolean(body.showPairStats),
-                showSessionStats: Boolean(body.showSessionStats),
+                showBadges: "showBadges" in body ? Boolean(body.showBadges) : true,
+                showPairStats: "showPairStats" in body ? Boolean(body.showPairStats) : true,
+                showSessionStats: "showSessionStats" in body ? Boolean(body.showSessionStats) : true,
                 profileHeadline: body.profileHeadline
                     ? String(body.profileHeadline).slice(0, 160)
                     : null,

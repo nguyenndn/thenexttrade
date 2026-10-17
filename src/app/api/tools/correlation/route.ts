@@ -42,14 +42,32 @@ function pearsonCorrelation(x: number[], y: number[]): number {
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const pairsStr = searchParams.get("pairs") || "";
-    const period = parseInt(searchParams.get("period") || "30");
-    const pairs = pairsStr.split(",").filter(Boolean);
+    const rawPeriod = parseInt(searchParams.get("period") || "30", 10);
+    const period = Math.min(Math.max(isNaN(rawPeriod) ? 30 : rawPeriod, 1), 365);
+    const pairs = pairsStr.split(",").map((p) => p.trim()).filter(Boolean);
 
     if (pairs.length === 0) {
         return NextResponse.json(
-            { success: false, error: "No pairs" },
+            { success: false, error: "No pairs specified" },
             { status: 400 }
         );
+    }
+
+    if (pairs.length > 12) {
+        return NextResponse.json(
+            { success: false, error: "Maximum 12 pairs allowed per request" },
+            { status: 400 }
+        );
+    }
+
+    const PAIR_REGEX = /^[A-Za-z0-9/_=.-]{3,15}$/;
+    for (const pair of pairs) {
+        if (!PAIR_REGEX.test(pair)) {
+            return NextResponse.json(
+                { success: false, error: `Invalid symbol format: ${pair}` },
+                { status: 400 }
+            );
+        }
     }
 
     try {

@@ -36,23 +36,7 @@ export async function GET(
             );
         }
 
-        // 1. Check Permission (Section 8.2)
-        const approvedLicense = await prisma.eALicense.findFirst({
-            where: {
-                userId: user.id,
-                status: AccountStatus.APPROVED,
-                OR: [{ expiryDate: null }, { expiryDate: { gte: new Date() } }],
-            },
-        });
-
-        if (!approvedLicense) {
-            return NextResponse.json(
-                createErrorResponse(ErrorCode.NO_APPROVED_ACCOUNT),
-                { status: 403 }
-            );
-        }
-
-        // 2. Get Product and File Path
+        // 1. Get Product and File Path
         const product = await prisma.eAProduct.findUnique({
             where: { id: productId },
         });
@@ -64,74 +48,114 @@ export async function GET(
             );
         }
 
-        let filePath: string | null = null;
-        if (platform === "MT4") {
-            if (!product.fileMT4)
-                return NextResponse.json(
-                    createErrorResponse(ErrorCode.FILE_NOT_AVAILABLE),
-                    { status: 404 }
-                );
-            // Assuming fileMT4 stores the full path or URL. specs say "Supabase Storage URLs".
-            // If it's a full URL, we might skip signing depending on if bucket is public.
-            // Spec 8.1 says structure `ea-products/{productId}/mt4/{filename}.ex4`.
-            // If the DB stores the full signed URL or public URL, we might need to parse it.
-            // Assuming the DB stores the RELATIVE PATH or we construct it.
-            // Spec 21.3 says `fileMT4: url`. If it is a signed URL, it expires.
-            // Ideally we store the PATH in DB and sign it here.
-            // Let's assume we store the PATH in DB (e.g. `ea-products/...`).
-            // Or if we store URL, we can't resign it easily if it was signed.
-            // Let's assume for V2 we store the PATH or the Public URL.
-            // Spec 8.1 talks about RLS "secure, time-limited signed URLs".
-            // So we likely store the PATH in the DB.
-
-            // Let's try to extract path if it looks like a URL, or use it as path.
-            filePath = product.fileMT4;
-        } else {
-            if (!product.fileMT5)
-                return NextResponse.json(
-                    createErrorResponse(ErrorCode.FILE_NOT_AVAILABLE),
-                    { status: 404 }
-                );
-            filePath = product.fileMT5;
-        }
-
-        // Clean up path if it's a full URL (just in case)
-        // If it starts with http, we might need to extract the path after /ea-products/
-        // This depends on how upload was implemented (Task 3.11 - not implemented yet).
-        // I I'll assume it stores the relative path "productId/mt4/filename.ex4" or similar.
-
-        // 3. Generate Download URL via time-limited signed URL
-        const { data: signedUrlData, error: signError } = await supabase.storage
-            .from("ea-products")
-            .createSignedUrl(filePath, 60 * 5); // 5 minutes expiration
-
-        if (signError || !signedUrlData) {
-            console.error("Storage Sign Error:", signError, filePath);
+        const filePath =
+            platform === "MT4" ? product.fileMT4 : product.fileMT5;
+        if (!filePath) {
             return NextResponse.json(
                 createErrorResponse(ErrorCode.FILE_NOT_AVAILABLE),
-                { status: 500 }
+                { status: 404 }
             );
         }
-        const downloadUrl = signedUrlData.signedUrl;
 
-        // 4. Log Download
-        await prisma.eADownload.create({
-            data: {
-                userId: user.id,
-                productId: product.id,
-                platform:
-                    platform === "MT4" ? PlatformType.MT4 : PlatformType.MT5,
-                version: product.version,
-                ipAddress: request.headers.get("x-forwarded-for") || "unknown",
-                userAgent: request.headers.get("user-agent"),
-            },
-        });
+        // 2. Check Permission: Free product, Pro Entitlement (ACTIVE/GRACE), Approved EA License, or ADMIN
+        let hasAccess = false;
+        if (product.isFree) {
+            hasAccess = true;
+        } else {
+            const proEntitlement = await prisma.proEntitlement.findFirst({
+                where: {
+                    userId: user.id,
+                    status: { in: ["ACTIVE", "GRACE"] },
+                    OR: [
+                        { expiresAt: null },
+                        { expiresAt: { gte: new Date() } },
+                    ],
+                },
+            });
 
-        // 5. Update Product Stats (Increment count)
-        await prisma.eAProduct.update({
-            where: { id: product.id },
-            data: { totalDownloads: { increment: 1 } },
-        });
+            if (proEntitlement) {
+                hasAccess = true;
+            } else {
+                const approvedLicense = await prisma.eALicense.findFirst({
+                    where: {
+                        userId: user.id,
+                        status: AccountStatus.APPROVED,
+                        OR: [
+                            { expiryDate: null },
+                            { expiryDate: { gte: new Date() } },
+                        ],
+                    },
+                });
+                if (approvedLicense) {
+                    hasAccess = true;
+                }
+            }
+        }
+
+        if (!hasAccess) {
+            const profile = await prisma.profile.findUnique({
+                where: { userId: user.id },
+                select: { role: true },
+            });
+            if (profile?.role === "ADMIN") {
+                hasAccess = true;
+            }
+        }
+
+        if (!hasAccess) {
+            return NextResponse.json(
+                createErrorResponse(ErrorCode.NO_APPROVED_ACCOUNT),
+                { status: 403 }
+            );
+        }
+
+        // 3. Resolve Download URL
+        let downloadUrl: string;
+        let logDirectlyHere = true;
+
+        if (
+            filePath.startsWith("http://") ||
+            filePath.startsWith("https://")
+        ) {
+            downloadUrl = filePath;
+        } else {
+            const { data: signedUrlData, error: signError } =
+                await supabase.storage
+                    .from("ea-products")
+                    .createSignedUrl(filePath, 60 * 5); // 5 minutes expiration
+
+            if (!signError && signedUrlData?.signedUrl) {
+                downloadUrl = signedUrlData.signedUrl;
+            } else {
+                // Fall back to the protected R2 streaming endpoint (which logs the download on stream)
+                downloadUrl = `/api/trading-systems/${product.id}/download?platform=${platform}`;
+                logDirectlyHere = false;
+            }
+        }
+
+        if (logDirectlyHere) {
+            // 4. Log Download
+            await prisma.eADownload.create({
+                data: {
+                    userId: user.id,
+                    productId: product.id,
+                    platform:
+                        platform === "MT4"
+                            ? PlatformType.MT4
+                            : PlatformType.MT5,
+                    version: product.version,
+                    ipAddress:
+                        request.headers.get("x-forwarded-for") || "unknown",
+                    userAgent: request.headers.get("user-agent"),
+                },
+            });
+
+            // 5. Update Product Stats (Increment count)
+            await prisma.eAProduct.update({
+                where: { id: product.id },
+                data: { totalDownloads: { increment: 1 } },
+            });
+        }
 
         return NextResponse.json(createSuccessResponse({ url: downloadUrl }));
     } catch (error) {

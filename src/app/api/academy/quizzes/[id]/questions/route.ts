@@ -9,9 +9,14 @@ const optionSchema = z.object({
 });
 
 const questionSchema = z.object({
-    text: z.string().min(1, "Question text is required"),
+    text: z.string().trim().min(1, "Question text is required"),
     order: z.number().int().optional(),
-    options: z.array(optionSchema).min(2, "At least 2 options required"),
+    options: z
+        .array(optionSchema)
+        .min(2, "At least 2 options required")
+        .refine((opts) => opts.some((o) => o.isCorrect), {
+            message: "At least one option must be marked as correct",
+        }),
 });
 
 // GET: List all questions for a quiz

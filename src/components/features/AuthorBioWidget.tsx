@@ -6,10 +6,42 @@ interface AuthorBioWidgetProps {
         name: string | null;
         image: string | null;
         bio?: string | null;
+        socialLinks?: {
+            facebook?: string | null;
+            twitter?: string | null;
+            instagram?: string | null;
+            github?: string | null;
+        } | null;
     };
 }
 
 export default function AuthorBioWidget({ author }: AuthorBioWidgetProps) {
+    const activeSocials = [
+        {
+            name: "Facebook",
+            icon: Facebook,
+            href: author.socialLinks?.facebook,
+        },
+        {
+            name: "Twitter",
+            icon: Twitter,
+            href: author.socialLinks?.twitter,
+        },
+        {
+            name: "Instagram",
+            icon: Instagram,
+            href: author.socialLinks?.instagram,
+        },
+        {
+            name: "GitHub",
+            icon: Github,
+            href: author.socialLinks?.github,
+        },
+    ].filter(
+        (item): item is { name: string; icon: typeof Facebook; href: string } =>
+            Boolean(item.href && item.href !== "#")
+    );
+
     return (
         <div className="bg-white dark:bg-slate-900 rounded-none border border-dashboard p-8 text-center">
             <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-6">
@@ -39,36 +71,25 @@ export default function AuthorBioWidget({ author }: AuthorBioWidgetProps) {
                     "Contributing writer at TheNextTrade, sharing insights on forex trading strategies and market analysis."}
             </p>
 
-            <div className="flex justify-center gap-2">
-                <a
-                    href="#"
-                    aria-label="Facebook"
-                    className="p-2 text-gray-500 hover:text-cyan-500 transition-colors border border-dashboard dark:border-slate-700 rounded-full hover:border-cyan-500"
-                >
-                    <Facebook size={16} />
-                </a>
-                <a
-                    href="#"
-                    aria-label="Twitter"
-                    className="p-2 text-gray-500 hover:text-cyan-500 transition-colors border border-dashboard dark:border-slate-700 rounded-full hover:border-cyan-500"
-                >
-                    <Twitter size={16} />
-                </a>
-                <a
-                    href="#"
-                    aria-label="Instagram"
-                    className="p-2 text-gray-500 hover:text-cyan-500 transition-colors border border-dashboard dark:border-slate-700 rounded-full hover:border-cyan-500"
-                >
-                    <Instagram size={16} />
-                </a>
-                <a
-                    href="#"
-                    aria-label="GitHub"
-                    className="p-2 text-gray-500 hover:text-cyan-500 transition-colors border border-dashboard dark:border-slate-700 rounded-full hover:border-cyan-500"
-                >
-                    <Github size={16} />
-                </a>
-            </div>
+            {activeSocials.length > 0 && (
+                <div className="flex justify-center gap-2">
+                    {activeSocials.map((social) => {
+                        const Icon = social.icon;
+                        return (
+                            <a
+                                key={social.name}
+                                href={social.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={social.name}
+                                className="p-2 text-gray-500 hover:text-cyan-500 transition-colors border border-dashboard dark:border-slate-700 rounded-full hover:border-cyan-500"
+                            >
+                                <Icon size={16} />
+                            </a>
+                        );
+                    })}
+                </div>
+            )}
         </div>
     );
 }

@@ -8,7 +8,10 @@ import { z } from "zod";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { generateApiKey } from "@/lib/utils/api-key";
 import { linkIbLeadToVipRequest } from "@/actions/ib-lead";
-import { notifyAdminsOfVipRequest } from "@/lib/admin/admin-notification.server";
+import {
+    notifyAdminsOfNewAccount,
+    notifyAdminsOfVipRequest,
+} from "@/lib/admin/admin-notification.server";
 
 // ============================================================================
 // CREATE PARTNER PRO ACCOUNT — Unified flow for Account Hub
@@ -88,11 +91,10 @@ export async function createPartnerProAccount(
             };
         }
 
-        // Find or create TradingAccount
-        let tradingAccountId: string;
-        let apiKey: string | undefined;
-        let isNewAccount = false;
-
+        // Resolve the target account WITHOUT writing anything yet: the
+        // duplicate-request guards below must run before a TradingAccount is
+        // created/updated, otherwise a rejected request leaves an orphan
+        // account behind and the admin never sees a reviewable VipRequest.
         const existingAccount = await prisma.tradingAccount.findFirst({
             where: {
                 userId: user.id,
@@ -101,6 +103,56 @@ export async function createPartnerProAccount(
             },
             select: { id: true, server: true },
         });
+
+        // 1. Check if this specific account already has an ACTIVE/GRACE entitlement
+        const existingAccountPro = existingAccount
+            ? await prisma.proEntitlement.findFirst({
+                  where: {
+                      userId: user.id,
+                      tradingAccountId: existingAccount.id,
+                      status: { in: ["ACTIVE", "GRACE"] },
+                  },
+                  select: { status: true },
+              })
+            : null;
+
+        if (existingAccountPro) {
+            return {
+                error: `This account already has ${existingAccountPro.status.toLowerCase()} Pro access. No further upgrade request is needed.`,
+            };
+        }
+
+        // 2. Check for an unlinked approved ProEntitlement matching this broker + accountNumber
+        const unlinkedPro = await prisma.proEntitlement.findFirst({
+            where: {
+                userId: user.id,
+                status: { in: ["ACTIVE", "GRACE"] },
+                tradingAccountId: null,
+                accountNumber,
+                broker: { equals: broker, mode: "insensitive" },
+            },
+        });
+
+        // 3. Block duplicate pending VipRequest for the same broker & account number
+        const pendingVipRequest = await prisma.vipRequest.findFirst({
+            where: {
+                userId: user.id,
+                accountNumber,
+                broker: { equals: broker, mode: "insensitive" },
+                status: "PENDING",
+            },
+        });
+
+        if (pendingVipRequest) {
+            return {
+                error: "You already have a pending verification request for this account. Please wait for review.",
+            };
+        }
+
+        // 4. Find or create TradingAccount (writes happen only after all guards pass)
+        let tradingAccountId: string;
+        let apiKey: string | undefined;
+        let isNewAccount = false;
 
         if (existingAccount) {
             tradingAccountId = existingAccount.id;
@@ -131,37 +183,28 @@ export async function createPartnerProAccount(
             isNewAccount = true;
         }
 
-        // Block redundant requests when the account (or a user-level grant)
-        // already has an ACTIVE/GRACE entitlement.
-        const existingPro = await prisma.proEntitlement.findFirst({
-            where: {
+        // 5. If an unlinked approved Pro record exists for this exact account, auto-link it immediately!
+        if (unlinkedPro) {
+            await prisma.proEntitlement.update({
+                where: { id: unlinkedPro.id },
+                data: { tradingAccountId },
+            });
+            await notifyAdminsOfNewAccount({
+                accountId: tradingAccountId,
                 userId: user.id,
-                status: { in: ["ACTIVE", "GRACE"] },
-                OR: [
-                    { tradingAccountId },
-                    { tradingAccountId: null },
-                ],
-            },
-            select: { status: true },
-        });
-        if (existingPro) {
+                broker,
+                accountNumber,
+                server: server || null,
+                userEmail: email,
+                userName: fullName || null,
+            });
+            revalidatePath("/dashboard/accounts");
+            revalidatePath("/dashboard");
             return {
-                error: `This account already has ${existingPro.status.toLowerCase()} Pro access. No further upgrade request is needed.`,
-            };
-        }
-
-        // Block duplicate pending VipRequest for same tradingAccountId
-        const existingRequest = await prisma.vipRequest.findFirst({
-            where: {
-                userId: user.id,
-                tradingAccountId,
-                status: "PENDING",
-            },
-        });
-
-        if (existingRequest) {
-            return {
-                error: "You already have a pending verification request for this account. Please wait for review.",
+                success: true,
+                accountId: tradingAccountId,
+                apiKey: isNewAccount ? apiKey : undefined,
+                isNewAccount,
             };
         }
 
@@ -184,8 +227,9 @@ export async function createPartnerProAccount(
         // Link latest IbLead (fire-and-forget)
         linkIbLeadToVipRequest(broker).catch(() => {});
 
-        // Notify Admins (fire-and-forget)
-        notifyAdminsOfVipRequest({
+        // Notify Admins (awaited: a floating promise can be dropped once the
+        // serverless function freezes right after the response is sent)
+        await notifyAdminsOfVipRequest({
             vipRequestId: vipRequest.id,
             userId: user.id,
             broker,
@@ -193,7 +237,20 @@ export async function createPartnerProAccount(
             balance,
             userEmail: email,
             userName: fullName || null,
-        }).catch(() => {});
+        });
+
+        // Notify Admins about the connected account itself (new accounts only)
+        if (isNewAccount) {
+            await notifyAdminsOfNewAccount({
+                accountId: tradingAccountId,
+                userId: user.id,
+                broker,
+                accountNumber,
+                server: server || null,
+                userEmail: email,
+                userName: fullName || null,
+            });
+        }
 
         revalidatePath("/dashboard/accounts");
         revalidatePath("/dashboard/trading-systems");
@@ -224,6 +281,7 @@ function normalizeBroker(raw: string | null | undefined): string {
     if (upper.startsWith("VANTAGE")) return "VANTAGE";
     if (upper.startsWith("VTMARKET") || upper.startsWith("VT"))
         return "VTMARKETS";
+    if (upper.startsWith("ULTIMA")) return "ULTIMAMARKETS";
     return raw.trim(); // pass through unchanged — let schema validation catch unknown values
 }
 
@@ -309,16 +367,12 @@ export async function upgradeToPartnerPro(
             };
         }
 
-        // 4b. Block redundant requests when the account (or a user-level grant)
-        // already has an ACTIVE/GRACE entitlement.
+        // 4b. Block redundant requests when this account already has an ACTIVE/GRACE entitlement
         const existingPro = await prisma.proEntitlement.findFirst({
             where: {
                 userId: user.id,
                 status: { in: ["ACTIVE", "GRACE"] },
-                OR: [
-                    { tradingAccountId: account.id },
-                    { tradingAccountId: null },
-                ],
+                tradingAccountId: account.id,
             },
             select: { status: true },
         });
@@ -326,6 +380,41 @@ export async function upgradeToPartnerPro(
             return {
                 error: `This account already has ${existingPro.status.toLowerCase()} Pro access. No further upgrade request is needed.`,
             };
+        }
+
+        // Auto-link if an unlinked approved ProEntitlement matches this broker & accountNumber
+        if (account.accountNumber) {
+            const unlinkedPro = await prisma.proEntitlement.findFirst({
+                where: {
+                    userId: user.id,
+                    status: { in: ["ACTIVE", "GRACE"] },
+                    tradingAccountId: null,
+                    accountNumber: account.accountNumber,
+                    broker: { equals: normalizedBroker, mode: "insensitive" },
+                },
+            });
+            if (unlinkedPro) {
+                await prisma.proEntitlement.update({
+                    where: { id: unlinkedPro.id },
+                    data: { tradingAccountId: account.id },
+                });
+                await notifyAdminsOfNewAccount({
+                    accountId: account.id,
+                    userId: user.id,
+                    broker: normalizedBroker,
+                    accountNumber: account.accountNumber,
+                    server: parsed.data.server || null,
+                    userEmail: email,
+                    userName: fullName || null,
+                });
+                revalidatePath("/dashboard/accounts");
+                revalidatePath("/dashboard");
+                return {
+                    success: true,
+                    accountId: account.id,
+                    isNewAccount: false,
+                };
+            }
         }
 
         // 4c. Block duplicate pending VipRequest for this exact account
@@ -371,8 +460,9 @@ export async function upgradeToPartnerPro(
             () => {}
         );
 
-        // 7. Notify Admins (fire-and-forget)
-        notifyAdminsOfVipRequest({
+        // 7. Notify Admins (awaited: a floating promise can be dropped once
+        // the serverless function freezes after the response is sent)
+        await notifyAdminsOfVipRequest({
             vipRequestId: vipRequest.id,
             userId: user.id,
             broker: normalizedBroker || account.broker || "",
@@ -380,7 +470,7 @@ export async function upgradeToPartnerPro(
             balance: balanceStr,
             userEmail: email,
             userName: fullName || null,
-        }).catch(() => {});
+        });
 
         revalidatePath("/dashboard/accounts");
         revalidatePath("/dashboard/trading-systems");

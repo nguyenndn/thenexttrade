@@ -52,7 +52,7 @@ export function PnLCalendar({
     const fetchMonthData = async (month: Date) => {
         setIsLoading(true);
         const result = await getCalendarPerformance(
-            month.toISOString(),
+            format(month, "yyyy-MM-dd"),
             accountId
         );
         if (result.success && result.data) {

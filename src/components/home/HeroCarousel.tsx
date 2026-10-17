@@ -165,6 +165,7 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
                                             month: "short",
                                             day: "numeric",
                                             year: "numeric",
+                                            timeZone: "UTC",
                                         })}
                                     </span>
                                 </div>

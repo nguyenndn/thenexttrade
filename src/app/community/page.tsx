@@ -35,14 +35,28 @@ import {
 import fs from "fs";
 import path from "path";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
     title: "GoldScalperNinja Official Community — Free XAUUSD Signals & Gold Analysis",
     description:
         "Join 12,000+ traders in the official GoldScalperNinja Telegram community. Free daily XAUUSD analysis, Price Action education, and MT5 EAs powered by TheNextTrade.",
+    alternates: {
+        canonical: "/community",
+    },
     openGraph: {
         title: "GoldScalperNinja Telegram Community — Free Gold Signals & Analysis",
         description:
             "Official GoldScalperNinja Telegram channel. Free daily XAUUSD setups, market context & VIP signals. Join 12,000+ traders.",
+        url: "/community",
+        siteName: "TheNextTrade",
+        type: "website",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "GoldScalperNinja Official Community — Free XAUUSD Signals & Gold Analysis",
+        description:
+            "Join 12,000+ traders in the official GoldScalperNinja Telegram community. Free daily XAUUSD analysis, Price Action education, and MT5 EAs.",
     },
     keywords: [
         "GoldScalperNinja",

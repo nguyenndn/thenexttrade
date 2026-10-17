@@ -41,6 +41,7 @@ export default async function DashboardQuizPage({
                     include: {
                         level: { select: { title: true } },
                         lessons: {
+                            where: { status: "published" },
                             orderBy: { order: "asc" },
                             select: {
                                 id: true,

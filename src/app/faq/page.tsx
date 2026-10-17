@@ -17,6 +17,8 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
     title: "Frequently Asked Questions (FAQ) | TheNextTrade",
     description:

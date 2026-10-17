@@ -4,6 +4,7 @@
 // Privacy mirrors /share/[id]: real name is only shown when the owner enabled
 // showRealName, otherwise the public @username, else a neutral "Trader".
 
+import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 
 export interface CertificateShareData {
@@ -37,17 +38,77 @@ function resolveDisplayName(
     return "Trader";
 }
 
+const UUID_REGEX =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function isValidUuid(id: string): boolean {
+    return typeof id === "string" && UUID_REGEX.test(id);
+}
+
 /** Level certificate: fetches one Certificate row + the owner's privacy flags. */
-export async function getCertificateShareData(
-    certId: string
-): Promise<CertificateShareData | null> {
-    const certificate = await prisma.certificate.findUnique({
-        where: { id: certId },
-        include: {
-            level: {
-                select: { title: true, order: true, description: true },
+export const getCertificateShareData = cache(
+    async (certId: string): Promise<CertificateShareData | null> => {
+    try {
+        const certificate = await prisma.certificate.findUnique({
+            where: { id: certId },
+            include: {
+                level: {
+                    select: { title: true, order: true, description: true },
+                },
+                user: {
+                    select: {
+                        name: true,
+                        image: true,
+                        profile: {
+                            select: { username: true, showRealName: true },
+                        },
+                    },
+                },
             },
-            user: {
+        });
+
+        if (!certificate) return null;
+
+        return {
+            certificateId: certificate.id,
+            displayName: resolveDisplayName(
+                certificate.user.name,
+                certificate.user.profile
+            ),
+            username: certificate.user.profile?.username ?? null,
+            userImage: certificate.user.image,
+            levelTitle: certificate.level.title,
+            levelOrder: certificate.level.order,
+            levelDescription: certificate.level.description,
+            score: certificate.score,
+            earnedAt: certificate.earnedAt.toISOString(),
+        };
+    } catch (error) {
+        console.error("Error fetching certificate share data:", error);
+        return null;
+    }
+});
+
+/**
+ * Master certificate: derived (no DB row) from all level certificates of a
+ * user. Returns null when not every level is completed — same logic as the
+ * certificates dashboard page.
+ */
+export const getMasterCertificateShareData = cache(
+    async (userId: string): Promise<MasterCertificateShareData | null> => {
+    if (!isValidUuid(userId)) {
+        return null;
+    }
+
+    try {
+        const [levels, certificates, user] = await Promise.all([
+            prisma.level.findMany({ select: { id: true, order: true } }),
+            prisma.certificate.findMany({
+                where: { userId },
+                select: { score: true, earnedAt: true },
+            }),
+            prisma.user.findUnique({
+                where: { id: userId },
                 select: {
                     name: true,
                     image: true,
@@ -55,76 +116,35 @@ export async function getCertificateShareData(
                         select: { username: true, showRealName: true },
                     },
                 },
-            },
-        },
-    });
+            }),
+        ]);
 
-    if (!certificate) return null;
+        if (!user) return null;
 
-    return {
-        certificateId: certificate.id,
-        displayName: resolveDisplayName(
-            certificate.user.name,
-            certificate.user.profile
-        ),
-        username: certificate.user.profile?.username ?? null,
-        userImage: certificate.user.image,
-        levelTitle: certificate.level.title,
-        levelOrder: certificate.level.order,
-        levelDescription: certificate.level.description,
-        score: certificate.score,
-        earnedAt: certificate.earnedAt.toISOString(),
-    };
-}
+        const totalLevels = levels.length;
+        const earnedCount = certificates.length;
+        const allLevelsCompleted = totalLevels > 0 && earnedCount >= totalLevels;
+        if (!allLevelsCompleted) return null;
 
-/**
- * Master certificate: derived (no DB row) from all level certificates of a
- * user. Returns null when not every level is completed — same logic as the
- * certificates dashboard page.
- */
-export async function getMasterCertificateShareData(
-    userId: string
-): Promise<MasterCertificateShareData | null> {
-    const [levels, certificates, user] = await Promise.all([
-        prisma.level.findMany({ select: { id: true, order: true } }),
-        prisma.certificate.findMany({
-            where: { userId },
-            select: { score: true, earnedAt: true },
-        }),
-        prisma.user.findUnique({
-            where: { id: userId },
-            select: {
-                name: true,
-                image: true,
-                profile: {
-                    select: { username: true, showRealName: true },
-                },
-            },
-        }),
-    ]);
+        const avgScore = Math.round(
+            certificates.reduce((sum, c) => sum + c.score, 0) / certificates.length
+        );
+        const latestEarnedAt = certificates.reduce(
+            (latest, c) => (c.earnedAt > latest ? c.earnedAt : latest),
+            certificates[0].earnedAt
+        );
 
-    if (!user) return null;
-
-    const totalLevels = levels.length;
-    const earnedCount = certificates.length;
-    const allLevelsCompleted = totalLevels > 0 && earnedCount >= totalLevels;
-    if (!allLevelsCompleted) return null;
-
-    const avgScore = Math.round(
-        certificates.reduce((sum, c) => sum + c.score, 0) / certificates.length
-    );
-    const latestEarnedAt = certificates.reduce(
-        (latest, c) => (c.earnedAt > latest ? c.earnedAt : latest),
-        certificates[0].earnedAt
-    );
-
-    return {
-        userId,
-        displayName: resolveDisplayName(user.name, user.profile),
-        username: user.profile?.username ?? null,
-        userImage: user.image,
-        avgScore,
-        levelCount: totalLevels,
-        earnedAt: latestEarnedAt.toISOString(),
-    };
-}
+        return {
+            userId,
+            displayName: resolveDisplayName(user.name, user.profile),
+            username: user.profile?.username ?? null,
+            userImage: user.image,
+            avgScore,
+            levelCount: totalLevels,
+            earnedAt: latestEarnedAt.toISOString(),
+        };
+    } catch (error) {
+        console.error("Error fetching master certificate share data:", error);
+        return null;
+    }
+});
