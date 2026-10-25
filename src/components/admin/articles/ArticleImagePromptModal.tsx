@@ -22,9 +22,12 @@ function CopyButton({ text }: { text: string }) {
     };
 
     return (
-        <button
+        <Button
+            type="button"
+            variant="ghost"
+            size="icon"
             onClick={handleCopy}
-            className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            className="p-1.5 h-auto w-auto rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
             aria-label="Copy prompt"
         >
             {copied ? (
@@ -32,7 +35,7 @@ function CopyButton({ text }: { text: string }) {
             ) : (
                 <Copy size={14} />
             )}
-        </button>
+        </Button>
     );
 }
 

@@ -207,20 +207,22 @@ export function ReviewsSection() {
                     {/* Navigation */}
                     <div className="flex items-center justify-center gap-4 mt-8">
                         <Button
-                            variant="ghost"
+                            variant="outline"
                             size="icon"
                             onClick={prev}
-                            className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 border border-dashboard text-gray-600 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-700 dark:hover:text-white"
+                            aria-label="Previous reviews"
+                            className="w-11 h-11 rounded-full bg-gray-100 dark:bg-white/5 border border-dashboard text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-900 dark:hover:text-white shadow-sm"
                         >
                             <ChevronLeft size={18} />
                         </Button>
 
                         {/* Dots (Gold themed active capsule) */}
-                        <div className="flex gap-2">
+                        <div className="flex items-center gap-1">
                             {Array.from({ length: maxIndex + 1 }).map(
                                 (_, i) => (
                                     <button
                                         key={i}
+                                        type="button"
                                         onClick={() => setCurrentIndex(i)}
                                         aria-label={`Go to review ${i + 1}`}
                                         aria-current={
@@ -228,21 +230,26 @@ export function ReviewsSection() {
                                                 ? "true"
                                                 : undefined
                                         }
-                                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                                            i === currentIndex
-                                                ? "bg-gold w-6"
-                                                : "bg-gray-300 dark:bg-white/20 hover:bg-gray-400 dark:hover:bg-white/40"
-                                        }`}
-                                    />
+                                        className="p-2.5 flex items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/50"
+                                    >
+                                        <span
+                                            className={`h-2 rounded-full transition-all duration-300 block ${
+                                                i === currentIndex
+                                                    ? "bg-gold w-6"
+                                                    : "w-2 bg-gray-300 dark:bg-white/20 hover:bg-gray-400 dark:hover:bg-white/40"
+                                            }`}
+                                        />
+                                    </button>
                                 )
                             )}
                         </div>
 
                         <Button
-                            variant="ghost"
+                            variant="outline"
                             size="icon"
                             onClick={next}
-                            className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 border border-dashboard text-gray-600 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-700 dark:hover:text-white"
+                            aria-label="Next reviews"
+                            className="w-11 h-11 rounded-full bg-gray-100 dark:bg-white/5 border border-dashboard text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-900 dark:hover:text-white shadow-sm"
                         >
                             <ChevronRight size={18} />
                         </Button>

@@ -480,13 +480,16 @@ export default function SecurityDashboard() {
                                     className="bg-transparent text-sm focus:outline-none w-full text-gray-700 dark:text-white placeholder:text-gray-500"
                                 />
                                 {ipSearch && (
-                                    <button
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => setIpSearch("")}
-                                        className="text-gray-400 hover:text-gray-600"
+                                        className="h-auto w-auto p-0 text-gray-400 hover:text-gray-600 hover:bg-transparent"
                                         aria-label="Clear search"
                                     >
                                         <X size={14} />
-                                    </button>
+                                    </Button>
                                 )}
                             </div>
                             <DropdownMenu>

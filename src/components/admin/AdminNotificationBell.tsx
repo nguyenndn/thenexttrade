@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Bell, Crown, KeyRound, ExternalLink } from "lucide-react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
+import { toast } from "sonner";
 import {
     Popover,
     PopoverContent,
@@ -15,12 +16,7 @@ import { cn } from "@/lib/utils";
 
 type AdminNotification = {
     id: string;
-    type:
-        | "NEW_VIP_REQUEST"
-        | "NEW_LICENSE_REQUEST"
-        | "BROADCAST_SENT"
-        | "SYSTEM_ALERT"
-        | string;
+    type: string;
     title: string;
     message: string;
     link: string;
@@ -31,104 +27,110 @@ type AdminNotification = {
 type AdminStats = {
     pendingLicenses: number;
     pendingVipRequests: number;
-    unreadNotifications: number;
+    unreadCount: number;
 };
+
+const POLL_INTERVAL_MS = 20_000;
+const BELL_ITEM_LIMIT = 12;
 
 export function AdminNotificationBell() {
     const [notifications, setNotifications] = useState<AdminNotification[]>([]);
     const [stats, setStats] = useState<AdminStats>({
         pendingLicenses: 0,
         pendingVipRequests: 0,
-        unreadNotifications: 0,
+        unreadCount: 0,
     });
-    const [viewedPendingLicenses, setViewedPendingLicenses] = useState(0);
-    const [viewedPendingVip, setViewedPendingVip] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
     const router = useRouter();
-    const pathname = usePathname();
 
-    useEffect(() => {
-        // Load viewed counts from local storage
-        const storedLic = localStorage.getItem("adminViewedPendingCount");
-        if (storedLic) {
-            setViewedPendingLicenses(parseInt(storedLic, 10));
-        }
-        const storedVip = localStorage.getItem("adminViewedPendingVipCount");
-        if (storedVip) {
-            setViewedPendingVip(parseInt(storedVip, 10));
+    const fetchData = useCallback(async () => {
+        try {
+            const res = await fetch(
+                `/api/admin/notifications?limit=${BELL_ITEM_LIMIT}`
+            );
+            if (!res.ok) return;
+
+            const data = await res.json();
+            if (!data.success) return;
+
+            setNotifications(data.data.notifications || []);
+            setStats({
+                pendingLicenses: data.data.pendingLicenses || 0,
+                pendingVipRequests: data.data.pendingVipRequests || 0,
+                unreadCount: data.data.unreadCount || 0,
+            });
+        } catch {
+            console.error("Failed to fetch admin notifications");
         }
     }, []);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await fetch("/api/admin/notifications?limit=8");
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.success) {
-                        setNotifications(data.data.notifications || []);
-                        const pendingLic = data.data.pendingLicenses || 0;
-                        const pendingVip = data.data.pendingVipRequests || 0;
-                        setStats({
-                            pendingLicenses: pendingLic,
-                            pendingVipRequests: pendingVip,
-                            unreadNotifications: data.data.unreadCount || 0,
-                        });
+        void fetchData();
 
-                        // If already on pipeline page, sync VIP viewed count
-                        if (pathname?.includes("/admin/ib/pipeline")) {
-                            setViewedPendingVip(pendingVip);
-                            localStorage.setItem(
-                                "adminViewedPendingVipCount",
-                                pendingVip.toString()
-                            );
-                        }
-                        // If already on licenses pending page, sync license viewed count
-                        if (
-                            pathname ===
-                            "/admin/trading-systems/accounts/pending"
-                        ) {
-                            setViewedPendingLicenses(pendingLic);
-                            localStorage.setItem(
-                                "adminViewedPendingCount",
-                                pendingLic.toString()
-                            );
-                        }
-                    }
-                }
-            } catch {
-                console.error("Failed to fetch admin notifications");
+        const interval = setInterval(fetchData, POLL_INTERVAL_MS);
+        const handleFocus = () => {
+            void fetchData();
+        };
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === "visible") {
+                void fetchData();
             }
         };
-        fetchData();
 
-        // Poll every 45s for fresh admin notifications
-        const interval = setInterval(fetchData, 45000);
-        return () => clearInterval(interval);
-    }, [pathname]);
+        window.addEventListener("focus", handleFocus);
+        document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    const markVipAsViewed = () => {
-        const current = stats.pendingVipRequests;
-        setViewedPendingVip(current);
-        localStorage.setItem("adminViewedPendingVipCount", current.toString());
+        return () => {
+            clearInterval(interval);
+            window.removeEventListener("focus", handleFocus);
+            document.removeEventListener(
+                "visibilitychange",
+                handleVisibilityChange
+            );
+        };
+    }, [fetchData]);
+
+    const markNotificationAsRead = async (notificationId: string) => {
+        const previousNotifications = notifications;
+        const previousStats = stats;
+
+        setNotifications((current) =>
+            current.map((notification) =>
+                notification.id === notificationId
+                    ? { ...notification, isRead: true }
+                    : notification
+            )
+        );
+        setStats((current) => ({
+            ...current,
+            unreadCount: Math.max(0, current.unreadCount - 1),
+        }));
+
+        try {
+            const res = await fetch("/api/user/notifications", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: notificationId }),
+            });
+            const payload = await res.json().catch(() => null);
+
+            if (!res.ok || !payload?.success) {
+                throw new Error(
+                    payload?.error || "Failed to mark notification as read"
+                );
+            }
+        } catch (error) {
+            // Roll back the optimistic update so the badge never lies.
+            setNotifications(previousNotifications);
+            setStats(previousStats);
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Failed to mark notification as read"
+            );
+            void fetchData();
+        }
     };
-
-    const markLicensesAsViewed = () => {
-        const current = stats.pendingLicenses;
-        setViewedPendingLicenses(current);
-        localStorage.setItem("adminViewedPendingCount", current.toString());
-    };
-
-    // Calculate effective badge count (New pending items only)
-    const effectivePendingLicenses = Math.max(
-        0,
-        stats.pendingLicenses - viewedPendingLicenses
-    );
-    const effectivePendingVip = Math.max(
-        0,
-        stats.pendingVipRequests - viewedPendingVip
-    );
-    const badgeCount = effectivePendingLicenses + effectivePendingVip;
 
     return (
         <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -139,9 +141,11 @@ export function AdminNotificationBell() {
                     aria-label="Admin Notifications"
                 >
                     <Bell size={20} />
-                    {badgeCount > 0 && (
+                    {stats.unreadCount > 0 && (
                         <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 animate-pulse shadow-sm">
-                            {badgeCount > 99 ? "99+" : badgeCount}
+                            {stats.unreadCount > 99
+                                ? "99+"
+                                : stats.unreadCount}
                         </span>
                     )}
                 </Button>
@@ -153,23 +157,20 @@ export function AdminNotificationBell() {
             >
                 <div className="p-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
                     <h3 className="font-bold text-gray-900 dark:text-white text-sm">
-                        Admin Alerts
+                        Notifications
                     </h3>
-                    {(stats.pendingVipRequests > 0 ||
-                        stats.pendingLicenses > 0) && (
+                    {stats.unreadCount > 0 && (
                         <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[11px] font-bold px-2 py-0.5 rounded-lg">
-                            {stats.pendingVipRequests + stats.pendingLicenses}{" "}
-                            Action Required
+                            {stats.unreadCount} unread
                         </span>
                     )}
                 </div>
 
-                {/* Pending VIP Requests Alert (High Priority) */}
+                {/* Pending VIP Requests Alert (work queue, not an unread notification) */}
                 {stats.pendingVipRequests > 0 && (
                     <div
                         className="p-3.5 bg-amber-50/80 dark:bg-amber-500/10 border-b border-amber-200/50 dark:border-amber-500/20 cursor-pointer hover:bg-amber-100/80 dark:hover:bg-amber-500/20 transition-colors"
                         onClick={() => {
-                            markVipAsViewed();
                             setIsOpen(false);
                             router.push("/admin/ib/pipeline?status=PENDING");
                         }}
@@ -188,7 +189,8 @@ export function AdminNotificationBell() {
                                             : ""}
                                     </p>
                                     <p className="text-[11px] text-amber-700 dark:text-amber-400/80 truncate">
-                                        Review Partner Pro accounts in Pipeline
+                                        Review Partner Pro accounts in
+                                        Pipeline
                                     </p>
                                 </div>
                             </div>
@@ -200,12 +202,11 @@ export function AdminNotificationBell() {
                     </div>
                 )}
 
-                {/* Pending EA Licenses Alert */}
+                {/* Pending EA Licenses Alert (work queue, not an unread notification) */}
                 {stats.pendingLicenses > 0 && (
                     <div
                         className="p-3.5 bg-orange-50/80 dark:bg-orange-500/10 border-b border-orange-200/50 dark:border-orange-500/20 cursor-pointer hover:bg-orange-100/80 dark:hover:bg-orange-500/20 transition-colors"
                         onClick={() => {
-                            markLicensesAsViewed();
                             setIsOpen(false);
                             router.push(
                                 "/admin/trading-systems/accounts/pending"
@@ -219,8 +220,8 @@ export function AdminNotificationBell() {
                                 </div>
                                 <div className="min-w-0">
                                     <p className="font-bold text-orange-900 dark:text-orange-300 text-xs">
-                                        {stats.pendingLicenses} pending
-                                        license{stats.pendingLicenses > 1 ? "s" : ""}
+                                        {stats.pendingLicenses} pending license
+                                        {stats.pendingLicenses > 1 ? "s" : ""}
                                     </p>
                                     <p className="text-[11px] text-orange-700 dark:text-orange-400/80 truncate">
                                         Approve trading system EA licenses
@@ -235,7 +236,7 @@ export function AdminNotificationBell() {
                     </div>
                 )}
 
-                {/* Notifications List */}
+                {/* Persisted notifications list */}
                 <div className="max-h-[280px] overflow-y-auto divide-y divide-gray-100 dark:divide-white/5">
                     {notifications.length === 0 ? (
                         <div className="p-8 text-center text-gray-500 dark:text-gray-400">
@@ -244,7 +245,7 @@ export function AdminNotificationBell() {
                                 className="mx-auto mb-2 opacity-40"
                             />
                             <p className="text-xs font-medium">
-                                No new notifications
+                                No notifications yet
                             </p>
                         </div>
                     ) : (
@@ -257,10 +258,8 @@ export function AdminNotificationBell() {
                                         "bg-blue-50/40 dark:bg-blue-900/10"
                                 )}
                                 onClick={() => {
-                                    if (n.link?.includes("pipeline")) {
-                                        markVipAsViewed();
-                                    } else if (n.link?.includes("pending")) {
-                                        markLicensesAsViewed();
+                                    if (!n.isRead) {
+                                        void markNotificationAsRead(n.id);
                                     }
                                     setIsOpen(false);
                                     router.push(n.link || "/admin");
@@ -290,7 +289,6 @@ export function AdminNotificationBell() {
                         variant="ghost"
                         className="flex-1 text-xs h-8 font-bold text-gray-600 dark:text-gray-300 hover:text-amber-600"
                         onClick={() => {
-                            markVipAsViewed();
                             setIsOpen(false);
                             router.push("/admin/ib/pipeline?status=PENDING");
                         }}
@@ -305,7 +303,7 @@ export function AdminNotificationBell() {
                             router.push("/admin/notifications");
                         }}
                     >
-                        Broadcasts
+                        View all notifications
                     </Button>
                 </div>
             </PopoverContent>

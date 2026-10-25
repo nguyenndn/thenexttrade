@@ -20,13 +20,9 @@ import { UserAccountsList } from "./UserAccountsList";
 import { UserLicensesList } from "./UserLicensesList";
 import { getCountryName, normalizeCountryCode } from "@/lib/country-utils";
 import { UserVipProTab } from "./UserVipProTab";
-import { UserIbPerformanceTab } from "./UserIbPerformanceTab";
 import { UserOverviewTab } from "./UserOverviewTab";
 import { UserDetailTabsWrapper } from "./UserDetailTabsWrapper";
-import { UserJournalTab } from "./UserJournalTab";
-import { UserTradePlansTab } from "./UserTradePlansTab";
-import { UserRulesGoalsTab } from "./UserRulesGoalsTab";
-import { UserReportsNotesTab } from "./UserReportsNotesTab";
+import { UserCoachingAnalyticsTab } from "./UserCoachingAnalyticsTab";
 import {
     computeCapitalBreakdown,
     isDemoTradingAccount,
@@ -90,6 +86,7 @@ export default async function UserDetailPage({
                     server: true,
                     lastHeartbeat: true,
                     lastSync: true,
+                    eaVersion: true,
                     totalTrades: true,
                     syncSource: true,
                     ibAttribution: true,
@@ -100,9 +97,70 @@ export default async function UserDetailPage({
                 },
             },
             eaDownloads: {
-                take: 5,
+                take: 10,
                 orderBy: { createdAt: "desc" },
-                include: { product: { select: { name: true, type: true } } },
+                include: {
+                    product: {
+                        select: {
+                            id: true,
+                            name: true,
+                            slug: true,
+                            type: true,
+                            version: true,
+                        },
+                    },
+                },
+            },
+            eaProductAccesses: {
+                where: { status: "GRANTED" },
+                orderBy: { updatedAt: "desc" },
+                include: {
+                    product: {
+                        select: {
+                            id: true,
+                            name: true,
+                            slug: true,
+                            version: true,
+                            type: true,
+                        },
+                    },
+                    tradingAccount: {
+                        select: {
+                            id: true,
+                            accountNumber: true,
+                            broker: true,
+                            server: true,
+                            platform: true,
+                            accountType: true,
+                            balance: true,
+                            equity: true,
+                            currency: true,
+                            status: true,
+                            lastHeartbeat: true,
+                            lastSync: true,
+                        },
+                    },
+                },
+            },
+            eaProductUsageEvents: {
+                take: 30,
+                orderBy: { occurredAt: "desc" },
+                include: {
+                    product: {
+                        select: {
+                            id: true,
+                            name: true,
+                            slug: true,
+                            version: true,
+                        },
+                    },
+                    tradingAccount: {
+                        select: {
+                            id: true,
+                            accountNumber: true,
+                        },
+                    },
+                },
             },
             journalEntries: {
                 take: 100,
@@ -601,53 +659,51 @@ export default async function UserDetailPage({
                         overviewContent={
                             <UserOverviewTab user={serializedUser} />
                         }
-                        journalContent={
-                            <UserJournalTab
-                                entries={serializedUser.journalEntries || []}
-                                totalCount={user._count.journalEntries}
-                            />
-                        }
                         accountsContent={
-                            <UserAccountsList
-                                accounts={serializedUser.tradingAccounts || []}
-                                userId={user.id}
-                            />
-                        }
-                        tradePlansContent={
-                            <UserTradePlansTab
-                                plans={serializedUser.tradePlans || []}
-                                strategies={serializedUser.strategies || []}
-                            />
+                            <div className="space-y-8">
+                                <UserAccountsList
+                                    accounts={serializedUser.tradingAccounts || []}
+                                    userId={user.id}
+                                    eaProductAccesses={
+                                        serializedUser.eaProductAccesses || []
+                                    }
+                                    eaProductUsageEvents={
+                                        serializedUser.eaProductUsageEvents || []
+                                    }
+                                />
+                                <UserLicensesList
+                                    licenses={serializedUser.EALicenses || []}
+                                />
+                            </div>
                         }
                         vipProContent={<UserVipProTab user={serializedUser} />}
-                        licensesContent={
-                            <UserLicensesList
-                                licenses={serializedUser.EALicenses || []}
-                            />
-                        }
-                        ibPerformanceContent={
-                            <UserIbPerformanceTab user={serializedUser} />
-                        }
-                        rulesGoalsContent={
-                            <UserRulesGoalsTab
+                        coachingContent={
+                            <UserCoachingAnalyticsTab
+                                plans={serializedUser.tradePlans || []}
+                                strategies={serializedUser.strategies || []}
                                 rules={serializedUser.tradingRules || []}
                                 goals={serializedUser.traderGoals || []}
                                 ruleChecks={serializedUser.ruleChecks || []}
-                            />
-                        }
-                        reportsNotesContent={
-                            <UserReportsNotesTab
                                 reports={serializedUser.tradingReports || []}
                                 dayNotes={serializedUser.tradingDayNotes || []}
                                 insights={serializedUser.insightSnapshots || []}
                             />
                         }
                         counts={{
-                            journal: user._count.journalEntries,
                             accounts: user._count.tradingAccounts,
+                            unverifiedAccounts: (serializedUser.tradingAccounts || []).filter(
+                                (acc: { ibAttribution?: string | null }) =>
+                                    acc.ibAttribution !== "CONFIRMED"
+                            ).length,
                             plans: (user._count.tradePlans || 0) + (user._count.strategies || 0),
                             vip: user._count.vipRequests + (serializedUser.proEntitlements?.length || 0),
+                            pendingVip: (serializedUser.vipRequests || []).filter(
+                                (r: { status?: string }) => r.status === "PENDING"
+                            ).length,
                             licenses: user._count.EALicenses,
+                            pendingLicenses: (serializedUser.EALicenses || []).filter(
+                                (lic: { status?: string }) => lic.status === "PENDING"
+                            ).length,
                             ib: user._count.ibLeads,
                             rules: (user._count.tradingRules || 0) + (user._count.traderGoals || 0),
                             reports: (user._count.tradingReports || 0) + (user._count.tradingDayNotes || 0),

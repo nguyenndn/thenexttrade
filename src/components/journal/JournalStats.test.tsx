@@ -4,7 +4,7 @@ import React from "react";
 import JournalStats from "./JournalStats";
 
 describe("JournalStats Component", () => {
-    it("renders all 6 metric cards including Total Commission", () => {
+    it("renders all metric cards including Total Commission and Total Swap", () => {
         const mockStats = {
             totalTrades: 12,
             winRate: 33.3,
@@ -13,6 +13,7 @@ describe("JournalStats Component", () => {
             lossCount: 8,
             totalLots: 3.74,
             totalCommission: -45.5,
+            totalSwap: -12.3,
         };
 
         render(<JournalStats stats={mockStats} />);
@@ -22,6 +23,7 @@ describe("JournalStats Component", () => {
         expect(screen.getByText(/Win Rate/i)).toBeDefined();
         expect(screen.getByText(/Net Profit/i)).toBeDefined();
         expect(screen.getByText(/Total Commission/i)).toBeDefined();
+        expect(screen.getByText(/Total Swap/i)).toBeDefined();
         expect(screen.getByText(/W\/L Ratio/i)).toBeDefined();
         expect(screen.getByText(/Total Lots/i)).toBeDefined();
 
@@ -30,11 +32,12 @@ describe("JournalStats Component", () => {
         expect(screen.getByText("33.3%")).toBeDefined();
         expect(screen.getByText("-$646.42")).toBeDefined();
         expect(screen.getByText("-$45.50")).toBeDefined();
+        expect(screen.getByText("-$12.30")).toBeDefined();
         expect(screen.getByText("4 / 8")).toBeDefined();
         expect(screen.getByText("3.74")).toBeDefined();
     });
 
-    it("handles zero or undefined totalCommission gracefully", () => {
+    it("handles zero or undefined totalCommission and totalSwap gracefully", () => {
         const mockStats = {
             totalTrades: 5,
             winRate: 80.0,
@@ -47,6 +50,7 @@ describe("JournalStats Component", () => {
         render(<JournalStats stats={mockStats} />);
 
         expect(screen.getByText(/Total Commission/i)).toBeDefined();
-        expect(screen.getByText("$0.00")).toBeDefined();
+        expect(screen.getByText(/Total Swap/i)).toBeDefined();
+        expect(screen.getAllByText("$0.00").length).toBeGreaterThanOrEqual(2);
     });
 });

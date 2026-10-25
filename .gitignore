@@ -79,3 +79,13 @@ scratch/
 
 # cookies / auth tokens
 *cookie*
+
+# impeccable engine binary (launcher auto-downloads to ~/.impeccable/bin)
+.agents/skills/impeccable/scripts/bin/
+
+# MT5 Bridge build artifacts and isolated portable background workers
+mt5-bridge/bin/
+mt5-bridge/obj/
+mt5-bridge/.mt5-worker/
+mt5-bridge/.mt5-workers/
+

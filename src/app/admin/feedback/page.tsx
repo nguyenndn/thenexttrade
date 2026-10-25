@@ -430,10 +430,11 @@ export default function AdminFeedbackPage() {
                 {filtered.length > 0 && (
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pt-3 border-t border-gray-100 dark:border-white/5 gap-3">
                         <div className="flex items-center gap-3">
-                            <button
+                            <Button
                                 type="button"
+                                variant="ghost"
                                 onClick={toggleSelectAll}
-                                className="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:text-primary transition-colors cursor-pointer"
+                                className="h-auto p-0 flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-transparent transition-colors cursor-pointer"
                             >
                                 {isAllSelected ? (
                                     <CheckSquare
@@ -451,15 +452,16 @@ export default function AdminFeedbackPage() {
                                         ? `${selectedIds.size} of ${filtered.length} selected`
                                         : `Select All (${filtered.length})`}
                                 </span>
-                            </button>
+                            </Button>
                             {selectedIds.size > 0 && (
-                                <button
+                                <Button
                                     type="button"
+                                    variant="ghost"
                                     onClick={() => setSelectedIds(new Set())}
-                                    className="text-[11px] font-medium text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 underline cursor-pointer"
+                                    className="h-auto p-0 text-[11px] font-medium text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 underline cursor-pointer hover:bg-transparent"
                                 >
                                     Deselect all
-                                </button>
+                                </Button>
                             )}
                         </div>
 
@@ -561,12 +563,14 @@ export default function AdminFeedbackPage() {
                             >
                                 <div className="flex items-start justify-between gap-4">
                                     <div className="flex items-start gap-3 flex-1 min-w-0">
-                                        <button
+                                        <Button
                                             type="button"
+                                            variant="ghost"
+                                            size="icon"
                                             onClick={() =>
                                                 toggleSelectItem(fb.id)
                                             }
-                                            className="mt-0.5 text-gray-400 hover:text-primary transition-colors cursor-pointer shrink-0"
+                                            className="h-auto w-auto p-0 mt-0.5 text-gray-400 hover:text-primary hover:bg-transparent transition-colors cursor-pointer shrink-0"
                                             aria-label={
                                                 isSelected
                                                     ? "Deselect item"
@@ -581,7 +585,7 @@ export default function AdminFeedbackPage() {
                                             ) : (
                                                 <Square size={18} />
                                             )}
-                                        </button>
+                                        </Button>
 
                                         <div className="flex-1 min-w-0">
                                             {/* Type + User */}

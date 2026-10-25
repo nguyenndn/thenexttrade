@@ -129,7 +129,11 @@ export function DashboardCoachNudge({
             {/* Compact Top-Level One-Line Bar */}
             {!hideTrigger && (
                 <DialogTrigger asChild>
-                    <button className="w-full text-left relative overflow-hidden rounded-lg border border-amber-500/20 dark:border-gold/15 bg-gradient-to-r from-amber-500/[0.04] to-yellow-500/[0.02] dark:from-gold/[0.02] dark:to-transparent backdrop-blur-md px-4 py-2.5 flex items-center justify-between gap-4 shadow-sm hover:border-amber-500/35 hover:shadow-md transition-all duration-300 group cursor-pointer">
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        className="w-full text-left relative overflow-hidden rounded-lg border border-amber-500/20 dark:border-gold/15 bg-gradient-to-r from-amber-500/[0.04] to-yellow-500/[0.02] dark:from-gold/[0.02] dark:to-transparent backdrop-blur-md px-4 py-2.5 flex items-center justify-between gap-4 shadow-sm hover:border-amber-500/35 hover:shadow-md transition-all duration-300 group cursor-pointer h-auto font-normal"
+                    >
                         {/* Glowing highlight animation */}
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-500/[0.03] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
 
@@ -154,7 +158,7 @@ export function DashboardCoachNudge({
                                 className="transition-transform group-hover:translate-x-0.5"
                             />
                         </div>
-                    </button>
+                    </Button>
                 </DialogTrigger>
             )}
 

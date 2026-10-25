@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { logger } from "@/lib/logger";
+import { Button } from "@/components/ui/Button";
 
 export default function GlobalError({
     error,
@@ -25,12 +26,12 @@ export default function GlobalError({
                         <p className="text-[#9CA3AF]">
                             {error.message || "An unexpected error occurred"}
                         </p>
-                        <button
+                        <Button
                             onClick={reset}
-                            className="px-6 py-2 bg-[#3B82F6] hover:bg-[#2563EB] text-white font-medium rounded-lg transition-colors"
+                            variant="primary"
                         >
                             Try again
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </body>

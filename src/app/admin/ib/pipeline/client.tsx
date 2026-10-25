@@ -161,9 +161,8 @@ export function VipPipelineClient({
     };
 
     const handleReject = (requestId: string) => {
-        if (!rejectReason.trim()) return;
         startTransition(async () => {
-            const result = await rejectVipRequest(requestId, rejectReason);
+            const result = await rejectVipRequest(requestId, rejectReason.trim() || undefined);
             if (result.success) {
                 toast.success("Request rejected");
                 setRejectModalId(null);
@@ -647,16 +646,16 @@ export function VipPipelineClient({
                             <textarea
                                 value={rejectReason}
                                 onChange={(e) => setRejectReason(e.target.value)}
-                                placeholder="Reason for rejection (e.g. Account number does not match IB partner link)..."
+                                placeholder="Reason for rejection..."
                                 className="w-full h-24 p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                             />
                             <div className="flex justify-end gap-2 pt-2">
-                                <Button variant="ghost" onClick={() => setRejectModalId(null)}>
+                                <Button variant="outline" onClick={() => setRejectModalId(null)}>
                                     Cancel
                                 </Button>
                                 <Button
                                     variant="destructive"
-                                    disabled={!rejectReason.trim() || isPending}
+                                    disabled={isPending}
                                     onClick={() => handleReject(rejectModalId)}
                                 >
                                     Confirm Rejection

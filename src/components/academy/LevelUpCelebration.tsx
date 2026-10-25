@@ -1,8 +1,8 @@
 "use client";
-
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 import {
     Trophy,
     Star,
@@ -18,6 +18,7 @@ import {
     Brain,
     Rocket,
     X,
+    Sparkles,
 } from "lucide-react";
 
 interface LevelUpCelebrationProps {
@@ -644,8 +645,9 @@ export function LevelUpCelebration({
                                 </p>
 
                                 <div className="mt-4 max-w-sm mx-auto space-y-4">
-                                    <p className="text-sm text-gray-600 dark:text-gray-300 font-medium leading-relaxed">
-                                        🎉 {theme.message}
+                                    <p className="text-sm text-gray-600 dark:text-gray-300 font-medium leading-relaxed flex items-center justify-center gap-1.5">
+                                        <Sparkles size={16} className="text-gold shrink-0" />
+                                        <span>{theme.message}</span>
                                     </p>
 
                                     {/* Sleek gold-accented divider */}
@@ -665,13 +667,16 @@ export function LevelUpCelebration({
 
                                 {/* Dismiss button for replay mode */}
                                 {!autoDismiss && phase === "reveal" && (
-                                    <button
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
                                         onClick={handleDismiss}
-                                        className="mt-6 flex items-center gap-2 px-5 py-2.5 rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white text-xs font-bold transition-all border border-black/5 dark:border-white/10 hover:scale-105"
+                                        className="mt-6 flex items-center gap-2 px-5 py-2.5 rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white text-xs font-bold transition-all border border-black/5 dark:border-white/10 hover:scale-105 h-auto"
                                     >
                                         <X size={12} />
                                         Tap to close
-                                    </button>
+                                    </Button>
                                 )}
                             </div>
                         </motion.div>

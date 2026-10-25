@@ -1,6 +1,23 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { normalizeSyncApiKey } from "@/lib/utils/api-key";
+import {
+    normalizeAccountNumber,
+    normalizeBrokerKey,
+} from "@/lib/trading-account-identity";
+
+const ACCOUNT_SELECT = {
+    id: true,
+    userId: true,
+    accountNumber: true,
+    platform: true,
+    autoSync: true,
+    syncOpenTrades: true,
+    currency: true,
+    server: true,
+    accountType: true,
+    broker: true,
+} as const;
 
 // ─── Types ──────────────────────────────────────────────────────────────────────
 
@@ -30,6 +47,8 @@ type ResolveSyncAuthOptions = {
     request: NextRequest;
     /** Account number from body/query to resolve the specific account */
     accountNumber?: string | null;
+    /** Broker/company from the EA payload, used to disambiguate logins */
+    broker?: string | null;
     /** Account DB id from body/query to resolve the specific account */
     accountId?: string | null;
     /** Whether to allow legacy TradingAccount.apiKey fallback (default: true) */
@@ -59,6 +78,7 @@ export async function resolveSyncAuth(
     const {
         request,
         accountNumber,
+        broker,
         accountId,
         allowLegacyAccountKey = true,
         requireAccount = false,
@@ -100,25 +120,10 @@ export async function resolveSyncAuth(
         // User-level key found — resolve account if identity provided
         let account: SyncAuthResult["account"] | undefined;
 
-        if (accountId || accountNumber) {
-            const where = accountId
-                ? { id: accountId, userId: user.id }
-                : { userId: user.id, accountNumber: String(accountNumber) };
-
+        if (accountId) {
             const found = await prisma.tradingAccount.findFirst({
-                where,
-                select: {
-                    id: true,
-                    userId: true,
-                    accountNumber: true,
-                    platform: true,
-                    autoSync: true,
-                    syncOpenTrades: true,
-                    currency: true,
-                    server: true,
-                    accountType: true,
-                    broker: true,
-                },
+                where: { id: accountId, userId: user.id },
+                select: ACCOUNT_SELECT,
             });
 
             if (found) {
@@ -126,7 +131,75 @@ export async function resolveSyncAuth(
             } else if (requireAccount) {
                 return {
                     success: false,
-                    error: `No trading account found for ${accountId ? `id ${accountId}` : `account #${accountNumber}`}`,
+                    error: `No trading account found for id ${accountId}`,
+                    status: 404,
+                };
+            }
+        } else if (accountNumber) {
+            const cleanAccountNumber = normalizeAccountNumber(
+                String(accountNumber)
+            );
+            const cleanBroker = normalizeBrokerKey(broker);
+
+            // Fetch the login's candidates, then compare broker keys in JS.
+            // Broker columns are free-text display names (`IC Markets` vs
+            // `ICMARKETS`), so an exact DB equality would miss real matches.
+            const candidates = await prisma.tradingAccount.findMany({
+                where: {
+                    userId: user.id,
+                    accountNumber: cleanAccountNumber,
+                },
+                select: ACCOUNT_SELECT,
+                take: 25,
+            });
+
+            if (cleanBroker) {
+                const brokerMatches = candidates.filter(
+                    (candidate) =>
+                        normalizeBrokerKey(candidate.broker) === cleanBroker
+                );
+
+                if (brokerMatches.length === 1) {
+                    account = brokerMatches[0];
+                } else if (brokerMatches.length > 1) {
+                    return {
+                        success: false,
+                        error: `Account #${cleanAccountNumber} is ambiguous at broker ${cleanBroker}. Contact support to remove the duplicate.`,
+                        status: 409,
+                    };
+                } else {
+                    // A legacy row may predate broker capture. Adopt it only
+                    // when it is the sole candidate and its broker is empty.
+                    const unknownBrokerCandidates = candidates.filter(
+                        (candidate) => !normalizeBrokerKey(candidate.broker)
+                    );
+                    if (
+                        candidates.length === 1 &&
+                        unknownBrokerCandidates.length === 1
+                    ) {
+                        account = unknownBrokerCandidates[0];
+                    } else if (requireAccount) {
+                        return {
+                            success: false,
+                            error: `No trading account found for account #${cleanAccountNumber} at broker ${cleanBroker}`,
+                            status: 404,
+                        };
+                    }
+                }
+            } else if (candidates.length > 1) {
+                // Legacy clients do not send a broker. Only resolve when the
+                // login is unambiguous inside this user's account list.
+                return {
+                    success: false,
+                    error: `Account #${cleanAccountNumber} exists at multiple brokers. Include broker in the request.`,
+                    status: 400,
+                };
+            } else if (candidates.length === 1) {
+                account = candidates[0];
+            } else if (requireAccount) {
+                return {
+                    success: false,
+                    error: `No trading account found for account #${cleanAccountNumber}`,
                     status: 404,
                 };
             }

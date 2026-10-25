@@ -3,6 +3,8 @@
 import { useState, type ReactNode } from "react";
 import { Bot, Cpu } from "lucide-react";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 
 interface TradingSystemsTabNavProps {
     aiLabContent: ReactNode;
@@ -35,20 +37,30 @@ export function TradingSystemsTabNav({
     return (
         <div>
             {/* Tab Navigation */}
-            <div className="mb-8 flex items-center gap-1 rounded-lg border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#111318]/80 p-1.5 backdrop-blur-md w-full sm:w-fit overflow-x-auto scrollbar-hide shadow-sm">
+            <div
+                role="tablist"
+                aria-label="Trading Systems Navigation"
+                className="mb-8 flex items-center gap-1 rounded-lg border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#111318]/80 p-1.5 backdrop-blur-md w-full sm:w-fit overflow-x-auto scrollbar-hide shadow-sm"
+            >
                 {TABS.map((tab) => {
                     const Icon = tab.icon;
                     const isActive = activeTab === tab.id;
 
                     return (
-                        <button
+                        <Button
                             key={tab.id}
+                            variant="ghost"
+                            role="tab"
+                            id={`tab-${tab.id}`}
+                            aria-selected={isActive}
+                            aria-controls={`panel-${tab.id}`}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`relative shrink-0 flex items-center gap-2 rounded-lg px-5 py-2.5 text-xs font-black uppercase tracking-wider transition-colors z-10 ${
+                            className={cn(
+                                "relative shrink-0 flex items-center gap-2 rounded-lg px-5 py-2.5 text-xs font-black uppercase tracking-wider transition-colors z-10 h-auto border-0",
                                 isActive
-                                    ? "text-white"
+                                    ? "text-white hover:text-white"
                                     : "text-gray-600 dark:text-gray-400 hover:text-gold dark:hover:text-gold"
-                            }`}
+                            )}
                         >
                             {isActive && (
                                 <motion.div
@@ -74,15 +86,23 @@ export function TradingSystemsTabNav({
                                     {tab.badge}
                                 </span>
                             )}
-                        </button>
+                        </Button>
                     );
                 })}
             </div>
 
             {/* Tab Content */}
             <div>
-                {activeTab === "ai" && aiLabContent}
-                {activeTab === "ea" && eaContent}
+                {activeTab === "ai" && (
+                    <div role="tabpanel" id="panel-ai" aria-labelledby="tab-ai">
+                        {aiLabContent}
+                    </div>
+                )}
+                {activeTab === "ea" && (
+                    <div role="tabpanel" id="panel-ea" aria-labelledby="tab-ea">
+                        {eaContent}
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
+import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 
 export function PublicSearchModal() {
     const [open, setOpen] = useState(false);
@@ -99,12 +101,15 @@ export function PublicSearchModal() {
                                 placeholder="Search for anything..."
                                 className="flex-1 bg-transparent text-base text-gray-700 dark:text-white placeholder:text-gray-500 outline-none py-2"
                             />
-                            <button
+                            <Button
+                                type="button"
+                                variant="primary"
+                                size="sm"
                                 onClick={handleSearch}
                                 className="px-5 py-2 rounded-full bg-gold hover:bg-amber-600 text-white font-semibold text-sm transition-colors flex-shrink-0"
                             >
                                 Search
-                            </button>
+                            </Button>
                         </div>
                     </motion.div>
                 </>
@@ -126,15 +131,21 @@ export function PublicSearchTrigger({ className }: { className?: string }) {
     };
 
     return (
-        <button
+        <Button
+            type="button"
+            variant="outline"
+            size="sm"
             onClick={handleClick}
-            className={`flex items-center gap-2 px-3 py-2 rounded-full bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors text-sm cursor-pointer border border-transparent ${className || ""}`}
+            className={cn(
+                "flex items-center gap-2 px-3 py-2 rounded-full bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors text-sm border border-transparent h-auto",
+                className
+            )}
         >
             <Search size={16} />
             <span className="hidden sm:inline">Search...</span>
             <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 px-1.5 font-mono text-[10px] font-medium text-gray-600 dark:text-gray-300">
                 <span className="text-[10px] text-primary">Ctrl + K </span>
             </kbd>
-        </button>
+        </Button>
     );
 }

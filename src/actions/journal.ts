@@ -198,43 +198,51 @@ export async function getJournalEntries(
     const winRate = decided > 0 ? (winCount / decided) * 100 : 0;
 
     const stats = {
+        // B2: Never sum floating PnL of OPEN positions into realized P&L
         totalPnL:
-            (pnlResult._sum.pnl || 0) +
-            (pnlResult._sum.swap || 0) +
-            (pnlResult._sum.commission || 0),
+            status === "OPEN"
+                ? 0
+                : (pnlResult._sum.pnl || 0) +
+                  (pnlResult._sum.swap || 0) +
+                  (pnlResult._sum.commission || 0),
         totalTrades: status === "OPEN" ? total : statsTotal,
         winCount,
         lossCount,
         winRate,
         totalLots: pnlResult._sum.lotSize || 0,
         totalCommission: pnlResult._sum.commission || 0,
+        totalSwap: pnlResult._sum.swap || 0,
     };
 
-    const formattedEntries = entries.map((entry) => ({
-        ...entry,
-        grossProfit: entry.pnl,
-        pnl:
-            entry.pnl != null
-                ? Number(
-                      (
-                          entry.pnl +
-                          (entry.swap || 0) +
-                          (entry.commission || 0)
-                      ).toFixed(2)
-                  )
-                : null,
-        commission: entry.commission ?? 0,
-        swap: entry.swap ?? 0,
-        entryDate: entry.entryDate.toISOString(),
-        exitDate: entry.exitDate?.toISOString() || null,
-        createdAt: entry.createdAt.toISOString(),
-        updatedAt: entry.updatedAt.toISOString(),
-        syncedAt: entry.syncedAt?.toISOString() || null,
-        // Ensure mistakes is string[] (it's Json? in DB)
-        mistakes: Array.isArray(entry.mistakes)
-            ? (entry.mistakes as string[])
-            : [],
-    }));
+    const formattedEntries = entries.map((entry) => {
+        const isOpen = entry.status === "OPEN";
+        return {
+            ...entry,
+            grossProfit: isOpen ? 0 : entry.pnl,
+            pnl: isOpen
+                ? 0
+                : entry.pnl != null
+                  ? Number(
+                        (
+                            entry.pnl +
+                            (entry.swap || 0) +
+                            (entry.commission || 0)
+                        ).toFixed(2)
+                    )
+                  : null,
+            commission: entry.commission ?? 0,
+            swap: entry.swap ?? 0,
+            entryDate: entry.entryDate.toISOString(),
+            exitDate: entry.exitDate?.toISOString() || null,
+            createdAt: entry.createdAt.toISOString(),
+            updatedAt: entry.updatedAt.toISOString(),
+            syncedAt: entry.syncedAt?.toISOString() || null,
+            // Ensure mistakes is string[] (it's Json? in DB)
+            mistakes: Array.isArray(entry.mistakes)
+                ? (entry.mistakes as string[])
+                : [],
+        };
+    });
 
     return {
         entries: formattedEntries,
@@ -570,31 +578,35 @@ export async function exportJournalEntries(filters: {
         });
 
         // Format specifically for CSV
-        const csvData = entries.map((entry) => ({
-            id: entry.id,
-            account: entry.account?.name || "Unknown",
-            symbol: entry.symbol,
-            type: entry.type,
-            status: entry.status,
-            result: entry.result || "",
-            entryDate: entry.entryDate.toISOString(),
-            exitDate: entry.exitDate ? entry.exitDate.toISOString() : "",
-            entryPrice: entry.entryPrice,
-            exitPrice: entry.exitPrice || "",
-            stopLoss: entry.stopLoss || "",
-            takeProfit: entry.takeProfit || "",
-            lotSize: entry.lotSize,
-            grossProfit: entry.pnl || 0,
-            commission: entry.commission || 0,
-            swap: entry.swap || 0,
-            pnl:
-                (entry.pnl || 0) +
-                (entry.commission || 0) +
-                (entry.swap || 0),
-            strategy: entry.strategy || "",
-            tags: entry.tags.join("; "),
-            mistakes: ((entry.mistakes as string[]) || []).join("; "),
-        }));
+        const csvData = entries.map((entry) => {
+            const isOpen = entry.status === "OPEN";
+            return {
+                id: entry.id,
+                account: entry.account?.name || "Unknown",
+                symbol: entry.symbol,
+                type: entry.type,
+                status: entry.status,
+                result: entry.result || "",
+                entryDate: entry.entryDate.toISOString(),
+                exitDate: entry.exitDate ? entry.exitDate.toISOString() : "",
+                entryPrice: entry.entryPrice,
+                exitPrice: entry.exitPrice || "",
+                stopLoss: entry.stopLoss || "",
+                takeProfit: entry.takeProfit || "",
+                lotSize: entry.lotSize,
+                grossProfit: isOpen ? 0 : entry.pnl || 0,
+                commission: entry.commission || 0,
+                swap: entry.swap || 0,
+                pnl: isOpen
+                    ? 0
+                    : (entry.pnl || 0) +
+                      (entry.commission || 0) +
+                      (entry.swap || 0),
+                strategy: entry.strategy || "",
+                tags: entry.tags.join("; "),
+                mistakes: ((entry.mistakes as string[]) || []).join("; "),
+            };
+        });
 
         return { data: csvData };
     } catch (error) {
@@ -646,6 +658,8 @@ export async function getDayDetails(date: string, accountId?: string) {
         let bestTrade = -Infinity;
         let worstTrade = Infinity;
         let totalHoldTimeMs = 0;
+        let totalCommission = 0;
+        let totalSwap = 0;
         let totalCommissions = 0;
         let grossProfit = 0;
         let grossLoss = 0;
@@ -679,6 +693,8 @@ export async function getDayDetails(date: string, accountId?: string) {
                 totalHoldTimeMs += t.exitDate.getTime() - t.entryDate.getTime();
             }
 
+            totalCommission += t.commission || 0;
+            totalSwap += t.swap || 0;
             totalCommissions += (t.commission || 0) + (t.swap || 0);
 
             if (netPnl > 0) {
@@ -725,6 +741,8 @@ export async function getDayDetails(date: string, accountId?: string) {
                     ? Math.round(totalHoldTimeMs / trades.length / 60000)
                     : 0,
                 maxDrawdown,
+                totalCommission,
+                totalSwap,
                 commissionsAndFees: totalCommissions,
                 winrate: winCount + lossCount + breakEvenCount > 0
                     ? (winCount / (winCount + lossCount + breakEvenCount)) * 100

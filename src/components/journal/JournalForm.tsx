@@ -978,13 +978,14 @@ export default function JournalForm({
 
                                                     <div className="space-y-1.5">
                                                         {ruleItems.map((rule, idx) => (
-                                                            <button
+                                                            <Button
                                                                 type="button"
+                                                                variant="ghost"
                                                                 key={idx}
                                                                 onClick={() => toggleRuleCheck(idx)}
-                                                                className={`w-full text-left p-2 rounded-lg text-xs flex items-center gap-2.5 transition-all cursor-pointer border ${
+                                                                className={`w-full text-left p-2 rounded-lg text-xs flex items-center gap-2.5 transition-all cursor-pointer border h-auto font-normal justify-start ${
                                                                     playbookChecks[idx]
-                                                                        ? "bg-amber-500/10 border-amber-500/40 text-gray-800 dark:text-white"
+                                                                        ? "bg-amber-500/10 border-amber-500/40 text-gray-800 dark:text-white hover:bg-amber-500/15"
                                                                         : "bg-white/40 dark:bg-black/20 border-dashboard text-gray-600 dark:text-gray-400 hover:border-gray-300"
                                                                 }`}
                                                             >
@@ -996,7 +997,7 @@ export default function JournalForm({
                                                                 <span className={playbookChecks[idx] ? "font-medium line-through opacity-90" : "font-normal"}>
                                                                     {rule}
                                                                 </span>
-                                                            </button>
+                                                            </Button>
                                                         ))}
                                                     </div>
                                                 </div>
@@ -1010,14 +1011,15 @@ export default function JournalForm({
                                                     </span>
                                                     <div className="flex gap-2">
                                                         {selectedStrategy.referenceImages.map((url: string, idx: number) => (
-                                                            <button
+                                                            <Button
                                                                 type="button"
+                                                                variant="ghost"
                                                                 key={url}
                                                                 onClick={() => setFormLightboxIndex(idx)}
-                                                                className="w-16 h-11 rounded-lg overflow-hidden border border-dashboard hover:border-primary transition-colors cursor-pointer"
+                                                                className="w-16 h-11 p-0 min-h-0 rounded-lg overflow-hidden border border-dashboard hover:border-primary transition-colors cursor-pointer"
                                                             >
                                                                 <img src={url} alt={`Reference ${idx + 1}`} className="w-full h-full object-cover" />
-                                                            </button>
+                                                            </Button>
                                                         ))}
                                                     </div>
                                                 </div>
@@ -1042,18 +1044,19 @@ export default function JournalForm({
                                                         { grade: "B", label: "B Acceptable", color: "text-amber-600 bg-amber-500/10 border-amber-500/30" },
                                                         { grade: "C", label: "C Impulsive", color: "text-red-600 bg-red-500/10 border-red-500/30" },
                                                     ].map((g) => (
-                                                        <button
+                                                        <Button
                                                             key={g.grade}
                                                             type="button"
+                                                            variant="ghost"
                                                             onClick={() => setFormData((p) => ({ ...p, playbookGrade: p.playbookGrade === g.grade ? "" : g.grade }))}
-                                                            className={`py-1.5 px-2 rounded-lg text-xs font-bold border transition-all text-center ${
+                                                            className={`py-1.5 px-2 rounded-lg text-xs font-bold border transition-all text-center h-auto ${
                                                                 formData.playbookGrade === g.grade
                                                                     ? `${g.color} ring-2 ring-primary/40`
                                                                     : "bg-white/60 dark:bg-white/5 border-dashboard text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                                                             }`}
                                                         >
                                                             {g.label}
-                                                        </button>
+                                                        </Button>
                                                     ))}
                                                 </div>
                                             </div>
@@ -1117,7 +1120,7 @@ export default function JournalForm({
                                                 addCustomTag();
                                             }
                                         }}
-                                        placeholder="Add custom tag (e.g. NFP, Test)..."
+                                        placeholder="Add custom tag..."
                                         className="flex-1 h-10 px-3 text-xs sm:text-sm rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none"
                                     />
                                     <Button
@@ -1228,10 +1231,11 @@ export default function JournalForm({
                                                                     "BROKEN",
                                                                     "SKIPPED",
                                                                 ] as const
-                                                             ).map((status) => (
-                                                                <button
+                                                            ).map((status) => (
+                                                                <Button
                                                                     key={status}
                                                                     type="button"
+                                                                    variant="ghost"
                                                                     onClick={() =>
                                                                         setRuleChecks(
                                                                             (
@@ -1246,21 +1250,21 @@ export default function JournalForm({
                                                                             })
                                                                         )
                                                                     }
-                                                                    className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase border transition-all ${
+                                                                    className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase border transition-all h-auto ${
                                                                         currentCheck.status ===
                                                                         status
                                                                             ? status ===
                                                                               "FOLLOWED"
-                                                                                ? "bg-emerald-500 border-emerald-500 text-white shadow-sm shadow-emerald-500/10"
+                                                                                ? "bg-emerald-500 border-emerald-500 text-white shadow-sm shadow-emerald-500/10 hover:bg-emerald-500 hover:text-white"
                                                                                 : status ===
                                                                                     "BROKEN"
-                                                                                  ? "bg-red-500 border-red-500 text-white shadow-sm shadow-red-500/10"
-                                                                                  : "bg-gray-500 border-gray-500 text-white shadow-sm shadow-gray-500/10"
+                                                                                  ? "bg-red-500 border-red-500 text-white shadow-sm shadow-red-500/10 hover:bg-red-500 hover:text-white"
+                                                                                  : "bg-gray-500 border-gray-500 text-white shadow-sm shadow-gray-500/10 hover:bg-gray-500 hover:text-white"
                                                                             : "bg-white dark:bg-black/20 text-gray-500 border-dashboard hover:border-gray-400"
                                                                     }`}
                                                                 >
                                                                     {status}
-                                                                </button>
+                                                                </Button>
                                                             ))}
                                                         </div>
                                                     </div>

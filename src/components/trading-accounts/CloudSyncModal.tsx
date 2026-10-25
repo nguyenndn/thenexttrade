@@ -519,10 +519,12 @@ export function CloudSyncModal({
                                         className="pr-10 rounded-lg h-9 text-xs"
                                         autoFocus={isEditingPassword}
                                     />
-                                    <button
+                                    <Button
                                         type="button"
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                                        className="h-7 w-7 absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
                                         aria-label={showPassword ? "Hide password" : "Show password"}
                                     >
                                         {showPassword ? (
@@ -530,7 +532,7 @@ export function CloudSyncModal({
                                         ) : (
                                             <Eye className="h-4 w-4" />
                                         )}
-                                    </button>
+                                    </Button>
                                 </div>
 
                                 <div className="rounded-lg border border-gray-200 bg-gray-50/50 p-2 text-[11px] leading-relaxed text-gray-600 dark:border-white/10 dark:bg-white/[0.02] dark:text-gray-400">
@@ -608,16 +610,18 @@ export function CloudSyncModal({
                     <span className="text-[11px] text-gray-500 dark:text-gray-400">
                         Sync failing or need assistance?
                     </span>
-                    <button
+                    <Button
                         type="button"
+                        variant="ghost"
+                        size="sm"
                         onClick={() => {
                             onClose();
                             onRequestSupport?.(account.id);
                         }}
-                        className="text-[11px] font-bold text-amber-600 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300 underline underline-offset-2 transition-colors cursor-pointer"
+                        className="h-auto p-0 text-[11px] font-bold text-amber-600 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300 underline underline-offset-2 transition-colors cursor-pointer hover:bg-transparent"
                     >
                         Request Manual Sync Support
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Primary Action Buttons */}

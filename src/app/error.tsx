@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { AlertTriangle, Home, RotateCcw } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 export default function Error({
     error,
@@ -46,13 +47,14 @@ export default function Error({
 
                 {/* Actions */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                    <button
+                    <Button
                         onClick={reset}
-                        className="flex items-center gap-2 px-6 py-2.5 bg-gold hover:bg-amber-600 text-white font-bold rounded-full transition-all hover:scale-105 shadow-md shadow-amber-500/20"
+                        variant="primary"
+                        className="rounded-full shadow-md shadow-amber-500/20"
                     >
                         <RotateCcw size={16} />
                         Try Again
-                    </button>
+                    </Button>
                     <Link
                         href="/"
                         className="flex items-center gap-2 px-6 py-2.5 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 font-bold rounded-full transition-colors"

@@ -227,6 +227,20 @@ export async function createPartnerProAccount(
         // Link latest IbLead (fire-and-forget)
         linkIbLeadToVipRequest(broker).catch(() => {});
 
+        // Notify Admins about the connected account itself (new accounts only)
+        if (isNewAccount) {
+            await notifyAdminsOfNewAccount({
+                accountId: tradingAccountId,
+                userId: user.id,
+                broker,
+                accountNumber,
+                server: server || null,
+                userEmail: email,
+                userName: fullName || null,
+                link: `/admin/users/${user.id}?tab=vip-broker`,
+            });
+        }
+
         // Notify Admins (awaited: a floating promise can be dropped once the
         // serverless function freezes right after the response is sent)
         await notifyAdminsOfVipRequest({
@@ -238,19 +252,6 @@ export async function createPartnerProAccount(
             userEmail: email,
             userName: fullName || null,
         });
-
-        // Notify Admins about the connected account itself (new accounts only)
-        if (isNewAccount) {
-            await notifyAdminsOfNewAccount({
-                accountId: tradingAccountId,
-                userId: user.id,
-                broker,
-                accountNumber,
-                server: server || null,
-                userEmail: email,
-                userName: fullName || null,
-            });
-        }
 
         revalidatePath("/dashboard/accounts");
         revalidatePath("/dashboard/trading-systems");

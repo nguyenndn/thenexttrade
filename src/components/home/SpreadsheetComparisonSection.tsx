@@ -14,7 +14,8 @@ import {
     Sparkles,
     type LucideIcon,
 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
 
 interface SpreadsheetComparisonSectionProps {
@@ -204,17 +205,20 @@ export function SpreadsheetComparisonSection({
                                     ? "/dashboard"
                                     : "/auth/signup?source=feature_comparison"
                             }
-                            className="w-full sm:w-auto inline-block"
+                            className={cn(
+                                buttonVariants({ variant: "gold", size: "smd" }),
+                                "w-full sm:w-auto px-5 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all flex items-center justify-center gap-2 animate-btn-shine group"
+                            )}
                         >
-                            <Button size="smd" className="w-full sm:w-auto px-5 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all flex items-center justify-center gap-2 animate-btn-shine">
+                            <span>
                                 {isLoggedIn
                                     ? "Open My Journal"
-                                    : "Start Free Journal"}{" "}
-                                <ArrowRight
-                                    size={14}
-                                    className="text-yellow-200"
-                                />
-                            </Button>
+                                    : "Start Free Journal"}
+                            </span>
+                            <ArrowRight
+                                size={14}
+                                className="group-hover:translate-x-1 transition-transform duration-300"
+                            />
                         </Link>
                     </div>
                 </div>

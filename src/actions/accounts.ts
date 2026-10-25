@@ -10,6 +10,7 @@ import { getUserProAccess } from "@/lib/pro-access";
 import { POPULAR_MT5_SERVERS } from "@/lib/constants/mt5-servers";
 import { detectBroker } from "@/lib/ea/broker-detection";
 import { notifyAdminsOfNewAccount } from "@/lib/admin/admin-notification.server";
+import { filterAccountsByBroker } from "@/lib/trading-account-identity";
 
 const accountSchema = z.object({
     name: z.string().min(1).max(50),
@@ -450,13 +451,85 @@ export async function deleteTradingAccount(id: string) {
     if (!user) return { error: "Unauthorized" };
 
     try {
-        await prisma.tradingAccount.delete({
+        const target = await prisma.tradingAccount.findUnique({
             where: { id, userId: user.id },
+            select: { id: true, accountNumber: true, broker: true },
         });
 
+        if (!target) {
+            return { error: "Account not found" };
+        }
+
+        // Only remove the license rows that belong to this account's broker.
+        const licenseCandidates = target.accountNumber
+            ? await prisma.eALicense.findMany({
+                  where: {
+                      userId: user.id,
+                      accountNumber: target.accountNumber.trim(),
+                  },
+                  select: { id: true, broker: true },
+              })
+            : [];
+        const scopedLicenseIds = filterAccountsByBroker(
+            licenseCandidates,
+            target.broker
+        ).map((license) => license.id);
+
+        await prisma.$transaction([
+            prisma.profile.updateMany({
+                where: { userId: user.id, mainTradingAccountId: id },
+                data: { mainTradingAccountId: null },
+            }),
+            prisma.proEntitlement.deleteMany({
+                where: { tradingAccountId: id },
+            }),
+            prisma.vipRequest.updateMany({
+                where: { tradingAccountId: id },
+                data: { tradingAccountId: null },
+            }),
+            prisma.ibLead.updateMany({
+                where: { tradingAccountId: id },
+                data: { tradingAccountId: null },
+            }),
+            prisma.importHistory.updateMany({
+                where: { accountId: id },
+                data: { accountId: null },
+            }),
+            prisma.journalEntry.updateMany({
+                where: { accountId: id },
+                data: { accountId: null },
+            }),
+            ...(scopedLicenseIds.length > 0
+                ? [
+                      prisma.eALicense.deleteMany({
+                          where: { id: { in: scopedLicenseIds } },
+                      }),
+                  ]
+                : []),
+            prisma.tradingAccount.delete({
+                where: { id, userId: user.id },
+            }),
+        ]);
+
+        if (target.accountNumber) {
+            const { syncLicensesToGitHubBackup } = await import(
+                "@/lib/ea/github-license-sync.server"
+            );
+            await syncLicensesToGitHubBackup({
+                removedAccountNumber: target.accountNumber.trim(),
+                ...(target.broker
+                    ? { removedBroker: target.broker }
+                    : {}),
+            }).catch(() => {});
+        }
+
         revalidatePath("/dashboard/accounts");
+        revalidatePath("/dashboard/trading-systems");
+        revalidatePath("/admin/trading-systems");
+        revalidatePath("/admin/trading-systems/accounts");
         return { success: true };
     } catch (error) {
+        console.error("deleteTradingAccount error:", error);
         return { error: "Failed to delete account" };
     }
 }

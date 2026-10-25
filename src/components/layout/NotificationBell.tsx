@@ -137,31 +137,38 @@ export function NotificationBell() {
                         )}
                     </div>
                     {unreadCount > 0 && (
-                        <button
-                            className="text-xs font-semibold flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-gray-500 hover:text-amber-600 dark:text-gray-400 dark:hover:text-amber-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="text-xs font-semibold h-7 px-2.5 text-gray-500 hover:text-amber-600 dark:text-gray-400 dark:hover:text-amber-400 gap-1.5"
                             onClick={() => markAsRead()}
                         >
                             <Check size={13} className="text-amber-500" /> Mark all read
-                        </button>
+                        </Button>
                     )}
                 </div>
 
                 {/* Tabs — Segmented Control */}
                 <div className="p-2 border-b border-dashboard bg-gray-50/50 dark:bg-white/[0.01]">
-                    <div className="grid grid-cols-4 gap-1 p-1 bg-gray-100 dark:bg-white/5 rounded-lg">
+                    <div role="tablist" aria-label="Notification Categories" className="grid grid-cols-4 gap-1 p-1 bg-gray-100 dark:bg-white/5 rounded-lg">
                         {(Object.keys(TAB_CONFIG) as TabType[]).map((tabKey) => {
                             const tab = TAB_CONFIG[tabKey];
                             const isActive = activeTab === tabKey;
                             const count = unreadCounts[tabKey];
 
                             return (
-                                <button
+                                <Button
                                     key={tabKey}
+                                    type="button"
+                                    variant="ghost"
+                                    role="tab"
+                                    aria-selected={isActive}
                                     onClick={() => setActiveTab(tabKey)}
                                     className={cn(
-                                        "py-1.5 px-2 flex items-center justify-center gap-1.5 text-xs font-semibold rounded-lg transition-all min-w-0 select-none",
+                                        "h-auto border-0 py-1.5 px-2 flex items-center justify-center gap-1.5 text-xs font-semibold rounded-lg transition-all min-w-0 select-none",
                                         isActive
-                                            ? "bg-white dark:bg-[#151925] text-gray-900 dark:text-white shadow-sm font-bold"
+                                            ? "bg-white dark:bg-[#151925] text-gray-900 dark:text-white shadow-sm font-bold hover:bg-white hover:text-gray-900 dark:hover:bg-[#151925] dark:hover:text-white"
                                             : "text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-white/40 dark:hover:bg-white/5"
                                     )}
                                 >
@@ -183,7 +190,7 @@ export function NotificationBell() {
                                             {count > 99 ? "99+" : count}
                                         </span>
                                     )}
-                                </button>
+                                </Button>
                             );
                         })}
                     </div>

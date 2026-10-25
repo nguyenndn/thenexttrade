@@ -165,9 +165,11 @@ export function RiskRewardCalc() {
                                     inputs.entryPrice - inputs.stopLoss
                                 );
                                 return (
-                                    <button
+                                    <Button
                                         key={ratio}
                                         type="button"
+                                        variant="outline"
+                                        size="sm"
                                         onClick={() => {
                                             const tp =
                                                 inputs.direction === "LONG"
@@ -182,10 +184,10 @@ export function RiskRewardCalc() {
                                                 ),
                                             });
                                         }}
-                                        className="flex-1 py-2 rounded-lg text-xs font-bold bg-white dark:bg-white/5 border border-dashboard text-gray-600 dark:text-gray-500 hover:border-primary/50 hover:text-primary transition-all"
+                                        className="flex-1 py-2 text-xs font-bold bg-white dark:bg-white/5 border-dashboard text-gray-600 dark:text-gray-500 hover:border-primary/50 hover:text-primary transition-all h-auto"
                                     >
                                         1:{ratio}
-                                    </button>
+                                    </Button>
                                 );
                             })}
                         </div>

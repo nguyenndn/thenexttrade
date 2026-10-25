@@ -278,6 +278,8 @@ async function AnalyticsDataWrapper({
             winRate: stats.winRate ?? 0,
             profitFactor: stats.profitFactor,
             totalPnL: stats.totalPnL,
+            totalCommission: stats.commission,
+            totalSwap: stats.swap,
             avgRRR:
                 stats.lossCount > 0 && stats.avgLoss > 0
                     ? stats.avgWin / stats.avgLoss

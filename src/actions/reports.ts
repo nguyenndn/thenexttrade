@@ -124,15 +124,8 @@ export async function generateMyWeeklyReview(accountId?: string) {
     const { generateWeeklyReportForUser } =
         await import("@/lib/services/report-generator.service");
 
-    // Get account timezone if provided
-    let timezone = "Etc/UTC";
-    if (accountId) {
-        const account = await prisma.tradingAccount.findFirst({
-            where: { id: accountId, userId: user.id },
-            select: { timezone: true },
-        });
-        if (account?.timezone) timezone = account.timezone;
-    }
+    // B1: Report periods are grouped in UTC (matching stored UTC trade timestamps)
+    const timezone = "Etc/UTC";
 
     try {
         const result = await generateWeeklyReportForUser(
@@ -240,14 +233,7 @@ export async function generateMyMonthlyReview(accountId?: string) {
     const { generateMonthlyReportForUser } =
         await import("@/lib/services/report-generator.service");
 
-    let timezone = "Etc/UTC";
-    if (accountId) {
-        const account = await prisma.tradingAccount.findFirst({
-            where: { id: accountId, userId: user.id },
-            select: { timezone: true },
-        });
-        if (account?.timezone) timezone = account.timezone;
-    }
+    const timezone = "Etc/UTC";
 
     try {
         const result = await generateMonthlyReportForUser(

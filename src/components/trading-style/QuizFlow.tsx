@@ -199,17 +199,21 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                         {question.text}
                     </h3>
 
-                    <div className="mt-5 space-y-2.5">
+                    <div role="radiogroup" aria-label={question.text} className="mt-5 space-y-2.5">
                         {question.options.map((option) => {
                             const isSelected = currentSelected === option.id;
                             return (
-                                <button
+                                <Button
                                     key={option.id}
+                                    type="button"
+                                    variant="ghost"
+                                    role="radio"
+                                    aria-checked={isSelected}
                                     onClick={() => handleSelect(option.id)}
                                     className={cn(
-                                        "group flex w-full items-center justify-between gap-3 rounded-lg border px-4 py-3 text-left transition-all",
+                                        "group flex w-full items-center justify-between gap-3 rounded-lg border px-4 py-3 text-left transition-all h-auto font-normal",
                                         isSelected
-                                            ? "border-amber-500/60 bg-amber-500/[0.08] shadow-sm"
+                                            ? "border-amber-500/60 bg-amber-500/[0.08] shadow-sm hover:bg-amber-500/[0.08]"
                                             : "border-gray-200 bg-white/60 hover:border-amber-500/40 hover:bg-amber-500/[0.03] dark:border-white/10 dark:bg-white/[0.02] backdrop-blur-sm",
                                     )}
                                 >
@@ -234,7 +238,7 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                                             <span className="h-1.5 w-1.5 rounded-full bg-white" />
                                         )}
                                     </span>
-                                </button>
+                                </Button>
                             );
                         })}
                     </div>

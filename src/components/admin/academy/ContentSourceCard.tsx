@@ -114,10 +114,11 @@ export function ContentSourceCard({
             {/* Raw Content Toggle */}
             {rawContent && (
                 <div>
-                    <button
+                    <Button
                         type="button"
+                        variant="ghost"
                         onClick={() => setShowRaw(!showRaw)}
-                        className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                        className="h-auto p-0 flex items-center gap-1.5 text-xs text-gray-600 hover:text-gray-700 dark:hover:text-gray-300 transition-colors font-normal hover:bg-transparent"
                     >
                         <FileText size={12} />
                         Raw Content
@@ -126,7 +127,7 @@ export function ContentSourceCard({
                         ) : (
                             <ChevronDown size={12} />
                         )}
-                    </button>
+                    </Button>
 
                     {showRaw && (
                         <div className="mt-2 max-h-48 overflow-y-auto p-2 bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 text-[11px] text-gray-600 dark:text-gray-500 whitespace-pre-wrap font-mono">

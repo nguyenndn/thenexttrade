@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireCronSecret } from "@/lib/api-auth";
+import { recordCronRun } from "@/lib/cron/cron-health.server";
 
 /**
  * GET /api/cron/cleanup-security-logs
@@ -8,6 +9,7 @@ import { requireCronSecret } from "@/lib/api-auth";
  * Schedule: daily via Vercel Cron.
  */
 export async function GET(request: Request) {
+    const cronStartedAt = new Date();
     const cronAuth = requireCronSecret(request);
     if (cronAuth instanceof NextResponse) return cronAuth;
 
@@ -29,6 +31,7 @@ export async function GET(request: Request) {
             }),
         ]);
 
+        await recordCronRun("cleanup-security-logs", cronStartedAt, "SUCCESS");
         return NextResponse.json({
             ok: true,
             deleted: {
@@ -38,6 +41,7 @@ export async function GET(request: Request) {
         });
     } catch (error) {
         console.error("[Cron] Security cleanup failed:", error);
+        await recordCronRun("cleanup-security-logs", cronStartedAt, "FAILED", error);
         return NextResponse.json({ error: "Cleanup failed" }, { status: 500 });
     }
 }

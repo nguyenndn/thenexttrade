@@ -16,6 +16,8 @@ export interface AnalyticsData {
         winRate: number;
         profitFactor: number;
         totalPnL: number;
+        totalCommission?: number;
+        totalSwap?: number;
         avgRRR: number;
         currentStreak: {
             type: "win" | "loss";
@@ -54,6 +56,9 @@ export interface AnalyticsData {
         id: string;
         symbol: string;
         type: string;
+        grossProfit?: number;
+        commission?: number;
+        swap?: number;
         pnl: number;
         entryDate: string;
         result: string;
@@ -84,7 +89,11 @@ export function AnalyticsDashboard({
                 <>
                     {/* Charts Row 1 - Full Width */}
                     <div className="grid grid-cols-1 gap-4">
-                        <EquityCurve data={data.equityCurve} />
+                        <EquityCurve
+                            data={data.equityCurve}
+                            totalCommission={data.summary.totalCommission}
+                            totalSwap={data.summary.totalSwap}
+                        />
                         <ProfitCalendar
                             data={data.dailyPnL}
                             equityCurve={data.equityCurve}

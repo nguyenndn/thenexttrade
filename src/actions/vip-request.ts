@@ -223,6 +223,13 @@ export async function approveVipRequest(requestId: string) {
             tradingAccountId: accountId || null,
             source: ToolAccessSource.IB_VERIFIED,
         });
+        await grantUserProductAccess({
+            adminUserId: user.id,
+            targetUserId: vipRequest.userId,
+            productSlug: "gsn-phoenix-grid",
+            tradingAccountId: accountId || null,
+            source: ToolAccessSource.IB_VERIFIED,
+        });
 
         // Audit log
         await tx.auditLog.create({
@@ -261,20 +268,68 @@ export async function approveVipRequest(requestId: string) {
             },
         });
         });
+
+        // Also ensure EALicense is APPROVED + LicenseKey exists + sync to GitHub Backup
+        try {
+            const {
+                ensureTradingAccountLicenseKey,
+                syncLicensesToGitHubBackup,
+            } = await import("@/lib/ea/github-license-sync.server");
+            await ensureTradingAccountLicenseKey({
+                userId: vipRequest.userId,
+                broker: vipRequest.broker,
+                accountNumber: vipRequest.accountNumber,
+                isApproved: true,
+                approvedBy: user.id,
+            });
+            await prisma.eALicense.upsert({
+                where: {
+                    broker_accountNumber: {
+                        broker: vipRequest.broker,
+                        accountNumber: vipRequest.accountNumber.trim(),
+                    },
+                },
+                create: {
+                    userId: vipRequest.userId,
+                    broker: vipRequest.broker,
+                    accountNumber: vipRequest.accountNumber.trim(),
+                    status: "APPROVED",
+                    isVerified: true,
+                    verifiedAt: new Date(),
+                    approvedBy: user.id,
+                    approvedAt: new Date(),
+                    startDate: new Date(),
+                    expiryDate: null,
+                },
+                update: {
+                    status: "APPROVED",
+                    isVerified: true,
+                    verifiedAt: new Date(),
+                    approvedBy: user.id,
+                    approvedAt: new Date(),
+                },
+            });
+            await syncLicensesToGitHubBackup();
+        } catch (syncErr) {
+            console.error("Non-fatal EA license / GitHub sync error after VIP approval:", syncErr);
+        }
     } catch (err) {
         console.error("Failed to approve VIP request:", err);
         return { error: "Approval failed. Please try again." };
     }
 
+    revalidatePath(`/admin/users/${vipRequest.userId}`);
     revalidatePath("/admin/ib/pipeline");
     revalidatePath("/admin/ib/traders");
+    revalidatePath("/admin/trading-systems");
+    revalidatePath("/admin/trading-systems/accounts");
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/accounts");
     revalidatePath("/dashboard/trading-systems");
     return { success: true };
 }
 
-export async function rejectVipRequest(requestId: string, reason: string) {
+export async function rejectVipRequest(requestId: string, reason?: string) {
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
 
@@ -283,7 +338,7 @@ export async function rejectVipRequest(requestId: string, reason: string) {
     });
     if (profile?.role !== "ADMIN") return { error: "Forbidden" };
 
-    if (!reason?.trim()) return { error: "Reject reason is required" };
+    const cleanReason = reason?.trim() || null;
 
     // Status guard — mirror of approveVipRequest. Only a PENDING request can be
     // rejected; re-rejecting a reviewed request would overwrite its state.
@@ -301,7 +356,7 @@ export async function rejectVipRequest(requestId: string, reason: string) {
         where: { id: requestId },
         data: {
             status: "REJECTED",
-            rejectReason: reason.trim(),
+            rejectReason: cleanReason,
             reviewedBy: user.id,
             reviewedAt: new Date(),
         },
@@ -313,12 +368,16 @@ export async function rejectVipRequest(requestId: string, reason: string) {
             userId: vipRequest.userId,
             type: NotificationType.VIP_REJECTED,
             title: "VIP Request Rejected",
-            message: `Your VIP request was rejected. Reason: ${reason.trim()}`,
+            message: cleanReason
+                ? `Your VIP request was rejected. Reason: ${cleanReason}`
+                : "Your VIP request was not approved.",
             priority: NotificationPriority.NORMAL,
             link: NOTIFICATION_ROUTES.VIP_ACCOUNTS,
         },
     });
 
+    revalidatePath(`/admin/users/${vipRequest.userId}`);
+    revalidatePath("/admin/ib/pipeline");
     revalidatePath("/dashboard");
     return { success: true };
 }
@@ -345,38 +404,97 @@ export async function deleteVipRequest(requestId: string) {
         where: { vipRequestId: requestId },
     });
 
-    // Also revoke product-level access for canonical products so eAProductAccess
-    // rows aren't left orphaned as GRANTED after the request is deleted.
-    try {
-        const { revokeUserProductAccess } = await import(
-            "@/lib/admin/ib/product-usage.server"
-        );
-        await revokeUserProductAccess({
-            adminUserId: user.id,
-            targetUserId: existingRequest.userId,
-            productSlug: "goldscalperninja",
-            tradingAccountId: existingRequest.tradingAccountId || null,
-        });
-        await revokeUserProductAccess({
-            adminUserId: user.id,
-            targetUserId: existingRequest.userId,
-            productSlug: "trade-manager",
-            tradingAccountId: existingRequest.tradingAccountId || null,
-        });
-    } catch (err) {
-        console.error("Failed to revoke product access on VIP request delete:", err);
+    // Only revoke product-level access and suspend EALicense if the deleted
+    // request was the APPROVED one (so deleting old REJECTED/PENDING rows
+    // never breaks an already-approved account).
+    if (existingRequest.status === "APPROVED") {
+        try {
+            const { revokeUserProductAccess } = await import(
+                "@/lib/admin/ib/product-usage.server"
+            );
+            await revokeUserProductAccess({
+                adminUserId: user.id,
+                targetUserId: existingRequest.userId,
+                productSlug: "goldscalperninja",
+                tradingAccountId: existingRequest.tradingAccountId || null,
+            });
+            await revokeUserProductAccess({
+                adminUserId: user.id,
+                targetUserId: existingRequest.userId,
+                productSlug: "trade-manager",
+                tradingAccountId: existingRequest.tradingAccountId || null,
+            });
+            await revokeUserProductAccess({
+                adminUserId: user.id,
+                targetUserId: existingRequest.userId,
+                productSlug: "gsn-phoenix-grid",
+                tradingAccountId: existingRequest.tradingAccountId || null,
+            });
+
+            if (existingRequest.accountNumber) {
+                const cleanAcct = existingRequest.accountNumber.trim();
+                await prisma.eALicense.updateMany({
+                    where: {
+                        userId: existingRequest.userId,
+                        accountNumber: cleanAcct,
+                    },
+                    data: {
+                        status: "SUSPENDED",
+                        isVerified: false,
+                        rejectReason: "VIP Request deleted by Admin",
+                    },
+                });
+                await prisma.tradingAccount.updateMany({
+                    where: {
+                        userId: existingRequest.userId,
+                        accountNumber: cleanAcct,
+                    },
+                    data: {
+                        ibAttribution: "UNVERIFIED",
+                    },
+                });
+                const { syncLicensesToGitHubBackup } = await import(
+                    "@/lib/ea/github-license-sync.server"
+                );
+                await syncLicensesToGitHubBackup();
+            }
+        } catch (err) {
+            console.error("Failed to revoke product access on VIP request delete:", err);
+        }
     }
 
     await prisma.vipRequest.delete({
         where: { id: requestId },
     });
 
+    revalidatePath(`/admin/users/${existingRequest.userId}`);
     revalidatePath("/admin/ib/pipeline");
     revalidatePath("/admin/ib/traders");
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/accounts");
     revalidatePath("/dashboard/trading-systems");
     return { success: true };
+}
+
+export async function clearRejectedVipRequests(userId: string) {
+    const user = await getAuthUser();
+    if (!user) return { error: "Unauthorized" };
+
+    const profile = await prisma.profile.findUnique({
+        where: { userId: user.id },
+    });
+    if (profile?.role !== "ADMIN") return { error: "Forbidden" };
+
+    const deleted = await prisma.vipRequest.deleteMany({
+        where: {
+            userId,
+            status: "REJECTED",
+        },
+    });
+
+    revalidatePath(`/admin/users/${userId}`);
+    revalidatePath("/admin/ib/pipeline");
+    return { success: true, deletedCount: deleted.count };
 }
 
 // ============================================================================
@@ -525,8 +643,23 @@ export async function revokeProAccess(
         } else {
             // It is an actual tradingAccountId
             effectiveTradingAccountId = tradingAccountId;
+            const targetAcct = await prisma.tradingAccount.findUnique({
+                where: { id: tradingAccountId },
+                select: { accountNumber: true },
+            });
             await prisma.proEntitlement.deleteMany({
-                where: { tradingAccountId },
+                where: targetAcct?.accountNumber
+                    ? {
+                          userId,
+                          OR: [
+                              { tradingAccountId },
+                              {
+                                  tradingAccountId: null,
+                                  accountNumber: targetAcct.accountNumber.trim(),
+                              },
+                          ],
+                      }
+                    : { tradingAccountId },
             });
         }
     } else {
@@ -586,6 +719,55 @@ export async function revokeProAccess(
             productSlug: "trade-manager",
             tradingAccountId: effectiveTradingAccountId,
         });
+        await revokeUserProductAccess({
+            adminUserId: user.id,
+            targetUserId: userId,
+            productSlug: "gsn-phoenix-grid",
+            tradingAccountId: effectiveTradingAccountId,
+        });
+
+        // Synchronize EALicense -> SUSPENDED and TradingAccount.ibAttribution -> UNVERIFIED
+        if (effectiveTradingAccountId) {
+            const targetAcc = await prisma.tradingAccount.findUnique({
+                where: { id: effectiveTradingAccountId },
+                select: { accountNumber: true },
+            });
+            await prisma.tradingAccount.updateMany({
+                where: { id: effectiveTradingAccountId },
+                data: { ibAttribution: "UNVERIFIED" },
+            });
+            if (targetAcc?.accountNumber) {
+                await prisma.eALicense.updateMany({
+                    where: {
+                        userId,
+                        accountNumber: targetAcc.accountNumber.trim(),
+                    },
+                    data: {
+                        status: "SUSPENDED",
+                        isVerified: false,
+                        rejectReason: reason || "Pro/VIP access revoked by Admin",
+                    },
+                });
+            }
+        } else {
+            await prisma.tradingAccount.updateMany({
+                where: { userId },
+                data: { ibAttribution: "UNVERIFIED" },
+            });
+            await prisma.eALicense.updateMany({
+                where: { userId },
+                data: {
+                    status: "SUSPENDED",
+                    isVerified: false,
+                    rejectReason: reason || "Pro/VIP access revoked by Admin",
+                },
+            });
+        }
+
+        const { syncLicensesToGitHubBackup } = await import(
+            "@/lib/ea/github-license-sync.server"
+        );
+        await syncLicensesToGitHubBackup();
     } catch (err) {
         console.error("Failed to revoke product access during revokeProAccess:", err);
     }

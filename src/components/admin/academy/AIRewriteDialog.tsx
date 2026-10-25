@@ -517,42 +517,45 @@ export const AIRewriteDialog = forwardRef<
                         <div className="p-5 space-y-4 overflow-y-auto flex-1">
                             {/* Input Mode Toggle */}
                             <div className="flex gap-1 p-1 bg-gray-100 dark:bg-white/5 rounded-lg">
-                                <button
+                                <Button
                                     type="button"
+                                    variant="ghost"
                                     onClick={() => setInputMode("url")}
                                     className={cn(
-                                        "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all",
+                                        "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 h-auto rounded-lg text-xs font-medium transition-all",
                                         inputMode === "url"
                                             ? "bg-white dark:bg-white/10 text-gray-700 dark:text-white shadow-sm"
                                             : "text-gray-600 hover:text-gray-700 dark:hover:text-gray-300"
                                     )}
                                 >
                                     <Link2 size={13} /> From URL
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     type="button"
+                                    variant="ghost"
                                     onClick={() => setInputMode("paste")}
                                     className={cn(
-                                        "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all",
+                                        "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 h-auto rounded-lg text-xs font-medium transition-all",
                                         inputMode === "paste"
                                             ? "bg-white dark:bg-white/10 text-gray-700 dark:text-white shadow-sm"
                                             : "text-gray-600 hover:text-gray-700 dark:hover:text-gray-300"
                                     )}
                                 >
                                     <ClipboardPaste size={13} /> Paste Content
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     type="button"
+                                    variant="ghost"
                                     onClick={() => setInputMode("search")}
                                     className={cn(
-                                        "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all",
+                                        "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 h-auto rounded-lg text-xs font-medium transition-all",
                                         inputMode === "search"
                                             ? "bg-white dark:bg-white/10 text-gray-700 dark:text-white shadow-sm"
                                             : "text-gray-600 hover:text-gray-700 dark:hover:text-gray-300"
                                     )}
                                 >
                                     <SearchCode size={13} /> Search Topic
-                                </button>
+                                </Button>
                             </div>
 
                             {/* URL Input + Search */}
@@ -634,16 +637,17 @@ export const AIRewriteDialog = forwardRef<
                                                 </label>
                                                 <div className="space-y-1.5 max-h-72 overflow-y-auto">
                                                     {searchResults.map((r) => (
-                                                        <button
+                                                        <Button
                                                             key={r.url}
                                                             type="button"
+                                                            variant="ghost"
                                                             onClick={() =>
                                                                 toggleSearchResult(
                                                                     r.url
                                                                 )
                                                             }
                                                             className={cn(
-                                                                "w-full text-left p-2.5 rounded-lg border transition-all flex items-start gap-2.5",
+                                                                "w-full text-left p-2.5 h-auto rounded-lg border transition-all flex items-start gap-2.5 font-normal",
                                                                 selectedUrls.has(
                                                                     r.url
                                                                 )
@@ -700,7 +704,7 @@ export const AIRewriteDialog = forwardRef<
                                                                     className="text-gray-400"
                                                                 />
                                                             </a>
-                                                        </button>
+                                                        </Button>
                                                     ))}
                                                 </div>
                                             </div>
@@ -836,16 +840,17 @@ export const AIRewriteDialog = forwardRef<
                                                 </label>
                                                 <div className="space-y-1.5 max-h-72 overflow-y-auto">
                                                     {searchResults.map((r) => (
-                                                        <button
+                                                        <Button
                                                             key={r.url}
                                                             type="button"
+                                                            variant="ghost"
                                                             onClick={() =>
                                                                 toggleSearchResult(
                                                                     r.url
                                                                 )
                                                             }
                                                             className={cn(
-                                                                "w-full text-left p-2.5 rounded-lg border transition-all flex items-start gap-2.5",
+                                                                "w-full text-left p-2.5 h-auto rounded-lg border transition-all flex items-start gap-2.5 font-normal",
                                                                 selectedUrls.has(
                                                                     r.url
                                                                 )
@@ -909,7 +914,7 @@ export const AIRewriteDialog = forwardRef<
                                                                     className="text-gray-400"
                                                                 />
                                                             </a>
-                                                        </button>
+                                                        </Button>
                                                     ))}
                                                 </div>
                                             </div>
@@ -934,13 +939,14 @@ export const AIRewriteDialog = forwardRef<
                                     {TONES.map((t) => {
                                         const ToneIcon = t.icon;
                                         return (
-                                            <button
+                                            <Button
                                                 key={t.id}
                                                 type="button"
+                                                variant="ghost"
                                                 onClick={() => setTone(t.id)}
                                                 disabled={isLoading}
                                                 className={cn(
-                                                    "flex flex-col items-center gap-0.5 px-2 py-2 rounded-lg text-xs font-medium transition-all border",
+                                                    "flex flex-col items-center gap-0.5 px-2 py-2 h-auto rounded-lg text-xs font-medium transition-all border",
                                                     tone === t.id
                                                         ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 ring-1 ring-amber-200 dark:ring-amber-800"
                                                         : "bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-100 dark:hover:bg-white/10"
@@ -950,7 +956,7 @@ export const AIRewriteDialog = forwardRef<
                                                     <ToneIcon size={14} />
                                                 </span>
                                                 <span>{t.label}</span>
-                                            </button>
+                                            </Button>
                                         );
                                     })}
                                 </div>
@@ -962,12 +968,13 @@ export const AIRewriteDialog = forwardRef<
                                     Mode
                                 </label>
                                 <div className="flex gap-2">
-                                    <button
+                                    <Button
                                         type="button"
+                                        variant="ghost"
                                         onClick={() => setMode("summary")}
                                         disabled={isLoading}
                                         className={cn(
-                                            "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all border",
+                                            "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 h-auto rounded-lg text-sm font-medium transition-all border",
                                             mode === "summary"
                                                 ? "bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 ring-1 ring-blue-200 dark:ring-blue-800"
                                                 : "bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-100 dark:hover:bg-white/10"
@@ -975,13 +982,14 @@ export const AIRewriteDialog = forwardRef<
                                     >
                                         <FileText size={15} />
                                         Summary
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
                                         type="button"
+                                        variant="ghost"
                                         onClick={() => setMode("rewrite")}
                                         disabled={isLoading}
                                         className={cn(
-                                            "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all border",
+                                            "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 h-auto rounded-lg text-sm font-medium transition-all border",
                                             mode === "rewrite"
                                                 ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 ring-1 ring-amber-200 dark:ring-amber-800"
                                                 : "bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-100 dark:hover:bg-white/10"
@@ -989,7 +997,7 @@ export const AIRewriteDialog = forwardRef<
                                     >
                                         <RefreshCw size={15} />
                                         Full Rewrite
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
 

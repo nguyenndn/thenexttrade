@@ -106,6 +106,8 @@ ECONOMIC_CALENDAR_PROVIDER_URL=
 
 Rules:
 
+- **Dynamic Base URL (`src/lib/url.ts`)**: All canonical URLs, OpenGraph metadata, `sitemap.xml`, `robots.txt`, `llms.txt`, JSON-LD schemas, and transactional email links derive from `getBaseUrl()` (`NEXT_PUBLIC_APP_URL`). Changing the domain only requires updating `NEXT_PUBLIC_APP_URL`.
+- **Cloudflare Turnstile & Tunnel**: Set `DISABLE_TURNSTILE=true` and `NEXT_PUBLIC_DISABLE_TURNSTILE=true` in local/staging test environments, and `false` with valid `TURNSTILE_SECRET_KEY` / `NEXT_PUBLIC_TURNSTILE_SITE_KEY` in production.
 - User-facing AI actions must route through the internal AI Gateway before calling OpenRouter.
 - If OpenRouter receives traffic but `/admin/ai` has no request record, the app is bypassing the internal gateway and must be fixed before release.
 - Economic calendar provider banners should not expose implementation details to public users.
@@ -173,6 +175,34 @@ Release checklist:
 - Verify `/api/ea/*` heartbeat/sync endpoints with a test MT5 account when the EA payload changes.
 - Verify admin product/license surfaces in `/admin/trading-systems` and `/admin/ib`.
 - Never add performance/backtest claims unless there is approved evidence and matching risk copy.
+
+## Scheduled Cron Jobs & Runbook
+
+Every `/api/cron/*` route calls `requireCronSecret()` (`src/lib/api-auth.ts`):
+- Production requires `CRON_SECRET` (`500` when missing, `401` when bearer token does not match).
+- Vercel Cron automatically sends `Authorization: Bearer $CRON_SECRET`.
+- `GITHUB_TOKEN` is additionally required for `/api/cron/license-github-sync` to commit `accounts.csv` to GitHub; without it the backup step is skipped and retried later.
+
+| Path | Schedule (UTC) | Purpose |
+| --- | --- | --- |
+| `/api/cron/send-scheduled-broadcasts` | `*/5 * * * *` | Send due admin broadcasts |
+| `/api/cron/license-github-sync` | `*/10 * * * *` | Retry license → GitHub backup outbox jobs |
+| `/api/cron/cleanup-stale-ai-requests` | `*/15 * * * *` | Release orphaned AI quota reservations |
+| `/api/cron/generate-reports` | `5 0 * * *` | Weekly (Sunday) / monthly (1st) reports |
+| `/api/cron/expire-licenses` | `10 0 * * *` | Mark expired EA licenses and notify users |
+| `/api/cron/vip-policy` | `20 0 * * *` | VIP funding/policy reconciliation (`VIP_POLICY_ENABLED=false` disables) |
+| `/api/cron/ib-snapshots` | `0 1 * * *` | IB activity snapshots and dormant nudges |
+| `/api/cron/cleanup-security-logs` | `30 3 * * *` | Delete security logs older than 90 days |
+| `/api/cron/activation-reminders` | `0 6 * * *` | Activation nudges for stuck users |
+| `/api/cron/sync-events` | `0 */6 * * *` | Economic calendar sync |
+| `/api/cron/welcome-nudges` | `0 */6 * * *` | D1/D3 welcome notifications |
+| `/api/cron/support-sync` | `0 10 * * 6` | Saturday 10:00 UTC: create due support-sync jobs |
+
+Each route records its outcome through `recordCronRun()` (`src/lib/cron/cron-health.server.ts`) into `SystemSetting` under `cron:last-run:<job>`. All jobs are idempotent and can be replayed manually via:
+
+```bash
+curl -H "Authorization: Bearer $CRON_SECRET" https://<production-host>/api/cron/<job>
+```
 
 ## Deploy Checklist
 

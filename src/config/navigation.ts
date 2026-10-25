@@ -102,6 +102,12 @@ export const dashboardMenuItems = [
         icon: Wallet,
         requiresTradeData: false,
     },
+    {
+        name: "Trade Manager",
+        href: "/dashboard/trade-manager",
+        icon: Zap,
+        requiresTradeData: false,
+    },
 
     // --- PLAYBOOK & EXECUTION ---
     {
@@ -164,6 +170,11 @@ export const adminMenuItems = [
     { name: "Overview", href: "/admin", icon: LayoutDashboard },
 
     // --- MONITORING & AI ---
+    {
+        name: "MT5 Cloud",
+        href: "/admin/mt5-cloud",
+        icon: CloudSync,
+    },
     {
         name: "AI Gateway",
         href: "/admin/ai",
@@ -245,6 +256,11 @@ export const dashboardMenuGroups = [
                 href: "/dashboard/accounts",
                 icon: Wallet,
             },
+            {
+                name: "Trade Manager",
+                href: "/dashboard/trade-manager",
+                icon: Zap,
+            },
         ],
     },
     {
@@ -307,7 +323,7 @@ export const adminMenuGroups = [
         icon: LayoutDashboard,
         items: [
             { name: "Overview", href: "/admin", icon: LayoutDashboard },
-
+            { name: "MT5 Cloud", href: "/admin/mt5-cloud", icon: CloudSync },
             { name: "AI Gateway", href: "/admin/ai", icon: Bot },
             {
                 name: "Release Health",

@@ -63,7 +63,7 @@ export default function UpdatePasswordPage() {
                             name="confirmPassword"
                             type="password"
                             required
-                            placeholder="Re-enter password"
+                            placeholder="••••••••"
                             className="w-full bg-white dark:bg-[#151925] border border-dashboard dark:border-gray-800 rounded-lg px-4 py-3 pl-11 text-gray-700 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-600 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
                         />
                         <Lock

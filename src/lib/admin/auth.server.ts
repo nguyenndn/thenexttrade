@@ -22,4 +22,6 @@ export async function requireAdminPageAccess() {
     });
 
     if (!profile || !isAdminRole(profile.role)) redirect("/forbidden");
+
+    return { user, profile };
 }

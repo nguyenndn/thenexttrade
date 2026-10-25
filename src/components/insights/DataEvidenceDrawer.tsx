@@ -62,13 +62,16 @@ export function DataEvidenceDrawer({
                             <p className="text-xs text-slate-500 dark:text-slate-400">Audit details behind system observations</p>
                         </div>
                     </div>
-                    <button
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
                         onClick={onClose}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                        className="h-8 w-8 text-slate-400 hover:text-slate-800 dark:hover:text-white"
                         aria-label="Close modal"
                     >
-                        <X className="w-5 h-5" />
-                    </button>
+                        <X className="w-4 h-4" />
+                    </Button>
                 </div>
 
                 <div className="space-y-4">

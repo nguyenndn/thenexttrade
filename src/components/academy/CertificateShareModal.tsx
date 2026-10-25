@@ -129,13 +129,16 @@ export function CertificateShareModal({
                             </p>
                         </div>
                     </div>
-                    <button
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
                         onClick={onClose}
-                        className="p-2 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-lg transition-colors"
+                        className="w-8 h-8 p-0 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-lg border-0"
                         aria-label="Close"
                     >
                         <X size={18} />
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Body */}
@@ -169,12 +172,15 @@ export function CertificateShareModal({
                         <span className="flex-1 text-xs font-semibold text-gray-600 dark:text-gray-300 truncate">
                             {shareUrl}
                         </span>
-                        <button
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
                             onClick={copyLink}
                             className={cn(
-                                "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all shrink-0",
+                                "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all shrink-0 h-auto",
                                 copied
-                                    ? "bg-emerald-500/10 text-emerald-500"
+                                    ? "bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20"
                                     : "bg-primary/10 text-primary hover:bg-primary/20"
                             )}
                         >
@@ -184,7 +190,7 @@ export function CertificateShareModal({
                                 <Copy size={12} />
                             )}
                             {copied ? "Copied" : "Copy"}
-                        </button>
+                        </Button>
                     </div>
 
                     {/* Native share CTA */}

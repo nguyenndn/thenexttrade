@@ -6,6 +6,7 @@ import DOMPurify from "isomorphic-dompurify";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { buttonVariants } from "@/components/ui/button-variants";
+import { Button } from "@/components/ui/Button";
 
 interface LessonPreviewModalProps {
     isOpen: boolean;
@@ -82,15 +83,16 @@ export function LessonPreviewModal({
                         <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-2xl w-full max-w-2xl pointer-events-auto overflow-hidden max-h-[90vh] flex flex-col">
                             {/* Header */}
                             <div className="relative bg-gradient-to-r from-primary/15 to-cyan-500/15 px-6 py-5 flex-shrink-0">
-                                <button
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
                                     onClick={onClose}
-                                    className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/30 dark:bg-black/20 flex items-center justify-center hover:bg-white/50 dark:hover:bg-black/40 transition-colors"
+                                    aria-label="Close lesson preview"
+                                    className="absolute top-3 right-3 h-8 w-8 rounded-full bg-white/40 dark:bg-black/30 text-gray-700 dark:text-gray-300 hover:bg-white/60 dark:hover:bg-black/50"
                                 >
-                                    <X
-                                        size={16}
-                                        className="text-gray-700 dark:text-gray-300"
-                                    />
-                                </button>
+                                    <X size={16} />
+                                </Button>
 
                                 {loading ? (
                                     <div className="flex items-center gap-3">

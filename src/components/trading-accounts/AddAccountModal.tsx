@@ -688,8 +688,9 @@ export function AddAccountModal({
                             false
                         )}
                         <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <button
-                                role="button"
+                            <Button
+                                type="button"
+                                variant="ghost"
                                 onClick={() => {
                                     setName("");
                                     setFreeAccountNumber("");
@@ -698,7 +699,7 @@ export function AddAccountModal({
                                     setInvestorPassword("");
                                     setStep("free-create");
                                 }}
-                                className="flex flex-col items-start gap-4 p-6 rounded-lg border-2 border-dashboard hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/5 transition-all text-left group cursor-pointer bg-transparent w-full"
+                                className="h-auto flex flex-col items-start gap-4 p-6 rounded-lg border-2 border-dashboard hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/5 transition-all text-left group cursor-pointer bg-transparent w-full whitespace-normal"
                             >
                                 <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                                     <Wallet
@@ -710,16 +711,17 @@ export function AddAccountModal({
                                     <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-1">
                                         Free Account
                                     </h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 font-normal">
                                         Connect any MT5 account to track your
                                         stats. No special broker required.
                                     </p>
                                 </div>
-                            </button>
-                            <button
-                                role="button"
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="ghost"
                                 onClick={() => setStep("pro-broker")}
-                                className="flex flex-col items-start gap-4 p-6 rounded-lg border-2 border-amber-200 dark:border-amber-500/30 hover:border-amber-400 dark:hover:border-amber-500/50 bg-amber-50/50 dark:bg-amber-500/5 hover:bg-amber-50 dark:hover:bg-amber-500/10 transition-all text-left group cursor-pointer w-full"
+                                className="h-auto flex flex-col items-start gap-4 p-6 rounded-lg border-2 border-amber-200 dark:border-amber-500/30 hover:border-amber-400 dark:hover:border-amber-500/50 bg-amber-50/50 dark:bg-amber-500/5 hover:bg-amber-50 dark:hover:bg-amber-500/10 transition-all text-left group cursor-pointer w-full whitespace-normal"
                             >
                                 <div className="w-12 h-12 rounded-lg bg-gold flex items-center justify-center shadow-md shadow-amber-500/10">
                                     <Check
@@ -737,7 +739,7 @@ export function AddAccountModal({
                                         features, EA access, and VIP tools.
                                     </p>
                                 </div>
-                            </button>
+                            </Button>
                         </div>
                     </>
                 )}
@@ -790,9 +792,11 @@ export function AddAccountModal({
                                         onOpenChange={setColorPickerOpen}
                                     >
                                         <PopoverTrigger asChild>
-                                            <button
+                                            <Button
                                                 type="button"
-                                                className="flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-gray-200/70 dark:hover:bg-white/10 transition-colors cursor-pointer group/color focus:outline-none"
+                                                variant="ghost"
+                                                size="sm"
+                                                className="h-auto p-0 flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-gray-200/70 dark:hover:bg-white/10 transition-colors cursor-pointer group/color focus:outline-none"
                                                 title="Choose account label color"
                                                 aria-label="Choose account label color"
                                             >
@@ -806,7 +810,7 @@ export function AddAccountModal({
                                                     size={11}
                                                     className="text-gray-400 group-hover/color:text-gray-600 dark:group-hover/color:text-gray-300 transition-colors shrink-0"
                                                 />
-                                            </button>
+                                            </Button>
                                         </PopoverTrigger>
                                         <PopoverContent
                                             className="w-64 p-3 bg-white dark:bg-[#1E2028] border border-dashboard shadow-2xl rounded-lg z-[150]"
@@ -827,15 +831,17 @@ export function AddAccountModal({
                                                 </div>
                                                 <div className="grid grid-cols-5 gap-2 pt-0.5">
                                                     {ACCOUNT_COLORS.map((c) => (
-                                                        <button
+                                                        <Button
                                                             type="button"
+                                                            variant="ghost"
+                                                            size="icon"
                                                             key={c}
                                                             onClick={() => {
                                                                 setColor(c);
                                                                 setColorPickerOpen(false);
                                                             }}
                                                             aria-label={`Select color ${c}`}
-                                                            className={`w-8 h-8 rounded-full transition-all flex items-center justify-center cursor-pointer ${
+                                                            className={`w-8 h-8 p-0 rounded-full transition-all flex items-center justify-center cursor-pointer ${
                                                                 color === c
                                                                     ? "ring-2 ring-offset-2 ring-offset-white dark:ring-offset-[#1E2028] scale-110"
                                                                     : "hover:scale-110 opacity-90 hover:opacity-100"
@@ -854,7 +860,7 @@ export function AddAccountModal({
                                                                     className="text-white drop-shadow-md"
                                                                 />
                                                             )}
-                                                        </button>
+                                                        </Button>
                                                     ))}
                                                 </div>
                                             </div>
@@ -1192,12 +1198,14 @@ export function AddAccountModal({
                                 {SUPPORTED_BROKERS.map((broker) => {
                                     const info = BROKER_INFO[broker];
                                     return (
-                                        <button
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
                                             key={broker}
                                             onClick={() =>
                                                 handleSelectBroker(broker)
                                             }
-                                            className="group flex flex-col items-center justify-center gap-3 p-6 rounded-lg border border-dashboard hover:border-amber-400 dark:hover:border-amber-500/50 bg-white dark:bg-[#1E2028] hover:shadow-lg transition-all text-center"
+                                            className="h-auto group flex flex-col items-center justify-center gap-3 p-6 rounded-lg border border-dashboard hover:border-amber-400 dark:hover:border-amber-500/50 bg-white dark:bg-[#1E2028] hover:shadow-lg transition-all text-center whitespace-normal"
                                         >
                                             <div className="h-16 flex items-center justify-center">
                                                 <Image
@@ -1212,11 +1220,11 @@ export function AddAccountModal({
                                                 <p className="font-bold text-gray-800 dark:text-white text-base">
                                                     {info.name}
                                                 </p>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-normal">
                                                     Min. ${info.minDeposit} USD
                                                 </p>
                                             </div>
-                                        </button>
+                                        </Button>
                                     );
                                 })}
                             </div>
@@ -1233,7 +1241,9 @@ export function AddAccountModal({
                         )}
                         <div className="p-6 space-y-4">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <button
+                                <Button
+                                    type="button"
+                                    variant="ghost"
                                     onClick={() => {
                                         setAccountStatus("new");
                                         trackBrokerClick({
@@ -1248,7 +1258,7 @@ export function AddAccountModal({
                                             "_blank"
                                         );
                                     }}
-                                    className={`flex flex-col items-center gap-3 p-5 rounded-lg border-2 transition-all text-center ${accountStatus === "new"
+                                    className={`h-auto flex flex-col items-center gap-3 p-5 rounded-lg border-2 transition-all text-center whitespace-normal ${accountStatus === "new"
                                             ? "border-amber-400 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-500/5"
                                             : "border-dashboard hover:border-amber-300 dark:hover:border-amber-500/20 bg-white dark:bg-[#1E2028]"
                                         }`}
@@ -1263,14 +1273,16 @@ export function AddAccountModal({
                                         <p className="font-bold text-sm text-gray-800 dark:text-white">
                                             No, create new account
                                         </p>
-                                        <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">
+                                        <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 font-normal">
                                             Opens registration in new tab
                                         </p>
                                     </div>
-                                </button>
-                                <button
+                                </Button>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
                                     onClick={() => setAccountStatus("existing")}
-                                    className={`flex flex-col items-center gap-3 p-5 rounded-lg border-2 transition-all text-center ${accountStatus === "existing"
+                                    className={`h-auto flex flex-col items-center gap-3 p-5 rounded-lg border-2 transition-all text-center whitespace-normal ${accountStatus === "existing"
                                             ? "border-blue-400 dark:border-blue-500/40 bg-blue-50 dark:bg-blue-500/5"
                                             : "border-dashboard hover:border-blue-300 dark:hover:border-blue-500/20 bg-white dark:bg-[#1E2028]"
                                         }`}
@@ -1285,11 +1297,11 @@ export function AddAccountModal({
                                         <p className="font-bold text-sm text-gray-800 dark:text-white">
                                             Yes, I have an account
                                         </p>
-                                        <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">
+                                        <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 font-normal">
                                             Transfer IB to get VIP access
                                         </p>
                                     </div>
-                                </button>
+                                </Button>
                             </div>
 
                             {accountStatus === "existing" && (
@@ -1343,7 +1355,10 @@ export function AddAccountModal({
                                                     }
                                                 </p>
                                             </div>
-                                            <button
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="sm"
                                                 onClick={() =>
                                                     copyToClipboard(
                                                         brokerInfo
@@ -1351,13 +1366,13 @@ export function AddAccountModal({
                                                             .emails!.body
                                                     )
                                                 }
-                                                className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline mt-1"
+                                                className="h-auto p-0 inline-flex items-center gap-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline mt-1 hover:bg-transparent"
                                             >
                                                 <Copy size={10} />{" "}
                                                 {copied
                                                     ? "Copied!"
                                                     : "Copy email"}
-                                            </button>
+                                            </Button>
                                         </div>
                                     )}
                                     {brokerInfo.ibTransferGuide.note && (

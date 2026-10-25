@@ -338,12 +338,13 @@ export function DateRangePicker({
                                 <h3 className="font-semibold text-gray-700 dark:text-white">
                                     Select Date Range
                                 </h3>
-                                <button
+                                <Button
+                                    variant="outline"
+                                    size="sm"
                                     onClick={handleCancel}
-                                    className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-700"
                                 >
                                     Cancel
-                                </button>
+                                </Button>
                             </div>
 
                             {/* Calendar Content */}

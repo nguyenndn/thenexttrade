@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronRight, BarChart3, Cable, Zap, PenLine } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import { trackEvent } from "@/lib/track";
 import { SetupProgressTrail } from "@/components/onboarding/SetupProgressTrail";
 import type { FirstSessionStep } from "@/lib/onboarding/first-session.server";
@@ -63,9 +64,11 @@ export function FirstSessionLauncher({
     };
 
     return (
-        <button
+        <Button
+            type="button"
+            variant="ghost"
             onClick={handleClick}
-            className={`w-full text-left relative overflow-hidden rounded-lg border backdrop-blur-md px-4 py-2.5 flex items-center justify-between gap-4 shadow-sm transition-all duration-300 group cursor-pointer ${
+            className={`w-full text-left relative overflow-hidden rounded-lg border backdrop-blur-md px-4 py-2.5 flex items-center justify-between gap-4 shadow-sm transition-all duration-300 group cursor-pointer h-auto font-normal ${
                 isGold
                     ? "border-amber-500/35 dark:border-amber-500/30 bg-amber-500/[0.04] dark:bg-amber-500/[0.04] hover:border-gold/40 hover:shadow-md"
                     : "border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] hover:border-gold/30 hover:shadow-md"
@@ -121,6 +124,6 @@ export function FirstSessionLauncher({
                     className="transition-transform group-hover:translate-x-0.5"
                 />
             </div>
-        </button>
+        </Button>
     );
 }

@@ -346,12 +346,15 @@ export default function LessonClientView({
 
                                 if (isLocked) {
                                     return (
-                                        <button
+                                        <Button
+                                            type="button"
                                             key={l.id}
+                                            variant="ghost"
+                                            size="sm"
                                             onClick={() =>
                                                 setLockedDialogLesson(l.title)
                                             }
-                                            className="w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-white/5 border-l-2 border-transparent cursor-not-allowed opacity-60"
+                                            className="w-full flex items-center justify-start gap-3 px-4 py-3 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-white/5 border-l-2 border-transparent cursor-not-allowed opacity-60 h-auto rounded-none font-normal"
                                         >
                                             <span className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] shrink-0 border border-dashed border-gray-300 dark:border-white/20 bg-gray-50 dark:bg-white/5">
                                                 <Lock
@@ -362,7 +365,7 @@ export default function LessonClientView({
                                             <span className="flex-1 truncate text-gray-500 dark:text-gray-600">
                                                 {l.title}
                                             </span>
-                                        </button>
+                                        </Button>
                                     );
                                 }
 
@@ -502,13 +505,16 @@ export default function LessonClientView({
 
                                 if (mobileLocked) {
                                     return (
-                                        <button
+                                        <Button
+                                            type="button"
                                             key={l.id}
+                                            variant="ghost"
+                                            size="sm"
                                             onClick={() => {
                                                 setMobileMenuOpen(false);
                                                 setLockedDialogLesson(l.title);
                                             }}
-                                            className="w-full flex items-center gap-3 py-2.5 px-3 text-sm rounded-lg text-gray-500 opacity-50"
+                                            className="w-full flex items-center justify-start gap-3 py-2.5 px-3 text-sm rounded-lg text-gray-500 opacity-50 h-auto font-normal"
                                         >
                                             <Lock
                                                 size={10}
@@ -517,7 +523,7 @@ export default function LessonClientView({
                                             <span className="truncate">
                                                 {l.title}
                                             </span>
-                                        </button>
+                                        </Button>
                                     );
                                 }
 
@@ -554,13 +560,16 @@ export default function LessonClientView({
             </AnimatePresence>
 
             {/* Mobile Menu Button (floating) */}
-            <button
+            <Button
+                type="button"
+                variant="primary"
+                size="icon"
                 onClick={() => setMobileMenuOpen(true)}
                 className="lg:hidden fixed bottom-20 right-4 z-50 w-12 h-12 rounded-full bg-gold text-white shadow-lg shadow-amber-500/30 flex items-center justify-center hover:bg-amber-600 transition-colors"
                 aria-label="Open lesson menu"
             >
                 <Menu size={20} />
-            </button>
+            </Button>
 
             {/* Locked Lesson Dialog */}
             <AnimatePresence>
@@ -602,13 +611,15 @@ export default function LessonClientView({
                             before accessing this one. Keep up the great work!
                         </p>
                         <div className="flex gap-3 justify-center">
-                            <button
+                            <Button
+                                type="button"
+                                variant="primary"
                                 onClick={() => setLockedDialogLesson(null)}
                                 autoFocus
-                                className="px-5 py-2.5 rounded-lg bg-gold text-white text-sm font-semibold hover:bg-amber-600 transition-colors shadow-lg shadow-amber-500/20"
+                                className="px-5 py-2.5 rounded-lg text-sm font-semibold shadow-lg shadow-amber-500/20"
                             >
                                 Got it!
-                            </button>
+                            </Button>
                         </div>
                     </motion.div>
                 </motion.div>

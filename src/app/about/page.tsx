@@ -16,7 +16,8 @@ import {
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 import { AboutTimeline } from "@/components/home/AboutTimeline";
 import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -235,22 +236,27 @@ export default async function AboutPage() {
                                     No credit card required. Connect your MT5 account in 30 seconds and uncover the behavioral leaks holding you back from consistent profitability.
                                 </p>
                                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-                                    <Link href="/auth/signup?intent=TRADE_FIRST&source=about_page" className="w-full sm:w-auto">
-                                        <Button size="smd" className="w-full sm:w-auto rounded-lg bg-gold hover:bg-amber-600 text-white font-bold shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2">
-                                            <span>Get Started Free</span>
-                                            <ArrowRight size={14} />
-                                        </Button>
+                                    <Link
+                                        href="/auth/signup?intent=TRADE_FIRST&source=about_page"
+                                        className={cn(
+                                            buttonVariants({ variant: "gold", size: "smd" }),
+                                            "w-full sm:w-auto rounded-lg bg-gold hover:bg-amber-600 text-white font-bold shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2"
+                                        )}
+                                    >
+                                        <span>Get Started Free</span>
+                                        <ArrowRight size={14} />
                                     </Link>
                                     <a
                                         href={TELEGRAM_CHANNEL_URL}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="w-full sm:w-auto"
+                                        className={cn(
+                                            buttonVariants({ variant: "outline", size: "smd" }),
+                                            "w-full sm:w-auto rounded-lg border-gray-300 dark:border-white/10 bg-white/80 dark:bg-slate-900 text-gray-800 dark:text-gray-200 font-bold flex items-center justify-center gap-2"
+                                        )}
                                     >
-                                        <Button variant="outline" size="smd" className="w-full sm:w-auto rounded-lg border-gray-300 dark:border-white/10 bg-white/80 dark:bg-slate-900 text-gray-800 dark:text-gray-200 font-bold flex items-center justify-center gap-2">
-                                            <Send size={14} className="text-amber-500" />
-                                            <span>Join Trader Community</span>
-                                        </Button>
+                                        <Send size={14} className="text-amber-500" />
+                                        <span>Join Trader Community</span>
                                     </a>
                                 </div>
                             </div>

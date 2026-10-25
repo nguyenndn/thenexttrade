@@ -95,32 +95,34 @@ export function EmailPreviewModal({
                     <div className="flex items-center gap-3">
                         {/* Device Viewport Toggle */}
                         <div className="flex items-center p-1 bg-gray-200/70 dark:bg-white/5 rounded-lg border border-gray-300/60 dark:border-white/10">
-                            <button
+                            <Button
                                 type="button"
+                                variant="ghost"
                                 onClick={() => setViewMode("desktop")}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                                className={`h-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                                     viewMode === "desktop"
-                                        ? "bg-white dark:bg-[#0C0F1B] text-amber-500 shadow-sm"
-                                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                                        ? "bg-white dark:bg-[#0C0F1B] text-amber-500 shadow-sm hover:text-amber-500"
+                                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                                 }`}
                                 aria-label="Desktop Preview"
                             >
                                 <Monitor size={14} />
                                 <span>Desktop</span>
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                                 type="button"
+                                variant="ghost"
                                 onClick={() => setViewMode("mobile")}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                                className={`h-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                                     viewMode === "mobile"
-                                        ? "bg-white dark:bg-[#0C0F1B] text-amber-500 shadow-sm"
-                                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                                        ? "bg-white dark:bg-[#0C0F1B] text-amber-500 shadow-sm hover:text-amber-500"
+                                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                                 }`}
                                 aria-label="Mobile Preview"
                             >
                                 <Smartphone size={14} />
                                 <span>Mobile</span>
-                            </button>
+                            </Button>
                         </div>
 
                         <Button

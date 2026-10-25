@@ -100,13 +100,16 @@ export function MobileExperimentBottomSheet({
                             </h3>
                         </div>
                     </div>
-                    <button
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
                         onClick={onClose}
-                        className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white"
+                        className="h-8 w-8 text-slate-400 hover:text-slate-700 dark:hover:text-white"
                         aria-label="Close"
                     >
-                        <X className="w-5 h-5" />
-                    </button>
+                        <X className="w-4 h-4" />
+                    </Button>
                 </div>
 
                 <p className="text-xs text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 p-3 rounded-lg border border-gray-200 dark:border-slate-800">

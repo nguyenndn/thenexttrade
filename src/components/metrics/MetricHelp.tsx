@@ -13,6 +13,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import { Button } from "@/components/ui/Button";
 import {
     METRIC_DEFINITIONS,
     type MetricId,
@@ -117,13 +118,15 @@ export function MetricHelp({
                 <TooltipProvider delayDuration={150}>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <button
+                            <Button
                                 type="button"
-                                className="inline-flex h-4 w-4 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 dark:hover:bg-white/10 dark:hover:text-gray-200"
+                                variant="ghost"
+                                size="icon"
+                                className="inline-flex h-4 w-4 min-h-0 items-center justify-center rounded-full text-gray-400 p-0 border-0 transition-colors hover:bg-gray-100 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 dark:hover:bg-white/10 dark:hover:text-gray-200"
                                 aria-label={`Explain ${def.label}`}
                             >
                                 <HelpCircle size={13} />
-                            </button>
+                            </Button>
                         </TooltipTrigger>
                         <TooltipContent
                             side={side}
@@ -143,13 +146,15 @@ export function MetricHelp({
             <div className="inline-flex md:hidden">
                 <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
                     <PopoverTrigger asChild>
-                        <button
+                        <Button
                             type="button"
-                            className="inline-flex h-5 w-5 items-center justify-center rounded-full text-gray-400 transition-colors active:bg-gray-100 dark:active:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                            variant="ghost"
+                            size="icon"
+                            className="inline-flex h-5 w-5 min-h-0 items-center justify-center rounded-full text-gray-400 p-0 border-0 transition-colors active:bg-gray-100 dark:active:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
                             aria-label={`Explain ${def.label}`}
                         >
                             <HelpCircle size={14} />
-                        </button>
+                        </Button>
                     </PopoverTrigger>
                     <PopoverContent
                         side={side}

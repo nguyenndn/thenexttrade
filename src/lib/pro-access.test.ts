@@ -48,8 +48,22 @@ vi.mock("@/lib/prisma", () => ({
         user: {
             findUnique: vi.fn(),
         },
+        eABroker: {
+            findMany: vi.fn(),
+        },
     },
 }));
+
+beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(prisma.proEntitlement.update).mockResolvedValue({} as never);
+    vi.mocked(prisma.eABroker.findMany).mockResolvedValue([
+        { name: "Vantage", slug: "vantage" },
+        { name: "Exness", slug: "exness" },
+        { name: "VT Markets", slug: "vtmarkets" },
+        { name: "Ultima Markets", slug: "ultima-markets" },
+    ] as any);
+});
 
 describe("TC-00: VIP & Trial Constants & Whitelists", () => {
     it("has exact parameters according to v1.4.0 specification", () => {
@@ -60,7 +74,12 @@ describe("TC-00: VIP & Trial Constants & Whitelists", () => {
         expect(FUNDING_MIN_BALANCE).toBe(200);
         expect(FUNDING_GRACE_DAYS).toBe(7);
         expect(FUNDING_RECHECK_DAYS).toBe(30);
-        expect(VALID_SYNC_SOURCES).toEqual(["EA_SYNC", "EA_HISTORY", "SUPPORT_SYNC"]);
+        expect(VALID_SYNC_SOURCES).toEqual([
+            "EA_SYNC",
+            "EA_HISTORY",
+            "SUPPORT_SYNC",
+            "CLOUD_WORKER",
+        ]);
         expect(VIP_ELIGIBLE_BROKERS).toEqual(["VANTAGE", "EXNESS", "VTMARKETS", "ULTIMAMARKETS"]);
     });
 });
@@ -203,11 +222,11 @@ describe("TC-05 to TC-14: Account Pro Access & Activity Policy Engine", () => {
 
         expect(result.isPro).toBe(true);
         expect(result.status).toBe("ACTIVE");
-        expect(result.policyState).toBe("ACTIVE");
+        expect(result.policyState).toBe("WARNED");
         expect(result.activityInfo?.daysSinceLastTrade).toBe(8);
     });
 
-    it("TC-07: Account remains ACTIVE even with 15 trading days without trades (funded account stays active)", async () => {
+    it("TC-07: Account is PAUSED after 15 trading days without trades", async () => {
         const now = new Date("2026-09-02T12:00:00Z"); // Wednesday (trading day)
         const fifteenDaysAgo = subtractTradingDays(now, 15);
 
@@ -239,12 +258,12 @@ describe("TC-05 to TC-14: Account Pro Access & Activity Policy Engine", () => {
 
         const result = await getAccountProAccess("user-1", "acc-1", now);
 
-        expect(result.isPro).toBe(true);
-        expect(result.policyState).toBe("ACTIVE");
+        expect(result.isPro).toBe(false);
+        expect(result.policyState).toBe("PAUSED");
         expect(result.activityInfo?.daysSinceLastTrade).toBe(15);
     });
 
-    it("TC-08: Account remains ACTIVE even with volume < 2.0 lots (no volume quota required)", async () => {
+    it("TC-08: Account is PAUSED when rolling 30-day volume is below 2.0 lots", async () => {
         const now = new Date();
         const oneDayAgo = new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000);
 
@@ -276,8 +295,8 @@ describe("TC-05 to TC-14: Account Pro Access & Activity Policy Engine", () => {
 
         const result = await getAccountProAccess("user-1", "acc-1");
 
-        expect(result.isPro).toBe(true);
-        expect(result.policyState).toBe("ACTIVE");
+        expect(result.isPro).toBe(false);
+        expect(result.policyState).toBe("PAUSED");
         expect(result.activityInfo?.rolling30dLots).toBe(1.2);
     });
 
@@ -433,6 +452,98 @@ describe("TC-05 to TC-14: Account Pro Access & Activity Policy Engine", () => {
         expect(result.source).toBe("MANUAL_ADMIN");
         expect(result.policyState).toBe("ACTIVE");
     });
+
+    it("TC-11c: account-level MANUAL_ADMIN bypasses business policy with zero activity", async () => {
+        const now = new Date("2026-09-02T12:00:00Z");
+
+        (prisma.tradingAccount.findFirst as any).mockResolvedValue({
+            id: "acc-manual",
+            broker: "RandomBroker",
+            accountNumber: "9001",
+            balance: 0,
+            currency: "USD",
+            server: "Random-Live",
+            accountType: "REAL",
+            status: "CONNECTED",
+            fundingVerifiedAt: null,
+            fundingAmount: null,
+            fundingLastVerifiedAt: null,
+            fundingGraceUntil: null,
+        });
+        (prisma.proEntitlement.findUnique as any).mockResolvedValue({
+            id: "ent-manual",
+            status: "ACTIVE",
+            source: "MANUAL_ADMIN",
+            expiresAt: null,
+        });
+        (prisma.journalEntry.aggregate as any).mockResolvedValue({
+            _sum: { lotSize: 0 },
+        });
+        (prisma.journalEntry.findFirst as any).mockResolvedValue(null);
+
+        const result = await getAccountProAccess(
+            "user-manual",
+            "acc-manual",
+            now
+        );
+
+        expect(result.isPro).toBe(true);
+        expect(result.status).toBe("ACTIVE");
+        expect(result.source).toBe("MANUAL_ADMIN");
+        expect(result.policyState).toBe("ACTIVE");
+        expect(result.activityInfo?.rolling30dLots).toBe(0);
+        expect(result.fundingInfo?.verified).toBe(false);
+    });
+
+    it("TC-11d: links an unlinked entitlement when broker names normalize equally", async () => {
+        const now = new Date("2026-09-02T12:00:00Z");
+        const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+        vi.mocked(prisma.tradingAccount.findFirst).mockResolvedValue({
+            id: "acc-unlinked",
+            broker: "Vantage Markets",
+            accountNumber: "1001",
+            balance: 500,
+            currency: "USD",
+            server: "Vantage-Live",
+            accountType: "REAL",
+            status: "CONNECTED",
+            fundingVerifiedAt: now,
+            fundingAmount: 500,
+            fundingLastVerifiedAt: now,
+            fundingGraceUntil: null,
+        } as never);
+        vi.mocked(prisma.proEntitlement.findUnique).mockResolvedValue(null);
+        vi.mocked(prisma.proEntitlement.findMany).mockResolvedValue([
+            {
+                id: "ent-unlinked",
+                broker: "Vantage",
+                status: "ACTIVE",
+                source: "IB_VERIFIED",
+                expiresAt: null,
+            },
+        ] as never);
+        vi.mocked(prisma.journalEntry.aggregate).mockResolvedValue({
+            _sum: { lotSize: 2.5 },
+        } as never);
+        vi.mocked(prisma.journalEntry.findFirst).mockResolvedValue({
+            exitDate: oneDayAgo,
+            entryDate: oneDayAgo,
+        } as never);
+
+        const result = await getAccountProAccess(
+            "user-unlinked",
+            "acc-unlinked",
+            now
+        );
+
+        expect(result.isPro).toBe(true);
+        expect(result.status).toBe("ACTIVE");
+        expect(prisma.proEntitlement.update).toHaveBeenCalledWith({
+            where: { id: "ent-unlinked" },
+            data: { tradingAccountId: "acc-unlinked" },
+        });
+    });
 });
 
 describe("TC-12 to TC-15: Anti-Bypass & Security Safeguards", () => {
@@ -485,8 +596,8 @@ describe("TC-12 to TC-15: Anti-Bypass & Security Safeguards", () => {
         const result = await getAccountProAccess("user-1", "acc-1");
 
         expect(result.activityInfo?.rolling30dLots).toBe(0);
-        expect(result.isPro).toBe(true);
-        expect(result.policyState).toBe("ACTIVE");
+        expect(result.isPro).toBe(false);
+        expect(result.policyState).toBe("PAUSED");
     });
 
     it("TC-14: Anti-Bypass: Manual web entries (syncSource: MANUAL) excluded from volume", async () => {
@@ -519,9 +630,114 @@ describe("TC-12 to TC-15: Anti-Bypass & Security Safeguards", () => {
         const result = await getAccountProAccess("user-1", "acc-1");
 
         expect(result.activityInfo?.rolling30dLots).toBe(0);
-        expect(result.isPro).toBe(true);
+        expect(result.isPro).toBe(false);
+        expect(result.policyState).toBe("PAUSED");
+    });
+
+    it("counts CLOUD_WORKER trades as verified cloud-sync volume", async () => {
+        const now = new Date();
+
+        vi.mocked(prisma.tradingAccount.findFirst).mockResolvedValue({
+            id: "acc-cloud",
+            broker: "Vantage",
+            balance: 500,
+            currency: "USD",
+            server: "Vantage-Live",
+            accountType: "REAL",
+            status: "CONNECTED",
+            fundingVerifiedAt: now,
+            fundingAmount: 500,
+            fundingLastVerifiedAt: now,
+            fundingGraceUntil: null,
+        } as never);
+        vi.mocked(prisma.proEntitlement.findUnique).mockResolvedValue({
+            id: "ent-cloud",
+            status: "ACTIVE",
+            source: "IB_VERIFIED",
+            expiresAt: null,
+        } as never);
+        vi.mocked(prisma.journalEntry.aggregate).mockResolvedValue({
+            _sum: { lotSize: 2.5 },
+        } as never);
+        vi.mocked(prisma.journalEntry.findFirst).mockResolvedValue({
+            exitDate: new Date(now.getTime() - 24 * 60 * 60 * 1000),
+            entryDate: new Date(now.getTime() - 24 * 60 * 60 * 1000),
+        } as never);
+
+        const result = await getAccountProAccess(
+            "user-cloud",
+            "acc-cloud",
+            now
+        );
+
+        expect(prisma.journalEntry.aggregate).toHaveBeenCalledWith(
+            expect.objectContaining({
+                where: expect.objectContaining({
+                    syncSource: {
+                        in: expect.arrayContaining(["CLOUD_WORKER"]),
+                    },
+                }),
+            })
+        );
+        expect(result.activityInfo?.rolling30dLots).toBe(2.5);
         expect(result.policyState).toBe("ACTIVE");
     });
+
+    it.each([
+        { label: "account type DEMO", accountType: "DEMO", server: "Vantage-Live" },
+        { label: "contest server", accountType: "STANDARD", server: "Vantage-Contest" },
+        { label: "evaluation account", accountType: "EVALUATION", server: "Vantage-Live" },
+        { label: "trial account", accountType: "TRIAL", server: "Vantage-Live" },
+    ])(
+        "TC-15: $label is excluded from funding and VIP volume",
+        async ({ accountType, server }) => {
+            const now = new Date("2026-09-02T12:00:00Z");
+
+            vi.mocked(prisma.tradingAccount.findFirst).mockResolvedValue({
+                id: "acc-non-live",
+                broker: "Vantage",
+                balance: 5000,
+                currency: "USD",
+                server,
+                accountType,
+                status: "ACTIVE",
+                fundingVerifiedAt: new Date(
+                    now.getTime() - 10 * 24 * 60 * 60 * 1000
+                ),
+                fundingAmount: 5000,
+                fundingLastVerifiedAt: new Date(
+                    now.getTime() - 10 * 24 * 60 * 60 * 1000
+                ),
+                fundingGraceUntil: null,
+            } as never);
+
+            vi.mocked(prisma.proEntitlement.findUnique).mockResolvedValue({
+                id: "ent-non-live",
+                status: "ACTIVE",
+                source: "IB_VERIFIED",
+                expiresAt: null,
+            } as never);
+
+            vi.mocked(prisma.journalEntry.aggregate).mockResolvedValue({
+                _sum: { lotSize: 10 },
+            } as never);
+            vi.mocked(prisma.journalEntry.findFirst).mockResolvedValue({
+                exitDate: new Date(now.getTime() - 24 * 60 * 60 * 1000),
+                entryDate: new Date(now.getTime() - 24 * 60 * 60 * 1000),
+            } as never);
+
+            const result = await getAccountProAccess(
+                "user-non-live",
+                "acc-non-live",
+                now
+            );
+
+            expect(result.activityInfo?.rolling30dLots).toBe(0);
+            expect(result.policyState).toBe("PAUSED");
+            expect(result.fundingInfo?.verified).toBe(false);
+            expect(result.isPro).toBe(false);
+        }
+    );
 });
 
 describe("Trading Days Calculation (skipping Saturday & Sunday)", () => {
@@ -566,6 +782,134 @@ describe("Trading Days Calculation (skipping Saturday & Sunday)", () => {
             const pastDate = subtractTradingDays(refDate, days);
             expect(countTradingDaysBetween(pastDate, refDate)).toBe(days);
         }
+    });
+});
+
+describe("User-level Pro Access aggregation", () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it("grants Pro for a global MANUAL_ADMIN entitlement with no eligible linked account", async () => {
+        (prisma.tradingAccount.findMany as any).mockResolvedValue([]);
+        (prisma.user.findUnique as any).mockResolvedValue({
+            createdAt: new Date("2026-08-01T00:00:00Z"),
+        });
+        (prisma.proEntitlement.findMany as any).mockResolvedValue([
+            {
+                id: "ent-global-manual",
+                status: "ACTIVE",
+                source: "MANUAL_ADMIN",
+                tradingAccountId: null,
+                accountNumber: null,
+                broker: null,
+                expiresAt: null,
+                tradingAccount: null,
+            },
+        ]);
+
+        const result = await getUserProAccess("user-global-manual");
+
+        expect(result.isPro).toBe(true);
+        expect(result.status).toBe("ACTIVE");
+        expect(result.source).toBe("MANUAL_ADMIN");
+        expect(result.policyState).toBe("ACTIVE");
+        expect(result.activityInfo?.rolling30dLots).toBe(0);
+    });
+
+    it("preserves aggregate GRACE status for an eligible entitlement", async () => {
+        const now = new Date();
+        const tradingAccount = {
+            id: "acc-grace",
+            name: "Vantage #1001",
+            broker: "Vantage",
+            accountNumber: "1001",
+            balance: 500,
+            currency: "USD",
+            server: "Vantage-Live",
+            accountType: "REAL",
+            status: "CONNECTED",
+            fundingVerifiedAt: now,
+            fundingAmount: 500,
+            fundingLastVerifiedAt: now,
+            fundingGraceUntil: null,
+        };
+
+        (prisma.tradingAccount.findMany as any).mockResolvedValue([
+            tradingAccount,
+        ]);
+        (prisma.user.findUnique as any).mockResolvedValue({
+            createdAt: new Date("2026-08-01T00:00:00Z"),
+        });
+        (prisma.proEntitlement.findMany as any).mockResolvedValue([
+            {
+                id: "ent-grace",
+                status: "GRACE",
+                source: "IB_VERIFIED",
+                tradingAccountId: "acc-grace",
+                accountNumber: "1001",
+                broker: "Vantage",
+                expiresAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
+                tradingAccount,
+            },
+        ]);
+        (prisma.journalEntry.aggregate as any).mockResolvedValue({
+            _sum: { lotSize: 3 },
+        });
+        (prisma.journalEntry.findFirst as any).mockResolvedValue({
+            exitDate: new Date(now.getTime() - 24 * 60 * 60 * 1000),
+            entryDate: new Date(now.getTime() - 24 * 60 * 60 * 1000),
+        });
+
+        const result = await getUserProAccess("user-grace");
+
+        expect(result.isPro).toBe(true);
+        expect(result.status).toBe("GRACE");
+        expect(result.policyState).toBe("ACTIVE");
+    });
+
+    it("does not grant Pro for an orphaned entitlement on an ineligible broker", async () => {
+        const tradingAccount = {
+            id: "acc-ineligible",
+            name: "Random #2002",
+            broker: "RandomBroker",
+            accountNumber: "2002",
+            balance: 5000,
+            currency: "USD",
+            server: "Random-Live",
+            accountType: "REAL",
+            status: "CONNECTED",
+            fundingVerifiedAt: new Date(),
+            fundingAmount: 5000,
+            fundingLastVerifiedAt: new Date(),
+            fundingGraceUntil: null,
+        };
+
+        (prisma.tradingAccount.findMany as any).mockResolvedValue([
+            tradingAccount,
+        ]);
+        (prisma.user.findUnique as any).mockResolvedValue({
+            createdAt: new Date("2026-08-01T00:00:00Z"),
+        });
+        (prisma.proEntitlement.findMany as any).mockResolvedValue([
+            {
+                id: "ent-ineligible",
+                status: "ACTIVE",
+                source: "IB_VERIFIED",
+                tradingAccountId: null,
+                accountNumber: "2002",
+                broker: "RandomBroker",
+                expiresAt: null,
+                tradingAccount: null,
+            },
+        ]);
+
+        const result = await getUserProAccess("user-ineligible");
+
+        expect(result.isPro).toBe(false);
+        expect(result.status).toBe("NONE");
+        expect(result.accounts[0].status).toBe("NONE");
+        expect(result.accounts[0].isPro).toBe(false);
     });
 });
 
@@ -639,15 +983,16 @@ describe("Cent Account Detection & Lot Size Normalization (100 Cent Lots = 1 Sta
         });
 
         (prisma.journalEntry.findFirst as any).mockResolvedValue({
-            openTime: new Date(),
+            exitDate: new Date(),
+            entryDate: new Date(),
         });
 
         const result = await getAccountProAccess("user-cent-1", "acc-cent-1");
 
         // 100 raw Cent lots traded in 30 days -> should normalize to 1.0 standard lot
         expect(result.activityInfo?.rolling30dLots).toBe(1.0);
-        expect(result.policyState).toBe("ACTIVE");
-        expect(result.isPro).toBe(true);
+        expect(result.policyState).toBe("PAUSED");
+        expect(result.isPro).toBe(false);
     });
 
     it("passes VIP volume qualification when cent volume reaches 200 Cent lots (2.0 Standard lots)", async () => {
@@ -677,7 +1022,8 @@ describe("Cent Account Detection & Lot Size Normalization (100 Cent Lots = 1 Sta
         });
 
         (prisma.journalEntry.findFirst as any).mockResolvedValue({
-            openTime: new Date(),
+            exitDate: new Date(),
+            entryDate: new Date(),
         });
 
         const result = await getAccountProAccess("user-cent-2", "acc-cent-2");

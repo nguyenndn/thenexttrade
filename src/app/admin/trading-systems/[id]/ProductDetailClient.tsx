@@ -63,6 +63,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
             <ProductUsersTable
                 productName={product.name}
                 users={product.activeUsers || []}
+                farmStats={product.farmStats}
             />
 
             {/* Edit Form - same layout as Create page */}

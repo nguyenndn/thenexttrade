@@ -105,11 +105,7 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                                             activeIndicatorClassName={
                                                 activeTabIndicator
                                             }
-                                            activeTextClassName={
-                                                colorTheme === "gold"
-                                                    ? "!text-slate-950 font-bold"
-                                                    : "!text-white font-bold"
-                                            }
+                                            activeTextClassName="!text-white font-bold"
                                         >
                                             <Icon size={15} className="shrink-0" />
                                             <span>{tab.label}</span>

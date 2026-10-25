@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { processWelcomeNudges } from "@/lib/emails/welcome-nudges.server";
 import { requireCronSecret } from "@/lib/api-auth";
+import { recordCronRun } from "@/lib/cron/cron-health.server";
 
 export const dynamic = "force-dynamic";
 
@@ -14,11 +15,13 @@ export const dynamic = "force-dynamic";
  * Auth: Bearer CRON_SECRET
  */
 export async function GET(request: NextRequest) {
+    const cronStartedAt = new Date();
     const cronAuth = requireCronSecret(request);
     if (cronAuth instanceof NextResponse) return cronAuth;
 
     try {
         const result = await processWelcomeNudges();
+        await recordCronRun("welcome-nudges", cronStartedAt, "SUCCESS");
 
         return NextResponse.json({
             success: true,
@@ -26,6 +29,7 @@ export async function GET(request: NextRequest) {
         });
     } catch (error) {
         console.error("[Cron] Welcome Nudges Error:", error);
+        await recordCronRun("welcome-nudges", cronStartedAt, "FAILED", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }

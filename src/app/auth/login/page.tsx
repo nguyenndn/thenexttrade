@@ -191,30 +191,32 @@ export default function LoginPage() {
                 </div>
 
                 <div className="flex rounded-lg border border-amber-900/10 bg-[#F8F1E3] p-1 mb-5 sm:mb-6 dark:bg-white/[0.06]">
-                    <button
+                    <Button
                         type="button"
+                        variant="ghost"
                         onClick={() => switchMode("password")}
-                        className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all min-h-[44px] ${
+                        className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all min-h-[44px] h-auto border-0 ${
                             mode === "password"
-                                ? "bg-white text-slate-950 shadow-sm shadow-amber-900/10 dark:bg-white/[0.06] dark:text-amber-200"
+                                ? "bg-white text-slate-950 shadow-sm shadow-amber-900/10 dark:bg-white/[0.06] dark:text-amber-200 hover:bg-white hover:text-slate-950 dark:hover:bg-white/[0.06] dark:hover:text-amber-200"
                                 : "text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
                         }`}
                     >
                         <Lock size={16} />
                         Password
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="button"
+                        variant="ghost"
                         onClick={() => switchMode("magic")}
-                        className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all min-h-[44px] ${
+                        className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all min-h-[44px] h-auto border-0 ${
                             mode === "magic"
-                                ? "bg-white text-slate-950 shadow-sm shadow-amber-900/10 dark:bg-white/[0.06] dark:text-amber-200"
+                                ? "bg-white text-slate-950 shadow-sm shadow-amber-900/10 dark:bg-white/[0.06] dark:text-amber-200 hover:bg-white hover:text-slate-950 dark:hover:bg-white/[0.06] dark:hover:text-amber-200"
                                 : "text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
                         }`}
                     >
                         <Mail size={16} />
                         Magic Link
-                    </button>
+                    </Button>
                 </div>
 
                 {error && (
@@ -232,7 +234,7 @@ export default function LoginPage() {
                         <Input
                             name="email"
                             type="email"
-                            placeholder="hello@example.com"
+                            placeholder="trader@thenexttrade.com"
                             label="Email"
                             required
                             startIcon={
@@ -342,7 +344,7 @@ export default function LoginPage() {
                         <Input
                             name="email"
                             type="email"
-                            placeholder="hello@example.com"
+                            placeholder="trader@thenexttrade.com"
                             label="Email"
                             required
                             startIcon={
@@ -388,13 +390,14 @@ export default function LoginPage() {
                             <br />
                             Click the link to sign in instantly.
                         </p>
-                        <button
+                        <Button
                             type="button"
+                            variant="ghost"
                             onClick={() => setMagicLinkSent(false)}
-                            className="text-xs sm:text-sm text-amber-700 hover:text-amber-800 hover:underline font-semibold mt-3 sm:mt-4 py-2 px-3 inline-flex items-center justify-center rounded-lg hover:bg-amber-500/10 min-h-[44px] dark:text-amber-300 dark:hover:text-amber-200 transition-colors"
+                            className="text-xs sm:text-sm text-amber-700 hover:text-amber-800 hover:underline font-semibold mt-3 sm:mt-4 py-2 px-3 inline-flex items-center justify-center rounded-lg hover:bg-amber-500/10 min-h-[44px] dark:text-amber-300 dark:hover:text-amber-200 transition-colors h-auto"
                         >
                             Try again with a different email
-                        </button>
+                        </Button>
                     </div>
                 )}
 

@@ -4,9 +4,11 @@ import {
     FUNDING_RECHECK_DAYS,
     FUNDING_GRACE_DAYS,
     FUNDING_MIN_BALANCE,
+    normalizeUsdBalance,
 } from "@/lib/pro-access";
 import { NotificationType, NotificationPriority } from "@prisma/client";
 import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
+import { isLiveTradingAccount } from "@/lib/trading-account-classification";
 
 export interface VipPolicyRunResult {
     scannedCount: number;
@@ -38,10 +40,11 @@ export async function runVipPolicyReconciliation(): Promise<VipPolicyRunResult> 
     }
 
     try {
-        // Fetch all active entitlements linked to trading accounts
+        // Fetch all live entitlements linked to trading accounts. GRACE is
+        // included so funding rechecks cannot be skipped during that state.
         const activeEntitlements = await prisma.proEntitlement.findMany({
             where: {
-                status: "ACTIVE",
+                status: { in: ["ACTIVE", "GRACE"] },
                 tradingAccountId: { not: null },
             },
             include: {
@@ -51,6 +54,10 @@ export async function runVipPolicyReconciliation(): Promise<VipPolicyRunResult> 
                         userId: true,
                         broker: true,
                         balance: true,
+                        currency: true,
+                        server: true,
+                        accountType: true,
+                        status: true,
                         fundingVerifiedAt: true,
                         fundingLastVerifiedAt: true,
                         fundingGraceUntil: true,
@@ -59,9 +66,17 @@ export async function runVipPolicyReconciliation(): Promise<VipPolicyRunResult> 
             },
         });
 
-        result.scannedCount = activeEntitlements.length;
+        // Demo, contest, evaluation, and trial accounts must never affect VIP
+        // policy metrics or produce pause/recheck notifications.
+        const eligibleEntitlements = activeEntitlements.filter(
+            (entitlement) =>
+                entitlement.tradingAccount &&
+                isLiveTradingAccount(entitlement.tradingAccount)
+        );
 
-        for (const entitlement of activeEntitlements) {
+        result.scannedCount = eligibleEntitlements.length;
+
+        for (const entitlement of eligibleEntitlements) {
             const account = entitlement.tradingAccount;
             if (!account || !account.userId) continue;
 
@@ -77,7 +92,14 @@ export async function runVipPolicyReconciliation(): Promise<VipPolicyRunResult> 
                     if (daysSinceRecheck >= FUNDING_RECHECK_DAYS) {
                         result.recheckedFundingCount++;
 
-                        if (account.balance >= FUNDING_MIN_BALANCE) {
+                        const usdBalance = normalizeUsdBalance(
+                            account.balance,
+                            account.currency,
+                            account.server,
+                            account.accountType
+                        );
+
+                        if (usdBalance >= FUNDING_MIN_BALANCE) {
                             // Balance is healthy, renew recheck timestamp
                             await prisma.tradingAccount.update({
                                 where: { id: account.id },
@@ -113,30 +135,24 @@ export async function runVipPolicyReconciliation(): Promise<VipPolicyRunResult> 
                 if (proAccess.policyState === "PAUSED") {
                     result.pausedCount++;
 
-                    // If funding verification expired, expire the DB entitlement
                     const isFundingExpired = proAccess.fundingInfo?.expired;
 
                     if (isFundingExpired) {
-                        await prisma.proEntitlement.update({
-                            where: { id: entitlement.id },
-                            data: {
-                                status: "EXPIRED",
-                                adminNote: "Auto-expired by VIP Policy: Funding verification expired (balance below $200).",
-                            },
-                        });
-
+                        // Keep the entitlement live so a later heartbeat can
+                        // clear the grace period and restore access instantly.
+                        // Pausing remains a derived policy state.
+                        const dayKey = now.toISOString().slice(0, 10);
                         await prisma.notification.create({
                             data: {
                                 userId: account.userId,
                                 type: NotificationType.LICENSE_EXPIRED,
-                                title: "VIP Access Expired",
-                                message: "Your VIP access has expired because account funding fell below the $200 minimum. Top up to reactivate.",
+                                title: "VIP Access Paused: Top Up Required",
+                                message: `Your VIP access is paused because funding stayed below the $${FUNDING_MIN_BALANCE} minimum after the grace period. Top up and keep the EA running to restore it automatically.`,
                                 priority: NotificationPriority.HIGH,
                                 link: NOTIFICATION_ROUTES.VIP_ACCOUNTS,
+                                dedupeKey: `vip-funding-paused-${account.id}-${dayKey}`,
                             },
                         });
-
-                        result.expiredCount++;
                     }
                 }
             } catch (accountErr) {

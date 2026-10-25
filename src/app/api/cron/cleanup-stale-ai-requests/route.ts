@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireCronSecret } from "@/lib/api-auth";
 import { sweepStaleAiRequests } from "@/lib/ai-gateway/quota-service";
+import { recordCronRun } from "@/lib/cron/cron-health.server";
 
 export const dynamic = "force-dynamic";
 
@@ -20,14 +21,17 @@ export const dynamic = "force-dynamic";
  * Security: protected by CRON_SECRET bearer token.
  */
 export async function GET(request: Request) {
+    const cronStartedAt = new Date();
     const cronAuth = requireCronSecret(request);
     if (cronAuth instanceof NextResponse) return cronAuth;
 
     try {
         const cleared = await sweepStaleAiRequests();
+        await recordCronRun("cleanup-stale-ai-requests", cronStartedAt, "SUCCESS");
         return NextResponse.json({ ok: true, cleared });
     } catch (error) {
         console.error("[Cron] Stale AI request cleanup failed:", error);
+        await recordCronRun("cleanup-stale-ai-requests", cronStartedAt, "FAILED", error);
         return NextResponse.json(
             { error: "Stale AI request cleanup failed" },
             { status: 500 }

@@ -60,6 +60,7 @@ export const SAMPLE_JOURNAL_STATS = {
     lossCount: 7,
     totalLots: 15.65,
     totalCommission: -108.50,
+    totalSwap: -24.20,
 };
 
 export const SAMPLE_TRADES: SampleTradeEntry[] = [

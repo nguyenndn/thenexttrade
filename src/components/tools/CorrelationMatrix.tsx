@@ -104,9 +104,13 @@ export function CorrelationMatrix() {
         <div className="space-y-6">
             {/* ── Toolbar ── */}
             <div className="flex items-center justify-between flex-wrap gap-4">
-                <div className="flex gap-2">
+                <div role="tablist" aria-label="Correlation Period" className="flex gap-2">
                     {PERIODS.map((p) => (
-                        <button
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            role="tab"
+                            aria-selected={period === p.value}
                             key={p.value}
                             onClick={() => {
                                 setPeriod(p.value);
@@ -114,9 +118,9 @@ export function CorrelationMatrix() {
                                 setError(null);
                             }}
                             className={cn(
-                                "relative px-4 py-2 rounded-lg text-xs font-bold border transition-colors z-10",
+                                "relative px-4 py-2 rounded-lg text-xs font-bold border transition-colors z-10 h-auto",
                                 period === p.value
-                                    ? "text-white border-transparent"
+                                    ? "text-white border-transparent hover:text-white"
                                     : "bg-white dark:bg-white/5 text-gray-600 dark:text-gray-500 border-dashboard hover:border-primary/50"
                             )}
                         >
@@ -132,7 +136,7 @@ export function CorrelationMatrix() {
                                 />
                             )}
                             {p.label}
-                        </button>
+                        </Button>
                     ))}
                 </div>
                 <Button

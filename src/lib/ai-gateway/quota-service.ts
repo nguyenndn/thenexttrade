@@ -3,17 +3,11 @@ import { prisma } from "@/lib/prisma";
 import { getUserProAccess } from "@/lib/pro-access";
 
 const PRO_LIMIT = 50;
-const TRIAL_LIMIT = 20;
 const FREE_LIMIT = 10;
 
 function getDailyLimitForUser(proAccess: {
     isPro: boolean;
-    status?: string;
-    trialInfo?: { isTrial?: boolean } | null;
 }): number {
-    if (proAccess.status === "TRIAL" || proAccess.trialInfo?.isTrial) {
-        return TRIAL_LIMIT;
-    }
     return proAccess.isPro ? PRO_LIMIT : FREE_LIMIT;
 }
 

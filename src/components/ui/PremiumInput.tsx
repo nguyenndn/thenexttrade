@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { LucideIcon, Eye, EyeOff } from "lucide-react";
+import { Button } from "./Button";
 
 export interface PremiumInputProps
     extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "prefix"> {
@@ -63,21 +64,24 @@ const PremiumInput = React.forwardRef<HTMLInputElement, PremiumInputProps>(
                         {...props}
                     />
                     {type === "password" && (
-                        <button
+                        <Button
                             type="button"
+                            variant="ghost"
+                            size="icon"
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 setShowPassword(!showPassword);
                             }}
-                            className="absolute z-10 inset-y-0 right-0 px-3 flex items-center cursor-pointer text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                            aria-label={showPassword ? "Hide password" : "Show password"}
+                            className="absolute z-10 inset-y-0 right-0 h-full w-10 flex items-center justify-center p-0 rounded-r-lg rounded-l-none text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors border-0"
                         >
                             {showPassword ? (
                                 <EyeOff size={16} />
                             ) : (
                                 <Eye size={16} />
                             )}
-                        </button>
+                        </Button>
                     )}
                 </div>
                 {error && (

@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/Button";
 import { CalcInput } from "./CalcInput";
 import {
     CalcResultPrimary,
@@ -99,18 +100,21 @@ export function CompoundingCalc() {
                     <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                         Period Type
                     </label>
-                    <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-lg gap-1">
+                    <div role="tablist" aria-label="Period Type" className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-lg gap-1">
                         {PERIOD_OPTIONS.map((opt) => (
-                            <button
+                            <Button
                                 key={opt.id}
                                 type="button"
+                                variant="ghost"
+                                role="tab"
+                                aria-selected={inputs.periodType === opt.id}
                                 onClick={() =>
                                     setInputs({ ...inputs, periodType: opt.id })
                                 }
                                 className={cn(
-                                    "relative flex-1 py-2.5 rounded-lg font-bold text-xs transition-colors z-10",
+                                    "relative flex-1 py-2.5 rounded-lg font-bold text-xs transition-colors z-10 h-auto border-0",
                                     inputs.periodType === opt.id
-                                        ? "text-white"
+                                        ? "text-white hover:text-white"
                                         : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white"
                                 )}
                             >
@@ -126,7 +130,7 @@ export function CompoundingCalc() {
                                     />
                                 )}
                                 {opt.label}
-                            </button>
+                            </Button>
                         ))}
                     </div>
                 </div>

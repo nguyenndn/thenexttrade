@@ -2,7 +2,8 @@ import { cache } from "react";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { TradeShareCard } from "@/components/journal/TradeShareCard";
-import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Medal } from "lucide-react";
 import Image from "next/image";
@@ -297,14 +298,18 @@ export default async function SharePage({ params }: SharePageProps) {
                                 </p>
                             </div>
 
-                            <Link href="/auth/signup">
-                                <Button size="smd" className="rounded-lg font-bold bg-gold hover:bg-amber-600 text-white shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
-                                    Get Started Free
-                                    <ArrowRight
-                                        size={14}
-                                        className="ml-2"
-                                    />
-                                </Button>
+                            <Link
+                                href="/auth/signup"
+                                className={cn(
+                                    buttonVariants({ variant: "gold", size: "smd" }),
+                                    "rounded-lg font-bold bg-gold hover:bg-amber-600 text-white shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+                                )}
+                            >
+                                Get Started Free
+                                <ArrowRight
+                                    size={14}
+                                    className="ml-2"
+                                />
                             </Link>
 
                             {/* Social proof */}

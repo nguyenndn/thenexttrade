@@ -36,12 +36,27 @@ export interface EALicenseWithUser extends EALicense {
         image: string | null;
         createdAt: Date;
     };
+    licenseKey?: string | null;
+    tradingAccountId?: string | null;
+    balance?: number | null;
+    equity?: number | null;
+    currency?: string | null;
+    lastHeartbeat?: Date | string | null;
+    accountType?: string | null;
 }
 
 // Form Inputs
 export interface SubmitAccountInput {
     broker: string;
     accountNumber: string;
+}
+
+export interface AdminCreateLicenseInput {
+    userEmail: string;
+    broker: string;
+    accountNumber: string;
+    expiryDate?: Date;
+    note?: string;
 }
 
 export interface ApproveAccountInput {

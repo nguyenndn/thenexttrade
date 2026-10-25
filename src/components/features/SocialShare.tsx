@@ -8,6 +8,7 @@ import {
     Send,
     ThumbsUp,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // X (formerly Twitter) icon - lucide doesn't have it yet
 const XIcon = ({
@@ -186,9 +187,12 @@ export default function SocialShare({
                     <PinterestIcon size={18} />
                 </a>
                 <div className="w-6 h-[1px] bg-gray-100 dark:bg-white/10 my-1"></div>
-                <button
+                <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
                     onClick={copyToClipboard}
-                    className="text-gray-500 hover:text-gold hover:scale-125 transition-transform"
+                    className="h-8 w-8 text-gray-500 hover:text-gold hover:scale-125 transition-transform p-0"
                     title="Copy Link"
                     aria-label="Copy Link"
                 >
@@ -201,18 +205,22 @@ export default function SocialShare({
                     ) : (
                         <LinkIcon size={20} strokeWidth={2.5} />
                     )}
-                </button>
+                </Button>
                 {articleId && (
                     <>
                         <div className="w-6 h-[1px] bg-gray-100 dark:bg-white/10 my-1"></div>
-                        <button
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
                             onClick={handleVoteToggle}
                             disabled={isToggling}
-                            className={`relative hover:scale-125 transition-all duration-300 disabled:opacity-70 ${
+                            className={cn(
+                                "relative h-8 w-8 hover:scale-125 transition-all duration-300 disabled:opacity-70 p-0",
                                 voted
                                     ? "text-gold"
                                     : "text-gray-500 hover:text-gold"
-                            }`}
+                            )}
                             title={
                                 voted ? "Remove your vote" : "Mark as helpful"
                             }
@@ -236,7 +244,7 @@ export default function SocialShare({
                                     {voteCount}
                                 </span>
                             )}
-                        </button>
+                        </Button>
                     </>
                 )}
             </div>

@@ -1,4 +1,4 @@
-import { Activity, Trophy, Layers, Target, Scale, Receipt } from "lucide-react";
+import { Activity, Trophy, Layers, Target, Scale, Receipt, Repeat } from "lucide-react";
 
 interface StatsProps {
     stats: {
@@ -9,6 +9,7 @@ interface StatsProps {
         lossCount: number;
         totalLots?: number;
         totalCommission?: number;
+        totalSwap?: number;
     };
 }
 
@@ -64,6 +65,28 @@ export default function JournalStats({ stats }: StatsProps) {
             desc: "Broker fees deducted",
         },
         {
+            title: "Total Swap",
+            value: new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+                signDisplay: "auto",
+            }).format(stats.totalSwap || 0),
+            icon: Repeat,
+            color:
+                (stats.totalSwap || 0) > 0
+                    ? "text-primary"
+                    : (stats.totalSwap || 0) < 0
+                      ? "text-rose-500 dark:text-rose-400"
+                      : "text-gray-700 dark:text-gray-300",
+            bg:
+                (stats.totalSwap || 0) > 0
+                    ? "bg-primary/10"
+                    : (stats.totalSwap || 0) < 0
+                      ? "bg-rose-50 dark:bg-rose-500/10"
+                      : "bg-gray-100 dark:bg-white/5",
+            desc: "Overnight rollover fees",
+        },
+        {
             title: "W/L Ratio",
             value: `${stats.winCount} / ${stats.lossCount}`,
             icon: Target,
@@ -85,7 +108,7 @@ export default function JournalStats({ stats }: StatsProps) {
     ];
 
     return (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 sm:gap-4 mb-6">
             {cards.map((card, index) => {
                 const Icon = card.icon;
                 return (

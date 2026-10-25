@@ -136,9 +136,9 @@ export default function QuizRunnerPage() {
                     </div>
 
                     <div>
-                        <h2 className="text-2xl font-bold mb-2">
+                        <h1 className="text-2xl font-bold mb-2">
                             {results.passed ? "Quiz Passed!" : "Quiz Failed"}
-                        </h2>
+                        </h1>
                         <p className="text-gray-600 dark:text-gray-300">
                             You scored{" "}
                             <span className="font-bold text-gray-700 dark:text-white">
@@ -192,9 +192,9 @@ export default function QuizRunnerPage() {
                 </div>
                 <div className="flex-1 flex items-center justify-center p-6">
                     <div className="bg-white dark:bg-[#151925] rounded-xl p-8 max-w-md w-full text-center shadow-xl border border-dashboard space-y-4">
-                        <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+                        <h1 className="text-xl font-bold text-gray-800 dark:text-white">
                             No Questions Available
-                        </h2>
+                        </h1>
                         <p className="text-sm text-gray-600 dark:text-gray-300">
                             This quiz does not have any questions available yet. Please check back later.
                         </p>
@@ -245,9 +245,9 @@ export default function QuizRunnerPage() {
 
             <div className="flex-1 flex flex-col max-w-2xl w-full mx-auto p-6 justify-center">
                 <div className="mb-8">
-                    <h2 className="text-2xl font-bold mb-6 leading-relaxed">
+                    <h1 className="text-2xl font-bold mb-6 leading-relaxed">
                         {currentQ.text}
-                    </h2>
+                    </h1>
 
                     <div className="space-y-4">
                         {currentQ.options?.map((opt: any) => {

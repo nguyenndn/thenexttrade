@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { LessonPreviewModal } from "@/components/academy/LessonPreviewModal";
@@ -847,7 +848,10 @@ export function AcademyTree({
                                         className="relative z-20 flex-shrink-0 order-1 md:order-none"
                                     >
                                         {isLevelCompleted && hasContent ? (
-                                            <button
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="icon"
                                                 onClick={() =>
                                                     setCelebration({
                                                         active: true,
@@ -856,7 +860,7 @@ export function AcademyTree({
                                                         autoDismiss: false,
                                                     })
                                                 }
-                                                className="block group relative cursor-pointer"
+                                                className="block group relative cursor-pointer p-0 h-auto w-auto rounded-full hover:bg-transparent"
                                                 aria-label={`View Level ${level.order} achievement`}
                                             >
                                                 {/* Unlock burst effect */}
@@ -894,7 +898,7 @@ export function AcademyTree({
                                                         className="text-emerald-500 relative z-10"
                                                     />
                                                 </motion.div>
-                                            </button>
+                                            </Button>
                                         ) : isLevelLocked || !hasContent ? (
                                             <motion.div
                                                 whileHover={{
@@ -1196,8 +1200,10 @@ export function AcademyTree({
                                                                 }}
                                                                 className="w-full flex justify-center md:block"
                                                             >
-                                                                <button
+                                                                <Button
                                                                     type="button"
+                                                                    variant="outline"
+                                                                    size="sm"
                                                                     onClick={() =>
                                                                         setSelectedQuestModule(
                                                                             {
@@ -1207,7 +1213,7 @@ export function AcademyTree({
                                                                         )
                                                                     }
                                                                     className={cn(
-                                                                        "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs text-left cursor-pointer",
+                                                                        "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs text-left h-auto font-normal",
                                                                         "bg-emerald-50 dark:bg-emerald-500/5 border-emerald-200 dark:border-emerald-500/20",
                                                                         "hover:border-emerald-400 dark:hover:border-emerald-500/40 hover:shadow-md hover:shadow-emerald-500/10",
                                                                         isEven
@@ -1239,7 +1245,7 @@ export function AcademyTree({
                                                                                 : "rotate-180 group-hover:-translate-x-0.5"
                                                                         )}
                                                                     />
-                                                                </button>
+                                                                </Button>
                                                             </motion.div>
                                                         );
                                                     }
@@ -1343,8 +1349,10 @@ export function AcademyTree({
                                                                         ease: "easeInOut",
                                                                     }}
                                                                 />
-                                                                <button
+                                                                <Button
                                                                     type="button"
+                                                                    variant="outline"
+                                                                    size="sm"
                                                                     onClick={() =>
                                                                         setSelectedQuestModule(
                                                                             {
@@ -1354,7 +1362,7 @@ export function AcademyTree({
                                                                         )
                                                                     }
                                                                     className={cn(
-                                                                        "group flex items-center gap-2.5 py-2.5 px-3 rounded-lg border-2 transition-all w-full max-w-[85%] sm:max-w-xs relative z-10 text-left cursor-pointer",
+                                                                        "group flex items-center gap-2.5 py-2.5 px-3 rounded-lg border-2 transition-all w-full max-w-[85%] sm:max-w-xs relative z-10 text-left h-auto font-normal",
                                                                         "bg-white dark:bg-white/[0.03] border-gold/60 dark:border-gold/40",
                                                                         "hover:border-gold dark:hover:border-gold/60 hover:shadow-md hover:shadow-amber-500/10",
                                                                         isEven
@@ -1408,7 +1416,7 @@ export function AcademyTree({
                                                                                 : "rotate-180 group-hover:-translate-x-0.5"
                                                                         )}
                                                                     />
-                                                                </button>
+                                                                </Button>
                                                             </motion.div>
                                                         );
                                                     }
@@ -1447,8 +1455,10 @@ export function AcademyTree({
                                                             }}
                                                             className="w-full flex justify-center md:block"
                                                         >
-                                                            <button
+                                                            <Button
                                                                 type="button"
+                                                                variant="outline"
+                                                                size="sm"
                                                                 onClick={() =>
                                                                     setSelectedQuestModule(
                                                                         {
@@ -1458,7 +1468,7 @@ export function AcademyTree({
                                                                     )
                                                                 }
                                                                 className={cn(
-                                                                    "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs text-left cursor-pointer",
+                                                                    "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs text-left h-auto font-normal",
                                                                     "bg-white dark:bg-white/[0.03] border-dashboard ",
                                                                     "hover:border-gold/50 dark:hover:border-gold/30 hover:shadow-md hover:shadow-amber-500/5",
                                                                     isEven
@@ -1508,7 +1518,7 @@ export function AcademyTree({
                                                                             : "rotate-180 group-hover:-translate-x-0.5"
                                                                     )}
                                                                 />
-                                                            </button>
+                                                            </Button>
                                                         </motion.div>
                                                     );
                                                 }
@@ -1584,44 +1594,59 @@ export function AcademyTree({
                                 <span className="text-xs font-bold text-gray-600 flex items-center gap-1">
                                     <FlaskConical size={12} /> DEV TEST
                                 </span>
-                                <button
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
                                     onClick={() => setDevOpen(false)}
-                                    className="text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                                    className="h-6 w-6 text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 transition-colors p-0"
                                     aria-label="Close dev panel"
                                 >
                                     <X size={14} />
-                                </button>
+                                </Button>
                             </div>
-                            <button
+                            <Button
+                                type="button"
+                                variant="primary"
+                                size="sm"
                                 onClick={() => handleDevAction("next")}
                                 disabled={devLoading}
-                                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-primary/10 hover:bg-primary/20 text-primary transition-colors disabled:opacity-50"
+                                className="w-full flex items-center justify-start gap-2 px-3 py-2 text-sm font-medium h-auto"
                             >
                                 <Zap size={14} />
                                 {devLoading
                                     ? "Processing..."
                                     : "Complete Next Lesson"}
-                            </button>
-                            <button
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
                                 onClick={() => handleDevAction("module")}
                                 disabled={devLoading}
-                                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-cyan-50 hover:bg-cyan-100 dark:bg-cyan-500/10 dark:hover:bg-cyan-500/20 text-cyan-600 transition-colors disabled:opacity-50"
+                                className="w-full flex items-center justify-start gap-2 px-3 py-2 text-sm font-medium bg-cyan-50 hover:bg-cyan-100 dark:bg-cyan-500/10 dark:hover:bg-cyan-500/20 text-cyan-600 border-cyan-200 dark:border-cyan-500/20 transition-colors h-auto"
                             >
                                 <Layers size={14} />
                                 {devLoading
                                     ? "Processing..."
                                     : "Complete Module"}
-                            </button>
-                            <button
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
                                 onClick={() => handleDevAction("reset")}
                                 disabled={devLoading}
-                                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 text-red-600 transition-colors disabled:opacity-50"
+                                className="w-full flex items-center justify-start gap-2 px-3 py-2 text-sm font-medium bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 text-red-600 border-red-200 dark:border-red-500/20 transition-colors h-auto"
                             >
                                 <RotateCcw size={14} />
                                 Reset All Progress
-                            </button>
+                            </Button>
                             <div className="border-t border-dashboard pt-2 mt-1">
-                                <button
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
                                     onClick={() => {
                                         const titles = levels.reduce(
                                             (acc, l) => {
@@ -1643,23 +1668,30 @@ export function AcademyTree({
                                             prev >= 12 ? 1 : prev + 1
                                         );
                                     }}
-                                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-amber-50 hover:bg-amber-100 dark:bg-amber-500/10 dark:hover:bg-amber-500/20 text-amber-600 transition-colors"
+                                    className="w-full flex items-center justify-start gap-2 px-3 py-2 text-sm font-medium bg-amber-50 hover:bg-amber-100 dark:bg-amber-500/10 dark:hover:bg-amber-500/20 text-amber-600 border-amber-200 dark:border-amber-500/20 transition-colors h-auto"
                                 >
                                     <Trophy size={14} />
                                     Test Level {devTestLevel} Effect
-                                </button>
+                                </Button>
                             </div>
                         </motion.div>
                     ) : (
-                        <motion.button
+                        <motion.div
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
-                            onClick={() => setDevOpen(true)}
-                            className="w-12 h-12 rounded-full bg-amber-500 hover:bg-amber-600 text-white shadow-lg flex items-center justify-center transition-colors"
-                            title="Dev Test Panel"
                         >
-                            <FlaskConical size={20} />
-                        </motion.button>
+                            <Button
+                                type="button"
+                                variant="primary"
+                                size="icon"
+                                onClick={() => setDevOpen(true)}
+                                className="w-12 h-12 rounded-full bg-amber-500 hover:bg-amber-600 text-white shadow-lg flex items-center justify-center transition-colors p-0"
+                                aria-label="Dev Test Panel"
+                                title="Dev Test Panel"
+                            >
+                                <FlaskConical size={20} />
+                            </Button>
+                        </motion.div>
                     )}
                 </div>
             )}

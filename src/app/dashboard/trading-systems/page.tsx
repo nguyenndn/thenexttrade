@@ -5,6 +5,11 @@ import { prisma } from "@/lib/prisma";
 import { AccountStatus } from "@prisma/client";
 import { TradingSystemsClient } from "@/components/dashboard/trading-systems/TradingSystemsClient";
 import { getMyVipRequest, getVipLink } from "@/actions/vip-request";
+import { ensureTradingAccountLicenseKey } from "@/lib/ea/github-license-sync.server";
+import type {
+    AccountLicenseItem,
+    SelectableTradingAccount,
+} from "@/components/dashboard/trading-systems/LicenseAccountsPanel";
 
 export const metadata: Metadata = {
     title: "Trading Systems | TheNextTrade",
@@ -26,7 +31,7 @@ export default async function TradingSystemsPage() {
         downloadCount,
         vipRequest,
         vipLink,
-        tradingAccountCount,
+        tradingAccounts,
     ] = await Promise.all([
         prisma.eALicense.findMany({
             where: { userId: user.id },
@@ -41,23 +46,147 @@ export default async function TradingSystemsPage() {
         }),
         getMyVipRequest(),
         getVipLink(),
-        prisma.tradingAccount.count({ where: { userId: user.id } }),
+        prisma.tradingAccount.findMany({
+            where: { userId: user.id },
+            select: {
+                id: true,
+                name: true,
+                accountNumber: true,
+                broker: true,
+                platform: true,
+                accountType: true,
+                balance: true,
+                currency: true,
+                apiKey: true,
+                ibAttribution: true,
+                proEntitlement: {
+                    select: {
+                        status: true,
+                        expiresAt: true,
+                    },
+                },
+            },
+            orderBy: { createdAt: "desc" },
+        }),
     ]);
 
-    // Check for Approved License
-    const hasApprovedLicense = licenses.some(
-        (l) =>
-            l.status === AccountStatus.APPROVED &&
-            (!l.expiryDate || l.expiryDate >= new Date())
+    const now = new Date();
+    const accountByNumber = new Map<string, (typeof tradingAccounts)[number]>();
+    for (const acc of tradingAccounts) {
+        if (acc.accountNumber) {
+            accountByNumber.set(acc.accountNumber.trim(), acc);
+        }
+    }
+
+    const accountLicensesMap = new Map<string, AccountLicenseItem>();
+
+    for (const lic of licenses) {
+        const acctNum = lic.accountNumber.trim();
+        const isApproved =
+            lic.status === AccountStatus.APPROVED &&
+            (!lic.expiryDate || lic.expiryDate >= now);
+
+        const matchedAcc = accountByNumber.get(acctNum);
+        let licenseKey: string | null = null;
+
+        if (isApproved) {
+            if (matchedAcc?.apiKey) {
+                licenseKey = matchedAcc.apiKey;
+            } else {
+                const ensured = await ensureTradingAccountLicenseKey({
+                    userId: user.id,
+                    broker: lic.broker,
+                    accountNumber: acctNum,
+                    isApproved: true,
+                });
+                licenseKey = ensured.licenseKey;
+            }
+        }
+
+        accountLicensesMap.set(acctNum, {
+            id: lic.id,
+            licenseId: lic.id,
+            accountNumber: acctNum,
+            broker: lic.broker,
+            status: isApproved
+                ? "APPROVED"
+                : (lic.status as AccountLicenseItem["status"]),
+            licenseKey,
+            rejectReason: lic.rejectReason,
+        });
+    }
+
+    // Also include any TradingAccount that was verified via VIP / IB Attribution
+    for (const acc of tradingAccounts) {
+        const acctNum = acc.accountNumber?.trim();
+        if (!acctNum || accountLicensesMap.has(acctNum)) continue;
+
+        const hasActivePro =
+            acc.proEntitlement &&
+            (acc.proEntitlement.status === "ACTIVE" ||
+                acc.proEntitlement.status === "GRACE") &&
+            (!acc.proEntitlement.expiresAt ||
+                acc.proEntitlement.expiresAt >= now);
+
+        const isIbApproved =
+            acc.ibAttribution === "VERIFIED" ||
+            acc.ibAttribution === "CONFIRMED" ||
+            Boolean(hasActivePro);
+
+        if (isIbApproved) {
+            let licenseKey = acc.apiKey;
+            if (!licenseKey) {
+                const ensured = await ensureTradingAccountLicenseKey({
+                    userId: user.id,
+                    broker: acc.broker || "Partner Broker",
+                    accountNumber: acctNum,
+                    isApproved: true,
+                });
+                licenseKey = ensured.licenseKey;
+            }
+            accountLicensesMap.set(acctNum, {
+                id: acc.id,
+                licenseId: null,
+                accountNumber: acctNum,
+                broker: acc.broker || "Partner Broker",
+                status: "APPROVED",
+                licenseKey,
+            });
+        }
+    }
+
+    const accountLicenses = Array.from(accountLicensesMap.values());
+    const hasApprovedLicense = accountLicenses.some(
+        (item) => item.status === "APPROVED"
+    );
+
+    const userTradingAccounts: SelectableTradingAccount[] = tradingAccounts.map(
+        (acc) => {
+            const acctNum = acc.accountNumber?.trim() || null;
+            const matchedLic = acctNum ? accountLicensesMap.get(acctNum) : null;
+            return {
+                id: acc.id,
+                name: acc.name || "Trading Account",
+                broker: acc.broker || "Broker",
+                accountNumber: acctNum,
+                platform: acc.platform || "MT5",
+                accountType: acc.accountType || null,
+                balance: Number(acc.balance ?? 0),
+                currency: acc.currency || "USD",
+                licenseStatus: matchedLic ? matchedLic.status : "UNREGISTERED",
+            };
+        }
     );
 
     return (
         <div className="space-y-4">
             <TradingSystemsClient
                 licenses={licenses}
+                accountLicenses={accountLicenses}
+                userTradingAccounts={userTradingAccounts}
                 products={products}
                 hasApprovedLicense={hasApprovedLicense}
-                hasAccount={tradingAccountCount > 0}
+                hasAccount={tradingAccounts.length > 0}
                 hasDownloaded={downloadCount > 0}
                 vipRequest={vipRequest}
                 vipLink={vipLink}

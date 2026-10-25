@@ -622,17 +622,19 @@ export function QuizClient({
                                                         option.id;
 
                                                     return (
-                                                        <button
+                                                        <Button
                                                             key={option.id}
+                                                            type="button"
+                                                            variant="ghost"
                                                             onClick={() =>
                                                                 handleSelectOption(
                                                                     option.id
                                                                 )
                                                             }
                                                             className={cn(
-                                                                "w-full text-left p-4 rounded-lg border transition-all duration-200",
+                                                                "w-full text-left p-4 rounded-lg border transition-all duration-200 h-auto font-normal justify-start",
                                                                 isSelected
-                                                                    ? "border-primary bg-primary/5 ring-2 ring-primary/20 text-gray-900 dark:text-white"
+                                                                    ? "border-primary bg-primary/5 ring-2 ring-primary/20 text-gray-900 dark:text-white hover:bg-primary/5"
                                                                     : "border-dashboard hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300"
                                                             )}
                                                         >
@@ -655,7 +657,7 @@ export function QuizClient({
                                                                     }
                                                                 </span>
                                                             </div>
-                                                        </button>
+                                                        </Button>
                                                     );
                                                 }
                                             )}
@@ -677,19 +679,21 @@ export function QuizClient({
 
                                 <div className="flex gap-1.5">
                                     {quiz.questions.map((q, idx) => (
-                                        <button
+                                        <Button
                                             key={q.id}
+                                            type="button"
+                                            variant="ghost"
                                             onClick={() =>
                                                 setCurrentQuestion(idx)
                                             }
                                             aria-label={`Go to question ${idx + 1}`}
                                             className={cn(
-                                                "w-2.5 h-2.5 rounded-full transition-all",
+                                                "min-h-0 border-0 p-0 rounded-full transition-all w-2.5 h-2.5",
                                                 idx === currentQuestion
-                                                    ? "bg-primary scale-125"
+                                                    ? "bg-primary scale-125 hover:bg-primary"
                                                     : answers[q.id]
-                                                      ? "bg-primary/40"
-                                                      : "bg-gray-200 dark:bg-white/10"
+                                                      ? "bg-primary/40 hover:bg-primary/60"
+                                                      : "bg-gray-200 dark:bg-white/10 hover:bg-gray-300"
                                             )}
                                         />
                                     ))}

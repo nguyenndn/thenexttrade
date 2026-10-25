@@ -15,6 +15,9 @@ vi.mock("@/lib/prisma", () => ({
         notification: {
             createMany: vi.fn(),
         },
+        securityLog: {
+            create: vi.fn(),
+        },
     },
 }));
 
@@ -65,7 +68,7 @@ describe("notifyAdminsOfVipRequest", () => {
         expect(first.title).toContain("ULTIMAMARKETS (1610076507)");
         expect(first.message).toContain("Trader Joe");
         expect(first.message).toContain("$17000");
-        expect(first.link).toBe(`${NOTIFICATION_ROUTES.VIP_PIPELINE_ADMIN}?status=PENDING`);
+        expect(first.link).toBe(`${NOTIFICATION_ROUTES.ADMIN_USERS}/user-456?tab=vip-broker`);
         expect(first.dedupeKey).toBe("admin-vip-req-req-123-admin-1");
     });
 });
@@ -116,7 +119,35 @@ describe("notifyAdminsOfNewAccount", () => {
         expect(first.message).toContain("Kee");
         expect(first.message).toContain("ULTIMAMARKETS #924399");
         expect(first.message).toContain("UltimaMarkets-Demo");
-        expect(first.link).toBe(`${NOTIFICATION_ROUTES.ADMIN_USERS}/user-456`);
+        expect(first.link).toBe(`${NOTIFICATION_ROUTES.ADMIN_USERS}/user-456?tab=accounts`);
         expect(first.dedupeKey).toBe("admin-new-account-acc-123-admin-1");
+    });
+
+    it("retries delivery and records a durable failure without throwing", async () => {
+        vi.mocked(prisma.profile.findMany).mockResolvedValueOnce([
+            { userId: "admin-1" },
+        ] as any);
+        vi.mocked(prisma.notification.createMany)
+            .mockRejectedValueOnce(new Error("temporary outage"))
+            .mockRejectedValueOnce(new Error("temporary outage"))
+            .mockRejectedValueOnce(new Error("temporary outage"));
+
+        await expect(
+            notifyAdminsOfNewAccount({
+                accountId: "acc-123",
+                userId: "user-456",
+                broker: "EXNESS",
+                accountNumber: "924399",
+            })
+        ).resolves.toBeUndefined();
+
+        expect(prisma.notification.createMany).toHaveBeenCalledTimes(3);
+        expect(prisma.securityLog.create).toHaveBeenCalledWith(
+            expect.objectContaining({
+                data: expect.objectContaining({
+                    type: "ADMIN_NOTIFICATION_FAILED",
+                }),
+            })
+        );
     });
 });

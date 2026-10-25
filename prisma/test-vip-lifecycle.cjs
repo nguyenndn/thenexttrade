@@ -261,13 +261,13 @@ async function runSimulation() {
         );
 
         // ====================================================================
-        // STEP 7: PERIODIC 30-DAY FUNDING RECHECK (BALANCE DROPPED TO $200) -> 7-DAY GRACE
+        // STEP 7: PERIODIC 30-DAY FUNDING RECHECK (BALANCE DROPPED TO $199) -> 7-DAY GRACE
         // ====================================================================
         const graceDeadline = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
         await prisma.tradingAccount.update({
             where: { id: account.id },
             data: {
-                balance: 200,
+                balance: 199,
                 fundingLastVerifiedAt: new Date(now.getTime() - 32 * 24 * 60 * 60 * 1000), // 32 days ago
                 fundingGraceUntil: graceDeadline,
             },
@@ -278,7 +278,7 @@ async function runSimulation() {
 
         await logStep(
             7,
-            "Periodic Funding Check (<$300 balance) -> 7-Day Grace Period Triggered",
+            "Periodic Funding Check (<$200 balance) -> 7-Day Grace Period Triggered",
             inGrace === true,
             `fundingGraceUntil: ${graceAccount.fundingGraceUntil.toISOString()}, inGrace: ${inGrace}`
         );
@@ -344,7 +344,7 @@ async function runSimulation() {
         );
 
         console.log("\n================================================================");
-        console.log("🎉 ALL 9 LIFECYCLE SIMULATION STAGES COMPLETED & VERIFIED 100%!");
+        console.log("🎉 ALL 9 LIFECYCLE SIMULATION STAGES COMPLETED & ASSERTED!");
         console.log("================================================================");
     } finally {
         // --- CLEANUP TEST DATA ---

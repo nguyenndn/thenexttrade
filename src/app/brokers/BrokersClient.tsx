@@ -11,6 +11,7 @@ import {
     Bitcoin,
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
+import { Button } from "@/components/ui/Button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { ReviewBadge } from "./ReviewModal";
 import partnersData from "@/config/partners.json";
@@ -158,17 +159,14 @@ function PartnerCard({
                         <ExternalLink size={13} />
                     </a>
                 ) : (
-                    <button
+                    <Button
                         disabled
-                        className={buttonVariants({
-                            variant: "outline",
-                            size: "smd",
-                            className:
-                                "w-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 font-bold cursor-not-allowed",
-                        })}
+                        variant="outline"
+                        size="smd"
+                        className="w-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 font-bold cursor-not-allowed"
                     >
                         Coming Soon
-                    </button>
+                    </Button>
                 )}
             </div>
         </div>

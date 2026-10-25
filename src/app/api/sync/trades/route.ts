@@ -363,6 +363,38 @@ export async function POST(request: NextRequest) {
                 });
             }
 
+            try {
+                const { recordEaProductTelemetry } = await import(
+                    "@/lib/ea/telemetry.server"
+                );
+                await recordEaProductTelemetry({
+                    userId: user.id,
+                    tradingAccountId: dbAccount.id,
+                    accountNumber: String(accountNumber),
+                    eventType: "SYNC",
+                    productSlug:
+                        (acctSync as any).productSlug ||
+                        (body as any).productSlug ||
+                        "trade-manager",
+                    eaName:
+                        (acctSync as any).eaName ||
+                        (body as any).eaName ||
+                        "Trade Manager",
+                    eaVersion:
+                        (acctSync as any).eaVersion ||
+                        (body as any).eaVersion ||
+                        "Trade Manager",
+                    balance: accountUpdate.balance,
+                    equity: accountUpdate.equity,
+                    currency: currency || "USD",
+                    broker: broker || null,
+                    server: server || null,
+                    syncSource: "APP_SYNC",
+                });
+            } catch {
+                // Non-blocking telemetry error
+            }
+
             results[accountNumber] = { imported, updated, skipped, errors };
         }
 

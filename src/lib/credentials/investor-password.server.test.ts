@@ -54,7 +54,7 @@ describe("getInvestorPasswordForAccount", () => {
         expect(res).toEqual({ ok: true, password: "decryptedSecretPass" });
     });
 
-    it("safely falls back to raw password if v1 decryption throws", async () => {
+    it("rejects ciphertext when v1 decryption fails", async () => {
         vi.spyOn(cryptoModule, "decryptPassword").mockImplementationOnce(() => {
             throw new Error("Decryption failed: bad key");
         });
@@ -65,7 +65,17 @@ describe("getInvestorPasswordForAccount", () => {
         } as any);
 
         const res = await getInvestorPasswordForAccount("acc-fallback");
-        expect(res).toEqual({ ok: true, password: "rawEncryptedFallback" });
+        expect(res).toEqual({ ok: false, reason: "DECRYPTION_FAILED" });
+    });
+
+    it("rejects unknown key versions instead of returning stored ciphertext", async () => {
+        vi.mocked(prisma.tradingAccountCredential.findUnique).mockResolvedValueOnce({
+            encryptedPassword: "futureCiphertext",
+            keyVersion: "v2",
+        } as any);
+
+        const res = await getInvestorPasswordForAccount("acc-v2");
+        expect(res).toEqual({ ok: false, reason: "DECRYPTION_FAILED" });
     });
 
     it("returns UNKNOWN reason when database query throws an error", async () => {

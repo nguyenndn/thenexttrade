@@ -177,18 +177,20 @@ export function RulebookClient({
                     {/* Category Filter Selector */}
                     <div className="flex flex-wrap gap-1.5 border-b border-dashboard/80 dark:border-white/[0.08] pb-4">
                         {categories.map((cat) => (
-                            <button
+                            <Button
                                 key={cat.value}
                                 type="button"
+                                variant="ghost"
+                                size="sm"
                                 onClick={() => setSelectedCategory(cat.value)}
-                                className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                                className={`h-auto px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
                                     selectedCategory === cat.value
-                                        ? "bg-amber-500/10 border-amber-500 text-gold dark:text-amber-400 font-bold"
+                                        ? "bg-amber-500/10 border-amber-500 text-gold dark:text-amber-400 font-bold hover:bg-amber-500/15"
                                         : "bg-white dark:bg-[#1E2028] border-dashboard hover:border-amber-400/40 text-gray-600 dark:text-gray-400"
                                 }`}
                             >
                                 {cat.label}
-                            </button>
+                            </Button>
                         ))}
                     </div>
 

@@ -10,6 +10,8 @@ import {
     X,
 } from "lucide-react";
 import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
+import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 
 interface FeedbackItem {
     id: number;
@@ -95,13 +97,16 @@ export function FeedbackCarousel({ images = [] }: FeedbackCarouselProps) {
 
             <div className="relative flex items-center justify-center max-w-5xl mx-auto px-1 sm:px-6 min-h-[660px] sm:min-h-[790px]">
                 {/* Navigation Buttons */}
-                <button
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
                     onClick={handlePrev}
-                    className="absolute left-1 sm:-left-12 z-40 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white dark:bg-slate-800 border border-dashboard flex items-center justify-center shadow-lg hover:bg-gray-50 dark:hover:bg-slate-700 hover:scale-105 active:scale-95 transition-all text-gray-700 dark:text-white cursor-pointer"
+                    className="absolute left-1 sm:-left-12 z-40 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white dark:bg-slate-800 border border-dashboard flex items-center justify-center shadow-lg hover:bg-gray-50 dark:hover:bg-slate-700 hover:scale-105 active:scale-95 transition-all text-gray-700 dark:text-white"
                     aria-label="Previous slide"
                 >
                     <ChevronLeft size={20} />
-                </button>
+                </Button>
 
                 {/* 3D Stage Container */}
                 <div className="w-full relative flex items-center justify-center h-[630px] sm:h-[760px] overflow-visible py-4 px-1 select-none">
@@ -234,27 +239,33 @@ export function FeedbackCarousel({ images = [] }: FeedbackCarouselProps) {
                     })}
                 </div>
 
-                <button
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
                     onClick={handleNext}
-                    className="absolute right-1 sm:-right-12 z-40 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white dark:bg-slate-800 border border-dashboard flex items-center justify-center shadow-lg hover:bg-gray-50 dark:hover:bg-slate-700 hover:scale-105 active:scale-95 transition-all text-gray-700 dark:text-white cursor-pointer"
+                    className="absolute right-1 sm:-right-12 z-40 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white dark:bg-slate-800 border border-dashboard flex items-center justify-center shadow-lg hover:bg-gray-50 dark:hover:bg-slate-700 hover:scale-105 active:scale-95 transition-all text-gray-700 dark:text-white"
                     aria-label="Next slide"
                 >
                     <ChevronRight size={20} />
-                </button>
+                </Button>
             </div>
 
             {/* Stepper Dots */}
             {dotsCount > 1 && (
                 <div className="flex items-center justify-center gap-2 mt-6">
                     {Array.from({ length: dotsCount }).map((_, index) => (
-                        <button
+                        <Button
                             key={index}
+                            type="button"
+                            variant="ghost"
                             onClick={() => handleDotClick(index)}
-                            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                            className={cn(
+                                "p-0 min-h-0 border-0 rounded-full transition-all duration-300 cursor-pointer h-2.5",
                                 index === currentIndex
-                                    ? "w-6 bg-gold"
-                                    : "bg-gray-300 dark:bg-slate-700 hover:bg-gold/50"
-                            }`}
+                                    ? "w-6 bg-gold hover:bg-gold"
+                                    : "w-2.5 bg-gray-300 dark:bg-slate-700 hover:bg-gold/50"
+                            )}
                             aria-label={`Go to slide ${index + 1}`}
                         />
                     ))}
@@ -342,13 +353,16 @@ function FeedbackLightboxModal({
                         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking the card
                     >
                         {/* Close Button at top-right of the card */}
-                        <button
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
                             onClick={onClose}
-                            className="absolute top-3 right-3 z-[10000] w-8 h-8 rounded-full bg-black/60 hover:bg-black/80 border border-white/10 flex items-center justify-center text-white hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-md"
+                            className="absolute top-3 right-3 z-[10000] w-8 h-8 rounded-full bg-black/60 hover:bg-black/80 border border-white/10 text-white shadow-md"
                             aria-label="Close preview"
                         >
                             <X size={16} />
-                        </button>
+                        </Button>
 
                         {imageSrc && (
                             <img

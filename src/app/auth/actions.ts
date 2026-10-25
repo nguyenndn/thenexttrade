@@ -2,11 +2,16 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { createClient as createSupabaseAdminClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { recordSession } from "@/lib/session";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { logSecurityEvent, SECURITY_EVENT_TYPES } from "@/lib/security-logger";
+import {
+    sendEmailWithDetails,
+    buildSignupOtpEmailHtml,
+} from "@/lib/services/email.service";
 
 import {
     authSchema,
@@ -264,19 +269,85 @@ export async function signup(formData: FormData) {
     const firstName = nameParts[0] || "";
     const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
 
-    // 2. Sign Up
+    const userMetadata = {
+        full_name: fullName.trim(),
+        country: normalizedCountry,
+        first_name: firstName,
+        last_name: lastName,
+        referral_code: referralCode,
+        referrer_user_id: referrer?.id || null,
+    };
+
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const smtpHost = process.env.SMTP_HOST || process.env.EMAIL_SERVER_HOST;
+
+    if (serviceRoleKey && smtpHost) {
+        const supabaseAdmin = createSupabaseAdminClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            serviceRoleKey,
+            { auth: { autoRefreshToken: false, persistSession: false } }
+        );
+
+        const { data: linkData, error: linkErr } =
+            await supabaseAdmin.auth.admin.generateLink({
+                type: "signup",
+                email: validated.data.email,
+                password,
+                options: {
+                    data: userMetadata,
+                },
+            });
+
+        if (linkErr || !linkData?.properties?.email_otp) {
+            logSecurityEvent({
+                type: SECURITY_EVENT_TYPES.AUTH_FAILED,
+                ip,
+                path: "/auth/signup",
+                detail: `Email: ${email}. Error: ${linkErr?.message || "Missing OTP"}`,
+            }).catch(() => {});
+            return { error: AUTH_ERRORS.SIGNUP_GENERIC };
+        }
+
+        const otpCode = linkData.properties.email_otp;
+        const appUrl =
+            process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3500";
+        const confirmUrl = `${appUrl}/auth/verify-email?email=${encodeURIComponent(validated.data.email)}`;
+
+        const emailResult = await sendEmailWithDetails({
+            to: validated.data.email,
+            subject: `Verify your email for TheNextTrade (${otpCode})`,
+            html: buildSignupOtpEmailHtml({
+                userName: fullName.trim(),
+                otpCode,
+                confirmUrl,
+            }),
+            text: `Your TheNextTrade verification code is: ${otpCode}`,
+        });
+
+        if (!emailResult.success) {
+            logSecurityEvent({
+                type: SECURITY_EVENT_TYPES.AUTH_FAILED,
+                ip,
+                path: "/auth/signup",
+                detail: `Email delivery failed for ${email}: ${emailResult.error}`,
+            }).catch(() => {});
+            return { error: AUTH_ERRORS.SIGNUP_GENERIC };
+        }
+
+        return {
+            success: true,
+            requiresVerification: true,
+            email: validated.data.email,
+            message: "OTP sent to your email.",
+        };
+    }
+
+    // 2. Sign Up (Fallback when custom SMTP / service role is not configured)
     const { data, error } = await supabase.auth.signUp({
         email: validated.data.email, // use normalized email
         password,
         options: {
-            data: {
-                full_name: fullName.trim(),
-                country: normalizedCountry,
-                first_name: firstName,
-                last_name: lastName,
-                referral_code: referralCode,
-                referrer_user_id: referrer?.id || null,
-            },
+            data: userMetadata,
         },
     });
 

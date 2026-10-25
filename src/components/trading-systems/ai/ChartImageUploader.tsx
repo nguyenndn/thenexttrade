@@ -2,6 +2,7 @@
 
 import { useRef, useState, useCallback, type DragEvent, type ChangeEvent, type ClipboardEvent } from "react";
 import { ImagePlus, X, Upload } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 interface ChartImageUploaderProps {
     onImageSelect: (file: File | null) => void;
@@ -92,15 +93,17 @@ export function ChartImageUploader({
                     alt="Chart preview"
                     className="w-full h-auto max-h-[200px] object-contain"
                 />
-                <button
+                <Button
                     type="button"
+                    variant="outline"
+                    size="icon"
                     onClick={handleClear}
                     disabled={disabled}
-                    className="absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white hover:bg-red-500 transition-colors disabled:opacity-50"
+                    className="absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white hover:bg-red-500 hover:text-white border-0 transition-colors disabled:opacity-50"
                     aria-label="Remove image"
                 >
                     <X size={14} />
-                </button>
+                </Button>
             </div>
         );
     }

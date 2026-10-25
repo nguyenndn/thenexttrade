@@ -120,14 +120,15 @@ export function ChangeRoleModal({
 
                 <div className="space-y-3">
                     {ROLES.map((role) => (
-                        <button
+                        <Button
                             key={role.value}
                             type="button"
+                            variant="ghost"
                             onClick={() => setSelectedRole(role.value)}
-                            className={`w-full flex items-start gap-3 p-4 rounded-lg border-2 transition-all text-left ${
+                            className={`w-full h-auto flex items-start gap-3 p-4 rounded-lg border-2 transition-all text-left font-normal ${
                                 selectedRole === role.value
-                                    ? "border-primary bg-primary/5 dark:bg-primary/5"
-                                    : "border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20"
+                                    ? "border-primary bg-primary/5 dark:bg-primary/5 hover:bg-primary/5"
+                                    : "border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 hover:bg-transparent"
                             }`}
                         >
                             <div
@@ -152,11 +153,11 @@ export function ChangeRoleModal({
                                         </span>
                                     )}
                                 </div>
-                                <p className="text-xs text-gray-500 mt-0.5">
+                                <p className="text-xs text-gray-500 mt-0.5 whitespace-normal">
                                     {role.description}
                                 </p>
                             </div>
-                        </button>
+                        </Button>
                     ))}
                 </div>
 

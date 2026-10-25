@@ -124,12 +124,16 @@ export function BulkImagePromptModal({
                     <h2 className="text-lg font-bold text-gray-800 dark:text-white">
                         Bulk Image Prompts — {articleIds.length} articles
                     </h2>
-                    <button
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
                         onClick={onClose}
-                        className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10"
+                        aria-label="Close modal"
+                        className="p-1 h-auto w-auto rounded-lg hover:bg-gray-100 dark:hover:bg-white/10"
                     >
                         <X size={18} className="text-gray-500" />
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Body */}

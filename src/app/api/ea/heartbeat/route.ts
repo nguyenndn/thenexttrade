@@ -3,8 +3,16 @@ import { prisma } from "@/lib/prisma";
 import { detectBroker } from "@/lib/ea/broker-detection";
 import { resolveSyncAuth } from "@/lib/sync-auth";
 import { parseBrokerNumber } from "@/lib/utils";
-import { isVipEligibleBroker, normalizeUsdBalance } from "@/lib/pro-access";
-
+import {
+    isVipEligibleBrokerInDatabase,
+    normalizeBrokerKey,
+    normalizeUsdBalance,
+} from "@/lib/pro-access";
+import { recordEaProductTelemetry } from "@/lib/ea/telemetry.server";
+import {
+    isDemoTradingAccount,
+    isLiveTradingPayload,
+} from "@/lib/trading-account-classification";
 /**
  * Maps a GMT hour offset from the EA to the most appropriate IANA timezone.
  * Covers all common MT4/MT5 broker server timezones.
@@ -34,6 +42,9 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const {
             eaVersion,
+            productSlug,
+            eaName,
+            platform,
             accountNumber,
             balance,
             equity,
@@ -47,11 +58,14 @@ export async function POST(request: NextRequest) {
             isSyncing, // Background sync state
         } = body;
 
+        const detectedBroker = detectBroker(server || "", broker || "");
+
         // Unified auth — supports both user sync key and legacy account key
         const auth = await resolveSyncAuth({
             request,
             accountNumber: accountNumber ? String(accountNumber) : null,
-            requireAccount: false, // we handle account resolution/creation below
+            broker: detectedBroker || broker || null,
+            requireAccount: false, // resolved below; EA traffic never creates accounts
         });
 
         if (!auth.success) {
@@ -73,31 +87,20 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        let account = resolvedAccount;
+        const isRealAccount = isLiveTradingPayload({
+            accountTradeMode,
+            server,
+            broker,
+        });
 
-        // For user-level key: if account not found by accountNumber, try to find or auto-create
-        if (!account && authMode === "USER_SYNC_KEY") {
-            // Try to find by userId + accountNumber
-            const existing = await prisma.tradingAccount.findFirst({
-                where: {
-                    userId: user.id,
-                    accountNumber: String(accountNumber),
-                },
-                select: {
-                    id: true,
-                    userId: true,
-                    accountNumber: true,
-                    platform: true,
-                    autoSync: true,
-                    syncOpenTrades: true,
-                },
-            });
+        const resolvedAccountType = isRealAccount ? "REAL" : "DEMO";
+        const safeBalance = parseBrokerNumber(balance) ?? undefined;
+        const safeEquity = parseBrokerNumber(equity) ?? undefined;
 
-            if (existing) {
-                account = existing;
-            }
-            // If still not found, the heartbeat will be rejected
-        }
+        // resolveSyncAuth already resolved the broker-scoped account for a
+        // user-level key. EA traffic must never create accounts, so an
+        // unresolved login is a hard 404 below.
+        const account = resolvedAccount;
 
         if (!account) {
             return NextResponse.json(
@@ -124,9 +127,6 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        // Auto-detect broker
-        const detectedBroker = detectBroker(server || "", broker || "");
-
         // Auto-detect timezone from GMT offset (seconds -> IANA timezone)
         let detectedTimezone: string | undefined;
         if (gmtOffset !== undefined && gmtOffset !== null) {
@@ -145,49 +145,82 @@ export async function POST(request: NextRequest) {
                 fundingVerifiedAt: true,
                 fundingGraceUntil: true,
                 broker: true,
+                server: true,
+                accountType: true,
+                ibAttribution: true,
             },
         });
         hasStoredTimezone = currentAccount?.timezone ?? null;
+        const storedIsNonLive = currentAccount
+            ? isDemoTradingAccount(currentAccount)
+            : false;
 
-        // Locale-tolerant numeric parsing (US "1,234.56" or EU "1.234,56",
-        // never NaN).
-        const safeBalance = parseBrokerNumber(balance) ?? undefined;
-        const safeEquity = parseBrokerNumber(equity) ?? undefined;
-
-        // Anti-bypass: Convert Cent/USC balances to standard USD equivalent ($300 threshold)
+        // Anti-bypass: Convert Cent/USC balances to standard USD equivalent.
         const effectiveUsdBalance =
             safeBalance !== undefined
                 ? normalizeUsdBalance(safeBalance, currency, server)
                 : undefined;
 
-        // Funding initial verification ($300 on REAL account from partner broker)
-        const resolvedBroker = detectedBroker || broker || currentAccount?.broker || "";
-        const isEligibleBroker = isVipEligibleBroker(resolvedBroker);
-        const isRealAccount =
-            accountTradeMode === "REAL" ||
-            accountTradeMode === 2 ||
-            accountTradeMode === "2" ||
-            accountTradeMode === "ACCOUNT_TRADE_MODE_REAL" ||
-            (!accountTradeMode &&
-                !String(server || "").toLowerCase().includes("demo") &&
-                !String(server || "").toLowerCase().includes("contest") &&
-                !String(broker || "").toLowerCase().includes("demo"));
+        // Funding verification is a trusted-flow decision. A client heartbeat
+        // alone must never grant Pro because balance/account type are supplied
+        // by the EA and can be tampered with.
+        // A stored broker is the trusted value. Client payload may fill in a
+        // missing broker, but it must never override one already on the account.
+        const resolvedBroker =
+            currentAccount?.broker || detectedBroker || broker || "";
+        const isEligibleBroker = await isVipEligibleBrokerInDatabase(
+            resolvedBroker
+        );
+        const isRealBusinessAccount = isRealAccount && !storedIsNonLive;
+
+        const hasVerifiedIbAttribution = ["VERIFIED", "CONFIRMED"].includes(
+            String(currentAccount?.ibAttribution || "").toUpperCase()
+        );
+        let hasApprovedLicense = false;
+        if (
+            !hasVerifiedIbAttribution &&
+            typeof prisma.eALicense?.findFirst === "function"
+        ) {
+            const license = await prisma.eALicense.findFirst({
+                where: {
+                    userId: user.id,
+                    accountNumber: String(accountNumber).trim(),
+                    status: "APPROVED",
+                    OR: [
+                        { expiryDate: null },
+                        { expiryDate: { gt: new Date() } },
+                    ],
+                },
+                select: { id: true, broker: true },
+            });
+            const resolvedBrokerKey = normalizeBrokerKey(resolvedBroker);
+            hasApprovedLicense =
+                !!license &&
+                !!resolvedBrokerKey &&
+                normalizeBrokerKey(license.broker) === resolvedBrokerKey;
+        }
+        const isTrustedAccount = hasVerifiedIbAttribution || hasApprovedLicense;
 
         let fundingUpdate: Record<string, unknown> = {};
 
-        // Security: Telemetry / heartbeat from EA client must NOT automatically grant PRO entitlements
-        // or set fundingVerifiedAt (prevents client-side privilege escalation).
-        // Only record telemetry (fundingLastVerifiedAt) or clear grace period if already verified.
-        if (isRealAccount && isEligibleBroker && effectiveUsdBalance !== undefined && effectiveUsdBalance >= 200) {
+        if (
+            isTrustedAccount &&
+            isRealBusinessAccount &&
+            isEligibleBroker &&
+            effectiveUsdBalance !== undefined &&
+            effectiveUsdBalance >= 200
+        ) {
             if (currentAccount?.fundingVerifiedAt) {
                 fundingUpdate = {
                     fundingLastVerifiedAt: new Date(),
                     ...(currentAccount.fundingGraceUntil ? { fundingGraceUntil: null } : {}),
                 };
             } else {
-                // Record telemetry timestamp without activating funding or entitlements
                 fundingUpdate = {
+                    fundingVerifiedAt: new Date(),
+                    fundingAmount: effectiveUsdBalance,
                     fundingLastVerifiedAt: new Date(),
+                    fundingGraceUntil: null,
                 };
             }
         }
@@ -213,12 +246,22 @@ export async function POST(request: NextRequest) {
                     : {}),
 
                 // Auto-collect info (Spec 1.1)
-                ...(detectedBroker || broker
+                // Lock the broker after first connect. Admin can still correct
+                // it in the database; heartbeat payload cannot change it.
+                ...(!currentAccount?.broker && (detectedBroker || broker)
                     ? { broker: detectedBroker || broker }
                     : {}),
-                ...(server ? { server } : {}),
+                ...(!currentAccount?.server && server ? { server } : {}),
                 ...(currency ? { currency } : {}),
                 ...(leverage ? { leverage: String(leverage) } : {}),
+                ...(accountTradeMode !== undefined || server || broker
+                    ? {
+                          accountType:
+                              storedIsNonLive && isRealAccount
+                                  ? currentAccount?.accountType || "DEMO"
+                                  : resolvedAccountType,
+                      }
+                    : {}),
 
                 // Auto-detect timezone from EA — only when none is stored yet
                 ...(detectedTimezone && !hasStoredTimezone
@@ -230,28 +273,38 @@ export async function POST(request: NextRequest) {
             },
         });
 
-        // Check $200 minimum requirement on REAL accounts
-        if (isRealAccount && effectiveUsdBalance !== undefined && effectiveUsdBalance < 200) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    error: "INSUFFICIENT_BALANCE",
-                    code: "BALANCE_TOO_LOW",
-                    message: "Tài khoản cần tối thiểu $200 để kết nối TheNextTrade VIP.",
-                    currentBalance: effectiveUsdBalance,
-                    minBalanceRequired: 200,
-                    autoSync: false,
-                    serverTime: new Date().toISOString(),
-                },
-                { status: 403 }
-            );
-        }
+        // Record EA product telemetry & capital snapshot (non-blocking)
+        await recordEaProductTelemetry({
+            userId: user.id,
+            tradingAccountId: account.id,
+            accountNumber: String(accountNumber),
+            eventType: "HEARTBEAT",
+            productSlug: productSlug || null,
+            eaName: eaName || null,
+            eaVersion: eaVersion || null,
+            balance: safeBalance,
+            equity: safeEquity,
+            currency: currency || null,
+            broker: resolvedBroker || null,
+            server: currentAccount?.server || server || null,
+            platform: platform || account.platform || "MT5",
+            accountType: resolvedAccountType,
+            syncSource: "EA_HEARTBEAT",
+        });
+
+        const balanceEligible =
+            isTrustedAccount &&
+            isRealBusinessAccount &&
+            isEligibleBroker &&
+            effectiveUsdBalance !== undefined &&
+            effectiveUsdBalance >= 200;
 
         return NextResponse.json({
             success: true,
             autoSync: account.autoSync,
             serverTime: new Date().toISOString(),
-            balanceEligible: true,
+            balanceEligible,
+            vipEligible: balanceEligible,
             minBalanceRequired: 200,
         });
     } catch (error) {

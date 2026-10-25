@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { Button } from "@/components/ui/Button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import {
     ArrowRight,
@@ -233,13 +234,17 @@ export function ToolsGrid() {
                     />
                     <input
                         type="text"
-                        placeholder="Search trading tools (e.g. lot size, fibonacci, pips)..."
+                        aria-label="Search trading tools"
+                        placeholder="Search trading calculators and market tools..."
                         value={searchQuery}
                         onChange={handleSearchChange}
                         className="bg-transparent text-sm focus:outline-none w-full text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500"
                     />
                     {searchQuery && (
-                        <button
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
                             onClick={() => {
                                 setSearchQuery("");
                                 const params = new URLSearchParams(
@@ -252,11 +257,11 @@ export function ToolsGrid() {
                                     { scroll: false }
                                 );
                             }}
-                            className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 shrink-0"
+                            className="h-6 w-6 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 shrink-0 p-0"
                             aria-label="Clear search"
                         >
                             <X size={16} />
-                        </button>
+                        </Button>
                     )}
                 </div>
             </div>
@@ -297,7 +302,10 @@ export function ToolsGrid() {
                             We couldn't find any tools matching "{searchQuery}".
                             Try adjusting your keywords.
                         </p>
-                        <button
+                        <Button
+                            type="button"
+                            variant="primary"
+                            size="sm"
                             onClick={() => {
                                 setSearchQuery("");
                                 const params = new URLSearchParams(
@@ -310,14 +318,10 @@ export function ToolsGrid() {
                                     { scroll: false }
                                 );
                             }}
-                            className={buttonVariants({
-                                variant: "primary",
-                                className:
-                                    "px-5 py-2.5 bg-gold hover:bg-gold/95 text-white font-bold text-xs rounded-lg shadow-md transition-all duration-300",
-                            })}
+                            className="px-5 py-2.5 text-xs font-bold"
                         >
                             Clear Search
-                        </button>
+                        </Button>
                     </div>
                 ) : (
                     <>

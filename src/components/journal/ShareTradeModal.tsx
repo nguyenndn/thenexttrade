@@ -256,6 +256,7 @@ export function ShareTradeModal({
                     <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard overflow-hidden transition-all duration-300 shadow-sm">
                         <Button
                             variant="outline"
+                            aria-expanded={descriptionOpen}
                             onClick={() => setDescriptionOpen(!descriptionOpen)}
                             className="w-full flex items-center justify-between p-4 h-auto border-none bg-gray-50 dark:bg-black/20 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors rounded-none"
                         >
@@ -320,6 +321,7 @@ export function ShareTradeModal({
                                 <Button
                                     onClick={handleCopy}
                                     variant="outline"
+                                    aria-label="Copy link"
                                     className="h-9 w-9 p-0 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300"
                                     title="Copy link"
                                 >
@@ -337,6 +339,7 @@ export function ShareTradeModal({
                                         window.open(shareUrl, "_blank")
                                     }
                                     variant="outline"
+                                    aria-label="Preview share link"
                                     className="h-9 w-9 p-0 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300"
                                     title="Preview"
                                 >

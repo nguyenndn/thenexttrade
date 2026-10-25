@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowRight, Quote, MessageCircle, ShieldCheck, Zap } from "lucide-react";
-import { Button } from "@/components/ui/Button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 
@@ -46,14 +45,20 @@ export function AboutUsSection() {
                             </div>
 
                             {/* Action Button: Read My Story Only */}
-                            <Link href="/about" className="w-full">
-                                <Button size="smd" className="w-full rounded-lg bg-gold text-white font-extrabold hover:bg-amber-600 shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] flex items-center justify-center animate-btn-shine">
-                                    Read My Story{" "}
-                                    <ArrowRight
-                                        size={14}
-                                        className="ml-1.5"
-                                    />
-                                </Button>
+                            <Link
+                                href="/about"
+                                className={buttonVariants({
+                                    variant: "gold",
+                                    size: "smd",
+                                    className:
+                                        "w-full rounded-lg bg-gold text-white font-extrabold hover:bg-amber-600 shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] flex items-center justify-center animate-btn-shine group",
+                                })}
+                            >
+                                <span>Read My Story</span>
+                                <ArrowRight
+                                    size={14}
+                                    className="ml-1.5 group-hover:translate-x-1 transition-transform duration-300"
+                                />
                             </Link>
                         </div>
                     </div>

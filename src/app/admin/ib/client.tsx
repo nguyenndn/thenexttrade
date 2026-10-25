@@ -33,6 +33,7 @@ import { toast } from "sonner";
 import { DateRangePicker } from "@/components/ui/DateRangePicker";
 import { IbTargetTrackerHero } from "@/components/admin/ib/IbTargetTrackerHero";
 import type { IbPipelineItem } from "@/lib/admin/ib/ib-monitor.types";
+import type { OperationalAccountCounts } from "@/lib/operational-account-counts";
 
 interface OverviewStats {
     totalLeads: number;
@@ -44,6 +45,7 @@ interface OverviewStats {
     revokedUsers: number;
     activeAccounts?: number;
     activeAccounts24h?: number;
+    accountCounts?: OperationalAccountCounts;
     reportedCapitalUSD?: number | null;
     freshCapitalUSD?: number | null;
     reportedEquityUSD?: number | null;
@@ -367,6 +369,9 @@ export function IbOverviewClient({
                             </p>
                             <p className="text-xs text-gray-500 dark:text-gray-400 pt-1.5 border-t border-gray-100 dark:border-white/5">
                                 {overview?.disconnectedAccounts || 0} inactive (&gt;7d) · {overview?.duplicateAccountWarnings || 0} dup warnings
+                                <span className="block text-[11px] text-gray-400 dark:text-gray-500">
+                                    All accounts, demo included
+                                </span>
                             </p>
                         </Link>
 
@@ -774,7 +779,15 @@ export function IbOverviewClient({
                                 {formatUsd(overview.freshCapitalUSD)}
                             </p>
                             <p className="text-xs text-gray-500 dark:text-gray-400 pt-1.5 border-t border-gray-100 dark:border-white/5">
-                                <span className="font-bold text-emerald-600 dark:text-emerald-400">{overview.activeAccounts24h || 0}</span> accounts active in 24h
+                                <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                                    {overview.accountCounts?.connectedLiveAccounts24h ?? overview.activeAccounts24h ?? 0}
+                                </span>{" "}
+                                live accounts active in 24h
+                                <span className="block text-[11px] text-gray-400 dark:text-gray-500">
+                                    {overview.accountCounts?.allAccounts ?? overview.activeAccounts ?? 0} all accounts (demo included)
+                                    {" · "}
+                                    {overview.accountCounts?.demoAccounts ?? 0} demo
+                                </span>
                             </p>
                         </div>
                     </div>

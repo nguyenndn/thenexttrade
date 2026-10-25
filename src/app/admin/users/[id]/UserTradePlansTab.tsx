@@ -190,30 +190,32 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
             {/* Sub-Section Navigation & Filter Bar */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex rounded-lg border border-gray-200 bg-[#F1F3F5] p-1 dark:border-white/10 dark:bg-[#1A1D27] w-fit">
-                    <button
+                    <Button
                         type="button"
+                        variant="ghost"
                         onClick={() => setActiveSection("plans")}
                         className={cn(
-                            "flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
+                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
                             activeSection === "plans"
                                 ? "bg-white text-gray-900 shadow-sm dark:bg-[#252936] dark:text-white"
-                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                         )}
                     >
                         <Compass size={14} /> Trade Plans ({plans.length})
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="button"
+                        variant="ghost"
                         onClick={() => setActiveSection("strategies")}
                         className={cn(
-                            "flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
+                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
                             activeSection === "strategies"
                                 ? "bg-white text-gray-900 shadow-sm dark:bg-[#252936] dark:text-white"
-                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                         )}
                     >
                         <BookOpen size={14} /> Playbooks & Strategies ({strategies.length})
-                    </button>
+                    </Button>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
@@ -228,19 +230,20 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                     {activeSection === "plans" && (
                         <div className="flex items-center gap-1 overflow-x-auto rounded-lg border border-gray-200 bg-white p-1 dark:border-white/10 dark:bg-[#151925]">
                             {["ALL", "PLANNED", "EXECUTED", "CANCELLED"].map((st) => (
-                                <button
+                                <Button
                                     key={st}
                                     type="button"
+                                    variant="ghost"
                                     onClick={() => setStatusFilter(st)}
                                     className={cn(
-                                        "rounded-lg px-2.5 py-1 text-[11px] font-bold uppercase transition-colors",
+                                        "h-auto rounded-lg px-2.5 py-1 text-[11px] font-bold uppercase transition-colors",
                                         statusFilter === st
-                                            ? "bg-primary text-white"
+                                            ? "bg-primary text-white hover:bg-primary"
                                             : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/5"
                                     )}
                                 >
                                     {st}
-                                </button>
+                                </Button>
                             ))}
                         </div>
                     )}

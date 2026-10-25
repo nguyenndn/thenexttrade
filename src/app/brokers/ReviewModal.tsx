@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
+import { Button } from "@/components/ui/Button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import {
@@ -72,13 +73,16 @@ export function ReviewBadge({ item }: { item: ReviewItem }) {
 
     return (
         <>
-            <button
+            <Button
+                type="button"
+                variant="outline"
+                size="sm"
                 onClick={() => setOpen(true)}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-gold/10 hover:text-amber-600 dark:hover:bg-gold/20 dark:hover:text-gold transition-all duration-200 cursor-pointer border border-transparent hover:border-gold/25"
+                className="inline-flex items-center gap-1 px-2.5 h-6 rounded-full text-[11px] font-semibold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-gold/10 hover:text-amber-600 dark:hover:bg-gold/20 dark:hover:text-gold transition-all duration-200 border-transparent hover:border-gold/25"
             >
                 <PenLine size={12} className="shrink-0" />
                 Our Review
-            </button>
+            </Button>
 
             {/* Portal always mounted after hydration so AnimatePresence can play exit */}
             {mounted &&
@@ -171,13 +175,16 @@ function ReviewModal({
                         </h3>
                         <StarRating rating={item.rating} />
                     </div>
-                    <button
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
                         onClick={onClose}
                         aria-label="Close review"
-                        className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-500 hover:text-gray-600 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
+                        className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-white/10 text-gray-500 hover:text-gray-600 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-white/20 border-0"
                     >
                         <X size={16} />
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Content — scrollable */}

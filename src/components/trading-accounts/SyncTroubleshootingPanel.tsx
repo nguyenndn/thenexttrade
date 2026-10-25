@@ -7,6 +7,7 @@ import {
     HelpCircle,
     AlertTriangle,
 } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import { trackEvent } from "@/lib/track";
 
 type SyncMethod = "EA_SYNC";
@@ -78,37 +79,39 @@ export function SyncTroubleshootingPanel({
             className={`rounded-lg border border-dashboard overflow-hidden ${className}`}
         >
             {/* Trigger */}
-            <button
+            <Button
                 type="button"
+                variant="ghost"
                 onClick={handleToggle}
-                className="w-full flex items-center gap-2 px-4 py-3 text-left text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                className="h-auto w-full flex items-center gap-2 px-4 py-3 text-left text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors rounded-none justify-start"
             >
                 <HelpCircle size={16} className="text-gray-400 shrink-0" />
-                <span className="flex-1">
+                <span className="flex-1 text-left">
                     Having trouble with {methodLabel}?
                 </span>
                 {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-            </button>
+            </Button>
 
             {/* Expandable content */}
             {isOpen && (
                 <div className="border-t border-dashboard divide-y divide-dashboard">
                     {topics.map((topic, index) => (
                         <div key={index}>
-                            <button
+                            <Button
                                 type="button"
+                                variant="ghost"
                                 onClick={() =>
                                     setExpandedIndex(
                                         expandedIndex === index ? null : index
                                     )
                                 }
-                                className="w-full flex items-start gap-2.5 px-4 py-3 text-left text-sm hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                                className="h-auto w-full flex items-start gap-2.5 px-4 py-3 text-left text-sm hover:bg-gray-50 dark:hover:bg-white/5 transition-colors rounded-none justify-start whitespace-normal"
                             >
                                 <AlertTriangle
                                     size={14}
                                     className="text-amber-500 shrink-0 mt-0.5"
                                 />
-                                <span className="flex-1 font-medium text-gray-700 dark:text-gray-300">
+                                <span className="flex-1 font-medium text-gray-700 dark:text-gray-300 text-left">
                                     {topic.question}
                                 </span>
                                 {expandedIndex === index ? (
@@ -122,7 +125,7 @@ export function SyncTroubleshootingPanel({
                                         className="text-gray-400 shrink-0 mt-0.5"
                                     />
                                 )}
-                            </button>
+                            </Button>
                             {expandedIndex === index && (
                                 <ul className="px-4 pb-3 pl-9 space-y-1.5">
                                     {topic.answer.map((line, i) => (

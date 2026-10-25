@@ -833,15 +833,16 @@ export function TradeDetailSheet({
                                                         </span>
                                                         <div className="flex gap-2">
                                                             {currentStrategy.referenceImages.map((url: string, idx: number) => (
-                                                                <button
+                                                                <Button
                                                                     type="button"
+                                                                    variant="ghost"
                                                                     key={url}
                                                                     onClick={() => setSheetLightboxIndex(idx)}
-                                                                    className="w-16 h-11 rounded-lg overflow-hidden border border-dashboard hover:border-primary transition-colors cursor-pointer"
+                                                                    className="w-16 h-11 p-0 min-h-0 rounded-lg overflow-hidden border border-dashboard hover:border-primary transition-colors cursor-pointer"
                                                                     aria-label={`Preview reference chart ${idx + 1}`}
                                                                 >
                                                                     <img src={url} alt={`Reference ${idx + 1}`} className="w-full h-full object-cover" />
-                                                                </button>
+                                                                </Button>
                                                             ))}
                                                         </div>
                                                     </div>

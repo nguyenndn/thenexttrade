@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { CheckCircle2, ChevronDown, HelpCircle, ShieldAlert } from "lucide-react";
+import { useEffect, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { CheckCircle2, ChevronDown, HelpCircle, Loader2, ShieldAlert } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -30,10 +32,15 @@ export function AccountIbAttributionBadge({
     accountNumber,
     compact = false,
 }: AccountIbAttributionBadgeProps) {
+    const router = useRouter();
     const [attribution, setAttribution] = useState<IbAttributionStatus>(
         (initialAttribution as IbAttributionStatus) || "UNKNOWN"
     );
     const [isPending, startTransition] = useTransition();
+
+    useEffect(() => {
+        setAttribution((initialAttribution as IbAttributionStatus) || "UNKNOWN");
+    }, [initialAttribution]);
 
     const handleSelect = (newStatus: IbAttributionStatus) => {
         if (newStatus === attribution) return;
@@ -43,7 +50,12 @@ export function AccountIbAttributionBadge({
         startTransition(async () => {
             const res = await updateTradingAccountIbAttribution(accountId, newStatus, userId);
             if (res.success) {
-                toast.success(`IB attribution set to ${newStatus}`);
+                toast.success(
+                    newStatus === "CONFIRMED"
+                        ? `Approved IB & unlocked EA License for #${accountNumber || accountId}`
+                        : `IB attribution set to ${newStatus}`
+                );
+                router.refresh();
             } else {
                 setAttribution(previous);
                 toast.error(res.error || "Failed to update attribution");
@@ -82,52 +94,73 @@ export function AccountIbAttributionBadge({
     };
 
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <button
+        <div className="inline-flex items-center gap-1.5 flex-wrap">
+            {attribution === "UNKNOWN" && !compact && (
+                <Button
                     type="button"
+                    variant="primary"
+                    size="sm"
                     disabled={isPending}
-                    className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-bold tracking-tight transition-all hover:scale-105 active:scale-95 cursor-pointer ${config.bgColor} ${config.textColor}`}
-                    title="Click to toggle IB attribution"
-                    aria-label={`Toggle IB attribution for account ${accountNumber || accountId}`}
-                >
-                    <span className="relative flex h-2 w-2">
-                        {attribution === "CONFIRMED" && (
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                        )}
-                        <span className={`relative inline-flex rounded-full h-2 w-2 ${config.dotColor}`} />
-                    </span>
-                    <span>{config.label}</span>
-                    <ChevronDown size={11} className="opacity-60" />
-                </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel className="text-[11px] uppercase tracking-wider text-gray-400">
-                    Set IB Attribution {accountNumber ? `(#${accountNumber})` : ""}
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
                     onClick={() => handleSelect("CONFIRMED")}
-                    className="flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 cursor-pointer"
+                    aria-label={`Approve IB attribution for account ${accountNumber || accountId}`}
+                    className="h-7 px-2.5 rounded-lg text-[11px] font-bold"
                 >
-                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                    <span>Confirmed Partner IB</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                    onClick={() => handleSelect("NOT_OURS")}
-                    className="flex items-center gap-2 text-xs font-bold text-amber-600 dark:text-amber-400 cursor-pointer"
-                >
-                    <span className="h-2 w-2 rounded-full bg-amber-500" />
-                    <span>External / Not Ours</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                    onClick={() => handleSelect("UNKNOWN")}
-                    className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400 cursor-pointer"
-                >
-                    <span className="h-2 w-2 rounded-full bg-gray-400" />
-                    <span>Unknown (Default)</span>
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
+                    {isPending ? (
+                        <Loader2 size={12} className="animate-spin" />
+                    ) : (
+                        <CheckCircle2 size={12} />
+                    )}
+                    <span>Approve IB</span>
+                </Button>
+            )}
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        disabled={isPending}
+                        className={`h-auto inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-bold tracking-tight transition-all hover:scale-105 active:scale-95 cursor-pointer ${config.bgColor} ${config.textColor}`}
+                        title="Click to toggle IB attribution"
+                        aria-label={`Toggle IB attribution for account ${accountNumber || accountId}`}
+                    >
+                        <span className="relative flex h-2 w-2">
+                            {attribution === "CONFIRMED" && (
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                            )}
+                            <span className={`relative inline-flex rounded-full h-2 w-2 ${config.dotColor}`} />
+                        </span>
+                        <span>{config.label}</span>
+                        <ChevronDown size={11} className="opacity-60" />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel className="text-[11px] uppercase tracking-wider text-gray-400">
+                        Set IB Attribution {accountNumber ? `(#${accountNumber})` : ""}
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                        onClick={() => handleSelect("CONFIRMED")}
+                        className="flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 cursor-pointer"
+                    >
+                        <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                        <span>Confirmed Partner IB</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => handleSelect("NOT_OURS")}
+                        className="flex items-center gap-2 text-xs font-bold text-amber-600 dark:text-amber-400 cursor-pointer"
+                    >
+                        <span className="h-2 w-2 rounded-full bg-amber-500" />
+                        <span>External / Not Ours</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => handleSelect("UNKNOWN")}
+                        className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400 cursor-pointer"
+                    >
+                        <span className="h-2 w-2 rounded-full bg-gray-400" />
+                        <span>Unknown (Default)</span>
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </div>
     );
 }

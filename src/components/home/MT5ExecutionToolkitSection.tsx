@@ -13,7 +13,8 @@ import {
     CheckCircle2,
     Zap,
 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
 
 interface MT5ExecutionToolkitSectionProps {
@@ -106,31 +107,29 @@ export function MT5ExecutionToolkitSection({
                         <div className="flex flex-col sm:flex-row gap-3 w-full max-w-md mx-auto lg:mx-0">
                             <Link
                                 href={eligibilityHref}
-                                className="w-full sm:flex-1 group"
+                                className={cn(
+                                    buttonVariants({ variant: "gold", size: "smd" }),
+                                    "w-full sm:flex-1 group rounded-lg bg-gold hover:bg-amber-600 text-white font-black shadow-[0_10px_24px_rgba(245,158,11,0.22)] hover:shadow-[0_14px_30px_rgba(245,158,11,0.3)] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
+                                )}
                             >
-                                <Button size="smd" className="w-full rounded-lg bg-gold hover:bg-amber-600 text-white font-black shadow-[0_10px_24px_rgba(245,158,11,0.22)] hover:shadow-[0_14px_30px_rgba(245,158,11,0.3)] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap">
-                                    Check Unlock Eligibility
-                                    <ShieldCheck
-                                        size={14}
-                                        className="text-yellow-200 group-hover:scale-110 transition-transform duration-300"
-                                    />
-                                </Button>
+                                Check Unlock Eligibility
+                                <ShieldCheck
+                                    size={14}
+                                    className="text-yellow-200 group-hover:scale-110 transition-transform duration-300"
+                                />
                             </Link>
                             <Link
                                 href="/trading-systems"
-                                className="w-full sm:flex-1 group"
+                                className={cn(
+                                    buttonVariants({ variant: "outline", size: "smd" }),
+                                    "w-full sm:flex-1 group rounded-lg bg-white/90 dark:bg-white/[0.03] border border-gold/35 dark:border-gold/25 hover:border-gold hover:bg-gold/[0.08] dark:hover:bg-gold/[0.06] text-gray-800 dark:text-gray-200 hover:text-gray-950 dark:hover:text-white font-black shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
+                                )}
                             >
-                                <Button
-                                    variant="outline"
-                                    size="smd"
-                                    className="w-full rounded-lg bg-white/90 dark:bg-white/[0.03] border border-gold/35 dark:border-gold/25 hover:border-gold hover:bg-gold/[0.08] dark:hover:bg-gold/[0.06] text-gray-800 dark:text-gray-200 hover:text-gray-950 dark:hover:text-white font-black shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
-                                >
-                                    View Trading Systems{" "}
-                                    <ArrowRight
-                                        size={14}
-                                        className="group-hover:translate-x-1 transition-transform duration-300"
-                                    />
-                                </Button>
+                                View Trading Systems{" "}
+                                <ArrowRight
+                                    size={14}
+                                    className="group-hover:translate-x-1 transition-transform duration-300"
+                                />
                             </Link>
                         </div>
 

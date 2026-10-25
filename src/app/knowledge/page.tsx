@@ -18,7 +18,8 @@ import { DynamicFirefly as FireflyBackground } from "@/components/ui/DynamicFire
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Pagination } from "@/components/ui/Pagination";
 import { ArticleCard } from "@/components/knowledge/ArticleCard";
-import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -198,15 +199,15 @@ export default async function LibraryPage(props: LibraryPageProps) {
                             align="left"
                         />
                         {(query || categorySlug || tagSlug) && (
-                            <Link href="/knowledge">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="flex items-center gap-2 text-red-500 border-red-500/20 hover:bg-red-500/10 hover:text-red-600 transition-all rounded-lg"
-                                >
-                                    <X size={16} />
-                                    <span>Clear Filter</span>
-                                </Button>
+                            <Link
+                                href="/knowledge"
+                                className={cn(
+                                    buttonVariants({ variant: "outline", size: "sm" }),
+                                    "flex items-center gap-2 text-red-500 border-red-500/20 hover:bg-red-500/10 hover:text-red-600 transition-all rounded-lg"
+                                )}
+                            >
+                                <X size={16} />
+                                <span>Clear Filter</span>
                             </Link>
                         )}
                     </div>

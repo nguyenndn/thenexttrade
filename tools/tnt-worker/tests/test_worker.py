@@ -18,6 +18,7 @@ import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
+from unittest.mock import patch
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -265,6 +266,35 @@ class TestParseIsoDatetime(unittest.TestCase):
             dt = worker.parse_iso_datetime(bad)
             self.assertLess(abs((datetime.now(timezone.utc) - dt).total_seconds()), 10,
                             f"'{bad}' should fall back to now UTC")
+
+
+class TestProcessJobPasswordMasking(unittest.TestCase):
+    def test_investor_password_is_masked_in_logs_and_progress(self):
+        secret = "investor-secret-123"
+        progress = []
+        job = {
+            "id": "support_ticket-1",
+            "accountNumber": "12345678",
+            "server": "Vantage-Live",
+            "investorPassword": secret,
+            "mode": "SUPPORT_SYNC",
+            "rangeFrom": "2026-09-01T00:00:00Z",
+            "rangeTo": "2026-10-01T00:00:00Z",
+        }
+
+        with patch.object(worker, "MT5_AVAILABLE", False), patch.object(
+            worker, "report_fail"
+        ) as report_fail_mock, self.assertLogs(
+            worker.logger, level="INFO"
+        ) as captured:
+            worker.process_job({}, job, on_progress=progress.append)
+
+        output = "\n".join(captured.output)
+        self.assertNotIn(secret, output)
+        self.assertIn("Investor Pass  : ********", output)
+        self.assertEqual(progress[0]["passwordMasked"], "********")
+        self.assertNotIn(secret, json.dumps(progress))
+        report_fail_mock.assert_called_once()
 
 
 class TestCatalogTools(unittest.TestCase):

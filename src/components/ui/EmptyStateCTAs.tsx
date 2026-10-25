@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { Plus, GraduationCap, Wallet } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 
 interface EmptyStateCTAsProps {
     /** Primary action - defaults to "Log Your First Trade" */
@@ -41,23 +42,25 @@ export function EmptyStateCTAs({
 
     return (
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
-            <Link href={finalPrimaryHref}>
-                <Button
-                    variant="primary"
-                    className="gap-2 px-5 h-10 text-sm font-bold rounded-lg shadow-sm shadow-amber-500/20 hover:shadow-md hover:shadow-amber-500/25 hover:-translate-y-px active:translate-y-0 transition-all duration-300"
-                >
-                    <PrimaryIcon size={16} />
-                    {finalPrimaryLabel}
-                </Button>
+            <Link
+                href={finalPrimaryHref}
+                className={cn(
+                    buttonVariants({ variant: "primary" }),
+                    "gap-2 px-5 h-10 text-sm font-bold rounded-lg shadow-sm shadow-amber-500/20 hover:shadow-md hover:shadow-amber-500/25 hover:-translate-y-px active:translate-y-0 transition-all duration-300 flex items-center justify-center"
+                )}
+            >
+                <PrimaryIcon size={16} />
+                {finalPrimaryLabel}
             </Link>
-            <Link href={secondaryHref}>
-                <Button
-                    variant="outline"
-                    className="gap-2 px-5 h-10 text-sm font-bold rounded-lg border-dashboard hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-gold dark:hover:text-amber-400 transition-all duration-300"
-                >
-                    <GraduationCap size={16} />
-                    {secondaryLabel}
-                </Button>
+            <Link
+                href={secondaryHref}
+                className={cn(
+                    buttonVariants({ variant: "outline" }),
+                    "gap-2 px-5 h-10 text-sm font-bold rounded-lg border-dashboard hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-gold dark:hover:text-amber-400 transition-all duration-300 flex items-center justify-center"
+                )}
+            >
+                <GraduationCap size={16} />
+                {secondaryLabel}
             </Link>
         </div>
     );

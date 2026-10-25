@@ -357,13 +357,16 @@ export default function OnboardingClient({
                             />
                         ))}
                     </div>
-                    <button
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
                         onClick={handleSkip}
-                        className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500 hover:text-amber-600 dark:hover:text-amber-400 font-extrabold transition-colors uppercase tracking-wider"
+                        className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500 hover:text-amber-600 dark:hover:text-amber-400 font-extrabold transition-colors uppercase tracking-wider h-auto border-0"
                     >
                         <SkipForward size={12} />
                         Skip
-                    </button>
+                    </Button>
                 </div>
 
                 <div className="p-8 pt-4">
@@ -546,14 +549,15 @@ export default function OnboardingClient({
                                 {TRADING_GOALS.map((g) => {
                                     const Icon = g.icon;
                                     return (
-                                        <button
+                                        <Button
                                             key={g.id}
                                             type="button"
+                                            variant="ghost"
                                             onClick={() => setTradingGoal(g.id)}
                                             className={cn(
-                                                "w-full flex items-center gap-4 p-4 rounded-lg border-2 text-left transition-all duration-200",
+                                                "w-full flex items-center gap-4 p-4 rounded-lg border-2 text-left transition-all duration-200 h-auto font-normal",
                                                 tradingGoal === g.id
-                                                    ? "border-amber-500 bg-amber-500/5 dark:bg-amber-500/10 shadow-sm shadow-amber-500/10"
+                                                    ? "border-amber-500 bg-amber-500/5 dark:bg-amber-500/10 shadow-sm shadow-amber-500/10 hover:bg-amber-500/5 dark:hover:bg-amber-500/10"
                                                     : "border-amber-900/10 hover:border-amber-500/35 dark:hover:border-amber-500/25 bg-white/30 dark:bg-white/[0.01]"
                                             )}
                                         >
@@ -581,7 +585,7 @@ export default function OnboardingClient({
                                                     className="text-amber-500 shrink-0 animate-in fade-in zoom-in duration-200"
                                                 />
                                             )}
-                                        </button>
+                                        </Button>
                                     );
                                 })}
                             </div>
@@ -625,13 +629,14 @@ export default function OnboardingClient({
 
                             <div className="space-y-4 mb-6">
                                 {/* Trade Manager EA */}
-                                <button
+                                <Button
                                     type="button"
+                                    variant="ghost"
                                     onClick={() => setSyncMethod("EA_SYNC")}
                                     className={cn(
-                                        "w-full rounded-lg border-2 p-4 text-left transition-all duration-200 relative block",
+                                        "w-full rounded-lg border-2 p-4 text-left transition-all duration-200 relative block h-auto font-normal",
                                         syncMethod === "EA_SYNC"
-                                            ? "border-amber-500 bg-amber-500/5 dark:bg-amber-500/10 shadow-sm shadow-amber-500/10"
+                                            ? "border-amber-500 bg-amber-500/5 dark:bg-amber-500/10 shadow-sm shadow-amber-500/10 hover:bg-amber-500/5 dark:hover:bg-amber-500/10"
                                             : "border-amber-900/10 hover:border-amber-500/35 dark:hover:border-amber-500/25 bg-white/30 dark:bg-white/[0.01]"
                                     )}
                                 >
@@ -653,16 +658,17 @@ export default function OnboardingClient({
                                             </p>
                                         </div>
                                     </div>
-                                </button>
+                                </Button>
 
                                 {/* Manual */}
-                                <button
+                                <Button
                                     type="button"
+                                    variant="ghost"
                                     onClick={() => setSyncMethod("MANUAL")}
                                     className={cn(
-                                        "w-full rounded-lg border-2 p-4 text-left transition-all duration-200 relative block",
+                                        "w-full rounded-lg border-2 p-4 text-left transition-all duration-200 relative block h-auto font-normal",
                                         syncMethod === "MANUAL"
-                                            ? "border-amber-500 bg-amber-500/5 dark:bg-amber-500/10 shadow-sm shadow-amber-500/10"
+                                            ? "border-amber-500 bg-amber-500/5 dark:bg-amber-500/10 shadow-sm shadow-amber-500/10 hover:bg-amber-500/5 dark:hover:bg-amber-500/10"
                                             : "border-amber-900/10 hover:border-amber-500/35 dark:hover:border-amber-500/25 bg-white/30 dark:bg-white/[0.01]"
                                     )}
                                 >
@@ -681,7 +687,7 @@ export default function OnboardingClient({
                                             </p>
                                         </div>
                                     </div>
-                                </button>
+                                </Button>
                             </div>
 
                             {isMobile && syncMethod === "EA_SYNC" && (
@@ -872,16 +878,17 @@ export default function OnboardingClient({
                             </Button>
 
                             {syncMethod !== "MANUAL" && (
-                                <button
+                                <Button
                                     type="button"
+                                    variant="ghost"
                                     onClick={async () => {
                                         await completeOnboardingAction();
                                         router.push("/dashboard");
                                     }}
-                                    className="w-full text-center text-xs text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 font-black tracking-wide transition-colors py-2 uppercase"
+                                    className="w-full text-center text-xs text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 font-black tracking-wide transition-colors py-2 uppercase h-auto border-0"
                                 >
                                     Skip setup, go to Dashboard →
-                                </button>
+                                </Button>
                             )}
                         </div>
                     )}

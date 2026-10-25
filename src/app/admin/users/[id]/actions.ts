@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { prisma } from "@/lib/prisma";
 import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
+import { filterAccountsByBroker } from "@/lib/trading-account-identity";
 
 async function checkAdmin() {
     const supabase = await createClient();
@@ -182,6 +183,125 @@ export async function updateTradingAccountIbAttribution(
                 ibAttributionBy: admin.id,
             },
         });
+
+        // Unify IB Attribution with EALicense, License Key, All 3 EAs Access, and GitHub Backup
+        if (account.accountNumber) {
+            const cleanAccountNumber = account.accountNumber.trim();
+            const cleanBroker = (account.broker || "EXNESS")
+                .trim()
+                .toUpperCase();
+
+            const {
+                ensureTradingAccountLicenseKey,
+                syncLicensesToGitHubBackup,
+            } = await import("@/lib/ea/github-license-sync.server");
+
+            if (ibAttribution === "CONFIRMED") {
+                await ensureTradingAccountLicenseKey({
+                    userId: account.userId,
+                    broker: cleanBroker,
+                    accountNumber: cleanAccountNumber,
+                    isApproved: true,
+                    approvedBy: admin.id,
+                });
+
+                await prisma.proEntitlement.upsert({
+                    where: { tradingAccountId: account.id },
+                    create: {
+                        userId: account.userId,
+                        tradingAccountId: account.id,
+                        status: "ACTIVE",
+                        source: "IB_VERIFIED",
+                        broker: cleanBroker,
+                        accountNumber: cleanAccountNumber,
+                        accountNumberMasked:
+                            cleanAccountNumber.length >= 4
+                                ? `****${cleanAccountNumber.slice(-4)}`
+                                : "****",
+                        startsAt: new Date(),
+                        lastReviewedAt: new Date(),
+                        reviewedBy: admin.id,
+                    },
+                    update: {
+                        status: "ACTIVE",
+                        source: "IB_VERIFIED",
+                        broker: cleanBroker,
+                        accountNumber: cleanAccountNumber,
+                        accountNumberMasked:
+                            cleanAccountNumber.length >= 4
+                                ? `****${cleanAccountNumber.slice(-4)}`
+                                : "****",
+                        startsAt: new Date(),
+                        expiresAt: null,
+                        lastReviewedAt: new Date(),
+                        reviewedBy: admin.id,
+                    },
+                });
+
+                await prisma.eALicense.upsert({
+                    where: {
+                        broker_accountNumber: {
+                            broker: cleanBroker,
+                            accountNumber: cleanAccountNumber,
+                        },
+                    },
+                    create: {
+                        userId: account.userId,
+                        broker: cleanBroker,
+                        accountNumber: cleanAccountNumber,
+                        status: "APPROVED",
+                        isVerified: true,
+                        verifiedAt: new Date(),
+                        approvedBy: admin.id,
+                        approvedAt: new Date(),
+                        startDate: new Date(),
+                        note: "Approved via IB Attribution (All EAs Unlocked)",
+                    },
+                    update: {
+                        status: "APPROVED",
+                        isVerified: true,
+                        verifiedAt: new Date(),
+                        approvedBy: admin.id,
+                        approvedAt: new Date(),
+                        rejectedBy: null,
+                        rejectedAt: null,
+                        rejectReason: null,
+                    },
+                });
+
+                await syncLicensesToGitHubBackup();
+            } else if (ibAttribution === "NOT_OURS") {
+                const licenseCandidates = await prisma.eALicense.findMany({
+                    where: {
+                        userId: account.userId,
+                        accountNumber: cleanAccountNumber,
+                    },
+                    select: { id: true, broker: true },
+                });
+                const scopedLicenseIds = filterAccountsByBroker(
+                    licenseCandidates,
+                    cleanBroker
+                ).map((license) => license.id);
+                if (scopedLicenseIds.length > 0) {
+                    await prisma.eALicense.updateMany({
+                        where: { id: { in: scopedLicenseIds } },
+                        data: {
+                            status: "SUSPENDED",
+                            isVerified: false,
+                            rejectReason:
+                                "Marked as External / Not Ours IB",
+                        },
+                    });
+                }
+                await prisma.proEntitlement.deleteMany({
+                    where: {
+                        tradingAccountId: account.id,
+                        source: "IB_VERIFIED",
+                    },
+                });
+                await syncLicensesToGitHubBackup();
+            }
+        }
 
         await prisma.auditLog.create({
             data: {

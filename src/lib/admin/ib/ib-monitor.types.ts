@@ -40,6 +40,9 @@ export type SyncSourceFilter =
 
 export type CapitalBandFilter = "ALL" | "0_1K" | "1K_10K" | "10K_50K" | "50K_PLUS";
 
+export type FundingState = "VERIFIED" | "GRACE" | "EXPIRED" | "NONE";
+export type PolicyState = "ACTIVE" | "WARNED" | "PAUSED";
+
 export type LastTradeFilter = "ALL" | "TODAY" | "7D" | "30D" | "NEVER";
 
 export type TraderSortOption =
@@ -126,7 +129,11 @@ export interface IbTraderRow {
     vipExpiresAt: string | null;
     products: ProductUsageSummary[];
     registeredAccountCount: number;
+    /** Demo/contest/evaluation/trial accounts registered to this trader. */
+    demoAccountCount: number;
+    /** Live accounts only (demo accounts excluded). */
     eligibleAccountCount: number;
+    /** Live accounts with a heartbeat or sync in the last 24h. */
     connectedAccountCount: number;
     activeTradingAccountCount: number;
     reportedCapitalByCurrency: Record<string, number>;
@@ -135,6 +142,10 @@ export interface IbTraderRow {
     isMixedCurrency: boolean;
     totalTrades30d: number;
     totalLotVolume30d: number;
+    fundingState: FundingState;
+    fundingGraceUntil: string | null;
+    policyState: PolicyState;
+    policyReason: string | null;
     lastTradeAt: string | null;
     lastHeartbeatAt: string | null;
     dataFreshness: "FRESH" | "STALE" | "DISCONNECTED" | "MIXED";

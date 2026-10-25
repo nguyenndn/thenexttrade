@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Globe, Map, List } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import { COUNTRY_NAMES, COUNTRY_FLAGS } from "./types";
 import dynamic from "next/dynamic";
 
@@ -37,20 +38,26 @@ export function GeoPanel({ countries }: Props) {
                     <span className="text-xs text-gray-400 mr-2">
                         {countries.length} countries
                     </span>
-                    <button
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
                         onClick={() => setView("map")}
-                        className={`p-1.5 rounded-lg transition-colors ${view === "map" ? "bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500" : "text-gray-400 hover:text-gray-600"}`}
+                        className={`p-1.5 h-auto w-auto rounded-lg transition-colors ${view === "map" ? "bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500" : "text-gray-400 hover:text-gray-600"}`}
                         aria-label="Map view"
                     >
                         <Map size={14} />
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
                         onClick={() => setView("table")}
-                        className={`p-1.5 rounded-lg transition-colors ${view === "table" ? "bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500" : "text-gray-400 hover:text-gray-600"}`}
+                        className={`p-1.5 h-auto w-auto rounded-lg transition-colors ${view === "table" ? "bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500" : "text-gray-400 hover:text-gray-600"}`}
                         aria-label="Table view"
                     >
                         <List size={14} />
-                    </button>
+                    </Button>
                 </div>
             </div>
 

@@ -23,6 +23,22 @@ export const rejectAccountSchema = z.object({
         .max(500, "Reason must be at most 500 characters"),
 });
 
+export const adminCreateLicenseSchema = z.object({
+    userEmail: z
+        .string()
+        .trim()
+        .email("Please enter a valid user email address"),
+    broker: z.string().min(1, "Please select a broker"),
+    accountNumber: z
+        .string()
+        .trim()
+        .min(4, "Account number must be at least 4 digits")
+        .max(20, "Account number is too long")
+        .regex(/^\d+$/, "Account number must contain only digits"),
+    expiryDate: z.date().optional(),
+    note: z.string().max(500, "Note must be at most 500 characters").optional(),
+});
+
 export const createEAProductSchema = z.object({
     name: z.string().min(1, "Product name is required"),
     slug: z.string().min(1, "Slug is required"),

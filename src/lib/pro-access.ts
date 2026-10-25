@@ -7,6 +7,7 @@ import {
     isCentAccount,
     normalizeLotSize,
 } from "@/lib/utils/cent-account";
+import { isLiveTradingAccount } from "@/lib/trading-account-classification";
 
 // ============================================================================
 // CONSTANTS (Official Parameters from docs/VIP-MEMBERSHIP-AND-TRIAL-SPEC.md)
@@ -21,7 +22,12 @@ export const INACTIVITY_PAUSE_DAYS = 14;
 export const FUNDING_MIN_BALANCE = 200;
 export const FUNDING_RECHECK_DAYS = 30;
 export const FUNDING_GRACE_DAYS = 7;
-export const VALID_SYNC_SOURCES = ["EA_SYNC", "EA_HISTORY", "SUPPORT_SYNC"];
+export const VALID_SYNC_SOURCES = [
+    "EA_SYNC",
+    "EA_HISTORY",
+    "SUPPORT_SYNC",
+    "CLOUD_WORKER",
+];
 export const VIP_ELIGIBLE_BROKERS = ["VANTAGE", "EXNESS", "VTMARKETS", "ULTIMAMARKETS"];
 
 export function getTrialDaysRemaining(userCreatedAt: Date, now: Date = new Date()): number {
@@ -158,6 +164,104 @@ export function isVipEligibleBroker(broker: string | null | undefined): boolean 
     return VIP_ELIGIBLE_BROKERS.includes(normalizeBrokerKey(broker));
 }
 
+/**
+ * Load VIP eligibility from the EABroker table. The database is the source of
+ * truth so admins can add/remove partner brokers without a code deploy.
+ */
+export async function getVipEligibleBrokerKeys(): Promise<Set<string>> {
+    const brokers = await prisma.eABroker.findMany({
+        where: { isActive: true, isVipEligible: true },
+        select: { name: true, slug: true },
+    });
+
+    const keys = new Set<string>();
+    for (const broker of brokers) {
+        const nameKey = normalizeBrokerKey(broker.name);
+        const slugKey = normalizeBrokerKey(broker.slug);
+        if (nameKey) keys.add(nameKey);
+        if (slugKey) keys.add(slugKey);
+    }
+    return keys;
+}
+
+export function isVipEligibleBrokerKey(
+    broker: string | null | undefined,
+    eligibleBrokerKeys: ReadonlySet<string>
+): boolean {
+    const key = normalizeBrokerKey(broker);
+    return !!key && eligibleBrokerKeys.has(key);
+}
+
+export async function isVipEligibleBrokerInDatabase(
+    broker: string | null | undefined
+): Promise<boolean> {
+    const keys = await getVipEligibleBrokerKeys();
+    return isVipEligibleBrokerKey(broker, keys);
+}
+
+interface ActivityPolicyInput {
+    brokerEligible: boolean;
+    rolling30dLots: number;
+    daysSinceLastTrade: number | null;
+    fundingInGrace: boolean;
+    fundingExpired: boolean;
+}
+
+export function evaluateActivityPolicy(
+    input: ActivityPolicyInput
+): { policyState: PolicyState; reason?: string } {
+    if (!input.brokerEligible) {
+        return {
+            policyState: "PAUSED",
+            reason: "Broker is not eligible for Partner Pro.",
+        };
+    }
+
+    if (input.fundingExpired) {
+        return {
+            policyState: "PAUSED",
+            reason: `Funding verification has expired. Please top up $${FUNDING_MIN_BALANCE} to restore VIP.`,
+        };
+    }
+
+    if (input.rolling30dLots < MIN_MONTHLY_LOTS) {
+        return {
+            policyState: "PAUSED",
+            reason: `Only ${input.rolling30dLots.toFixed(2)} verified lots in the last 30 days. At least ${MIN_MONTHLY_LOTS.toFixed(1)} lots are required.`,
+        };
+    }
+
+    if (input.daysSinceLastTrade === null) {
+        return {
+            policyState: "PAUSED",
+            reason: "No verified closed trades have been synced yet.",
+        };
+    }
+
+    if (input.daysSinceLastTrade > INACTIVITY_PAUSE_DAYS) {
+        return {
+            policyState: "PAUSED",
+            reason: `No verified trades for ${input.daysSinceLastTrade} trading days. The limit is ${INACTIVITY_PAUSE_DAYS}.`,
+        };
+    }
+
+    if (input.fundingInGrace) {
+        return {
+            policyState: "WARNED",
+            reason: "Account balance check is in the 7-day grace period.",
+        };
+    }
+
+    if (input.daysSinceLastTrade > INACTIVITY_WARN_DAYS) {
+        return {
+            policyState: "WARNED",
+            reason: `No verified trades for ${input.daysSinceLastTrade} trading days.`,
+        };
+    }
+
+    return { policyState: "ACTIVE" };
+}
+
 export {
     isCentAccount,
     isCentSymbol,
@@ -190,6 +294,7 @@ export async function getAccountProAccess(
             currency: true,
             server: true,
             accountType: true,
+            status: true,
             fundingVerifiedAt: true,
             fundingAmount: true,
             fundingLastVerifiedAt: true,
@@ -218,21 +323,30 @@ export async function getAccountProAccess(
     ) {
         let unlinkedMatch = null;
         if (account.accountNumber && account.broker) {
-            unlinkedMatch = await prisma.proEntitlement.findFirst({
-                where: {
-                    userId,
-                    tradingAccountId: null,
-                    accountNumber: account.accountNumber,
-                    broker: { equals: account.broker, mode: "insensitive" },
-                    status: { in: ["ACTIVE", "GRACE"] },
-                },
-                select: {
-                    id: true,
-                    status: true,
-                    source: true,
-                    expiresAt: true,
-                },
-            });
+            const unlinkedCandidates =
+                (await prisma.proEntitlement.findMany({
+                    where: {
+                        userId,
+                        tradingAccountId: null,
+                        accountNumber: account.accountNumber,
+                        status: { in: ["ACTIVE", "GRACE"] },
+                    },
+                    orderBy: { createdAt: "desc" },
+                    select: {
+                        id: true,
+                        broker: true,
+                        status: true,
+                        source: true,
+                        expiresAt: true,
+                    },
+                })) || [];
+            const accountBrokerKey = normalizeBrokerKey(account.broker);
+            unlinkedMatch =
+                unlinkedCandidates.find(
+                    (candidate) =>
+                        normalizeBrokerKey(candidate.broker) ===
+                        accountBrokerKey
+                ) ?? null;
             if (unlinkedMatch) {
                 prisma.proEntitlement
                     .update({
@@ -284,6 +398,7 @@ export async function getAccountProAccess(
 
     const hasEntitlement =
         entitlement?.status === "ACTIVE" || entitlement?.status === "GRACE";
+    const isManualAdminGrant = entitlement?.source === "MANUAL_ADMIN";
 
     // 1. If no active entitlement, check if user is within 7-day trial
     if (!hasEntitlement) {
@@ -324,9 +439,13 @@ export async function getAccountProAccess(
     }
 
     // 2. Evaluate Activity Policy & Funding for ACTIVE / GRACE accounts
-    const isEligibleBrokerAccount = isVipEligibleBroker(account.broker);
+    const eligibleBrokerKeys = await getVipEligibleBrokerKeys();
+    const isEligibleBrokerAccount = isVipEligibleBrokerKey(
+        account.broker,
+        eligibleBrokerKeys
+    );
 
-    // Calculate rolling 30-day lots from verified sources (EA_SYNC, EA_HISTORY, SUPPORT_SYNC)
+    // Calculate rolling 30-day lots from verified sources.
     const period30dStart = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
     const [volumeAgg, latestTrade] = await Promise.all([
@@ -353,36 +472,49 @@ export async function getAccountProAccess(
         }),
     ]);
 
+    const isLiveAccount = isLiveTradingAccount(account);
     const isCent = isCentAccount(account.currency, account.server, account.accountType);
     const rawLots = volumeAgg._sum.lotSize ?? 0;
-    const rolling30dLots = isEligibleBrokerAccount ? normalizeLotSize(rawLots, isCent) : 0;
-    const lastTradeAt = latestTrade?.exitDate ?? latestTrade?.entryDate ?? null;
+    const rolling30dLots =
+        isLiveAccount && isEligibleBrokerAccount
+            ? normalizeLotSize(rawLots, isCent)
+            : 0;
+    const lastTradeAt = isLiveAccount
+        ? latestTrade?.exitDate ?? latestTrade?.entryDate ?? null
+        : null;
     const daysSinceLastTrade = lastTradeAt
         ? countTradingDaysBetween(lastTradeAt, now)
         : null;
 
     // Funding verification state
-    const fundingVerified = !!account.fundingVerifiedAt;
+    const fundingVerified = isLiveAccount && !!account.fundingVerifiedAt;
     const fundingGraceUntil = account.fundingGraceUntil;
-    const fundingInGrace = !!fundingGraceUntil && now <= fundingGraceUntil;
-    const fundingExpired = !!fundingGraceUntil && now > fundingGraceUntil;
+    const fundingInGrace =
+        fundingVerified && !!fundingGraceUntil && now <= fundingGraceUntil;
+    const fundingExpired =
+        fundingVerified && !!fundingGraceUntil && now > fundingGraceUntil;
 
-    // Determine Activity Policy
-    let policyState: PolicyState = "ACTIVE";
-    let policyReason: string | undefined;
+    const policy = isManualAdminGrant
+        ? {
+              policyState: "ACTIVE" as const,
+              reason: "Manual administrator override.",
+          }
+        : isLiveAccount
+          ? evaluateActivityPolicy({
+                brokerEligible: isEligibleBrokerAccount,
+                rolling30dLots,
+                daysSinceLastTrade,
+                fundingInGrace,
+                fundingExpired,
+            })
+          : {
+                policyState: "PAUSED" as const,
+                reason:
+                    "Demo, contest, evaluation, and trial accounts do not qualify for VIP business metrics.",
+            };
+    const { policyState, reason: policyReason } = policy;
 
-    if (!isEligibleBrokerAccount) {
-        policyState = "PAUSED";
-        policyReason = "Broker is not in the list of supported partner brokers.";
-    } else if (fundingExpired) {
-        policyState = "PAUSED";
-        policyReason = "Funding verification has expired. Please top up $200 to maintain VIP.";
-    } else if (fundingInGrace) {
-        policyState = "WARNED";
-        policyReason = "Account balance check is in grace period.";
-    }
-
-    const effectiveIsPro = policyState !== "PAUSED";
+    const effectiveIsPro = isManualAdminGrant || policyState !== "PAUSED";
 
     return {
         isPro: effectiveIsPro,
@@ -444,6 +576,7 @@ export async function getUserProAccess(
                         currency: true,
                         server: true,
                         accountType: true,
+                        status: true,
                         fundingVerifiedAt: true,
                         fundingAmount: true,
                         fundingLastVerifiedAt: true,
@@ -459,10 +592,12 @@ export async function getUserProAccess(
                 id: true,
                 name: true,
                 broker: true,
+                accountNumber: true,
                 balance: true,
                 currency: true,
                 server: true,
                 accountType: true,
+                status: true,
                 fundingVerifiedAt: true,
                 fundingAmount: true,
                 fundingLastVerifiedAt: true,
@@ -488,11 +623,21 @@ export async function getUserProAccess(
             }
         }
     }
+    const hasManualAdminOverride = entitlements.some(
+        (e) =>
+            (e.status === "ACTIVE" || e.status === "GRACE") &&
+            e.source === "MANUAL_ADMIN"
+    );
 
     // Query 30-day closed verified volume across all eligible accounts
     const period30dStart = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const eligibleBrokerKeys = await getVipEligibleBrokerKeys();
     const eligibleAccountIds = allTradingAccounts
-        .filter((ta) => isVipEligibleBroker(ta.broker))
+        .filter(
+            (ta) =>
+                isLiveTradingAccount(ta) &&
+                isVipEligibleBrokerKey(ta.broker, eligibleBrokerKeys)
+        )
         .map((ta) => ta.id);
 
     const [volumeAgg, latestTrade] = await Promise.all([
@@ -561,28 +706,126 @@ export async function getUserProAccess(
         ? countTradingDaysBetween(lastTradeAt, now)
         : null;
 
-    // Check funding across accounts
-    const fundedAccount = allTradingAccounts.find((ta) => ta.fundingVerifiedAt);
+    // Check funding across eligible accounts. One healthy funded account is
+    // enough for the user-level result; a stale account must not pause another.
+    const eligibleFundingAccounts = allTradingAccounts.filter((ta) =>
+        isLiveTradingAccount(ta) &&
+        isVipEligibleBrokerKey(ta.broker, eligibleBrokerKeys)
+    );
+    const healthyFundedAccount = eligibleFundingAccounts.find(
+        (ta) =>
+            ta.fundingVerifiedAt &&
+            (!ta.fundingGraceUntil || now <= ta.fundingGraceUntil)
+    );
+    const fundedAccount =
+        healthyFundedAccount ??
+        eligibleFundingAccounts.find((ta) => ta.fundingVerifiedAt);
     const fundingVerified = !!fundedAccount;
     const fundingGraceUntil = fundedAccount?.fundingGraceUntil ?? null;
-    const fundingInGrace = !!fundingGraceUntil && now <= fundingGraceUntil;
-    const fundingExpired = !!fundingGraceUntil && now > fundingGraceUntil;
+    const fundingInGrace =
+        !healthyFundedAccount &&
+        !!fundingGraceUntil &&
+        now <= fundingGraceUntil;
+    const fundingExpired =
+        !healthyFundedAccount &&
+        eligibleFundingAccounts.some(
+            (ta) =>
+                !!ta.fundingVerifiedAt &&
+                !!ta.fundingGraceUntil &&
+                now > ta.fundingGraceUntil
+        );
 
     // Build entitlement map
     const entitlementMap = new Map<string, AccountProStatus>();
 
     for (const e of entitlements) {
         if (e.tradingAccountId) {
-            const isAccountPro = e.status === "ACTIVE" || e.status === "GRACE";
+            const isAccountPro =
+                e.status === "ACTIVE" || e.status === "GRACE";
+            const isEligibleAccount =
+                !!e.tradingAccount &&
+                isLiveTradingAccount(e.tradingAccount) &&
+                isVipEligibleBrokerKey(e.tradingAccount.broker, eligibleBrokerKeys);
+            const hasAccess =
+                isAccountPro &&
+                (e.source === "MANUAL_ADMIN" || isEligibleAccount);
             entitlementMap.set(e.tradingAccountId, {
                 tradingAccountId: e.tradingAccountId,
                 accountName: e.tradingAccount?.name || "Unknown",
                 broker: e.tradingAccount?.broker || e.broker || null,
+                status: hasAccess ? e.status : ("NONE" as const),
+                isPro: hasAccess,
+                source: e.source,
+                expiresAt: e.expiresAt,
+                fundingVerified:
+                    !!e.tradingAccount &&
+                    isLiveTradingAccount(e.tradingAccount) &&
+                    !!e.tradingAccount.fundingVerifiedAt,
+            });
+        }
+    }
+
+    // Match unlinked entitlements to existing trading accounts or global admin grants
+    const unlinked = entitlements.filter((e) => !e.tradingAccountId);
+    const globalUnlinkedAccounts: AccountProStatus[] = [];
+
+    for (const e of unlinked) {
+        const isAccountPro = e.status === "ACTIVE" || e.status === "GRACE";
+        if (e.accountNumber && e.broker) {
+            const matchedTa = allTradingAccounts.find(
+                (ta) =>
+                    ta.accountNumber === e.accountNumber &&
+                    normalizeBrokerKey(ta.broker) ===
+                        normalizeBrokerKey(e.broker)
+            );
+            if (matchedTa && !entitlementMap.has(matchedTa.id)) {
+                const isEligibleAccount =
+                    isLiveTradingAccount(matchedTa) &&
+                    isVipEligibleBrokerKey(
+                        matchedTa.broker,
+                        eligibleBrokerKeys
+                    );
+                const hasAccess =
+                    isAccountPro &&
+                    (e.source === "MANUAL_ADMIN" || isEligibleAccount);
+                entitlementMap.set(matchedTa.id, {
+                    tradingAccountId: matchedTa.id,
+                    accountName: matchedTa.name || "Unknown",
+                    broker: matchedTa.broker || e.broker || null,
+                    status: hasAccess ? e.status : ("NONE" as const),
+                    isPro: hasAccess,
+                    source: e.source,
+                    expiresAt: e.expiresAt,
+                    fundingVerified:
+                        isLiveTradingAccount(matchedTa) &&
+                        !!matchedTa.fundingVerifiedAt,
+                });
+                if (hasAccess) {
+                    prisma.proEntitlement
+                        .update({
+                            where: { id: e.id },
+                            data: { tradingAccountId: matchedTa.id },
+                        })
+                        .catch(() => {});
+                }
+                continue;
+            }
+        }
+
+        // Only count unlinked entitlement if it is a genuine global user-level grant
+        // (matching getAccountProAccess behavior). Ignore orphaned IB_VERIFIED rows
+        // left behind from deleted trading accounts.
+        const isGlobalGrant =
+            (!e.accountNumber && !e.broker) || e.source === "MANUAL_ADMIN";
+        if (isGlobalGrant) {
+            globalUnlinkedAccounts.push({
+                tradingAccountId: "",
+                accountName: e.broker ? `${e.broker} (unlinked)` : "Unlinked",
+                broker: e.broker || null,
                 status: isAccountPro ? e.status : ("NONE" as const),
                 isPro: isAccountPro,
                 source: e.source,
                 expiresAt: e.expiresAt,
-                fundingVerified: !!e.tradingAccount?.fundingVerifiedAt,
             });
         }
     }
@@ -598,24 +841,12 @@ export async function getUserProAccess(
             isPro: false,
             source: null,
             expiresAt: null,
-            fundingVerified: !!ta.fundingVerifiedAt,
+            fundingVerified:
+                isLiveTradingAccount(ta) && !!ta.fundingVerifiedAt,
         };
     });
 
-    // Unlinked entitlements
-    const unlinked = entitlements.filter((e) => !e.tradingAccountId);
-    for (const e of unlinked) {
-        const isAccountPro = e.status === "ACTIVE" || e.status === "GRACE";
-        accounts.push({
-            tradingAccountId: "",
-            accountName: e.broker ? `${e.broker} (unlinked)` : "Unlinked",
-            broker: e.broker || null,
-            status: isAccountPro ? e.status : ("NONE" as const),
-            isPro: isAccountPro,
-            source: e.source,
-            expiresAt: e.expiresAt,
-        });
-    }
+    accounts.push(...globalUnlinkedAccounts);
 
     const hasAnyEntitlement = accounts.some(
         (a) => a.status === "ACTIVE" || a.status === "GRACE"
@@ -664,38 +895,45 @@ export async function getUserProAccess(
     }
 
     // 2. Evaluate Activity Policy for users with Entitlement
-    let aggregatePolicyState: PolicyState = "ACTIVE";
-    let policyReason: string | undefined;
-
-    if (!hasAnyEntitlement || eligibleAccountIds.length === 0) {
-        aggregatePolicyState = "ACTIVE";
-        policyReason =
-            eligibleAccountIds.length === 0 && hasAnyEntitlement
-                ? "No trading accounts linked to supported partner brokers."
-                : undefined;
-    } else if (fundingExpired) {
-        aggregatePolicyState = "PAUSED";
-        policyReason = "Funding verification has expired. Please top up $200 to maintain VIP.";
-    } else if (fundingInGrace) {
-        aggregatePolicyState = "WARNED";
-        policyReason = "Account balance check is in grace period.";
-    }
+    const policy = hasManualAdminOverride
+        ? {
+              policyState: "ACTIVE" as const,
+              reason: "Manual administrator override.",
+          }
+        : evaluateActivityPolicy({
+              brokerEligible: eligibleAccountIds.length > 0,
+              rolling30dLots: totalRolling30dLots,
+              daysSinceLastTrade,
+              fundingInGrace,
+              fundingExpired,
+          });
+    const aggregatePolicyState = policy.policyState;
+    const policyReason = policy.reason;
 
     const effectiveIsPro =
-        hasAnyEntitlement &&
-        eligibleAccountIds.length > 0 &&
-        aggregatePolicyState !== "PAUSED";
+        hasManualAdminOverride ||
+        (hasAnyEntitlement &&
+            eligibleAccountIds.length > 0 &&
+            aggregatePolicyState !== "PAUSED");
 
     // Determine aggregate DB status
     let aggregateStatus: ProStatus;
     const proStatuses = accounts.filter((a) => a.status !== "NONE");
 
-    if (proStatuses.length === 0 || eligibleAccountIds.length === 0) {
-        aggregateStatus = "NONE";
-    } else if (hasAnyEntitlement) {
+    if (proStatuses.some((a) => a.status === "ACTIVE")) {
         aggregateStatus = "ACTIVE";
-    } else if (proStatuses.some((a) => a.status === "EXPIRED")) {
+    } else if (proStatuses.some((a) => a.status === "GRACE")) {
+        aggregateStatus = "GRACE";
+    } else if (
+        proStatuses.some((a) => a.status === "EXPIRED") ||
+        entitlements.some((e) => e.status === "EXPIRED")
+    ) {
         aggregateStatus = "EXPIRED";
+    } else if (
+        proStatuses.some((a) => a.status === "REVOKED") ||
+        entitlements.some((e) => e.status === "REVOKED")
+    ) {
+        aggregateStatus = "REVOKED";
     } else {
         aggregateStatus = "NONE";
     }

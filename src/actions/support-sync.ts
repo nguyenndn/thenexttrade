@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { revalidatePath } from "next/cache";
+import { getNextSupportSyncAt } from "@/lib/support-sync-schedule";
 
 export interface CreateSupportSyncInput {
     broker: string;
@@ -61,7 +62,7 @@ export async function createSupportSyncTicket(input: CreateSupportSyncInput) {
             accountNumber: input.accountNumber.trim(),
             server: input.server?.trim() || null,
             notes: input.notes?.trim() || null,
-            scheduledFor: null,
+            scheduledFor: getNextSupportSyncAt(),
             status: "PENDING",
         },
     });

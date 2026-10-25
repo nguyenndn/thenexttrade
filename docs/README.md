@@ -16,6 +16,8 @@ This folder is the active source of truth for the product, system, operations, d
 | [OPERATIONS.md](OPERATIONS.md) | Environment, self-host stack, deploy, storage, monitoring, release ops |
 | [DESIGN.md](DESIGN.md) | UI standards for dashboard, auth pages, cards, buttons, metrics |
 | [EMAIL.md](EMAIL.md) | Transactional email strategy, templates needed, delivery rules |
+| [EA-TELEMETRY-INTEGRATION-GUIDE.md](EA-TELEMETRY-INTEGRATION-GUIDE.md) | Unified MQL5 3-Tier License (`GSN_EA_License.mqh`), EA Farm Telemetry, and Trade/Commission/Swap Sync (`GSN_EA_Telemetry.mqh`) |
+| [VIP-MEMBERSHIP-AND-TRIAL-SPEC.md](VIP-MEMBERSHIP-AND-TRIAL-SPEC.md) | 7-Day Free Trial, Active Trader Retention Policy (VIP/Pro), Support-Sync concierge & funding rules |
 | [features/trading-style-assessment.md](features/trading-style-assessment.md) | Spec and scoring engine for Trading Style Assessment & Archetypes |
 | [features/personalized-improvement-loop.md](features/personalized-improvement-loop.md) | Deep architecture/spec for the Personalized Trading Improvement Loop |
 

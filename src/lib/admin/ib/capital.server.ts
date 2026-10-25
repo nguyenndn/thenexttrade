@@ -1,4 +1,8 @@
 import { prisma } from "@/lib/prisma";
+import {
+    isDemoTradingAccount,
+    isLiveTradingAccount,
+} from "@/lib/trading-account-classification";
 
 export interface CapitalBreakdown {
     byCurrency: Record<string, number>;
@@ -10,37 +14,14 @@ export interface CapitalBreakdown {
     usdEquityTotal: number | null;
 }
 
-interface CapitalAccountIdentity {
+export { isDemoTradingAccount };
+
+export function isLiveCapitalAccount(account: {
     accountType?: string | null;
     server?: string | null;
     status?: string | null;
-}
-
-export function isDemoTradingAccount(account: CapitalAccountIdentity): boolean {
-    return (
-        account.accountType?.toUpperCase().includes("DEMO") === true ||
-        account.server?.toLowerCase().includes("demo") === true
-    );
-}
-
-export function isLiveCapitalAccount(account: CapitalAccountIdentity): boolean {
-    if (
-        account.status === "PENDING" ||
-        account.status === "REJECTED" ||
-        account.status === "SUSPENDED" ||
-        isDemoTradingAccount(account)
-    ) {
-        return false;
-    }
-
-    if (!account.accountType) return true;
-
-    const normalizedType = account.accountType.toUpperCase();
-    return (
-        normalizedType.includes("REAL") ||
-        normalizedType === "PERSONAL" ||
-        normalizedType.includes("FUNDED")
-    );
+}): boolean {
+    return isLiveTradingAccount(account);
 }
 
 export function computeCapitalBreakdown(

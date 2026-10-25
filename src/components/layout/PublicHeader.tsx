@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
 import { AuthUser } from "@/lib/auth-types";
-import { Search } from "lucide-react";
+import { Search, Menu, X } from "lucide-react";
 
 import { DesktopNav } from "@/components/layout/DesktopNav";
 import { MobileNavigation } from "@/components/layout/MobileNavigation";
@@ -129,16 +129,19 @@ export function PublicHeader({
                         <ThemeToggleSwitch />
 
                         {/* Search Trigger Button (Symmetrical to Theme Switcher) */}
-                        <button
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
                             onClick={handleSearchClick}
                             aria-label="Search website (Ctrl+K)"
-                            className="relative w-9 h-9 p-0 flex items-center justify-center rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber-500/40 cursor-pointer bg-white dark:bg-slate-800/80 border-2 border-dashboard dark:border-slate-700 text-gold hover:bg-gray-50 dark:hover:bg-slate-700/80 hover:text-amber-600 dark:hover:text-amber-300 hover:border-gold/50"
+                            className="relative w-9 h-9 p-0 flex items-center justify-center rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber-500/40 bg-white dark:bg-slate-800/80 border-2 border-dashboard dark:border-slate-700 text-gold hover:bg-gray-50 dark:hover:bg-slate-700/80 hover:text-amber-600 dark:hover:text-amber-300 hover:border-gold/50"
                         >
                             <Search
                                 className="w-[18px] h-[18px]"
                                 strokeWidth={2.5}
                             />
-                        </button>
+                        </Button>
 
                         {/* Login / User Menu — hidden on mobile/tablet, shown on lg+ */}
                         <div className="hidden lg:flex items-center">
@@ -158,35 +161,13 @@ export function PublicHeader({
                             }
                             className="lg:hidden p-2 rounded-lg text-gray-700 dark:text-white hover:bg-amber-50 dark:hover:bg-amber-400/10 hover:text-amber-600 dark:hover:text-amber-300"
                             aria-label="Toggle menu"
+                            aria-expanded={isMobileMenuOpen}
+                            aria-controls="mobile-navigation"
                         >
                             {isMobileMenuOpen ? (
-                                <svg
-                                    className="w-6 h-6"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
+                                <X className="w-6 h-6" />
                             ) : (
-                                <svg
-                                    className="w-6 h-6"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                </svg>
+                                <Menu className="w-6 h-6" />
                             )}
                         </Button>
                     </div>

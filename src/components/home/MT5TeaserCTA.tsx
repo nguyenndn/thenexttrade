@@ -13,7 +13,8 @@ import {
     Layers,
     Activity,
 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 
 interface MT5TeaserCTAProps {
     isLoggedIn?: boolean;
@@ -207,32 +208,30 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
                                 <Link
                                     href="/trading-systems"
-                                    className="w-full sm:w-auto group"
+                                    className={cn(
+                                        buttonVariants({ variant: "gold", size: "smd" }),
+                                        "w-full sm:w-auto px-5 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 flex items-center justify-center gap-2 animate-btn-shine whitespace-nowrap group"
+                                    )}
                                 >
-                                    <Button size="smd" className="w-full sm:w-auto px-5 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 flex items-center justify-center gap-2 animate-btn-shine whitespace-nowrap">
-                                        <span>Unlock Automated EAs</span>
-                                        <ArrowRight
-                                            size={14}
-                                            className="group-hover:translate-x-1 transition-transform duration-300"
-                                        />
-                                    </Button>
+                                    <span>Unlock Automated EAs</span>
+                                    <ArrowRight
+                                        size={14}
+                                        className="group-hover:translate-x-1 transition-transform duration-300"
+                                    />
                                 </Link>
 
                                 <Link
                                     href={secondaryUrl}
-                                    className="w-full sm:w-auto group"
+                                    className={cn(
+                                        buttonVariants({ variant: "outline", size: "smd" }),
+                                        "w-full sm:w-auto px-5 rounded-lg border border-gray-200 dark:border-white/15 hover:border-gold dark:hover:border-gold/60 bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm text-slate-700 dark:text-slate-200 hover:text-amber-600 dark:hover:text-gold font-extrabold shadow-sm flex items-center justify-center gap-2 whitespace-nowrap group"
+                                    )}
                                 >
-                                    <Button
-                                        variant="outline"
-                                        size="smd"
-                                        className="w-full sm:w-auto px-5 rounded-lg border border-gray-200 dark:border-white/15 hover:border-gold dark:hover:border-gold/60 bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm text-slate-700 dark:text-slate-200 hover:text-amber-600 dark:hover:text-gold font-extrabold shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
-                                    >
-                                        <HelpCircle
-                                            size={14}
-                                            className="shrink-0 text-amber-500 dark:text-gold"
-                                        />
-                                        <span>How Unlock Works</span>
-                                    </Button>
+                                    <HelpCircle
+                                        size={14}
+                                        className="shrink-0 text-amber-500 dark:text-gold"
+                                    />
+                                    <span>How Unlock Works</span>
                                 </Link>
                             </div>
 

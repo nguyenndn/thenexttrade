@@ -312,10 +312,12 @@ export function AccountCard({
                             Syncing...
                         </span>
                     ) : isLatestSyncFailed ? (
-                        <button
+                        <Button
                             type="button"
+                            variant="ghost"
+                            size="sm"
                             onClick={() => setIsCloudSyncOpen(true)}
-                            className="inline-flex items-center gap-1.5 text-[9px] font-bold px-2 py-[3px] rounded-lg border whitespace-nowrap bg-rose-500/10 text-rose-700 border-rose-300 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/30 shadow-sm hover:bg-rose-500/20 transition-colors cursor-pointer"
+                            className="h-auto p-0 inline-flex items-center gap-1.5 text-[9px] font-bold px-2 py-[3px] rounded-lg border whitespace-nowrap bg-rose-500/10 text-rose-700 border-rose-300 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/30 shadow-sm hover:bg-rose-500/20 transition-colors cursor-pointer"
                             title={formatSyncErrorMessage(latestJob)}
                         >
                             <span className="relative flex h-1.5 w-1.5 shrink-0">
@@ -323,7 +325,7 @@ export function AccountCard({
                                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-rose-500" />
                             </span>
                             Sync Failed
-                        </button>
+                        </Button>
                     ) : syncMethod.variant !== "none" ? (
                         <span
                             className={cn(
@@ -708,11 +710,13 @@ export function AccountCard({
                                         <span>Syncing...</span>
                                     </span>
                                 ) : (
-                                    <button
+                                    <Button
                                         type="button"
+                                        variant="ghost"
+                                        size="sm"
                                         onClick={() => setIsCloudSyncOpen(true)}
                                         className={cn(
-                                            "text-xs font-bold transition-colors cursor-pointer",
+                                            "h-auto p-0 text-xs font-bold transition-colors cursor-pointer hover:bg-transparent",
                                             isLatestSyncFailed
                                                 ? "text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300"
                                                 : "text-gold hover:text-amber-500 dark:text-amber-400 dark:hover:text-amber-300"
@@ -720,7 +724,7 @@ export function AccountCard({
                                         title={isLatestSyncFailed ? "Sync failed - click to retry" : "Cloud Sync"}
                                     >
                                         {isLatestSyncFailed ? "Retry Sync" : "Sync"}
-                                    </button>
+                                    </Button>
                                 )}
                             </>
                         )}

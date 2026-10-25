@@ -210,29 +210,123 @@ async function getLicensesByBroker() {
     }
 }
 
+import { buildProductFarmData } from "@/lib/admin/trading-systems/ea-farm-stats.server";
+
+const ACCOUNT_SELECT = {
+    id: true,
+    accountNumber: true,
+    broker: true,
+    server: true,
+    platform: true,
+    accountType: true,
+    balance: true,
+    equity: true,
+    currency: true,
+    status: true,
+    lastHeartbeat: true,
+    lastSync: true,
+} as const;
+
+async function getEaFarmProducts() {
+    try {
+        const rawProducts = await prisma.eAProduct.findMany({
+            where: { isActive: true },
+            orderBy: { createdAt: "desc" },
+            include: {
+                accessRecords: {
+                    where: { status: "GRANTED" },
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                email: true,
+                                image: true,
+                                tradingAccounts: { select: ACCOUNT_SELECT },
+                            },
+                        },
+                        tradingAccount: { select: ACCOUNT_SELECT },
+                    },
+                },
+                usageEvents: {
+                    orderBy: { occurredAt: "desc" },
+                    take: 250,
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                email: true,
+                                image: true,
+                                tradingAccounts: { select: ACCOUNT_SELECT },
+                            },
+                        },
+                        tradingAccount: { select: ACCOUNT_SELECT },
+                    },
+                },
+                downloads: {
+                    orderBy: { createdAt: "desc" },
+                    take: 250,
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                email: true,
+                                image: true,
+                                tradingAccounts: { select: ACCOUNT_SELECT },
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        return rawProducts.map((p) => {
+            const { farmStats } = buildProductFarmData(p);
+            return {
+                id: p.id,
+                name: p.name,
+                slug: p.slug,
+                version: p.version,
+                platform: p.platform,
+                type: p.type,
+                farmStats,
+            };
+        });
+    } catch (error) {
+        console.error("Error fetching EA farm products:", error);
+        return [];
+    }
+}
+
 export default async function EADashboardPage() {
     await requireAdminPageAccess();
-    const [heroStats, recentActivity, recentPending, brokerStats] =
+    const [heroStats, recentActivity, recentPending, brokerStats, eaFarmProducts] =
         await Promise.all([
             getHeroStats(),
             getRecentActivity(),
             getRecentPending(),
             getLicensesByBroker(),
+            getEaFarmProducts(),
         ]);
 
     return (
         <div className="space-y-4 pb-10">
             <AdminPageHeader
                 title="Trading Systems"
-                description="Overview of license requests, EA products and system performance."
+                description="Overview of license requests, EA products, live telemetry, and EA Farm capital."
             >
                 <Link href="/admin/trading-systems/create">
                     <Button variant="primary" className="shadow-amber-500/30">
                         <Bot size={18} aria-hidden="true" /> New Product
                     </Button>
                 </Link>
+                <Link href="/admin/trading-systems/accounts">
+                    <Button variant="outline">Manage Licenses</Button>
+                </Link>
                 <Link href="/admin/trading-systems/accounts/pending">
-                    <Button variant="outline">Manage Requests</Button>
+                    <Button variant="outline">Pending Requests</Button>
                 </Link>
             </AdminPageHeader>
 
@@ -244,6 +338,7 @@ export default async function EADashboardPage() {
                 recentActivity={recentActivity}
                 recentPending={recentPending}
                 brokerStats={brokerStats}
+                eaFarmProducts={eaFarmProducts}
             />
         </div>
     );

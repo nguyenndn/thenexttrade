@@ -90,18 +90,37 @@ export async function PATCH(request: NextRequest) {
         }
 
         if (id === "ALL") {
-            await prisma.notification.updateMany({
+            const result = await prisma.notification.updateMany({
                 where: { userId: user.id, isRead: false },
-                data: { isRead: true },
+                data: { isRead: true, readAt: new Date() },
             });
-        } else {
-            await prisma.notification.updateMany({
-                where: { id: String(id), userId: user.id }, // Ensure ownership without P2025 throw
-                data: { isRead: true },
-            });
+            return NextResponse.json(
+                createSuccessResponse({
+                    success: true,
+                    updatedCount: result.count,
+                })
+            );
         }
 
-        return NextResponse.json(createSuccessResponse({ success: true }));
+        const result = await prisma.notification.updateMany({
+            where: { id: String(id), userId: user.id },
+            data: { isRead: true, readAt: new Date() },
+        });
+
+        if (result.count === 0) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: "Notification not found",
+                    errorCode: "NOT_FOUND",
+                },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json(
+            createSuccessResponse({ success: true, updatedCount: result.count })
+        );
     } catch (error) {
         console.error("PATCH Notifications Error:", error);
         return NextResponse.json(

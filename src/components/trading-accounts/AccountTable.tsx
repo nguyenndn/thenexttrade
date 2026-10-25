@@ -164,11 +164,13 @@ export function AccountTable({
                             {/* Card Top: Star + Name + Badges + Menu */}
                             <div className="flex items-start justify-between gap-2">
                                 <div className="flex items-start gap-2.5 min-w-0">
-                                    <button
+                                    <Button
                                         type="button"
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => onSetMain(account.id)}
                                         aria-label={isMain ? "Current main account" : "Set as main account"}
-                                        className="mt-0.5 p-1 -ml-1 text-gray-400 hover:text-amber-500 transition-colors"
+                                        className="mt-0.5 h-7 w-7 p-0 -ml-1 text-gray-400 hover:text-amber-500 hover:bg-transparent transition-colors"
                                     >
                                         <Star
                                             size={16}
@@ -179,7 +181,7 @@ export function AccountTable({
                                                     : "fill-transparent"
                                             )}
                                         />
-                                    </button>
+                                    </Button>
                                     <div className="min-w-0">
                                         <div className="flex items-center gap-1.5 flex-wrap">
                                             <span className="text-sm font-bold text-gray-900 dark:text-white truncate">
@@ -214,13 +216,15 @@ export function AccountTable({
 
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <button
+                                        <Button
                                             type="button"
+                                            variant="ghost"
+                                            size="icon"
                                             aria-label="Account options"
-                                            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                            className="h-8 w-8 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                                         >
                                             <MoreVertical size={16} />
-                                        </button>
+                                        </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent
                                         align="end"
@@ -475,9 +479,12 @@ export function AccountTable({
                                     {/* 1. Account Name & Number with Main Star */}
                                     <td className="py-4 pl-5 pr-4 align-middle">
                                         <div className="flex items-center gap-2.5 min-w-0">
-                                            <button
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="icon"
                                                 onClick={() => onSetMain(account.id)}
-                                                className="group/star text-gray-300 hover:text-amber-500 transition-colors shrink-0"
+                                                className="h-6 w-6 p-0 group/star text-gray-300 hover:text-amber-500 hover:bg-transparent transition-colors shrink-0"
                                                 title={isMain ? "Main Trading Account" : "Click to set as Main"}
                                                 aria-label={isMain ? "Main Trading Account" : "Set as main account"}
                                             >
@@ -490,7 +497,7 @@ export function AccountTable({
                                                             : "fill-transparent group-hover/star:text-amber-500"
                                                     )}
                                                 />
-                                            </button>
+                                            </Button>
 
                                             <div className="min-w-0">
                                                 <div className="flex items-center gap-1.5">
@@ -519,15 +526,17 @@ export function AccountTable({
                                                         #{account.accountNumber || "—"}
                                                     </span>
                                                     {hasPendingSupport && (
-                                                        <button
+                                                        <Button
                                                             type="button"
+                                                            variant="ghost"
+                                                            size="sm"
                                                             onClick={() => onRequestSupport?.(account.id)}
-                                                            className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30 hover:bg-amber-500/25 transition-colors cursor-pointer"
+                                                            className="h-auto p-0 inline-flex items-center gap-1 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30 hover:bg-amber-500/25 transition-colors cursor-pointer"
                                                             title="Manual sync support request pending. Click to view ticket."
                                                         >
                                                             <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse shrink-0" />
                                                             Support Pending
-                                                        </button>
+                                                        </Button>
                                                     )}
                                                 </div>
                                             </div>
@@ -585,10 +594,11 @@ export function AccountTable({
                                                 <span>Syncing...</span>
                                             </div>
                                         ) : isLatestSyncFailed ? (
-                                            <button
+                                            <Button
                                                 type="button"
+                                                variant="ghost"
                                                 onClick={() => setCloudSyncAccount(account)}
-                                                className="group/failed flex flex-col gap-0.5 text-left cursor-pointer"
+                                                className="h-auto p-0 group/failed flex flex-col gap-0.5 text-left cursor-pointer hover:bg-transparent items-start"
                                                 title={formatSyncErrorMessage(latestJob)}
                                             >
                                                 <div className="flex items-center gap-1.5">
@@ -608,7 +618,7 @@ export function AccountTable({
                                                           })}`
                                                         : "Never synced"}
                                                 </span>
-                                            </button>
+                                            </Button>
                                         ) : syncMethod.variant === "ea" ? (
                                             <div
                                                 className="flex items-center gap-2"
@@ -641,13 +651,16 @@ export function AccountTable({
                                             <div className="flex items-center gap-2">
                                                 <span className="h-2 w-2 rounded-full bg-gray-400 shrink-0" />
                                                 {onOpenSyncSetup ? (
-                                                    <button
+                                                    <Button
+                                                        type="button"
+                                                        variant="ghost"
+                                                        size="sm"
                                                         onClick={() => onOpenSyncSetup(preferredSyncMethod)}
-                                                        className="text-xs font-semibold text-gold dark:text-amber-400 hover:underline inline-flex items-center gap-1"
+                                                        className="h-auto p-0 text-xs font-semibold text-gold dark:text-amber-400 hover:underline inline-flex items-center gap-1 hover:bg-transparent"
                                                         title="Connect Cloud Sync or EA Trade Manager"
                                                     >
                                                         <Cable size={12} /> Connect
-                                                    </button>
+                                                    </Button>
                                                 ) : (
                                                     <span className="text-xs font-medium text-gray-400 dark:text-gray-500">
                                                         Not Connected
@@ -715,11 +728,13 @@ export function AccountTable({
                                                     <span>Syncing...</span>
                                                 </span>
                                             ) : (
-                                                <button
+                                                <Button
                                                     type="button"
+                                                    variant="ghost"
+                                                    size="sm"
                                                     onClick={() => setCloudSyncAccount(account)}
                                                     className={cn(
-                                                        "text-xs font-bold transition-colors cursor-pointer",
+                                                        "h-auto p-0 text-xs font-bold transition-colors cursor-pointer hover:bg-transparent",
                                                         isLatestSyncFailed
                                                             ? "text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300"
                                                             : "text-gold hover:text-amber-500 dark:text-amber-400 dark:hover:text-amber-300"
@@ -727,18 +742,20 @@ export function AccountTable({
                                                     title={isLatestSyncFailed ? "Sync failed - click to retry" : "Cloud Sync"}
                                                 >
                                                     {isLatestSyncFailed ? "Retry Sync" : "Sync"}
-                                                </button>
+                                                </Button>
                                             )}
 
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <button
+                                                    <Button
                                                         type="button"
+                                                        variant="ghost"
+                                                        size="icon"
                                                         aria-label="Account options"
-                                                        className="p-1 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer ml-0.5"
+                                                        className="h-7 w-7 p-1 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer ml-0.5"
                                                     >
                                                         <MoreVertical size={15} />
-                                                    </button>
+                                                    </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent
                                                     align="end"

@@ -3,6 +3,13 @@
 import { useState, useEffect } from "react";
 import { X, Trophy, Calendar, DollarSign, ShieldAlert, Award, FileText, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import {
     createCompetition,
@@ -195,16 +202,17 @@ export function CompetitionModal({
                             <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                                 Status
                             </label>
-                            <select
-                                value={status}
-                                onChange={(e: any) => setStatus(e.target.value)}
-                                className="w-full px-3.5 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#1E2230] text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/40"
-                            >
-                                <option value="DRAFT">DRAFT (Hidden)</option>
-                                <option value="UPCOMING">UPCOMING (Announced)</option>
-                                <option value="ACTIVE">ACTIVE (Live Scoring)</option>
-                                <option value="ENDED">ENDED (Finalized)</option>
-                            </select>
+                            <Select value={status} onValueChange={(val: any) => setStatus(val)}>
+                                <SelectTrigger className="w-full px-3.5 py-2 h-auto rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#1E2230] text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/40">
+                                    <SelectValue placeholder="Select status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="DRAFT">DRAFT (Hidden)</SelectItem>
+                                    <SelectItem value="UPCOMING">UPCOMING (Announced)</SelectItem>
+                                    <SelectItem value="ACTIVE">ACTIVE (Live Scoring)</SelectItem>
+                                    <SelectItem value="ENDED">ENDED (Finalized)</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
 
@@ -257,7 +265,9 @@ export function CompetitionModal({
 
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <div className="space-y-1">
-                                <label className="text-[11px] font-bold text-gray-600 dark:text-gray-400">🥇 1st Place</label>
+                                <label className="text-[11px] font-bold text-gray-600 dark:text-gray-400 flex items-center gap-1.5">
+                                    <Award size={13} className="text-amber-500 shrink-0" /> 1st Place
+                                </label>
                                 <input
                                     type="text"
                                     value={rank1Reward}
@@ -266,7 +276,9 @@ export function CompetitionModal({
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-[11px] font-bold text-gray-600 dark:text-gray-400">🥈 2nd Place</label>
+                                <label className="text-[11px] font-bold text-gray-600 dark:text-gray-400 flex items-center gap-1.5">
+                                    <Award size={13} className="text-gray-400 shrink-0" /> 2nd Place
+                                </label>
                                 <input
                                     type="text"
                                     value={rank2Reward}
@@ -275,7 +287,9 @@ export function CompetitionModal({
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-[11px] font-bold text-gray-600 dark:text-gray-400">🥉 3rd Place</label>
+                                <label className="text-[11px] font-bold text-gray-600 dark:text-gray-400 flex items-center gap-1.5">
+                                    <Award size={13} className="text-amber-700 dark:text-amber-600 shrink-0" /> 3rd Place
+                                </label>
                                 <input
                                     type="text"
                                     value={rank3Reward}
@@ -318,14 +332,15 @@ export function CompetitionModal({
                             <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                                 Scoring Metric
                             </label>
-                            <select
-                                value={scoringMetric}
-                                onChange={(e: any) => setScoringMetric(e.target.value)}
-                                className="w-full px-3.5 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#1E2230] text-sm text-gray-900 dark:text-white focus:outline-none"
-                            >
-                                <option value="currency">Net PnL ($ USD)</option>
-                                <option value="percentage">Win Rate (%)</option>
-                            </select>
+                            <Select value={scoringMetric} onValueChange={(val: any) => setScoringMetric(val)}>
+                                <SelectTrigger className="w-full px-3.5 py-2 h-auto rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#1E2230] text-sm text-gray-900 dark:text-white focus:outline-none">
+                                    <SelectValue placeholder="Select metric" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="currency">Net PnL ($ USD)</SelectItem>
+                                    <SelectItem value="percentage">Win Rate (%)</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
 

@@ -420,9 +420,11 @@ export function StrategyModal({
                                     onOpenChange={setColorPickerOpen}
                                 >
                                     <PopoverTrigger asChild>
-                                        <button
+                                        <Button
                                             type="button"
-                                            className="flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-gray-200/70 dark:hover:bg-white/10 transition-colors cursor-pointer group/color focus:outline-none"
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-auto p-0 flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-gray-200/70 dark:hover:bg-white/10 transition-colors cursor-pointer group/color focus:outline-none"
                                             title={formData.isPlaybook ? "Choose playbook color badge" : "Choose strategy color badge"}
                                             aria-label={formData.isPlaybook ? "Choose playbook color badge" : "Choose strategy color badge"}
                                         >
@@ -436,7 +438,7 @@ export function StrategyModal({
                                                 size={11}
                                                 className="text-gray-400 group-hover/color:text-gray-600 dark:group-hover/color:text-gray-300 transition-colors shrink-0"
                                             />
-                                        </button>
+                                        </Button>
                                     </PopoverTrigger>
                                     <PopoverContent
                                         className="w-64 p-3 bg-white dark:bg-[#1E2028] border border-dashboard shadow-2xl rounded-lg z-[150]"
@@ -457,15 +459,17 @@ export function StrategyModal({
                                             </div>
                                             <div className="grid grid-cols-6 gap-2 pt-0.5">
                                                 {COLORS.map((c) => (
-                                                    <button
+                                                    <Button
                                                         type="button"
+                                                        variant="ghost"
+                                                        size="icon"
                                                         key={c}
                                                         onClick={() => {
                                                             setFormData((prev) => ({ ...prev, color: c }));
                                                             setColorPickerOpen(false);
                                                         }}
                                                         aria-label={`Select color ${c}`}
-                                                        className={`w-7 h-7 rounded-full transition-all flex items-center justify-center cursor-pointer ${
+                                                        className={`w-7 h-7 p-0 rounded-full transition-all flex items-center justify-center cursor-pointer ${
                                                             formData.color === c
                                                                 ? "ring-2 ring-offset-2 ring-offset-white dark:ring-offset-[#1E2028] scale-110"
                                                                 : "hover:scale-110 opacity-90 hover:opacity-100"
@@ -485,7 +489,7 @@ export function StrategyModal({
                                                                 className="text-white drop-shadow-md"
                                                             />
                                                         )}
-                                                    </button>
+                                                    </Button>
                                                 ))}
                                             </div>
                                         </div>
@@ -527,10 +531,11 @@ export function StrategyModal({
                     <div className="border border-amber-500/20 rounded-lg bg-amber-500/[0.02] dark:bg-amber-500/[0.04] overflow-hidden">
                         <div className="p-4 flex items-center justify-between border-b border-amber-500/10">
                             <div className="flex items-center gap-3">
-                                <button
+                                <Button
                                     type="button"
+                                    variant="ghost"
                                     onClick={() => setFormData((p) => ({ ...p, isPlaybook: !p.isPlaybook }))}
-                                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                                    className={`p-0 relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none hover:bg-transparent ${
                                         formData.isPlaybook ? "bg-gold" : "bg-gray-200 dark:bg-white/20"
                                     }`}
                                     role="switch"
@@ -542,7 +547,7 @@ export function StrategyModal({
                                             formData.isPlaybook ? "translate-x-5" : "translate-x-0"
                                         }`}
                                     />
-                                </button>
+                                </Button>
                                 <div>
                                     <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-1.5">
                                         <BookOpen size={14} className="text-gold dark:text-amber-400" />
@@ -599,21 +604,23 @@ export function StrategyModal({
                                                         className="px-2.5 py-1 rounded-lg bg-amber-500/10 text-gold dark:text-amber-400 text-xs font-bold flex items-center gap-1.5 border border-amber-500/20"
                                                     >
                                                         {tf}
-                                                        <button
+                                                        <Button
                                                             type="button"
+                                                            variant="ghost"
+                                                            size="icon"
                                                             onClick={() => removeTimeframe(tf)}
-                                                            className="hover:text-red-500 transition-colors"
+                                                            className="h-4 w-4 p-0 hover:text-red-500 transition-colors hover:bg-transparent"
                                                             aria-label={`Remove timeframe ${tf}`}
                                                         >
                                                             <X size={12} />
-                                                        </button>
+                                                        </Button>
                                                     </span>
                                                 ))}
                                             </div>
                                             <div className="relative">
                                                 <input
                                                     type="text"
-                                                    placeholder="Type or select timeframe (e.g. M15, H4)..."
+                                                    placeholder="Type or select timeframe..."
                                                     className={inputClasses}
                                                     value={tfInput}
                                                     onFocus={() => setShowTfSuggestions(true)}
@@ -629,14 +636,16 @@ export function StrategyModal({
                                                 {showTfSuggestions && filteredTfSuggestions.length > 0 && (
                                                     <div className="absolute top-full mt-1 left-0 w-full bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg shadow-xl z-20 max-h-36 overflow-y-auto p-1">
                                                         {filteredTfSuggestions.map((tf) => (
-                                                            <button
+                                                            <Button
                                                                 type="button"
+                                                                variant="ghost"
+                                                                size="sm"
                                                                 key={tf}
                                                                 onMouseDown={() => addTimeframe(tf)}
-                                                                className="w-full text-left px-3 py-1.5 text-xs font-bold hover:bg-amber-500/10 hover:text-gold rounded-lg transition-colors text-gray-700 dark:text-gray-300"
+                                                                className="h-auto w-full text-left px-3 py-1.5 text-xs font-bold hover:bg-amber-500/10 hover:text-gold rounded-lg transition-colors text-gray-700 dark:text-gray-300 justify-start"
                                                             >
                                                                 {tf}
-                                                            </button>
+                                                            </Button>
                                                         ))}
                                                     </div>
                                                 )}
@@ -653,14 +662,16 @@ export function StrategyModal({
                                                         className="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold flex items-center gap-1.5 border border-amber-500/20"
                                                     >
                                                         {pair}
-                                                        <button
+                                                        <Button
                                                             type="button"
+                                                            variant="ghost"
+                                                            size="icon"
                                                             onClick={() => removePair(pair)}
-                                                            className="hover:text-red-500 transition-colors"
+                                                            className="h-4 w-4 p-0 hover:text-red-500 transition-colors hover:bg-transparent"
                                                             aria-label={`Remove pair ${pair}`}
                                                         >
                                                             <X size={12} />
-                                                        </button>
+                                                        </Button>
                                                     </span>
                                                 ))}
                                             </div>
@@ -683,14 +694,16 @@ export function StrategyModal({
                                                 {showPairSuggestions && filteredPairSuggestions.length > 0 && (
                                                     <div className="absolute top-full mt-1 left-0 w-full bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg shadow-xl z-20 max-h-36 overflow-y-auto p-1">
                                                         {filteredPairSuggestions.map((p) => (
-                                                            <button
+                                                            <Button
                                                                 type="button"
+                                                                variant="ghost"
+                                                                size="sm"
                                                                 key={p}
                                                                 onMouseDown={() => addPair(p)}
-                                                                className="w-full text-left px-3 py-1.5 text-xs font-bold hover:bg-amber-500/10 hover:text-amber-600 rounded-lg transition-colors text-gray-700 dark:text-gray-300"
+                                                                className="h-auto w-full text-left px-3 py-1.5 text-xs font-bold hover:bg-amber-500/10 hover:text-amber-600 rounded-lg transition-colors text-gray-700 dark:text-gray-300 justify-start"
                                                             >
                                                                 {p}
-                                                            </button>
+                                                            </Button>
                                                         ))}
                                                     </div>
                                                 )}
@@ -795,14 +808,16 @@ export function StrategyModal({
                                                             alt={`Reference ${idx + 1}`}
                                                             className="w-full h-full object-cover"
                                                         />
-                                                        <button
+                                                        <Button
                                                             type="button"
+                                                            variant="destructive"
+                                                            size="icon"
                                                             onClick={() => removeImage(idx)}
-                                                            className="absolute top-1.5 right-1.5 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-md"
+                                                            className="absolute top-1.5 right-1.5 w-6 h-6 p-0 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
                                                             aria-label={`Remove image ${idx + 1}`}
                                                         >
                                                             <Trash2 size={12} />
-                                                        </button>
+                                                        </Button>
                                                     </div>
                                                 ))}
 
@@ -813,10 +828,11 @@ export function StrategyModal({
                                                 )}
 
                                                 {formData.referenceImages.length < 3 && !uploadingImage && (
-                                                    <button
+                                                    <Button
                                                         type="button"
+                                                        variant="ghost"
                                                         onClick={() => fileInputRef.current?.click()}
-                                                        className="aspect-video rounded-lg border-2 border-dashed border-dashboard hover:border-amber-500/50 flex flex-col items-center justify-center cursor-pointer group transition-colors bg-gray-50/50 dark:bg-white/[0.02]"
+                                                        className="h-auto aspect-video rounded-lg border-2 border-dashed border-dashboard hover:border-amber-500/50 flex flex-col items-center justify-center cursor-pointer group transition-colors bg-gray-50/50 dark:bg-white/[0.02] p-0"
                                                     >
                                                         <ImagePlus
                                                             size={22}
@@ -825,7 +841,7 @@ export function StrategyModal({
                                                         <span className="text-xs text-gray-400 group-hover:text-gold dark:group-hover:text-amber-400 mt-1 font-medium transition-colors">
                                                             Upload
                                                         </span>
-                                                    </button>
+                                                    </Button>
                                                 )}
                                             </div>
                                         </div>

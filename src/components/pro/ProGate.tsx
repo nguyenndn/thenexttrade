@@ -3,7 +3,8 @@
 import { useProAccess } from "./ProProvider";
 import { Crown, Lock, ArrowRight, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 
 interface ProGateProps {
@@ -25,12 +26,16 @@ export function ProGate({
     fallback,
     previewCount,
 }: ProGateProps) {
-    const { isPro, loading, getAccountStatus } = useProAccess();
+    const {
+        isPro,
+        loading,
+        getAccountStatus,
+        policyState: globalPolicyState,
+    } = useProAccess();
 
     // Account-scoped check: if accountId is provided, check that specific account
-    const isUnlocked = accountId
-        ? (getAccountStatus(accountId)?.isPro ?? false)
-        : isPro;
+    const accountStatus = accountId ? getAccountStatus(accountId) : null;
+    const isUnlocked = accountId ? (accountStatus?.isPro ?? false) : isPro;
 
     if (loading) {
         return (
@@ -44,10 +49,21 @@ export function ProGate({
 
     if (fallback) return <>{fallback}</>;
 
-    return <ProTeaser feature={feature} />;
+    return (
+        <ProTeaser
+            feature={feature}
+            policyState={accountStatus?.policyState ?? globalPolicyState}
+        />
+    );
 }
 
-function ProTeaser({ feature }: { feature?: string }) {
+function ProTeaser({
+    feature,
+    policyState,
+}: {
+    feature?: string;
+    policyState: "ACTIVE" | "WARNED" | "PAUSED";
+}) {
     const featureLabels: Record<string, string> = {
         "ai-coach": "AI Weekly Coach",
         "edge-leak": "Edge Leak Detector",
@@ -57,6 +73,13 @@ function ProTeaser({ feature }: { feature?: string }) {
     };
 
     const label = feature ? featureLabels[feature] || feature : "This feature";
+    const isPaused = policyState === "PAUSED";
+    const title = isPaused
+        ? "Your VIP access is paused"
+        : "Your trial ended";
+    const description = isPaused
+        ? "Restore access by meeting the current VIP activity policy."
+        : `Your 7-day trial has ended. Continue using ${label} by activating VIP access.`;
 
     return (
         <div className="relative overflow-hidden rounded-lg border border-dashboard bg-white dark:bg-[#1E2028]">
@@ -70,31 +93,43 @@ function ProTeaser({ feature }: { feature?: string }) {
                 </div>
 
                 <h3 className="text-lg font-bold text-gray-800 dark:text-white">
-                    {label} is a Pro Feature
+                    {title}
                 </h3>
                 <p className="mt-2 max-w-sm text-sm text-gray-500 dark:text-gray-400">
-                    Unlock all Pro features for free by verifying as a Gold
-                    Scalper Ninja VIP trader. No subscription required.
+                    {description}
                 </p>
+                <ul className="mt-4 space-y-2 text-left text-sm text-gray-600 dark:text-gray-300">
+                    <li className="flex items-start gap-2">
+                        <Crown className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
+                        Connect and fund a REAL partner MT5 account with at least
+                        $200.
+                    </li>
+                    <li className="flex items-start gap-2">
+                        <Crown className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
+                        Trade at least 2.0 lots during a rolling 30-day period.
+                    </li>
+                    <li className="flex items-start gap-2">
+                        <Crown className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
+                        Connect the EA or request Support Sync to verify your
+                        activity.
+                    </li>
+                </ul>
 
                 <Link
                     href="/dashboard/accounts?action=add&intent=unlock-pro"
-                    className="mt-6 inline-block"
+                    className={cn(
+                        buttonVariants({ variant: "primary", size: "md" }),
+                        "mt-6 inline-flex gap-2 font-bold"
+                    )}
                 >
-                    <Button
-                        variant="primary"
-                        size="md"
-                        className="gap-2 font-bold"
-                    >
-                        <Crown className="h-4 w-4" />
-                        Unlock Pro Free
-                        <ArrowRight className="h-4 w-4" />
-                    </Button>
+                    <Crown className="h-4 w-4" />
+                    Review Access Requirements
+                    <ArrowRight className="h-4 w-4" />
                 </Link>
 
                 <p className="mt-3 text-xs text-gray-400 dark:text-gray-500">
-                    Open a broker account via our partner link → Verify → Get
-                    instant Pro access
+                    Demo, contest, and evaluation accounts never count toward
+                    funding or VIP volume.
                 </p>
             </div>
         </div>

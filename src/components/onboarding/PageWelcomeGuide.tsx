@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { X, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 
 // ============================
 // PAGE GUIDES — 1 card per page
@@ -184,13 +185,16 @@ export function PageWelcomeGuide() {
                                 </p>
                             </div>
                         </div>
-                        <button
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
                             onClick={handleDismiss}
-                            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors p-1 -mt-1 -mr-1"
+                            className="h-7 w-7 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 -mt-1 -mr-1"
                             aria-label="Dismiss guide"
                         >
                             <X size={16} />
-                        </button>
+                        </Button>
                     </div>
 
                     {/* Tips */}
@@ -210,12 +214,15 @@ export function PageWelcomeGuide() {
                     </div>
 
                     {/* Action */}
-                    <button
+                    <Button
+                        type="button"
+                        variant="gold"
+                        size="sm"
                         onClick={handleDismiss}
-                        className="w-full px-4 py-2.5 text-xs font-bold text-white bg-gold hover:bg-amber-600 rounded-lg transition-colors shadow-sm"
+                        className="w-full text-xs font-bold text-white shadow-sm"
                     >
                         Got It
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

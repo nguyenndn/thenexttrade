@@ -19,6 +19,7 @@ import Link from "next/link";
 import { useState, useRef, useCallback } from "react";
 import { format } from "date-fns";
 import type { PublicProfileData } from "@/lib/profile-queries";
+import { Button } from "@/components/ui/Button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
 
@@ -73,9 +74,12 @@ function ShareButton({ username }: { username: string }) {
     };
 
     return (
-        <button
+        <Button
+            type="button"
+            variant="outline"
+            size="sm"
             onClick={handleShare}
-            className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-[11px] font-bold text-amber-900 shadow-sm transition-all hover:border-amber-300 hover:bg-amber-100"
+            className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 h-7 text-[11px] font-bold text-amber-900 shadow-sm transition-all hover:border-amber-300 hover:bg-amber-100"
         >
             {copied ? (
                 <Check size={12} className="text-amber-700" />
@@ -83,7 +87,7 @@ function ShareButton({ username }: { username: string }) {
                 <Share2 size={12} />
             )}
             {copied ? "Copied" : "Share"}
-        </button>
+        </Button>
     );
 }
 

@@ -2211,4 +2211,27 @@ model CompetitionParticipant {
   @@map("competition_participants")
 }
 
+enum LicenseGitHubSyncJobStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model LicenseGitHubSyncJob {
+  id            String                      @id @default(uuid())
+  eventKey      String                      @unique
+  payload       Json?
+  status        LicenseGitHubSyncJobStatus  @default(PENDING)
+  attempts      Int                         @default(0)
+  lastError     String?
+  nextAttemptAt DateTime                    @default(now()) @db.Timestamptz(6)
+  createdAt     DateTime                    @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime                    @updatedAt @db.Timestamptz(6)
+  completedAt   DateTime?                   @db.Timestamptz(6)
+
+  @@index([status, nextAttemptAt])
+  @@map("license_github_sync_jobs")
+}
+
 

@@ -57,8 +57,16 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
     return (
         <>
             <div
+                role="button"
+                tabIndex={0}
                 onClick={() => setIsDetailOpen(true)}
-                className="grid grid-cols-12 gap-1 md:gap-2 py-3 border-b border-dashboard hover:bg-gray-50 dark:hover:bg-white/5 transition-colors items-center px-4 group cursor-pointer"
+                onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setIsDetailOpen(true);
+                    }
+                }}
+                className="grid grid-cols-12 gap-1 md:gap-2 py-3 border-b border-dashboard hover:bg-gray-50 dark:hover:bg-white/5 transition-colors items-center px-4 group cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary/40"
             >
                 <div className="col-span-2 md:col-span-1 text-sm font-bold text-gray-600 dark:text-gray-300 flex items-center gap-1">
                     <span>{formatTime(event.date)}</span>
@@ -125,13 +133,16 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Close Button */}
-                        <button
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
                             onClick={() => setIsDetailOpen(false)}
-                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5"
+                            className="absolute top-4 right-4 h-8 w-8 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
                             aria-label="Close modal"
                         >
-                            <X size={20} />
-                        </button>
+                            <X size={16} />
+                        </Button>
 
                         {/* Header */}
                         <div className="flex items-center gap-3 mb-5">

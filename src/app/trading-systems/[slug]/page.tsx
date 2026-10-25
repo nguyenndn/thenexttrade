@@ -277,7 +277,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                     variant: "primary",
                                     size: "smd",
                                     className:
-                                        "w-full bg-gold hover:bg-amber-600 text-white font-black shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2",
+                                        "w-full bg-gold hover:bg-amber-600 text-white font-bold shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2",
                                 })}
                             >
                                 <Server size={14} />

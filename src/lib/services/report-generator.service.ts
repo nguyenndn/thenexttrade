@@ -36,25 +36,20 @@ interface TradeSnippet {
 // ─── Period Calculation ─────────────────────────────────────────────────────
 
 /**
- * Get the previous week's Monday-Sunday period in account timezone
+ * Get the previous week's Monday-Sunday period in UTC (B1: never double-shift UTC timestamps by account.timezone)
  */
 export function getWeeklyPeriod(
     now: Date,
-    timezone: string,
+    _timezone = "Etc/UTC",
     current = false
 ): ReportPeriod {
-    const formatter = new Intl.DateTimeFormat("en-CA", {
-        timeZone: timezone,
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-    });
-    const localDate = formatter.format(now);
-    const [y, m, d] = localDate.split("-").map(Number);
-    const local = new Date(y, m - 1, d);
+    const y = now.getUTCFullYear();
+    const m = now.getUTCMonth() + 1;
+    const d = now.getUTCDate();
+    const local = new Date(Date.UTC(y, m - 1, d));
 
     // DOW: 0=Sun, 1=Mon, ..., 6=Sat
-    const dow = local.getDay();
+    const dow = local.getUTCDay();
 
     let monday: Date;
     let sunday: Date;
@@ -63,50 +58,48 @@ export function getWeeklyPeriod(
         // Current week: go back to this Monday
         const daysBack = dow === 0 ? 6 : dow - 1;
         monday = new Date(local);
-        monday.setDate(local.getDate() - daysBack);
+        monday.setUTCDate(local.getUTCDate() - daysBack);
         // End is today (not next Sunday)
         sunday = new Date(local);
     } else {
         // Previous week
         const daysBack = dow === 0 ? 6 : dow - 1 + 7;
         monday = new Date(local);
-        monday.setDate(local.getDate() - daysBack);
+        monday.setUTCDate(local.getUTCDate() - daysBack);
         sunday = new Date(monday);
-        sunday.setDate(monday.getDate() + 6);
+        sunday.setUTCDate(monday.getUTCDate() + 6);
     }
 
     // ISO week number
-    const jan4 = new Date(monday.getFullYear(), 0, 4);
+    const jan4 = new Date(Date.UTC(monday.getUTCFullYear(), 0, 4));
     const weekNum = Math.ceil(
-        ((monday.getTime() - jan4.getTime()) / 86400000 + jan4.getDay() + 1) / 7
+        ((monday.getTime() - jan4.getTime()) / 86400000 +
+            jan4.getUTCDay() +
+            1) /
+            7
     );
 
     return {
-        start: new Date(`${formatDate(monday)}T00:00:00`),
-        end: new Date(`${formatDate(sunday)}T23:59:59.999`),
+        start: new Date(`${formatDate(monday)}T00:00:00.000Z`),
+        end: new Date(`${formatDate(sunday)}T23:59:59.999Z`),
         label: current
-            ? `Week ${weekNum}, ${monday.getFullYear()} (Current)`
-            : `Week ${weekNum}, ${monday.getFullYear()}`,
+            ? `Week ${weekNum}, ${monday.getUTCFullYear()} (Current)`
+            : `Week ${weekNum}, ${monday.getUTCFullYear()}`,
         type: "WEEKLY",
     };
 }
 
 /**
- * Get the previous month's 1st-last period in account timezone
+ * Get the previous month's 1st-last period in UTC (B1: never double-shift UTC timestamps by account.timezone)
  */
 export function getMonthlyPeriod(
     now: Date,
-    timezone: string,
+    _timezone = "Etc/UTC",
     current = false
 ): ReportPeriod {
-    const formatter = new Intl.DateTimeFormat("en-CA", {
-        timeZone: timezone,
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-    });
-    const localDate = formatter.format(now);
-    const [y, m, d] = localDate.split("-").map(Number);
+    const y = now.getUTCFullYear();
+    const m = now.getUTCMonth() + 1;
+    const d = now.getUTCDate();
 
     const monthNames = [
         "January",
@@ -125,11 +118,11 @@ export function getMonthlyPeriod(
 
     if (current) {
         // Current month: 1st of this month → today
-        const firstDay = new Date(y, m - 1, 1);
-        const today = new Date(y, m - 1, d);
+        const firstDay = new Date(Date.UTC(y, m - 1, 1));
+        const today = new Date(Date.UTC(y, m - 1, d));
         return {
-            start: new Date(`${formatDate(firstDay)}T00:00:00`),
-            end: new Date(`${formatDate(today)}T23:59:59.999`),
+            start: new Date(`${formatDate(firstDay)}T00:00:00.000Z`),
+            end: new Date(`${formatDate(today)}T23:59:59.999Z`),
             label: `${monthNames[m - 1]} ${y} (Current)`,
             type: "MONTHLY",
         };
@@ -139,19 +132,19 @@ export function getMonthlyPeriod(
     const prevMonth = m === 1 ? 12 : m - 1;
     const prevYear = m === 1 ? y - 1 : y;
 
-    const firstDay = new Date(prevYear, prevMonth - 1, 1);
-    const lastDay = new Date(prevYear, prevMonth, 0);
+    const firstDay = new Date(Date.UTC(prevYear, prevMonth - 1, 1));
+    const lastDay = new Date(Date.UTC(prevYear, prevMonth, 0));
 
     return {
-        start: new Date(`${formatDate(firstDay)}T00:00:00`),
-        end: new Date(`${formatDate(lastDay)}T23:59:59.999`),
+        start: new Date(`${formatDate(firstDay)}T00:00:00.000Z`),
+        end: new Date(`${formatDate(lastDay)}T23:59:59.999Z`),
         label: `${monthNames[prevMonth - 1]} ${prevYear}`,
         type: "MONTHLY",
     };
 }
 
 function formatDate(d: Date): string {
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
 }
 
 // ─── Core Stats Query ───────────────────────────────────────────────────────
@@ -538,25 +531,27 @@ async function getBestWorstTrades(
 
 // ─── Previous Period Stats ──────────────────────────────────────────────────
 
-function getPreviousPeriod(period: ReportPeriod): { start: Date; end: Date } {
+export function getPreviousPeriod(period: ReportPeriod): { start: Date; end: Date } {
     if (period.type === "WEEKLY") {
         const start = new Date(period.start);
-        start.setDate(start.getDate() - 7);
+        start.setUTCDate(start.getUTCDate() - 7);
         const end = new Date(period.end);
-        end.setDate(end.getDate() - 7);
+        end.setUTCDate(end.getUTCDate() - 7);
         return { start, end };
     } else {
-        // Previous month
+        // Previous month in UTC
         const start = new Date(period.start);
-        start.setMonth(start.getMonth() - 1);
+        start.setUTCMonth(start.getUTCMonth() - 1);
         const end = new Date(
-            start.getFullYear(),
-            start.getMonth() + 1,
-            0,
-            23,
-            59,
-            59,
-            999
+            Date.UTC(
+                start.getUTCFullYear(),
+                start.getUTCMonth() + 1,
+                0,
+                23,
+                59,
+                59,
+                999
+            )
         );
         return { start, end };
     }
@@ -700,7 +695,8 @@ export async function generateReportsForAllUsers(
 
     for (const user of users) {
         for (const account of user.tradingAccounts) {
-            const tz = account.timezone || "Etc/UTC";
+            // B1: All trade timestamps in DB are stored in UTC; do not shift report grouping by account.timezone
+            const tz = "Etc/UTC";
             const now = new Date();
             const period =
                 type === "WEEKLY"

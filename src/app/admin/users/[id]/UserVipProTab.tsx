@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     SPRING_SOFT,
@@ -34,6 +35,8 @@ import { toast } from "sonner";
 import {
     approveVipRequest,
     rejectVipRequest,
+    deleteVipRequest,
+    clearRejectedVipRequests,
     grantGracePeriod,
     revokeProAccess,
     grantManualPro,
@@ -87,9 +90,8 @@ interface UserVipProTabProps {
 }
 
 export function UserVipProTab({ user }: UserVipProTabProps) {
+    const router = useRouter();
     const [loading, setLoading] = useState<string | null>(null);
-    const [rejectingId, setRejectingId] = useState<string | null>(null);
-    const [rejectReason, setRejectReason] = useState("");
     const [screenshotModal, setScreenshotModal] = useState<string | null>(null);
 
     // Body scroll lock: lock while the lightbox is open, release after the
@@ -115,10 +117,6 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
     const [graceDays, setGraceDays] = useState(14);
     const [grantNote, setGrantNote] = useState("");
 
-    // Revoke State
-    const [revokingId, setRevokingId] = useState<string | null>(null);
-    const [revokeReason, setRevokeReason] = useState("");
-
     const accessStatusLabels: Record<string, string> = {
         ACTIVE: "Active Access",
         GRACE: "Temporary Access",
@@ -134,6 +132,9 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
     const activeEntitlements = user.proEntitlements.filter(
         (e) => e.status !== "REVOKED"
     );
+    const rejectedCount = user.vipRequests.filter(
+        (r) => r.status === "REJECTED"
+    ).length;
 
     // VIP Actions
     const handleApproveVip = async (requestId: string) => {
@@ -144,6 +145,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                 toast.success(
                     "VIP verification request approved successfully!"
                 );
+                router.refresh();
             } else {
                 toast.error(res.error || "Failed to approve request");
             }
@@ -155,22 +157,51 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
     };
 
     const handleRejectVip = async (requestId: string) => {
-        if (!rejectReason.trim()) {
-            toast.error("Please provide a reason for rejection");
-            return;
-        }
         setLoading(`vip-reject-${requestId}`);
         try {
-            const res = await rejectVipRequest(requestId, rejectReason);
+            const res = await rejectVipRequest(requestId);
             if (res.success) {
                 toast.success("VIP request rejected.");
-                setRejectingId(null);
-                setRejectReason("");
+                router.refresh();
             } else {
                 toast.error(res.error || "Failed to reject request");
             }
         } catch {
             toast.error("An error occurred while rejecting");
+        } finally {
+            setLoading(null);
+        }
+    };
+
+    const handleDeleteVip = async (requestId: string) => {
+        setLoading(`vip-delete-${requestId}`);
+        try {
+            const res = await deleteVipRequest(requestId);
+            if (res.success) {
+                toast.success("VIP request deleted.");
+                router.refresh();
+            } else {
+                toast.error(res.error || "Failed to delete request");
+            }
+        } catch {
+            toast.error("An error occurred while deleting");
+        } finally {
+            setLoading(null);
+        }
+    };
+
+    const handleClearRejected = async () => {
+        setLoading("vip-clear-rejected");
+        try {
+            const res = await clearRejectedVipRequests(user.id);
+            if (res.success) {
+                toast.success(`Deleted ${res.deletedCount ?? rejectedCount} rejected record(s).`);
+                router.refresh();
+            } else {
+                toast.error(res.error || "Failed to delete rejected records");
+            }
+        } catch {
+            toast.error("An error occurred while clearing rejected records");
         } finally {
             setLoading(null);
         }
@@ -197,6 +228,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                 setGrantNote("");
                 setSelectedAccountId("user-level");
                 setGrantType("permanent");
+                router.refresh();
             } else {
                 toast.error(res.error || "Failed to grant product access");
             }
@@ -211,22 +243,17 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
         entitlementId: string,
         tradingAccountId?: string | null
     ) => {
-        if (!revokeReason.trim()) {
-            toast.error("Please provide a reason for revoking");
-            return;
-        }
         setLoading(`revoke-pro-${entitlementId}`);
         try {
             const res = await revokeProAccess(
                 user.id,
-                revokeReason,
+                undefined,
                 tradingAccountId || undefined,
                 entitlementId
             );
             if (res.success) {
                 toast.success("Product access removed.");
-                setRevokingId(null);
-                setRevokeReason("");
+                router.refresh();
             } else {
                 toast.error(res.error || "Failed to remove product access");
             }
@@ -240,21 +267,39 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
     return (
         <div className="space-y-6">
             {/* 1. Partner account verification */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
-                <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
+            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+                <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-white/10 flex flex-wrap items-center justify-between gap-3">
                     <div>
                         <h3 className="text-base font-bold text-gray-700 dark:text-white flex items-center gap-2">
                             <ShieldCheck size={18} className="text-primary" />{" "}
                             Partner Account Verification
                         </h3>
                         <p className="text-xs text-gray-500 mt-1">
-                            Review the broker account evidence submitted for
-                            product access
+                            Review broker account submissions for product access
                         </p>
                     </div>
-                    <span className="text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-lg">
-                        {user.vipRequests.length} Total
-                    </span>
+                    <div className="flex items-center gap-2">
+                        {rejectedCount > 0 && (
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={handleClearRejected}
+                                disabled={loading === "vip-clear-rejected"}
+                                className="h-8 text-xs font-bold text-red-500 border-red-200 hover:bg-red-50 dark:border-red-500/20 dark:hover:bg-red-500/10 rounded-lg"
+                            >
+                                {loading === "vip-clear-rejected" ? (
+                                    <Loader2 size={12} className="animate-spin mr-1.5" />
+                                ) : (
+                                    <Trash2 size={12} className="mr-1.5" />
+                                )}
+                                Delete Rejected ({rejectedCount})
+                            </Button>
+                        )}
+                        <span className="text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-lg">
+                            {user.vipRequests.length} Total
+                        </span>
+                    </div>
                 </div>
 
                 {user.vipRequests.length > 0 ? (
@@ -263,9 +308,9 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                             <thead>
                                 <tr className="border-b border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.01] text-[10px] font-bold text-gray-500 uppercase tracking-wider">
                                     <th className="p-4 sm:px-6">
-                                        Account Details
+                                        Broker & Account
                                     </th>
-                                    <th className="p-4">Submission Details</th>
+                                    <th className="p-4">Submitted</th>
                                     <th className="p-4">Evidence</th>
                                     <th className="p-4">Status</th>
                                     <th className="p-4 sm:px-6 text-right">
@@ -280,17 +325,16 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                         className="hover:bg-gray-50/30 dark:hover:bg-white/[0.01] transition-colors"
                                     >
                                         <td className="p-4 sm:px-6">
-                                            <p className="font-bold text-gray-700 dark:text-white">
-                                                {req.broker}
-                                            </p>
-                                            <p className="text-xs text-gray-600 mt-0.5 font-medium">
-                                                Account #:{" "}
-                                                <span className="font-mono text-xs">
-                                                    {req.accountNumber}
+                                            <div className="flex items-center gap-2">
+                                                <p className="font-bold text-gray-700 dark:text-white">
+                                                    {req.broker}
+                                                </p>
+                                                <span className="font-mono text-xs text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded">
+                                                    #{req.accountNumber}
                                                 </span>
-                                            </p>
-                                            <p className="text-xs text-gray-500 mt-0.5">
-                                                Submitted Balance:{" "}
+                                            </div>
+                                            <p className="text-xs text-gray-500 mt-1">
+                                                Balance:{" "}
                                                 <span className="font-bold text-gray-700 dark:text-white">
                                                     $
                                                     {parseFloat(
@@ -300,54 +344,49 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                             </p>
                                         </td>
                                         <td className="p-4">
-                                            <p className="text-xs font-medium text-gray-700 dark:text-white">
-                                                Email: {req.email}
-                                            </p>
-                                            <p className="text-xs text-gray-600 mt-0.5">
-                                                Telegram:{" "}
-                                                {req.telegramId
-                                                    ? `@${req.telegramId.replace("@", "")}`
-                                                    : "N/A"}
-                                            </p>
-                                            <p className="text-[10px] text-gray-500 mt-1">
-                                                Submitted:{" "}
+                                            <p className="text-xs text-gray-700 dark:text-gray-300">
                                                 {format(
                                                     new Date(req.createdAt),
                                                     "MMM d, yyyy · HH:mm"
                                                 )}
                                             </p>
+                                            {req.telegramId && (
+                                                <p className="text-[11px] text-gray-500 mt-0.5">
+                                                    Telegram: @{req.telegramId.replace("@", "")}
+                                                </p>
+                                            )}
                                         </td>
                                         <td className="p-4">
                                             {req.screenshotUrl ? (
                                                 <Button
                                                     type="button"
-                                                    variant="ghost"
+                                                    variant="outline"
                                                     onClick={() =>
                                                         setScreenshotModal(
                                                             req.screenshotUrl
                                                         )
                                                     }
-                                                    className="h-auto px-2.5 py-1.5 bg-primary/5 hover:bg-primary/10 text-primary border border-primary/20"
+                                                    className="h-auto px-2.5 py-1.5 bg-primary/5 hover:bg-primary/10 text-primary border border-primary/20 rounded-lg text-xs"
                                                 >
-                                                    <ImageIcon size={14} /> View
-                                                    Screenshot
+                                                    <ImageIcon size={14} className="mr-1.5" /> View
+                                                    Proof
                                                 </Button>
                                             ) : (
-                                                <span className="text-xs text-gray-600 flex items-center gap-1">
+                                                <span className="text-xs text-gray-500 flex items-center gap-1">
                                                     <AlertCircle
                                                         size={14}
                                                         className="text-gray-400"
                                                     />{" "}
-                                                    No attachment
+                                                    None
                                                 </span>
                                             )}
                                         </td>
                                         <td className="p-4">
-                                            <div className="space-y-1.5">
+                                            <div className="space-y-1">
                                                 {req.status === "PENDING" && (
                                                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-yellow-50 text-yellow-700 border border-yellow-200 dark:bg-yellow-500/10 dark:text-yellow-400 dark:border-yellow-500/20">
                                                         <Clock size={12} />{" "}
-                                                        Pending Review
+                                                        Pending
                                                     </span>
                                                 )}
                                                 {req.status === "APPROVED" && (
@@ -359,142 +398,91 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                                     </span>
                                                 )}
                                                 {req.status === "REJECTED" && (
-                                                    <div className="space-y-1">
-                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20">
-                                                            <XCircle
-                                                                size={12}
-                                                            />{" "}
-                                                            Rejected
-                                                        </span>
-                                                        {req.rejectReason && (
-                                                            <p className="text-[11px] text-red-500 dark:text-red-400 leading-tight max-w-[200px]">
-                                                                Reason:{" "}
-                                                                {
-                                                                    req.rejectReason
-                                                                }
-                                                            </p>
-                                                        )}
-                                                    </div>
-                                                )}
-                                                {req.reviewedAt && (
-                                                    <p className="text-[10px] text-gray-500">
-                                                        Reviewed on{" "}
-                                                        {format(
-                                                            new Date(
-                                                                req.reviewedAt
-                                                            ),
-                                                            "MMM d, yyyy"
-                                                        )}
-                                                    </p>
+                                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20">
+                                                        <XCircle
+                                                            size={12}
+                                                        />{" "}
+                                                        Rejected
+                                                    </span>
                                                 )}
                                             </div>
                                         </td>
                                         <td className="p-4 sm:px-6 text-right">
-                                            {req.status === "PENDING" && (
-                                                <div className="flex items-center justify-end gap-2">
-                                                    {rejectingId === req.id ? (
-                                                        <div className="flex flex-col gap-2 w-48 text-left bg-gray-50 dark:bg-white/5 p-2 rounded-lg border border-gray-200 dark:border-white/10">
-                                                            <textarea
-                                                                value={
-                                                                    rejectReason
-                                                                }
-                                                                onChange={(e) =>
-                                                                    setRejectReason(
-                                                                        e.target
-                                                                            .value
-                                                                    )
-                                                                }
-                                                                placeholder="Reject reason..."
-                                                                rows={2}
-                                                                className="w-full text-xs p-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] text-gray-700 dark:text-white focus:outline-none focus:border-red-500"
-                                                            />
-                                                            <div className="flex justify-end gap-1.5">
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="sm"
-                                                                    onClick={() => {
-                                                                        setRejectingId(
-                                                                            null
-                                                                        );
-                                                                        setRejectReason(
-                                                                            ""
-                                                                        );
-                                                                    }}
-                                                                    className="h-7 text-[10px] px-2 py-0.5 rounded-lg"
-                                                                >
-                                                                    Cancel
-                                                                </Button>
-                                                                <Button
-                                                                    variant="primary"
-                                                                    size="sm"
-                                                                    onClick={() =>
-                                                                        handleRejectVip(
-                                                                            req.id
-                                                                        )
-                                                                    }
-                                                                    disabled={
-                                                                        loading ===
-                                                                        `vip-reject-${req.id}`
-                                                                    }
-                                                                    className="h-7 text-[10px] px-2 py-0.5 bg-red-600 hover:bg-red-700 text-white rounded-lg"
-                                                                >
-                                                                    {loading ===
-                                                                    `vip-reject-${req.id}` ? (
-                                                                        <Loader2
-                                                                            size={
-                                                                                10
-                                                                            }
-                                                                            className="animate-spin"
-                                                                        />
-                                                                    ) : (
-                                                                        "Reject"
-                                                                    )}
-                                                                </Button>
-                                                            </div>
-                                                        </div>
+                                            <div className="flex items-center justify-end gap-2">
+                                                {req.status === "PENDING" && (
+                                                    <>
+                                                        <Button
+                                                            variant="primary"
+                                                            size="sm"
+                                                            onClick={() =>
+                                                                handleApproveVip(
+                                                                    req.id
+                                                                )
+                                                            }
+                                                            disabled={
+                                                                loading ===
+                                                                `vip-approve-${req.id}`
+                                                            }
+                                                            className="h-8 text-xs font-bold rounded-lg"
+                                                        >
+                                                            {loading ===
+                                                            `vip-approve-${req.id}` ? (
+                                                                <Loader2
+                                                                    size={12}
+                                                                    className="animate-spin mr-1"
+                                                                />
+                                                            ) : null}
+                                                            Approve
+                                                        </Button>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={() =>
+                                                                handleRejectVip(
+                                                                    req.id
+                                                                )
+                                                            }
+                                                            disabled={
+                                                                loading ===
+                                                                `vip-reject-${req.id}`
+                                                            }
+                                                            className="h-8 text-xs font-bold text-red-500 border-red-200 hover:bg-red-50 dark:border-red-500/20 dark:hover:bg-red-500/10 rounded-lg"
+                                                        >
+                                                            {loading ===
+                                                            `vip-reject-${req.id}` ? (
+                                                                <Loader2
+                                                                    size={12}
+                                                                    className="animate-spin mr-1"
+                                                                />
+                                                            ) : null}
+                                                            Reject
+                                                        </Button>
+                                                    </>
+                                                )}
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    aria-label="Delete request"
+                                                    onClick={() =>
+                                                        handleDeleteVip(req.id)
+                                                    }
+                                                    disabled={
+                                                        loading ===
+                                                        `vip-delete-${req.id}`
+                                                    }
+                                                    className="h-8 text-xs font-bold text-gray-500 hover:text-red-500 border-gray-200 hover:border-red-200 hover:bg-red-50 dark:border-white/10 dark:hover:border-red-500/20 dark:hover:bg-red-500/10 rounded-lg"
+                                                >
+                                                    {loading ===
+                                                    `vip-delete-${req.id}` ? (
+                                                        <Loader2
+                                                            size={12}
+                                                            className="animate-spin"
+                                                        />
                                                     ) : (
-                                                        <>
-                                                            <Button
-                                                                variant="outline"
-                                                                size="sm"
-                                                                onClick={() =>
-                                                                    setRejectingId(
-                                                                        req.id
-                                                                    )
-                                                                }
-                                                                className="h-8 text-xs font-bold text-red-500 border-red-200 hover:bg-red-50 dark:border-red-500/20 dark:hover:bg-red-500/10 rounded-lg"
-                                                            >
-                                                                Reject
-                                                            </Button>
-                                                            <Button
-                                                                variant="primary"
-                                                                size="sm"
-                                                                onClick={() =>
-                                                                    handleApproveVip(
-                                                                        req.id
-                                                                    )
-                                                                }
-                                                                disabled={
-                                                                    loading ===
-                                                                    `vip-approve-${req.id}`
-                                                                }
-                                                                className="h-8 text-xs font-bold rounded-lg"
-                                                            >
-                                                                {loading ===
-                                                                `vip-approve-${req.id}` ? (
-                                                                    <Loader2
-                                                                        size={
-                                                                            12
-                                                                        }
-                                                                        className="animate-spin mr-1"
-                                                                    />
-                                                                ) : null}
-                                                                Approve
-                                                            </Button>
-                                                        </>
+                                                        <Trash2 size={13} />
                                                     )}
-                                                </div>
-                                            )}
+                                                </Button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -513,7 +501,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
             {/* 2. Current access and management */}
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
                 {/* Left/Middle: Current access */}
-                <div className="xl:col-span-2 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm flex flex-col">
+                <div className="xl:col-span-2 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm flex flex-col">
                     <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <div>
                             <h3 className="text-base font-bold text-gray-700 dark:text-white flex items-center gap-2">
@@ -529,7 +517,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                             </p>
                         </div>
                         <span className="text-xs font-bold text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-lg">
-                            {activeEntitlements.length} Records
+                            {activeEntitlements.length} Active
                         </span>
                     </div>
 
@@ -538,46 +526,27 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                             {activeEntitlements.map((ent) => (
                                 <div
                                     key={ent.id}
-                                    className="p-5 space-y-4 hover:bg-gray-50/20 dark:hover:bg-white/[0.01] transition-colors"
+                                    className="p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 hover:bg-gray-50/20 dark:hover:bg-white/[0.01] transition-colors"
                                 >
-                                    <div className="flex flex-wrap items-center justify-between gap-3">
-                                        <div className="space-y-1">
-                                            <div className="flex items-center gap-2">
-                                                <p className="text-sm font-bold text-gray-700 dark:text-white">
-                                                    {ent.broker
-                                                        ? `${ent.broker} · #${ent.accountNumberMasked || ent.accountNumber}`
-                                                        : "User-level Access (Global)"}
-                                                </p>
-                                                {ent.tradingAccount?.name && (
-                                                    <span className="text-xs text-gray-600 font-medium">
-                                                        (
-                                                        {
-                                                            ent.tradingAccount
-                                                                .name
-                                                        }
-                                                        )
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <p className="text-xs text-gray-500">
-                                                Access source:{" "}
-                                                {accessSourceLabels[
-                                                    ent.source
-                                                ] || ent.source}
+                                    <div className="space-y-1">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <p className="text-sm font-bold text-gray-700 dark:text-white">
+                                                {ent.broker
+                                                    ? `${ent.broker} · #${ent.accountNumberMasked || ent.accountNumber}`
+                                                    : "User-level Access (Global)"}
                                             </p>
-                                        </div>
-
-                                        <div className="flex items-center gap-2">
+                                            {ent.tradingAccount?.name && (
+                                                <span className="text-xs text-gray-600 font-medium">
+                                                    ({ent.tradingAccount.name})
+                                                </span>
+                                            )}
                                             <span
-                                                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider ${
+                                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
                                                     ent.status === "ACTIVE"
                                                         ? "bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400"
                                                         : ent.status === "GRACE"
                                                           ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-500/20 dark:text-yellow-400"
-                                                          : ent.status ===
-                                                              "REVOKED"
-                                                            ? "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400"
-                                                            : "bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-500"
+                                                          : "bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-500"
                                                 }`}
                                             >
                                                 {accessStatusLabels[
@@ -585,119 +554,56 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                                 ] || ent.status}
                                             </span>
                                         </div>
+                                        <p className="text-xs text-gray-500">
+                                            {accessSourceLabels[ent.source] ||
+                                                ent.source}{" "}
+                                            · Started{" "}
+                                            {format(
+                                                new Date(ent.startsAt),
+                                                "MMM d, yyyy"
+                                            )}
+                                            {ent.expiresAt
+                                                ? ` · Ends ${format(new Date(ent.expiresAt), "MMM d, yyyy")}`
+                                                : " · Lifetime"}
+                                        </p>
+                                        {ent.adminNote && (
+                                            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                                                Note: {ent.adminNote}
+                                            </p>
+                                        )}
                                     </div>
-
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                                        <div>
-                                            <p className="text-gray-600">
-                                                Access Started
-                                            </p>
-                                            <p className="font-bold text-gray-700 dark:text-white mt-0.5">
-                                                {format(
-                                                    new Date(ent.startsAt),
-                                                    "MMM d, yyyy · HH:mm"
-                                                )}
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <p className="text-gray-600">
-                                                Access Ends
-                                            </p>
-                                            <p className="font-bold text-gray-700 dark:text-white mt-0.5">
-                                                {ent.expiresAt
-                                                    ? format(
-                                                          new Date(
-                                                              ent.expiresAt
-                                                          ),
-                                                          "MMM d, yyyy · HH:mm"
-                                                      )
-                                                    : "Never (Lifetime)"}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {ent.adminNote && (
-                                        <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-xs text-gray-600 dark:text-gray-300">
-                                            <p className="font-bold uppercase text-[9px] tracking-wider text-gray-600 mb-1">
-                                                Admin Notes
-                                            </p>
-                                            {ent.adminNote}
-                                        </div>
-                                    )}
 
                                     {ent.status !== "REVOKED" &&
                                         ent.status !== "EXPIRED" && (
-                                            <div className="pt-2 flex justify-end">
-                                                {revokingId === ent.id ? (
-                                                    <div className="flex items-center gap-2 w-full max-w-md bg-red-50/50 dark:bg-red-500/5 border border-red-200 dark:border-red-500/10 p-3 rounded-lg">
-                                                        <input
-                                                            type="text"
-                                                            value={revokeReason}
-                                                            onChange={(e) =>
-                                                                setRevokeReason(
-                                                                    e.target
-                                                                        .value
-                                                                )
-                                                            }
-                                                            
-                                                            className="flex-1 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 text-xs bg-white dark:bg-[#1E2028] text-gray-700 dark:text-white focus:outline-none"
-                                                        />
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onClick={() => {
-                                                                setRevokingId(
-                                                                    null
-                                                                );
-                                                                setRevokeReason(
-                                                                    ""
-                                                                );
-                                                            }}
-                                                            className="h-8 text-xs font-bold"
-                                                        >
-                                                            Cancel
-                                                        </Button>
-                                                        <Button
-                                                            variant="primary"
-                                                            size="sm"
-                                                            onClick={() =>
-                                                                handleRevokePro(
-                                                                    ent.id,
-                                                                    ent.tradingAccountId || ent.tradingAccount?.id || null
-                                                                )
-                                                            }
-                                                            disabled={
-                                                                loading ===
-                                                                `revoke-pro-${ent.id}`
-                                                            }
-                                                            className="h-8 text-xs font-bold bg-red-600 hover:bg-red-700 text-white rounded-lg"
-                                                        >
-                                                            {loading ===
-                                                            `revoke-pro-${ent.id}` ? (
-                                                                <Loader2
-                                                                    size={12}
-                                                                    className="animate-spin mr-1"
-                                                                />
-                                                            ) : null}
-                                                            Revoke
-                                                        </Button>
-                                                    </div>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() =>
+                                                    handleRevokePro(
+                                                        ent.id,
+                                                        ent.tradingAccountId ||
+                                                            ent.tradingAccount
+                                                                ?.id ||
+                                                            null
+                                                    )
+                                                }
+                                                disabled={
+                                                    loading ===
+                                                    `revoke-pro-${ent.id}`
+                                                }
+                                                className="h-8 text-xs font-bold text-red-500 border-red-200 hover:bg-red-50 dark:border-red-500/20 dark:hover:bg-red-500/10 flex items-center gap-1.5 rounded-lg"
+                                            >
+                                                {loading ===
+                                                `revoke-pro-${ent.id}` ? (
+                                                    <Loader2
+                                                        size={13}
+                                                        className="animate-spin"
+                                                    />
                                                 ) : (
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            setRevokingId(
-                                                                ent.id
-                                                            )
-                                                        }
-                                                        className="h-8 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-1 rounded-lg"
-                                                    >
-                                                        <Trash2 size={14} />{" "}
-                                                        Remove Access
-                                                    </Button>
+                                                    <Trash2 size={13} />
                                                 )}
-                                            </div>
+                                                Remove Access
+                                            </Button>
                                         )}
                                 </div>
                             ))}
@@ -719,7 +625,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                 </div>
 
                 {/* Right: Manual access form */}
-                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-6 shadow-sm">
+                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm">
                     <h3 className="text-base font-bold text-gray-700 dark:text-white flex items-center gap-2 mb-4 border-b border-gray-200 dark:border-white/10 pb-3">
                         <KeyRound size={18} className="text-primary" /> Grant
                         Product Access
@@ -798,28 +704,30 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                 Access Duration
                             </label>
                             <div className="grid grid-cols-2 gap-2">
-                                <button
+                                <Button
                                     type="button"
+                                    variant="outline"
                                     onClick={() => setGrantType("permanent")}
-                                    className={`py-2 px-3 text-xs font-bold rounded-lg border transition-all ${
+                                    className={`py-2 px-3 h-auto text-xs font-bold rounded-lg border transition-all ${
                                         grantType === "permanent"
                                             ? "border-primary bg-primary/5 text-primary"
                                             : "border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-50"
                                     }`}
                                 >
                                     Ongoing
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     type="button"
+                                    variant="outline"
                                     onClick={() => setGrantType("grace")}
-                                    className={`py-2 px-3 text-xs font-bold rounded-lg border transition-all ${
+                                    className={`py-2 px-3 h-auto text-xs font-bold rounded-lg border transition-all ${
                                         grantType === "grace"
                                             ? "border-primary bg-primary/5 text-primary"
                                             : "border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-50"
                                     }`}
                                 >
                                     Temporary
-                                </button>
+                                </Button>
                             </div>
                         </div>
 
@@ -846,14 +754,13 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                         {/* Note */}
                         <div>
                             <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-1.5">
-                                Admin Note
+                                Admin Note (Optional)
                             </label>
                             <textarea
                                 value={grantNote}
                                 onChange={(e) => setGrantNote(e.target.value)}
-                                placeholder="Why is this access being granted?"
-                                rows={3}
-                                className="w-full px-3 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-sm text-gray-700 dark:text-white placeholder:text-gray-400 focus:outline-none focus:border-primary/50 transition-colors resize-none"
+                                rows={2}
+                                className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-sm text-gray-700 dark:text-white focus:outline-none focus:border-primary/50 transition-colors resize-none"
                             />
                         </div>
 
@@ -893,7 +800,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative max-w-5xl max-h-[90vh] bg-white dark:bg-[#151925] rounded-lg overflow-hidden p-2 shadow-2xl cursor-default"
+                        className="relative max-w-5xl max-h-[90vh] bg-white dark:bg-[#151925] rounded-xl overflow-hidden p-2 shadow-2xl cursor-default"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <img
@@ -906,7 +813,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                 VIP verification proof attachment screenshot
                             </p>
                             <Button
-                                variant="ghost"
+                                variant="outline"
                                 size="sm"
                                 onClick={() => setScreenshotModal(null)}
                                 className="h-8 text-xs font-bold rounded-lg"

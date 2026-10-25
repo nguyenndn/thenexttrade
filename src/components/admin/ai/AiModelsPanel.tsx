@@ -242,13 +242,15 @@ export function AiModelsPanel({
                                     </p>
                                 </div>
                             </div>
-                            <button
+                            <Button
+                                type="button"
+                                variant="ghost"
                                 onClick={() => handleToggle(model.id, model.enabled)}
-                                className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center transition-all ${model.enabled ? "bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-500/20" : "bg-gray-100 dark:bg-white/5 text-gray-400"}`}
+                                className={`px-2.5 py-1 h-auto rounded-lg text-xs font-semibold flex items-center transition-all ${model.enabled ? "bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-500/20" : "bg-gray-100 dark:bg-white/5 text-gray-400"}`}
                             >
                                 <Power className="w-3 h-3 mr-1" />
                                 {model.enabled ? "Enabled" : "Disabled"}
-                            </button>
+                            </Button>
                         </div>
 
                         <div className="border-t border-gray-100 dark:border-white/5 pt-3 grid grid-cols-2 gap-2 text-xs">

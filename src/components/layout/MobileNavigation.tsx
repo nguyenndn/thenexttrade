@@ -66,6 +66,7 @@ export function MobileNavigation({
         <AnimatePresence>
             {isOpen && (
         <motion.div
+            id="mobile-navigation"
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
@@ -185,16 +186,19 @@ export function MobileNavigation({
                                 <Settings size={16} className="text-gray-500" />
                                 Settings
                             </Link>
-                            <button
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
                                 onClick={() => {
                                     signout();
                                     onClose();
                                 }}
-                                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                                className="w-full flex items-center justify-start gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors h-auto"
                             >
                                 <LogOut size={16} />
                                 Log Out
-                            </button>
+                            </Button>
                         </div>
                     ) : (
                         /* ── Not logged in: Login + Sign Up ── */

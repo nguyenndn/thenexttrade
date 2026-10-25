@@ -144,17 +144,19 @@ export function SyncFilterToolbar({
                             className="bg-transparent text-xs focus:outline-none w-full text-gray-800 dark:text-white placeholder:text-gray-400"
                         />
                         {search && (
-                            <button
+                            <Button
                                 type="button"
+                                variant="ghost"
+                                size="icon"
                                 onClick={() => {
                                     onSearchChange("");
                                     onClearSearch?.();
                                 }}
-                                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-0.5 rounded-full hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors shrink-0 cursor-pointer"
+                                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-0.5 h-auto w-auto rounded-full hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors shrink-0 cursor-pointer"
                                 aria-label="Clear search"
                             >
                                 <X size={14} />
-                            </button>
+                            </Button>
                         )}
                     </div>
                 </form>

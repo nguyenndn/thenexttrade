@@ -5,6 +5,7 @@ import { getAuthUser } from "@/lib/auth-cache";
 import type { IbLeadSource } from "@prisma/client";
 import { computeCapitalBreakdown } from "@/lib/admin/ib/capital.server";
 import { buildEligibleJournalWhere } from "@/lib/admin/ib/eligible-volume.server";
+import { buildOperationalAccountCounts } from "@/lib/operational-account-counts";
 
 // ============================================================================
 // IB LEAD TRACKING
@@ -217,7 +218,6 @@ export async function getIbOverviewStats(range: IbStatsFilter = "30d") {
         activeEntitlements,
         graceEntitlements,
         revokedEntitlements,
-        activeAccounts24h,
         monitoredAccounts,
         activeToolUsers,
         tradeStatsRange,
@@ -247,16 +247,6 @@ export async function getIbOverviewStats(range: IbStatsFilter = "30d") {
             where: { status: "REVOKED" },
             select: { userId: true },
             distinct: ["userId"],
-        }),
-        prisma.tradingAccount.count({
-            where: {
-                status: { notIn: ["PENDING", "REJECTED", "SUSPENDED"] },
-                accountType: { not: "DEMO" },
-                OR: [
-                    { lastHeartbeat: { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) } },
-                    { lastSync: { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) } },
-                ],
-            },
         }),
         prisma.tradingAccount.findMany({
             where: { status: { notIn: ["PENDING", "REJECTED", "SUSPENDED"] } },
@@ -303,6 +293,12 @@ export async function getIbOverviewStats(range: IbStatsFilter = "30d") {
     const graceUserSet = new Set(graceEntitlements.map((e) => e.userId));
     const revokedUserSet = new Set(revokedEntitlements.map((e) => e.userId));
     const capital = computeCapitalBreakdown(monitoredAccounts);
+    // Operational counts are demo-inclusive by design. Business metrics
+    // (capital above) stay live-only via computeCapitalBreakdown.
+    const accountCounts = buildOperationalAccountCounts(
+        monitoredAccounts,
+        now.getTime()
+    );
     const staleAccounts = monitoredAccounts.filter((account) => {
         const signal = [account.lastHeartbeat, account.lastSync]
             .filter(Boolean)
@@ -355,8 +351,9 @@ export async function getIbOverviewStats(range: IbStatsFilter = "30d") {
         activeProUsers: new Set([...activeUserSet, ...graceUserSet]).size,
         graceUsers: graceUserSet.size,
         revokedUsers: revokedUserSet.size,
-        activeAccounts: monitoredAccounts.length,
-        activeAccounts24h,
+        activeAccounts: accountCounts.allAccounts,
+        activeAccounts24h: accountCounts.connectedLiveAccounts24h,
+        accountCounts,
         reportedCapitalUSD: capital.usdBalanceTotal,
         freshCapitalUSD: capital.usdFreshBalanceTotal,
         reportedEquityUSD: capital.usdEquityTotal,

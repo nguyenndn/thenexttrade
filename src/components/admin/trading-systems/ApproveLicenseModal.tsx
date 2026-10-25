@@ -51,12 +51,25 @@ export function ApproveLicenseModal({
                 toast.success(
                     `Account ${license.accountNumber} approved successfully`
                 );
-                toast.info(
-                    "Don't forget to add this account to the Google Sheet manually!",
-                    {
-                        duration: 10000,
-                    }
-                );
+                if (res.githubSynced) {
+                    toast.success("GitHub backup updated.");
+                } else if (res.githubSkipped) {
+                    toast.warning(
+                        res.syncJobId
+                            ? "GitHub backup skipped (GITHUB_TOKEN missing); retry queued."
+                            : "GitHub backup skipped (GITHUB_TOKEN missing)."
+                    );
+                } else if (res.syncJobId) {
+                    toast.warning(
+                        `GitHub backup failed; retry queued. ${res.githubError ?? ""}`.trim()
+                    );
+                } else {
+                    toast.warning(
+                        res.githubError
+                            ? `GitHub backup not updated: ${res.githubError}`
+                            : "GitHub backup not updated."
+                    );
+                }
                 router.refresh();
                 onClose();
             } else {
@@ -103,14 +116,15 @@ export function ApproveLicenseModal({
                         </div>
                     </div>
 
-                    <div className="p-4 bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-100 dark:border-yellow-900/20 rounded-lg flex gap-3 text-sm text-yellow-700 dark:text-yellow-400">
+                    <div className="p-4 bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/20 rounded-lg flex gap-3 text-sm text-blue-700 dark:text-blue-300">
                         <Info className="shrink-0 mt-0.5" size={18} />
                         <div>
-                            <p className="font-bold">Manual Sync Required</p>
+                            <p className="font-bold">Automatic backup</p>
                             <p>
-                                After approving, please manually add this
-                                account number to the central Google Sheet for
-                                the EA to work.
+                                Approval issues the per-account License Key and
+                                writes the account to the GitHub license backup
+                                (accounts.csv) automatically. If the backup
+                                cannot be updated, the retry is queued.
                             </p>
                         </div>
                     </div>

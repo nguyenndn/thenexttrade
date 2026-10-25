@@ -68,3 +68,13 @@ When ready to officially re-launch the Academy to all traders:
    npm run lint
    npx vitest run src/lib/trading-style/
    ```
+
+---
+
+## 4. Curriculum & Lesson Authoring Reference (Tóm Tắt Cấu Trúc & Quy Trình Tạo Bài)
+
+- **Database is Source of Truth:** All 12 Levels / 32 Modules / Lessons live in PostgreSQL (`Course`, `Module`, `Lesson`, `Quiz`, `UserProgress`). Files in `content/data/` are historical archives only.
+- **Core Price Action Focus:** Legacy academic modules (Elliott Wave, Ichimoku) were removed in favor of practical Price Action, Market Structure (`HH/HL/LH/LL`, `BOS`, `CHoCH`), Supply & Demand, Order Blocks, Fair Value Gaps (`FVG`), and Liquidity Sweeps.
+- **Creating / Editing Lessons:**
+  - Create or edit via Admin UI (`/admin/academy/lessons/create` $\rightarrow$ `POST /api/academy/lessons`) using the target `moduleId` (UUID).
+  - Lesson illustrations are stored as static PNGs under `public/images/academy/level-XX/module-YY/{name}.png` and embedded inline in `Lesson.content`.

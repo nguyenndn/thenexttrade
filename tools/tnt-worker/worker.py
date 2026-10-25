@@ -755,7 +755,7 @@ def process_job(cfg, job, on_progress=None):
                 "job_id": job_id,
                 "accountNumber": str(account_num or "—"),
                 "server": str(server or "—"),
-                "password": password or "—",
+                "passwordMasked": "********" if password else "—",
                 "mode": mode,
                 "step": step,
                 "status": status,
@@ -767,7 +767,7 @@ def process_job(cfg, job, on_progress=None):
     logger.info(f"📥 [PULL JOB] Received Job ID: {job_id} | Mode: {mode}")
     logger.info(f"👤 Account Number : #{account_num}")
     logger.info(f"🌐 Broker Server  : '{server}'")
-    logger.info(f"🔑 Investor Pass  : '{password}'")
+    logger.info("🔑 Investor Pass  : ********")
     logger.info(f"📅 Sync Range     : {range_from_str or 'Earliest'} -> {range_to_str or 'Now'}")
     logger.info("=" * 64)
 
@@ -1132,7 +1132,7 @@ class WorkerThread(threading.Thread):
                 "step": "Idle — Waiting for sync jobs...",
                 "accountNumber": "—",
                 "server": "—",
-                "password": "—",
+                "passwordMasked": "—",
                 "mode": "—",
             })
 
@@ -1154,7 +1154,7 @@ class WorkerThread(threading.Thread):
                             "step": f"Received Job #{job.get('id')} — preparing login for #{job.get('accountNumber')}",
                             "accountNumber": str(job.get("accountNumber") or "—"),
                             "server": str(job.get("server") or "—"),
-                            "password": str(job.get("investorPassword") or "—"),
+                            "passwordMasked": "********" if job.get("investorPassword") else "—",
                             "mode": str(job.get("mode") or "—"),
                         })
                     process_job(self.cfg, job, on_progress=self.on_task_update)
@@ -1685,7 +1685,7 @@ def launch_gui():
         def apply():
             acc = info.get("accountNumber")
             srv = info.get("server")
-            pwd = info.get("password")
+            pwd = info.get("passwordMasked")
             mode = info.get("mode")
             step = info.get("step") or "Idle"
             status = info.get("status", "IDLE")

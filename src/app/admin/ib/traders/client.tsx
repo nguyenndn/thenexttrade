@@ -331,14 +331,16 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                     { key: "STALE_VIP", label: "VIP Sync Overdue", icon: <AlertTriangle size={12} className="text-red-400" /> },
                     { key: "EXPIRING_SOON", label: "Temporary VIP Expiring Soon", icon: <Clock size={12} /> },
                 ].map((preset) => (
-                    <button
+                    <Button
                         key={preset.key}
+                        type="button"
+                        variant="ghost"
                         onClick={() => applyQuickView(preset.key)}
-                        className="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] text-gray-700 dark:text-gray-300 hover:border-primary transition-colors shadow-sm flex items-center gap-1.5"
+                        className="px-3 py-1.5 h-auto rounded-lg text-xs font-bold whitespace-nowrap border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] text-gray-700 dark:text-gray-300 hover:border-primary transition-colors shadow-sm flex items-center gap-1.5"
                     >
                         {preset.icon}
                         {preset.label}
-                    </button>
+                    </Button>
                 ))}
             </div>
 
@@ -688,10 +690,12 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                         <thead>
                             <tr className="border-b border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] text-[11px] font-black uppercase text-gray-500 tracking-wider">
                                 <th className="py-3 px-3 w-10 text-center">
-                                    <button
+                                    <Button
                                         type="button"
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={toggleSelectAll}
-                                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 inline-flex items-center justify-center transition-colors"
+                                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 h-auto w-auto p-0 inline-flex items-center justify-center transition-colors hover:bg-transparent"
                                         aria-label="Select all traders"
                                     >
                                         {selectedUserIds.size > 0 && selectedUserIds.size === rows.length ? (
@@ -699,10 +703,12 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                         ) : (
                                             <Square size={16} />
                                         )}
-                                    </button>
+                                    </Button>
                                 </th>
                                 <th className="py-3 px-4">Trader Info</th>
                                 <th className="py-3 px-4">VIP Plan</th>
+                                <th className="py-3 px-4">Funding</th>
+                                <th className="py-3 px-4">Policy</th>
                                 <th className="py-3 px-4">Canonical Products</th>
                                 <th className="py-3 px-4">Trading Style</th>
                                 <th className="py-3 px-4">Accounts & Capital</th>
@@ -713,7 +719,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                         <tbody className="divide-y divide-gray-100 dark:divide-white/5 text-sm">
                             {rows.length === 0 ? (
                                 <tr>
-                                    <td colSpan={8} className="text-center py-12 text-gray-400">
+                                    <td colSpan={10} className="text-center py-12 text-gray-400">
                                         No traders found matching current filters.
                                     </td>
                                 </tr>
@@ -726,10 +732,12 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                             <tr className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors">
                                                 {/* Select Checkbox */}
                                                 <td className="py-3.5 px-3 text-center w-10">
-                                                    <button
+                                                    <Button
                                                         type="button"
+                                                        variant="ghost"
+                                                        size="icon"
                                                         onClick={() => toggleSelectUser(trader.userId)}
-                                                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 inline-flex items-center justify-center transition-colors"
+                                                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 h-auto w-auto p-0 inline-flex items-center justify-center transition-colors hover:bg-transparent"
                                                         aria-label={`Select trader ${trader.userName}`}
                                                     >
                                                         {selectedUserIds.has(trader.userId) ? (
@@ -737,18 +745,22 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                         ) : (
                                                             <Square size={16} />
                                                         )}
-                                                    </button>
+                                                    </Button>
                                                 </td>
 
                                                 {/* User Info */}
                                                 <td className="py-3.5 px-4">
                                                     <div className="flex items-center gap-3">
-                                                        <button
+                                                        <Button
+                                                            type="button"
+                                                            variant="ghost"
+                                                            size="icon"
                                                             onClick={() => toggleExpand(trader.userId)}
-                                                            className="p-1 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-white"
+                                                            aria-label={isExpanded ? "Collapse trader accounts" : "Expand trader accounts"}
+                                                            className="p-1 h-auto w-auto rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-white"
                                                         >
                                                             {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                                                        </button>
+                                                        </Button>
                                                         <div>
                                                             <Link
                                                                 href={`/admin/users/${trader.userId}`}
@@ -779,6 +791,51 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                             Free Plan
                                                         </span>
                                                     )}
+                                                </td>
+
+                                                {/* Funding State */}
+                                                <td className="py-3.5 px-4">
+                                                    {trader.fundingState === "VERIFIED" ? (
+                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
+                                                            <CheckCircle2 size={10} /> Verified
+                                                        </span>
+                                                    ) : trader.fundingState === "GRACE" ? (
+                                                        <span
+                                                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20"
+                                                            title={trader.fundingGraceUntil ? `Grace until ${new Date(trader.fundingGraceUntil).toLocaleDateString()}` : undefined}
+                                                        >
+                                                            <Clock size={10} /> Grace
+                                                        </span>
+                                                    ) : trader.fundingState === "EXPIRED" ? (
+                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/20">
+                                                            <ShieldAlert size={10} /> Expired
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-xs text-gray-400">None</span>
+                                                    )}
+                                                </td>
+
+                                                {/* Activity Policy */}
+                                                <td className="py-3.5 px-4">
+                                                    <span
+                                                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                                                            trader.policyState === "ACTIVE"
+                                                                ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20"
+                                                                : trader.policyState === "WARNED"
+                                                                  ? "bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/20"
+                                                                  : "bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-500/20"
+                                                        }`}
+                                                        title={trader.policyReason || undefined}
+                                                    >
+                                                        {trader.policyState === "ACTIVE" ? (
+                                                            <Activity size={10} />
+                                                        ) : trader.policyState === "WARNED" ? (
+                                                            <AlertTriangle size={10} />
+                                                        ) : (
+                                                            <XCircle size={10} />
+                                                        )}
+                                                        {trader.policyState}
+                                                    </span>
                                                 </td>
 
                                                 {/* Canonical Products Usage */}
@@ -829,7 +886,11 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                             })()}
                                                         </p>
                                                         <p className="text-xs text-gray-500 font-medium">
-                                                            {trader.registeredAccountCount} registered ({trader.connectedAccountCount} connected)
+                                                            {trader.registeredAccountCount} registered
+                                                            {trader.demoAccountCount > 0
+                                                                ? ` (${trader.demoAccountCount} demo)`
+                                                                : ""}{" "}
+                                                            · {trader.connectedAccountCount} live connected
                                                         </p>
                                                     </div>
                                                 </td>
@@ -880,7 +941,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                             {/* Expanded Account Details */}
                                             {isExpanded && (
                                                 <tr className="bg-gray-50/80 dark:bg-white/[0.01]">
-                                                    <td colSpan={8} className="p-4 border-t border-b border-gray-100 dark:border-white/5">
+                                                    <td colSpan={10} className="p-4 border-t border-b border-gray-100 dark:border-white/5">
                                                         <div className="space-y-3">
                                                             <h4 className="text-xs font-black uppercase tracking-wider text-gray-500">
                                                                 Linked Trading Accounts ({trader.accounts.length})

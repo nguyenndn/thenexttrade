@@ -21,7 +21,8 @@ export default function NewsletterWidget() {
             <form className="space-y-3" onSubmit={(e) => e.preventDefault()}>
                 <input
                     type="email"
-                    placeholder="hello@example.com"
+                    aria-label="Email address"
+                    placeholder="trader@thenexttrade.com"
                     className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 placeholder:text-cyan-100/70 text-white focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/50 transition-all text-sm"
                     required
                 />

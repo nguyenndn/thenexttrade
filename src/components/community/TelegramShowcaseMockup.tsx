@@ -13,6 +13,7 @@ import {
 import { toast } from "sonner";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { Button } from "@/components/ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface TelegramShowcaseMockupProps {
@@ -418,16 +419,18 @@ export function TelegramShowcaseMockup({
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <button
+                        <Button
                             type="button"
+                            variant="outline"
+                            size="sm"
                             onClick={handleCopyLink}
                             title="Copy Telegram Channel Link"
                             aria-label="Copy Telegram channel invite link"
-                            className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-200/80 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold hover:bg-slate-300 dark:hover:bg-white/[0.16] transition-all active:scale-95"
+                            className="flex items-center gap-1.5 px-3 h-7 rounded-lg bg-slate-200/80 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold hover:bg-slate-300 dark:hover:bg-white/[0.16] transition-all"
                         >
                             {copied ? <Check size={12} className="text-emerald-500" /> : <Copy size={12} />}
                             <span className="hidden sm:inline">Copy Link</span>
-                        </button>
+                        </Button>
                     </div>
                 </div>
 
@@ -576,20 +579,22 @@ export function TelegramShowcaseMockup({
                         ).map((r) => {
                             const isSelected = userReacted[r.key];
                             return (
-                                <button
+                                <Button
                                     key={r.key}
                                     type="button"
+                                    variant="ghost"
+                                    size="sm"
                                     onClick={() => handleReaction(r.key)}
                                     aria-label={`React with ${r.emoji}`}
-                                    className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold transition-all transform active:scale-90 ${
+                                    className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold transition-all transform active:scale-90 h-auto ${
                                         isSelected
-                                            ? "bg-[#2AABEE]/20 border border-[#2AABEE] text-[#2AABEE] scale-105 shadow-xs"
+                                            ? "bg-[#2AABEE]/20 border border-[#2AABEE] text-[#2AABEE] scale-105 shadow-xs hover:bg-[#2AABEE]/20 hover:text-[#2AABEE]"
                                             : "bg-slate-100 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-700 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-white/10"
                                     }`}
                                 >
                                     <span>{r.emoji}</span>
                                     <span className="font-mono">{r.count}</span>
-                                </button>
+                                </Button>
                             );
                         })}
                     </div>

@@ -133,7 +133,7 @@ export function TradingSystemsTabbedGuide({ primaryCtaUrl }: TabbedGuideProps) {
                                             value={tab.id}
                                             className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10 flex-1 sm:flex-none justify-center gap-1.5"
                                             activeIndicatorClassName="!bg-gold shadow-sm border-0"
-                                            activeTextClassName="!text-slate-950 font-bold"
+                                            activeTextClassName="!text-white font-bold"
                                         >
                                             <IconComp size={12} />
                                             <span>{tab.label}</span>

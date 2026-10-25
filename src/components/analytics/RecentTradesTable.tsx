@@ -9,6 +9,8 @@ interface RecentTradesTableProps {
         id: string;
         symbol: string;
         type: string;
+        commission?: number;
+        swap?: number;
         pnl: number;
         entryDate: string;
         result: string;
@@ -70,6 +72,8 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
                                 <th className="px-4 py-3">Pair</th>
                                 <th className="px-4 py-3">Type</th>
                                 <th className="px-4 py-3">Result</th>
+                                <th className="px-4 py-3 text-right">Comm</th>
+                                <th className="px-4 py-3 text-right">Swap</th>
                                 <th className="px-4 py-3 text-right">P&L</th>
                             </tr>
                         </thead>
@@ -106,6 +110,32 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
                                             {getResultIcon(trade.result)}
                                             {trade.result}
                                         </span>
+                                    </td>
+                                    <td
+                                        className={`px-4 py-3.5 text-right font-mono font-medium whitespace-nowrap ${
+                                            (trade.commission || 0) < 0
+                                                ? "text-red-500/90"
+                                                : "text-gray-500 dark:text-gray-400"
+                                        }`}
+                                    >
+                                        {(trade.commission || 0) < 0 ? "-" : ""}$
+                                        {Math.abs(trade.commission || 0).toFixed(2)}
+                                    </td>
+                                    <td
+                                        className={`px-4 py-3.5 text-right font-mono font-medium whitespace-nowrap ${
+                                            (trade.swap || 0) > 0
+                                                ? "text-emerald-500 dark:text-[#00C888]"
+                                                : (trade.swap || 0) < 0
+                                                  ? "text-red-500/90"
+                                                  : "text-gray-500 dark:text-gray-400"
+                                        }`}
+                                    >
+                                        {(trade.swap || 0) > 0
+                                            ? "+"
+                                            : (trade.swap || 0) < 0
+                                              ? "-"
+                                              : ""}
+                                        ${Math.abs(trade.swap || 0).toFixed(2)}
                                     </td>
                                     <td
                                         className={`px-4 py-3.5 text-right font-bold whitespace-nowrap ${

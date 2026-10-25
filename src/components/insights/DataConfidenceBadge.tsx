@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { DataConfidenceLevel, DataConfidenceView } from "@/lib/trader-growth/types";
 import { ShieldCheck, AlertCircle, Info, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 import { DataEvidenceDrawer } from "./DataEvidenceDrawer";
 
 interface DataConfidenceBadgeProps {
@@ -64,17 +66,18 @@ export function DataConfidenceBadge({
 
     return (
         <>
-            <button
+            <Button
                 type="button"
+                variant="ghost"
+                size="sm"
                 onClick={() => showDrawerOnClick && setIsDrawerOpen(true)}
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all hover:opacity-90 ${badgeColor} ${className}`}
-
+                className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all hover:opacity-90 h-auto font-normal", badgeColor, className)}
             >
                 {icon}
                 <span>{label}</span>
                 {size > 0 && <span className="opacity-75">({size} trades)</span>}
                 {showDrawerOnClick && <ChevronRight className="w-3 h-3 opacity-60 ml-0.5" />}
-            </button>
+            </Button>
 
             {showDrawerOnClick && (
                 <DataEvidenceDrawer

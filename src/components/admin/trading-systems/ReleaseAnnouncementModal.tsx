@@ -220,10 +220,11 @@ export function ReleaseAnnouncementModal({
                     <div className="flex items-center gap-3">
                         {/* Viewport Switcher */}
                         <div className="flex items-center p-1 bg-gray-200/70 dark:bg-white/5 rounded-lg border border-gray-300/60 dark:border-white/10">
-                            <button
+                            <Button
+                                variant="ghost"
                                 type="button"
                                 onClick={() => setViewMode("desktop")}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all h-auto ${
                                     viewMode === "desktop"
                                         ? "bg-white dark:bg-[#0C0F1B] text-amber-500 shadow-sm"
                                         : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
@@ -232,11 +233,12 @@ export function ReleaseAnnouncementModal({
                             >
                                 <Monitor size={14} />
                                 <span>Desktop</span>
-                            </button>
-                            <button
+                            </Button>
+                            <Button
+                                variant="ghost"
                                 type="button"
                                 onClick={() => setViewMode("mobile")}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all h-auto ${
                                     viewMode === "mobile"
                                         ? "bg-white dark:bg-[#0C0F1B] text-amber-500 shadow-sm"
                                         : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
@@ -245,7 +247,7 @@ export function ReleaseAnnouncementModal({
                             >
                                 <Smartphone size={14} />
                                 <span>Mobile</span>
-                            </button>
+                            </Button>
                         </div>
 
                         <Button

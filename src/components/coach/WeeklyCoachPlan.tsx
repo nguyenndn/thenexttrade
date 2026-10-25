@@ -10,6 +10,7 @@ import {
     ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/Button";
 import { toggleCoachActionPlanItem } from "@/actions/coach";
 
 interface ActionItem {
@@ -151,8 +152,10 @@ export function WeeklyCoachPlan({ plan }: WeeklyCoachPlanProps) {
                                         : "bg-white dark:bg-[#151925] border-dashboard hover:border-amber-500/30 dark:hover:border-gold/30 hover:shadow-sm"
                                 } ${isLegacy ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`}
                             >
-                                <button
+                                <Button
                                     type="button"
+                                    variant="ghost"
+                                    size="icon"
                                     onClick={() =>
                                         handleToggle(action.id, action.status)
                                     }
@@ -163,14 +166,14 @@ export function WeeklyCoachPlan({ plan }: WeeklyCoachPlanProps) {
                                             ? "Legacy action items cannot be toggled"
                                             : "Mark action complete"
                                     }
-                                    className="shrink-0 mt-0.5 text-amber-500 dark:text-gold disabled:cursor-not-allowed"
+                                    className="shrink-0 mt-0.5 text-amber-500 dark:text-gold disabled:cursor-not-allowed h-auto w-auto p-0 min-h-0 border-0 hover:bg-transparent"
                                 >
                                     {isChecked ? (
                                         <CheckSquare size={18} />
                                     ) : (
                                         <Square size={18} />
                                     )}
-                                </button>
+                                </Button>
                                 <div className="space-y-0.5 flex-1 min-w-0">
                                     <p
                                         className={`text-sm font-black text-gray-800 dark:text-white leading-tight ${isChecked ? "line-through" : ""}`}

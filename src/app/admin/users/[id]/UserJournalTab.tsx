@@ -285,38 +285,40 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                     {/* Result Filter */}
                     <div className="flex rounded-lg border border-gray-200 dark:border-white/10 p-0.5 bg-gray-50 dark:bg-white/[0.03]">
                         {["ALL", "WIN", "LOSS"].map((res) => (
-                            <button
+                            <Button
                                 key={res}
                                 type="button"
+                                variant="ghost"
                                 onClick={() => setResultFilter(res)}
                                 className={cn(
-                                    "px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors cursor-pointer",
+                                    "px-2.5 py-1 h-auto text-xs font-semibold rounded-lg transition-colors cursor-pointer",
                                     resultFilter === res
                                         ? "bg-white dark:bg-white/10 text-primary shadow-sm"
-                                        : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                                        : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                                 )}
                             >
                                 {res === "ALL" ? "All Results" : res === "WIN" ? "Wins" : "Losses"}
-                            </button>
+                            </Button>
                         ))}
                     </div>
 
                     {/* Type Filter */}
                     <div className="flex rounded-lg border border-gray-200 dark:border-white/10 p-0.5 bg-gray-50 dark:bg-white/[0.03]">
                         {["ALL", "BUY", "SELL"].map((t) => (
-                            <button
+                            <Button
                                 key={t}
                                 type="button"
+                                variant="ghost"
                                 onClick={() => setTypeFilter(t)}
                                 className={cn(
-                                    "px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors cursor-pointer",
+                                    "px-2.5 py-1 h-auto text-xs font-semibold rounded-lg transition-colors cursor-pointer",
                                     typeFilter === t
                                         ? "bg-white dark:bg-white/10 text-primary shadow-sm"
-                                        : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                                        : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                                 )}
                             >
                                 {t === "ALL" ? "All Sides" : t}
-                            </button>
+                            </Button>
                         ))}
                     </div>
                 </div>

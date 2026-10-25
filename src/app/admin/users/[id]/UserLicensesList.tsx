@@ -1,7 +1,15 @@
 "use client";
 
-import { Key, ShieldCheck, Clock } from "lucide-react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { Key, CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/Button";
+import {
+    approveAccount,
+    rejectAccount,
+} from "@/app/admin/trading-systems/accounts/actions";
 
 export interface EALicenseItem {
     id: string;
@@ -26,7 +34,49 @@ const licenseStatusStyles: Record<string, string> = {
 };
 
 export function UserLicensesList({ licenses }: UserLicensesListProps) {
+    const router = useRouter();
+    const [isPending, startTransition] = useTransition();
+    const [busyId, setBusyId] = useState<string | null>(null);
     const activeLicenses = licenses.filter((l) => l.status === "APPROVED");
+
+    const handleApprove = (licenseId: string, accountNumber: string) => {
+        setBusyId(licenseId);
+        startTransition(async () => {
+            try {
+                const res = await approveAccount(licenseId, {
+                    expiryDate: undefined,
+                    note: "Approved via User Detail",
+                });
+                if (res.success) {
+                    toast.success(`Approved EA License for #${accountNumber}`);
+                    router.refresh();
+                } else {
+                    toast.error(res.error || "Failed to approve EA License");
+                }
+            } finally {
+                setBusyId(null);
+            }
+        });
+    };
+
+    const handleReject = (licenseId: string, accountNumber: string) => {
+        setBusyId(licenseId);
+        startTransition(async () => {
+            try {
+                const res = await rejectAccount(licenseId, {
+                    reason: "Not verified under our IB network",
+                });
+                if (res.success) {
+                    toast.success(`Rejected EA License for #${accountNumber}`);
+                    router.refresh();
+                } else {
+                    toast.error(res.error || "Failed to reject EA License");
+                }
+            } finally {
+                setBusyId(null);
+            }
+        });
+    };
 
     return (
         <div className="space-y-6">
@@ -88,7 +138,67 @@ export function UserLicensesList({ licenses }: UserLicensesListProps) {
                                 </div>
                             </div>
 
-                            <div className="flex items-center sm:justify-end shrink-0">
+                            <div className="flex items-center gap-2 sm:justify-end shrink-0 flex-wrap">
+                                {lic.status === "PENDING" && (
+                                    <>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            disabled={isPending && busyId === lic.id}
+                                            onClick={() =>
+                                                handleReject(lic.id, lic.accountNumber)
+                                            }
+                                            className="h-8 px-2.5 rounded-lg text-xs font-bold text-red-500 border-red-200 hover:bg-red-50 dark:border-red-500/20 dark:hover:bg-red-500/10"
+                                        >
+                                            <XCircle size={13} />
+                                            <span>Reject</span>
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            variant="primary"
+                                            size="sm"
+                                            disabled={isPending && busyId === lic.id}
+                                            onClick={() =>
+                                                handleApprove(lic.id, lic.accountNumber)
+                                            }
+                                            className="h-8 px-3 rounded-lg text-xs font-bold"
+                                        >
+                                            {isPending && busyId === lic.id ? (
+                                                <Loader2
+                                                    size={13}
+                                                    className="animate-spin"
+                                                />
+                                            ) : (
+                                                <CheckCircle2 size={13} />
+                                            )}
+                                            <span>Approve</span>
+                                        </Button>
+                                    </>
+                                )}
+                                {(lic.status === "REJECTED" ||
+                                    lic.status === "SUSPENDED") && (
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        disabled={isPending && busyId === lic.id}
+                                        onClick={() =>
+                                            handleApprove(lic.id, lic.accountNumber)
+                                        }
+                                        className="h-8 px-2.5 rounded-lg text-xs font-bold"
+                                    >
+                                        {isPending && busyId === lic.id ? (
+                                            <Loader2
+                                                size={13}
+                                                className="animate-spin"
+                                            />
+                                        ) : (
+                                            <CheckCircle2 size={13} />
+                                        )}
+                                        <span>Approve</span>
+                                    </Button>
+                                )}
                                 <span
                                     className={`inline-block text-[11px] font-bold px-3 py-1 rounded-md uppercase tracking-wider border ${
                                         licenseStatusStyles[lic.status] || "bg-gray-100 text-gray-600 border-gray-200"

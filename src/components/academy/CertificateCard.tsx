@@ -330,23 +330,30 @@ export function CertificateCard({
                                     : `Certificate Preview — Level ${levelOrder}`}
                             </h3>
                             <div className="flex items-center gap-2">
-                                <button
+                                <Button
+                                    type="button"
+                                    variant="primary"
+                                    size="sm"
                                     onClick={handleDownload}
-                                    className="flex items-center gap-2 px-4 py-2 text-white rounded-lg text-xs font-bold transition-colors hover:opacity-90"
-                                    style={{
-                                        background: isMaster
-                                            ? "#D97706"
-                                            : "#00C888",
-                                    }}
+                                    className={cn(
+                                        "flex items-center gap-2 text-white font-bold h-8 text-xs",
+                                        isMaster
+                                            ? "bg-amber-600 hover:bg-amber-700"
+                                            : "bg-[#00C888] hover:bg-[#00B077]"
+                                    )}
                                 >
                                     <Download size={14} /> Download PNG
-                                </button>
-                                <button
+                                </Button>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
                                     onClick={() => setShowPreview(false)}
-                                    className="p-2 text-gray-500 hover:text-gray-800 transition-colors"
+                                    aria-label="Close preview"
+                                    className="h-8 w-8 text-gray-500 hover:text-gray-800"
                                 >
-                                    <X size={18} />
-                                </button>
+                                    <X size={16} />
+                                </Button>
                             </div>
                         </div>
 

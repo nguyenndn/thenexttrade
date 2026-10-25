@@ -55,7 +55,8 @@ export function JournalTableFilters({
                     <Search size={18} className="text-gray-500" />
                     <input
                         type="text"
-                        placeholder="Filter by Pair (e.g. XAUUSD)"
+                        aria-label="Filter by Pair or Symbol"
+                        placeholder="Search pair or symbol..."
                         className="bg-transparent text-sm focus:outline-none w-full text-gray-700 dark:text-white placeholder:text-gray-500"
                         value={searchTerm}
                         onChange={(e) => {

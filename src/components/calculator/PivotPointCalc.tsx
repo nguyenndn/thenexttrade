@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/Button";
 import { CalcInput } from "./CalcInput";
 
 type PivotMethod = "classic" | "fibonacci" | "woodie" | "camarilla" | "demark";
@@ -138,17 +139,21 @@ export function PivotPointCalc() {
         <div className="grid lg:grid-cols-2 gap-8">
             <div className="space-y-6">
                 {/* Method Toggle */}
-                <div className="flex flex-wrap bg-gray-100 dark:bg-white/5 p-1 rounded-lg gap-1">
+                <div role="tablist" aria-label="Pivot Calculation Method" className="flex flex-wrap bg-gray-100 dark:bg-white/5 p-1 rounded-lg gap-1">
                     {METHODS.map((m) => (
-                        <button
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            role="tab"
+                            aria-selected={inputs.method === m.id}
                             key={m.id}
                             onClick={() =>
                                 setInputs({ ...inputs, method: m.id })
                             }
                             className={cn(
-                                "relative flex-1 min-w-[38%] py-2.5 rounded-lg font-bold text-xs transition-colors z-10",
+                                "relative flex-1 min-w-[38%] py-2.5 rounded-lg font-bold text-xs transition-colors z-10 h-auto border-0",
                                 inputs.method === m.id
-                                    ? "text-white"
+                                    ? "text-white hover:text-white"
                                     : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white"
                             )}
                         >
@@ -164,7 +169,7 @@ export function PivotPointCalc() {
                                 />
                             )}
                             {m.name}
-                        </button>
+                        </Button>
                     ))}
                 </div>
 

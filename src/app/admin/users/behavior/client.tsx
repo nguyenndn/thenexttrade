@@ -235,34 +235,36 @@ export function BehaviorConsoleClient() {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 {/* 2 Primary Tabs */}
                 <div className="inline-flex rounded-lg border border-zinc-200/80 bg-zinc-100/80 p-1 dark:border-zinc-800 dark:bg-zinc-800/80">
-                    <button
+                    <Button
                         type="button"
+                        variant="ghost"
                         onClick={() => {
                             setActiveTab("needs-attention");
                             setPage(1);
                         }}
-                        className={`rounded-lg px-4 py-2 text-xs font-semibold transition-all ${
+                        className={`h-auto rounded-lg px-4 py-2 text-xs font-semibold transition-all ${
                             activeTab === "needs-attention"
                                 ? "bg-white text-zinc-900 shadow-xs dark:bg-zinc-900 dark:text-white"
-                                : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
+                                : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-transparent"
                         }`}
                     >
                         Needs Attention
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="button"
+                        variant="ghost"
                         onClick={() => {
                             setActiveTab("value");
                             setPage(1);
                         }}
-                        className={`rounded-lg px-4 py-2 text-xs font-semibold transition-all ${
+                        className={`h-auto rounded-lg px-4 py-2 text-xs font-semibold transition-all ${
                             activeTab === "value"
                                 ? "bg-white text-zinc-900 shadow-xs dark:bg-zinc-900 dark:text-white"
-                                : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
+                                : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-transparent"
                         }`}
                     >
                         Value Radar
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Filters */}

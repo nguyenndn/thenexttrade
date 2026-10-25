@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireCronSecret } from "@/lib/api-auth";
+import { recordCronRun } from "@/lib/cron/cron-health.server";
 import { generateActivitySnapshots } from "@/lib/services/ib-snapshot.service";
 import { prisma } from "@/lib/prisma";
 import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
@@ -13,6 +14,7 @@ export const maxDuration = 120;
  * Security: Protected by CRON_SECRET
  */
 export async function GET(request: Request) {
+    const cronStartedAt = new Date();
     const cronAuth = requireCronSecret(request);
     if (cronAuth instanceof NextResponse) return cronAuth;
 
@@ -68,6 +70,7 @@ export async function GET(request: Request) {
             }
         }
 
+        await recordCronRun("ib-snapshots", cronStartedAt, "SUCCESS");
         return NextResponse.json({
             success: true,
             ...result,
@@ -76,6 +79,7 @@ export async function GET(request: Request) {
         });
     } catch (error: any) {
         console.error("[IB Snapshot Cron Error]:", error);
+        await recordCronRun("ib-snapshots", cronStartedAt, "FAILED", error);
         return NextResponse.json(
             { error: "Failed to generate snapshots", detail: error.message },
             { status: 500 }

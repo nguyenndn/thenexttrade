@@ -2,6 +2,10 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { verifyTurnstile } from "@/lib/turnstile";
+import {
+    notifyAdminsOfNewAccount,
+    notifyAdminsOfVipRequest,
+} from "@/lib/admin/admin-notification.server";
 import { createPartnerProAccount, upgradeToPartnerPro } from "./account-pro";
 
 vi.mock("@/lib/prisma", () => ({
@@ -142,6 +146,8 @@ describe("Partner Pro Account Actions", () => {
             expect(result.success).toBe(true);
             expect(result.accountId).toBe("new-account-id");
             expect(prisma.vipRequest.create).toHaveBeenCalled();
+            expect(notifyAdminsOfVipRequest).toHaveBeenCalledOnce();
+            expect(notifyAdminsOfNewAccount).toHaveBeenCalledOnce();
         });
 
         it("auto-links entitlement immediately when adding an account matching an unlinked approved Pro record", async () => {
@@ -182,6 +188,8 @@ describe("Partner Pro Account Actions", () => {
             expect(result.success).toBe(true);
             expect(result.accountId).toBe("created-acc-id");
             expect(prisma.vipRequest.create).not.toHaveBeenCalled();
+            expect(notifyAdminsOfNewAccount).toHaveBeenCalledOnce();
+            expect(notifyAdminsOfVipRequest).not.toHaveBeenCalled();
             expect(prisma.proEntitlement.update).toHaveBeenCalledWith({
                 where: { id: "unlinked-pro-ent-id" },
                 data: { tradingAccountId: "created-acc-id" },
@@ -301,6 +309,8 @@ describe("Partner Pro Account Actions", () => {
             expect(result.success).toBe(true);
             expect(result.accountId).toBe("existing-free-acc-id");
             expect(prisma.vipRequest.create).not.toHaveBeenCalled();
+            expect(notifyAdminsOfNewAccount).toHaveBeenCalledOnce();
+            expect(notifyAdminsOfVipRequest).not.toHaveBeenCalled();
             expect(prisma.proEntitlement.update).toHaveBeenCalledWith({
                 where: { id: "unlinked-ent-1" },
                 data: { tradingAccountId: "existing-free-acc-id" },
@@ -335,6 +345,8 @@ describe("Partner Pro Account Actions", () => {
             expect(result.success).toBe(true);
             expect(result.accountId).toBe("free-acc-upgrade");
             expect(prisma.vipRequest.create).toHaveBeenCalled();
+            expect(notifyAdminsOfVipRequest).toHaveBeenCalledOnce();
+            expect(notifyAdminsOfNewAccount).not.toHaveBeenCalled();
         });
     });
 });

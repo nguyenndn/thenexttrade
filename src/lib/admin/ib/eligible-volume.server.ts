@@ -19,9 +19,29 @@ export interface BuildEligibleJournalWhereOpts {
     ibConfirmedOnly?: boolean;
 }
 
+function buildLiveAccountWhere(): Prisma.TradingAccountWhereInput {
+    return {
+        NOT: [
+            { accountType: { contains: "demo", mode: "insensitive" } },
+            { accountType: { contains: "contest", mode: "insensitive" } },
+            { accountType: { contains: "evaluation", mode: "insensitive" } },
+            { accountType: { contains: "trial", mode: "insensitive" } },
+            { server: { contains: "demo", mode: "insensitive" } },
+            { server: { contains: "contest", mode: "insensitive" } },
+            { server: { contains: "evaluation", mode: "insensitive" } },
+            { server: { contains: "trial", mode: "insensitive" } },
+            { broker: { contains: "demo", mode: "insensitive" } },
+            { broker: { contains: "contest", mode: "insensitive" } },
+            { broker: { contains: "evaluation", mode: "insensitive" } },
+            { broker: { contains: "trial", mode: "insensitive" } },
+        ],
+    };
+}
+
 /**
  * Builds standard Prisma where clause to filter out manual/unverified trade lots.
- * Excludes trades manually typed on the website (syncSource: "MANUAL").
+ * Excludes trades manually typed on the website (syncSource: "MANUAL") and
+ * every journal row linked to a Demo/contest/evaluation/trial account.
  */
 export function buildEligibleJournalWhere(
     opts: BuildEligibleJournalWhereOpts = {}
@@ -57,16 +77,17 @@ export function buildEligibleJournalWhere(
         ];
     }
 
-    if (opts.ibConfirmedOnly || opts.broker) {
-        const accountCondition: Prisma.TradingAccountWhereInput = {};
-        if (opts.ibConfirmedOnly) {
-            accountCondition.ibAttribution = "CONFIRMED";
-        }
-        if (opts.broker) {
-            accountCondition.broker = { equals: opts.broker, mode: "insensitive" };
-        }
-        where.account = accountCondition;
+    const accountCondition: Prisma.TradingAccountWhereInput = buildLiveAccountWhere();
+    if (opts.ibConfirmedOnly) {
+        accountCondition.ibAttribution = "CONFIRMED";
     }
+    if (opts.broker) {
+        accountCondition.broker = {
+            equals: opts.broker,
+            mode: "insensitive",
+        };
+    }
+    where.account = accountCondition;
 
     return where;
 }

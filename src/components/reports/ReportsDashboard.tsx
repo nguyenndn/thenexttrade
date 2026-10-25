@@ -589,21 +589,23 @@ export function ReportsDashboard() {
                                         isSameDay(dateRange.start, presetRange.start) &&
                                         isSameDay(dateRange.end, presetRange.end);
                                     return (
-                                        <button
+                                        <Button
                                             type="button"
+                                            variant="ghost"
+                                            size="sm"
                                             key={preset.label}
                                             onClick={() =>
                                                 setDateRange(presetRange)
                                             }
                                             className={cn(
-                                                "px-4 py-2 text-[11px] font-black uppercase tracking-wider rounded-lg border-2 transition-all duration-200 active:scale-95 cursor-pointer",
+                                                "h-auto px-4 py-2 text-[11px] font-black uppercase tracking-wider rounded-lg border-2 transition-all duration-200 active:scale-95 cursor-pointer",
                                                 isActive
-                                                    ? "border-amber-500 bg-amber-500/10 text-amber-500 dark:border-amber-400 dark:text-amber-400 dark:bg-amber-500/15 shadow-sm shadow-amber-500/10"
+                                                    ? "border-amber-500 bg-amber-500/10 text-amber-500 dark:border-amber-400 dark:text-amber-400 dark:bg-amber-500/15 shadow-sm shadow-amber-500/10 hover:bg-amber-500/15"
                                                     : "border-dashboard/80 dark:border-slate-800 bg-transparent text-slate-500 dark:text-slate-400 hover:border-amber-500 hover:text-amber-500 hover:bg-amber-500/5 dark:hover:border-amber-400 dark:hover:text-amber-400 dark:hover:bg-amber-500/10"
                                             )}
                                         >
                                             {preset.label}
-                                        </button>
+                                        </Button>
                                     );
                                 })}
                             </div>

@@ -2,6 +2,7 @@
 import type { CardComponentProps } from "onborda";
 import { useOnborda } from "onborda";
 import { X, ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 export function OnboardingCard({
     step,
@@ -60,13 +61,16 @@ export function OnboardingCard({
                             </p>
                         </div>
                     </div>
-                    <button
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
                         onClick={handleClose}
-                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors p-1 pointer-events-auto"
+                        className="h-7 w-7 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 pointer-events-auto"
                         aria-label="Close tour"
                     >
                         <X size={16} />
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Content */}
@@ -77,17 +81,23 @@ export function OnboardingCard({
                 {/* Actions */}
                 <div className="flex items-center justify-between">
                     {!isFirst ? (
-                        <button
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
                             onClick={prevStep}
-                            className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition-colors pointer-events-auto"
+                            className="h-auto p-0 flex items-center gap-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition-colors pointer-events-auto hover:bg-transparent"
                         >
                             <ArrowLeft size={14} /> Back
-                        </button>
+                        </Button>
                     ) : (
                         <span />
                     )}
 
-                    <button
+                    <Button
+                        type="button"
+                        variant="gold"
+                        size="sm"
                         onClick={handleNext}
                         className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-gold hover:bg-amber-600 rounded-lg transition-colors shadow-sm pointer-events-auto"
                     >
@@ -100,7 +110,7 @@ export function OnboardingCard({
                                 Next <ArrowRight size={14} />
                             </>
                         )}
-                    </button>
+                    </Button>
                 </div>
             </div>
 

@@ -49,9 +49,9 @@ function SuccessTransitionContent() {
 
             {/* Welcome text */}
             <div className="space-y-2 animate-in slide-in-from-bottom-3 fade-in duration-700 delay-200 fill-mode-both">
-                <h2 className="text-2xl font-bold tracking-tight text-white">
+                <h1 className="text-2xl font-bold tracking-tight text-white">
                     Welcome back, <span className="text-gold">{name}</span>
-                </h2>
+                </h1>
                 <p className="text-sm text-gray-400 font-medium">
                     Preparing your dashboard…
                 </p>

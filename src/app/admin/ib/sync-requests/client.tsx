@@ -338,13 +338,14 @@ export function SyncRequestsClient({
                             {selectedIds.size} of {initialData.items.length} {selectedIds.size === 1 ? "request" : "requests"} selected
                         </span>
                         <span className="text-gray-400">•</span>
-                        <button
+                        <Button
                             type="button"
+                            variant="ghost"
                             onClick={() => setSelectedIds(new Set())}
-                            className="text-primary hover:underline font-semibold cursor-pointer"
+                            className="h-auto p-0 text-primary hover:underline font-semibold cursor-pointer hover:bg-transparent"
                         >
                             Deselect all
-                        </button>
+                        </Button>
                     </div>
                     <div className="flex items-center gap-2">
                         <Button
@@ -932,10 +933,12 @@ export function SyncRequestsClient({
                                             <span className="font-mono text-xs text-gray-400">
                                                 ID: {diagnosticsJob.id}
                                             </span>
-                                            <button
+                                            <Button
                                                 type="button"
+                                                variant="ghost"
+                                                size="icon"
                                                 onClick={() => handleCopyId(diagnosticsJob.id)}
-                                                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 inline-flex items-center"
+                                                className="h-auto w-auto p-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 inline-flex items-center hover:bg-transparent"
                                                 aria-label="Copy request ID"
                                             >
                                                 {copiedId ? (
@@ -943,7 +946,7 @@ export function SyncRequestsClient({
                                                 ) : (
                                                     <Copy size={12} />
                                                 )}
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>

@@ -220,7 +220,11 @@ export function UserMenu({
 
                     {/* Search — mobile only (sm:hidden) */}
                     <div className="sm:hidden px-3 py-2 border-b border-dashboard">
-                        <button
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            aria-label="Search"
                             onClick={() =>
                                 document.dispatchEvent(
                                     new KeyboardEvent("keydown", {
@@ -230,11 +234,11 @@ export function UserMenu({
                                     })
                                 )
                             }
-                            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors text-sm text-left"
+                            className="w-full flex items-center justify-start gap-2 px-3 py-2.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors text-sm text-left h-auto border-transparent"
                         >
                             <Search size={15} className="shrink-0" />
                             <span>Search...</span>
-                        </button>
+                        </Button>
                     </div>
 
                     {/* Menu Items */}

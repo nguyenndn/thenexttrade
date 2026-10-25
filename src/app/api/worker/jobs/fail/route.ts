@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { notifyAdminsOfSyncFailure } from "@/lib/admin/admin-notification.server";
+import {
+    failSupportSyncTicket,
+    getSupportTicketIdFromJobId,
+    sanitizeSupportSyncMessage,
+    SUPPORT_SYNC_MODE,
+} from "@/lib/services/support-sync-jobs.server";
+import { getNextSupportSyncAt } from "@/lib/support-sync-schedule";
 
 export async function POST(request: NextRequest) {
     try {
@@ -72,19 +79,33 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        const safeErrorMessage = sanitizeSupportSyncMessage(errorMessage, 500);
+
         await prisma.mt5ImportJob.update({
             where: { id: jobId },
             data: {
                 status: "FAILED",
                 errorCode,
-                errorMessage,
+                errorMessage: safeErrorMessage,
                 completedAt: new Date(),
-                message: `Failed: ${errorMessage}`,
+                message: `Failed: ${safeErrorMessage}`,
             },
         });
 
+        if (job.mode === SUPPORT_SYNC_MODE) {
+            const ticketId = getSupportTicketIdFromJobId(job.id);
+            if (ticketId) {
+                await failSupportSyncTicket({
+                    ticketId,
+                    errorCode,
+                    errorMessage: safeErrorMessage,
+                });
+            }
+        }
+
         // If MT5 connection timed out 5 times or failed, create a support ticket and alert Admins
         if (
+            job.mode !== SUPPORT_SYNC_MODE &&
             job.account &&
             (errorCode === "LOGIN_TIMEOUT_5X" ||
                 errorCode === "LOGIN_FAILED" ||
@@ -107,8 +128,9 @@ export async function POST(request: NextRequest) {
                             accountNumber:
                                 job.account.accountNumber || "Unknown",
                             server: job.account.server || null,
+                            scheduledFor: getNextSupportSyncAt(),
                             status: "PENDING",
-                            notes: `[Auto-Worker Alert] Sync failed (${errorCode}). Error: ${errorMessage}`,
+                            notes: `[Auto-Worker Alert] Sync failed (${errorCode}). Error: ${safeErrorMessage}`,
                         },
                     });
                 }
@@ -122,7 +144,7 @@ export async function POST(request: NextRequest) {
                 broker: job.account.broker || "Unknown Broker",
                 accountNumber: job.account.accountNumber || "Unknown",
                 server: job.account.server || null,
-                errorMessage,
+                errorMessage: safeErrorMessage,
             });
         }
 

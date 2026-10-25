@@ -13,7 +13,8 @@ export type InvestorPasswordResult =
 /**
  * Retrieves the investor password for a given trading account.
  * Supports both "plain" plaintext storage and "v1" AES-256-GCM encryption.
- * Safely falls back to raw string if decryption throws, preventing sync lockouts.
+ * Legacy "plain" credentials remain readable, but v1 decryption failures are
+ * rejected so ciphertext is never sent to the worker as a password.
  */
 export async function getInvestorPasswordForAccount(
     accountId: string
@@ -42,13 +43,11 @@ export async function getInvestorPasswordForAccount(
                 const decrypted = decryptPassword(cred.encryptedPassword);
                 return { ok: true, password: decrypted };
             } catch {
-                // Fallback to raw value if decryption key differs or was saved raw
-                return { ok: true, password: cred.encryptedPassword };
+                return { ok: false, reason: "DECRYPTION_FAILED" };
             }
         }
 
-        // Fallback for any future or alternate version
-        return { ok: true, password: cred.encryptedPassword };
+        return { ok: false, reason: "DECRYPTION_FAILED" };
     } catch {
         return { ok: false, reason: "UNKNOWN" };
     }

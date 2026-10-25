@@ -1,6 +1,6 @@
 ---
 name: plan
-description: Unified Feature & Project Planning Workflow (commands: /plan, /plan_feature). Combines Business Analyst requirements, System Architecture (Prisma DB, Server Actions, Component Tree), and atomic task breakdown with verification criteria.
+description: "Unified Feature & Project Planning Workflow (commands: /plan, /plan_feature). Combines Business Analyst requirements, System Architecture (Prisma DB, Server Actions, Component Tree), and atomic task breakdown with verification criteria."
 ---
 
 # /plan — Unified Feature & Project Planning Workflow

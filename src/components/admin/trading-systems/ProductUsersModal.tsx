@@ -11,15 +11,15 @@ import {
     Check,
     ExternalLink,
     ShieldCheck,
-    Sparkles,
-    Calendar,
-    Activity,
     Bot,
+    Wallet,
+    Activity,
+    Layers,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { PremiumInput } from "@/components/ui/PremiumInput";
 import { toast } from "sonner";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
+import type { ProductFarmStats } from "@/lib/admin/trading-systems/ea-farm-stats.server";
 
 export interface ProductActiveUser {
     id: string;
@@ -27,13 +27,22 @@ export interface ProductActiveUser {
     name: string;
     email: string;
     image?: string | null;
+    tradingAccountId?: string | null;
     accountNumber?: string | null;
     broker?: string | null;
     server?: string | null;
     platform?: string | null;
+    accountType?: string | null;
+    balance?: number | null;
+    equity?: number | null;
+    currency?: string | null;
     status: string;
+    accountStatus?: string | null;
+    isConfirmedAccount?: boolean;
+    isOnline?: boolean;
     grantedAt?: string | null;
     lastUsedAt?: string | null;
+    lastHeartbeatAt?: string | null;
 }
 
 interface ProductUsersModalProps {
@@ -45,7 +54,21 @@ interface ProductUsersModalProps {
         version: string;
         thumbnail?: string | null;
         activeUsers?: ProductActiveUser[];
+        farmStats?: ProductFarmStats;
     } | null;
+}
+
+function formatMoney(amount: number | null | undefined, currency = "USD"): string {
+    if (amount === null || amount === undefined || !Number.isFinite(amount)) {
+        return "—";
+    }
+    const prefix = currency.toUpperCase() === "USD" ? "$" : "";
+    const suffix =
+        currency.toUpperCase() !== "USD" ? ` ${currency.toUpperCase()}` : "";
+    return `${prefix}${amount.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    })}${suffix}`;
 }
 
 export function ProductUsersModal({
@@ -59,6 +82,7 @@ export function ProductUsersModal({
     if (!isOpen || !product) return null;
 
     const users = product.activeUsers || [];
+    const farmStats = product.farmStats;
 
     const filteredUsers = users.filter((u) => {
         if (!searchQuery.trim()) return true;
@@ -67,7 +91,8 @@ export function ProductUsersModal({
             u.name.toLowerCase().includes(q) ||
             u.email.toLowerCase().includes(q) ||
             (u.accountNumber && u.accountNumber.toLowerCase().includes(q)) ||
-            (u.broker && u.broker.toLowerCase().includes(q))
+            (u.broker && u.broker.toLowerCase().includes(q)) ||
+            (u.server && u.server.toLowerCase().includes(q))
         );
     });
 
@@ -80,9 +105,12 @@ export function ProductUsersModal({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+            onClick={onClose}
+        >
             <div
-                className="relative w-full max-w-4xl max-h-[90vh] flex flex-col bg-white dark:bg-[#121624] border border-gray-200 dark:border-white/10 rounded-lg shadow-2xl overflow-hidden"
+                className="relative w-full max-w-5xl max-h-[90vh] flex flex-col bg-white dark:bg-[#121624] border border-gray-200 dark:border-white/10 rounded-xl shadow-2xl overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* ── Modal Header ── */}
@@ -102,14 +130,14 @@ export function ProductUsersModal({
                         <div>
                             <div className="flex items-center gap-2">
                                 <h3 className="text-base font-bold text-gray-900 dark:text-white">
-                                    Active Users & Licensees
+                                    EA Farm Telemetry & Active Accounts
                                 </h3>
                                 <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
                                     {product.name} v{product.version}
                                 </span>
                             </div>
                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                                Showing all traders with approved access & active MT4/MT5 accounts.
+                                Live MT4/MT5 account capital, heartbeat telemetry, and trader allocations.
                             </p>
                         </div>
                     </div>
@@ -127,6 +155,83 @@ export function ProductUsersModal({
                     </div>
                 </div>
 
+                {/* ── EA Farm Capital Summary Strip ── */}
+                {farmStats && (
+                    <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-y lg:divide-y-0 divide-gray-200 dark:divide-white/10 border-b border-gray-200 dark:border-white/10 bg-gray-50/40 dark:bg-white/[0.02]">
+                        <div className="p-4">
+                            <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                                <span>Confirmed EA Farm Capital</span>
+                                <Wallet size={14} />
+                            </div>
+                            <p className="text-lg font-extrabold text-gray-900 dark:text-white mt-1 font-mono">
+                                {formatMoney(farmStats.confirmedFarmBalanceUSD)}
+                            </p>
+                            <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+                                Eq: {formatMoney(farmStats.confirmedFarmEquityUSD)} · {farmStats.confirmedAccountsCount} linked accts
+                            </p>
+                        </div>
+
+                        <div className="p-4">
+                            <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                                <span>User Pool Capital</span>
+                                <Layers size={14} />
+                            </div>
+                            <p className="text-lg font-extrabold text-gray-900 dark:text-white mt-1 font-mono">
+                                {formatMoney(farmStats.userPoolBalanceUSD)}
+                            </p>
+                            <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+                                Eq: {formatMoney(farmStats.userPoolEquityUSD)} · {farmStats.totalAccountsCount} total accts
+                                {farmStats.demoAccountsCount > 0
+                                    ? ` (${farmStats.demoAccountsCount} demo)`
+                                    : ""}
+                            </p>
+                        </div>
+
+                        <div className="p-4">
+                            <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                                <span>Online Telemetry (24h)</span>
+                                <Activity size={14} />
+                            </div>
+                            <div className="flex items-center gap-2 mt-1">
+                                <span className="relative flex h-2.5 w-2.5">
+                                    {farmStats.onlineAccountsCount > 0 && (
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                                    )}
+                                    <span
+                                        className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
+                                            farmStats.onlineAccountsCount > 0
+                                                ? "bg-emerald-500"
+                                                : "bg-gray-400"
+                                        }`}
+                                    />
+                                </span>
+                                <p className="text-lg font-extrabold text-gray-900 dark:text-white font-mono">
+                                    {farmStats.onlineAccountsCount} / {farmStats.totalAccountsCount}
+                                    <span className="text-xs font-bold text-gray-400 dark:text-gray-500 ml-1">
+                                        ({farmStats.liveAccountsCount} live)
+                                    </span>
+                                </p>
+                            </div>
+                            <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+                                Fresh capital: {formatMoney(farmStats.confirmedFreshBalanceUSD)}
+                            </p>
+                        </div>
+
+                        <div className="p-4">
+                            <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+                                <span>Licensed Traders</span>
+                                <Users size={14} />
+                            </div>
+                            <p className="text-lg font-extrabold text-gray-900 dark:text-white mt-1 font-mono">
+                                {farmStats.uniqueTradersCount}
+                            </p>
+                            <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+                                {users.length} account allocations
+                            </p>
+                        </div>
+                    </div>
+                )}
+
                 {/* ── Search & Filter Bar ── */}
                 <div className="p-4 sm:px-6 bg-white dark:bg-[#121624] border-b border-gray-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
                     <div className="relative w-full sm:w-80">
@@ -138,14 +243,14 @@ export function ProductUsersModal({
                             type="text"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Search by name, email, account #..."
-                            className="w-full pl-9 pr-4 py-1.5 text-xs rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all placeholder:text-gray-400"
+                            aria-label="Filter traders by name, email, account number, or broker"
+                            className="w-full pl-9 pr-4 py-1.5 text-xs rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
                         />
                     </div>
 
                     <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
                         <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                            Total: <strong className="text-gray-900 dark:text-white">{filteredUsers.length}</strong> {filteredUsers.length === 1 ? "user" : "users"}
+                            Showing: <strong className="text-gray-900 dark:text-white">{filteredUsers.length}</strong> {filteredUsers.length === 1 ? "allocation" : "allocations"}
                         </span>
                         <Link href={`/admin/trading-systems/${product.id}`}>
                             <Button
@@ -173,7 +278,7 @@ export function ProductUsersModal({
                             <p className="text-xs text-gray-500 dark:text-gray-400 max-w-sm">
                                 {searchQuery
                                     ? `No traders match "${searchQuery}". Try searching with a different name or email.`
-                                    : `When traders connect their MT4/MT5 accounts and are granted access to ${product.name}, they will appear here.`}
+                                    : `When traders connect their MT4/MT5 accounts and run ${product.name}, they will appear here.`}
                             </p>
                         </div>
                     ) : (
@@ -181,128 +286,211 @@ export function ProductUsersModal({
                             <thead className="bg-gray-50 dark:bg-[#181E32] sticky top-0 z-10 border-b border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold text-[10px]">
                                 <tr>
                                     <th className="px-6 py-3">Trader</th>
-                                    <th className="px-6 py-3">Trading Account</th>
-                                    <th className="px-6 py-3">Status</th>
-                                    <th className="px-6 py-3">Granted Date</th>
+                                    <th className="px-6 py-3">MT4/MT5 Account</th>
+                                    <th className="px-6 py-3">Capital (Balance / Equity)</th>
+                                    <th className="px-6 py-3">Telemetry Heartbeat</th>
                                     <th className="px-6 py-3 text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200 dark:divide-white/10 bg-white dark:bg-[#121624]">
-                                {filteredUsers.map((user) => (
-                                    <tr
-                                        key={user.id}
-                                        className="hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
-                                    >
-                                        {/* User Column */}
-                                        <td className="px-6 py-3.5">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-amber-500/20 to-orange-500/20 border border-amber-500/30 flex items-center justify-center shrink-0 overflow-hidden font-bold text-amber-600 dark:text-amber-400 text-xs shadow-sm">
-                                                    {user.image ? (
-                                                        <img
-                                                            src={user.image}
-                                                            alt={user.name}
-                                                            className="w-full h-full object-cover"
-                                                        />
-                                                    ) : (
-                                                        user.name.charAt(0).toUpperCase()
-                                                    )}
-                                                </div>
-                                                <div className="min-w-0">
-                                                    <Link
-                                                        href={`/admin/users/${user.userId}`}
-                                                        className="font-bold text-gray-900 dark:text-white hover:text-amber-500 dark:hover:text-amber-400 transition-colors truncate block"
-                                                    >
-                                                        {user.name}
-                                                    </Link>
-                                                    <div className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 text-[11px] mt-0.5">
-                                                        <span className="truncate max-w-[180px]">
-                                                            {user.email}
-                                                        </span>
-                                                        <button
-                                                            type="button"
-                                                            onClick={(e) =>
-                                                                handleCopyEmail(user.email, e)
-                                                            }
-                                                            className="hover:text-amber-500 transition-colors p-0.5"
-                                                            title="Copy email"
+                                {filteredUsers.map((user) => {
+                                    const isDemo = user.accountType === "DEMO";
+                                    const lastSignal = user.lastHeartbeatAt || user.lastUsedAt;
+                                    return (
+                                        <tr
+                                            key={user.id}
+                                            className="hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                                        >
+                                            {/* User Column */}
+                                            <td className="px-6 py-3.5">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-amber-500/20 to-orange-500/20 border border-amber-500/30 flex items-center justify-center shrink-0 overflow-hidden font-bold text-amber-600 dark:text-amber-400 text-xs shadow-sm">
+                                                        {user.image ? (
+                                                            <img
+                                                                src={user.image}
+                                                                alt={user.name}
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                        ) : (
+                                                            user.name.charAt(0).toUpperCase()
+                                                        )}
+                                                    </div>
+                                                    <div className="min-w-0">
+                                                        <Link
+                                                            href={`/admin/users/${user.userId}`}
+                                                            className="font-bold text-gray-900 dark:text-white hover:text-amber-500 dark:hover:text-amber-400 transition-colors truncate block"
                                                         >
-                                                            {copiedEmail === user.email ? (
-                                                                <Check
-                                                                    size={11}
-                                                                    className="text-emerald-500"
-                                                                />
-                                                            ) : (
-                                                                <Copy size={11} />
-                                                            )}
-                                                        </button>
+                                                            {user.name}
+                                                        </Link>
+                                                        <div className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 text-[11px] mt-0.5">
+                                                            <span className="truncate max-w-[180px]">
+                                                                {user.email}
+                                                            </span>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                type="button"
+                                                                onClick={(e) =>
+                                                                    handleCopyEmail(user.email, e)
+                                                                }
+                                                                className="h-auto w-auto p-0.5 text-gray-500 dark:text-gray-400 hover:text-amber-500 transition-colors"
+                                                                aria-label={`Copy email ${user.email}`}
+                                                                title="Copy email"
+                                                            >
+                                                                {copiedEmail === user.email ? (
+                                                                    <Check
+                                                                        size={11}
+                                                                        className="text-emerald-500"
+                                                                    />
+                                                                ) : (
+                                                                    <Copy size={11} />
+                                                                )}
+                                                            </Button>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </td>
+                                            </td>
 
-                                        {/* Trading Account Column */}
-                                        <td className="px-6 py-3.5">
-                                            <div className="flex flex-col gap-0.5">
-                                                <div className="flex items-center gap-1.5">
-                                                    <span className="font-mono font-bold text-gray-800 dark:text-gray-200">
-                                                        {user.accountNumber || "—"}
+                                            {/* Trading Account Column */}
+                                            <td className="px-6 py-3.5">
+                                                <div className="flex flex-col gap-0.5">
+                                                    <div className="flex items-center gap-1.5 flex-wrap">
+                                                        <span className="font-mono font-bold text-gray-800 dark:text-gray-200">
+                                                            {user.accountNumber && user.accountNumber !== "—"
+                                                                ? `#${user.accountNumber}`
+                                                                : "—"}
+                                                        </span>
+                                                        {user.platform && user.accountNumber !== "—" && (
+                                                            <span className="px-1.5 py-0.2 rounded-lg text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-mono">
+                                                                {user.platform}
+                                                            </span>
+                                                        )}
+                                                        {user.accountType && (
+                                                            <span
+                                                                className={`px-1.5 py-0.2 rounded-lg text-[10px] font-bold border font-mono ${
+                                                                    isDemo
+                                                                        ? "bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/20"
+                                                                        : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                                                                }`}
+                                                            >
+                                                                {user.accountType}
+                                                            </span>
+                                                        )}
+                                                        {user.isConfirmedAccount && (
+                                                            <span
+                                                                className="px-1.5 py-0.2 rounded-lg text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                                                                title="Account confirmed running this EA via telemetry"
+                                                            >
+                                                                EA Linked
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <span className="text-[11px] text-gray-500 dark:text-gray-400">
+                                                        {user.broker || "Default Broker"}
+                                                        {user.server ? ` · ${user.server}` : ""}
                                                     </span>
-                                                    {user.platform && (
-                                                        <span className="px-1.5 py-0.2 rounded-lg text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-mono">
-                                                            {user.platform}
+                                                </div>
+                                            </td>
+
+                                            {/* Capital Column */}
+                                            <td className="px-6 py-3.5">
+                                                {user.balance !== null && user.balance !== undefined ? (
+                                                    <div className="flex flex-col gap-0.5">
+                                                        <span
+                                                            className={`font-mono font-bold text-xs ${
+                                                                isDemo
+                                                                    ? "text-gray-500 dark:text-gray-400"
+                                                                    : "text-gray-900 dark:text-white"
+                                                            }`}
+                                                        >
+                                                            {formatMoney(
+                                                                user.balance,
+                                                                user.currency || "USD"
+                                                            )}
+                                                        </span>
+                                                        <span className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">
+                                                            Eq:{" "}
+                                                            {formatMoney(
+                                                                user.equity ?? user.balance,
+                                                                user.currency || "USD"
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-gray-400">—</span>
+                                                )}
+                                            </td>
+
+                                            {/* Telemetry Status Column (Pulsing dot + formatDistanceToNow) */}
+                                            <td className="px-6 py-3.5">
+                                                <div className="flex flex-col gap-0.5">
+                                                    <div
+                                                        className="flex items-center gap-2"
+                                                        title={
+                                                            lastSignal
+                                                                ? `Last signal: ${format(new Date(lastSignal), "dd MMM yyyy HH:mm:ss")}`
+                                                                : "No heartbeat recorded yet"
+                                                        }
+                                                    >
+                                                        <span className="relative flex h-2 w-2 shrink-0">
+                                                            {user.isOnline && (
+                                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                                                            )}
+                                                            <span
+                                                                className={`relative inline-flex rounded-full h-2 w-2 ${
+                                                                    user.isOnline
+                                                                        ? "bg-emerald-500"
+                                                                        : lastSignal
+                                                                          ? "bg-amber-500"
+                                                                          : "bg-gray-400"
+                                                                }`}
+                                                            />
+                                                        </span>
+                                                        <span className="text-xs font-medium text-gray-800 dark:text-gray-200">
+                                                            {lastSignal
+                                                                ? formatDistanceToNow(
+                                                                      new Date(lastSignal),
+                                                                      { addSuffix: true }
+                                                                  )
+                                                                : "Awaiting connection"}
+                                                        </span>
+                                                    </div>
+                                                    {user.grantedAt && (
+                                                        <span className="text-[10px] text-gray-400 pl-4">
+                                                            Granted{" "}
+                                                            {format(
+                                                                new Date(user.grantedAt),
+                                                                "dd MMM yyyy"
+                                                            )}
                                                         </span>
                                                     )}
                                                 </div>
-                                                <span className="text-[11px] text-gray-500 dark:text-gray-400">
-                                                    {user.broker || "Default Broker"}
-                                                    {user.server ? ` · ${user.server}` : ""}
-                                                </span>
-                                            </div>
-                                        </td>
+                                            </td>
 
-                                        {/* Status Column */}
-                                        <td className="px-6 py-3.5">
-                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                                                <ShieldCheck size={11} />
-                                                <span>Active</span>
-                                            </span>
-                                        </td>
-
-                                        {/* Granted Date Column */}
-                                        <td className="px-6 py-3.5 text-gray-500 dark:text-gray-400">
-                                            {user.grantedAt ? (
-                                                <span title={user.grantedAt}>
-                                                    {format(
-                                                        new Date(user.grantedAt),
-                                                        "dd MMM yyyy"
-                                                    )}
-                                                </span>
-                                            ) : (
-                                                "—"
-                                            )}
-                                        </td>
-
-                                        {/* Actions Column */}
-                                        <td className="px-6 py-3.5 text-right">
-                                            <div className="flex items-center justify-end gap-1.5">
-                                                <a
-                                                    href={`mailto:${user.email}`}
-                                                    className="p-1.5 rounded-lg text-gray-500 hover:text-amber-500 hover:bg-amber-500/10 transition-colors"
-                                                    title={`Send email to ${user.email}`}
-                                                >
-                                                    <Mail size={14} />
-                                                </a>
-                                                <Link
-                                                    href={`/admin/users/${user.userId}`}
-                                                    className="p-1.5 rounded-lg text-gray-500 hover:text-amber-500 hover:bg-amber-500/10 transition-colors"
-                                                    title="View Trader Profile"
-                                                >
-                                                    <ExternalLink size={14} />
-                                                </Link>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
+                                            {/* Actions Column */}
+                                            <td className="px-6 py-3.5 text-right">
+                                                <div className="flex items-center justify-end gap-1.5">
+                                                    <a
+                                                        href={`mailto:${user.email}`}
+                                                        className="p-1.5 rounded-lg text-gray-500 hover:text-amber-500 hover:bg-amber-500/10 transition-colors"
+                                                        aria-label={`Send email to ${user.email}`}
+                                                        title={`Send email to ${user.email}`}
+                                                    >
+                                                        <Mail size={14} />
+                                                    </a>
+                                                    <Link
+                                                        href={`/admin/users/${user.userId}`}
+                                                        className="p-1.5 rounded-lg text-gray-500 hover:text-amber-500 hover:bg-amber-500/10 transition-colors"
+                                                        aria-label={`View trader profile for ${user.name}`}
+                                                        title="View Trader Profile"
+                                                    >
+                                                        <ExternalLink size={14} />
+                                                    </Link>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     )}
@@ -313,7 +501,7 @@ export function ProductUsersModal({
                     <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
                         <ShieldCheck size={14} className="text-emerald-500" />
                         <span>
-                            All licenses are actively verified against the MetaTrader bridge.
+                            Live MT5 trade telemetry & capital snapshots synced via TheNextTrade Bridge.
                         </span>
                     </div>
 

@@ -8,6 +8,7 @@ import {
 } from "@/lib/emails/activation-reminders";
 import { sendEmail } from "@/lib/services/email.service";
 import { requireCronSecret } from "@/lib/api-auth";
+import { recordCronRun } from "@/lib/cron/cron-health.server";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +22,7 @@ export const dynamic = "force-dynamic";
  * Auth: Bearer CRON_SECRET
  */
 export async function GET(request: NextRequest) {
+    const cronStartedAt = new Date();
     const cronAuth = requireCronSecret(request);
     if (cronAuth instanceof NextResponse) return cronAuth;
 
@@ -147,6 +149,7 @@ export async function GET(request: NextRequest) {
             }
         }
 
+        await recordCronRun("activation-reminders", cronStartedAt, "SUCCESS");
         return NextResponse.json({
             success: true,
             processedCount: candidates.length,
@@ -157,6 +160,7 @@ export async function GET(request: NextRequest) {
         });
     } catch (error) {
         console.error("[Cron] Activation Reminders Error:", error);
+        await recordCronRun("activation-reminders", cronStartedAt, "FAILED", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }

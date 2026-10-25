@@ -1,12 +1,8 @@
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-// import { ArrowRight } from "lucide-react";
 import { AboutUsSection } from "@/components/home/AboutUsSection";
-// import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { getAuthUser } from "@/lib/auth-cache";
-// import Link from "next/link";
-// import { Button } from "@/components/ui/Button";
 import { Suspense } from "react";
 import { HomeFeedSkeleton } from "@/components/ui/LoadingSkeleton";
 import { SaaSHeroSection } from "@/components/home/SaaSHeroSection";
@@ -65,14 +61,6 @@ const HomeFAQSection = dynamic(
         })),
     { loading: () => <div className="h-96" /> }
 );
-// Temporarily hidden while Academy menu is disabled
-// const LearningPathTimeline = dynamic(
-//     () =>
-//         import("@/components/home/LearningPathTimeline").then((m) => ({
-//             default: m.LearningPathTimeline,
-//         })),
-//     { loading: () => <div className="h-96" /> }
-// );
 const WebForexTools = dynamic(
     () =>
         import("@/components/home/WebForexTools").then((m) => ({
@@ -189,49 +177,7 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                 <MT5TeaserCTA isLoggedIn={isLoggedIn} />
             </FadeIn>
 
-            {/* STEP 03 / 04 · Institutional Knowledge (12-Level Academy Curriculum) — Temporarily hidden while Academy menu is disabled */}
-            {/*
-            <div
-                id="academy-preview"
-                className="relative overflow-hidden bg-white dark:bg-transparent border-t border-dashboard"
-            >
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]"></div>
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gold/5 via-transparent to-transparent dark:from-gold/[0.03] dark:via-transparent dark:to-transparent"></div>
-                <section className="py-6 sm:py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <FadeIn delay={0.1} direction="up">
-                        <HomeSectionHeading
-                            align="center"
-                            title="From market novice to funded master"
-                            highlight="funded master"
-                            description="A structured 12-level progression from foundations to institutional execution: market structure, liquidity mechanics, and cold risk math."
-                            contentClassName="lg:max-w-5xl"
-                            className="mb-12 sm:mb-16"
-                        />
-                    </FadeIn>
-
-                    <LearningPathTimeline />
-
-                    <FadeIn delay={0.3} direction="up">
-                        <div className="flex justify-center mt-6">
-                            <Link href="/academy" className="w-full sm:w-auto inline-block">
-                                <Button size="smd" className="w-full sm:w-auto relative overflow-hidden rounded-lg bg-gold text-white font-extrabold shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:bg-amber-600 hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 px-6 group animate-btn-shine flex items-center justify-center">
-                                    <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    <span className="flex items-center gap-2 relative z-10">
-                                        Explore Academy{" "}
-                                        <ArrowRight
-                                            size={14}
-                                            className="group-hover:translate-x-1 transition-transform duration-300"
-                                        />
-                                    </span>
-                                </Button>
-                            </Link>
-                        </div>
-                    </FadeIn>
-                </section>
-            </div>
-            */}
-
-            {/* STEP 04 / 04 · Zero-Fee Capital Preservation (Broker-Funded Sponsorship & Rankings) */}
+            {/* STEP 03 / 03 · Zero-Fee Capital Preservation (Broker-Funded Sponsorship & Rankings) */}
             <FadeIn delay={0.1} direction="up">
                 <BrokerFundedMembershipSection isLoggedIn={isLoggedIn} />
             </FadeIn>

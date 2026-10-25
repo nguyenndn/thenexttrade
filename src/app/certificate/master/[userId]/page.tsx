@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getMasterCertificateShareData } from "@/lib/certificates/certificate-share.server";
 import { CertificateShareScale } from "@/components/academy/CertificateShareScale";
-import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Crown, ShieldCheck } from "lucide-react";
 import Image from "next/image";
@@ -222,11 +223,15 @@ export default async function MasterCertificatePage({
                                     to earn your own Master Certificate.
                                 </p>
                             </div>
-                            <Link href="/auth/signup">
-                                <Button size="smd" className="rounded-lg font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
-                                    Get Started Free
-                                    <ArrowRight size={14} className="ml-2" />
-                                </Button>
+                            <Link
+                                href="/auth/signup"
+                                className={cn(
+                                    buttonVariants({ variant: "gold", size: "smd" }),
+                                    "rounded-lg font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+                                )}
+                            >
+                                Get Started Free
+                                <ArrowRight size={14} className="ml-2" />
                             </Link>
                         </div>
                     </div>

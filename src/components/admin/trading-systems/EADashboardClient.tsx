@@ -24,6 +24,8 @@ import { BrokerLogo } from "@/components/ui/BrokerLogo";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Button } from "@/components/ui/Button";
 import { AccountStatus } from "@prisma/client";
+import type { ProductFarmStats } from "@/lib/admin/trading-systems/ea-farm-stats.server";
+import { Wallet, Radio } from "lucide-react";
 
 interface HeroStat {
     value: number;
@@ -59,6 +61,16 @@ interface BrokerStat {
     };
 }
 
+export interface EAFarmProductSummary {
+    id: string;
+    name: string;
+    slug: string;
+    version: string;
+    platform: string;
+    type: string;
+    farmStats: ProductFarmStats;
+}
+
 interface EADashboardClientProps {
     pending: HeroStat;
     active: HeroStat;
@@ -67,6 +79,15 @@ interface EADashboardClientProps {
     recentActivity: ActivityItem[];
     recentPending: PendingLicense[];
     brokerStats: BrokerStat[];
+    eaFarmProducts?: EAFarmProductSummary[];
+}
+
+function formatUsd(val: number): string {
+    return val.toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 0,
+    });
 }
 
 const quickActions = [
@@ -107,6 +128,7 @@ export function EADashboardClient({
     recentActivity,
     recentPending,
     brokerStats,
+    eaFarmProducts = [],
 }: EADashboardClientProps) {
     return (
         <div className="space-y-6">
@@ -179,6 +201,82 @@ export function EADashboardClient({
                             index={3}
                         />
                     </div>
+
+                    {/* EA Farm Capital & Live Telemetry Overview */}
+                    {eaFarmProducts.length > 0 && (
+                        <AnimatedSection delay={0.15}>
+                            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5">
+                                <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                                    <div>
+                                        <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                            <Wallet className="text-emerald-500" size={18} />
+                                            EA Farm Capital & Live Telemetry
+                                        </h3>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                            Real MT4/MT5 account capital directly running each EA vs total User Pool capital
+                                        </p>
+                                    </div>
+                                    <Link href="/admin/trading-systems/products">
+                                        <Button variant="outline" size="sm" className="text-xs font-bold rounded-lg">
+                                            Inspect EA Farms <ArrowRight size={14} className="ml-1" />
+                                        </Button>
+                                    </Link>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    {eaFarmProducts.map((ea) => (
+                                        <Link
+                                            key={ea.id}
+                                            href={`/admin/trading-systems/${ea.id}`}
+                                            className="group rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/60 dark:bg-[#151925]/80 hover:border-emerald-500/40 transition-all overflow-hidden flex flex-col"
+                                        >
+                                            <div className="px-4 py-3 border-b border-gray-200 dark:border-white/10 flex items-center justify-between gap-2">
+                                                <div className="min-w-0">
+                                                    <h4 className="font-bold text-sm text-gray-900 dark:text-white truncate group-hover:text-emerald-500 transition-colors">
+                                                        {ea.name}
+                                                    </h4>
+                                                    <p className="text-[11px] font-mono text-gray-500 dark:text-gray-400">
+                                                        {ea.platform} • v{ea.version}
+                                                    </p>
+                                                </div>
+                                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shrink-0">
+                                                    <Radio size={11} />
+                                                    {ea.farmStats.onlineAccountsCount} Online
+                                                </span>
+                                            </div>
+                                            <div className="grid grid-cols-2 divide-x divide-y divide-gray-200 dark:divide-white/10 text-left flex-1">
+                                                <div className="p-3">
+                                                    <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                                                        Confirmed Farm
+                                                    </p>
+                                                    <p className="text-sm font-black font-mono text-gray-900 dark:text-white mt-0.5 truncate">
+                                                        {formatUsd(ea.farmStats.confirmedFarmBalanceUSD)}
+                                                    </p>
+                                                    <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate">
+                                                        Eq: {formatUsd(ea.farmStats.confirmedFarmEquityUSD)} ({ea.farmStats.confirmedAccountsCount} acc)
+                                                    </p>
+                                                </div>
+                                                <div className="p-3">
+                                                    <p className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                                                        User Pool
+                                                    </p>
+                                                    <p className="text-sm font-black font-mono text-gray-900 dark:text-white mt-0.5 truncate">
+                                                        {formatUsd(ea.farmStats.userPoolBalanceUSD)}
+                                                    </p>
+                                                    <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate">
+                                                        {ea.farmStats.uniqueTradersCount} traders • {ea.farmStats.totalAccountsCount} acc
+                                                        {ea.farmStats.demoAccountsCount > 0
+                                                            ? ` (${ea.farmStats.demoAccountsCount} demo)`
+                                                            : ""}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+                        </AnimatedSection>
+                    )}
 
                     {/* 2-Column Main Content Layout */}
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

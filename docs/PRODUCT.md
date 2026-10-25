@@ -1,10 +1,85 @@
 # Product
 
-Last reviewed: 2026-09-10
+<!-- impeccable:product-schema 1 -->
+
+Last reviewed: 2026-10-22
 
 This file describes the current product behavior at a practical level. For detailed URL/query-param behavior and QA checklists, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
 
 For the scope decision behind each feature group, use [FEATURE_CATALOG.md](FEATURE_CATALOG.md). That file is the guardrail for deciding whether a feature should be central, supporting, retention-only, admin-only, legacy, or removed.
+
+## Platform
+
+web
+
+Next.js App Router web app, responsive down to mobile web. MT5 integration runs through Expert Advisors on the trader's desktop or VPS, not through a native app.
+
+## Users
+
+Retail traders worldwide (Southeast Asia plus international), working mostly on MetaTrader 5 and heavily weighted toward gold (XAUUSD). The audience spans:
+
+- **New traders** who need structured education (Academy) and discipline before they blow an account.
+- **Experienced traders and scalpers** who want a journal and behavioral analysis of their real MT5 history.
+- **Prop-firm traders** preparing for or running challenges. They are an audience, not a product line: prop-firm features and partner blocks stay out of scope (see Current Product Decisions).
+- **Automation users** who want to run the GoldScalperNinja ecosystem EAs (Trade Manager, GoldScalperNinja, Apex Gold Sentinel).
+
+Their job: turn a raw trade history into an honest picture of what they are doing wrong, and get one next action that protects capital.
+
+## Product Purpose
+
+TheNextTrade connects to a trader's MT5 account (Trade Manager EA sync or Manual Journal), reviews what actually happened, and converts it into one next action through rules, weekly coaching, and experiments. Success is a trader who reaches first data, keeps syncing, and trades more consistently over time.
+
+## Positioning
+
+- **$0 to traders.** Revenue comes from IB rebates paid by partner brokers per traded lot, not subscriptions. Partner Pro and EA access are unlocked by trading through an IB-verified account, not by paying.
+- **Built on real MT5 execution data.** Live telemetry from Trade Manager EA, not screenshots or self-reported numbers.
+- **One next action, not a dashboard wall.** The loop is `Connect/log trades -> Understand what happened -> Take one next action -> Improve`.
+- **Owned EA ecosystem.** One IB-verified trading account = one License Key that unlocks all three GoldScalperNinja EAs.
+
+## Operating Context
+
+- Traders work in MT5 on desktop or VPS. Mobile users can review data but cannot run EA sync from the phone.
+- Accounts live at partner brokers (Vantage Markets, VT Markets, Ultima Markets, Exness). Broker choice decides IB eligibility and Partner Pro access.
+- Community and support happen largely through Telegram.
+- Admins run IB attribution, VIP/Partner Pro approval, EA license issuance, and sync support from `/admin`.
+
+## Capabilities and Constraints
+
+See Feature Inventory below for the full map. Durable constraints:
+
+- UI copy is English only, even though much of the community is Southeast Asian.
+- Current sync paths are Trade Manager EA and Manual Journal only.
+- No backtest or performance-simulator claims for EAs unless validated.
+- Prop-firm product direction is off unless re-approved.
+
+## Brand Commitments
+
+- **TheNextTrade** is the platform identity in global navigation and headers. The old name "Breek" never appears in user-facing copy.
+- **GoldScalperNinja** is the community and MT5-system ecosystem name, used on `/community`, trading-system pages, and EA copy. Do not mix both brands in one heading without explaining the relationship.
+- Voice: plain, honest, domain-real trading language ("protect your capital", "hard stop-loss", "drawdown control", "cold risk math"). Banned: generic AI marketing phrasing such as "unlock your potential", "elevate your trading journey", "game-changing". Full list in `.agents/rules/GEMINI.md`.
+
+## Evidence on Hand
+
+- **Testimonials:** `src/components/home/ReviewsSection.tsx` holds six reviews rewritten/summarized from real Telegram community feedback. They are paraphrased, not verbatim quotes; do not add names, photos, star ratings, or new reviews that were not given.
+- **No platform-wide usage counts.** Total entries/accounts are skewed (one account holds 30,000+ entries), so user/trade counts must not be shown as social proof. See the note in `src/components/home/HomeTrustMetrics.tsx`.
+- **Partner broker rebates** are real and documented in IB Business Model below.
+- **Product facts** (lesson counts, calculators, guides) are stated as constants where they appear, not computed from usage.
+- Absent: verified performance results, press coverage, named customer case studies. Do not fabricate them.
+
+## Product Principles
+
+1. **Capital preservation first.** Every surface should help a trader avoid avoidable losses before it helps them chase gains.
+2. **One next action per context.** Promote the single most useful step; never the whole feature catalog.
+3. **Honest numbers only.** No inflated counts, no overclaimed EA performance, no confusing raw metrics without explanation.
+4. **Real execution data over self-report.** Prefer what MT5 telemetry proves.
+5. **Free to the trader, transparent about why.** The IB model is the reason access is free; say so plainly.
+
+## Accessibility & Inclusion
+
+- Icon-only controls carry `aria-label`.
+- Metric tooltips work on hover (desktop) and tap (mobile) without layout shift.
+- Mobile web: 16px minimum input font size, touch-friendly bottom sheets, zero horizontal scroll.
+- Many users read English as a second language: keep copy short and literal, avoid idioms.
 
 ## Feature Inventory
 

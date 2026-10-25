@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button-variants";
+import { Button } from "@/components/ui/Button";
 
 interface RateData {
     symbol: string;
@@ -229,34 +229,37 @@ export function LiveMarketRates() {
                                 {lastUpdate.toLocaleTimeString()}
                             </span>
                         )}
-                        <button
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
                             onClick={fetchRates}
                             disabled={loading}
-                            className={buttonVariants({
-                                variant: "outline",
-                                className:
-                                    "px-3 py-2.5 rounded-lg bg-white dark:bg-white/5 text-sm font-bold text-gray-600 dark:text-gray-300 hover:border-primary/50",
-                            })}
+                            className="px-3 py-2 bg-white dark:bg-white/5 text-sm font-bold text-gray-600 dark:text-gray-300 hover:border-primary/50 h-auto"
                         >
                             <RefreshCw
                                 size={14}
-                                className={loading ? "animate-spin" : ""}
+                                className={loading ? "animate-spin mr-1.5" : "mr-1.5"}
                             />
                             <span className="hidden sm:inline">Refresh</span>
-                        </button>
+                        </Button>
                     </div>
                 </div>
 
                 {/* Category Filters */}
-                <div className="flex gap-2 flex-wrap">
+                <div role="tablist" aria-label="Market Category Filters" className="flex gap-2 flex-wrap">
                     {CATEGORIES.map((cat) => (
-                        <button
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            role="tab"
+                            aria-selected={activeCategory === cat.id}
                             key={cat.id}
                             onClick={() => setActiveCategory(cat.id)}
                             className={cn(
-                                "relative px-4 py-2 rounded-lg text-xs font-bold border transition-colors z-10",
+                                "relative px-4 py-2 rounded-lg text-xs font-bold border transition-colors z-10 h-auto",
                                 activeCategory === cat.id
-                                    ? "text-white border-transparent"
+                                    ? "text-white border-transparent hover:text-white"
                                     : "bg-white dark:bg-white/5 text-gray-600 dark:text-gray-500 border-dashboard hover:border-primary/50"
                             )}
                         >
@@ -272,7 +275,7 @@ export function LiveMarketRates() {
                                 />
                             )}
                             {cat.label}
-                        </button>
+                        </Button>
                     ))}
                 </div>
             </div>

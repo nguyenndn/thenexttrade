@@ -10,7 +10,8 @@ import {
     Zap,
     LayoutDashboard,
 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
 import { PreviewConnectView } from "@/components/home/preview/PreviewConnectView";
 import { PreviewAnalyzeView } from "@/components/home/preview/PreviewAnalyzeView";
@@ -90,7 +91,11 @@ export function TradeJournalPreviewSection({
                     {/* Left Column: Interactive Steps List + CTAs */}
                     <div className="lg:col-span-5 flex flex-col justify-between h-full text-left">
                         {/* Interactive Steps List */}
-                        <div className="flex-1 flex flex-col justify-between gap-3 mb-4 sm:mb-5 w-full">
+                        <div
+                            role="tablist"
+                            aria-label="Trading workflow steps"
+                            className="flex-1 flex flex-col justify-between gap-3 mb-4 sm:mb-5 w-full"
+                        >
                             {STEPS.map((step) => {
                                 const Icon = step.icon;
                                 const isActive = activeStep === step.id;
@@ -99,6 +104,9 @@ export function TradeJournalPreviewSection({
                                     <button
                                         key={step.id}
                                         type="button"
+                                        role="tab"
+                                        aria-selected={isActive}
+                                        aria-controls={`preview-panel-${step.id}`}
                                         onClick={() => setActiveStep(step.id)}
                                         className={`group w-full flex items-start gap-3.5 rounded-lg p-3.5 sm:p-4 text-left transition-all duration-300 relative border ${
                                             isActive
@@ -169,43 +177,41 @@ export function TradeJournalPreviewSection({
                                         ? "/dashboard"
                                         : "/auth/signup?source=home_product_preview"
                                 }
-                                className="w-full sm:flex-1 group"
+                                className={cn(
+                                    buttonVariants({ variant: "gold", size: "smd" }),
+                                    "w-full sm:flex-1 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap group"
+                                )}
                             >
-                                <Button size="smd" className="w-full rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap">
-                                    {isLoggedIn ? (
-                                        <>
-                                            Go to Dashboard{" "}
-                                            <LayoutDashboard
-                                                size={14}
-                                                className="text-yellow-200 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300"
-                                            />
-                                        </>
-                                    ) : (
-                                        <>
-                                            Start Free Journal{" "}
-                                            <Zap
-                                                size={14}
-                                                className="text-yellow-200 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300"
-                                            />
-                                        </>
-                                    )}
-                                </Button>
+                                {isLoggedIn ? (
+                                    <>
+                                        Go to Dashboard{" "}
+                                        <LayoutDashboard
+                                            size={14}
+                                            className="text-yellow-200 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300"
+                                        />
+                                    </>
+                                ) : (
+                                    <>
+                                        Start Free Journal{" "}
+                                        <Zap
+                                            size={14}
+                                            className="text-yellow-200 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300"
+                                        />
+                                    </>
+                                )}
                             </Link>
                             <Link
                                 href="/get-started"
-                                className="w-full sm:flex-1 group"
+                                className={cn(
+                                    buttonVariants({ variant: "outline", size: "smd" }),
+                                    "w-full sm:flex-1 rounded-lg bg-white/90 dark:bg-white/[0.03] border border-gold/35 dark:border-gold/25 hover:border-gold hover:bg-gold/[0.08] dark:hover:bg-gold/[0.06] text-gray-800 dark:text-gray-200 hover:text-gray-950 dark:hover:text-white font-extrabold shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap group"
+                                )}
                             >
-                                <Button
-                                    variant="outline"
-                                    size="smd"
-                                    className="w-full rounded-lg bg-white/90 dark:bg-white/[0.03] border border-gold/35 dark:border-gold/25 hover:border-gold hover:bg-gold/[0.08] dark:hover:bg-gold/[0.06] text-gray-800 dark:text-gray-200 hover:text-gray-950 dark:hover:text-white font-extrabold shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
-                                >
-                                    View Setup Path{" "}
-                                    <ArrowRight
-                                        size={14}
-                                        className="group-hover:translate-x-1 transition-transform duration-300"
-                                    />
-                                </Button>
+                                View Setup Path{" "}
+                                <ArrowRight
+                                    size={14}
+                                    className="group-hover:translate-x-1 transition-transform duration-300"
+                                />
                             </Link>
                         </div>
                     </div>
@@ -226,11 +232,18 @@ export function TradeJournalPreviewSection({
                                 </div>
 
                                 {/* Step Switcher Inside App Bar */}
-                                <div className="flex items-center gap-0.5 sm:gap-1 bg-gray-100 dark:bg-white/5 p-0.5 rounded-lg overflow-x-auto scrollbar-hide">
+                                <div
+                                    role="tablist"
+                                    aria-label="Workflow preview view tabs"
+                                    className="flex items-center gap-0.5 sm:gap-1 bg-gray-100 dark:bg-white/5 p-0.5 rounded-lg overflow-x-auto scrollbar-hide touch-pan-x"
+                                >
                                     {STEPS.map((step) => (
                                         <button
                                             key={step.id}
                                             type="button"
+                                            role="tab"
+                                            aria-selected={activeStep === step.id}
+                                            aria-controls={`preview-panel-${step.id}`}
                                             onClick={() => setActiveStep(step.id)}
                                             className={`text-[9px] sm:text-[10px] font-bold px-2 sm:px-2.5 py-1 rounded-lg transition-all whitespace-nowrap ${
                                                 activeStep === step.id
@@ -255,7 +268,12 @@ export function TradeJournalPreviewSection({
                             </div>
 
                             {/* Interactive Screens Body - Fixed height ensures no tab-switching layout jump */}
-                            <div className="w-full h-[265px] sm:h-[275px] overflow-hidden">
+                            <div
+                                role="tabpanel"
+                                id={`preview-panel-${activeStep}`}
+                                aria-label={STEPS[activeStep]?.tag}
+                                className="w-full h-[265px] sm:h-[275px] overflow-hidden"
+                            >
                                 {activeStep === 0 && <PreviewConnectView />}
                                 {activeStep === 1 && <PreviewAnalyzeView />}
                                 {activeStep === 2 && <PreviewImproveView />}

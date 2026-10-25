@@ -120,22 +120,26 @@ export function PlaybookLightbox({
                         {/* Prev / Next Controls */}
                         {images.length > 1 && (
                             <>
-                                <button
+                                <Button
                                     type="button"
+                                    variant="outline"
+                                    size="icon"
                                     onClick={handlePrev}
                                     className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 border border-white/20 text-white flex items-center justify-center hover:bg-black/90 transition-colors shadow-lg"
                                     aria-label="Previous chart"
                                 >
                                     <ChevronLeft size={22} />
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     type="button"
+                                    variant="outline"
+                                    size="icon"
                                     onClick={handleNext}
                                     className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 border border-white/20 text-white flex items-center justify-center hover:bg-black/90 transition-colors shadow-lg"
                                     aria-label="Next chart"
                                 >
                                     <ChevronRight size={22} />
-                                </button>
+                                </Button>
                             </>
                         )}
                     </div>

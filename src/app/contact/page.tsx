@@ -16,6 +16,8 @@ import Link from "next/link";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 import { submitContactForm } from "@/app/actions/contact";
 import { z } from "zod";
 
@@ -168,14 +170,14 @@ export default function ContactPage() {
                                         <RotateCcw size={14} />
                                         <span>Send Another Letter</span>
                                     </Button>
-                                    <Link href="/trading-systems" className="w-full sm:w-auto">
-                                        <Button
-                                            variant="primary"
-                                            size="md"
-                                            className="w-full sm:w-auto rounded-lg bg-gold hover:bg-amber-600 text-white text-sm font-black"
-                                        >
-                                            Explore Trading Systems
-                                        </Button>
+                                    <Link
+                                        href="/trading-systems"
+                                        className={cn(
+                                            buttonVariants({ variant: "primary", size: "md" }),
+                                            "w-full sm:w-auto rounded-lg bg-gold hover:bg-amber-600 text-white text-sm font-bold"
+                                        )}
+                                    >
+                                        Explore Trading Systems
                                     </Link>
                                 </div>
                             </div>
@@ -236,6 +238,8 @@ export default function ContactPage() {
                                                 value={name}
                                                 onChange={(e) => setName(e.target.value)}
                                                 disabled={isPending}
+                                                aria-invalid={errors.name ? "true" : undefined}
+                                                aria-describedby={errors.name ? "name-error" : undefined}
                                                 className={`w-full px-4 py-2.5 rounded-lg bg-gray-50/70 dark:bg-white/[0.03] border ${
                                                     errors.name
                                                         ? "border-red-500 focus:border-red-500"
@@ -243,7 +247,7 @@ export default function ContactPage() {
                                                 } text-sm sm:text-base font-medium text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors`}
                                             />
                                             {errors.name && (
-                                                <p className="text-red-500 text-xs font-semibold">
+                                                <p id="name-error" className="text-red-500 text-xs font-semibold">
                                                     {errors.name}
                                                 </p>
                                             )}
@@ -263,6 +267,8 @@ export default function ContactPage() {
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
                                                 disabled={isPending}
+                                                aria-invalid={errors.email ? "true" : undefined}
+                                                aria-describedby={errors.email ? "email-error" : undefined}
                                                 className={`w-full px-4 py-2.5 rounded-lg bg-gray-50/70 dark:bg-white/[0.03] border ${
                                                     errors.email
                                                         ? "border-red-500 focus:border-red-500"
@@ -270,7 +276,7 @@ export default function ContactPage() {
                                                 } text-sm sm:text-base font-medium text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors`}
                                             />
                                             {errors.email && (
-                                                <p className="text-red-500 text-xs font-semibold">
+                                                <p id="email-error" className="text-red-500 text-xs font-semibold">
                                                     {errors.email}
                                                 </p>
                                             )}
@@ -292,6 +298,8 @@ export default function ContactPage() {
                                             value={subject}
                                             onChange={(e) => setSubject(e.target.value)}
                                             disabled={isPending}
+                                            aria-invalid={errors.subject ? "true" : undefined}
+                                            aria-describedby={errors.subject ? "subject-error" : undefined}
                                             className={`w-full px-4 py-2.5 rounded-lg bg-gray-50/70 dark:bg-white/[0.03] border ${
                                                 errors.subject
                                                     ? "border-red-500 focus:border-red-500"
@@ -299,7 +307,7 @@ export default function ContactPage() {
                                             } text-sm sm:text-base font-medium text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors`}
                                         />
                                         {errors.subject && (
-                                            <p className="text-red-500 text-xs font-semibold">
+                                            <p id="subject-error" className="text-red-500 text-xs font-semibold">
                                                 {errors.subject}
                                             </p>
                                         )}
@@ -319,6 +327,8 @@ export default function ContactPage() {
                                             value={message}
                                             onChange={(e) => setMessage(e.target.value)}
                                             disabled={isPending}
+                                            aria-invalid={errors.message ? "true" : undefined}
+                                            aria-describedby={errors.message ? "message-error" : undefined}
                                             className={`w-full p-4 rounded-lg bg-gray-50/70 dark:bg-white/[0.02] border ${
                                                 errors.message
                                                     ? "border-red-500 focus:border-red-500"
@@ -326,7 +336,7 @@ export default function ContactPage() {
                                             } text-sm sm:text-base font-normal leading-relaxed text-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors resize-none`}
                                         />
                                         {errors.message && (
-                                            <p className="text-red-500 text-xs font-semibold">
+                                            <p id="message-error" className="text-red-500 text-xs font-semibold">
                                                 {errors.message}
                                             </p>
                                         )}
@@ -344,7 +354,7 @@ export default function ContactPage() {
                                                 type="submit"
                                                 variant="primary"
                                                 size="md"
-                                                className="w-full sm:w-auto rounded-lg bg-gold hover:bg-amber-600 text-white font-black text-sm px-6 py-2.5 shadow-sm shadow-amber-500/20 flex items-center justify-center gap-2 border-none active:scale-[0.98] transition-all"
+                                                className="w-full sm:w-auto rounded-lg bg-gold hover:bg-amber-600 text-white font-bold text-sm px-6 py-2.5 shadow-sm shadow-amber-500/20 flex items-center justify-center gap-2 border-none active:scale-[0.98] transition-all"
                                                 isLoading={isPending}
                                             >
                                                 <Send size={15} className="shrink-0" />

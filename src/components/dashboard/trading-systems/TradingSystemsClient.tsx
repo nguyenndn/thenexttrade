@@ -7,10 +7,17 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { CustomBotIcon } from "./SharedUI";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { VipTabSummary } from "./VipTabSummary";
+import {
+    LicenseAccountsPanel,
+    type AccountLicenseItem,
+    type SelectableTradingAccount,
+} from "./LicenseAccountsPanel";
 import type { VipRequest } from "@prisma/client";
 
 interface TradingSystemsClientProps {
     licenses: any[];
+    accountLicenses?: AccountLicenseItem[];
+    userTradingAccounts?: SelectableTradingAccount[];
     products: any[];
     hasApprovedLicense: boolean;
     hasAccount?: boolean;
@@ -23,6 +30,8 @@ interface TradingSystemsClientProps {
 
 export function TradingSystemsClient({
     licenses,
+    accountLicenses = [],
+    userTradingAccounts = [],
     products,
     hasApprovedLicense,
     hasAccount,
@@ -73,6 +82,12 @@ export function TradingSystemsClient({
             <PageHeader
                 title="Trading Systems"
                 description="Verified execution algorithms, indicators, and institutional license controls."
+            />
+
+            {/* Per-Account EA License Keys Panel */}
+            <LicenseAccountsPanel
+                items={accountLicenses}
+                userTradingAccounts={userTradingAccounts}
             />
 
             {/* Unified Tabs */}

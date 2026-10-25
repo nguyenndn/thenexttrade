@@ -151,11 +151,13 @@ export function StrategyCard({
                                     </p>
                                     <div className="flex gap-2">
                                         {strategy.referenceImages.map((url, idx) => (
-                                            <button
+                                            <Button
                                                 type="button"
+                                                variant="ghost"
+                                                size="sm"
                                                 key={url}
                                                 onClick={() => setLightboxIndex(idx)}
-                                                className="w-16 h-10 rounded-lg overflow-hidden border border-dashboard hover:border-primary/50 transition-colors relative group/img cursor-pointer"
+                                                className="w-16 h-10 p-0 rounded-lg overflow-hidden border border-dashboard hover:border-primary/50 transition-colors relative group/img cursor-pointer"
                                                 aria-label={`Preview reference chart ${idx + 1}`}
                                             >
                                                 <img
@@ -163,7 +165,7 @@ export function StrategyCard({
                                                     alt={`Reference ${idx + 1}`}
                                                     className="w-full h-full object-cover group-hover/img:scale-105 transition-transform"
                                                 />
-                                            </button>
+                                            </Button>
                                         ))}
                                     </div>
                                 </div>

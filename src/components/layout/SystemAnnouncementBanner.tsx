@@ -83,13 +83,16 @@ export function SystemAnnouncementBanner() {
                 {/* Decorative header */}
                 <div className="h-2 bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400" />
 
-                <button
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
                     onClick={dismiss}
-                    className="absolute top-4 right-4 p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors"
+                    className="absolute top-4 right-4 h-8 w-8 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-white"
                     aria-label="Dismiss announcement"
                 >
-                    <X size={18} />
-                </button>
+                    <X size={16} />
+                </Button>
 
                 <div className="p-6 sm:p-8 flex flex-col items-center text-center">
                     <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center mb-4">

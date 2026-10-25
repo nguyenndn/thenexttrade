@@ -118,16 +118,18 @@ export function AiChartAnalysisLab() {
                                 alt="Chart analyzed"
                                 className="w-full h-auto max-h-[160px] object-contain"
                             />
-                            <button
+                            <Button
                                 type="button"
+                                variant="outline"
+                                size="icon"
                                 onClick={handleClearImage}
                                 disabled={isPending}
-                                className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white hover:bg-red-500 transition-colors disabled:opacity-50"
+                                className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white hover:bg-red-500 hover:text-white border-0 transition-colors disabled:opacity-50"
                                 title="Remove / Reset image"
                                 aria-label="Remove image"
                             >
                                 <X size={12} />
-                            </button>
+                            </Button>
                             <div className="absolute bottom-1.5 left-2 px-2 py-0.5 rounded-lg bg-black/70 backdrop-blur text-[9px] font-medium text-gray-200">
                                 {uploadedFile ? "Custom Screenshot" : "Auto Snapshot"}
                             </div>
@@ -171,15 +173,17 @@ export function AiChartAnalysisLab() {
                         </Button>
 
                         {uploadedFile && (
-                            <button
+                            <Button
                                 type="button"
+                                variant="outline"
+                                size="sm"
                                 onClick={handleClearImage}
                                 disabled={isPending}
-                                className="w-full flex items-center justify-center gap-2 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.03] px-4 py-2 text-xs font-bold text-gray-400 transition-all hover:text-red-500"
+                                className="w-full flex items-center justify-center gap-2 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.03] px-4 py-2 text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-red-500"
                             >
                                 <RefreshCw size={12} />
                                 Reset to Auto Chart Snapshot
-                            </button>
+                            </Button>
                         )}
                     </div>
 

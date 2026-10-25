@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getInvestorPasswordForAccount } from "@/lib/credentials/investor-password.server";
+import {
+    failSupportSyncTicket,
+    getSupportTicketIdFromJobId,
+    SUPPORT_SYNC_MODE,
+} from "@/lib/services/support-sync-jobs.server";
 
 export async function GET(request: NextRequest) {
     try {
@@ -57,16 +62,33 @@ export async function GET(request: NextRequest) {
 
         const pwResult = await getInvestorPasswordForAccount(job.accountId);
         if (!pwResult.ok) {
+            const errorCode =
+                pwResult.reason === "DECRYPTION_FAILED"
+                    ? "CREDENTIAL_DECRYPTION_FAILED"
+                    : "NO_CREDENTIALS";
+            const errorMessage =
+                pwResult.reason === "DECRYPTION_FAILED"
+                    ? "Investor credential could not be decrypted. Please re-enter it for this account."
+                    : "No investor password configured for this account.";
             await prisma.mt5ImportJob.update({
                 where: { id: job.id },
                 data: {
                     status: "FAILED",
-                    errorCode: "NO_CREDENTIALS",
-                    errorMessage:
-                        "No investor password configured for this account.",
+                    errorCode,
+                    errorMessage,
                     completedAt: new Date(),
                 },
             });
+            if (job.mode === SUPPORT_SYNC_MODE) {
+                const ticketId = getSupportTicketIdFromJobId(job.id);
+                if (ticketId) {
+                    await failSupportSyncTicket({
+                        ticketId,
+                        errorCode,
+                        errorMessage,
+                    });
+                }
+            }
             return NextResponse.json({
                 job: null,
                 message: "Job failed: missing investor credentials",
@@ -95,6 +117,7 @@ export async function GET(request: NextRequest) {
                 server: job.account.server,
                 broker: job.account.broker,
                 investorPassword,
+                mode: job.mode,
                 rangeFrom: job.rangeFrom.toISOString(),
                 rangeTo: job.rangeTo.toISOString(),
             },

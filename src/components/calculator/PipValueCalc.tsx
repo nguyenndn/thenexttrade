@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/Button";
 import { PIP_VALUES } from "@/lib/calculators";
 import { CurrencyPairSelect } from "./CurrencyPairSelect";
 import {
@@ -51,13 +52,16 @@ export function PipValueCalc() {
                                 { label: "Mini", val: 0.1 },
                                 { label: "Micro", val: 0.01 },
                             ].map((lt) => (
-                                <button
+                                <Button
                                     key={lt.label}
                                     type="button"
+                                    variant="ghost"
+                                    role="tab"
+                                    aria-selected={lotSize === lt.val}
                                     onClick={() => setLotSize(lt.val)}
-                                    className={`relative flex-1 py-2.5 rounded-lg text-xs font-bold transition-colors z-10 ${
+                                    className={`relative flex-1 py-2.5 rounded-lg text-xs font-bold transition-colors z-10 h-auto border-0 ${
                                         lotSize === lt.val
-                                            ? "text-white"
+                                            ? "text-white hover:text-white"
                                             : "text-gray-600 dark:text-gray-500 hover:text-gray-700 dark:hover:text-white"
                                     }`}
                                 >
@@ -73,7 +77,7 @@ export function PipValueCalc() {
                                         />
                                     )}
                                     {lt.label}
-                                </button>
+                                </Button>
                             ))}
                         </div>
                     </div>

@@ -107,18 +107,19 @@ export function LeaderboardSidebar({ initialData }: LeaderboardSidebarProps) {
                                 : "Your profile is hidden from the leaderboard."}
                         </p>
                     </div>
-                    <button
+                    <Button
                         type="button"
+                        variant="ghost"
                         role="switch"
                         aria-checked={showOnLeaderboard}
                         aria-label="Toggle leaderboard profile visibility"
                         onClick={handleGlobalVisibilityToggle}
                         disabled={isPending}
                         className={cn(
-                            "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2",
+                            "relative inline-flex h-6 w-11 shrink-0 p-0 min-h-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2",
                             showOnLeaderboard
-                                ? "bg-[#00C888]"
-                                : "bg-gray-200 dark:bg-white/10"
+                                ? "bg-[#00C888] hover:bg-[#00C888]"
+                                : "bg-gray-200 dark:bg-white/10 hover:bg-gray-300 dark:hover:bg-white/15"
                         )}
                     >
                         <span
@@ -129,7 +130,7 @@ export function LeaderboardSidebar({ initialData }: LeaderboardSidebarProps) {
                                     : "translate-x-0"
                             )}
                         />
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Accounts Visibility & Performance */}

@@ -336,6 +336,7 @@ export async function proxy(request: NextRequest) {
         // Skip rate limiting for internal/high-frequency routes (PRO-QA-001, PRO-QA-011)
         const skipRateLimit =
             pathname === "/api/pro-status" ||
+            pathname === "/api/remote/state" ||
             pathname.startsWith("/api/cron/") ||
             pathname.startsWith("/api/internal/");
 

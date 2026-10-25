@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, ArrowDown, ShieldCheck } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 import { DynamicFirefly } from "@/components/ui/DynamicFirefly";
 
 interface SaaSHeroSectionProps {
@@ -78,7 +79,7 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                     We never claim the tool makes money; we claim it shows the
                     trader what they keep doing wrong. */}
                 <h1 className="text-2xl min-[400px]:text-3xl sm:text-4xl md:text-5xl lg:text-[54px] xl:text-[68px] 2xl:text-[76px] font-black text-gray-900 dark:text-white tracking-tight leading-[1.15] sm:leading-[1.08] mb-7 sm:mb-6 max-w-5xl">
-                    <span className="block whitespace-nowrap">
+                    <span className="block whitespace-normal sm:whitespace-nowrap">
                         You already know what to do.
                     </span>
                     <span className="block mt-1 sm:mt-2 min-h-[1.15em] sm:whitespace-nowrap">
@@ -111,33 +112,32 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                                 ? "/dashboard"
                                 : "/auth/signup?intent=TRADE_FIRST&source=homepage_hero"
                         }
-                        className="w-full sm:w-auto group"
+                        className={cn(
+                            buttonVariants({ variant: "gold", size: "lg" }),
+                            "w-full sm:w-auto h-11 sm:h-12 px-5 sm:px-7 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all duration-300 flex items-center justify-center gap-2 whitespace-normal sm:whitespace-nowrap animate-btn-shine group"
+                        )}
                     >
-                        <Button className="w-full sm:w-auto h-11 sm:h-12 px-5 sm:px-7 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all duration-300 flex items-center justify-center gap-2 whitespace-normal sm:whitespace-nowrap animate-btn-shine">
-                            <span>
-                                {isLoggedIn ? "Open My Journal" : "Sync My MT5 — Free"}
-                            </span>
-                            <ArrowRight
-                                size={14}
-                                className="group-hover:translate-x-1 transition-transform duration-300 shrink-0"
-                            />
-                        </Button>
+                        <span>
+                            {isLoggedIn ? "Open My Journal" : "Sync My MT5 — Free"}
+                        </span>
+                        <ArrowRight
+                            size={14}
+                            className="group-hover:translate-x-1 transition-transform duration-300 shrink-0"
+                        />
                     </Link>
 
                     <a
                         href="#how-it-works"
-                        className="w-full sm:w-auto group"
+                        className={cn(
+                            buttonVariants({ variant: "outline", size: "lg" }),
+                            "w-full sm:w-auto h-11 sm:h-12 px-5 sm:px-7 rounded-lg border-gray-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm text-slate-700 dark:text-slate-200 hover:border-gold hover:text-amber-600 dark:hover:text-gold font-extrabold shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-normal sm:whitespace-nowrap group"
+                        )}
                     >
-                        <Button
-                            variant="outline"
-                            className="w-full sm:w-auto h-11 sm:h-12 px-5 sm:px-7 rounded-lg border-gray-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm text-slate-700 dark:text-slate-200 hover:border-gold hover:text-amber-600 dark:hover:text-gold font-extrabold shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-normal sm:whitespace-nowrap"
-                        >
-                            <span>See How It Works</span>
-                            <ArrowDown
-                                size={14}
-                                className="text-amber-500 dark:text-gold group-hover:translate-y-1 transition-transform duration-300 shrink-0"
-                            />
-                        </Button>
+                        <span>See How It Works</span>
+                        <ArrowDown
+                            size={14}
+                            className="text-amber-500 dark:text-gold group-hover:translate-y-1 transition-transform duration-300 shrink-0"
+                        />
                     </a>
                 </div>
 

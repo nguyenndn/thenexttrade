@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 interface FAQItem {
@@ -28,9 +29,13 @@ export function FAQAccordion({ items, hoverClassName }: FAQAccordionProps) {
                             "hover:border-gold/30 dark:hover:border-gold/20 hover:shadow-md hover:shadow-amber-500/[0.03] dark:hover:shadow-amber-500/[0.02]"
                     )}
                 >
-                    <button
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        aria-expanded={open === idx}
+                        aria-controls={`faq-answer-${idx}`}
                         onClick={() => setOpen(open === idx ? null : idx)}
-                        className="w-full flex items-center justify-between px-5 py-4 text-left bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/[0.07] transition-colors"
+                        className="w-full flex items-center justify-between px-5 py-4 text-left bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/[0.07] transition-colors h-auto rounded-none font-normal"
                     >
                         <span className="font-semibold text-gray-800 dark:text-gray-100 text-sm pr-4">
                             {item.question}
@@ -42,8 +47,11 @@ export function FAQAccordion({ items, hoverClassName }: FAQAccordionProps) {
                                 open === idx && "rotate-180"
                             )}
                         />
-                    </button>
+                    </Button>
                     <div
+                        id={`faq-answer-${idx}`}
+                        role="region"
+                        aria-label={item.question}
                         className={cn(
                             "grid transition-all duration-200 ease-in-out",
                             open === idx ? "grid-rows-[1fr]" : "grid-rows-[0fr]"

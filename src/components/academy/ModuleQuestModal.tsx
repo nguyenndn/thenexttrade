@@ -351,11 +351,14 @@ export function ModuleQuestModal({
                                         : lState === "current";
 
                                     return (
-                                        <button
+                                        <Button
+                                            type="button"
                                             key={lesson.id}
+                                            variant="outline"
+                                            size="sm"
                                             onClick={() => handleLessonAction(lesson)}
                                             className={cn(
-                                                "w-full group flex items-center justify-between p-3 rounded-lg border text-left transition-colors",
+                                                "w-full group flex items-center justify-between p-3 rounded-lg border text-left transition-colors h-auto font-normal",
                                                 "relative overflow-hidden",
                                                 isCompleted &&
                                                     "bg-amber-500/[0.06] dark:bg-amber-500/[0.04] border-amber-500/30 dark:border-amber-500/20 hover:border-amber-500/50",
@@ -428,7 +431,7 @@ export function ModuleQuestModal({
                                             <div className="shrink-0 flex items-center text-gray-400 dark:text-zinc-500 group-hover:text-gray-900 dark:group-hover:text-white transition-transform group-hover:translate-x-0.5">
                                                 <ChevronRight size={16} />
                                             </div>
-                                        </button>
+                                        </Button>
                                     );
                                 })}
                             </div>

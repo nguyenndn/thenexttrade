@@ -294,12 +294,16 @@ export function ArticleOpsDashboard({
                                 Image Prompts
                             </Button>
                         )}
-                        <button
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            aria-label="Clear selection"
                             onClick={() => setSelectedIds(new Set())}
-                            className="ml-auto p-1 rounded-lg hover:bg-gray-200 dark:hover:bg-white/10"
+                            className="ml-auto p-1 h-auto w-auto rounded-lg hover:bg-gray-200 dark:hover:bg-white/10"
                         >
                             <X size={14} className="text-gray-500" />
-                        </button>
+                        </Button>
                     </div>
                 )}
 
@@ -536,7 +540,10 @@ export function ArticleOpsDashboard({
                                                             size={14}
                                                         />
                                                     </Link>
-                                                    <button
+                                                    <Button
+                                                        type="button"
+                                                        variant="ghost"
+                                                        size="icon"
                                                         onClick={() =>
                                                             handleOpenPrompts(
                                                                 row.id
@@ -546,7 +553,7 @@ export function ArticleOpsDashboard({
                                                             loadingPromptId ===
                                                             row.id
                                                         }
-                                                        className="p-1.5 rounded-lg hover:bg-gold/10 transition-colors text-gray-400 hover:text-gold disabled:opacity-50"
+                                                        className="p-1.5 h-auto w-auto rounded-lg hover:bg-gold/10 transition-colors text-gray-400 hover:text-gold disabled:opacity-50"
                                                         aria-label="Generate image prompts"
                                                     >
                                                         <Wand2
@@ -558,9 +565,12 @@ export function ArticleOpsDashboard({
                                                                     : ""
                                                             }
                                                         />
-                                                    </button>
+                                                    </Button>
                                                     {hasSeoIssues(row) && (
-                                                        <button
+                                                        <Button
+                                                            type="button"
+                                                            variant="ghost"
+                                                            size="icon"
                                                             onClick={() =>
                                                                 handleOpenSeoFix(
                                                                     row.id
@@ -570,7 +580,7 @@ export function ArticleOpsDashboard({
                                                                 loadingSeoId ===
                                                                 row.id
                                                             }
-                                                            className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 disabled:opacity-50"
+                                                            className="p-1.5 h-auto w-auto rounded-lg hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 disabled:opacity-50"
                                                             aria-label="Fix SEO"
                                                             title="Fix SEO"
                                                         >
@@ -583,7 +593,7 @@ export function ArticleOpsDashboard({
                                                                         : ""
                                                                 }
                                                             />
-                                                        </button>
+                                                        </Button>
                                                     )}
                                                 </div>
                                             </td>

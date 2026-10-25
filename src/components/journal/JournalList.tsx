@@ -54,7 +54,8 @@ const getColumnWidthClass = (colId: string) => {
     switch (colId) {
         case "pnl":
         case "commission":
-            return "w-[140px] min-w-[140px] max-w-[140px] text-right";
+        case "swap":
+            return "w-[130px] min-w-[130px] max-w-[130px] text-right";
         case "tp":
         case "sl":
             return "w-[120px] min-w-[120px] max-w-[120px] text-right";
@@ -75,7 +76,7 @@ const getColumnWidthClass = (colId: string) => {
 };
 
 const getColumnAlignmentClass = (colId: string) => {
-    if (["pnl", "tp", "sl", "commission"].includes(colId)) return "justify-end pr-2";
+    if (["pnl", "tp", "sl", "commission", "swap"].includes(colId)) return "justify-end pr-2";
     if (["openTime", "closeTime", "type", "volume", "mindset"].includes(colId))
         return "justify-center whitespace-nowrap";
     return "justify-start whitespace-nowrap";
@@ -176,6 +177,7 @@ export default function JournalList({
             "type",
             "volume",
             "commission",
+            "swap",
             "pnl",
             "strategy",
             "mindset",
@@ -196,6 +198,7 @@ export default function JournalList({
         { id: "closeTime", label: "Close Time" },
         { id: "volume", label: "Volume" },
         { id: "commission", label: "Commission" },
+        { id: "swap", label: "Swap" },
         { id: "pnl", label: "Net Profit" },
         { id: "tp", label: "Take Profit" },
         { id: "sl", label: "Stop Loss" },
@@ -228,6 +231,14 @@ export default function JournalList({
                             parsed.splice(pnlIdx, 0, "commission");
                         } else {
                             parsed.push("commission");
+                        }
+                    }
+                    if (!parsed.includes("swap")) {
+                        const pnlIdx = parsed.indexOf("pnl");
+                        if (pnlIdx !== -1) {
+                            parsed.splice(pnlIdx, 0, "swap");
+                        } else {
+                            parsed.push("swap");
                         }
                     }
                     setVisibleColumns(new Set(parsed));
@@ -613,6 +624,7 @@ export default function JournalList({
                                                                     "closeTime",
                                                                     "volume",
                                                                     "commission",
+                                                                    "swap",
                                                                     "pnl",
                                                                     "tp",
                                                                     "sl",
@@ -647,6 +659,7 @@ export default function JournalList({
                                                                     "closeTime",
                                                                     "volume",
                                                                     "commission",
+                                                                    "swap",
                                                                     "pnl",
                                                                     "tp",
                                                                     "sl",
@@ -677,7 +690,7 @@ export default function JournalList({
                                         {isLoading ? (
                                             <tr>
                                                 <td
-                                                    colSpan={14}
+                                                    colSpan={15}
                                                     className="px-6 py-8 text-center text-gray-600"
                                                 >
                                                     Loading...
@@ -742,7 +755,7 @@ export default function JournalList({
                                                                     className={`px-6 py-4 ${getColumnWidthClass(col.id)}`}
                                                                 >
                                                                     <div
-                                                                        className={`w-full ${col.id === "pnl" || col.id === "commission" || col.id === "tp" || col.id === "sl" ? "flex justify-end pr-2" : ""}`}
+                                                                        className={`w-full ${col.id === "pnl" || col.id === "commission" || col.id === "swap" || col.id === "tp" || col.id === "sl" ? "flex justify-end pr-2" : ""}`}
                                                                     >
                                                                         {col.id ===
                                                                             "date" &&
@@ -802,6 +815,25 @@ export default function JournalList({
                                                                                     ? (entry.commission < 0 ? "-" : "") +
                                                                                       "$" +
                                                                                       Math.abs(entry.commission).toFixed(2)
+                                                                                    : "$0.00"}
+                                                                            </span>
+                                                                        )}
+                                                                        {col.id ===
+                                                                            "swap" && (
+                                                                            <span
+                                                                                className={cn(
+                                                                                    "font-mono font-medium",
+                                                                                    (entry.swap || 0) > 0
+                                                                                        ? "text-emerald-600 dark:text-primary"
+                                                                                        : (entry.swap || 0) < 0
+                                                                                          ? "text-red-500/90 dark:text-red-400/90"
+                                                                                          : "text-gray-500 dark:text-gray-400"
+                                                                                )}
+                                                                            >
+                                                                                {entry.swap != null
+                                                                                    ? (entry.swap > 0 ? "+" : entry.swap < 0 ? "-" : "") +
+                                                                                      "$" +
+                                                                                      Math.abs(entry.swap).toFixed(2)
                                                                                     : "$0.00"}
                                                                             </span>
                                                                         )}
@@ -1026,6 +1058,23 @@ export default function JournalList({
                                                         </p>
                                                         <p className="font-mono text-xs font-semibold text-red-500/90 dark:text-red-400/90">
                                                             {entry.commission < 0 ? "-" : ""}${Math.abs(entry.commission).toFixed(2)}
+                                                        </p>
+                                                    </div>
+                                                ) : null}
+                                                {entry.swap ? (
+                                                    <div>
+                                                        <p className="text-xs text-gray-500 mb-0.5">
+                                                            Swap
+                                                        </p>
+                                                        <p
+                                                            className={cn(
+                                                                "font-mono text-xs font-semibold",
+                                                                entry.swap > 0
+                                                                    ? "text-emerald-600 dark:text-primary"
+                                                                    : "text-red-500/90 dark:text-red-400/90"
+                                                            )}
+                                                        >
+                                                            {entry.swap > 0 ? "+" : entry.swap < 0 ? "-" : ""}${Math.abs(entry.swap).toFixed(2)}
                                                         </p>
                                                     </div>
                                                 ) : null}

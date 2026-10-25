@@ -7,11 +7,37 @@ import { createTradingAccount, deleteTradingAccount } from "./accounts";
 
 vi.mock("@/lib/prisma", () => ({
     prisma: {
+        $transaction: vi.fn(async (operations: Promise<unknown>[]) =>
+            Promise.all(operations)
+        ),
         tradingAccount: {
             findFirst: vi.fn(),
+            findUnique: vi.fn(),
             create: vi.fn(),
             count: vi.fn(),
             delete: vi.fn(),
+            updateMany: vi.fn(),
+        },
+        profile: {
+            updateMany: vi.fn(),
+        },
+        proEntitlement: {
+            deleteMany: vi.fn(),
+        },
+        vipRequest: {
+            updateMany: vi.fn(),
+        },
+        ibLead: {
+            updateMany: vi.fn(),
+        },
+        importHistory: {
+            updateMany: vi.fn(),
+        },
+        journalEntry: {
+            updateMany: vi.fn(),
+        },
+        eALicense: {
+            deleteMany: vi.fn(),
         },
         user: {
             findUnique: vi.fn(),
@@ -204,6 +230,10 @@ describe("Trading Accounts Actions", () => {
         });
 
         it("deletes account belonging to user and returns success", async () => {
+            (prisma.tradingAccount.findUnique as any).mockResolvedValue({
+                id: "acc-1",
+                userId: mockUser.id,
+            });
             (prisma.tradingAccount.delete as any).mockResolvedValue({ id: "acc-1" });
 
             const result = await deleteTradingAccount("acc-1");

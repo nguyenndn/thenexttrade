@@ -206,42 +206,45 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
             {/* Sub-Section Navigation & Filters */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex rounded-lg border border-gray-200 bg-[#F1F3F5] p-1 dark:border-white/10 dark:bg-[#1A1D27] w-fit">
-                    <button
+                    <Button
                         type="button"
+                        variant="ghost"
                         onClick={() => setActiveSection("rules")}
                         className={cn(
-                            "flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
+                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
                             activeSection === "rules"
                                 ? "bg-white text-gray-900 shadow-sm dark:bg-[#252936] dark:text-white"
-                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                         )}
                     >
                         <ShieldCheck size={14} /> Trading Rules ({rules.length})
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="button"
+                        variant="ghost"
                         onClick={() => setActiveSection("goals")}
                         className={cn(
-                            "flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
+                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
                             activeSection === "goals"
                                 ? "bg-white text-gray-900 shadow-sm dark:bg-[#252936] dark:text-white"
-                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                         )}
                     >
                         <Target size={14} /> Behavior Goals ({goals.length})
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="button"
+                        variant="ghost"
                         onClick={() => setActiveSection("checks")}
                         className={cn(
-                            "flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
+                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
                             activeSection === "checks"
                                 ? "bg-white text-gray-900 shadow-sm dark:bg-[#252936] dark:text-white"
-                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                         )}
                     >
                         <Activity size={14} /> Rule Check Telemetry ({ruleChecks.length})
-                    </button>
+                    </Button>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
@@ -263,19 +266,20 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                     {activeSection === "rules" && ruleCategories.length > 1 && (
                         <div className="flex items-center gap-1 overflow-x-auto rounded-lg border border-gray-200 bg-white p-1 dark:border-white/10 dark:bg-[#151925]">
                             {ruleCategories.slice(0, 4).map((cat) => (
-                                <button
+                                <Button
                                     key={cat}
                                     type="button"
+                                    variant="ghost"
                                     onClick={() => setCategoryFilter(cat)}
                                     className={cn(
-                                        "rounded-lg px-2.5 py-1 text-[11px] font-bold uppercase transition-colors",
+                                        "h-auto rounded-lg px-2.5 py-1 text-[11px] font-bold uppercase transition-colors",
                                         categoryFilter === cat
-                                            ? "bg-primary text-white"
+                                            ? "bg-primary text-white hover:bg-primary"
                                             : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/5"
                                     )}
                                 >
                                     {cat}
-                                </button>
+                                </Button>
                             ))}
                         </div>
                     )}

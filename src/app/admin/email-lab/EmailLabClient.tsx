@@ -504,74 +504,80 @@ export function EmailLabClient({
 
             {/* Category Filter Tabs */}
             <div className="flex flex-wrap items-center gap-2 border-b border-gray-200 dark:border-white/10 pb-3">
-                <button
+                <Button
                     type="button"
+                    variant="ghost"
                     onClick={() => setActiveTab("all")}
-                    className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "all"
-                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20"
+                    className={`h-auto flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "all"
+                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20 hover:text-white"
                             : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
                         }`}
                 >
                     <Layers size={14} />
                     <span>All Templates ({totalCount})</span>
-                </button>
-                <button
+                </Button>
+                <Button
                     type="button"
+                    variant="ghost"
                     onClick={() => setActiveTab("vip")}
-                    className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "vip"
-                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20"
+                    className={`h-auto flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "vip"
+                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20 hover:text-white"
                             : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
                         }`}
                 >
                     <Crown size={14} />
                     <span>VIP & Trial ({vipCount})</span>
-                </button>
-                <button
+                </Button>
+                <Button
                     type="button"
+                    variant="ghost"
                     onClick={() => setActiveTab("ea_academy")}
-                    className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "ea_academy"
-                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20"
+                    className={`h-auto flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "ea_academy"
+                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20 hover:text-white"
                             : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
                         }`}
                 >
                     <Key size={14} />
                     <span>EA & Systems ({eaAcademyCount})</span>
-                </button>
+                </Button>
 
-                <button
+                <Button
                     type="button"
+                    variant="ghost"
                     onClick={() => setActiveTab("reports")}
-                    className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "reports"
-                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20"
+                    className={`h-auto flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "reports"
+                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20 hover:text-white"
                             : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
                         }`}
                 >
                     <BarChart3 size={14} />
                     <span>Reports & Reviews ({reportsCount})</span>
-                </button>
+                </Button>
 
-                <button
+                <Button
                     type="button"
+                    variant="ghost"
                     onClick={() => setActiveTab("onboarding")}
-                    className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "onboarding"
-                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20"
+                    className={`h-auto flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "onboarding"
+                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20 hover:text-white"
                             : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
                         }`}
                 >
                     <Sparkles size={14} />
                     <span>Onboarding & Activation ({onboardingCount})</span>
-                </button>
-                <button
+                </Button>
+                <Button
                     type="button"
+                    variant="ghost"
                     onClick={() => setActiveTab("auth")}
-                    className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "auth"
-                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20"
+                    className={`h-auto flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "auth"
+                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20 hover:text-white"
                             : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
                         }`}
                 >
                     <ShieldCheck size={14} />
                     <span>Supabase Auth ({authCount})</span>
-                </button>
+                </Button>
             </div>
 
             {/* Group 1: SMTP and System Generated Emails */}

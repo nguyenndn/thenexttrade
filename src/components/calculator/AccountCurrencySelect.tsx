@@ -2,6 +2,8 @@
 
 import { cn } from "@/lib/utils";
 
+import { Button } from "@/components/ui/Button";
+
 const CURRENCIES = [
     { code: "USD", symbol: "$", name: "US Dollar" },
     { code: "EUR", symbol: "€", name: "Euro" },
@@ -25,22 +27,21 @@ export function AccountCurrencySelect({
     className,
 }: AccountCurrencySelectProps) {
     return (
-        <div className={cn("flex flex-wrap gap-2", className)}>
+        <div role="tablist" aria-label="Account Currency" className={cn("flex flex-wrap gap-2", className)}>
             {CURRENCIES.map((c) => (
-                <button
+                <Button
                     key={c.code}
                     type="button"
+                    variant={value === c.code ? "primary" : "outline"}
+                    size="sm"
+                    role="tab"
+                    aria-selected={value === c.code}
+                    aria-label={`${c.code} (${c.name})`}
                     onClick={() => onChange(c.code)}
-                    className={cn(
-                        "px-3 py-2 rounded-lg text-xs font-bold transition-all border",
-                        value === c.code
-                            ? "bg-gold text-white border-amber-500 shadow-sm shadow-amber-500/20"
-                            : "bg-white dark:bg-white/5 text-gray-600 dark:text-gray-500 border-dashboard hover:border-gold/50"
-                    )}
                     title={c.name}
                 >
                     {c.code}
-                </button>
+                </Button>
             ))}
         </div>
     );

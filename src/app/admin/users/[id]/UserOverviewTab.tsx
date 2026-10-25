@@ -1,9 +1,11 @@
+import Link from "next/link";
 import {
     GraduationCap,
     LineChart,
     FileText,
     Download,
     Monitor,
+    Bot,
 } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 
@@ -27,11 +29,15 @@ interface UserOverviewTabProps {
             name: string | null;
             broker: string | null;
             balance: number;
+            equity?: number | null;
+            currency?: string | null;
             status: string;
             platform: string;
             accountNumber: string | null;
             accountType: string | null;
             server: string | null;
+            lastHeartbeat?: Date | string | null;
+            lastSync?: Date | string | null;
             createdAt: Date | string;
         }>;
         eaDownloads: Array<{
@@ -39,7 +45,60 @@ interface UserOverviewTabProps {
             createdAt: Date | string;
             version: string;
             platform: string;
-            product: { name: string; type: string } | null;
+            product: {
+                id?: string;
+                name: string;
+                slug?: string;
+                type: string;
+                version?: string;
+            } | null;
+        }>;
+        eaProductAccesses?: Array<{
+            id: string;
+            productId: string;
+            tradingAccountId: string | null;
+            status: string;
+            lastUsedAt?: Date | string | null;
+            lastHeartbeatAt?: Date | string | null;
+            product: {
+                id: string;
+                name: string;
+                slug: string;
+                version: string;
+                type: string;
+            } | null;
+            tradingAccount?: {
+                id: string;
+                accountNumber: string | null;
+                broker: string | null;
+                server: string | null;
+                platform: string | null;
+                accountType: string | null;
+                balance: number;
+                equity: number | null;
+                currency: string | null;
+                status: string;
+                lastHeartbeat: Date | string | null;
+                lastSync: Date | string | null;
+            } | null;
+        }>;
+        eaProductUsageEvents?: Array<{
+            id: string;
+            productId: string;
+            tradingAccountId: string | null;
+            eventType: string;
+            occurredAt: Date | string;
+            productVersion?: string | null;
+            product: {
+                id: string;
+                name: string;
+                slug: string;
+                version: string;
+            } | null;
+            tradingAccount?: {
+                id: string;
+                accountNumber: string | null;
+            } | null;
         }>;
         journalEntries: Array<{
             id: string;
@@ -97,6 +156,8 @@ interface UserOverviewTabProps {
     };
 }
 
+const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
+
 export function UserOverviewTab({ user }: UserOverviewTabProps) {
     // Build Unified Timeline (Key Milestones only - trade logs filtered to prevent drowning)
     const timelineEvents = [
@@ -147,6 +208,98 @@ export function UserOverviewTab({ user }: UserOverviewTabProps) {
         .sort((a, b) => b.date.getTime() - a.date.getTime())
         .slice(0, 8);
 
+    // Build consolidated EA allocations for this user
+    const accountById = new Map(user.tradingAccounts.map((a) => [a.id, a]));
+    const eaAllocationMap = new Map<
+        string,
+        {
+            key: string;
+            productId: string;
+            productName: string;
+            version: string;
+            accountNumber: string | null;
+            broker: string | null;
+            platform: string | null;
+            accountType: string | null;
+            balance: number | null;
+            equity: number | null;
+            currency: string;
+            lastSignal: string | null;
+            isConfirmedAccount: boolean;
+        }
+    >();
+
+    for (const ar of user.eaProductAccesses || []) {
+        if (!ar.product) continue;
+        const acc =
+            ar.tradingAccount ||
+            (ar.tradingAccountId
+                ? accountById.get(ar.tradingAccountId)
+                : null) ||
+            null;
+        const key = `${ar.product.id}:${acc?.id || "USER"}`;
+        const sig =
+            ar.lastHeartbeatAt ||
+            ar.lastUsedAt ||
+            acc?.lastHeartbeat ||
+            acc?.lastSync ||
+            null;
+
+        eaAllocationMap.set(key, {
+            key,
+            productId: ar.product.id,
+            productName: ar.product.name,
+            version: ar.product.version,
+            accountNumber: acc?.accountNumber || null,
+            broker: acc?.broker || null,
+            platform: acc?.platform || "MT5",
+            accountType: acc?.accountType || null,
+            balance: acc ? acc.balance : null,
+            equity: acc ? (acc.equity ?? acc.balance) : null,
+            currency: acc?.currency || "USD",
+            lastSignal: sig ? new Date(sig).toISOString() : null,
+            isConfirmedAccount: Boolean(acc),
+        });
+    }
+
+    for (const ev of user.eaProductUsageEvents || []) {
+        if (!ev.product) continue;
+        const acc = ev.tradingAccountId
+            ? accountById.get(ev.tradingAccountId)
+            : null;
+        const key = `${ev.product.id}:${acc?.id || ev.tradingAccountId || "USER"}`;
+        const existing = eaAllocationMap.get(key);
+        const evIso = new Date(ev.occurredAt).toISOString();
+
+        if (!existing) {
+            eaAllocationMap.set(key, {
+                key,
+                productId: ev.product.id,
+                productName: ev.product.name,
+                version: ev.productVersion || ev.product.version,
+                accountNumber:
+                    acc?.accountNumber ||
+                    ev.tradingAccount?.accountNumber ||
+                    null,
+                broker: acc?.broker || null,
+                platform: acc?.platform || "MT5",
+                accountType: acc?.accountType || null,
+                balance: acc ? acc.balance : null,
+                equity: acc ? (acc.equity ?? acc.balance) : null,
+                currency: acc?.currency || "USD",
+                lastSignal: evIso,
+                isConfirmedAccount: Boolean(acc || ev.tradingAccountId),
+            });
+        } else if (
+            !existing.lastSignal ||
+            new Date(evIso) > new Date(existing.lastSignal)
+        ) {
+            existing.lastSignal = evIso;
+        }
+    }
+
+    const eaAllocations = Array.from(eaAllocationMap.values());
+
     // Parse user agent to get browser name
     const parseBrowser = (ua: string | null) => {
         if (!ua) return "Unknown";
@@ -160,7 +313,7 @@ export function UserOverviewTab({ user }: UserOverviewTabProps) {
     return (
         <div className="space-y-6">
             {/* Compact user activity summary */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-4 sm:p-6 overflow-hidden">
+            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-4 sm:p-6 overflow-hidden">
                 <h3 className="text-base font-bold text-gray-700 dark:text-white border-b border-gray-200 dark:border-white/10 pb-3 mb-4">
                     User Activity
                 </h3>
@@ -184,7 +337,7 @@ export function UserOverviewTab({ user }: UserOverviewTabProps) {
                             label: "Products & Licenses",
                             values: [
                                 `${user._count.eaDownloads} Downloads`,
-                                `${user._count.EALicenses} Licenses`,
+                                `${eaAllocations.length || user._count.EALicenses} Active EAs`,
                             ],
                         },
                         {
@@ -223,10 +376,122 @@ export function UserOverviewTab({ user }: UserOverviewTabProps) {
                 </div>
             </div>
 
+            {/* Active Trading Systems (EAs) & Account Telemetry */}
+            {eaAllocations.length > 0 && (
+                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-4 sm:p-6 overflow-hidden">
+                    <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-3 mb-4">
+                        <h3 className="text-base font-bold text-gray-700 dark:text-white flex items-center gap-2">
+                            <Bot size={18} className="text-amber-500" />
+                            Active Trading Systems (EAs)
+                        </h3>
+                        <span className="text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-lg border border-amber-500/20">
+                            {eaAllocations.length}{" "}
+                            {eaAllocations.length === 1
+                                ? "deployment"
+                                : "deployments"}
+                        </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {eaAllocations.map((alloc) => {
+                            const isOnline =
+                                alloc.lastSignal &&
+                                Date.now() -
+                                    new Date(alloc.lastSignal).getTime() <=
+                                    TWENTY_FOUR_HOURS_MS;
+
+                            return (
+                                <div
+                                    key={alloc.key}
+                                    className="flex items-center justify-between gap-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] p-3.5"
+                                >
+                                    <div className="min-w-0">
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                            <Link
+                                                href={`/admin/trading-systems/${alloc.productId}`}
+                                                className="text-xs font-bold text-gray-900 dark:text-white hover:text-amber-500 transition-colors"
+                                            >
+                                                {alloc.productName}
+                                            </Link>
+                                            <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                                                v{alloc.version}
+                                            </span>
+                                        </div>
+
+                                        <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-mono">
+                                            {alloc.accountNumber
+                                                ? `#${alloc.accountNumber} · ${alloc.broker || alloc.platform || "MT5"}`
+                                                : "User-level license (Awaiting account link)"}
+                                        </p>
+
+                                        <div className="mt-1.5 flex items-center gap-2 text-[11px] text-gray-500">
+                                            <span className="relative flex h-2 w-2 shrink-0">
+                                                {isOnline && (
+                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                                                )}
+                                                <span
+                                                    className={`relative inline-flex rounded-full h-2 w-2 ${
+                                                        isOnline
+                                                            ? "bg-emerald-500"
+                                                            : alloc.lastSignal
+                                                              ? "bg-amber-500"
+                                                              : "bg-gray-400"
+                                                    }`}
+                                                />
+                                            </span>
+                                            <span>
+                                                {alloc.lastSignal
+                                                    ? formatDistanceToNow(
+                                                          new Date(
+                                                              alloc.lastSignal
+                                                          ),
+                                                          { addSuffix: true }
+                                                      )
+                                                    : "No heartbeat yet"}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {alloc.balance !== null && (
+                                        <div className="text-right shrink-0">
+                                            <p className="text-xs font-black text-gray-900 dark:text-white font-mono">
+                                                {new Intl.NumberFormat(
+                                                    "en-US",
+                                                    {
+                                                        style: "currency",
+                                                        currency:
+                                                            alloc.currency,
+                                                        maximumFractionDigits: 2,
+                                                    }
+                                                ).format(alloc.balance)}
+                                            </p>
+                                            {alloc.equity !== null && (
+                                                <p className="text-[10px] text-gray-500 font-mono">
+                                                    Eq:{" "}
+                                                    {new Intl.NumberFormat(
+                                                        "en-US",
+                                                        {
+                                                            style: "currency",
+                                                            currency:
+                                                                alloc.currency,
+                                                            maximumFractionDigits: 2,
+                                                        }
+                                                    ).format(alloc.equity)}
+                                                </p>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
+
             {/* ---- below: free-flowing content ---- */}
             <div className="grid grid-cols-1 gap-6 xl:grid-cols-5">
                 {/* Recent account activity */}
-                <div className="xl:col-span-3 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-4 sm:p-6">
+                <div className="xl:col-span-3 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-4 sm:p-6">
                     <h3 className="text-base font-bold text-gray-700 dark:text-white border-b border-gray-200 dark:border-white/10 pb-3 mb-4">
                         Recent Account Activity
                     </h3>
@@ -270,7 +535,7 @@ export function UserOverviewTab({ user }: UserOverviewTabProps) {
                 {/* Right mini-column: Sessions — 2/5 width */}
                 <div className="xl:col-span-2">
                     {/* Recent Sessions */}
-                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden">
+                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden">
                         <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                             <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
                                 <Monitor size={16} className="text-gray-500" />{" "}

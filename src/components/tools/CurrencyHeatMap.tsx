@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button-variants";
+import { Button } from "@/components/ui/Button";
 
 const CURRENCIES = ["USD", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "NZD"];
 
@@ -134,21 +134,20 @@ export function CurrencyHeatMap() {
                     {lastUpdate &&
                         `Updated: ${lastUpdate.toLocaleTimeString()}`}
                 </div>
-                <button
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
                     onClick={fetchStrength}
                     disabled={loading}
-                    className={buttonVariants({
-                        variant: "outline",
-                        className:
-                            "px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-sm font-bold text-gray-600 dark:text-gray-300 hover:border-primary/50",
-                    })}
+                    className="px-3 py-1.5 bg-gray-100 dark:bg-white/5 text-sm font-bold text-gray-600 dark:text-gray-300 hover:border-primary/50 h-auto"
                 >
                     <RefreshCw
                         size={14}
-                        className={loading ? "animate-spin" : ""}
+                        className={loading ? "animate-spin mr-1.5" : "mr-1.5"}
                     />
                     Refresh
-                </button>
+                </Button>
             </div>
 
             <div className="space-y-3">

@@ -30,7 +30,7 @@ const TIMELINE: TimelineItem[] = [
         color: "text-red-500",
         bg: "bg-red-100 dark:bg-red-500/10",
         borderColor: "border-red-200 dark:border-red-500/20",
-        accentColor: "from-red-500 to-orange-500",
+        accentColor: "from-red-600 to-orange-600 dark:from-red-400 dark:to-orange-400",
         glowColor: "rgba(239, 68, 68, 0.6)",
         title: "The Pink Glasses",
         period: "The Beginning",
@@ -42,7 +42,7 @@ const TIMELINE: TimelineItem[] = [
         color: "text-amber-500",
         bg: "bg-amber-100 dark:bg-amber-500/10",
         borderColor: "border-amber-200 dark:border-amber-500/20",
-        accentColor: "from-amber-500 to-red-500",
+        accentColor: "from-amber-600 to-red-600 dark:from-amber-400 dark:to-red-400",
         glowColor: "rgba(245, 158, 11, 0.6)",
         title: "The Wake-Up Call",
         period: "Rock Bottom",
@@ -54,7 +54,7 @@ const TIMELINE: TimelineItem[] = [
         color: "text-blue-500",
         bg: "bg-blue-100 dark:bg-blue-500/10",
         borderColor: "border-blue-200 dark:border-blue-500/20",
-        accentColor: "from-blue-500 to-cyan-500",
+        accentColor: "from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400",
         glowColor: "rgba(59, 130, 246, 0.6)",
         title: "The Hard Way",
         period: "Self-Education",
@@ -66,7 +66,7 @@ const TIMELINE: TimelineItem[] = [
         color: "text-primary",
         bg: "bg-emerald-100 dark:bg-primary/10",
         borderColor: "border-emerald-200 dark:border-primary/20",
-        accentColor: "from-primary to-teal-400",
+        accentColor: "from-emerald-700 to-teal-600 dark:from-primary dark:to-teal-400",
         glowColor: "rgba(0, 200, 120, 0.6)",
         title: "TheNextTrade",
         period: "The Solution",
@@ -220,10 +220,10 @@ function TimelineNode({
                             {item.period}
                         </span>
                     </div>
-                    <h3 className="text-xl md:text-2xl font-black text-gray-700 dark:text-white mb-3 tracking-tight">
+                    <h3 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white mb-3 tracking-tight">
                         {item.title}
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-500 leading-relaxed">
+                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                         {item.story}
                     </p>
                 </div>
@@ -280,7 +280,7 @@ export function AboutTimeline() {
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
             >
-                <h2 className="text-3xl md:text-4xl font-black tracking-tight text-gray-700 dark:text-white">
+                <h2 className="text-3xl md:text-4xl font-black tracking-tight text-gray-900 dark:text-white">
                     Why We Built TheNextTrade
                 </h2>
                 <p className="text-lg text-gray-600 dark:text-gray-300">

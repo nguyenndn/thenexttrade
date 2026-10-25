@@ -15,7 +15,8 @@ import {
     Zap,
     Check,
 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
 
 interface BrokerFundedMembershipSectionProps {
@@ -269,16 +270,17 @@ export function BrokerFundedMembershipSection({
                                 ? "/dashboard/accounts"
                                 : "/auth/signup?intent=BROKER_FUNDED&source=broker_funded_section"
                         }
-                        className="w-full sm:w-auto inline-block"
+                        className={cn(
+                            buttonVariants({ variant: "gold", size: "smd" }),
+                            "w-full sm:w-auto px-6 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 inline-flex items-center justify-center gap-2"
+                        )}
                     >
-                        <Button size="smd" className="w-full sm:w-auto px-6 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 inline-flex items-center justify-center gap-2">
-                            <span>
-                                {isLoggedIn
-                                    ? "Connect Your Broker Account"
-                                    : "Start Your Free 7-Day Trial"}
-                            </span>
-                            <ArrowRight size={14} />
-                        </Button>
+                        <span>
+                            {isLoggedIn
+                                ? "Connect Your Broker Account"
+                                : "Start Your Free 7-Day Trial"}
+                        </span>
+                        <ArrowRight size={14} />
                     </Link>
                     <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-2.5 font-medium">
                         7-day free trial · No card required · Everything unlocked day one

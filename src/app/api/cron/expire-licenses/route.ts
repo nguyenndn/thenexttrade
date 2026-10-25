@@ -7,10 +7,12 @@ import {
 } from "@prisma/client";
 import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 import { requireCronSecret } from "@/lib/api-auth";
+import { recordCronRun } from "@/lib/cron/cron-health.server";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
+    const cronStartedAt = new Date();
     const cronAuth = requireCronSecret(request);
     if (cronAuth instanceof NextResponse) return cronAuth;
 
@@ -26,6 +28,7 @@ export async function GET(request: NextRequest) {
         });
 
         if (expiredLicenses.length === 0) {
+            await recordCronRun("expire-licenses", cronStartedAt, "SUCCESS");
             return NextResponse.json({ success: true, count: 0 });
         }
 
@@ -52,9 +55,11 @@ export async function GET(request: NextRequest) {
             processedCount++;
         }
 
+        await recordCronRun("expire-licenses", cronStartedAt, "SUCCESS");
         return NextResponse.json({ success: true, count: processedCount });
     } catch (error) {
         console.error("Cron Expire Licenses Error:", error);
+        await recordCronRun("expire-licenses", cronStartedAt, "FAILED", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }

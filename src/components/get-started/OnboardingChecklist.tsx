@@ -279,7 +279,7 @@ export function OnboardingChecklist({ progress }: { progress: UserProgress }) {
                                                         {step.title}
                                                     </h2>
                                                     {isNext && !done && (
-                                                        <span className="rounded-full bg-gold px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] text-white">
+                                                        <span className="rounded-full bg-gold px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.1em] text-white">
                                                             Next
                                                         </span>
                                                     )}

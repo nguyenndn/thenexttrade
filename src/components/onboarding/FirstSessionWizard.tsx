@@ -218,14 +218,16 @@ export function FirstSessionWizard({
                     <span className="text-[10px] font-black uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500">
                         Setup Guide
                     </span>
-                    <button
+                    <Button
                         type="button"
+                        variant="outline"
+                        size="icon"
                         aria-label="Close setup wizard"
                         onClick={() => onOpenChange(false)}
                         className="flex h-8 w-8 items-center justify-center rounded-full border border-dashboard bg-white text-gray-500 shadow-sm transition-all hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-white/[0.03] dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-white"
                     >
                         <X size={15} strokeWidth={2.4} />
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Progress Indicator */}
@@ -292,13 +294,16 @@ export function FirstSessionWizard({
 
                 {/* Footer */}
                 <div className="px-5 pb-5 pt-2 flex items-center justify-between">
-                    <button
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
                         onClick={handleDismiss}
-                        className="text-xs font-semibold text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors flex items-center gap-1"
+                        className="h-auto p-0 text-xs font-semibold text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-transparent flex items-center gap-1"
                     >
                         <Clock size={12} />
                         <span>Remind me later</span>
-                    </button>
+                    </Button>
                     <Link
                         href="/get-started"
                         className="text-xs font-semibold text-gray-400 dark:text-gray-500 hover:text-primary transition-colors flex items-center gap-1"
@@ -368,11 +373,12 @@ function StepConnectAccount({
             </div>
 
             {/* Secondary: Manual Journal — saves MANUAL preference then routes */}
-            <button
+            <Button
                 type="button"
+                variant="ghost"
                 onClick={handleManualClick}
                 disabled={isPending}
-                className="w-full text-left flex items-center gap-3 p-3 rounded-lg border border-dashboard hover:border-primary/30 dark:hover:border-primary/20 bg-white dark:bg-white/[0.01] transition-all duration-300 group disabled:opacity-60"
+                className="h-auto w-full text-left flex items-center gap-3 p-3 rounded-lg border border-dashboard hover:border-primary/30 dark:hover:border-primary/20 bg-white dark:bg-white/[0.01] transition-all duration-300 group disabled:opacity-60 justify-start"
             >
                 <div className="p-2 bg-gray-100 dark:bg-white/5 rounded-lg shrink-0">
                     <PenLine
@@ -392,7 +398,7 @@ function StepConnectAccount({
                     size={14}
                     className="text-gray-300 dark:text-gray-600 group-hover:text-primary group-hover:translate-x-0.5 transition-all shrink-0"
                 />
-            </button>
+            </Button>
         </div>
     );
 }
@@ -457,10 +463,12 @@ function StepChooseSyncMethod({
             </div>
 
             {options.map((opt) => (
-                <button
+                <Button
                     key={opt.method}
+                    type="button"
+                    variant="ghost"
                     onClick={() => onSelect(opt.method, opt.href)}
-                    className="w-full text-left flex items-start gap-3 p-3 rounded-lg border border-dashboard hover:border-primary/30 dark:hover:border-primary/20 bg-white dark:bg-white/[0.01] transition-all duration-300 group"
+                    className="h-auto w-full text-left flex items-start gap-3 p-3 rounded-lg border border-dashboard hover:border-primary/30 dark:hover:border-primary/20 bg-white dark:bg-white/[0.01] transition-all duration-300 group justify-start whitespace-normal"
                 >
                     <div className="p-2 bg-gray-100 dark:bg-white/5 rounded-lg shrink-0 group-hover:bg-primary/10 transition-colors">
                         {React.cloneElement(
@@ -481,7 +489,7 @@ function StepChooseSyncMethod({
                                 {opt.badge}
                             </span>
                         </div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed font-normal">
                             {opt.description}
                         </p>
                     </div>
@@ -489,7 +497,7 @@ function StepChooseSyncMethod({
                         size={14}
                         className="text-gray-300 dark:text-gray-600 group-hover:text-primary group-hover:translate-x-0.5 transition-all shrink-0 mt-2"
                     />
-                </button>
+                </Button>
             ))}
         </div>
     );
@@ -698,14 +706,16 @@ function StepMobileSyncFallback({
                 </Button>
 
                 {/* Action 3: Continue anyway */}
-                <button
+                <Button
                     type="button"
+                    variant="ghost"
+                    size="sm"
                     onClick={onContinueAnyway}
                     disabled={isPending}
-                    className="w-full text-center text-[10px] text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 font-black uppercase tracking-wider py-2"
+                    className="w-full text-center text-[10px] text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 font-black uppercase tracking-wider py-2 h-auto"
                 >
                     Continue anyway (I am on a remote desktop/VPS)
-                </button>
+                </Button>
             </div>
         </div>
     );

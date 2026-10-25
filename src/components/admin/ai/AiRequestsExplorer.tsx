@@ -154,7 +154,10 @@ export function AiRequestsExplorer({ requests: initialRequests }: { requests: an
                                             )}
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <button
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="icon"
                                                 onClick={() =>
                                                     setExpandedId(
                                                         expandedId === req.id
@@ -162,14 +165,15 @@ export function AiRequestsExplorer({ requests: initialRequests }: { requests: an
                                                             : req.id
                                                     )
                                                 }
-                                                className="text-gray-400 hover:text-gray-950 dark:hover:text-white p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                                                aria-label={expandedId === req.id ? "Collapse request details" : "Expand request details"}
+                                                className="text-gray-400 hover:text-gray-950 dark:hover:text-white p-1.5 h-auto w-auto rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                                             >
                                                 {expandedId === req.id ? (
                                                     <ChevronUp className="w-4.5 h-4.5" />
                                                 ) : (
                                                     <ChevronDown className="w-4.5 h-4.5" />
                                                 )}
-                                            </button>
+                                            </Button>
                                         </td>
                                     </tr>
 

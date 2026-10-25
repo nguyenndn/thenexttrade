@@ -173,20 +173,24 @@ export function CompetitionListClient({
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex items-center gap-1.5 border-b border-dashboard pb-3 overflow-x-auto">
+            <div role="tablist" aria-label="Competition Status Filter" className="flex items-center gap-1.5 border-b border-dashboard pb-3 overflow-x-auto">
                 {["ALL", "ACTIVE", "UPCOMING", "DRAFT", "ENDED"].map((tab) => (
-                    <button
+                    <Button
                         key={tab}
+                        type="button"
+                        variant="ghost"
+                        role="tab"
+                        aria-selected={selectedTab === tab}
                         onClick={() => setSelectedTab(tab)}
                         className={cn(
-                            "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap",
+                            "h-auto px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap",
                             selectedTab === tab
-                                ? "bg-amber-500 text-white shadow-xs"
+                                ? "bg-amber-500 text-white shadow-xs hover:bg-amber-500 hover:text-white"
                                 : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
                         )}
                     >
                         {tab}
-                    </button>
+                    </Button>
                 ))}
             </div>
 

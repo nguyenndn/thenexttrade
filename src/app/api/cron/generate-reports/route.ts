@@ -8,6 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 import { requireCronSecret } from "@/lib/api-auth";
 import { canSendEmailCategory } from "@/lib/email/preferences";
+import { recordCronRun } from "@/lib/cron/cron-health.server";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300; // 5 minutes max for batch processing
@@ -29,6 +30,9 @@ export async function GET(request: Request) {
     const cronAuth = requireCronSecret(request);
     if (cronAuth instanceof NextResponse) return cronAuth;
 
+    const cronStartedAt = new Date();
+
+    try {
     // 2. Determine what to generate
     const now = new Date();
     const dayOfWeek = now.getUTCDay(); // 0=Sun, 1=Mon, ..., 6=Sat
@@ -49,6 +53,7 @@ export async function GET(request: Request) {
     }
 
     if (tasks.length === 0) {
+        await recordCronRun("generate-reports", cronStartedAt, "SUCCESS");
         return NextResponse.json({
             message: "No reports to generate today",
             day: dayOfWeek,
@@ -163,6 +168,7 @@ export async function GET(request: Request) {
         }
     }
 
+    await recordCronRun("generate-reports", cronStartedAt, "SUCCESS");
     return NextResponse.json({
         success: true,
         tasks,
@@ -171,4 +177,12 @@ export async function GET(request: Request) {
         emailsSent,
         timestamp: now.toISOString(),
     });
+    } catch (error) {
+        console.error("[Cron] Report generation failed:", error);
+        await recordCronRun("generate-reports", cronStartedAt, "FAILED", error);
+        return NextResponse.json(
+            { error: "Report generation failed" },
+            { status: 500 }
+        );
+    }
 }

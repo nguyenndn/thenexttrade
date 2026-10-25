@@ -107,10 +107,12 @@ export function AcademyLevelTree({
                             {/* Level Node Header */}
                             <div className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 bg-gray-50/40 dark:bg-white/[0.01]">
                                 <div className="flex items-center gap-3 min-w-0">
-                                    <button
+                                    <Button
                                         type="button"
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => toggleLevel(level.id)}
-                                        className="p-1 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                                        className="h-7 w-7 p-1 text-gray-400 hover:text-gray-700 dark:hover:text-white"
                                         aria-label={
                                             isExpanded
                                                 ? "Collapse level"
@@ -122,7 +124,7 @@ export function AcademyLevelTree({
                                         ) : (
                                             <ChevronRight size={18} />
                                         )}
-                                    </button>
+                                    </Button>
 
                                     <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500/10 to-teal-500/20 border border-cyan-500/20 flex items-center justify-center font-black text-cyan-600 dark:text-cyan-400 text-xs shrink-0">
                                         {String(level.order).padStart(2, "0")}

@@ -490,18 +490,21 @@ export function AiProvidersPanel({
                                                             })
                                                         }
                                                     />
-                                                    <button
+                                                    <Button
                                                         type="button"
+                                                        variant="ghost"
+                                                        size="icon"
                                                         onClick={() => setShowApiKey(!showApiKey)}
-                                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"
+                                                        className="absolute right-3 top-1/2 -translate-y-1/2 h-auto w-auto p-0 text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-transparent transition-colors"
                                                         title={showApiKey ? "Hide API Key" : "Show API Key"}
+                                                        aria-label={showApiKey ? "Hide API Key" : "Show API Key"}
                                                     >
                                                         {showApiKey ? (
                                                             <EyeOff className="w-4 h-4" />
                                                         ) : (
                                                             <Eye className="w-4 h-4" />
                                                         )}
-                                                    </button>
+                                                    </Button>
                                                 </div>
                                             </div>
                                         </div>
@@ -576,32 +579,36 @@ export function AiProvidersPanel({
                                                         ••••{" "}
                                                         {activeCred.lastFour}
                                                     </span>
-                                                    <button
+                                                    <Button
+                                                        type="button"
+                                                        variant="ghost"
                                                         onClick={() =>
                                                             handleTestKey(
                                                                 activeCred.id
                                                             )
                                                         }
-                                                        className="text-[10px] text-primary hover:underline font-bold transition-colors"
+                                                        className="h-auto p-0 text-[10px] text-primary hover:underline font-bold transition-colors hover:bg-transparent"
                                                     >
                                                         Test Key
-                                                    </button>
+                                                    </Button>
                                                 </div>
                                             ) : provider.credentials && provider.credentials.length > 0 ? (
                                                 <div className="flex items-center gap-2 flex-wrap">
                                                     <span className="text-xs font-mono text-yellow-600 dark:text-yellow-400">
                                                         •••• {provider.credentials[0].lastFour} ({provider.credentials[0].status})
                                                     </span>
-                                                    <button
+                                                    <Button
+                                                        type="button"
+                                                        variant="ghost"
                                                         onClick={() =>
                                                             handleTestAndActivateKey(
                                                                 provider.credentials[0].id
                                                             )
                                                         }
-                                                        className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-lg hover:bg-primary/20 font-bold transition-colors"
+                                                        className="h-auto text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-lg hover:bg-primary/20 font-bold transition-colors"
                                                     >
                                                         Test & Activate
-                                                    </button>
+                                                    </Button>
                                                 </div>
                                             ) : (
                                                 <span className="text-xs text-red-500 font-bold">

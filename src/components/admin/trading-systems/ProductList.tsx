@@ -38,6 +38,7 @@ type SortField =
     | "name"
     | "createdAt"
     | "totalDownloads"
+    | "farmCapital"
     | "isActive"
     | "type"
     | "platform"
@@ -116,8 +117,18 @@ export function ProductList({ products }: ProductListProps) {
 
     const sortedProducts = useMemo(() => {
         return [...filteredProducts].sort((a, b) => {
-            let aValue: any = a[sortField];
-            let bValue: any = b[sortField];
+            let aValue: any =
+                sortField === "farmCapital"
+                    ? (a as any).farmStats?.confirmedFarmBalanceUSD ||
+                      (a as any).farmStats?.userPoolBalanceUSD ||
+                      0
+                    : (a as any)[sortField];
+            let bValue: any =
+                sortField === "farmCapital"
+                    ? (b as any).farmStats?.confirmedFarmBalanceUSD ||
+                      (b as any).farmStats?.userPoolBalanceUSD ||
+                      0
+                    : (b as any)[sortField];
 
             // Handle strings case-insensitive
             if (typeof aValue === "string") aValue = aValue.toLowerCase();
@@ -279,8 +290,19 @@ export function ProductList({ products }: ProductListProps) {
                                             }
                                         >
                                             <div className="flex items-center">
-                                                Downloads{" "}
+                                                Usage & Traders{" "}
                                                 <SortIcon field="totalDownloads" />
+                                            </div>
+                                        </th>
+                                        <th
+                                            className="px-6 py-4 border-b border-gray-200 dark:border-white/10 cursor-pointer hover:text-primary transition-colors group"
+                                            onClick={() =>
+                                                handleSort("farmCapital")
+                                            }
+                                        >
+                                            <div className="flex items-center">
+                                                EA Farm Capital{" "}
+                                                <SortIcon field="farmCapital" />
                                             </div>
                                         </th>
                                         <th
@@ -300,7 +322,21 @@ export function ProductList({ products }: ProductListProps) {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200 dark:divide-white/10">
-                                    {sortedProducts.map((product) => (
+                                    {sortedProducts.map((product) => {
+                                        const farmStats = (product as any).farmStats;
+                                        const confirmedBalance =
+                                            farmStats?.confirmedFarmBalanceUSD ?? 0;
+                                        const poolBalance =
+                                            farmStats?.userPoolBalanceUSD ?? 0;
+                                        const onlineCount =
+                                            farmStats?.onlineAccountsCount ?? 0;
+                                        const tradersCount =
+                                            farmStats?.uniqueTradersCount ??
+                                            (product as any).activeUsers?.length ??
+                                            (product as any).activeLicensesCount ??
+                                            0;
+
+                                        return (
                                         <tr
                                             key={product.id}
                                             className="hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors group"
@@ -364,14 +400,15 @@ export function ProductList({ products }: ProductListProps) {
                                                         />
                                                         <span>{product.totalDownloads || (product as any)._count?.downloads || 0} downloads</span>
                                                     </div>
-                                                    <button
+                                                    <Button
+                                                        variant="ghost"
                                                         type="button"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             setSelectedProductForUsers(product);
                                                         }}
-                                                        className="group/users flex items-center gap-1.5 text-gray-500 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 font-normal text-[11px] transition-colors cursor-pointer text-left"
-                                                        title="Click to view detailed user list"
+                                                        className="group/users flex items-center gap-1.5 text-gray-500 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 font-normal text-[11px] transition-colors cursor-pointer text-left h-auto p-0"
+                                                        title="Click to view detailed user list & EA Farm telemetry"
                                                     >
                                                         <ShieldCheck
                                                             size={12}
@@ -379,10 +416,49 @@ export function ProductList({ products }: ProductListProps) {
                                                             aria-hidden="true"
                                                         />
                                                         <span className="hover:underline decoration-dotted underline-offset-2 font-medium">
-                                                            {(product as any).activeUsers?.length ?? (product as any).activeLicensesCount ?? 0} active users
+                                                            {tradersCount} {tradersCount === 1 ? "trader" : "traders"} · {(product as any).activeUsers?.length ?? 0} accts
                                                         </span>
-                                                    </button>
+                                                    </Button>
                                                 </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <Button
+                                                    variant="ghost"
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSelectedProductForUsers(product);
+                                                    }}
+                                                    className="flex flex-col items-start gap-0.5 text-left cursor-pointer group/farm h-auto p-0 font-normal"
+                                                    title="Click to inspect EA Farm capital & account telemetry"
+                                                >
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span className="font-mono font-bold text-xs text-emerald-600 dark:text-emerald-400 group-hover/farm:underline">
+                                                            ${confirmedBalance.toLocaleString("en-US", {
+                                                                minimumFractionDigits: 2,
+                                                                maximumFractionDigits: 2,
+                                                            })}
+                                                        </span>
+                                                        {onlineCount > 0 && (
+                                                            <span
+                                                                className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400"
+                                                                title={`${onlineCount} account(s) online in the last 24h`}
+                                                            >
+                                                                <span className="relative flex h-1.5 w-1.5">
+                                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                                                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
+                                                                </span>
+                                                                {onlineCount}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <span className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">
+                                                        Pool: ${poolBalance.toLocaleString("en-US", {
+                                                            minimumFractionDigits: 2,
+                                                            maximumFractionDigits: 2,
+                                                        })}
+                                                    </span>
+                                                </Button>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-2">
@@ -440,7 +516,8 @@ export function ProductList({ products }: ProductListProps) {
                                                 </div>
                                             </td>
                                         </tr>
-                                    ))}
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>

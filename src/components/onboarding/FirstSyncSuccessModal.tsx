@@ -110,13 +110,16 @@ export function FirstSyncSuccessModal({
                     className="relative z-10 bg-white dark:bg-[#1E2028] rounded-lg w-full max-w-md overflow-hidden border border-dashboard shadow-2xl"
                 >
                 {/* Close button */}
-                <button
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
                     onClick={handleDismiss}
-                    className="absolute top-4 right-4 z-20 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-white/10 transition-colors"
+                    className="absolute top-4 right-4 z-20 h-8 w-8 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
                     aria-label="Close modal"
                 >
                     <X size={18} />
-                </button>
+                </Button>
 
                 {/* Celebratory header */}
                 <div className="relative px-6 pt-8 pb-4 text-center overflow-hidden">
@@ -126,8 +129,8 @@ export function FirstSyncSuccessModal({
 
                     <div className="relative z-10">
                         {/* Success icon */}
-                        <div className="mx-auto w-14 h-14 rounded-lg bg-gold flex items-center justify-center shadow-md mb-4 text-slate-950">
-                            <CheckCircle2 size={28} className="text-slate-950" />
+                        <div className="mx-auto w-14 h-14 rounded-lg bg-gold flex items-center justify-center shadow-md mb-4 text-white">
+                            <CheckCircle2 size={28} className="text-white" />
                         </div>
 
                         <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">

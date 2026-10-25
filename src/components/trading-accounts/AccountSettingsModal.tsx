@@ -233,9 +233,11 @@ export function AccountSettingsModal({
                                     onOpenChange={setColorPickerOpen}
                                 >
                                     <PopoverTrigger asChild>
-                                        <button
+                                        <Button
                                             type="button"
-                                            className="flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-gray-200/70 dark:hover:bg-white/10 transition-colors cursor-pointer group/color focus:outline-none"
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-auto p-0 flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-gray-200/70 dark:hover:bg-white/10 transition-colors cursor-pointer group/color focus:outline-none"
                                             title="Choose account color badge"
                                             aria-label="Choose account color badge"
                                         >
@@ -249,7 +251,7 @@ export function AccountSettingsModal({
                                                 size={11}
                                                 className="text-gray-400 group-hover/color:text-gray-600 dark:group-hover/color:text-gray-300 transition-colors shrink-0"
                                             />
-                                        </button>
+                                        </Button>
                                     </PopoverTrigger>
                                     <PopoverContent
                                         className="w-64 p-3 bg-white dark:bg-[#1E2028] border border-dashboard shadow-2xl rounded-lg z-[150]"
@@ -270,15 +272,17 @@ export function AccountSettingsModal({
                                             </div>
                                             <div className="grid grid-cols-6 gap-2 pt-0.5">
                                                 {COLORS.map((c) => (
-                                                    <button
+                                                    <Button
                                                         type="button"
+                                                        variant="ghost"
+                                                        size="icon"
                                                         key={c}
                                                         onClick={() => {
                                                             setColor(c);
                                                             setColorPickerOpen(false);
                                                         }}
                                                         aria-label={`Select color ${c}`}
-                                                        className={`w-7 h-7 rounded-full transition-all flex items-center justify-center cursor-pointer ${
+                                                        className={`w-7 h-7 p-0 rounded-full transition-all flex items-center justify-center cursor-pointer ${
                                                             color === c
                                                                 ? "ring-2 ring-offset-2 ring-offset-white dark:ring-offset-[#1E2028] scale-110"
                                                                 : "hover:scale-110 opacity-90 hover:opacity-100"
@@ -298,7 +302,7 @@ export function AccountSettingsModal({
                                                                 className="text-white drop-shadow-md"
                                                             />
                                                         )}
-                                                    </button>
+                                                    </Button>
                                                 ))}
                                             </div>
                                         </div>

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/Button";
 import { CalcInput } from "./CalcInput";
 
 type FibType = "retracement" | "extension";
@@ -60,13 +61,17 @@ export function FibonacciCalc() {
             <div className="space-y-6">
                 {/* Type Toggle */}
                 <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-lg gap-1">
-                    <button
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        role="tab"
+                        aria-selected={inputs.fibType === "retracement"}
                         onClick={() =>
                             setInputs({ ...inputs, fibType: "retracement" })
                         }
-                        className={`relative flex-1 py-3 rounded-lg font-bold text-sm transition-colors z-10 ${
+                        className={`relative flex-1 py-3 rounded-lg font-bold text-sm transition-colors z-10 h-auto border-0 ${
                             inputs.fibType === "retracement"
-                                ? "text-white"
+                                ? "text-white hover:text-white"
                                 : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white"
                         }`}
                     >
@@ -82,14 +87,18 @@ export function FibonacciCalc() {
                             />
                         )}
                         Retracement
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        role="tab"
+                        aria-selected={inputs.fibType === "extension"}
                         onClick={() =>
                             setInputs({ ...inputs, fibType: "extension" })
                         }
-                        className={`relative flex-1 py-3 rounded-lg font-bold text-sm transition-colors z-10 ${
+                        className={`relative flex-1 py-3 rounded-lg font-bold text-sm transition-colors z-10 h-auto border-0 ${
                             inputs.fibType === "extension"
-                                ? "text-white"
+                                ? "text-white hover:text-white"
                                 : "text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white"
                         }`}
                     >
@@ -105,18 +114,22 @@ export function FibonacciCalc() {
                             />
                         )}
                         Extension
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Trend Toggle */}
                 <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-lg gap-1">
-                    <button
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        role="tab"
+                        aria-selected={inputs.trend === "uptrend"}
                         onClick={() =>
                             setInputs({ ...inputs, trend: "uptrend" })
                         }
-                        className={`relative flex-1 py-3 rounded-lg font-bold text-sm transition-colors z-10 ${
+                        className={`relative flex-1 py-3 rounded-lg font-bold text-sm transition-colors z-10 h-auto border-0 ${
                             inputs.trend === "uptrend"
-                                ? "text-white"
+                                ? "text-white hover:text-white"
                                 : "text-gray-600 dark:text-gray-300"
                         }`}
                     >
@@ -132,14 +145,18 @@ export function FibonacciCalc() {
                             />
                         )}
                         ↑ Uptrend
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        role="tab"
+                        aria-selected={inputs.trend === "downtrend"}
                         onClick={() =>
                             setInputs({ ...inputs, trend: "downtrend" })
                         }
-                        className={`relative flex-1 py-3 rounded-lg font-bold text-sm transition-colors z-10 ${
+                        className={`relative flex-1 py-3 rounded-lg font-bold text-sm transition-colors z-10 h-auto border-0 ${
                             inputs.trend === "downtrend"
-                                ? "text-white"
+                                ? "text-white hover:text-white"
                                 : "text-gray-600 dark:text-gray-300"
                         }`}
                     >
@@ -155,7 +172,7 @@ export function FibonacciCalc() {
                             />
                         )}
                         ↓ Downtrend
-                    </button>
+                    </Button>
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-6">

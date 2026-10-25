@@ -1083,8 +1083,9 @@ export function ArticleForm({
                                     <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider">
                                         Tags
                                     </label>
-                                    <button
+                                    <Button
                                         type="button"
+                                        variant="ghost"
                                         disabled={
                                             isSuggestingTags ||
                                             (!formData.title &&
@@ -1129,7 +1130,7 @@ export function ArticleForm({
                                                 setIsSuggestingTags(false);
                                             }
                                         }}
-                                        className="flex items-center gap-1 text-[10px] font-medium text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                        className="h-auto p-0 flex items-center gap-1 text-[10px] font-medium text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-transparent transition-colors"
                                         title="AI will analyze your content and suggest relevant tags"
                                     >
                                         {isSuggestingTags ? (
@@ -1143,7 +1144,7 @@ export function ArticleForm({
                                         {isSuggestingTags
                                             ? "Analyzing..."
                                             : "AI Suggest"}
-                                    </button>
+                                    </Button>
                                 </div>
                                 <TagInput
                                     value={formData.tags}
@@ -1160,8 +1161,9 @@ export function ArticleForm({
                                 <h3 className="font-bold text-gray-700 dark:text-white text-sm uppercase tracking-wider">
                                     Excerpt
                                 </h3>
-                                <button
+                                <Button
                                     type="button"
+                                    variant="ghost"
                                     onClick={() => {
                                         setAutoExcerpt((prev) => {
                                             const next = !prev;
@@ -1187,7 +1189,7 @@ export function ArticleForm({
                                             return next;
                                         });
                                     }}
-                                    className={`flex items-center gap-1 text-[10px] font-medium transition-colors ${
+                                    className={`h-auto p-0 flex items-center gap-1 text-[10px] font-medium transition-colors hover:bg-transparent ${
                                         autoExcerpt
                                             ? "text-emerald-600 dark:text-emerald-400 hover:text-emerald-700"
                                             : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
@@ -1204,7 +1206,7 @@ export function ArticleForm({
                                         <Unlock size={11} />
                                     )}
                                     {autoExcerpt ? "Auto" : "Manual"}
-                                </button>
+                                </Button>
                             </div>
                             <textarea
                                 className={`w-full p-3 rounded-lg border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all resize-none placeholder-gray-400 ${

@@ -249,17 +249,24 @@ export function PnLCalendar({
 
                                     {isCurrentMonth && (
                                         <div className="absolute top-2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                                            <button
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="icon"
                                                 onClick={() =>
                                                     openNoteModal(date)
                                                 }
-                                                className="p-1 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm text-gray-500 hover:text-primary"
+                                                className="h-6 w-6 p-0 rounded-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm text-gray-500 hover:text-primary"
                                                 title="Edit Note"
+                                                aria-label={`Edit note for ${format(date, "MMM d")}`}
                                             >
                                                 <Edit2 className="w-3 h-3" />
-                                            </button>
+                                            </Button>
                                             {onSelectDateRange && (
-                                                <button
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="icon"
                                                     onClick={() =>
                                                         onSelectDateRange(
                                                             format(
@@ -274,11 +281,12 @@ export function PnLCalendar({
                                                             )
                                                         )
                                                     }
-                                                    className="p-1 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm text-gray-500 hover:text-primary"
+                                                    className="h-6 w-6 p-0 rounded-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm text-gray-500 hover:text-primary"
                                                     title="View Week Trades"
+                                                    aria-label={`View week trades for ${format(date, "MMM d")}`}
                                                 >
                                                     <CalendarIcon className="w-3 h-3" />
-                                                </button>
+                                                </Button>
                                             )}
                                         </div>
                                     )}

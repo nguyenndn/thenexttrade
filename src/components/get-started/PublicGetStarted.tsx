@@ -98,13 +98,13 @@ export function PublicGetStarted() {
 
                         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
                             <Link
-                                href="/auth/register"
+                                href="/auth/signup?source=get_started"
                                 className={cn(
                                     buttonVariants({
                                         variant: "primary",
                                         size: "smd",
                                     }),
-                                    "w-full rounded-lg bg-gold hover:bg-amber-600 text-white font-black border-none"
+                                    "w-full rounded-lg bg-gold hover:bg-amber-600 text-white font-bold border-none"
                                 )}
                             >
                                 Open Free Workspace
@@ -229,13 +229,13 @@ export function PublicGetStarted() {
                                 ))}
                             </div>
                             <Link
-                                href="/auth/register"
+                                href="/auth/signup?source=get_started"
                                 className={cn(
                                     buttonVariants({
                                         variant: "primary",
                                         size: "smd",
                                     }),
-                                    "mt-7 w-full rounded-lg bg-gold hover:bg-amber-600 text-white border-none font-black"
+                                    "mt-7 w-full rounded-lg bg-gold hover:bg-amber-600 text-white border-none font-bold"
                                 )}
                             >
                                 Start Workspace Setup

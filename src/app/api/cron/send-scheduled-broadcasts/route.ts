@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 import { requireCronSecret } from "@/lib/api-auth";
+import { recordCronRun } from "@/lib/cron/cron-health.server";
 
 export const dynamic = "force-dynamic"; // Ensure not cached
 
 export async function GET(request: NextRequest) {
+    const cronStartedAt = new Date();
     const cronAuth = requireCronSecret(request);
     if (cronAuth instanceof NextResponse) return cronAuth;
 
@@ -21,6 +23,7 @@ export async function GET(request: NextRequest) {
         });
 
         if (pendingBroadcasts.length === 0) {
+            await recordCronRun("send-scheduled-broadcasts", cronStartedAt, "SUCCESS");
             return NextResponse.json({ success: true, count: 0 });
         }
 
@@ -58,9 +61,11 @@ export async function GET(request: NextRequest) {
             sentCount++;
         }
 
+        await recordCronRun("send-scheduled-broadcasts", cronStartedAt, "SUCCESS");
         return NextResponse.json({ success: true, count: sentCount });
     } catch (error) {
         console.error("Cron Broadcast Error:", error);
+        await recordCronRun("send-scheduled-broadcasts", cronStartedAt, "FAILED", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }

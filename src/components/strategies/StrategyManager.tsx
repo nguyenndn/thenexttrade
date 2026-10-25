@@ -323,40 +323,34 @@ export function StrategyManager({
 
                             {/* Filter Type Pills */}
                             <div className="flex items-center gap-1 p-1 bg-gray-50 dark:bg-white/5 rounded-lg border border-dashboard self-start sm:self-auto">
-                                <button
+                                <Button
                                     type="button"
+                                    variant={filterType === "all" ? "gold" : "ghost"}
+                                    size="sm"
                                     onClick={() => setFilterType("all")}
-                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap ${
-                                        filterType === "all"
-                                            ? "bg-gold text-white shadow-sm"
-                                            : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                                    }`}
+                                    className="h-auto px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap"
                                 >
                                     All ({allStrategies.length})
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     type="button"
+                                    variant={filterType === "playbook" ? "gold" : "ghost"}
+                                    size="sm"
                                     onClick={() => setFilterType("playbook")}
-                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 whitespace-nowrap ${
-                                        filterType === "playbook"
-                                            ? "bg-gold text-white shadow-sm"
-                                            : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                                    }`}
+                                    className="h-auto px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 whitespace-nowrap"
                                 >
                                     <BookOpen size={13} />
                                     Playbooks ({playbookCount})
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     type="button"
+                                    variant={filterType === "standard" ? "gold" : "ghost"}
+                                    size="sm"
                                     onClick={() => setFilterType("standard")}
-                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap ${
-                                        filterType === "standard"
-                                            ? "bg-gold text-white shadow-sm"
-                                            : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                                    }`}
+                                    className="h-auto px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap"
                                 >
                                     Standard ({standardCount})
-                                </button>
+                                </Button>
                             </div>
                         </div>
 

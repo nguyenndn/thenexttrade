@@ -142,21 +142,36 @@ export async function POST(request: NextRequest) {
                 data: updateData,
             });
 
-            if (balance !== undefined) {
-                try {
-                    const { captureCapitalSnapshot } = await import(
-                        "@/lib/admin/ib/capital.server"
-                    );
-                    await captureCapitalSnapshot({
-                        tradingAccountId: dbAccount.id,
-                        balance,
-                        equity: equity ?? null,
-                        currency: acct.currency || "USD",
-                        source: "HEARTBEAT",
-                    });
-                } catch (e) {
-                    // Non-blocking snapshot error
-                }
+            try {
+                const { recordEaProductTelemetry } = await import(
+                    "@/lib/ea/telemetry.server"
+                );
+                await recordEaProductTelemetry({
+                    userId: user.id,
+                    tradingAccountId: dbAccount.id,
+                    accountNumber: String(acct.accountNumber),
+                    eventType: "HEARTBEAT",
+                    productSlug:
+                        (acct as any).productSlug ||
+                        (body as any).productSlug ||
+                        "trade-manager",
+                    eaName:
+                        (acct as any).eaName ||
+                        (body as any).eaName ||
+                        "Trade Manager",
+                    eaVersion:
+                        (acct as any).eaVersion ||
+                        (body as any).eaVersion ||
+                        null,
+                    balance,
+                    equity,
+                    currency: acct.currency || "USD",
+                    broker: acct.broker || null,
+                    server: acct.server || null,
+                    syncSource: "APP_HEARTBEAT",
+                });
+            } catch {
+                // Non-blocking telemetry error
             }
 
             updated.push(acct.accountNumber);

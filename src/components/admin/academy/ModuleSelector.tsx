@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Check, Layers, Search } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { SPRING_SOFT } from "@/lib/animations";
 
@@ -77,11 +78,12 @@ export function ModuleSelector({
     return (
         <div ref={ref} className={cn("relative", className)}>
             {/* Trigger */}
-            <button
+            <Button
                 type="button"
+                variant="ghost"
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
-                    "w-full flex items-center justify-between gap-2 p-2.5 rounded-lg text-sm transition-all text-left",
+                    "w-full h-auto flex items-center justify-between gap-2 p-2.5 rounded-lg text-sm transition-all text-left font-normal",
                     "bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 ",
                     "hover:border-gray-300 dark:hover:border-white/20",
                     isOpen && "ring-2 ring-primary/20 border-primary",
@@ -108,7 +110,7 @@ export function ModuleSelector({
                         isOpen && "rotate-180"
                     )}
                 />
-            </button>
+            </Button>
 
             {/* Dropdown */}
             <AnimatePresence>
@@ -154,16 +156,17 @@ export function ModuleSelector({
                                             {levelTitle}
                                         </div>
                                         {mods.map((mod) => (
-                                            <button
+                                            <Button
                                                 key={mod.id}
                                                 type="button"
+                                                variant="ghost"
                                                 onClick={() => {
                                                     onChange(mod.id);
                                                     setIsOpen(false);
                                                     setSearch("");
                                                 }}
                                                 className={cn(
-                                                    "w-full flex items-center justify-between px-3 py-2 text-sm transition-colors text-left",
+                                                    "w-full h-auto flex items-center justify-between px-3 py-2 text-sm transition-colors text-left font-normal rounded-none",
                                                     mod.id === value
                                                         ? "bg-primary/5 text-primary font-medium"
                                                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
@@ -178,7 +181,7 @@ export function ModuleSelector({
                                                         className="text-primary flex-shrink-0"
                                                     />
                                                 )}
-                                            </button>
+                                            </Button>
                                         ))}
                                     </div>
                                 )

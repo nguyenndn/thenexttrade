@@ -5,6 +5,7 @@ import { HelpCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { tourMap } from "./tours";
+import { Button } from "@/components/ui/Button";
 
 const ONBOARDING_PREFIX = "onboarding-done-";
 
@@ -44,13 +45,16 @@ export function OnboardingTrigger() {
     if (!currentTour) return null;
 
     return (
-        <button
+        <Button
+            type="button"
+            variant="ghost"
+            size="sm"
             onClick={handleStart}
-            className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"
+            className="flex items-center gap-2 text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary hover:bg-primary/5"
             title="Start product tour"
         >
             <HelpCircle size={16} />
             <span className="hidden sm:inline">Tour</span>
-        </button>
+        </Button>
     );
 }

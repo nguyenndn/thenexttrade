@@ -5,10 +5,25 @@ import { DEFAULT_PAGE_SIZE } from "./ib-monitor.constants";
 import { resolveProductSummariesForUsers } from "./product-usage.server";
 import { normalizeSyncSource, getSyncSourceLabel } from "@/lib/sync/sync-source";
 import {
+    countTradingDaysBetween,
+    evaluateActivityPolicy,
+    getVipEligibleBrokerKeys,
+    isVipEligibleBrokerKey,
+    normalizeLotSize,
+} from "@/lib/pro-access";
+import { isCentAccount } from "@/lib/utils/cent-account";
+import {
+    isDemoTradingAccount,
+    isLiveTradingAccount,
+} from "@/lib/trading-account-classification";
+import { buildOperationalAccountCounts } from "@/lib/operational-account-counts";
+import {
     ExpandedTraderAccount,
+    FundingState,
     IbTraderFilters,
     IbTraderPaginatedResult,
     IbTraderRow,
+    PolicyState,
     ProductUsageSummary,
 } from "./ib-monitor.types";
 
@@ -18,7 +33,12 @@ type Freshness = "FRESH" | "STALE" | "DISCONNECTED";
 function accountType(value: string | null | undefined): "REAL" | "DEMO" | "UNKNOWN" {
     const normalized = (value || "").toUpperCase();
     if (normalized.includes("REAL") || normalized === "PERSONAL" || normalized.includes("FUNDED")) return "REAL";
-    if (normalized.includes("DEMO") || normalized.includes("EVALUATION")) return "DEMO";
+    if (
+        normalized.includes("DEMO") ||
+        normalized.includes("CONTEST") ||
+        normalized.includes("EVALUATION") ||
+        normalized.includes("TRIAL")
+    ) return "DEMO";
     return "UNKNOWN";
 }
 
@@ -78,6 +98,10 @@ type TraderView = {
     capital: ReturnType<typeof computeCapitalBreakdown>;
     trades30d: number;
     lots30d: number;
+    fundingState: FundingState;
+    fundingGraceUntil: string | null;
+    policyState: PolicyState;
+    policyReason: string | null;
     lastTradeAt: string | null;
 };
 
@@ -155,7 +179,11 @@ function matches(view: TraderView, filters: IbTraderFilters, now: Date) {
     return matchesLastTrade(view.lastTradeAt, filters.lastTrade, now);
 }
 
-function buildRow(view: TraderView, lastTradeByAccount: Map<string, string>): IbTraderRow {
+function buildRow(
+    view: TraderView,
+    lastTradeByAccount: Map<string, string>,
+    now: Date
+): IbTraderRow {
     const seen = new Set<string>();
     const duplicateKeys = new Set<string>();
     const accountViews = view.accounts;
@@ -175,7 +203,7 @@ function buildRow(view: TraderView, lastTradeByAccount: Map<string, string>): Ib
             currency: (raw.currency || "UNKNOWN").toUpperCase(),
             balance: raw.balance || 0,
             equity: raw.equity || 0,
-            accountType: item.type,
+            accountType: isDemoTradingAccount(raw) ? "DEMO" : item.type,
             status: raw.status,
             syncSource: raw.syncSource,
             syncSourceLabel: getSyncSourceLabel(normalizeSyncSource(raw.syncSource)),
@@ -190,6 +218,10 @@ function buildRow(view: TraderView, lastTradeByAccount: Map<string, string>): Ib
         };
     });
     const activeAccounts = accountViews.filter((item) => eligible(item.raw));
+    const operationalCounts = buildOperationalAccountCounts(
+        accountViews.map((item) => item.raw),
+        now.getTime()
+    );
     const states = new Set(accountViews.filter((item) => eligible(item.raw)).map((item) => item.freshness));
     const dataFreshness: IbTraderRow["dataFreshness"] =
         states.size === 0 ? "DISCONNECTED" : states.size === 1 ? [...states][0] : "MIXED";
@@ -207,11 +239,17 @@ function buildRow(view: TraderView, lastTradeByAccount: Map<string, string>): Ib
         vipStatus: view.vip.status,
         vipExpiresAt: view.vip.expiresAt,
         products: view.products,
+        // Operational counts: `registeredAccountCount` includes demo accounts,
+        // while eligible/connected counts are live-only.
         registeredAccountCount: accounts.length,
-        eligibleAccountCount: activeAccounts.length,
-        connectedAccountCount: activeAccounts.filter((item) => item.freshness === "FRESH").length,
+        demoAccountCount: operationalCounts.demoAccounts,
+        eligibleAccountCount: operationalCounts.liveAccounts,
+        connectedAccountCount: operationalCounts.connectedLiveAccounts24h,
         activeTradingAccountCount: activeAccounts.filter(
-            (item) => item.raw.totalTrades > 0 && item.freshness === "FRESH"
+            (item) =>
+                isLiveTradingAccount(item.raw) &&
+                item.raw.totalTrades > 0 &&
+                item.freshness === "FRESH"
         ).length,
         reportedCapitalByCurrency: view.capital.byCurrency,
         freshCapitalByCurrency: view.capital.freshByCurrency,
@@ -219,6 +257,10 @@ function buildRow(view: TraderView, lastTradeByAccount: Map<string, string>): Ib
         isMixedCurrency: view.capital.isMixedCurrency,
         totalTrades30d: view.trades30d,
         totalLotVolume30d: view.lots30d,
+        fundingState: view.fundingState,
+        fundingGraceUntil: view.fundingGraceUntil,
+        policyState: view.policyState,
+        policyReason: view.policyReason,
         lastTradeAt: view.lastTradeAt,
         lastHeartbeatAt: heartbeat.length ? new Date(Math.max(...heartbeat)).toISOString() : null,
         dataFreshness,
@@ -263,6 +305,7 @@ export async function getPaginatedTraderMonitorV2(filters: IbTraderFilters): Pro
                     id: true, broker: true, server: true, accountNumber: true, balance: true, equity: true,
                     currency: true, platform: true, status: true, syncSource: true, eaVersion: true,
                     lastSync: true, lastHeartbeat: true, totalTrades: true, accountType: true,
+                    fundingVerifiedAt: true, fundingGraceUntil: true,
                 },
                 orderBy: { updatedAt: "desc" },
             },
@@ -281,6 +324,7 @@ export async function getPaginatedTraderMonitorV2(filters: IbTraderFilters): Pro
     }
     const userIds = users.map((user) => user.id);
     const accountIds = users.flatMap((user) => user.tradingAccounts.map((account) => account.id));
+    const eligibleBrokerKeys = await getVipEligibleBrokerKeys();
     const [groupedTrades, accountTrades, productMap] = await Promise.all([
         prisma.journalEntry.groupBy({
             by: ["userId"],
@@ -299,7 +343,7 @@ export async function getPaginatedTraderMonitorV2(filters: IbTraderFilters): Pro
                       accountIds,
                       status: "CLOSED",
                   }),
-                  select: { accountId: true, exitDate: true },
+                  select: { accountId: true, exitDate: true, lotSize: true },
                   orderBy: { exitDate: "desc" },
               })
             : Promise.resolve([]),
@@ -340,7 +384,83 @@ export async function getPaginatedTraderMonitorV2(filters: IbTraderFilters): Pro
         const fullLastTradeAt = accountLastTrades.length
             ? accountLastTrades.sort((a, b) => (b > a ? 1 : -1))[0]
             : null;
-        return {
+            const policyAccounts = accounts.filter(
+                (item) =>
+                    !item.duplicate &&
+                    isLiveTradingAccount(item.raw) &&
+                    isVipEligibleBrokerKey(
+                        item.raw.broker,
+                        eligibleBrokerKeys
+                    )
+            );
+            const policyAccountIds = new Set(
+                policyAccounts.map((item) => item.raw.id)
+            );
+            const policyAccountById = new Map(
+                policyAccounts.map((item) => [item.raw.id, item.raw])
+            );
+
+            let policyLots30d = 0;
+            let policyLastTrade: Date | null = null;
+            for (const trade of accountTrades) {
+                if (!trade.accountId || !policyAccountIds.has(trade.accountId)) {
+                    continue;
+                }
+                if (
+                    trade.exitDate &&
+                    (!policyLastTrade ||
+                        trade.exitDate.getTime() > policyLastTrade.getTime())
+                ) {
+                    policyLastTrade = trade.exitDate;
+                }
+                if (trade.exitDate && trade.exitDate >= thirtyDaysAgo) {
+                    const account = policyAccountById.get(trade.accountId);
+                    const isCent = isCentAccount(
+                        account?.currency,
+                        account?.server,
+                        account?.accountType
+                    );
+                    policyLots30d += normalizeLotSize(
+                        trade.lotSize || 0,
+                        isCent
+                    );
+                }
+            }
+
+            const fundedAccounts = policyAccounts.filter(
+                (item) => !!item.raw.fundingVerifiedAt
+            );
+            const healthyFunded = fundedAccounts.find(
+                (item) =>
+                    !item.raw.fundingGraceUntil ||
+                    item.raw.fundingGraceUntil >= now
+            );
+            const chosenFunding = healthyFunded || fundedAccounts[0];
+            const fundingState: FundingState = healthyFunded
+                ? "VERIFIED"
+                : fundedAccounts.some((item) => item.raw.fundingGraceUntil)
+                  ? fundedAccounts.some(
+                        (item) =>
+                            !!item.raw.fundingGraceUntil &&
+                            item.raw.fundingGraceUntil >= now
+                    )
+                      ? "GRACE"
+                      : "EXPIRED"
+                  : "NONE";
+            const fundingInGrace = fundingState === "GRACE";
+            const fundingExpired = fundingState === "EXPIRED";
+            const daysSinceLastTrade = policyLastTrade
+                ? countTradingDaysBetween(policyLastTrade, now)
+                : null;
+            const policy = evaluateActivityPolicy({
+                brokerEligible: policyAccounts.length > 0,
+                rolling30dLots: policyLots30d,
+                daysSinceLastTrade,
+                fundingInGrace,
+                fundingExpired,
+            });
+
+            return {
             user,
             vip: vipStatus(user.proEntitlements, now),
             products: productMap.get(user.id) || [],
@@ -348,8 +468,13 @@ export async function getPaginatedTraderMonitorV2(filters: IbTraderFilters): Pro
             capital: computeCapitalBreakdown(uniqueAccounts),
             trades30d: stats.count,
             lots30d: stats.lots,
+            fundingState,
+            fundingGraceUntil:
+                chosenFunding?.raw.fundingGraceUntil?.toISOString() ?? null,
+            policyState: policy.policyState,
+            policyReason: policy.reason ?? null,
             lastTradeAt: fullLastTradeAt,
-        };
+            };
     }).filter((view) => matches(view, filters, now));
 
     views.sort((a, b) => {
@@ -361,8 +486,8 @@ export async function getPaginatedTraderMonitorV2(filters: IbTraderFilters): Pro
         return created;
     });
     const total = views.length;
-    const rows = views.slice((page - 1) * pageSize, page * pageSize).map((view) => buildRow(view, lastTradeByAccount));
-    const allRows = views.map((view) => buildRow(view, lastTradeByAccount));
+    const rows = views.slice((page - 1) * pageSize, page * pageSize).map((view) => buildRow(view, lastTradeByAccount, now));
+    const allRows = views.map((view) => buildRow(view, lastTradeByAccount, now));
     // Exclude duplicated accounts from the aggregate capital too — they are
     // already flagged per-row, but summing them here would double-count funds
     // in the summary cards.

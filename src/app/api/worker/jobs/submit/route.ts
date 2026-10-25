@@ -3,9 +3,13 @@ import { prisma } from "@/lib/prisma";
 import { generateTradeHash } from "@/lib/importers";
 import { classifyTradeResult } from "@/lib/utils/trade-classification";
 import { revalidatePath } from "next/cache";
-import { POPULAR_MT5_SERVERS } from "@/lib/constants/mt5-servers";
 import { detectBroker } from "@/lib/ea/broker-detection";
 import { isCentAccount, isCentSymbol, normalizeLotSize } from "@/lib/utils/cent-account";
+import {
+    getSupportTicketIdFromJobId,
+    SUPPORT_SYNC_MODE,
+    verifySupportSyncTicket,
+} from "@/lib/services/support-sync-jobs.server";
 
 interface DealPayload {
     ticket: number | string;
@@ -94,6 +98,8 @@ export async function POST(request: NextRequest) {
 
         let imported = 0;
         let updated = 0;
+        const syncSource =
+            job.mode === SUPPORT_SYNC_MODE ? "SUPPORT_SYNC" : "CLOUD_WORKER";
 
         for (const deal of deals) {
             try {
@@ -185,7 +191,7 @@ export async function POST(request: NextRequest) {
                             result,
                             commission: Number(deal.commission) || 0,
                             swap: Number(deal.swap) || 0,
-                            syncSource: "CLOUD_WORKER",
+                            syncSource,
                             externalHash: hash,
                         },
                     });
@@ -202,7 +208,7 @@ export async function POST(request: NextRequest) {
         // Update Trading Account stats
         const accountUpdate: Record<string, any> = {
             lastSync: new Date(),
-            syncSource: "CLOUD_WORKER",
+            syncSource,
             appLastHeartbeat: new Date(),
         };
 
@@ -218,17 +224,17 @@ export async function POST(request: NextRequest) {
         if (typeof leverage === "number" && leverage > 0) {
             accountUpdate.leverage = `1:${leverage}`;
         }
-        if (typeof company === "string" && company.trim().length > 0) {
-            accountUpdate.broker = company.trim();
-        } else if (!job.account.broker && job.account.server) {
-            const matched = POPULAR_MT5_SERVERS.find(
-                (s) => s.name.toLowerCase() === job.account.server?.trim().toLowerCase()
+        if (!job.account.broker) {
+            const reportedCompany =
+                typeof company === "string" ? company.trim() : "";
+            const detected = detectBroker(
+                job.account.server || "",
+                reportedCompany
             );
-            if (matched?.broker) {
-                accountUpdate.broker = matched.broker;
-            } else {
-                const detected = detectBroker(job.account.server, "");
-                if (detected) accountUpdate.broker = detected;
+            if (detected) {
+                accountUpdate.broker = detected;
+            } else if (reportedCompany) {
+                accountUpdate.broker = reportedCompany;
             }
         }
 
@@ -249,14 +255,31 @@ export async function POST(request: NextRequest) {
             },
         });
 
+        let supportTicketVerified = false;
+        if (job.mode === SUPPORT_SYNC_MODE) {
+            const ticketId = getSupportTicketIdFromJobId(job.id);
+            if (ticketId) {
+                supportTicketVerified = await verifySupportSyncTicket({
+                    ticketId,
+                    imported,
+                    updated,
+                    totalDeals: deals.length,
+                });
+            }
+        }
+
         revalidatePath("/dashboard/accounts");
         revalidatePath("/dashboard");
+        if (supportTicketVerified) {
+            revalidatePath("/admin/ib/sync-requests");
+        }
 
         return NextResponse.json({
             success: true,
             imported,
             updated,
             totalDeals: deals.length,
+            supportTicketVerified,
         });
     } catch (error: any) {
         return NextResponse.json(

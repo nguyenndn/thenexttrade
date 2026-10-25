@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { Server, Check, ChevronDown, Plus, X } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import {
     MT5ServerItem,
     getServersForBroker,
@@ -257,14 +258,16 @@ export function ServerCombobox({
 
                     <div className="flex items-center gap-1.5 shrink-0 ml-2">
                         {value && (
-                            <button
+                            <Button
                                 type="button"
+                                variant="ghost"
+                                size="icon"
                                 onClick={handleClear}
                                 aria-label="Clear server"
-                                className="p-0.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-lg transition-colors"
+                                className="h-5 w-5 p-0.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-lg transition-colors"
                             >
                                 <X className="h-3.5 w-3.5" />
-                            </button>
+                            </Button>
                         )}
                         <ChevronDown
                             className={`h-4 w-4 text-gray-400 transition-transform duration-200 ${
@@ -306,10 +309,11 @@ export function ServerCombobox({
                         {/* Search Indicator or Custom Option */}
                         {search.trim() && !isExactMatch && (
                             <div className="p-2 border-b border-gray-100 dark:border-white/5 bg-primary/5 dark:bg-primary/10 shrink-0">
-                                <button
+                                <Button
                                     type="button"
+                                    variant="ghost"
                                     onClick={handleSelectCustom}
-                                    className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold text-primary hover:bg-primary/10 transition-colors text-left"
+                                    className="h-auto w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold text-primary hover:bg-primary/10 transition-colors text-left"
                                 >
                                     <span className="flex items-center gap-1.5 truncate">
                                         <Plus className="h-3.5 w-3.5 shrink-0" />
@@ -321,7 +325,7 @@ export function ServerCombobox({
                                     <span className="text-[10px] uppercase tracking-wider bg-primary/20 text-primary px-1.5 py-0.5 rounded-lg font-bold shrink-0 ml-2">
                                         Custom
                                     </span>
-                                </button>
+                                </Button>
                             </div>
                         )}
 
@@ -342,11 +346,12 @@ export function ServerCombobox({
                                     {displayedServers.map((server) => {
                                         const isSelected = value === server.name;
                                         return (
-                                            <button
+                                            <Button
                                                 key={server.name}
                                                 type="button"
+                                                variant="ghost"
                                                 onClick={() => handleSelect(server)}
-                                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors text-left ${
+                                                className={`h-auto w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors text-left ${
                                                     isSelected
                                                         ? "bg-primary/10 text-primary font-bold"
                                                         : "text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 font-medium"
@@ -370,7 +375,7 @@ export function ServerCombobox({
                                                         <Check className="h-3.5 w-3.5 text-primary shrink-0" />
                                                     )}
                                                 </div>
-                                            </button>
+                                            </Button>
                                         );
                                     })}
 

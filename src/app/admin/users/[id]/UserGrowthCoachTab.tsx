@@ -217,42 +217,45 @@ export function UserGrowthCoachTab({
             {/* Sub-Section Navigation & Filters */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex rounded-lg border border-gray-200 bg-[#F1F3F5] p-1 dark:border-white/10 dark:bg-[#1A1D27] w-fit">
-                    <button
+                    <Button
                         type="button"
+                        variant="ghost"
                         onClick={() => setActiveSection("experiments")}
                         className={cn(
-                            "flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
+                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
                             activeSection === "experiments"
                                 ? "bg-white text-gray-900 shadow-sm dark:bg-[#252936] dark:text-white"
-                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                         )}
                     >
                         <Sparkles size={14} /> 10-Trade Experiments ({experiments.length})
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="button"
+                        variant="ghost"
                         onClick={() => setActiveSection("coach")}
                         className={cn(
-                            "flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
+                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
                             activeSection === "coach"
                                 ? "bg-white text-gray-900 shadow-sm dark:bg-[#252936] dark:text-white"
-                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                         )}
                     >
                         <Brain size={14} /> AI Coach Plans ({coachPlans.length})
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="button"
+                        variant="ghost"
                         onClick={() => setActiveSection("missions")}
                         className={cn(
-                            "flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
+                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
                             activeSection === "missions"
                                 ? "bg-white text-gray-900 shadow-sm dark:bg-[#252936] dark:text-white"
-                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                         )}
                     >
                         <Award size={14} /> Missions & Edge XP ({edgeEvents.length})
-                    </button>
+                    </Button>
                 </div>
 
                 <div className="w-full sm:w-64">

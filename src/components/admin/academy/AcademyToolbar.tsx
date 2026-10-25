@@ -71,14 +71,16 @@ export function AcademyToolbar({
                         className="w-full pl-10 pr-10 py-2.5 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg text-sm text-gray-800 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
                     />
                     {searchQuery && (
-                        <button
+                        <Button
                             type="button"
+                            variant="ghost"
+                            size="icon"
                             onClick={() => onSearchChange("")}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-1 rounded-lg transition-colors"
+                            className="h-6 w-6 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white p-1 rounded-lg transition-colors"
                             aria-label="Clear search"
                         >
                             <X size={16} />
-                        </button>
+                        </Button>
                     )}
                 </div>
 
@@ -86,39 +88,45 @@ export function AcademyToolbar({
                 <div className="flex flex-wrap items-center gap-2">
                     {/* Access Filter Pills */}
                     <div className="flex items-center p-1 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg">
-                        <button
+                        <Button
                             type="button"
+                            variant="ghost"
+                            size="sm"
                             onClick={() => onAccessFilterChange("ALL")}
-                            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                            className={`h-auto px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
                                 accessFilter === "ALL"
-                                    ? "bg-white dark:bg-[#1e2330] text-gray-900 dark:text-white shadow-sm"
-                                    : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                                    ? "bg-white dark:bg-[#1e2330] text-gray-900 dark:text-white shadow-sm hover:bg-white dark:hover:bg-[#1e2330]"
+                                    : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                             }`}
                         >
                             All ({totalCount})
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="button"
+                            variant="ghost"
+                            size="sm"
                             onClick={() => onAccessFilterChange("PUBLIC")}
-                            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                            className={`h-auto px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
                                 accessFilter === "PUBLIC"
-                                    ? "bg-emerald-500 text-white shadow-sm shadow-emerald-500/30"
-                                    : "text-gray-500 hover:text-emerald-600 dark:hover:text-emerald-400"
+                                    ? "bg-emerald-500 text-white shadow-sm shadow-emerald-500/30 hover:bg-emerald-600"
+                                    : "text-gray-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-transparent"
                             }`}
                         >
                             Public
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="button"
+                            variant="ghost"
+                            size="sm"
                             onClick={() => onAccessFilterChange("MEMBER")}
-                            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                            className={`h-auto px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
                                 accessFilter === "MEMBER"
-                                    ? "bg-gold text-white shadow-sm shadow-amber-500/30"
-                                    : "text-gray-500 hover:text-gold dark:hover:text-gold"
+                                    ? "bg-gold text-white shadow-sm shadow-amber-500/30 hover:bg-amber-600"
+                                    : "text-gray-500 hover:text-gold dark:hover:text-gold hover:bg-transparent"
                             }`}
                         >
                             Member
-                        </button>
+                        </Button>
                     </div>
 
                     {/* Sort Dropdown */}
@@ -157,45 +165,51 @@ export function AcademyToolbar({
 
                     {/* View Mode Switcher */}
                     <div className="flex items-center p-1 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg">
-                        <button
+                        <Button
                             type="button"
+                            variant="ghost"
+                            size="icon"
                             onClick={() => onViewModeChange("grid")}
-                            className={`p-2 rounded-lg transition-all ${
+                            className={`h-8 w-8 p-2 rounded-lg transition-all ${
                                 viewMode === "grid"
-                                    ? "bg-white dark:bg-[#1e2330] text-primary shadow-sm"
-                                    : "text-gray-400 hover:text-gray-700 dark:hover:text-white"
+                                    ? "bg-white dark:bg-[#1e2330] text-primary shadow-sm hover:bg-white dark:hover:bg-[#1e2330]"
+                                    : "text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-transparent"
                             }`}
                             aria-label="Grid view"
                             title="Grid View"
                         >
                             <LayoutGrid size={16} />
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="button"
+                            variant="ghost"
+                            size="icon"
                             onClick={() => onViewModeChange("table")}
-                            className={`p-2 rounded-lg transition-all ${
+                            className={`h-8 w-8 p-2 rounded-lg transition-all ${
                                 viewMode === "table"
-                                    ? "bg-white dark:bg-[#1e2330] text-primary shadow-sm"
-                                    : "text-gray-400 hover:text-gray-700 dark:hover:text-white"
+                                    ? "bg-white dark:bg-[#1e2330] text-primary shadow-sm hover:bg-white dark:hover:bg-[#1e2330]"
+                                    : "text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-transparent"
                             }`}
                             aria-label="Table view"
                             title="Table View"
                         >
                             <List size={16} />
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="button"
+                            variant="ghost"
+                            size="icon"
                             onClick={() => onViewModeChange("tree")}
-                            className={`p-2 rounded-lg transition-all ${
+                            className={`h-8 w-8 p-2 rounded-lg transition-all ${
                                 viewMode === "tree"
-                                    ? "bg-white dark:bg-[#1e2330] text-primary shadow-sm"
-                                    : "text-gray-400 hover:text-gray-700 dark:hover:text-white"
+                                    ? "bg-white dark:bg-[#1e2330] text-primary shadow-sm hover:bg-white dark:hover:bg-[#1e2330]"
+                                    : "text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-transparent"
                             }`}
                             aria-label="Hierarchy tree view"
                             title="Curriculum Tree View"
                         >
                             <FolderTree size={16} />
-                        </button>
+                        </Button>
                     </div>
 
                     {/* Add New Level Button */}
@@ -229,13 +243,15 @@ export function AcademyToolbar({
                     )}
                 </span>
                 {searchQuery && (
-                    <button
+                    <Button
                         type="button"
+                        variant="ghost"
+                        size="sm"
                         onClick={() => onSearchChange("")}
-                        className="text-xs font-semibold text-primary hover:underline"
+                        className="h-auto p-0 text-xs font-semibold text-primary hover:underline hover:bg-transparent"
                     >
                         Reset search
-                    </button>
+                    </Button>
                 )}
             </div>
         </div>

@@ -275,26 +275,30 @@ export default function AnalyticsDashboard() {
                         />
                         <div className="relative">
                             <PageviewTrend data={data.trend} />
-                            <button
+                            <Button
+                                variant="ghost"
+                                size="icon"
                                 onClick={handleExportPageviews}
-                                className="absolute top-5 right-5 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                                className="absolute top-5 right-5 p-1.5 h-auto w-auto rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                                 title="Export CSV"
                                 aria-label="Export pageviews as CSV"
                             >
                                 <Download size={14} />
-                            </button>
+                            </Button>
                         </div>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                             <div className="relative">
                                 <TopPagesPanel pages={data.topPages} />
-                                <button
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
                                     onClick={handleExportTopPages}
-                                    className="absolute top-5 right-5 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                                    className="absolute top-5 right-5 p-1.5 h-auto w-auto rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                                     title="Export CSV"
                                     aria-label="Export top pages as CSV"
                                 >
                                     <Download size={14} />
-                                </button>
+                                </Button>
                             </div>
                             <ReferrerPanel referrers={data.topReferrers} />
                         </div>

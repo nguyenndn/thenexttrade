@@ -69,19 +69,20 @@ function ToggleSwitch({
     disabled?: boolean;
 }) {
     return (
-        <button
+        <Button
             type="button"
+            variant="ghost"
             role="switch"
             aria-checked={enabled}
             onClick={disabled ? undefined : onToggle}
             disabled={disabled}
             aria-label={enabled ? "Disable" : "Enable"}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors shrink-0 ${
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors shrink-0 p-0 min-h-0 border-0 ${
                 disabled
                     ? "opacity-50 cursor-not-allowed"
                     : enabled
-                      ? "bg-primary"
-                      : "bg-gray-200 dark:bg-white/10"
+                      ? "bg-primary hover:bg-primary"
+                      : "bg-gray-200 dark:bg-white/10 hover:bg-gray-300 dark:hover:bg-white/15"
             }`}
         >
             <span
@@ -89,7 +90,7 @@ function ToggleSwitch({
                     enabled ? "translate-x-6" : "translate-x-1"
                 }`}
             />
-        </button>
+        </Button>
     );
 }
 

@@ -21,6 +21,8 @@ interface DayTradeListProps {
         bestTrade: number;
         worstTrade: number;
         avgHoldTimeMinutes: number;
+        totalCommission?: number;
+        totalSwap?: number;
         commissionsAndFees: number;
         winrate: number;
         profitFactor: number;
@@ -183,13 +185,81 @@ export function DayTradeList({
                                 </span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
+                                <span className="text-gray-600 dark:text-gray-300">
+                                    Commission
+                                </span>
+                                <span
+                                    className={`font-bold font-mono ${
+                                        (stats?.totalCommission ?? 0) < 0
+                                            ? "text-red-500"
+                                            : "text-gray-700 dark:text-white"
+                                    }`}
+                                >
+                                    {(stats?.totalCommission ?? 0) < 0 ? "-" : ""}$
+                                    {Math.abs(
+                                        stats?.totalCommission ??
+                                            trades.reduce(
+                                                (s, t) => s + (t.commission || 0),
+                                                0
+                                            )
+                                    ).toLocaleString("en-US", {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2,
+                                    })}
+                                </span>
+                            </div>
+                            <div className="flex justify-between items-center text-sm">
+                                <span className="text-gray-600 dark:text-gray-300">
+                                    Swap
+                                </span>
+                                <span
+                                    className={`font-bold font-mono ${
+                                        (stats?.totalSwap ?? 0) > 0
+                                            ? "text-[#3B82F6]"
+                                            : (stats?.totalSwap ?? 0) < 0
+                                              ? "text-red-500"
+                                              : "text-gray-700 dark:text-white"
+                                    }`}
+                                >
+                                    {(stats?.totalSwap ?? 0) > 0
+                                        ? "+"
+                                        : (stats?.totalSwap ?? 0) < 0
+                                          ? "-"
+                                          : ""}
+                                    $
+                                    {Math.abs(
+                                        stats?.totalSwap ??
+                                            trades.reduce(
+                                                (s, t) => s + (t.swap || 0),
+                                                0
+                                            )
+                                    ).toLocaleString("en-US", {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2,
+                                    })}
+                                </span>
+                            </div>
+                            <div className="flex justify-between items-center text-sm">
                                 <span className="text-gray-600 dark:text-gray-300 flex items-center gap-1.5">
                                     <span className="flex items-center justify-center w-4 h-4 rounded-full bg-gray-100 dark:bg-white/10 text-[9px] font-bold text-gray-600 dark:text-gray-300">
                                         $
                                     </span>
                                     Commissions & Fees
                                 </span>
-                                <span className="font-bold text-gray-700 dark:text-white">
+                                <span
+                                    className={`font-bold font-mono ${
+                                        (stats?.commissionsAndFees ?? 0) > 0
+                                            ? "text-[#3B82F6]"
+                                            : (stats?.commissionsAndFees ?? 0) < 0
+                                              ? "text-red-500"
+                                              : "text-gray-700 dark:text-white"
+                                    }`}
+                                >
+                                    {(stats?.commissionsAndFees ?? 0) > 0
+                                        ? "+"
+                                        : (stats?.commissionsAndFees ?? 0) < 0
+                                          ? "-"
+                                          : ""}
                                     $
                                     {stats?.commissionsAndFees
                                         ? Math.abs(

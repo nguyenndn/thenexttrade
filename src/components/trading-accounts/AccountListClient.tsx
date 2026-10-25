@@ -662,13 +662,15 @@ export function AccountListClient({
                                     <span className="text-amber-700 dark:text-amber-300 font-bold text-[11px]">
                                         Free Limit
                                     </span>
-                                    <button
+                                    <Button
                                         type="button"
+                                        variant="ghost"
+                                        size="sm"
                                         onClick={() => setActiveModal({ type: "FREE_VS_PRO" })}
-                                        className="ml-1 inline-flex items-center gap-0.5 text-[11px] font-black text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 underline underline-offset-2 transition-colors cursor-pointer"
+                                        className="h-auto p-0 ml-1 inline-flex items-center gap-0.5 text-[11px] font-black text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 underline underline-offset-2 transition-colors cursor-pointer hover:bg-transparent"
                                     >
                                         Upgrade <ArrowUpRight className="w-3 h-3" />
-                                    </button>
+                                    </Button>
                                 </div>
                             ) : (
                                 <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg border border-dashboard/80 bg-gray-50/80 dark:bg-white/[0.03] dark:border-white/10 text-xs shadow-sm">

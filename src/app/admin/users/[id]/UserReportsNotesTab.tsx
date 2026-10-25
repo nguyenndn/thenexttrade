@@ -199,42 +199,45 @@ export function UserReportsNotesTab({
             {/* Sub-Section Navigation & Filters */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex rounded-lg border border-gray-200 bg-[#F1F3F5] p-1 dark:border-white/10 dark:bg-[#1A1D27] w-fit">
-                    <button
+                    <Button
                         type="button"
+                        variant="ghost"
                         onClick={() => setActiveSection("reports")}
                         className={cn(
-                            "flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
+                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
                             activeSection === "reports"
                                 ? "bg-white text-gray-900 shadow-sm dark:bg-[#252936] dark:text-white"
-                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                         )}
                     >
                         <BarChart3 size={14} /> Performance Reports ({reports.length})
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="button"
+                        variant="ghost"
                         onClick={() => setActiveSection("notes")}
                         className={cn(
-                            "flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
+                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
                             activeSection === "notes"
                                 ? "bg-white text-gray-900 shadow-sm dark:bg-[#252936] dark:text-white"
-                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                         )}
                     >
                         <Calendar size={14} /> Trading Day Notes ({dayNotes.length})
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="button"
+                        variant="ghost"
                         onClick={() => setActiveSection("insights")}
                         className={cn(
-                            "flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
+                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
                             activeSection === "insights"
                                 ? "bg-white text-gray-900 shadow-sm dark:bg-[#252936] dark:text-white"
-                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                                : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                         )}
                     >
                         <Lightbulb size={14} /> Behavioral Insights ({insights.length})
-                    </button>
+                    </Button>
                 </div>
 
                 <div className="w-full sm:w-64">

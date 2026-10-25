@@ -14,6 +14,7 @@ import { computeCapitalBreakdown } from "./capital.server";
 import { resolveUserProductSummaries } from "./product-usage.server";
 import { normalizeSyncSource, getSyncSourceLabel } from "@/lib/sync/sync-source";
 import { getPaginatedTraderMonitorV2 } from "./ib-monitor.server-v2";
+import { isDemoTradingAccount } from "@/lib/trading-account-classification";
 
 export function parseTraderFilters(params: Record<string, string | undefined>): IbTraderFilters {
     const page = parseInt(params.page || "1", 10);
@@ -310,6 +311,9 @@ async function getPaginatedTraderMonitorLegacy(
                 vipExpiresAt,
                 products,
                 registeredAccountCount,
+                demoAccountCount: u.tradingAccounts.filter((account) =>
+                    isDemoTradingAccount(account)
+                ).length,
                 eligibleAccountCount,
                 connectedAccountCount,
                 activeTradingAccountCount,
@@ -319,6 +323,13 @@ async function getPaginatedTraderMonitorLegacy(
                 isMixedCurrency: capBreakdown.isMixedCurrency,
                 totalTrades30d: jStats.count,
                 totalLotVolume30d: jStats.lotVolume,
+                fundingState: "NONE" as const,
+                fundingGraceUntil: null,
+                policyState:
+                    vipStatus === "ACTIVE" || vipStatus === "GRACE"
+                        ? ("WARNED" as const)
+                        : ("PAUSED" as const),
+                policyReason: "Legacy monitor path is inactive.",
                 lastTradeAt: null,
                 lastHeartbeatAt: accounts[0]?.lastHeartbeat || null,
                 dataFreshness,

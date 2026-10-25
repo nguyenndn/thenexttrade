@@ -16,10 +16,16 @@ import {
 
 interface EquityCurveProps {
     data: Array<{ date: string; balance: number; pnl: number }>;
+    totalCommission?: number;
+    totalSwap?: number;
 }
 import { processEquityCurveData } from "./utils/chartHelpers";
 
-export function EquityCurve({ data }: EquityCurveProps) {
+export function EquityCurve({
+    data,
+    totalCommission,
+    totalSwap,
+}: EquityCurveProps) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
 
@@ -32,7 +38,7 @@ export function EquityCurve({ data }: EquityCurveProps) {
 
     return (
         <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group/card">
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary/10 rounded-lg text-primary">
                         <TrendingUp size={20} />
@@ -47,19 +53,66 @@ export function EquityCurve({ data }: EquityCurveProps) {
                     </div>
                 </div>
 
-                <div className="text-right">
-                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-0.5">
-                        Net Profit
-                    </p>
-                    <p
-                        className={`text-lg font-black ${totalNetProfit >= 0 ? "text-primary" : "text-red-500"}`}
-                    >
-                        {totalNetProfit >= 0 ? "+" : ""}$
-                        {Math.abs(totalNetProfit).toLocaleString("en-US", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                        })}
-                    </p>
+                <div className="flex items-center gap-6">
+                    {totalCommission !== undefined && (
+                        <div className="text-right">
+                            <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-0.5">
+                                Commission
+                            </p>
+                            <p
+                                className={`text-sm sm:text-base font-black font-mono ${
+                                    totalCommission < 0
+                                        ? "text-red-500"
+                                        : "text-gray-700 dark:text-gray-300"
+                                }`}
+                            >
+                                {totalCommission < 0 ? "-" : ""}$
+                                {Math.abs(totalCommission).toLocaleString(
+                                    "en-US",
+                                    {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2,
+                                    }
+                                )}
+                            </p>
+                        </div>
+                    )}
+                    {totalSwap !== undefined && (
+                        <div className="text-right">
+                            <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-0.5">
+                                Swap
+                            </p>
+                            <p
+                                className={`text-sm sm:text-base font-black font-mono ${
+                                    totalSwap > 0
+                                        ? "text-primary"
+                                        : totalSwap < 0
+                                          ? "text-red-500"
+                                          : "text-gray-700 dark:text-gray-300"
+                                }`}
+                            >
+                                {totalSwap > 0 ? "+" : totalSwap < 0 ? "-" : ""}$
+                                {Math.abs(totalSwap).toLocaleString("en-US", {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })}
+                            </p>
+                        </div>
+                    )}
+                    <div className="text-right">
+                        <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-0.5">
+                            Net Profit
+                        </p>
+                        <p
+                            className={`text-lg font-black ${totalNetProfit >= 0 ? "text-primary" : "text-red-500"}`}
+                        >
+                            {totalNetProfit >= 0 ? "+" : ""}$
+                            {Math.abs(totalNetProfit).toLocaleString("en-US", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            })}
+                        </p>
+                    </div>
                 </div>
             </div>
 

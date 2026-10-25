@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: Unified Brainstorming & Socratic Idea Exploration (commands: /brainstorm, /brainstorming). Explores product & technical options, asks 3 framing questions with trade-offs before implementation.
+description: "Unified Brainstorming & Socratic Idea Exploration (commands: /brainstorm, /brainstorming). Explores product & technical options, asks 3 framing questions with trade-offs before implementation."
 ---
 
 # /brainstorm — Unified Idea Exploration & Socratic Gate

@@ -140,9 +140,10 @@ export function SupportSyncRequestModal({
                         </label>
                         <DropdownMenu className="w-full">
                             <DropdownMenuTrigger asChild>
-                                <button
+                                <Button
                                     type="button"
-                                    className="w-full flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50/50 px-3.5 py-2.5 text-xs font-medium text-gray-900 transition-all hover:bg-gray-100/70 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 dark:border-white/10 dark:bg-[#1E2028] dark:text-white dark:hover:bg-white/10 cursor-pointer"
+                                    variant="ghost"
+                                    className="h-auto w-full flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50/50 px-3.5 py-2.5 text-xs font-medium text-gray-900 transition-all hover:bg-gray-100/70 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 dark:border-white/10 dark:bg-[#1E2028] dark:text-white dark:hover:bg-white/10 cursor-pointer"
                                 >
                                     <span className="truncate text-left">
                                         {selectedAccountId === "manual" ? (
@@ -161,7 +162,7 @@ export function SupportSyncRequestModal({
                                         )}
                                     </span>
                                     <ChevronDown size={14} className="text-gray-400 shrink-0 ml-2" />
-                                </button>
+                                </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent
                                 align="start"
