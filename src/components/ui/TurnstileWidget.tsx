@@ -9,6 +9,7 @@ interface TurnstileWidgetProps {
     theme?: "light" | "dark" | "auto";
     size?: "normal" | "compact";
     className?: string;
+    resetKey?: number;
 }
 
 declare global {
@@ -45,6 +46,7 @@ export function TurnstileWidget({
     theme = "auto",
     size = "normal",
     className,
+    resetKey,
 }: TurnstileWidgetProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const widgetIdRef = useRef<string | null>(null);
@@ -135,6 +137,23 @@ export function TurnstileWidget({
             widgetIdRef.current = null;
         };
     }, [renderWidget, onVerify, isDev]);
+
+    // Reset single-use challenge token when parent increments resetKey (e.g., after server validation error)
+    useEffect(() => {
+        if (!resetKey) return;
+        if (isDev || !SITE_KEY || DISABLE_TURNSTILE) {
+            onVerify("dev-mode-bypass");
+            return;
+        }
+        onVerify("");
+        if (widgetIdRef.current && window.turnstile) {
+            try {
+                window.turnstile.reset(widgetIdRef.current);
+            } catch {
+                // Ignore if widget is not ready
+            }
+        }
+    }, [resetKey, onVerify, isDev]);
 
     // Don't render widget in dev mode, if no site key, or if Turnstile is explicitly disabled
     if (isDev || !SITE_KEY || DISABLE_TURNSTILE) return null;

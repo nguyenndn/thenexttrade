@@ -6,7 +6,6 @@ import {
     eachDayOfInterval,
     startOfWeek,
     endOfWeek,
-    isSameDay,
     parseISO,
 } from "date-fns";
 import {
@@ -115,119 +114,152 @@ export function PlCalendarHeatmap({
     const dayLabels = ["S", "M", "T", "W", "T", "F", "S"];
 
     return (
-        <div className="flex flex-col h-full justify-between overflow-x-auto scrollbar-hide p-4 pb-2">
-            <div className="flex gap-1.5 w-full min-w-[320px]">
-                {/* Day of Week Headers */}
-                <div className="flex flex-col gap-1 pr-2 justify-between text-[10px] font-bold text-gray-400 dark:text-gray-600 pt-5 h-[132px]">
-                    {dayLabels.map((label, idx) => (
-                        <div
-                            key={idx}
-                            className="h-[16px] w-[14px] flex items-center justify-center"
+        <div className="flex flex-col h-full w-full overflow-hidden">
+            {/* Header */}
+            <div className="px-5 py-3.5 border-b border-dashboard flex items-center justify-between gap-2 shrink-0">
+                <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-500 shrink-0">
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                         >
-                            {idx % 2 === 1 ? label : ""}
-                        </div>
-                    ))}
+                            <rect width="18" height="18" x="3" y="3" rx="2" />
+                            <path d="M3 9h18" />
+                            <path d="M3 15h18" />
+                            <path d="M9 3v18" />
+                            <path d="M15 3v18" />
+                        </svg>
+                    </div>
+                    <div className="min-w-0">
+                        <h3 className="font-bold text-gray-700 dark:text-white text-sm truncate">
+                            P&L Calendar Heatmap
+                        </h3>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                            Daily profit & loss intensity
+                        </p>
+                    </div>
                 </div>
 
-                {/* Heatmap Grid */}
-                <div className="flex-1 flex gap-1 h-full max-h-[175px]">
-                    <TooltipProvider delayDuration={100}>
-                        {weeks.map((week, weekIdx) => {
-                            // Extract month label if first week of the month
-                            const firstDayOfWeek = week[0];
-                            const showMonthLabel =
-                                firstDayOfWeek.getDate() <= 7;
-
-                            return (
-                                <div
-                                    key={weekIdx}
-                                    className="flex flex-col gap-1 relative pt-5"
-                                >
-                                    {showMonthLabel && (
-                                        <div className="absolute top-0 left-0 text-[10px] font-extrabold text-gray-400 dark:text-gray-600 whitespace-nowrap">
-                                            {format(firstDayOfWeek, "MMM")}
-                                        </div>
-                                    )}
-                                    {week.map((day, dayIdx) => {
-                                        const dateStr = format(
-                                            day,
-                                            "yyyy-MM-dd"
-                                        );
-                                        const perf =
-                                            performanceMap.get(dateStr);
-                                        const profit = perf?.value || 0;
-                                        const hasTrades = perf
-                                            ? perf.tradeCount > 0
-                                            : false;
-                                        const cellColor = getCellColor(
-                                            profit,
-                                            hasTrades
-                                        );
-
-                                        return (
-                                            <Tooltip key={dayIdx}>
-                                                <TooltipTrigger asChild>
-                                                    <div
-                                                        className={`w-[16px] h-[16px] rounded-lg transition-all cursor-pointer ${cellColor}`}
-                                                    />
-                                                </TooltipTrigger>
-                                                <TooltipContent className="bg-gray-950 dark:bg-white text-white dark:text-gray-900 border-none shadow-xl rounded-lg p-2.5 text-xs font-semibold">
-                                                    <p className="font-extrabold text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">
-                                                        {format(
-                                                            day,
-                                                            "EEEE, MMMM dd, yyyy"
-                                                        )}
-                                                    </p>
-                                                    {hasTrades ? (
-                                                        <div className="space-y-0.5 mt-1">
-                                                            <p
-                                                                className={`font-black text-sm ${profit >= 0 ? "text-emerald-500" : "text-red-500"}`}
-                                                            >
-                                                                {profit >= 0
-                                                                    ? "+"
-                                                                    : ""}
-                                                                $
-                                                                {profit.toFixed(
-                                                                    2
-                                                                )}
-                                                            </p>
-                                                            <p className="text-[10px] text-gray-300 dark:text-gray-600">
-                                                                {perf?.tradeCount ||
-                                                                    0}{" "}
-                                                                trades •{" "}
-                                                                {perf?.winRate
-                                                                    ? perf.winRate.toFixed(
-                                                                          0
-                                                                      )
-                                                                    : 0}
-                                                                % Win Rate
-                                                            </p>
-                                                        </div>
-                                                    ) : (
-                                                        <p className="text-gray-400 dark:text-gray-500 italic mt-0.5">
-                                                            No trades recorded
-                                                        </p>
-                                                    )}
-                                                </TooltipContent>
-                                            </Tooltip>
-                                        );
-                                    })}
-                                </div>
-                            );
-                        })}
-                    </TooltipProvider>
+                {/* Legend */}
+                <div className="hidden sm:flex items-center gap-1.5 text-[10px] text-gray-400 dark:text-gray-500 select-none shrink-0">
+                    <span>Loss</span>
+                    <div className="w-[10px] h-[10px] rounded-[2px] bg-red-500" />
+                    <div className="w-[10px] h-[10px] rounded-[2px] bg-red-300" />
+                    <div className="w-[10px] h-[10px] rounded-[2px] bg-gray-100 dark:bg-gray-800" />
+                    <div className="w-[10px] h-[10px] rounded-[2px] bg-emerald-300" />
+                    <div className="w-[10px] h-[10px] rounded-[2px] bg-emerald-500" />
+                    <span>Profit</span>
                 </div>
             </div>
 
-            {/* Legend */}
-            <div className="flex items-center gap-1.5 justify-end text-[10px] text-gray-400 dark:text-gray-500 mt-2 pr-2 select-none">
-                <span>Loss</span>
-                <div className="w-[10px] h-[10px] rounded-[1px] bg-red-500" />
-                <div className="w-[10px] h-[10px] rounded-[1px] bg-red-300" />
-                <div className="w-[10px] h-[10px] rounded-[1px] bg-gray-100 dark:bg-gray-800" />
-                <div className="w-[10px] h-[10px] rounded-[1px] bg-emerald-300" />
-                <div className="w-[10px] h-[10px] rounded-[1px] bg-emerald-500" />
-                <span>Profit</span>
+            <div className="flex-1 flex flex-col justify-center overflow-x-auto scrollbar-hide p-4 min-h-0">
+                <div className="flex gap-1.5 w-full min-w-[320px]">
+                    {/* Day of Week Headers */}
+                    <div className="flex flex-col gap-1 pr-2 justify-between text-[10px] font-bold text-gray-400 dark:text-gray-600 pt-5 h-[132px]">
+                        {dayLabels.map((label, idx) => (
+                            <div
+                                key={idx}
+                                className="h-[16px] w-[14px] flex items-center justify-center"
+                            >
+                                {idx % 2 === 1 ? label : ""}
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Heatmap Grid */}
+                    <div className="flex-1 flex gap-1 h-full max-h-[175px]">
+                        <TooltipProvider delayDuration={100}>
+                            {weeks.map((week, weekIdx) => {
+                                const firstDayOfWeek = week[0];
+                                const showMonthLabel =
+                                    firstDayOfWeek.getDate() <= 7;
+
+                                return (
+                                    <div
+                                        key={weekIdx}
+                                        className="flex flex-col gap-1 relative pt-5"
+                                    >
+                                        {showMonthLabel && (
+                                            <div className="absolute top-0 left-0 text-[10px] font-extrabold text-gray-400 dark:text-gray-600 whitespace-nowrap">
+                                                {format(firstDayOfWeek, "MMM")}
+                                            </div>
+                                        )}
+                                        {week.map((day, dayIdx) => {
+                                            const dateStr = format(
+                                                day,
+                                                "yyyy-MM-dd"
+                                            );
+                                            const perf =
+                                                performanceMap.get(dateStr);
+                                            const profit = perf?.value || 0;
+                                            const hasTrades = perf
+                                                ? perf.tradeCount > 0
+                                                : false;
+                                            const cellColor = getCellColor(
+                                                profit,
+                                                hasTrades
+                                            );
+
+                                            return (
+                                                <Tooltip key={dayIdx}>
+                                                    <TooltipTrigger asChild>
+                                                        <div
+                                                            className={`w-[16px] h-[16px] rounded-lg transition-all cursor-pointer ${cellColor}`}
+                                                        />
+                                                    </TooltipTrigger>
+                                                    <TooltipContent className="bg-gray-950 dark:bg-white text-white dark:text-gray-900 border-none shadow-xl rounded-lg p-2.5 text-xs font-semibold">
+                                                        <p className="font-extrabold text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">
+                                                            {format(
+                                                                day,
+                                                                "EEEE, MMMM dd, yyyy"
+                                                            )}
+                                                        </p>
+                                                        {hasTrades ? (
+                                                            <div className="space-y-0.5 mt-1">
+                                                                <p
+                                                                    className={`font-black text-sm ${profit >= 0 ? "text-emerald-500" : "text-red-500"}`}
+                                                                >
+                                                                    {profit >= 0
+                                                                        ? "+"
+                                                                        : ""}
+                                                                    $
+                                                                    {profit.toFixed(
+                                                                        2
+                                                                    )}
+                                                                </p>
+                                                                <p className="text-[10px] text-gray-300 dark:text-gray-600">
+                                                                    {perf?.tradeCount ||
+                                                                        0}{" "}
+                                                                    trades •{" "}
+                                                                    {perf?.winRate
+                                                                        ? perf.winRate.toFixed(
+                                                                              0
+                                                                          )
+                                                                        : 0}
+                                                                    % Win Rate
+                                                                </p>
+                                                            </div>
+                                                        ) : (
+                                                            <p className="text-gray-400 dark:text-gray-500 italic mt-0.5">
+                                                                No trades recorded
+                                                            </p>
+                                                        )}
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            );
+                                        })}
+                                    </div>
+                                );
+                            })}
+                        </TooltipProvider>
+                    </div>
+                </div>
             </div>
         </div>
     );

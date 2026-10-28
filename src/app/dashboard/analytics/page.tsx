@@ -56,33 +56,14 @@ export default async function AnalyticsPage({
     // 1. Account & Date Filters
     let accountId = resolvedParams?.accountId as string | undefined;
 
-    // Default Account Logic if not provided
+    // Default Account Logic if not provided (Priority 1: Main Account from /dashboard/accounts)
     if (!accountId) {
         const cookieStore = await cookies();
         const lastAccountId = cookieStore.get("last_account_id")?.value;
-
-        // Validate cookie account ID actually exists for this user
-        if (lastAccountId) {
-            const cookieAccountExists = await prisma.tradingAccount.findFirst({
-                where: { id: lastAccountId, userId: user.id },
-                select: { id: true },
-            });
-            if (cookieAccountExists) {
-                accountId = lastAccountId;
-            }
-        }
-
-        // Fallback: Get the most recent account from DB
-        if (!accountId) {
-            const firstAccount = await prisma.tradingAccount.findFirst({
-                where: { userId: user.id },
-                orderBy: { createdAt: "desc" },
-                select: { id: true },
-            });
-            if (firstAccount) {
-                accountId = firstAccount.id;
-            }
-        }
+        const { resolveDefaultAccountId } = await import(
+            "@/actions/main-account"
+        );
+        accountId = await resolveDefaultAccountId(user.id, lastAccountId);
     }
 
     // Date Range Logic (All-Time by default since Date Filter is removed)

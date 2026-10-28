@@ -16,14 +16,12 @@ function SuccessTransitionContent() {
 
         // Redirect to dashboard after animation completes
         const redirectTimer = setTimeout(() => {
-            // Build dashboard URL with accountId + today (same as login overlay)
             const match = document.cookie.match(
                 /(?:^|;\s*)last_account_id=([^;]+)/
             );
             const accountId = match?.[1];
-            const today = new Date().toISOString().slice(0, 10);
             const url = accountId
-                ? `/dashboard?accountId=${accountId}&from=${today}&to=${today}`
+                ? `/dashboard?accountId=${accountId}`
                 : "/dashboard";
             router.push(url);
         }, 2200);

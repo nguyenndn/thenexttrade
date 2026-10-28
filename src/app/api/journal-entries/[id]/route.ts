@@ -113,7 +113,15 @@ export async function PUT(
     try {
         const existing = await prisma.journalEntry.findUnique({
             where: { id: params.id },
-            select: { userId: true },
+            select: {
+                userId: true,
+                entryDate: true,
+                exitDate: true,
+                result: true,
+                pnl: true,
+                commission: true,
+                swap: true,
+            },
         });
 
         if (!existing)
@@ -148,6 +156,34 @@ export async function PUT(
         for (const key of Object.keys(validated)) {
             if (key in body && key !== "ruleChecks" && key !== "tradePlanId") {
                 updateData[key] = validated[key];
+            }
+        }
+
+        if (updateData.status === "CLOSED") {
+            if (!updateData.exitDate && !existing.exitDate) {
+                updateData.exitDate =
+                    (updateData.entryDate as Date) || existing.entryDate;
+            }
+            const effectivePnl =
+                typeof updateData.pnl === "number"
+                    ? updateData.pnl
+                    : existing.pnl;
+            if (
+                !updateData.result &&
+                !existing.result &&
+                typeof effectivePnl === "number"
+            ) {
+                const effComm =
+                    typeof updateData.commission === "number"
+                        ? updateData.commission
+                        : existing.commission || 0;
+                const effSwap =
+                    typeof updateData.swap === "number"
+                        ? updateData.swap
+                        : existing.swap || 0;
+                const netPnl = effectivePnl + effComm + effSwap;
+                updateData.result =
+                    netPnl > 0 ? "WIN" : netPnl < 0 ? "LOSS" : "BREAK_EVEN";
             }
         }
 
@@ -235,7 +271,15 @@ export async function DELETE(
     try {
         const existing = await prisma.journalEntry.findUnique({
             where: { id: params.id },
-            select: { userId: true },
+            select: {
+                userId: true,
+                entryDate: true,
+                exitDate: true,
+                result: true,
+                pnl: true,
+                commission: true,
+                swap: true,
+            },
         });
         if (!existing)
             return NextResponse.json({ error: "Not found" }, { status: 404 });

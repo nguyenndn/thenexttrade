@@ -1,7 +1,6 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { type ReactNode } from "react";
 
 const BalanceGrowthChart = dynamic(() =>
     import("@/components/dashboard/BalanceGrowthChart").then(
@@ -199,7 +198,7 @@ export const WIDGET_REGISTRY: Record<WidgetType, WidgetConfig> = {
             "Monthly calendar showing daily win rates, trade counts, and P&L.",
         defaultW: 240,
         defaultH: 110,
-        minW: 80,
+        minW: 60,
         minH: 50,
         component: TradingCalendar,
     },
@@ -221,7 +220,7 @@ export const WIDGET_REGISTRY: Record<WidgetType, WidgetConfig> = {
             "GitHub-style heatmap showing green/red daily profit intensities.",
         defaultW: 240,
         defaultH: 66,
-        minW: 80,
+        minW: 60,
         minH: 30,
         component: PlCalendarHeatmap,
     },

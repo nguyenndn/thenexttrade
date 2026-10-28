@@ -266,13 +266,13 @@ export default async function UserDetailPage({
                 orderBy: { createdAt: "desc" },
             },
             proEntitlements: {
-                where: { status: { not: "REVOKED" } },
                 orderBy: { createdAt: "desc" },
                 include: {
                     tradingAccount: {
                         select: {
                             id: true,
                             name: true,
+                            broker: true,
                             accountNumber: true,
                         },
                     },
@@ -660,7 +660,8 @@ export default async function UserDetailPage({
                             <UserOverviewTab user={serializedUser} />
                         }
                         accountsContent={
-                            <div className="space-y-8">
+                            <div className="space-y-6">
+                                <UserVipProTab user={serializedUser} />
                                 <UserAccountsList
                                     accounts={serializedUser.tradingAccounts || []}
                                     userId={user.id}
@@ -670,13 +671,15 @@ export default async function UserDetailPage({
                                     eaProductUsageEvents={
                                         serializedUser.eaProductUsageEvents || []
                                     }
+                                    proEntitlements={
+                                        serializedUser.proEntitlements || []
+                                    }
                                 />
                                 <UserLicensesList
                                     licenses={serializedUser.EALicenses || []}
                                 />
                             </div>
                         }
-                        vipProContent={<UserVipProTab user={serializedUser} />}
                         coachingContent={
                             <UserCoachingAnalyticsTab
                                 plans={serializedUser.tradePlans || []}
@@ -696,7 +699,13 @@ export default async function UserDetailPage({
                                     acc.ibAttribution !== "CONFIRMED"
                             ).length,
                             plans: (user._count.tradePlans || 0) + (user._count.strategies || 0),
-                            vip: user._count.vipRequests + (serializedUser.proEntitlements?.length || 0),
+                            vip:
+                                user._count.vipRequests +
+                                (serializedUser.proEntitlements || []).filter(
+                                    (e: { status?: string }) =>
+                                        e.status === "ACTIVE" ||
+                                        e.status === "GRACE"
+                                ).length,
                             pendingVip: (serializedUser.vipRequests || []).filter(
                                 (r: { status?: string }) => r.status === "PENDING"
                             ).length,

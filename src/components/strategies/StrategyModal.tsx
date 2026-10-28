@@ -62,7 +62,7 @@ interface StrategyModalProps {
 
 const COLORS = [
     // Row 1: 15 Vibrant & Fresh Shades
-    "hsl(var(--primary))", // Primary Green
+    "#00C888", // Primary Green
     "#10B981", // Emerald
     "#3B82F6", // Blue
     "#0EA5E9", // Sky

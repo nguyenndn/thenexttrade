@@ -11,7 +11,10 @@ const strategySchema = z.object({
     rules: z.string().optional().nullable(),
     color: z
         .string()
-        .regex(/^#[0-9A-Fa-f]{6}$/)
+        .transform((val) =>
+            val === "hsl(var(--primary))" ? "#00C888" : val
+        )
+        .pipe(z.string().regex(/^#[0-9A-Fa-f]{6}$/))
         .optional(),
     // Playbook fields
     isPlaybook: z.boolean().optional(),
@@ -137,6 +140,16 @@ export async function updateStrategy(
             idealEntry, idealStopLoss, idealTakeProfit,
             riskRewardMin, referenceImages,
         } = validation.data;
+
+        if (name !== existing.name) {
+            const duplicate = await prisma.strategy.findUnique({
+                where: { userId_name: { userId: user.id, name } },
+                select: { id: true },
+            });
+            if (duplicate && duplicate.id !== id) {
+                return { error: "Strategy name already exists" };
+            }
+        }
 
         const result = await prisma.strategy.updateMany({
             where: { id, userId: user.id },

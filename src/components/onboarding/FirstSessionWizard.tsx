@@ -521,7 +521,7 @@ function StepBringFirstData({
             description: string;
             cta: string;
             href: string;
-            icon: React.ReactNode;
+            icon?: React.ReactNode;
         }
     > = {
         EA_SYNC: {
@@ -530,7 +530,6 @@ function StepBringFirstData({
                 "Attach Trade Manager EA to MT5, paste your Sync API Key under the SYNC tab, and confirm the heartbeat.",
             cta: "Open Sync Setup",
             href: "/dashboard/accounts?setup=sync&method=ea&source=first-session",
-            icon: <Zap size={20} className="text-amber-500" />,
         },
         MANUAL: {
             title: "Log Your First Trade",
@@ -548,7 +547,11 @@ function StepBringFirstData({
         <div className="space-y-3">
             <div className="p-3.5 bg-gradient-to-br from-primary/[0.04] to-cyan-500/[0.02] border border-primary/15 rounded-lg space-y-2.5">
                 <div className="flex items-center gap-2">
-                    <div className="p-2 bg-primary/10 rounded-lg">{c.icon}</div>
+                    {c.icon && (
+                        <div className="p-2 bg-primary/10 rounded-lg">
+                            {c.icon}
+                        </div>
+                    )}
                     <h3 className="text-sm font-black text-gray-800 dark:text-white">
                         {c.title}
                     </h3>

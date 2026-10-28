@@ -1,5 +1,6 @@
 import JournalList from "@/components/journal/JournalList";
 import { Metadata } from "next";
+import { cookies } from "next/headers";
 import { getJournalEntries, getUserTags } from "@/actions/journal";
 import { getStrategies } from "@/actions/strategies";
 import { redirect } from "next/navigation";
@@ -43,10 +44,23 @@ export default async function JournalPage({
             : 20;
 
     // Parse Filters
-    const accountId =
+    let accountId =
         typeof resolvedParams.accountId === "string"
             ? resolvedParams.accountId
             : undefined;
+
+    // Resolve accountId from Main Account (/dashboard/accounts) -> cookie -> first account if missing from URL
+    const cookieStore = await cookies();
+    if (!accountId) {
+        const savedAccountId = cookieStore.get("last_account_id")?.value;
+        const { resolveDefaultAccountId } = await import(
+            "@/actions/main-account"
+        );
+        accountId = await resolveDefaultAccountId(user.id, savedAccountId);
+    } else if (accountId === "all") {
+        accountId = undefined;
+    }
+
     const symbol =
         typeof resolvedParams.symbol === "string"
             ? resolvedParams.symbol
@@ -54,6 +68,29 @@ export default async function JournalPage({
     const type =
         typeof resolvedParams.type === "string" && resolvedParams.type !== "ALL"
             ? resolvedParams.type
+            : undefined;
+    const direction =
+        typeof resolvedParams.direction === "string" &&
+        resolvedParams.direction !== "ALL"
+            ? resolvedParams.direction
+            : undefined;
+    const result =
+        typeof resolvedParams.result === "string" &&
+        resolvedParams.result !== "ALL"
+            ? resolvedParams.result
+            : undefined;
+    const source =
+        typeof resolvedParams.source === "string" &&
+        resolvedParams.source !== "ALL"
+            ? resolvedParams.source
+            : undefined;
+    const comment =
+        typeof resolvedParams.comment === "string"
+            ? resolvedParams.comment
+            : undefined;
+    const magicNumber =
+        typeof resolvedParams.magicNumber === "string"
+            ? resolvedParams.magicNumber
             : undefined;
     const tag =
         typeof resolvedParams.tag === "string" && resolvedParams.tag !== "ALL"
@@ -76,8 +113,7 @@ export default async function JournalPage({
     let dateTo =
         typeof resolvedParams.to === "string" ? resolvedParams.to : undefined;
 
-    // Use the default range in this request. Redirecting here made Journal fetch
-    // its auth/state/query stack twice on a cold navigation.
+    // Always default to Start of Month -> Today matching /dashboard
     if (!dateFrom || !dateTo) {
         const now = new Date();
         const startMonthStr = format(startOfMonth(now), "yyyy-MM-dd");
@@ -118,6 +154,11 @@ export default async function JournalPage({
                 accountId,
                 symbol,
                 type,
+                direction,
+                result,
+                source,
+                comment,
+                magicNumber,
                 status,
                 tag,
                 strategy,
@@ -140,6 +181,7 @@ export default async function JournalPage({
                 strategies={strategies}
                 userTags={userTags}
                 hasTradeData={tradingDataState.hasTradeData}
+                currentAccountId={accountId}
             />
         </div>
     );

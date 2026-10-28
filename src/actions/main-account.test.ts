@@ -5,14 +5,25 @@ import { setMainAccount, getMainAccountId } from "./main-account";
 
 vi.mock("@/lib/prisma", () => ({
     prisma: {
+        $transaction: vi.fn((ops: unknown[]) => Promise.all(ops)),
         tradingAccount: {
             findFirst: vi.fn(),
+            updateMany: vi.fn(),
+            update: vi.fn(),
         },
         profile: {
             upsert: vi.fn(),
             findUnique: vi.fn(),
         },
     },
+}));
+
+vi.mock("next/headers", () => ({
+    cookies: vi.fn().mockResolvedValue({
+        set: vi.fn(),
+        delete: vi.fn(),
+        get: vi.fn(),
+    }),
 }));
 
 vi.mock("@/lib/auth-cache", () => ({

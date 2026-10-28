@@ -57,7 +57,17 @@ export async function GET(request: NextRequest) {
         const searchParams = request.nextUrl.searchParams;
         const startDateParam = searchParams.get("startDate");
         const endDateParam = searchParams.get("endDate");
-        const accountId = searchParams.get("accountId");
+        let accountId = searchParams.get("accountId") || undefined;
+
+        if (!accountId) {
+            const { resolveDefaultAccountId } = await import(
+                "@/actions/main-account"
+            );
+            accountId = await resolveDefaultAccountId(
+                user.id,
+                request.cookies.get("last_account_id")?.value
+            );
+        }
 
         const now = new Date();
         const startDate = startDateParam

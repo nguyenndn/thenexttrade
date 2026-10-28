@@ -1,6 +1,6 @@
 # Email
 
-Last reviewed: 2026-05-31
+Last reviewed: 2026-10-28
 
 The app should own transactional email instead of relying on provider-default templates long term.
 
@@ -10,8 +10,15 @@ Use SMTP-compatible delivery through `src/lib/services/email.service.ts`.
 
 Recommended providers:
 
-- Brevo: good default when cost matters.
-- Postmark: best choice when transactional deliverability is the priority.
+- **Local Development / E2E QA**: Mailtrap Sandbox (`SMTP_HOST=sandbox.smtp.mailtrap.io` + `MAILTRAP_API_TOKEN` for automated Playwright OTP retrieval).
+- **Production**: Brevo (cost-effective default) or Postmark (highest transactional deliverability).
+
+## Signup 8-Digit OTP Delivery (`src/app/auth/actions.ts`)
+
+When both `SUPABASE_SERVICE_ROLE_KEY` and `SMTP_HOST` are configured, the `signup` server action bypasses Supabase's built-in rate-limited mailer:
+1. Calls `supabaseAdmin.auth.admin.generateLink({ type: "signup", email, password, options })` to create the user and retrieve `properties.email_otp` (8-digit code).
+2. Renders the branded HTML template via `buildSignupOtpEmailHtml({ otpCode, email })`.
+3. Dispatches the email directly through `sendEmailWithDetails` (Nodemailer SMTP) and redirects the user to `/auth/verify-email`.
 
 ## Current And Needed Emails
 

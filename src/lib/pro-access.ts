@@ -367,7 +367,7 @@ export async function getAccountProAccess(
                         { accountNumber: null, broker: null },
                         { source: "MANUAL_ADMIN" },
                     ],
-                    status: { in: ["ACTIVE", "GRACE"] },
+                    status: { in: ["ACTIVE", "GRACE", "REVOKED"] },
                 },
                 select: {
                     id: true,
@@ -377,7 +377,7 @@ export async function getAccountProAccess(
                 },
                 orderBy: { createdAt: "desc" },
             });
-            if (globalEntitlement) {
+            if (globalEntitlement && (!entitlement || globalEntitlement.status !== "REVOKED")) {
                 entitlement = globalEntitlement;
             }
         }
@@ -400,31 +400,33 @@ export async function getAccountProAccess(
         entitlement?.status === "ACTIVE" || entitlement?.status === "GRACE";
     const isManualAdminGrant = entitlement?.source === "MANUAL_ADMIN";
 
-    // 1. If no active entitlement, check if user is within 7-day trial
+    // 1. If no active entitlement, check if user is within 7-day trial (unless explicitly REVOKED by Admin)
     if (!hasEntitlement) {
-        const user = await prisma.user.findUnique({
-            where: { id: userId },
-            select: { createdAt: true },
-        });
+        if (entitlement?.status !== "REVOKED") {
+            const user = await prisma.user.findUnique({
+                where: { id: userId },
+                select: { createdAt: true },
+            });
 
-        if (user) {
-            const trialDurationMs = TRIAL_DURATION_DAYS * 24 * 60 * 60 * 1000;
-            const trialEndsAt = new Date(user.createdAt.getTime() + trialDurationMs);
-            if (now < trialEndsAt) {
-                const diffMs = trialEndsAt.getTime() - now.getTime();
-                const daysRemaining = Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
-                return {
-                    isPro: true,
-                    status: "TRIAL",
-                    source: "PROMO",
-                    expiresAt: trialEndsAt,
-                    policyState: "ACTIVE",
-                    trialInfo: {
-                        isTrial: true,
-                        daysRemaining,
-                        trialEndsAt,
-                    },
-                };
+            if (user) {
+                const trialDurationMs = TRIAL_DURATION_DAYS * 24 * 60 * 60 * 1000;
+                const trialEndsAt = new Date(user.createdAt.getTime() + trialDurationMs);
+                if (now < trialEndsAt) {
+                    const diffMs = trialEndsAt.getTime() - now.getTime();
+                    const daysRemaining = Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+                    return {
+                        isPro: true,
+                        status: "TRIAL",
+                        source: "PROMO",
+                        expiresAt: trialEndsAt,
+                        policyState: "ACTIVE",
+                        trialInfo: {
+                            isTrial: true,
+                            daysRemaining,
+                            trialEndsAt,
+                        },
+                    };
+                }
             }
         }
 
@@ -830,8 +832,39 @@ export async function getUserProAccess(
         }
     }
 
+    const activeGlobalGrant = globalUnlinkedAccounts.find(
+        (g) => g.status === "ACTIVE" || g.status === "GRACE"
+    );
+
     const accounts: AccountProStatus[] = allTradingAccounts.map((ta) => {
         const existing = entitlementMap.get(ta.id);
+        if (
+            existing &&
+            (existing.status === "ACTIVE" || existing.status === "GRACE")
+        ) {
+            return existing;
+        }
+        if (activeGlobalGrant) {
+            const isEligibleAccount =
+                isLiveTradingAccount(ta) &&
+                isVipEligibleBrokerKey(ta.broker, eligibleBrokerKeys);
+            const hasAccess =
+                activeGlobalGrant.source === "MANUAL_ADMIN" ||
+                isEligibleAccount;
+            if (hasAccess) {
+                return {
+                    tradingAccountId: ta.id,
+                    accountName: ta.name,
+                    broker: ta.broker,
+                    status: activeGlobalGrant.status,
+                    isPro: true,
+                    source: activeGlobalGrant.source,
+                    expiresAt: activeGlobalGrant.expiresAt,
+                    fundingVerified:
+                        isLiveTradingAccount(ta) && !!ta.fundingVerifiedAt,
+                };
+            }
+        }
         if (existing) return existing;
         return {
             tradingAccountId: ta.id,
@@ -851,9 +884,12 @@ export async function getUserProAccess(
     const hasAnyEntitlement = accounts.some(
         (a) => a.status === "ACTIVE" || a.status === "GRACE"
     );
+    const hasRevokedEntitlement = entitlements.some(
+        (e) => e.status === "REVOKED"
+    );
 
-    // 1. Handle 7-Day Free Trial if user has NO active entitlement
-    if (!hasAnyEntitlement && user) {
+    // 1. Handle 7-Day Free Trial if user has NO active entitlement and has NOT been explicitly revoked by Admin
+    if (!hasAnyEntitlement && !hasRevokedEntitlement && user) {
         const trialDurationMs = TRIAL_DURATION_DAYS * 24 * 60 * 60 * 1000;
         const trialEndsAt = new Date(user.createdAt.getTime() + trialDurationMs);
 

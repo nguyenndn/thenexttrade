@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Logo } from "@/components/ui/Logo";
 import { cn } from "@/lib/utils";
 import { dashboardMenuItems } from "@/config/navigation";
@@ -11,6 +11,34 @@ import { signout } from "@/app/auth/actions";
 import { useFeatureFlags } from "@/lib/dashboard-context";
 import { Button } from "@/components/ui/Button";
 import { VipStatusWidget } from "@/components/dashboard/VipStatusWidget";
+
+const ACCOUNT_SCOPED_ROUTES = new Set([
+    "/dashboard",
+    "/dashboard/journal",
+    "/dashboard/analytics",
+    "/dashboard/sessions",
+    "/dashboard/intelligence",
+    "/dashboard/reports",
+]);
+
+function buildScopedHref(
+    rawHref: string,
+    searchParams: ReturnType<typeof useSearchParams>
+): string {
+    if (!rawHref || rawHref === "#") return rawHref;
+    const cleanPath = rawHref.split("?")[0];
+    if (!ACCOUNT_SCOPED_ROUTES.has(cleanPath)) return rawHref;
+
+    const params = new URLSearchParams(rawHref.split("?")[1] || "");
+    const accountId = searchParams?.get("accountId");
+
+    if (accountId && !params.has("accountId")) {
+        params.set("accountId", accountId);
+    }
+
+    const qs = params.toString();
+    return qs ? `${cleanPath}?${qs}` : cleanPath;
+}
 
 export interface SidebarItem {
     name: string;
@@ -46,8 +74,10 @@ function SidebarItemComponent({
     onToggle,
     activeHref,
 }: SidebarItemComponentProps) {
+    const searchParams = useSearchParams();
     const Icon = item.icon;
     const hasSubItems = item.items && item.items.length > 0;
+    const resolvedItemHref = buildScopedHref(item.href, searchParams);
 
     // Active Logic
     // Exact match determined by the parent's longest prefix match
@@ -100,7 +130,7 @@ function SidebarItemComponent({
                 >
                     {item.href !== "#" && (
                         <Link
-                            href={item.href}
+                            href={resolvedItemHref}
                             className="absolute inset-0 z-0"
                         />
                     )}
@@ -148,10 +178,14 @@ function SidebarItemComponent({
 
                     {item.items.map((subItem: any) => {
                         const isSubActive = subItem.href === activeHref;
+                        const resolvedSubHref = buildScopedHref(
+                            subItem.href,
+                            searchParams
+                        );
                         return (
                             <Link
                                 key={subItem.name}
-                                href={subItem.href}
+                                href={resolvedSubHref}
                                 className={cn(
                                     "flex items-center gap-2 py-1.5 pl-2 pr-3 rounded-lg text-[13px] font-semibold transition-colors relative",
                                     isSubActive

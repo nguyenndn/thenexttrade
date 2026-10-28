@@ -1,8 +1,22 @@
 # Design
 
-Last reviewed: 2026-08-18
+Last reviewed: 2026-10-28
 
-Design direction: premium, calm, operational, and fast to scan. Dashboard pages should feel like tools, not landing pages.
+Design direction: premium, calm, operational, and fast to scan. Dashboard pages should feel like tools, not landing pages. For full component rules, also reference `design/ui-guide.md` and `AGENTS.md`.
+
+## UI & UX Invariants (Mandatory Design System Rules)
+
+| Rule | Standard |
+| --- | --- |
+| **Language** | English-only in all user-facing and admin UI copy |
+| **Buttons & Dropdowns** | Always use `<Button>` from `@/components/ui/Button` and `<DropdownMenu>` (never raw `<button>` or `<select>`) |
+| **Optical Border Radius** | Cards/Panels = `rounded-xl` (12px+); Buttons/Inputs = `rounded-lg` (8px) |
+| **Cancel / Close Button** | Always use `variant="outline"` (never `variant="ghost"`) |
+| **Icons** | `lucide-react` icons only (never emojis in operational UI) |
+| **Input Placeholders** | No generic example placeholders (`e.g. 200`, `Enter...`); rely on clear Labels & Helper Text |
+| **Entity Color Picker** | Embed a compact prefix popover swatch `[🟢▾]` inside the Name input instead of sprawling multi-row color grids |
+| **2x2 Matrix Specs Card** | Group technical specs (`Account #`, `Broker`, `Server`, `Platform`) into a `grid-cols-2 divide-x divide-y` matrix card |
+| **Telemetry Status** | Use a pulsing status dot + relative time (`formatDistanceToNow`) with tooltip instead of rigid `Live (EA)` text badges |
 
 ## Feature Density
 

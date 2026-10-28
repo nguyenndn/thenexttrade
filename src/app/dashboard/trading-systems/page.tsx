@@ -32,6 +32,7 @@ export default async function TradingSystemsPage() {
         vipRequest,
         vipLink,
         tradingAccounts,
+        globalProEntitlement,
     ] = await Promise.all([
         prisma.eALicense.findMany({
             where: { userId: user.id },
@@ -68,9 +69,32 @@ export default async function TradingSystemsPage() {
             },
             orderBy: { createdAt: "desc" },
         }),
+        prisma.proEntitlement.findFirst({
+            where: {
+                userId: user.id,
+                tradingAccountId: null,
+                OR: [
+                    { accountNumber: null, broker: null },
+                    { source: "MANUAL_ADMIN" },
+                ],
+                status: { in: ["ACTIVE", "GRACE"] },
+            },
+            select: {
+                status: true,
+                expiresAt: true,
+            },
+            orderBy: { createdAt: "desc" },
+        }),
     ]);
 
     const now = new Date();
+    const hasGlobalPro = Boolean(
+        globalProEntitlement &&
+            (globalProEntitlement.status === "ACTIVE" ||
+                globalProEntitlement.status === "GRACE") &&
+            (!globalProEntitlement.expiresAt ||
+                globalProEntitlement.expiresAt >= now)
+    );
     const accountByNumber = new Map<string, (typeof tradingAccounts)[number]>();
     for (const acc of tradingAccounts) {
         if (acc.accountNumber) {
@@ -116,22 +140,25 @@ export default async function TradingSystemsPage() {
         });
     }
 
-    // Also include any TradingAccount that was verified via VIP / IB Attribution
+    // Also include any TradingAccount that was verified via VIP / IB Attribution or Global Pro
     for (const acc of tradingAccounts) {
         const acctNum = acc.accountNumber?.trim();
         if (!acctNum || accountLicensesMap.has(acctNum)) continue;
 
         const hasActivePro =
-            acc.proEntitlement &&
-            (acc.proEntitlement.status === "ACTIVE" ||
-                acc.proEntitlement.status === "GRACE") &&
-            (!acc.proEntitlement.expiresAt ||
-                acc.proEntitlement.expiresAt >= now);
+            hasGlobalPro ||
+            Boolean(
+                acc.proEntitlement &&
+                    (acc.proEntitlement.status === "ACTIVE" ||
+                        acc.proEntitlement.status === "GRACE") &&
+                    (!acc.proEntitlement.expiresAt ||
+                        acc.proEntitlement.expiresAt >= now)
+            );
 
         const isIbApproved =
             acc.ibAttribution === "VERIFIED" ||
             acc.ibAttribution === "CONFIRMED" ||
-            Boolean(hasActivePro);
+            hasActivePro;
 
         if (isIbApproved) {
             let licenseKey = acc.apiKey;
@@ -156,9 +183,9 @@ export default async function TradingSystemsPage() {
     }
 
     const accountLicenses = Array.from(accountLicensesMap.values());
-    const hasApprovedLicense = accountLicenses.some(
-        (item) => item.status === "APPROVED"
-    );
+    const hasApprovedLicense =
+        hasGlobalPro ||
+        accountLicenses.some((item) => item.status === "APPROVED");
 
     const userTradingAccounts: SelectableTradingAccount[] = tradingAccounts.map(
         (acc) => {

@@ -316,7 +316,7 @@ export function AccountSettingsModal({
                             onChange={(val) => setServer(val)}
                             label="Broker Server"
                             required={false}
-                            helperText="MT5 Broker server name used for automated Cloud Sync"
+                            helperText="Optional MT5 broker server name"
                         />
 
                         {/* Account Specs - 2 rows x 2 columns */}
@@ -373,7 +373,7 @@ export function AccountSettingsModal({
                         </div>
                     </div>
 
-                    {/* Cloud Sync & Credentials */}
+                    {/* Cloud Sync & Credentials — temporarily hidden while Cloud Sync infrastructure is offline
                     <div className="space-y-4 pt-2 border-t border-dashboard">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
@@ -395,7 +395,6 @@ export function AccountSettingsModal({
                             )}
                         </div>
 
-                        {/* Domain Realism Notice */}
                         <div className="p-3 rounded-lg bg-primary/5 border border-primary/15 text-xs text-gray-600 dark:text-gray-300 flex items-center gap-2.5">
                             <CloudSync size={16} className="text-primary shrink-0" />
                             <p className="text-[11px] leading-relaxed">
@@ -426,6 +425,7 @@ export function AccountSettingsModal({
                             />
                         </div>
                     </div>
+                    */}
 
 
                     {/* API Configuration */}

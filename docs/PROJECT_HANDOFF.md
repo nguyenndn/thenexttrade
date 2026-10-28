@@ -1,10 +1,10 @@
 # Project Handoff
 
-Last reviewed: 2026-09-10
+Last reviewed: 2026-10-26
 
 This file is the practical handoff for a new developer or AI agent. It explains what the product is, which features matter, and where to work without reading every historical plan.
 
-For a feature-by-feature keep/hide/remove decision map, read `docs/FEATURE_CATALOG.md` before touching UI scope or navigation.
+For the complete Vietnamese Business Analyst / SRS specification across all 10 system modules, read `docs/MASTER_BA_SPECIFICATION.md`. For a feature-by-feature keep/hide/remove decision map, read `docs/FEATURE_CATALOG.md` before touching UI scope or navigation.
 
 ## Product Thesis
 
@@ -32,21 +32,22 @@ Do not replace the global platform identity with GoldScalperNinja. Treat GoldSca
 | Core | Journal review | `/dashboard/journal`, `/dashboard/sessions` | Yes | User needs to inspect trades, plans, tags, and behavior. |
 | Core | Analytics and intelligence | `/dashboard/analytics`, `/dashboard/intelligence` | Yes | Converts raw history into patterns and risk insight. |
 | Core | Reports and weekly coach | `/dashboard/reports`, `/dashboard/reports/weekly` | Yes | Turns analysis into a weekly action. |
-| Core | Rules and goals | `/dashboard/rules` | Yes | Makes improvement measurable. |
+| Core | Rules, goals & strategies | `/dashboard/rules`, `/dashboard/strategies` | Yes | Makes improvement and playbook performance measurable. |
+| Core | Trade Manager Remote Control | `/dashboard/trade-manager`, `/api/remote/*` | Yes | Enables web/mobile position monitoring, SL-to-breakeven, and remote execution. |
 | Core | Trading Style Assessment | `/trading-style`, `/dashboard/settings/trading-style` | Yes | 14-question profiling engine mapping 8 archetypes across 6 dimensions to diagnose behavior. |
 | Core | Academy | `/academy`, `/dashboard/academy` | Yes | Provides lessons/articles tied to user weaknesses. |
 | Core | New-user activation | `/onboarding`, `/dashboard` first-session wizard | Yes | Prevents new users from not knowing what to do. |
 | Supporting | Homepage/public conversion | `/`, `/get-started`, `/faq` | Yes, but simplified | Should guide users into signup or useful public learning. |
 | Supporting | Community | `/community` | Yes | Builds trust and VIP/IB funnel around GoldScalperNinja. |
-| Supporting | Trading systems | `/trading-systems`, `/trading-systems/[slug]` | Yes | Explains EA products and partner unlock path. |
+| Supporting | Trading systems | `/trading-systems`, `/trading-systems/[slug]`, `/dashboard/trading-systems` | Yes | Explains EA products and partner unlock path (1 License Key unlocks all 3 EAs). |
 | Supporting | Brokers | `/brokers`, broker detail pages | Yes | Supports partner account/VIP eligibility. |
 | Supporting | Tools | `/tools`, `/tools/*` | Yes | SEO and trader utility, but not the main app journey. |
 | Supporting | Public trader card | `/trader/[username]`, `/share/[id]` | Yes | Social proof and safe sharing. |
-| Retention | Edge missions, leaderboard, check-ins | `/dashboard/missions`, `/dashboard/leaderboard` | Yes, but secondary | Good retention, but should not block first value. |
-| Admin | Reports, users, IB/VIP, AI Gateway, Email Lab | `/admin/*` | Yes | Needed for operation, support, and monitoring. |
+| Retention | Edge missions, loyalty, leaderboard, check-ins | `/dashboard/learning`, `/dashboard/loyalty`, `/dashboard/leaderboard` | Yes, but secondary | Good retention, but should not block first value. |
+| Admin | Reports, 3-Tab User CRM, IB/VIP, AI Gateway, Email Lab | `/admin/*` | Yes | Needed for operation, support, and monitoring. |
 | Admin | Behaviour segmentation | `/admin/users/behavior` | Yes | Turns telemetry into who needs help and who is worth the most. |
 | Admin | Revenue & commission rates | `/admin/trading-systems/brokers` | Yes | Commission rates are the input to every IB revenue figure. |
-| Admin | Sync operations | `/admin/ib/sync-requests` | Yes | Covers automated sync failures and the manual fallback path. |
+| Admin | Sync & Cloud Worker operations | `/admin/ib/sync-requests`, `/admin/mt5-cloud` | Yes | Covers Multi-Instance/Auto-Sleep cloud workers and manual support tickets. |
 | Hidden/legacy | Retired sync client (previously "TNT Connect"), legacy sync copy | legacy files/APIs only | Compatibility only | Current user-facing sync path is Trade Manager EA or Manual Journal. |
 | Removed/avoid | Prop firm/funded challenge direction | removed routes/blocks | No | Not aligned with the current product direction. |
 | Removed/avoid | EA backtest/performance simulator claims | old plans only | No | We do not have validated public backtest presentation for this flow. |
@@ -118,6 +119,7 @@ User-facing AI actions must go through the internal gateway. They should not cal
 
 | File | Update when |
 | --- | --- |
+| `docs/MASTER_BA_SPECIFICATION.md` | Full end-to-end BA / SRS functional specification across User and Admin modules changes |
 | `docs/PROJECT_HANDOFF.md` | Product direction, feature priority, or route ownership changes |
 | `docs/FEATURE_CATALOG.md` | Feature necessity, visibility rules, and route ownership by product layer |
 | `docs/PRODUCT.md` | User/admin behavior changes |

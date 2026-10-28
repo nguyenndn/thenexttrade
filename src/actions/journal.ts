@@ -58,6 +58,11 @@ export async function getJournalEntries(
         accountId?: string;
         symbol?: string;
         type?: string;
+        direction?: string;
+        result?: string;
+        source?: string;
+        comment?: string;
+        magicNumber?: string;
         status?: string;
         tag?: string;
         strategy?: string;
@@ -77,6 +82,11 @@ export async function getJournalEntries(
         accountId,
         symbol,
         type,
+        direction,
+        result,
+        source,
+        comment,
+        magicNumber,
         status,
         tag,
         strategy,
@@ -92,9 +102,13 @@ export async function getJournalEntries(
     const skip = (safePage - 1) * safeLimit;
 
     const where: any = { userId: user.id };
-    if (accountId) where.accountId = accountId;
+    if (accountId && accountId !== "all") where.accountId = accountId;
     if (symbol) where.symbol = { contains: symbol, mode: "insensitive" };
-    if (type) where.type = type as TradeType;
+
+    const effectiveDirection = type || direction;
+    if (effectiveDirection && ["BUY", "SELL"].includes(effectiveDirection)) {
+        where.type = effectiveDirection as TradeType;
+    }
 
     if (status) {
         if (["WIN", "LOSS", "BREAK_EVEN"].includes(status)) {
@@ -104,11 +118,47 @@ export async function getJournalEntries(
         }
     }
 
+    if (result && ["WIN", "LOSS", "BREAK_EVEN"].includes(result)) {
+        where.result = result as TradeResult;
+    }
+
+    if (source === "EA") {
+        where.syncSource = { in: ["EA", "APP", "MT5_CLOUD"] };
+    } else if (source === "MANUAL") {
+        where.OR = [{ syncSource: "MANUAL" }, { syncSource: null }];
+    }
+
+    if (comment) {
+        where.notes = { contains: comment, mode: "insensitive" };
+    }
+
+    if (magicNumber && magicNumber.trim() !== "") {
+        const parsedMagic = Number(magicNumber.trim());
+        if (!Number.isNaN(parsedMagic)) {
+            where.magicNumber = parsedMagic;
+        }
+    }
+
     if (strategy) where.strategy = { equals: strategy, mode: "insensitive" };
 
     const dateFilter = buildDateRangeFilter(dateFrom, dateTo, timezone);
     if (dateFilter) {
-        where.OR = [{ exitDate: dateFilter }, { entryDate: dateFilter }];
+        const dateOrCondition =
+            status === "OPEN"
+                ? [{ entryDate: dateFilter }]
+                : status === "CLOSED"
+                  ? [{ exitDate: dateFilter }]
+                  : [
+                        { status: "CLOSED" as TradeStatus, exitDate: dateFilter },
+                        { status: "OPEN" as TradeStatus, entryDate: dateFilter },
+                    ];
+
+        if (where.OR) {
+            where.AND = [{ OR: where.OR }, { OR: dateOrCondition }];
+            delete where.OR;
+        } else {
+            where.OR = dateOrCondition;
+        }
     }
 
     if (hasImages) {
@@ -137,6 +187,15 @@ export async function getJournalEntries(
         statsWhere.status = "CLOSED";
         if (dateFilter) {
             delete statsWhere.OR;
+            if (statsWhere.AND) {
+                statsWhere.AND = statsWhere.AND.filter(
+                    (cond: any) =>
+                        !cond.OR?.some(
+                            (o: any) => o.exitDate || o.entryDate
+                        )
+                );
+                if (statsWhere.AND.length === 0) delete statsWhere.AND;
+            }
             statsWhere.exitDate = dateFilter;
         }
     }
@@ -284,6 +343,16 @@ export async function createJournalEntry(data: z.infer<typeof journalSchema>) {
             },
         });
 
+        if (entry.accountId) {
+            const exactTotalTrades = await prisma.journalEntry.count({
+                where: { accountId: entry.accountId },
+            });
+            await prisma.tradingAccount.update({
+                where: { id: entry.accountId },
+                data: { totalTrades: exactTotalTrades },
+            });
+        }
+
         // Award XP for logging trade
         let xpEarned = 0;
         let isFirstTrade = false;
@@ -396,9 +465,19 @@ export async function deleteJournalEntry(id: string) {
             data: { journalEntryId: null, status: "PLANNED" },
         });
 
-        await prisma.journalEntry.delete({
+        const deletedEntry = await prisma.journalEntry.delete({
             where: { id, userId: user.id },
         });
+
+        if (deletedEntry.accountId) {
+            const exactTotalTrades = await prisma.journalEntry.count({
+                where: { accountId: deletedEntry.accountId },
+            });
+            await prisma.tradingAccount.update({
+                where: { id: deletedEntry.accountId },
+                data: { totalTrades: exactTotalTrades },
+            });
+        }
 
         revalidatePath("/dashboard/journal");
         return { success: true };
@@ -416,6 +495,12 @@ export async function bulkDeleteJournalEntries(ids: string[]) {
     }
 
     try {
+        const affectedAccounts = await prisma.journalEntry.findMany({
+            where: { id: { in: ids }, userId: user.id },
+            select: { accountId: true },
+            distinct: ["accountId"],
+        });
+
         await prisma.tradePlan.updateMany({
             where: {
                 journalEntryId: { in: ids },
@@ -433,6 +518,18 @@ export async function bulkDeleteJournalEntries(ids: string[]) {
                 userId: user.id,
             },
         });
+
+        for (const item of affectedAccounts) {
+            if (item.accountId) {
+                const exactTotalTrades = await prisma.journalEntry.count({
+                    where: { accountId: item.accountId },
+                });
+                await prisma.tradingAccount.update({
+                    where: { id: item.accountId },
+                    data: { totalTrades: exactTotalTrades },
+                });
+            }
+        }
 
         revalidatePath("/dashboard/journal");
         return { success: true, count: deleted.count };
@@ -548,7 +645,7 @@ export async function exportJournalEntries(filters: {
     const { accountId, symbol, type, status, tag, dateFrom, dateTo } = filters;
     const where: any = { userId: user.id };
 
-    if (accountId) where.accountId = accountId;
+    if (accountId && accountId !== "all") where.accountId = accountId;
     if (symbol) where.symbol = { contains: symbol, mode: "insensitive" };
     if (type) where.type = type as TradeType;
 

@@ -1,12 +1,11 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { BarChart2, Crown, Check, Clock } from "lucide-react";
+import { BarChart2 } from "lucide-react";
 import { SystemsList } from "@/components/dashboard/trading-systems/SystemsList";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { CustomBotIcon } from "./SharedUI";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { VipTabSummary } from "./VipTabSummary";
 import {
     LicenseAccountsPanel,
     type AccountLicenseItem,
@@ -29,20 +28,16 @@ interface TradingSystemsClientProps {
 }
 
 export function TradingSystemsClient({
-    licenses,
     accountLicenses = [],
     userTradingAccounts = [],
     products,
     hasApprovedLicense,
-    hasAccount,
-    hasDownloaded,
-    vipRequest = null,
     vipLink = null,
-    userEmail = "",
-    userName,
 }: TradingSystemsClientProps) {
     const searchParams = useSearchParams();
-    const defaultTab = searchParams.get("tab") || "MT5_EA";
+    const rawTab = searchParams.get("tab");
+    const defaultTab =
+        rawTab === "MT5_INDICATOR" ? "MT5_INDICATOR" : "MT5_EA";
     // Product counts for tab badges
     const eaCount = products.filter(
         (p) =>
@@ -68,14 +63,6 @@ export function TradingSystemsClient({
             p.type === "INDICATOR"
     );
 
-    // VIP status badge
-    const vipBadge =
-        vipRequest?.status === "APPROVED"
-            ? <Check size={11} />
-            : vipRequest?.status === "PENDING"
-              ? <Clock size={11} />
-              : null;
-
     return (
         <>
             {/* Header */}
@@ -88,6 +75,8 @@ export function TradingSystemsClient({
             <LicenseAccountsPanel
                 items={accountLicenses}
                 userTradingAccounts={userTradingAccounts}
+                hasApprovedLicense={hasApprovedLicense}
+                vipLink={vipLink}
             />
 
             {/* Unified Tabs */}
@@ -122,20 +111,6 @@ export function TradingSystemsClient({
                                 </span>
                             )}
                         </TabsTrigger>
-                        <TabsTrigger
-                            value="VIP"
-                            className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
-                            activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
-                            activeTextClassName="!text-white"
-                        >
-                            <Crown size={14} className="sm:w-4 sm:h-4" />
-                            <span>VIP</span>
-                            {vipBadge && (
-                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-gold shadow-sm ml-1">
-                                    {vipBadge}
-                                </span>
-                            )}
-                        </TabsTrigger>
                     </TabsList>
                 </div>
 
@@ -159,18 +134,6 @@ export function TradingSystemsClient({
                             products={indicatorProducts}
                             isLocked={!hasApprovedLicense}
                         />
-                    </TabsContent>
-
-                    <TabsContent
-                        value="VIP"
-                        className="animate-in fade-in slide-in-from-bottom-4 duration-500 mt-0"
-                    >
-                        <div className="w-full bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-dashboard">
-                            <VipTabSummary
-                                vipRequest={vipRequest}
-                                vipLink={vipLink}
-                            />
-                        </div>
                     </TabsContent>
                 </div>
             </Tabs>

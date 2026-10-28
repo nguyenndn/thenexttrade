@@ -188,7 +188,7 @@ export async function verifyLogin2FA(code: string) {
     if (error) return { error: AUTH_ERRORS.OTP_VERIFY_GENERIC };
 
     revalidatePath("/", "layout");
-    redirect("/academy");
+    redirect("/dashboard");
 }
 
 export async function signInWithMagicLink(formData: FormData) {
@@ -478,7 +478,7 @@ export async function updatePassword(formData: FormData) {
         return { error: error.message };
     }
 
-    redirect("/academy");
+    redirect("/dashboard");
 }
 
 // ----------------------------------------------------------------------------

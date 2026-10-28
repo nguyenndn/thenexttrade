@@ -342,8 +342,11 @@ export function ProductList({ products }: ProductListProps) {
                                             className="hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors group"
                                         >
                                             <td className="px-8 py-4">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-white/10 flex items-center justify-center shrink-0 overflow-hidden shadow-sm border border-gray-200 dark:border-white/10 group-hover:shadow-md transition-all">
+                                                <Link
+                                                    href={`/admin/trading-systems/${product.id}`}
+                                                    className="flex items-center gap-4 group/product"
+                                                >
+                                                    <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-white/10 flex items-center justify-center shrink-0 overflow-hidden shadow-sm border border-gray-200 dark:border-white/10 group-hover/product:shadow-md transition-all">
                                                         {product.thumbnail ? (
                                                             <img
                                                                 src={
@@ -352,7 +355,7 @@ export function ProductList({ products }: ProductListProps) {
                                                                 alt={
                                                                     product.name
                                                                 }
-                                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                                className="w-full h-full object-cover group-hover/product:scale-110 transition-transform duration-500"
                                                             />
                                                         ) : (
                                                             <Bot
@@ -363,7 +366,7 @@ export function ProductList({ products }: ProductListProps) {
                                                         )}
                                                     </div>
                                                     <div>
-                                                        <p className="font-bold text-gray-700 dark:text-white text-base group-hover:text-primary transition-colors">
+                                                        <p className="font-bold text-gray-700 dark:text-white text-base group-hover/product:text-primary transition-colors">
                                                             {product.name}
                                                         </p>
                                                         <p className="text-xs text-gray-600 mt-0.5">
@@ -375,7 +378,7 @@ export function ProductList({ products }: ProductListProps) {
                                                             )}
                                                         </p>
                                                     </div>
-                                                </div>
+                                                </Link>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className="bg-gray-100 dark:bg-white/10 px-2.5 py-1 rounded-lg text-[10px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-widest border border-gray-200 dark:border-white/10">

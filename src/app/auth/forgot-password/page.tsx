@@ -12,6 +12,7 @@ export default function ForgotPasswordPage() {
     const [message, setMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [turnstileToken, setTurnstileToken] = useState("");
+    const [turnstileResetKey, setTurnstileResetKey] = useState(0);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -25,6 +26,7 @@ export default function ForgotPasswordPage() {
 
         if (result?.error) {
             setError(result.error);
+            setTurnstileResetKey((k) => k + 1);
         } else {
             setMessage(
                 result?.message ||
@@ -84,6 +86,7 @@ export default function ForgotPasswordPage() {
                     )}
 
                     <TurnstileWidget
+                        resetKey={turnstileResetKey}
                         onVerify={setTurnstileToken}
                         className="flex justify-center"
                     />

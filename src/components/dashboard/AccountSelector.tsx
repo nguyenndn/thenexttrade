@@ -63,6 +63,7 @@ type TradingAccount = {
     balance: number;
     currency: string;
     isDefault: boolean;
+    isMain?: boolean;
     accountNumber: string;
     platform?: string;
     accountType?: string;
@@ -111,8 +112,9 @@ export function AccountSelector({
             });
     }, []);
 
-    // Stable accountId string from URL (avoids searchParams object ref instability)
-    const urlAccountId = searchParams?.get("accountId") || currentAccountId;
+    // Raw accountId in URL vs effective accountId (including server-resolved prop)
+    const rawUrlAccountId = searchParams?.get("accountId");
+    const urlAccountId = rawUrlAccountId || currentAccountId;
 
     // Guard: prevent re-navigating after initial account selection
     const hasSetAccount = useRef(false);
@@ -127,19 +129,25 @@ export function AccountSelector({
             active = accounts.find((a) => a.id === urlAccountId);
         }
 
-        // Fallback to Cookie or Oldest Account
+        // Priority 1: Main Account set in /dashboard/accounts (isMain / isDefault)
+        // Priority 2: Cookie last_account_id
+        // Priority 3: First account
         if (!active && accounts.length > 0) {
-            // Helper to get cookie
-            const getCookie = (name: string) => {
-                const value = `; ${document.cookie}`;
-                const parts = value.split(`; ${name}=`);
-                if (parts.length === 2) return parts.pop()?.split(";").shift();
-                return null;
-            };
+            active = accounts.find((a) => a.isMain || a.isDefault);
 
-            const savedAccountId = getCookie("last_account_id");
-            if (savedAccountId) {
-                active = accounts.find((a) => a.id === savedAccountId);
+            if (!active) {
+                const getCookie = (name: string) => {
+                    const value = `; ${document.cookie}`;
+                    const parts = value.split(`; ${name}=`);
+                    if (parts.length === 2)
+                        return parts.pop()?.split(";").shift();
+                    return null;
+                };
+
+                const savedAccountId = getCookie("last_account_id");
+                if (savedAccountId) {
+                    active = accounts.find((a) => a.id === savedAccountId);
+                }
             }
 
             if (!active) {
@@ -158,13 +166,17 @@ export function AccountSelector({
                 window.dispatchEvent(event);
             }
 
-            // Navigate ONLY if URL param is missing/wrong AND we haven't already navigated
+            // Navigate ONLY if the actual browser URL param is missing/wrong AND we haven't already navigated
             if (
-                (!urlAccountId || active.id !== urlAccountId) &&
+                (!rawUrlAccountId || active.id !== rawUrlAccountId) &&
                 !hasSetAccount.current
             ) {
                 hasSetAccount.current = true;
-                const params = new URLSearchParams(searchParams?.toString());
+                const liveQuery =
+                    typeof window !== "undefined"
+                        ? window.location.search
+                        : searchParams?.toString() || "";
+                const params = new URLSearchParams(liveQuery);
                 params.set("accountId", active.id);
                 // Update cookie to correct value
                 document.cookie = `last_account_id=${active.id}; path=/; max-age=31536000; SameSite=Lax`;
@@ -173,7 +185,7 @@ export function AccountSelector({
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [urlAccountId, accounts]);
+    }, [rawUrlAccountId, urlAccountId, accounts]);
 
     const handleSelect = useCallback(
         (account: TradingAccount) => {
@@ -192,14 +204,17 @@ export function AccountSelector({
                 window.dispatchEvent(event);
             }
 
-            // 3. Update URL
-            const params = new URLSearchParams(searchParams?.toString());
+            // 3. Update URL using live window.location.search to avoid stale searchParams closure
+            const liveQuery =
+                typeof window !== "undefined"
+                    ? window.location.search
+                    : searchParams?.toString() || "";
+            const params = new URLSearchParams(liveQuery);
             params.set("accountId", account.id);
 
             router.push(`?${params.toString()}`);
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         },
-        [router]
+        [router, searchParams]
     );
 
     return (

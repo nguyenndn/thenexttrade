@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { buttonVariants } from "@/components/ui/button-variants";
+import { getSyncServerUrl } from "@/lib/sync/sync-urls";
 
 export default function SyncSettingsClient() {
     const [isLoading, setIsLoading] = useState(true);
@@ -182,10 +183,7 @@ export default function SyncSettingsClient() {
         },
     ];
 
-    const syncApiUrl =
-        typeof window !== "undefined"
-            ? window.location.origin
-            : "https://thenexttrade.com";
+    const syncApiUrl = getSyncServerUrl();
 
     const STEPS = [
         {

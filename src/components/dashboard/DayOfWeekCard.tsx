@@ -98,7 +98,7 @@ export function DayOfWeekCard({ data }: DayOfWeekCardProps) {
             </div>
 
             {/* Day rows - exactly 5 rows fill remaining space */}
-            <div className="flex-1 flex flex-col px-5 pb-5 min-h-0">
+            <div className="flex-1 flex flex-col px-5 pb-5 min-h-0 overflow-y-auto custom-scrollbar">
                 {!hasTrades ? (
                     <div className="flex items-center justify-center flex-1">
                         <p className="text-sm text-gray-400">

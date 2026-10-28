@@ -35,8 +35,7 @@ function useDashboardUrl(): string {
         );
         const accountId = match?.[1];
         if (!accountId) return "/dashboard";
-        const today = new Date().toISOString().slice(0, 10); // yyyy-MM-dd
-        return `/dashboard?accountId=${accountId}&from=${today}&to=${today}`;
+        return `/dashboard?accountId=${accountId}`;
     }, []);
 }
 

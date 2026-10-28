@@ -1,13 +1,16 @@
 "use client";
 
-import React, { useState, useEffect, useTransition, useRef } from "react";
-import { createPortal } from "react-dom";
+import React, {
+    useState,
+    useEffect,
+    useTransition,
+    useRef,
+    useMemo,
+    useCallback,
+} from "react";
 import {
     LayoutDashboard,
-    Settings,
     Plus,
-    Save,
-    X,
     Edit3,
     Trash2,
     ChevronDown,
@@ -35,7 +38,11 @@ import { WidgetWrapper } from "./WidgetWrapper";
 import { WidgetCatalogueModal } from "./WidgetCatalogueModal";
 import { WIDGET_REGISTRY, WidgetType } from "./WidgetRegistry";
 import {
-    getUserDashboards,
+    GridPresetsMenu,
+    GridPresetId,
+    buildPresetLayout,
+} from "./GridPresetsMenu";
+import {
     saveDashboardLayout,
     createDashboard,
     deleteDashboard,
@@ -48,6 +55,13 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { DashboardFilter } from "../DashboardFilter";
 
+const DEFAULT_HERO_WIDGETS: HeroWidgetType[] = [
+    "TOTAL_BALANCE",
+    "PERIOD_PNL",
+    "WIN_RATE",
+    "TRADE_SCORE",
+];
+
 function migrateLegacyLayout(grid: any[]): any[] {
     if (!grid || grid.length === 0) return [];
 
@@ -58,7 +72,7 @@ function migrateLegacyLayout(grid: any[]): any[] {
             ...item,
             x: item.x * 60,
             w: item.w * 60,
-            h: Math.round(item.h * 22), // Scale up height for 5px rowHeight with 0px vertical margin (approx 22x multiplier)
+            h: Math.round(item.h * 22),
         }));
     }
 
@@ -73,6 +87,70 @@ function migrateLegacyLayout(grid: any[]): any[] {
     }
 
     return grid;
+}
+
+function parseDashboardLayout(rawLayout: unknown): {
+    grid: LayoutItem[];
+    hero: HeroWidgetType[];
+} {
+    if (!rawLayout) {
+        return { grid: [], hero: [...DEFAULT_HERO_WIDGETS] };
+    }
+
+    let parsed: any = rawLayout;
+    if (typeof rawLayout === "string") {
+        try {
+            parsed = JSON.parse(rawLayout);
+        } catch {
+            return { grid: [], hero: [...DEFAULT_HERO_WIDGETS] };
+        }
+    }
+
+    const rawGrid =
+        parsed && !Array.isArray(parsed) && Array.isArray(parsed.grid)
+            ? parsed.grid
+            : Array.isArray(parsed)
+              ? parsed
+              : [];
+
+    const hero: HeroWidgetType[] =
+        parsed && !Array.isArray(parsed) && Array.isArray(parsed.hero)
+            ? parsed.hero
+            : [...DEFAULT_HERO_WIDGETS];
+
+    const migratedGrid = migrateLegacyLayout(rawGrid);
+    const validLayout: LayoutItem[] = migratedGrid
+        .filter((item: any) => WIDGET_REGISTRY[item.type as WidgetType])
+        .map((item: any) => {
+            const config = WIDGET_REGISTRY[item.type as WidgetType];
+            const minW = config.minW;
+            const minH = config.minH;
+            const snappedW = Math.max(
+                minW,
+                Math.min(240, Math.round((item.w || config.defaultW) / 20) * 20)
+            );
+            const snappedX = Math.max(
+                0,
+                Math.min(240 - snappedW, Math.round((item.x || 0) / 20) * 20)
+            );
+            const snappedH = Math.max(
+                minH,
+                Math.round((item.h || config.defaultH) / 4) * 4
+            );
+            const snappedY = Math.max(0, Math.round((item.y || 0) / 4) * 4);
+
+            return {
+                ...item,
+                x: snappedX,
+                y: snappedY,
+                w: snappedW,
+                h: snappedH,
+                minW,
+                minH,
+            };
+        });
+
+    return { grid: validLayout, hero };
 }
 
 export interface DashboardManagerProps {
@@ -100,10 +178,7 @@ export function DashboardManager({
     const [newDashboardName, setNewDashboardName] = useState("");
     const [layout, setLayout] = useState<LayoutItem[]>([]);
     const [heroWidgets, setHeroWidgets] = useState<HeroWidgetType[]>([
-        "TOTAL_BALANCE",
-        "PERIOD_PNL",
-        "WIN_RATE",
-        "TRADE_SCORE",
+        ...DEFAULT_HERO_WIDGETS,
     ]);
     const [isCatalogueOpen, setIsCatalogueOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
@@ -133,79 +208,195 @@ export function DashboardManager({
     // Sync layout state when active dashboard changes
     useEffect(() => {
         if (activeDashboard && activeDashboard.layout) {
-            // Clean up layout from string or obj
-            const parsed =
-                typeof activeDashboard.layout === "string"
-                    ? JSON.parse(activeDashboard.layout)
-                    : activeDashboard.layout;
-
-            if (parsed && !Array.isArray(parsed) && parsed.grid) {
-                const migratedGrid = migrateLegacyLayout(parsed.grid);
-                // Ensure all items have valid type before rendering and override minW/minH with current registry values
-                const validLayout = migratedGrid
-                    .filter(
-                        (item: any) => WIDGET_REGISTRY[item.type as WidgetType]
-                    )
-                    .map((item: any) => {
-                        const config = WIDGET_REGISTRY[item.type as WidgetType];
-                        return {
-                            ...item,
-                            minW: config.minW,
-                            minH: config.minH,
-                        };
-                    });
-                setLayout(validLayout);
-                setHeroWidgets(
-                    parsed.hero || [
-                        "TOTAL_BALANCE",
-                        "PERIOD_PNL",
-                        "WIN_RATE",
-                        "TRADE_SCORE",
-                    ]
-                );
-            } else {
-                const gridToMigrate = Array.isArray(parsed) ? parsed : [];
-                const migratedGrid = migrateLegacyLayout(gridToMigrate);
-                const validLayout = migratedGrid
-                    .filter((item) => WIDGET_REGISTRY[item.type as WidgetType])
-                    .map((item: any) => {
-                        const config = WIDGET_REGISTRY[item.type as WidgetType];
-                        return {
-                            ...item,
-                            minW: config.minW,
-                            minH: config.minH,
-                        };
-                    });
-                setLayout(validLayout);
-                setHeroWidgets([
-                    "TOTAL_BALANCE",
-                    "PERIOD_PNL",
-                    "WIN_RATE",
-                    "TRADE_SCORE",
-                ]);
-            }
+            const { grid, hero } = parseDashboardLayout(activeDashboard.layout);
+            setLayout(grid);
+            setHeroWidgets(hero);
         }
-    }, [activeId, activeDashboard?.layout]);
+    }, [activeId, activeDashboard]);
 
-    const handleLayoutChange = (newLayout: LayoutItem[]) => {
-        // Prevent react-grid-layout from wiping items by mapping over prevLayout (our source of truth)
+    const handleLayoutChange = useCallback((newLayout: LayoutItem[]) => {
+        // Prevent react-grid-layout from wiping metadata by mapping over prevLayout
         // and only updating coordinates of matching items from newLayout.
         setLayout((prevLayout) => {
-            return prevLayout.map((existingItem) => {
+            let changed = false;
+            const nextLayout = prevLayout.map((existingItem) => {
                 const newItem = newLayout.find((l) => l.i === existingItem.i);
                 if (newItem) {
-                    return {
-                        ...existingItem,
-                        x: newItem.x,
-                        y: newItem.y,
-                        w: newItem.w,
-                        h: newItem.h,
-                    };
+                    if (
+                        existingItem.x !== newItem.x ||
+                        existingItem.y !== newItem.y ||
+                        existingItem.w !== newItem.w ||
+                        existingItem.h !== newItem.h
+                    ) {
+                        changed = true;
+                        return {
+                            ...existingItem,
+                            x: newItem.x,
+                            y: newItem.y,
+                            w: newItem.w,
+                            h: newItem.h,
+                        };
+                    }
                 }
                 return existingItem;
             });
+            return changed ? nextLayout : prevLayout;
         });
-    };
+    }, []);
+
+    const handleWidgetWidthChange = useCallback(
+        (id: string, newWidth: number) => {
+            setLayout((prevLayout) => {
+                const target = prevLayout.find((item) => item.i === id);
+                if (!target) return prevLayout;
+
+                const config = WIDGET_REGISTRY[target.type as WidgetType];
+                const minW = config?.minW || target.minW || 40;
+                const clampedW = Math.max(
+                    minW,
+                    Math.min(240, Math.round(newWidth / 20) * 20)
+                );
+
+                const cloned = prevLayout.map((it) => ({ ...it }));
+                const active = cloned.find((it) => it.i === id)!;
+                const oldW = active.w;
+
+                const sameRowSiblings = cloned
+                    .filter(
+                        (it) =>
+                            it.i !== id &&
+                            it.y < active.y + active.h &&
+                            it.y + it.h > active.y
+                    )
+                    .sort((a, b) => a.x - b.x);
+
+                // Case 1: Standalone item on its row shrinking -> check if it can pack into open space on the row immediately above
+                if (sameRowSiblings.length === 0 && clampedW < oldW && active.y > 0) {
+                    const itemsAbove = cloned.filter(
+                        (it) => it.i !== id && it.y + it.h <= active.y
+                    );
+                    if (itemsAbove.length > 0) {
+                        const maxTopY = Math.max(...itemsAbove.map((it) => it.y));
+                        const prevRowItems = itemsAbove
+                            .filter(
+                                (it) =>
+                                    it.y <= maxTopY &&
+                                    it.y + it.h > maxTopY
+                            )
+                            .sort((a, b) => a.x - b.x);
+                        const prevRightEdge = prevRowItems.reduce(
+                            (max, it) => Math.max(max, it.x + it.w),
+                            0
+                        );
+                        if (prevRightEdge + clampedW <= 240) {
+                            active.x = prevRightEdge;
+                            active.y = maxTopY;
+                            active.w = clampedW;
+                            return cloned;
+                        }
+                    }
+                }
+
+                // Case 2: Item shares a row with siblings
+                if (sameRowSiblings.length > 0) {
+                    const leftSiblings = sameRowSiblings.filter(
+                        (it) => it.x < active.x
+                    );
+                    const rightSiblings = sameRowSiblings.filter(
+                        (it) => it.x >= active.x
+                    );
+
+                    const leftEdge =
+                        leftSiblings.length > 0
+                            ? Math.max(
+                                  ...leftSiblings.map((it) => it.x + it.w)
+                              )
+                            : 0;
+
+                    if (leftEdge + clampedW <= 240) {
+                        active.x = leftEdge;
+                        active.w = clampedW;
+                    } else {
+                        // Squeeze left sibling if possible
+                        active.w = clampedW;
+                        active.x = 240 - clampedW;
+                        if (leftSiblings.length === 1) {
+                            const leftIt = leftSiblings[0];
+                            const leftCfg =
+                                WIDGET_REGISTRY[leftIt.type as WidgetType];
+                            const leftMinW =
+                                leftCfg?.minW || leftIt.minW || 40;
+                            if (active.x - leftIt.x >= leftMinW) {
+                                leftIt.w = active.x - leftIt.x;
+                            } else {
+                                active.x = 0;
+                                active.y = leftIt.y + leftIt.h;
+                            }
+                        } else {
+                            active.x = 0;
+                            active.y =
+                                Math.max(
+                                    ...leftSiblings.map((it) => it.y + it.h)
+                                );
+                        }
+                    }
+
+                    // Reflow right siblings
+                    let cursorX = active.x + active.w;
+                    let wrapY = active.y + active.h;
+                    for (let idx = 0; idx < rightSiblings.length; idx++) {
+                        const sib = rightSiblings[idx];
+                        const sibCfg = WIDGET_REGISTRY[sib.type as WidgetType];
+                        const sibMinW = sibCfg?.minW || sib.minW || 40;
+                        const minAfter = rightSiblings
+                            .slice(idx + 1)
+                            .reduce((s, r) => {
+                                const c =
+                                    WIDGET_REGISTRY[r.type as WidgetType];
+                                return s + (c?.minW || r.minW || 40);
+                            }, 0);
+
+                        if (cursorX + sib.w + minAfter <= 240) {
+                            sib.x = cursorX;
+                            cursorX = sib.x + sib.w;
+                        } else if (240 - cursorX - minAfter >= sibMinW) {
+                            sib.x = cursorX;
+                            sib.w =
+                                Math.floor((240 - cursorX - minAfter) / 20) *
+                                20;
+                            cursorX = sib.x + sib.w;
+                        } else {
+                            // Wrap remaining right siblings to next row starting at x = 0
+                            let wrapX = 0;
+                            for (
+                                let wIdx = idx;
+                                wIdx < rightSiblings.length;
+                                wIdx++
+                            ) {
+                                const wItem = rightSiblings[wIdx];
+                                if (wrapX + wItem.w > 240) {
+                                    wrapX = 0;
+                                    wrapY += wItem.h;
+                                }
+                                wItem.x = wrapX;
+                                wItem.y = wrapY;
+                                wrapX += wItem.w;
+                            }
+                            break;
+                        }
+                    }
+
+                    return cloned;
+                }
+
+                // Default fallback for standalone item
+                active.w = clampedW;
+                active.x = Math.max(0, Math.min(active.x, 240 - clampedW));
+                return cloned;
+            });
+        },
+        []
+    );
 
     const handleSave = () => {
         if (!editName.trim()) {
@@ -237,7 +428,7 @@ export function DashboardManager({
                 setIsEditable(false);
                 setFreeStyleBackup(null);
                 toast.success("Dashboard saved successfully");
-            } catch (err) {
+            } catch {
                 toast.error("Failed to save dashboard");
             }
         });
@@ -246,30 +437,54 @@ export function DashboardManager({
     const applyGridPreset = (cols: number, rows: number) => {
         if (layout.length === 0) return;
 
-        // Back up the current layout if we haven't already backed one up during this edit session
         if (!freeStyleBackup) {
             setFreeStyleBackup(layout);
         }
 
-        const C = cols;
-        const R = rows;
-        const colWidth = Math.floor(240 / C);
-        const rowHeight = Math.max(30, Math.floor(180 / R));
+        // Snap column count to clean 12-col divisors (1, 2, 3, 4, 6)
+        const clampedCols = Math.max(1, Math.min(6, cols));
+        const colSpan = Math.max(2, Math.floor(12 / clampedCols));
+        const baseColWidth = colSpan * 20;
+        const effectiveCols = Math.floor(240 / baseColWidth);
+        const standardRowH = 64; // 320px comfortable card height
 
-        const newGrid = layout.map((item, idx) => {
-            const colIdx = idx % C;
-            const rowIdx = Math.floor(idx / C);
-            return {
-                ...item,
-                x: colIdx * colWidth,
-                y: rowIdx * rowHeight,
-                w: colWidth,
-                h: rowHeight,
-            };
-        });
+        const newGrid: LayoutItem[] = [];
+        let currentY = 0;
+
+        for (let i = 0; i < layout.length; i += effectiveCols) {
+            const rowItems = layout.slice(i, i + effectiveCols);
+            const count = rowItems.length;
+            const rawColW = Math.floor(240 / count);
+            const snappedColW = Math.max(40, Math.floor(rawColW / 20) * 20);
+            const rowH = Math.max(
+                ...rowItems.map((it) => {
+                    const cfg = WIDGET_REGISTRY[it.type as WidgetType];
+                    return Math.max(
+                        standardRowH,
+                        Math.ceil((cfg?.minH || it.minH || 30) / 4) * 4
+                    );
+                })
+            );
+
+            rowItems.forEach((item, colIdx) => {
+                const w =
+                    colIdx === count - 1
+                        ? 240 - colIdx * snappedColW
+                        : snappedColW;
+                newGrid.push({
+                    ...item,
+                    x: colIdx * snappedColW,
+                    y: currentY,
+                    w,
+                    h: rowH,
+                    minW: Math.min(item.minW || 40, w),
+                });
+            });
+            currentY += rowH;
+        }
 
         setLayout(newGrid);
-        toast.success(`Applied ${cols}x${rows} grid preset`);
+        toast.success(`Applied ${effectiveCols}×${rows} grid preset`);
     };
 
     const restoreFreeStyle = () => {
@@ -282,110 +497,81 @@ export function DashboardManager({
         }
     };
 
-    const applySpecialLayout = (
-        type: "focus-left" | "focus-right" | "split" | "single-col" | "4-cols"
-    ) => {
+    const handleApplyPreset = (presetId: GridPresetId) => {
         if (layout.length === 0) return;
 
         if (!freeStyleBackup) {
             setFreeStyleBackup(layout);
         }
 
-        let newGrid: LayoutItem[] = [];
-        if (type === "focus-left") {
-            let leftY = 0;
-            let rightY = 0;
-            newGrid = layout.map((item, idx) => {
-                if (idx % 3 === 0) {
-                    const y = leftY;
-                    leftY += 80;
-                    return { ...item, x: 0, y, w: 160, h: 80 };
-                } else {
-                    const y = rightY;
-                    rightY += 40;
-                    return { ...item, x: 160, y, w: 80, h: 40 };
-                }
-            });
-            toast.success("Applied Focus Left layout (2/3 : 1/3)");
-        } else if (type === "focus-right") {
-            let leftY = 0;
-            let rightY = 0;
-            newGrid = layout.map((item, idx) => {
-                if (idx % 3 === 0) {
-                    const y = rightY;
-                    rightY += 80;
-                    return { ...item, x: 80, y, w: 160, h: 80 };
-                } else {
-                    const y = leftY;
-                    leftY += 40;
-                    return { ...item, x: 0, y, w: 80, h: 40 };
-                }
-            });
-            toast.success("Applied Focus Right layout (1/3 : 2/3)");
-        } else if (type === "split") {
-            newGrid = layout.map((item, idx) => {
-                const colIdx = idx % 2;
-                const rowIdx = Math.floor(idx / 2);
-                return {
-                    ...item,
-                    x: colIdx * 120,
-                    y: rowIdx * 60,
-                    w: 120,
-                    h: 60,
-                };
-            });
-            toast.success("Applied Split Screen layout (50:50)");
-        } else if (type === "single-col") {
-            newGrid = layout.map((item, idx) => {
-                return {
-                    ...item,
-                    x: 0,
-                    y: idx * 60,
-                    w: 240,
-                    h: 60,
-                };
-            });
-            toast.success("Applied Single Column Full-Width layout");
-        } else if (type === "4-cols") {
-            newGrid = layout.map((item, idx) => {
-                const colIdx = idx % 4;
-                const rowIdx = Math.floor(idx / 4);
-                return {
-                    ...item,
-                    x: colIdx * 60,
-                    y: rowIdx * 50,
-                    w: 60,
-                    h: 50,
-                };
-            });
-            toast.success("Applied 4 Columns Grid layout");
-        }
-
-        setLayout(newGrid);
+        const { grid, label } = buildPresetLayout(layout, presetId);
+        setLayout(grid);
+        toast.success(`Applied ${label} preset`);
     };
 
     const handleAddWidget = (widget: any) => {
         const newId = `widget_${Date.now()}`;
-        const newItem = {
+        const currentItems = layoutRef.current;
+        const w = Math.max(
+            widget.minW || 40,
+            Math.min(240, Math.round((widget.defaultW || 120) / 20) * 20)
+        );
+        const h = Math.max(
+            widget.minH || 30,
+            Math.round((widget.defaultH || 68) / 4) * 4
+        );
+
+        let nextX = 0;
+        let nextY = 0;
+
+        if (currentItems.length > 0) {
+            const finiteItems = currentItems.filter((it) =>
+                Number.isFinite(it.y)
+            );
+            if (finiteItems.length > 0) {
+                const maxTopY = Math.max(...finiteItems.map((it) => it.y));
+                const bottomRowItems = finiteItems.filter(
+                    (it) => it.y === maxTopY
+                );
+                const rightEdge = bottomRowItems.reduce(
+                    (max, it) => Math.max(max, it.x + it.w),
+                    0
+                );
+                const maxBottomY = finiteItems.reduce(
+                    (max, it) => Math.max(max, it.y + it.h),
+                    0
+                );
+
+                if (rightEdge + w <= 240) {
+                    nextX = rightEdge;
+                    nextY = maxTopY;
+                } else {
+                    nextX = 0;
+                    nextY = maxBottomY;
+                }
+            }
+        }
+
+        const newItem: LayoutItem = {
             i: newId,
-            x: 0,
-            y: Infinity, // puts it at the bottom
-            w: widget.defaultW,
-            h: widget.defaultH,
+            x: nextX,
+            y: nextY,
+            w,
+            h,
             minW: widget.minW,
             minH: widget.minH,
             type: widget.type,
         };
 
-        const updatedLayout = [...layoutRef.current, newItem];
-        layoutRef.current = updatedLayout; // Sync ref immediately to allow rapid successive clicks
+        const updatedLayout = [...currentItems, newItem];
+        layoutRef.current = updatedLayout;
         setLayout(updatedLayout);
         toast.success(`Added ${widget.title} widget`);
     };
 
-    const handleRemoveWidget = (id: string) => {
+    const handleRemoveWidget = useCallback((id: string) => {
         setLayout((prev) => prev.filter((item) => item.i !== id));
-    };
+    }, []);
 
     const handleCreateDashboard = () => {
         setNewDashboardName("");
@@ -399,12 +585,7 @@ export function DashboardManager({
             try {
                 const defaultPayload = {
                     grid: [],
-                    hero: [
-                        "TOTAL_BALANCE",
-                        "PERIOD_PNL",
-                        "WIN_RATE",
-                        "TRADE_SCORE",
-                    ],
+                    hero: [...DEFAULT_HERO_WIDGETS],
                 };
                 const newDb = await createDashboard(
                     newDashboardName.trim(),
@@ -412,16 +593,17 @@ export function DashboardManager({
                 );
                 setDashboards([...dashboards, newDb]);
                 setActiveId(newDb.id);
+                setEditName(newDb.name);
                 setIsEditable(true);
                 setIsCreateModalOpen(false);
                 toast.success("New dashboard created");
-            } catch (err) {
+            } catch {
                 toast.error("Failed to create dashboard");
             }
         });
     };
 
-    const handleDeleteDashboard = async (id: string) => {
+    const handleDeleteDashboard = async () => {
         if (dashboards.length <= 1) {
             toast.error("Cannot delete the only dashboard");
             return;
@@ -436,16 +618,29 @@ export function DashboardManager({
                 await deleteDashboard(activeId);
                 const nextDbs = dashboards.filter((d) => d.id !== activeId);
                 setDashboards(nextDbs);
-                if (activeId === activeId) {
+                if (nextDbs.length > 0) {
                     setActiveId(nextDbs[0].id);
                 }
                 setIsEditable(false);
                 toast.success("Dashboard deleted");
-            } catch (err) {
+            } catch {
                 toast.error("Failed to delete dashboard");
             }
         });
     };
+
+    const normalizedLayout = useMemo(
+        () =>
+            layout.map((item) => {
+                const widgetConfig = WIDGET_REGISTRY[item.type as WidgetType];
+                return {
+                    ...item,
+                    minW: item.minW ?? widgetConfig?.minW ?? 40,
+                    minH: item.minH ?? widgetConfig?.minH ?? 30,
+                };
+            }),
+        [layout]
+    );
 
     if (!activeDashboard) return null;
 
@@ -457,14 +652,14 @@ export function DashboardManager({
                         type="text"
                         value={editName}
                         onChange={(e) => setEditName(e.target.value)}
+                        aria-label="Dashboard Name"
                         className="bg-transparent border-b border-gray-200 dark:border-gray-700 focus:border-amber-500 text-sm font-semibold px-1 h-7 rounded-none w-36 outline-none transition-all text-gray-900 dark:text-gray-100 shrink-0"
-                        placeholder="Dashboard Name"
                         autoFocus
                     />
                     <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleDeleteDashboard(activeId)}
+                        onClick={handleDeleteDashboard}
                         disabled={dashboards.length <= 1 || isPending}
                         className="w-7 h-7 flex items-center justify-center text-red-500 hover:text-red-650 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed mx-1 shrink-0"
                         aria-label="Delete Dashboard"
@@ -481,146 +676,28 @@ export function DashboardManager({
                     >
                         <Plus className="w-3.5 h-3.5" /> Widget
                     </Button>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                className="flex items-center justify-center gap-1.5 px-2.5 h-7 min-w-[120px] text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors mx-1 outline-none whitespace-nowrap shrink-0"
-                                title="Grid Presets"
-                            >
-                                <LayoutGrid className="w-3.5 h-3.5" /> Grid
-                                Presets
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent
-                            align="end"
-                            className="w-56 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-[#382F1D] max-h-[380px] overflow-y-auto scrollbar-thin"
-                        >
-                            <DropdownMenuItem
-                                onClick={restoreFreeStyle}
-                                disabled={!freeStyleBackup}
-                                className="cursor-pointer rounded-lg px-3 py-2 my-0.5 text-slate-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-white/5 disabled:opacity-50"
-                            >
-                                Free Style (Restore)
-                            </DropdownMenuItem>
 
-                            <DropdownMenuSeparator className="bg-gray-100 dark:bg-gray-800" />
-                            <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                                Asymmetric Layouts
-                            </div>
-                            <DropdownMenuItem
-                                onClick={() => applySpecialLayout("focus-left")}
-                                className="cursor-pointer rounded-lg px-3 py-2 my-0.5 text-slate-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-white/5"
-                            >
-                                Focus Left (2/3 : 1/3)
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() =>
-                                    applySpecialLayout("focus-right")
-                                }
-                                className="cursor-pointer rounded-lg px-3 py-2 my-0.5 text-slate-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-white/5"
-                            >
-                                Focus Right (1/3 : 2/3)
-                            </DropdownMenuItem>
+                    <GridPresetsMenu
+                        hasBackup={!!freeStyleBackup}
+                        onRestoreFreeStyle={restoreFreeStyle}
+                        onApplyPreset={handleApplyPreset}
+                        onOpenCustomGrid={() => setIsCustomGridOpen(true)}
+                    />
 
-                            <DropdownMenuSeparator className="bg-gray-100 dark:bg-gray-800" />
-                            <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                                Symmetric Layouts
-                            </div>
-                            <DropdownMenuItem
-                                onClick={() => applySpecialLayout("split")}
-                                className="cursor-pointer rounded-lg px-3 py-2 my-0.5 text-slate-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-white/5"
-                            >
-                                Split Screen (50:50)
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() => applySpecialLayout("single-col")}
-                                className="cursor-pointer rounded-lg px-3 py-2 my-0.5 text-slate-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-white/5"
-                            >
-                                Full Width Stack (1 Col)
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() => applySpecialLayout("4-cols")}
-                                className="cursor-pointer rounded-lg px-3 py-2 my-0.5 text-slate-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-white/5"
-                            >
-                                4 Columns Grid
-                            </DropdownMenuItem>
-
-                            <DropdownMenuSeparator className="bg-gray-100 dark:bg-gray-800" />
-                            <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                                Regular Grids
-                            </div>
-                            <DropdownMenuItem
-                                onClick={() => applyGridPreset(3, 3)}
-                                className="cursor-pointer rounded-lg px-3 py-2 my-0.5 text-slate-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-white/5"
-                            >
-                                3 x 3 Grid
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() => applyGridPreset(3, 4)}
-                                className="cursor-pointer rounded-lg px-3 py-2 my-0.5 text-slate-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-white/5"
-                            >
-                                3 x 4 Grid
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() => applyGridPreset(2, 3)}
-                                className="cursor-pointer rounded-lg px-3 py-2 my-0.5 text-slate-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-white/5"
-                            >
-                                2 x 3 Grid
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() => applyGridPreset(2, 4)}
-                                className="cursor-pointer rounded-lg px-3 py-2 my-0.5 text-slate-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-white/5"
-                            >
-                                2 x 4 Grid
-                            </DropdownMenuItem>
-
-                            <DropdownMenuSeparator className="bg-gray-100 dark:bg-gray-800" />
-                            <DropdownMenuItem
-                                onClick={() => setIsCustomGridOpen(true)}
-                                className="cursor-pointer rounded-lg px-3 py-2 my-0.5 text-slate-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-white/5"
-                            >
-                                Custom Grid...
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
                     <Button
                         variant="outline"
                         size="sm"
                         onClick={() => {
                             setIsEditable(false);
                             setFreeStyleBackup(null);
-                            // revert layout
-                            const parsed =
-                                typeof activeDashboard.layout === "string"
-                                    ? JSON.parse(activeDashboard.layout)
-                                    : activeDashboard.layout;
-                            if (
-                                parsed &&
-                                !Array.isArray(parsed) &&
-                                parsed.grid
-                            ) {
-                                setLayout(parsed.grid);
-                                setHeroWidgets(
-                                    parsed.hero || [
-                                        "TOTAL_BALANCE",
-                                        "PERIOD_PNL",
-                                        "WIN_RATE",
-                                        "TRADE_SCORE",
-                                    ]
-                                );
-                            } else {
-                                setLayout(Array.isArray(parsed) ? parsed : []);
-                                setHeroWidgets([
-                                    "TOTAL_BALANCE",
-                                    "PERIOD_PNL",
-                                    "WIN_RATE",
-                                    "TRADE_SCORE",
-                                ]);
-                            }
+                            setEditName(activeDashboard.name);
+                            const { grid, hero } = parseDashboardLayout(
+                                activeDashboard.layout
+                            );
+                            setLayout(grid);
+                            setHeroWidgets(hero);
                         }}
-                        className="px-2.5 h-7 flex items-center justify-center min-w-[110px] text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-gray-200 dark:border-gray-700 rounded-lg transition-colors bg-transparent whitespace-nowrap shrink-0 mx-0.5"
+                        className="px-2.5 h-7 flex items-center justify-center min-w-[90px] text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-gray-200 dark:border-gray-700 rounded-lg transition-colors bg-transparent whitespace-nowrap shrink-0 mx-0.5"
                     >
                         Cancel
                     </Button>
@@ -629,7 +706,7 @@ export function DashboardManager({
                         size="sm"
                         onClick={handleSave}
                         disabled={isPending}
-                        className="px-3.5 h-7 flex items-center justify-center min-w-[110px] text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-all shadow-sm shadow-amber-500/20 hover:scale-[1.02] active:scale-[0.98] ml-1.5 whitespace-nowrap shrink-0"
+                        className="px-3.5 h-7 flex items-center justify-center min-w-[90px] text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-all shadow-sm shadow-amber-500/20 hover:scale-[1.02] active:scale-[0.98] ml-1 whitespace-nowrap shrink-0"
                     >
                         Save
                     </Button>
@@ -743,7 +820,7 @@ export function DashboardManager({
                 </div>
             </div>
 
-            {/* Hero Stats Bar (4 columns) - Now customizable! */}
+            {/* Hero Stats Bar (4 columns) */}
             <DashboardHero
                 data={data}
                 isEditable={isEditable}
@@ -765,7 +842,7 @@ export function DashboardManager({
                 className={cn(
                     "min-h-[500px] transition-[background-color,border-color] duration-200 -mx-2",
                     isEditable &&
-                        "bg-gray-50 dark:bg-gray-800/30 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700 p-0"
+                        "bg-gray-50/70 dark:bg-gray-800/20 rounded-xl border-2 border-dashed border-amber-500/30 dark:border-amber-400/25 p-0"
                 )}
             >
                 {layout.length === 0 ? (
@@ -783,7 +860,10 @@ export function DashboardManager({
                         ) : (
                             <Button
                                 variant="ghost"
-                                onClick={() => setIsEditable(true)}
+                                onClick={() => {
+                                    setEditName(activeDashboard.name);
+                                    setIsEditable(true);
+                                }}
                                 className="mt-4 text-amber-500 hover:text-amber-600 font-medium hover:underline p-0 h-auto"
                             >
                                 Edit to add widgets
@@ -792,19 +872,11 @@ export function DashboardManager({
                     </div>
                 ) : (
                     <WidgetGrid
-                        layout={layout.map((item: any) => {
-                            const widgetConfig =
-                                WIDGET_REGISTRY[item.type as WidgetType];
-                            return {
-                                ...item,
-                                minW: widgetConfig?.minW || 1,
-                                minH: widgetConfig?.minH || 1,
-                            };
-                        })}
+                        layout={normalizedLayout}
                         onLayoutChange={handleLayoutChange}
                         isEditable={isEditable}
                     >
-                        {layout.map((item: any) => {
+                        {normalizedLayout.map((item) => {
                             const widgetConfig =
                                 WIDGET_REGISTRY[item.type as WidgetType];
                             if (!widgetConfig)
@@ -817,19 +889,19 @@ export function DashboardManager({
                                     <WidgetWrapper
                                         id={item.i}
                                         isEditable={isEditable}
+                                        currentWidth={item.w}
+                                        currentHeight={item.h}
+                                        minWidth={
+                                            item.minW || widgetConfig.minW
+                                        }
+                                        onWidthChange={handleWidgetWidthChange}
                                         onRemove={handleRemoveWidget}
                                     >
-                                        {/* Render the dynamically imported component and pass data */}
                                         <div className="w-full h-full overflow-hidden">
                                             <WidgetComponent
                                                 data={data}
-                                                // Depending on the widget, we might need to pass specific props
-                                                // extracted from `data` here. Since components already accept what
-                                                // DashboardClient passes, we can pass the entire `data` root or specific parts.
-                                                // However, to keep it simple and robust, we might need to adapt the widget components
-                                                // or map props here. Let's map props based on type!
                                                 {...getWidgetProps(
-                                                    item.type,
+                                                    item.type as WidgetType,
                                                     data,
                                                     onTradeClick,
                                                     onAddTrade
@@ -906,8 +978,8 @@ export function DashboardManager({
                     </DialogHeader>
                     <div className="py-4">
                         <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Are you sure you want to delete the dashboard "
-                            {activeDashboard?.name}"? This action cannot be
+                            Are you sure you want to delete the dashboard &quot;
+                            {activeDashboard?.name}&quot;? This action cannot be
                             undone.
                         </p>
                     </div>
@@ -940,12 +1012,12 @@ export function DashboardManager({
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <label className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                                    Columns
+                                    Columns (1–6)
                                 </label>
                                 <Input
                                     type="number"
                                     min={1}
-                                    max={12}
+                                    max={6}
                                     value={customCols}
                                     onChange={(e) =>
                                         setCustomCols(e.target.value)
@@ -1016,7 +1088,10 @@ function getWidgetProps(
         case "BALANCE_GROWTH":
             return { data: data.chartData };
         case "DAILY_WIN_RATE":
-            return { data: data.dailyWinRates, dates: data.selectedDates };
+            return {
+                data: data.dailyWinRates,
+                selectedDates: data.selectedDates,
+            };
         case "PROFIT_DIST":
             return { data: data.symbolPerformance };
         case "LOT_DIST":
@@ -1055,3 +1130,4 @@ function getWidgetProps(
             return {};
     }
 }
+

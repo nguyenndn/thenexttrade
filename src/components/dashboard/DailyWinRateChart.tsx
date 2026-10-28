@@ -11,6 +11,7 @@ import {
     Cell,
     ReferenceLine,
 } from "recharts";
+import { Percent } from "lucide-react";
 import { ChartContainer } from "@/components/ui/ChartContainer";
 import { format, parseISO, isWithinInterval } from "date-fns";
 
@@ -27,13 +28,34 @@ interface DailyWinRateChartProps {
 
 export function DailyWinRateChart({
     data,
-    height = 300,
     selectedDates,
 }: DailyWinRateChartProps) {
+    const header = (
+        <div className="px-5 py-3.5 border-b border-dashboard flex items-center justify-between shrink-0">
+            <div className="flex items-center gap-2.5">
+                <div className="p-2 bg-amber-500/10 rounded-lg text-amber-500">
+                    <Percent size={18} />
+                </div>
+                <div>
+                    <h3 className="font-bold text-gray-700 dark:text-white text-sm">
+                        Daily Win Rate
+                    </h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Win percentage by trading day
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+
     if (!data || data.length === 0) {
         return (
-            <div className="flex flex-col w-full h-full overflow-hidden items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300">
-                No data available
+            <div className="flex flex-col w-full h-full overflow-hidden">
+                {header}
+                <div className="flex-1 flex flex-col items-center justify-center p-6 text-center font-medium text-sm text-gray-500 dark:text-gray-400">
+                    <Percent size={26} className="mb-2 opacity-40" />
+                    No data available
+                </div>
             </div>
         );
     }
@@ -99,17 +121,20 @@ export function DailyWinRateChart({
         data.length > 60 ? 6 : data.length > 30 ? 3 : data.length > 14 ? 1 : 0;
 
     return (
-        <div className="flex flex-col h-full w-full overflow-hidden p-4">
-            <ChartContainer
-                height="100%"
-                minHeight={100}
-                className="w-full h-full flex-1"
-            >
+        <div className="flex flex-col h-full w-full overflow-hidden">
+            {header}
+            <div className="flex-1 flex flex-col overflow-hidden p-4 min-h-0">
+                <ChartContainer
+                    height="100%"
+                    minHeight={100}
+                    className="w-full h-full flex-1"
+                >
                 <ResponsiveContainer
                     width="100%"
                     height="100%"
                     minWidth={0}
                     minHeight={0}
+                    debounce={50}
                 >
                     <BarChart
                         data={data}
@@ -287,6 +312,7 @@ export function DailyWinRateChart({
                     </BarChart>
                 </ResponsiveContainer>
             </ChartContainer>
+            </div>
         </div>
     );
 }

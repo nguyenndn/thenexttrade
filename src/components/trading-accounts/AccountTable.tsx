@@ -133,21 +133,10 @@ export function AccountTable({
                         : null;
                     const isReal = accountType === "REAL";
                     const syncMethod = getSyncMethod(account);
-                    const isAccountSyncing = Boolean(
-                        activeSyncingAccounts?.[account.id] ||
-                        (account.latestJob &&
-                            (account.latestJob.status === "PENDING" ||
-                                account.latestJob.status === "PROCESSING") &&
-                            Date.now() - new Date(account.latestJob.createdAt).getTime() <
-                                (account.latestJob.status === "PENDING" ? 60000 : 120000))
-                    );
+                    // Temporarily disabled while Cloud Sync worker infrastructure is offline
+                    const isAccountSyncing = false;
                     const latestJob = account.latestJob;
-                    const isLatestSyncFailed = Boolean(
-                        !isAccountSyncing &&
-                        latestJob &&
-                        latestJob.status === "FAILED" &&
-                        Date.now() - new Date(latestJob.createdAt).getTime() < 3600000
-                    );
+                    const isLatestSyncFailed = false;
                     const balance = account.balance ?? 0;
                     const isUnderReview =
                         account.proStatus === "PENDING" ||
@@ -238,6 +227,7 @@ export function AccountTable({
                                             <span>Account Settings</span>
                                         </DropdownMenuItem>
 
+                                        {/* Temporarily hidden while Cloud Sync infrastructure is offline
                                         {onRequestSupport && (
                                             <DropdownMenuItem
                                                 onClick={() => onRequestSupport(account.id)}
@@ -247,6 +237,7 @@ export function AccountTable({
                                                 <span>{hasPendingSupport ? "View Support Ticket" : "Sync Support"}</span>
                                             </DropdownMenuItem>
                                         )}
+                                        */}
 
                                         {isAccountSyncing && (
                                             <DropdownMenuItem
@@ -397,6 +388,7 @@ export function AccountTable({
                                     >
                                         Dashboard
                                     </Link>
+                                    {/* Temporarily hidden while Cloud Sync infrastructure is offline
                                     <Button
                                         size="sm"
                                         variant="outline"
@@ -407,6 +399,7 @@ export function AccountTable({
                                         <RefreshCw size={12} className={cn(isAccountSyncing && "animate-spin")} />
                                         <span>{isLatestSyncFailed ? "Retry" : "Sync"}</span>
                                     </Button>
+                                    */}
                                 </div>
                             </div>
                         </div>
@@ -438,24 +431,10 @@ export function AccountTable({
                             const isReal = accountType === "REAL";
                             const syncMethod = getSyncMethod(account);
 
-                            const isAccountSyncing = Boolean(
-                                activeSyncingAccounts?.[account.id] ||
-                                (account.latestJob &&
-                                    (account.latestJob.status === "PENDING" ||
-                                        account.latestJob.status === "PROCESSING") &&
-                                    Date.now() - new Date(account.latestJob.createdAt).getTime() <
-                                        (account.latestJob.status === "PENDING" ? 60000 : 120000))
-                            );
-
+                            // Temporarily disabled while Cloud Sync worker infrastructure is offline
+                            const isAccountSyncing = false;
                             const latestJob = account.latestJob;
-                            const isLatestSyncFailed = Boolean(
-                                !isAccountSyncing &&
-                                latestJob &&
-                                latestJob.status === "FAILED" &&
-                                (!account.lastSync ||
-                                    new Date(latestJob.createdAt).getTime() > new Date(account.lastSync).getTime() ||
-                                    (latestJob.completedAt && new Date(latestJob.completedAt).getTime() > new Date(account.lastSync).getTime()))
-                            );
+                            const isLatestSyncFailed = false;
 
                             const balance = account.balance || 0;
 
@@ -657,7 +636,7 @@ export function AccountTable({
                                                         size="sm"
                                                         onClick={() => onOpenSyncSetup(preferredSyncMethod)}
                                                         className="h-auto p-0 text-xs font-semibold text-gold dark:text-amber-400 hover:underline inline-flex items-center gap-1 hover:bg-transparent"
-                                                        title="Connect Cloud Sync or EA Trade Manager"
+                                                        title="Connect EA Trade Manager"
                                                     >
                                                         <Cable size={12} /> Connect
                                                     </Button>
@@ -672,14 +651,15 @@ export function AccountTable({
 
                                     {/* 7. Access Tier */}
                                     <td className="py-4 px-3 align-middle whitespace-nowrap">
-                                        {!isReal && accountType === "DEMO" ? (
-                                            <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-dashboard/80 bg-gray-50 text-gray-500 dark:border-white/10 dark:bg-white/5 dark:text-gray-400">
-                                                <Info size={10} className="text-gray-400" /> Standard
-                                            </span>
-                                        ) : account.proStatus === "ACTIVE" ||
-                                          account.eligibility?.status === "PRO_ACTIVE" ? (
+                                        {account.proStatus === "ACTIVE" ||
+                                        account.proStatus === "GRACE" ||
+                                        account.eligibility?.status === "PRO_ACTIVE" ? (
                                             <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-lg border border-emerald-500/30 bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
                                                 <Crown size={10} className="text-emerald-500" /> Pro
+                                            </span>
+                                        ) : !isReal && accountType === "DEMO" ? (
+                                            <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-dashboard/80 bg-gray-50 text-gray-500 dark:border-white/10 dark:bg-white/5 dark:text-gray-400">
+                                                <Info size={10} className="text-gray-400" /> Standard
                                             </span>
                                         ) : isUnderReview ? (
                                             <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-amber-500/30 bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
@@ -717,6 +697,7 @@ export function AccountTable({
                                                 Dashboard
                                             </Link>
 
+                                            {/* Temporarily hidden while Cloud Sync infrastructure is offline
                                             <span className="text-gray-300 dark:text-white/15 select-none text-xs">·</span>
 
                                             {isAccountSyncing ? (
@@ -744,6 +725,7 @@ export function AccountTable({
                                                     {isLatestSyncFailed ? "Retry Sync" : "Sync"}
                                                 </Button>
                                             )}
+                                            */}
 
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
@@ -781,6 +763,7 @@ export function AccountTable({
                                                         <span>{isMain ? "Main Account" : "Set as Main"}</span>
                                                     </DropdownMenuItem>
 
+                                                    {/* Temporarily hidden while Cloud Sync infrastructure is offline
                                                     {onRequestSupport && (
                                                         <DropdownMenuItem
                                                             onClick={() => onRequestSupport(account.id)}
@@ -790,6 +773,7 @@ export function AccountTable({
                                                             <span>{hasPendingSupport ? "View Support Ticket" : "Sync Support"}</span>
                                                         </DropdownMenuItem>
                                                     )}
+                                                    */}
 
                                                     {isAccountSyncing && (
                                                         <DropdownMenuItem

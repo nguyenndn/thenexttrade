@@ -1,8 +1,8 @@
 # Feature Specs
 
-Last reviewed: 2026-08-11
+Last reviewed: 2026-10-26
 
-This file is the developer handoff layer. Use it when fixing bugs or continuing feature work. `PRODUCT.md` explains what exists at a high level; this file explains what each important URL/function must do.
+This file is the developer handoff layer. Use it when fixing bugs or continuing feature work. For the complete Vietnamese Business Analyst / SRS specification across all 10 system modules, read [MASTER_BA_SPECIFICATION.md](MASTER_BA_SPECIFICATION.md). `PRODUCT.md` explains what exists at a high level; this file explains what each important URL/function must do.
 
 ## How To Use This File
 
@@ -402,25 +402,27 @@ QA checklist:
 - Rate-limit state.
 - Mobile layout.
 
-### `/auth/register` and `/auth/signup`
+### `/auth/signup`
 
 Purpose:
 
-- Create a new user with lower perceived form length.
+- Create a new user with lower perceived form length and reliable 8-digit OTP verification.
 
 Expected behavior:
 
-- Step-based signup.
+- Step-based signup (Step 1: Identity & Country; Step 2: Password, Terms, Turnstile).
 - Country auto-detects from IP where available.
 - Country selector shows flag and country name.
 - Country fallback must be clear and editable.
 - Terms acceptance required.
+- When `SUPABASE_SERVICE_ROLE_KEY` and `SMTP_HOST` are configured, `signup` in `src/app/auth/actions.ts` uses `supabaseAdmin.auth.admin.generateLink({ type: "signup" })` to generate the 8-digit OTP (`email_otp`) and delivers a branded verification email (`buildSignupOtpEmailHtml`) via `sendEmailWithDetails`, bypassing Supabase default SMTP limits and routing the user directly to `/auth/verify-email`.
 - Welcome email sends only after email verification succeeds.
 
 Code paths:
 
 - `src/app/auth/signup/page.tsx`
-- register/auth components and actions
+- `src/app/auth/actions.ts`
+- `src/app/auth/verify-email/page.tsx`
 - `src/app/api/geo/country/route.ts`
 - `src/lib/data/countries.ts`
 - `src/lib/country-utils.ts`
@@ -744,13 +746,24 @@ Expected behavior:
 - For accounts with `totalTrades > 0`, keep normal `Dashboard` + `Sync` actions.
 - `lastSync` can support sync-status copy, but first-data CTA should be based on `totalTrades > 0`.
 - Event `account_card_sync_first_trades_clicked` should include `method`, `accountId`, and `source: "account-card"`.
+- **Streamlined 3-Step `TradeSyncWizard` (`src/components/trading-accounts/TradeSyncWizard.tsx`)**:
+  - **Step 1 (Sync API Key & Registered Accounts)**: View or generate the 64-character Sync API Key, 1-click Copy Key, list registered MT5 accounts (or add one inline), and download the EA file. Includes a mobile device warning (`useIsMobileSyncDevice`) with `Email Desktop Setup Link` and `Log Manually instead`.
+  - **Step 2 (Step-by-Step MetaTrader 5 Setup)**: Detailed 4-sub-step guide inside MT5:
+    1. Open Expert Advisors Options (`Ctrl + O` -> `Tools -> Options -> Expert Advisors`).
+    2. Check `"Allow WebRequest for listed URL"` and paste the exact server URL (driven by `getSyncServerUrl()` reading `NEXT_PUBLIC_SYNC_SERVER_URL || NEXT_PUBLIC_APP_URL`) with a 1-click **Copy URL** button.
+    3. Enable **Algo Trading** and attach **Trade Manager EA** to an active chart.
+    4. Open the **SYNC** tab on the EA panel, paste the **Sync API Key**, and click **Connect**.
+  - **Step 3 (Verify Connection)**: Automated status checks (`API key generated`, `MT5 account registered`, `Heartbeat detected`, `Trades synced`) via `/api/sync/status` plus `SyncTroubleshootingPanel`.
+- In `AddAccountModal`, clicking **Skip for now** after creating a Free account cleanly closes the modal (`onClose()`) without forcing `TradeSyncWizard` open.
 
 Code paths:
 
 - `src/app/dashboard/accounts/page.tsx`
 - `src/components/trading-accounts/AccountListClient.tsx`
 - `src/components/trading-accounts/AccountCard.tsx`
+- `src/components/trading-accounts/AddAccountModal.tsx`
 - `src/components/trading-accounts/TradeSyncWizard.tsx`
+- `src/lib/sync/sync-urls.ts`
 - `src/actions/accounts.ts`
 - `src/actions/account-pro.ts`
 - `src/lib/pro-eligibility.ts`
@@ -1013,24 +1026,27 @@ QA checklist:
 - Free user.
 - Pro user.
 
-### `/dashboard/missions`
+### `/dashboard/learning`, `/dashboard/loyalty`, `/dashboard/leaderboard`
 
 Purpose:
 
-- Give users clear daily/weekly actions that build trading discipline and retention.
+- Give users clear daily/weekly actions (`Edge` missions & streaks), IB lot-based loyalty rewards, and opt-in trader discipline rankings.
 
 Expected behavior:
 
-- Daily check-in appears each new day if not claimed.
+- Daily check-in appears each new day if not claimed (`/api/streak/check-in`).
 - Claimed daily check-in should not be claimable again until the next day.
 - Mission cards should explain what to do, progress, reward, and CTA.
 - Completed missions should show claimed/completed state.
 - Edge copy should be used instead of generic XP in user-facing UI where practical.
+- `/dashboard/loyalty` tracks IB traded lot progression across `LoyaltyTier` levels and lets eligible traders submit `LoyaltyClaim` requests.
+- `/dashboard/leaderboard` ranks opted-in accounts (`TradingAccount.showOnLeaderboard = true`) by consistency and Edge discipline.
 
 Code paths:
 
-- `src/app/dashboard/missions/page.tsx`
-- `src/components/dashboard/missions/*`
+- `src/app/dashboard/learning/page.tsx`
+- `src/app/dashboard/loyalty/page.tsx`
+- `src/app/dashboard/leaderboard/page.tsx`
 - `src/actions/edge-missions.ts`
 - `src/lib/services/edge-missions.service.ts`
 - `src/lib/gamification.ts`
@@ -1045,11 +1061,31 @@ APIs:
 QA checklist:
 
 - First visit.
-- Daily check-in available.
-- Daily check-in claimed.
-- Next-day check-in.
+- Daily check-in available & claimed.
 - Mission progress from trade, Academy, report generation.
+- Loyalty tier display & reward claim submission.
+- Leaderboard opt-in toggle.
 - Mobile card layout.
+
+### `/dashboard/trade-manager` and `/dashboard/strategies`
+
+Purpose:
+
+- `/dashboard/trade-manager`: Remote Web/Mobile control console for live MT5 open positions managed by Trade Manager EA.
+- `/dashboard/strategies`: Define trading playbooks/setups, tag trades, and compare per-strategy win rate and profit factor.
+
+Expected behavior:
+
+- `/dashboard/trade-manager` displays live open positions, floating P&L, account protection rules (`/api/remote/rules`), and remote execution actions (`Close All`, `Close Profitable`, `Close Losing`, `Move SL to Breakeven`, `Partial Close`) dispatched via `/api/remote/execute` -> `EaCommand` -> `/api/ea/commands/pending`.
+- `/dashboard/strategies` allows full CRUD on `Strategy` records and computes live performance metrics (`/api/strategies/performance`).
+
+Code paths:
+
+- `src/app/dashboard/trade-manager/page.tsx`
+- `src/app/api/remote/*`
+- `src/app/api/ea/commands/*`
+- `src/app/dashboard/strategies/page.tsx`
+- `src/app/api/strategies/*`
 
 ### `/dashboard/academy`, `/dashboard/academy/lessons/[slug]`, `/dashboard/academy/quiz/[quizId]`, `/dashboard/academy/certificates`
 
@@ -1974,39 +2010,63 @@ Code paths:
 
 ---
 
-### `/admin/users/[id]` — Expanded 8-Domain Telemetry & Narrative Summary
+### `/admin/users/[id]` — Streamlined 3-Tab CRM Console & Narrative Summary
 
 Purpose:
 
-- Full-spectrum trader inspection & support console (Doc #1 & Doc #4).
-- Provide administrative read-only visibility into the entire user trading loop.
+- Full-spectrum trader inspection, IB attribution, EA licensing, and coaching console.
+- Provide administrative visibility and 1-click Partner Pro / All-EA unlock in a clean 3-tab CRM layout.
 
 Users:
 
-- Admins and Superadmins.
+- Admins.
 
 Components & Tabs:
 
-1. **User Narrative Summary (Hero)**: On-the-fly behavioral synopsis (`classifyUser`), active risk chip badges, trading tempo, product adoption, and value indicator. Strict `persist: false` guarantee (zero DB writes on view).
-2. **Overview**: Account info, profile, Telegram, notes, registration source.
-3. **Access & VIP**: VIP tiers, trial expiration, manual override, audit logs.
-4. **Broker & IB**: Linked MT5 accounts, broker detection, and interactive `AccountIbAttributionBadge` (`CONFIRMED`, `NOT_OURS`, `UNKNOWN`).
-5. **Journal & Trades**: Filterable trade table, Net P&L, Win Rate %, Trade Telemetry Inspector modal with entry/exit, SL/TP, swap, and emotion logs.
-6. **Plans & Playbooks**: Pre-trade execution plans, Plan vs Actual execution comparison modal, and Playbook strategies library.
-7. **Rules & Goals**: Active trading rules, severity matrix, behavior goals, and historical trade rule check evaluations.
-8. **Growth & Coach**: Edge XP event telemetry, Mission progression, 10-Trade Improvement Experiments, and AI Coach weekly action checklists.
-9. **Reports & Notes**: Weekly/monthly trading reports, calendar day reflection notes, and algorithmic leak radar insight snapshots.
+1. **User Narrative Summary (Hero)** (`UserNarrativeSummary.tsx`): On-the-fly behavioral synopsis (`classifyUser`), active risk chip badges, trading tempo, product adoption, and value indicator. Strict `persist: false` guarantee (zero DB writes on view).
+2. **Left Identity Column**: Avatar, role, country, Real Capital Breakdown (Live vs Demo accounts), `QuickActions` (`Edit Role`, `Reset Password`, `Notify`), and auto-saving `AdminNotes`. (Note: 1-click **Impersonate Trader** is available in `/admin/users` row actions via `UserRowActions.tsx` and `/admin/users/behavior`).
+3. **Tab 1 — `Overview` (`UserOverviewTab.tsx`)**: Activity overview, connected MT5 trading accounts (`UserAccountsList`), EA licenses (`UserLicensesList`), Academy progress, badges, and activity timeline.
+4. **Tab 2 — `VIP & Broker` (`UserVipProTab.tsx`)**:
+   - **VIP & Partner Pro Status**: Direct toggle to grant/revoke VIP or manage trial expiration.
+   - **IB Attribution & All-EA Access**: Per-account IB attribution selector (`CONFIRMED`, `NOT_OURS`, `UNKNOWN`). Selecting **`CONFIRMED`** (`updateTradingAccountIbAttribution` in `src/app/admin/users/[id]/actions.ts`) automatically executes 4 unified actions:
+     1. Issues/activates `TradingAccount.licenseKey`,
+     2. Upserts `ProEntitlement` to `ACTIVE` (`IB_VERIFIED`),
+     3. Upserts `EALicense` to `APPROVED` (unlocking all 3 EAs: Trade Manager, GoldScalperNinja, and GSN - Apex Gold Sentinel),
+     4. Triggers `syncLicensesToGitHubBackup()`.
+   - Selecting **`NOT_OURS`** suspends matching `EALicense` records and removes `IB_VERIFIED` `ProEntitlement`.
+   - **EA Telemetry & Downloads**: Displays `EAProductAccess`, `EADownload`, and `EAProductUsageEvent` history.
+5. **Tab 3 — `Coaching & Analytics` (`UserCoachingAnalyticsTab.tsx`)**:
+   - Displays computed behavioral signals (`computeTraderSignals`), active weekly coaching focus, rule compliance checks, and recent journal entries with full trade telemetry (entry/exit, SL/TP, commission, swap, psychology notes).
 
 Code paths:
 
 - `src/app/admin/users/[id]/page.tsx`
+- `src/app/admin/users/[id]/actions.ts`
+- `src/app/admin/users/[id]/UserDetailTabsWrapper.tsx`
+- `src/app/admin/users/[id]/UserOverviewTab.tsx`
+- `src/app/admin/users/[id]/UserVipProTab.tsx`
+- `src/app/admin/users/[id]/UserCoachingAnalyticsTab.tsx`
 - `src/components/admin/users/UserNarrativeSummary.tsx`
-- `src/components/admin/users/AccountIbAttributionBadge.tsx`
-- `src/app/admin/users/[id]/UserJournalTab.tsx`
-- `src/app/admin/users/[id]/UserTradePlansTab.tsx`
-- `src/app/admin/users/[id]/UserRulesGoalsTab.tsx`
-- `src/app/admin/users/[id]/UserGrowthCoachTab.tsx`
-- `src/app/admin/users/[id]/UserReportsNotesTab.tsx`
+- `src/components/admin/users/UserRowActions.tsx`
+- `src/actions/admin-impersonate.ts`
+- `src/lib/ea/github-license-sync.server.ts`
+
+---
+
+### `/admin/mt5-cloud`, `/admin/loyalty`, `/admin/competitions`
+
+Purpose:
+
+- `/admin/mt5-cloud`: Manage the Multi-Instance & Smart Auto-Sleep Windows MT5 Cloud Worker fleet (`Mt5Worker`) and generate `Mt5EnrollmentToken` credentials.
+- `/admin/loyalty`: Manage IB volume `LoyaltyTier` configurations and review/approve user `LoyaltyClaim` requests.
+- `/admin/competitions`: Create and manage trader `Competition` events and `CompetitionParticipant` standings.
+
+Code paths:
+
+- `src/app/admin/mt5-cloud/page.tsx`
+- `src/app/admin/loyalty/page.tsx`
+- `src/app/admin/competitions/page.tsx`
+- `src/app/api/worker/jobs/*`
 
 ---
 

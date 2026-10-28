@@ -70,7 +70,7 @@ export function TradeSyncWizard({
     defaultMethod,
     onOpenAddAccount,
 }: TradeSyncWizardProps) {
-    const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+    const [step, setStep] = useState<1 | 2 | 3>(1);
     const [syncMethod, setSyncMethod] = useState<SyncMethod>(
         defaultMethod || "EA_SYNC"
     );
@@ -81,6 +81,7 @@ export function TradeSyncWizard({
     const [isLoadingKey, setIsLoadingKey] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [copiedUrl, setCopiedUrl] = useState(false);
     const [keyData, setKeyData] = useState<{
         hasKey: boolean;
         key: string | null;
@@ -90,18 +91,18 @@ export function TradeSyncWizard({
     const [generatedKey, setGeneratedKey] = useState<string | null>(null);
     const [showFullKey, setShowFullKey] = useState(false);
 
-    // Checkbox confirmation in step 3
+    // Checkbox confirmation in step 2
     const [isConfirmed, setIsConfirmed] = useState(false);
 
     // Verify step states
     const [syncStatus, setSyncStatus] = useState<SyncStatus | null>(null);
     const [isCheckingStatus, setIsCheckingStatus] = useState(false);
-    const [showTroubleshooting, setShowTroubleshooting] = useState(false);
 
     // Reset on open
     useEffect(() => {
         if (isOpen) {
-            if (defaultMethod) setSyncMethod(defaultMethod);
+            setSyncMethod(defaultMethod || "EA_SYNC");
+            setStep(1);
             setLinkSent(false);
         }
     }, [isOpen, defaultMethod]);
@@ -112,7 +113,7 @@ export function TradeSyncWizard({
             isOpen &&
             isMobile &&
             syncMethod === "EA_SYNC" &&
-            (step === 2 || step === 3)
+            (step === 1 || step === 2)
         ) {
             import("@/actions/first-session-onboarding").then((m) => {
                 m.recordMobileSyncFallbackViewedAction(syncMethod);
@@ -121,13 +122,13 @@ export function TradeSyncWizard({
     }, [isOpen, step, isMobile, syncMethod]);
 
     useEffect(() => {
-        if (isOpen && step === 2 && syncMethod !== "MANUAL") {
+        if (isOpen && step === 1) {
             fetchKey();
         }
-    }, [isOpen, step, syncMethod]);
+    }, [isOpen, step]);
 
     useEffect(() => {
-        if (isOpen && step === 4) {
+        if (isOpen && step === 3) {
             checkSyncStatus();
         }
     }, [isOpen, step]);
@@ -180,6 +181,14 @@ export function TradeSyncWizard({
         }
     };
 
+    const handleCopyUrl = () => {
+        const urlToCopy = syncServerUrl || "https://thenexttrade.com";
+        navigator.clipboard.writeText(urlToCopy);
+        setCopiedUrl(true);
+        toast.success("WebRequest URL copied to clipboard!");
+        setTimeout(() => setCopiedUrl(false), 2000);
+    };
+
     const checkSyncStatus = useCallback(async () => {
         setIsCheckingStatus(true);
         try {
@@ -196,29 +205,20 @@ export function TradeSyncWizard({
     }, []);
 
     const handleNext = () => {
-        // Manual skips step 2 and 3 — go directly to close
-        if (syncMethod === "MANUAL" && step === 1) {
-            onClose();
-            setStep(1);
-            toast.success("You can log trades manually from the Journal page.");
-            return;
-        }
-        if (step < 4) {
-            setStep((prev) => (prev + 1) as any);
+        if (step < 3) {
+            setStep((prev) => (prev + 1) as 1 | 2 | 3);
         } else {
             onClose();
             setStep(1);
             setIsConfirmed(false);
             setSyncStatus(null);
-            setShowTroubleshooting(false);
             toast.success("Setup wizard completed!");
         }
     };
 
     const handleBack = () => {
         if (step > 1) {
-            setStep((prev) => (prev - 1) as any);
-            setShowTroubleshooting(false);
+            setStep((prev) => (prev - 1) as 1 | 2 | 3);
         }
     };
 
@@ -253,161 +253,39 @@ export function TradeSyncWizard({
                     <div className="flex items-center justify-between">
                         <DialogHeader className="space-y-1">
                             <DialogTitle className="flex items-center gap-2 text-xl font-black text-gray-800 dark:text-white">
-                                <Cable className="w-6 h-6 text-amber-500 animate-pulse" />
-                                Interactive Sync Wizard
+                                <Cable className="w-5 h-5 text-amber-500" />
+                                Trade Manager Sync Setup
                             </DialogTitle>
                             <DialogDescription className="text-xs text-gray-500 dark:text-gray-400">
-                                {syncMethod === "MANUAL"
-                                    ? "Log trades manually from the Journal page."
-                                    : "4 steps to sync your MT5 trades automatically."}
+                                3 steps to connect your MT5 account with Trade Manager EA.
                             </DialogDescription>
                         </DialogHeader>
 
                         {/* Step Dots */}
-                        {syncMethod !== "MANUAL" && (
-                            <div className="flex items-center gap-2">
-                                {[1, 2, 3, 4].map((s) => (
-                                    <div
-                                        key={s}
-                                        className={cn(
-                                            "h-2 rounded-full transition-all duration-300",
-                                            step === s
-                                                ? "w-8 bg-amber-500 shadow-sm shadow-amber-500/30"
-                                                : step > s
-                                                  ? "w-2 bg-amber-500/50"
-                                                  : "w-2 bg-gray-200 dark:bg-white/10"
-                                        )}
-                                    />
-                                ))}
-                            </div>
-                        )}
+                        <div className="flex items-center gap-2">
+                            {[1, 2, 3].map((s) => (
+                                <div
+                                    key={s}
+                                    className={cn(
+                                        "h-2 rounded-full transition-all duration-300",
+                                        step === s
+                                            ? "w-8 bg-amber-500 shadow-sm shadow-amber-500/30"
+                                            : step > s
+                                              ? "w-2 bg-amber-500/50"
+                                              : "w-2 bg-gray-200 dark:bg-white/10"
+                                    )}
+                                />
+                            ))}
+                        </div>
                     </div>
                 </div>
 
                 {/* Step Body */}
                 <div className="p-6 max-h-[60vh] overflow-y-auto">
                     {/* ═══════════════════════════════════════════════════════════════
- STEP 1: SELECT METHOD
+ STEP 1: API KEY & ACCOUNT MATCHING
  ═══════════════════════════════════════════════════════════════ */}
                     {step === 1 && (
-                        <div className="space-y-4">
-                            <div className="text-center max-w-md mx-auto mb-2">
-                                <p className="text-sm font-bold text-gray-700 dark:text-gray-200">
-                                    Choose your connection style
-                                </p>
-                                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                                    Choose how you want to log and track your
-                                    trading performance.
-                                </p>
-                            </div>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {/* Option: MT5 Auto-Sync (Recommended) */}
-                                <div
-                                    onClick={() => setSyncMethod("EA_SYNC")}
-                                    className={cn(
-                                        "relative rounded-lg border-2 p-5 cursor-pointer transition-all duration-200 group flex flex-col justify-between h-56",
-                                        syncMethod === "EA_SYNC"
-                                            ? "border-amber-500 bg-amber-500/[0.03] dark:bg-amber-500/[0.05] shadow-lg shadow-amber-500/5"
-                                            : "border-dashboard bg-transparent hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.01]"
-                                    )}
-                                >
-                                    <span className="absolute -top-2.5 left-4 px-2.5 py-0.5 bg-amber-500 text-white text-[9px] font-black uppercase tracking-widest rounded-lg">
-                                        Recommended
-                                    </span>
-                                    <div>
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <Cable
-                                                size={18}
-                                                className="text-amber-500 shrink-0"
-                                            />
-                                            <h3 className="text-sm font-bold text-gray-800 dark:text-white">
-                                                MT5 Auto-Sync
-                                            </h3>
-                                        </div>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                                            Automatically sync your MT5 trades
-                                            using the Sync tab in EA Trade
-                                            Manager or the standalone
-                                            lightweight TradeSync EA.
-                                        </p>
-                                    </div>
-                                    <div className="pt-4 mt-auto flex items-center justify-between">
-                                        <span
-                                            className={cn(
-                                                "text-xs font-bold transition-colors inline-flex items-center gap-1",
-                                                syncMethod === "EA_SYNC"
-                                                    ? "text-amber-600 dark:text-amber-400"
-                                                    : "text-gray-400 dark:text-gray-500 group-hover:text-amber-500"
-                                            )}
-                                        >
-                                            {syncMethod === "EA_SYNC" ? (
-                                                <>
-                                                    <CheckCircle2 size={13} />
-                                                    Selected
-                                                </>
-                                            ) : (
-                                                "Select Option"
-                                            )}
-                                        </span>
-                                    </div>
-                                </div>
-
-                                {/* Option: Manual Journal */}
-                                <div
-                                    onClick={() => setSyncMethod("MANUAL")}
-                                    className={cn(
-                                        "relative rounded-lg border-2 p-5 cursor-pointer transition-all duration-200 group flex flex-col justify-between h-56",
-                                        syncMethod === "MANUAL"
-                                            ? "border-amber-500 bg-amber-500/[0.03] dark:bg-amber-500/[0.05] shadow-lg shadow-amber-500/5"
-                                            : "border-dashboard bg-transparent hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.01]"
-                                    )}
-                                >
-                                    <div>
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <PenLine
-                                                size={18}
-                                                className="text-gray-400 shrink-0"
-                                            />
-                                            <h3 className="text-sm font-bold text-gray-800 dark:text-white">
-                                                Manual Journal
-                                            </h3>
-                                        </div>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                                            No MT5 connection? Track and analyze
-                                            your trades by logging them
-                                            manually. You can set up auto-sync
-                                            later anytime.
-                                        </p>
-                                    </div>
-                                    <div className="pt-4 mt-auto flex items-center justify-between">
-                                        <span
-                                            className={cn(
-                                                "text-xs font-bold transition-colors inline-flex items-center gap-1",
-                                                syncMethod === "MANUAL"
-                                                    ? "text-amber-600 dark:text-amber-400"
-                                                    : "text-gray-400 dark:text-gray-500 group-hover:text-amber-500"
-                                            )}
-                                        >
-                                            {syncMethod === "MANUAL" ? (
-                                                <>
-                                                    <CheckCircle2 size={13} />
-                                                    Selected
-                                                </>
-                                            ) : (
-                                                "Select Option"
-                                            )}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* ═══════════════════════════════════════════════════════════════
- STEP 2: API KEY & ACCOUNT MATCHING
- ═══════════════════════════════════════════════════════════════ */}
-                    {step === 2 && (
                         <div className="space-y-4">
                             {isMobile && syncMethod === "EA_SYNC" && (
                                 <div className="p-4 rounded-lg border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 space-y-3">
@@ -654,9 +532,9 @@ export function TradeSyncWizard({
                     )}
 
                     {/* ═══════════════════════════════════════════════════════════════
- STEP 3: CONFIGURATION (Whitelist & WebRequest)
+ STEP 2: CONFIGURATION (Whitelist & WebRequest)
  ═══════════════════════════════════════════════════════════════ */}
-                    {step === 3 && (
+                    {step === 2 && (
                         <div className="space-y-4">
                             {isMobile && syncMethod === "EA_SYNC" && (
                                 <div className="p-4 rounded-lg border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 space-y-3">
@@ -745,41 +623,117 @@ export function TradeSyncWizard({
                                 </div>
                             )}
 
-                            <div className="rounded-lg border border-dashboard bg-amber-500/[0.02] p-4 text-xs space-y-3">
-                                <h3 className="font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                                    <CheckCircle2 className="w-4 h-4 text-amber-500" />
-                                    Configure MT5 allowed URLs (Crucial Step)
-                                </h3>
+                            <div className="rounded-xl border border-dashboard bg-amber-500/[0.02] p-4 text-xs space-y-3.5">
+                                <div>
+                                    <h3 className="font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                                        <CheckCircle2 className="w-4 h-4 text-amber-500 shrink-0" />
+                                        Step-by-Step MetaTrader 5 Setup
+                                    </h3>
+                                    <p className="text-gray-500 dark:text-gray-400 leading-relaxed mt-1">
+                                        MetaTrader 5 blocks external network requests by default. Follow these 4 steps inside your MT5 terminal so Trade Manager EA can sync your live telemetry:
+                                    </p>
+                                </div>
 
-                                <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
-                                    For security and stability, MetaTrader 5
-                                    blocks external network requests by default.
-                                    You must whitelist our secure API gateway:
-                                </p>
+                                <div className="space-y-3 p-3.5 bg-gray-50 dark:bg-black/30 rounded-xl border border-dashboard">
+                                    {/* Sub-step 1 */}
+                                    <div className="flex items-start gap-2.5">
+                                        <span className="w-5 h-5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+                                            1
+                                        </span>
+                                        <div className="space-y-0.5">
+                                            <p className="font-bold text-gray-800 dark:text-gray-200">
+                                                Open Expert Advisors Options (<kbd className="px-1.5 py-0.5 text-[10px] rounded bg-white dark:bg-white/10 border border-dashboard font-mono">Ctrl + O</kbd>)
+                                            </p>
+                                            <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
+                                                In your MT5 top menu bar, click{" "}
+                                                <strong className="text-gray-700 dark:text-gray-200">
+                                                    Tools &rarr; Options
+                                                </strong>{" "}
+                                                and switch to the{" "}
+                                                <strong className="text-gray-700 dark:text-gray-200">
+                                                    Expert Advisors
+                                                </strong>{" "}
+                                                tab.
+                                            </p>
+                                        </div>
+                                    </div>
 
-                                <div className="space-y-2 p-3 bg-gray-50 dark:bg-black/30 rounded-lg border border-dashboard">
-                                    <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide">
-                                        Path inside MetaTrader 5:
-                                    </p>
-                                    <p className="font-bold text-gray-700 dark:text-gray-300">
-                                        Tools &gt; Options &gt; Expert Advisors
-                                    </p>
+                                    {/* Sub-step 2 */}
+                                    <div className="flex items-start gap-2.5 pt-2 border-t border-dashboard">
+                                        <span className="w-5 h-5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+                                            2
+                                        </span>
+                                        <div className="space-y-2 flex-1 min-w-0">
+                                            <div className="space-y-0.5">
+                                                <p className="font-bold text-gray-800 dark:text-gray-200">
+                                                    Allow WebRequest &amp; Add Server URL
+                                                </p>
+                                                <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
+                                                    Tick{" "}
+                                                    <strong className="text-gray-700 dark:text-gray-200">
+                                                        &quot;Allow WebRequest for listed URL&quot;
+                                                    </strong>
+                                                    , double-click the green <strong className="text-emerald-600 dark:text-emerald-400">+</strong> row (&quot;add new URL&quot;), paste this exact URL, and click <strong className="text-gray-700 dark:text-gray-200">OK</strong>:
+                                                </p>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <code className="flex-1 bg-white dark:bg-black/40 px-2.5 py-2 rounded-lg border border-dashboard font-mono text-[11px] text-primary break-all">
+                                                    {syncServerUrl || "https://thenexttrade.com"}
+                                                </code>
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={handleCopyUrl}
+                                                    className="shrink-0 text-xs font-bold h-8 px-2.5"
+                                                >
+                                                    {copiedUrl ? (
+                                                        <>
+                                                            <Check size={13} className="text-emerald-500" /> Copied
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Copy size={13} /> Copy URL
+                                                        </>
+                                                    )}
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                    <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide mt-3">
-                                        1. Check the box:
-                                    </p>
-                                    <p className="text-gray-700 dark:text-gray-300">
-                                        Allow WebRequest for listed URL:
-                                    </p>
+                                    {/* Sub-step 3 */}
+                                    <div className="flex items-start gap-2.5 pt-2 border-t border-dashboard">
+                                        <span className="w-5 h-5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+                                            3
+                                        </span>
+                                        <div className="space-y-0.5">
+                                            <p className="font-bold text-gray-800 dark:text-gray-200">
+                                                Enable Algo Trading &amp; Attach Trade Manager EA
+                                            </p>
+                                            <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
+                                                Ensure <strong className="text-gray-700 dark:text-gray-200">Algo Trading</strong> is enabled (green play icon on the top toolbar), then drag{" "}
+                                                <strong className="text-gray-700 dark:text-gray-200">Trade Manager EA</strong> from{" "}
+                                                <span className="font-mono text-[11px]">Navigator &rarr; Expert Advisors</span> onto any active chart.
+                                            </p>
+                                        </div>
+                                    </div>
 
-                                    <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide mt-3">
-                                        2. Add this URL:
-                                    </p>
-                                    <div className="flex gap-2 items-center">
-                                        <code className="flex-1 bg-white dark:bg-black/40 p-2 rounded-lg border border-dashboard font-mono text-[11px] text-primary break-all">
-                                            {syncServerUrl ||
-                                                "https://thenexttrade.com"}
-                                        </code>
+                                    {/* Sub-step 4 */}
+                                    <div className="flex items-start gap-2.5 pt-2 border-t border-dashboard">
+                                        <span className="w-5 h-5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+                                            4
+                                        </span>
+                                        <div className="space-y-0.5">
+                                            <p className="font-bold text-gray-800 dark:text-gray-200">
+                                                Paste Sync API Key in the EA Panel
+                                            </p>
+                                            <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
+                                                On the Trade Manager chart panel, open the{" "}
+                                                <strong className="text-gray-700 dark:text-gray-200">SYNC</strong> tab, paste your{" "}
+                                                <strong className="text-gray-700 dark:text-gray-200">Sync API Key</strong> from Step 1, and click{" "}
+                                                <strong className="text-gray-700 dark:text-gray-200">Connect</strong>.
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -809,9 +763,9 @@ export function TradeSyncWizard({
                     )}
 
                     {/* ═══════════════════════════════════════════════════════════════
- STEP 4: VERIFY
+ STEP 3: VERIFY
  ═══════════════════════════════════════════════════════════════ */}
-                    {step === 4 && (
+                    {step === 3 && (
                         <div className="space-y-4">
                             <div className="text-center mb-2">
                                 <p className="text-sm font-bold text-gray-700 dark:text-gray-200">
@@ -964,40 +918,22 @@ export function TradeSyncWizard({
                     )}
 
                     {/* Next / Continue / Finish Button */}
-                    {syncMethod === "MANUAL" && step === 1 ? (
-                        <Button
-                            variant="gold"
-                            size="smd"
-                            onClick={() => {
-                                onClose();
-                                if (onOpenAddAccount) {
-                                    onOpenAddAccount("MANUAL");
-                                } else {
-                                    window.location.href = "/dashboard/journal?action=log-trade";
-                                }
-                            }}
-                            className="font-bold flex items-center gap-2"
-                        >
-                            Continue <ArrowRight size={14} />
-                        </Button>
-                    ) : (
-                        <Button
-                            variant="gold"
-                            size="smd"
-                            disabled={step === 3 && !isConfirmed}
-                            onClick={handleNext}
-                            className="font-bold flex items-center gap-2"
-                        >
-                            {step === 4
-                                ? allChecksPassed
-                                    ? "Finish & Go to Dashboard"
-                                    : "Skip & Go to Dashboard"
-                                : step === 3
-                                  ? "Continue to Verify"
-                                  : "Continue"}
-                            <ArrowRight size={14} />
-                        </Button>
-                    )}
+                    <Button
+                        variant="gold"
+                        size="smd"
+                        disabled={step === 2 && !isConfirmed}
+                        onClick={handleNext}
+                        className="font-bold flex items-center gap-2"
+                    >
+                        {step === 3
+                            ? allChecksPassed
+                                ? "Finish & Go to Dashboard"
+                                : "Skip & Go to Dashboard"
+                            : step === 2
+                              ? "Continue to Verify"
+                              : "Continue"}
+                        <ArrowRight size={14} />
+                    </Button>
                 </div>
             </DialogContent>
         </Dialog>

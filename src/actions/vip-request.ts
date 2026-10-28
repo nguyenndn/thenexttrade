@@ -522,6 +522,13 @@ export async function grantGracePeriod(
     expiresAt.setDate(expiresAt.getDate() + days);
 
     if (tradingAccountId) {
+        const targetAcc = await prisma.tradingAccount.findUnique({
+            where: { id: tradingAccountId },
+            select: { broker: true, accountNumber: true },
+        });
+        const cleanAcct = targetAcc?.accountNumber?.trim() || null;
+        const cleanBroker = targetAcc?.broker?.trim() || null;
+
         await prisma.proEntitlement.upsert({
             where: { tradingAccountId },
             create: {
@@ -529,6 +536,9 @@ export async function grantGracePeriod(
                 tradingAccountId,
                 status: "GRACE",
                 source: "MANUAL_ADMIN",
+                broker: cleanBroker,
+                accountNumber: cleanAcct,
+                accountNumberMasked: cleanAcct ? maskAccountNumber(cleanAcct) : null,
                 startsAt: new Date(),
                 expiresAt,
                 lastReviewedAt: new Date(),
@@ -536,6 +546,10 @@ export async function grantGracePeriod(
             },
             update: {
                 status: "GRACE",
+                source: "MANUAL_ADMIN",
+                broker: cleanBroker,
+                accountNumber: cleanAcct,
+                accountNumberMasked: cleanAcct ? maskAccountNumber(cleanAcct) : null,
                 startsAt: new Date(),
                 expiresAt,
                 lastReviewedAt: new Date(),
@@ -555,6 +569,7 @@ export async function grantGracePeriod(
                 where: { id: existingUserLevel.id },
                 data: {
                     status: "GRACE",
+                    source: "MANUAL_ADMIN",
                     startsAt: new Date(),
                     expiresAt,
                     lastReviewedAt: new Date(),
@@ -589,6 +604,7 @@ export async function grantGracePeriod(
 
     revalidatePath(`/admin/users/${userId}`);
     revalidatePath("/admin/ib/pipeline");
+    revalidatePath("/dashboard");
     revalidatePath("/dashboard/accounts");
     revalidatePath("/dashboard/trading-systems");
     return { success: true };
@@ -596,9 +612,9 @@ export async function grantGracePeriod(
 
 /**
  * Revoke Pro access for a specific trading account or entitlement.
- * - If entitlementId is provided: revokes that specific entitlement by primary key.
- * - If tradingAccountId is provided: revokes the entitlement associated with that account.
- * - If neither is provided: revokes all active/grace entitlements for the user.
+ * - If entitlementId is provided: marks that specific entitlement as REVOKED.
+ * - If tradingAccountId is provided: marks the entitlement associated with that account as REVOKED.
+ * - If neither is provided: marks all entitlements for the user as REVOKED (or creates a REVOKED marker to end 7-day trial).
  */
 export async function revokeProAccess(
     userId: string,
@@ -616,7 +632,7 @@ export async function revokeProAccess(
 
     let effectiveTradingAccountId: string | null = null;
 
-    // 1. If entitlementId is provided directly, hard delete by primary key
+    // 1. If entitlementId is provided directly, mark REVOKED by primary key
     if (entitlementId) {
         const ent = await prisma.proEntitlement.findUnique({
             where: { id: entitlementId },
@@ -624,8 +640,15 @@ export async function revokeProAccess(
         });
         if (ent) {
             effectiveTradingAccountId = ent.tradingAccountId;
-            await prisma.proEntitlement.deleteMany({
+            await prisma.proEntitlement.update({
                 where: { id: ent.id },
+                data: {
+                    status: "REVOKED",
+                    expiresAt: new Date(),
+                    lastReviewedAt: new Date(),
+                    reviewedBy: user.id,
+                    adminNote: reason || "Revoked by Admin",
+                },
             });
         }
     } else if (tradingAccountId) {
@@ -637,17 +660,24 @@ export async function revokeProAccess(
 
         if (entByCandidateId) {
             effectiveTradingAccountId = entByCandidateId.tradingAccountId;
-            await prisma.proEntitlement.deleteMany({
+            await prisma.proEntitlement.update({
                 where: { id: entByCandidateId.id },
+                data: {
+                    status: "REVOKED",
+                    expiresAt: new Date(),
+                    lastReviewedAt: new Date(),
+                    reviewedBy: user.id,
+                    adminNote: reason || "Revoked by Admin",
+                },
             });
         } else {
             // It is an actual tradingAccountId
             effectiveTradingAccountId = tradingAccountId;
             const targetAcct = await prisma.tradingAccount.findUnique({
                 where: { id: tradingAccountId },
-                select: { accountNumber: true },
+                select: { broker: true, accountNumber: true },
             });
-            await prisma.proEntitlement.deleteMany({
+            const updated = await prisma.proEntitlement.updateMany({
                 where: targetAcct?.accountNumber
                     ? {
                           userId,
@@ -660,13 +690,61 @@ export async function revokeProAccess(
                           ],
                       }
                     : { tradingAccountId },
+                data: {
+                    status: "REVOKED",
+                    expiresAt: new Date(),
+                    lastReviewedAt: new Date(),
+                    reviewedBy: user.id,
+                    adminNote: reason || "Revoked by Admin",
+                },
             });
+            if (updated.count === 0) {
+                await prisma.proEntitlement.create({
+                    data: {
+                        userId,
+                        tradingAccountId,
+                        status: "REVOKED",
+                        source: "MANUAL_ADMIN",
+                        broker: targetAcct?.broker?.trim() || null,
+                        accountNumber: targetAcct?.accountNumber?.trim() || null,
+                        accountNumberMasked: targetAcct?.accountNumber
+                            ? maskAccountNumber(targetAcct.accountNumber.trim())
+                            : null,
+                        startsAt: new Date(),
+                        expiresAt: new Date(),
+                        lastReviewedAt: new Date(),
+                        reviewedBy: user.id,
+                        adminNote: reason || "Set to Free Plan by Admin",
+                    },
+                });
+            }
         }
     } else {
-        // Revoke all user entitlements (legacy/global) -> hard delete
-        await prisma.proEntitlement.deleteMany({
+        // Revoke all user entitlements (or end 7-day trial immediately)
+        const updated = await prisma.proEntitlement.updateMany({
             where: { userId },
+            data: {
+                status: "REVOKED",
+                expiresAt: new Date(),
+                lastReviewedAt: new Date(),
+                reviewedBy: user.id,
+                adminNote: reason || "Set to Free Plan by Admin",
+            },
         });
+        if (updated.count === 0) {
+            await prisma.proEntitlement.create({
+                data: {
+                    userId,
+                    status: "REVOKED",
+                    source: "MANUAL_ADMIN",
+                    startsAt: new Date(),
+                    expiresAt: new Date(),
+                    lastReviewedAt: new Date(),
+                    reviewedBy: user.id,
+                    adminNote: reason || "Set to Free Plan by Admin",
+                },
+            });
+        }
     }
 
     // Clean up any APPROVED vipRequest for this account/user to avoid stale approved state
@@ -811,6 +889,13 @@ export async function grantManualPro(
     if (profile?.role !== "ADMIN") return { error: "Forbidden" };
 
     if (tradingAccountId) {
+        const targetAcc = await prisma.tradingAccount.findUnique({
+            where: { id: tradingAccountId },
+            select: { broker: true, accountNumber: true },
+        });
+        const cleanAcct = targetAcc?.accountNumber?.trim() || null;
+        const cleanBroker = targetAcc?.broker?.trim() || null;
+
         await prisma.proEntitlement.upsert({
             where: { tradingAccountId },
             create: {
@@ -818,6 +903,9 @@ export async function grantManualPro(
                 tradingAccountId,
                 status: "ACTIVE",
                 source: "MANUAL_ADMIN",
+                broker: cleanBroker,
+                accountNumber: cleanAcct,
+                accountNumberMasked: cleanAcct ? maskAccountNumber(cleanAcct) : null,
                 startsAt: new Date(),
                 lastReviewedAt: new Date(),
                 reviewedBy: user.id,
@@ -826,6 +914,9 @@ export async function grantManualPro(
             update: {
                 status: "ACTIVE",
                 source: "MANUAL_ADMIN",
+                broker: cleanBroker,
+                accountNumber: cleanAcct,
+                accountNumberMasked: cleanAcct ? maskAccountNumber(cleanAcct) : null,
                 startsAt: new Date(),
                 expiresAt: null,
                 lastReviewedAt: new Date(),
@@ -833,6 +924,73 @@ export async function grantManualPro(
                 adminNote: note || null,
             },
         });
+
+        try {
+            const { grantUserProductAccess } = await import(
+                "@/lib/admin/ib/product-usage.server"
+            );
+            const { ToolAccessSource } = await import("@prisma/client");
+            for (const slug of [
+                "goldscalperninja",
+                "trade-manager",
+                "gsn-phoenix-grid",
+            ]) {
+                await grantUserProductAccess({
+                    adminUserId: user.id,
+                    targetUserId: userId,
+                    productSlug: slug,
+                    tradingAccountId,
+                    source: ToolAccessSource.MANUAL_ADMIN,
+                });
+            }
+            if (cleanAcct && cleanBroker) {
+                const {
+                    ensureTradingAccountLicenseKey,
+                    syncLicensesToGitHubBackup,
+                } = await import("@/lib/ea/github-license-sync.server");
+                const upperBroker = cleanBroker.toUpperCase();
+                await ensureTradingAccountLicenseKey({
+                    userId,
+                    broker: upperBroker,
+                    accountNumber: cleanAcct,
+                    isApproved: true,
+                    approvedBy: user.id,
+                });
+                await prisma.eALicense.upsert({
+                    where: {
+                        broker_accountNumber: {
+                            broker: upperBroker,
+                            accountNumber: cleanAcct,
+                        },
+                    },
+                    create: {
+                        userId,
+                        broker: upperBroker,
+                        accountNumber: cleanAcct,
+                        status: "APPROVED",
+                        isVerified: true,
+                        verifiedAt: new Date(),
+                        approvedBy: user.id,
+                        approvedAt: new Date(),
+                        startDate: new Date(),
+                        note: note || "Approved via Manual Admin Pro Grant",
+                    },
+                    update: {
+                        status: "APPROVED",
+                        isVerified: true,
+                        verifiedAt: new Date(),
+                        approvedBy: user.id,
+                        approvedAt: new Date(),
+                        rejectedBy: null,
+                        rejectedAt: null,
+                        rejectReason: null,
+                    },
+                });
+                await syncLicensesToGitHubBackup();
+            }
+        } catch (err) {
+            console.error("Non-fatal EA sync error in grantManualPro:", err);
+        }
     } else {
         // Legacy user-level grant — upsert by userId to avoid stacking duplicate
         // user-level entitlements (same null tradingAccountId caveat as grace).
@@ -870,6 +1028,7 @@ export async function grantManualPro(
 
     revalidatePath(`/admin/users/${userId}`);
     revalidatePath("/admin/ib/pipeline");
+    revalidatePath("/dashboard");
     revalidatePath("/dashboard/accounts");
     revalidatePath("/dashboard/trading-systems");
     return { success: true };

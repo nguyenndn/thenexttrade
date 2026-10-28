@@ -75,9 +75,13 @@ interface SessionData {
     }[];
 }
 
-export function SessionDashboard() {
+export function SessionDashboard({
+    currentAccountId,
+}: {
+    currentAccountId?: string;
+} = {}) {
     const searchParams = useSearchParams();
-    const accountId = searchParams?.get("accountId");
+    const accountId = searchParams?.get("accountId") || currentAccountId;
     const fromStr = searchParams?.get("from");
     const toStr = searchParams?.get("to");
 

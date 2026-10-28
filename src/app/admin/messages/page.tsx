@@ -7,7 +7,7 @@ import { AdminMessagesClient } from "@/components/admin/messages/AdminMessagesCl
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 export const metadata: Metadata = {
-  title: "Contact Inquiries | Admin Portal",
+  title: "Messages | Admin Portal",
   description: "Review, triage, and reply to trader correspondence dispatched from the public contact desk.",
 };
 
@@ -40,7 +40,7 @@ export default async function AdminMessagesPage() {
   return (
     <div className="w-full space-y-6">
       <AdminPageHeader
-        title="Contact Inquiries"
+        title="Messages"
         description="Review, triage, and reply to trader correspondence dispatched from the public contact desk."
         backHref="/admin"
       />

@@ -31,18 +31,18 @@ function LoginSuccessOverlay({
         // Start progress bar animation
         const t1 = setTimeout(() => setProgress(100), 100);
 
-        // Build dashboard URL with accountId + today (same logic as UserMenu dropdown)
+        // Build dashboard URL with accountId (dates default to Start of Month -> Today)
         const t2 = setTimeout(() => {
             const match = document.cookie.match(
                 /(?:^|;\s*)last_account_id=([^;]+)/
             );
             const accountId = match?.[1];
-            const today = new Date().toISOString().slice(0, 10);
             const url =
-                redirectTo ||
-                (accountId
-                    ? `/dashboard?accountId=${accountId}&from=${today}&to=${today}`
-                    : "/dashboard");
+                redirectTo && redirectTo !== "/dashboard"
+                    ? redirectTo
+                    : accountId
+                      ? `/dashboard?accountId=${accountId}`
+                      : "/dashboard";
             window.location.href = url;
         }, 2400);
 
@@ -107,6 +107,7 @@ export default function LoginPage() {
     const [mode, setMode] = useState<"password" | "magic">("password");
     const [magicLinkSent, setMagicLinkSent] = useState(false);
     const [turnstileToken, setTurnstileToken] = useState("");
+    const [turnstileResetKey, setTurnstileResetKey] = useState(0);
     const [showTransition, setShowTransition] = useState(false);
     const [transitionName, setTransitionName] = useState("Trader");
     const [transitionRedirectTo, setTransitionRedirectTo] = useState<
@@ -137,6 +138,7 @@ export default function LoginPage() {
         if (result?.error) {
             trackEvent("login_failed", { method: "password" });
             setError(result.error);
+            setTurnstileResetKey((k) => k + 1);
             setLoading(false);
         } else if (result?.requires2FA) {
             trackEvent("login_requires_2fa", { method: "password" });
@@ -162,6 +164,7 @@ export default function LoginPage() {
         if (result?.error) {
             trackEvent("login_failed", { method: "magic_link" });
             setError(result.error);
+            setTurnstileResetKey((k) => k + 1);
         } else if (result?.success) {
             trackEvent("magic_link_requested");
             setMagicLinkSent(true);
@@ -173,6 +176,7 @@ export default function LoginPage() {
         setMode(newMode);
         setError(null);
         setMagicLinkSent(false);
+        setTurnstileResetKey((k) => k + 1);
     };
 
     return (
@@ -312,6 +316,7 @@ export default function LoginPage() {
                         </div>
 
                         <TurnstileWidget
+                            resetKey={turnstileResetKey}
                             onVerify={setTurnstileToken}
                             className="flex justify-center overflow-hidden max-w-full"
                         />
@@ -357,6 +362,7 @@ export default function LoginPage() {
                         />
 
                         <TurnstileWidget
+                            resetKey={turnstileResetKey}
                             onVerify={setTurnstileToken}
                             className="flex justify-center overflow-hidden max-w-full"
                         />

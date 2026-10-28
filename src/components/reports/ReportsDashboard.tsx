@@ -170,6 +170,19 @@ export function ReportsDashboard() {
         try {
             setIsGenerating(true);
 
+            const currentSearch =
+                typeof window !== "undefined"
+                    ? new URLSearchParams(window.location.search)
+                    : null;
+            const cookieMatch =
+                typeof document !== "undefined"
+                    ? document.cookie.match(
+                          /(?:^|;\s*)last_account_id=([^;]+)/
+                      )
+                    : null;
+            const activeAccountId =
+                currentSearch?.get("accountId") || cookieMatch?.[1] || "";
+
             if (selectedType === "trades" || selectedType === "tax") {
                 // CSV preview instead of direct download
                 const params = new URLSearchParams({
@@ -177,6 +190,9 @@ export function ReportsDashboard() {
                     startDate: format(dateRange.start, "yyyy-MM-dd"),
                     endDate: format(dateRange.end, "yyyy-MM-dd"),
                 });
+                if (activeAccountId && activeAccountId !== "all") {
+                    params.set("accountId", activeAccountId);
+                }
 
                 const response = await fetch(`/api/export/csv?${params}`);
                 if (!response.ok) throw new Error("Failed to generate CSV");
@@ -201,6 +217,9 @@ export function ReportsDashboard() {
                     startDate: format(dateRange.start, "yyyy-MM-dd"),
                     endDate: format(dateRange.end, "yyyy-MM-dd"),
                 });
+                if (activeAccountId && activeAccountId !== "all") {
+                    params.set("accountId", activeAccountId);
+                }
 
                 const response = await fetch(
                     `/api/export/report-data?${params}`

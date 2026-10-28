@@ -1,8 +1,8 @@
 # System
 
-Last reviewed: 2026-09-10
+Last reviewed: 2026-10-26
 
-TheNextTrade is a trader operating system: Trade Manager EA/manual trade capture, journal, analytics, Academy, Edge missions, Partner Pro/VIP operations, AI Gateway, trading-system access, and admin reporting in one Next.js app. For route-level behavior specs, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
+TheNextTrade is a trader operating system: Trade Manager EA/manual trade capture, remote EA execution control, journal, analytics, Academy, Edge missions, Partner Pro/VIP operations, AI Gateway, trading-system access, and admin reporting in one Next.js app. For the complete Vietnamese Business Analyst / SRS specification across all 10 modules, read [MASTER_BA_SPECIFICATION.md](MASTER_BA_SPECIFICATION.md). For route-level behavior specs, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
 
 ## Stack
 
@@ -61,11 +61,11 @@ Source of truth: `prisma/schema.prisma`.
 
 Source of truth: `src/app`.
 
-- Public: `/`, `/about`, `/contact`, `/edge`, `/legal/*`, `/articles`, `/academy`, `/brokers`, `/tools`.
-- Auth: `/auth/login`, `/auth/register`, callbacks, reset/verify flows.
-- User dashboard: `/dashboard`, accounts, journal, rules, analytics, reports, mistakes, intelligence, academy, missions, trading systems, settings.
-- Admin: `/admin`, users, reports, analytics, articles, article ops, academy, IB, AI Gateway, trading systems, email lab, security, release health.
-- APIs: `/api/auth/*`, `/api/sync/*`, `/api/ea/*`, `/api/analytics/*`, `/api/admin/*`, `/api/articles/*`, `/api/app/version`, `/api/trade-plans`, `/api/sync/health`.
+- Public: `/`, `/get-started`, `/about`, `/contact`, `/edge`, `/faq`, `/legal/*`, `/articles`, `/academy`, `/brokers`, `/tools/*`, `/trading-style`, `/community`, `/trading-systems`, `/trader/[username]`, `/share/[id]`, `/certificate/*`.
+- Auth: `/auth/login`, `/auth/signup`, `/auth/verify-email`, `/auth/verify-2fa`, `/auth/forgot-password`, `/auth/update-password`, `/onboarding`.
+- User dashboard: `/dashboard`, `/dashboard/accounts`, `/dashboard/journal`, `/dashboard/sessions`, `/dashboard/analytics`, `/dashboard/intelligence`, `/dashboard/reports/*`, `/dashboard/rules`, `/dashboard/strategies`, `/dashboard/trade-manager`, `/dashboard/trading-systems`, `/dashboard/learning`, `/dashboard/loyalty`, `/dashboard/leaderboard`, `/dashboard/academy/*`, `/dashboard/settings/*`.
+- Admin: `/admin`, `/admin/reports`, `/admin/analytics`, `/admin/release-health`, `/admin/users`, `/admin/users/behavior`, `/admin/users/[id]`, `/admin/ib/*`, `/admin/mt5-cloud`, `/admin/trading-systems/*`, `/admin/articles/*`, `/admin/academy/*`, `/admin/competitions`, `/admin/loyalty`, `/admin/notifications/*`, `/admin/messages`, `/admin/feedback`, `/admin/ai/*`, `/admin/email-lab`, `/admin/security`, `/admin/settings`.
+- APIs: `/api/sync/*`, `/api/ea/*`, `/api/remote/*`, `/api/worker/jobs/*`, `/api/v1/ai/*`, `/api/analytics/*`, `/api/admin/*`, `/api/articles/*`, `/api/academy/*`, `/api/cron/*`, `/api/trade-plans/*`, `/api/trading-accounts/*`.
 
 Navigation source of truth: `src/config/navigation.ts`.
 
@@ -77,28 +77,30 @@ Use this table when assigning bugs or feature work.
 | --- | --- | --- | --- |
 | Public pages | `/`, `/about`, `/contact`, `/edge`, `/legal/*` | `src/app/(public)`, public page files under `src/app` | SEO helpers, analytics tracking |
 | Articles/CMS | `/articles`, `/admin/articles`, `/admin/articles/ops` | `src/app/articles`, `src/app/admin/articles`, article components | Article models, image storage, SEO checks |
-| Auth | `/auth/login`, `/auth/register`, auth callbacks | `src/app/auth`, auth actions, middleware/proxy | Supabase Auth, `User`, `Profile`, sessions, security logs |
+| Auth & OTP Verification | `/auth/login`, `/auth/signup`, `/auth/verify-email`, `/auth/verify-2fa` | `src/app/auth`, `src/app/auth/actions.ts`, middleware/proxy | Supabase Auth (`generateLink` 8-digit OTP + SMTP fallback), `User`, `Profile`, sessions, security logs |
 | Dashboard shell | `/dashboard/*` | `src/app/dashboard/layout.client.tsx`, `src/components/dashboard`, `src/config/navigation.ts` | Auth session, profile, navigation |
 | Main dashboard | `/dashboard` | `src/app/dashboard/page.tsx`, `src/app/dashboard/DashboardClient.tsx` | dashboard stats, chart queries, performance helpers, first-session activation state |
-| Account hub | `/dashboard/accounts` | `src/components/trading-accounts`, account APIs | `TradingAccount`, Pro eligibility, sync state |
+| Account hub & Sync Wizard | `/dashboard/accounts` | `src/components/trading-accounts/AccountListClient.tsx`, `AddAccountModal.tsx`, `TradeSyncWizard.tsx`, `src/lib/sync/sync-urls.ts` | `TradingAccount`, Pro eligibility, 3-step EA sync setup (`NEXT_PUBLIC_SYNC_SERVER_URL \|\| NEXT_PUBLIC_APP_URL`) |
 | Sync Health Center | `/dashboard/accounts?health=sync` | `src/components/trading-accounts/SyncHealthCenter.tsx`, `SyncHealthSummaryCard.tsx`, `SyncHealthAccountRow.tsx`, `SyncRecoveryAction.tsx` | `TradingAccount`, `SyncHistory`, `ImportHistory`, `src/lib/sync-health.ts` |
-| Trade Manager EA sync | account setup, EA APIs | `src/app/api/ea`, trading-system download/config surfaces | API key auth, commands, account heartbeat, first-data sync |
-| Legacy sync compatibility | old sync APIs/app artifacts | `src/app/api/sync`, `src/app/api/app/version`, legacy app folders if still present | backwards-compatible import handling only; do not promote in new UI |
-| Journal | `/dashboard/journal`, `/api/cron/journal-autopilot` | journal pages/components/actions, `src/lib/journal/autopilot.server.ts`, `src/app/api/cron/journal-autopilot/route.ts`, `src/lib/services/journal-autopilot-scheduler.service.ts` | `JournalEntry`, imports, manual trades, `autopilotStatus`, AI gateway journal autopilot (auto-run via instrumentation on server start, dev + self-hosted prod; override interval with `JOURNAL_AUTOPILOT_CRON`, default `*/15 * * * *`) |
+| Trade Manager EA sync | account setup, EA APIs | `src/app/api/ea/*`, `src/app/api/sync/*`, trading-system download/config surfaces | API key auth, commands, account heartbeat, first-data sync |
+| Trade Manager Remote Control | `/dashboard/trade-manager`, `/api/remote/*`, `/api/ea/commands/*` | `src/app/dashboard/trade-manager/*`, `src/app/api/remote/*`, `src/app/api/ea/commands/*` | `EaCommand`, live MT5 position telemetry, remote SL/TP/close execution, Telegram rules |
+| MT5 Cloud Worker Fleet | `/admin/mt5-cloud`, `/api/worker/jobs/*` | `src/app/admin/mt5-cloud/*`, `src/app/api/worker/jobs/*`, `tools/tnt-worker/*` | `Mt5Worker` (Multi-Instance & Smart Auto-Sleep), `Mt5EnrollmentToken`, `Mt5ImportJob`, `TradingAccountCredential` (AES-256-GCM) |
+| Legacy sync compatibility | old sync APIs/app artifacts | `src/app/api/sync`, `src/app/api/app/version` | backwards-compatible import handling only; do not promote in new UI |
+| Journal & Strategies | `/dashboard/journal`, `/dashboard/strategies`, `/api/cron/journal-autopilot` | journal pages/components/actions, `src/app/dashboard/strategies/*`, `src/lib/journal/autopilot.server.ts` | `JournalEntry`, `Strategy`, `TradingDayNote`, imports, manual trades, AI gateway journal autopilot |
 | Trade plans | `/dashboard/journal?tab=plans` | `src/components/journal/TradePlanList.tsx`, `TradePlanCard.tsx`, `TradePlanModal.tsx`, `PlanVsActualPanel.tsx`, `src/actions/trade-plans.ts` | `TradePlan`, `JournalEntry`, account/symbol matching |
 | Rulebook and goals | `/dashboard/rules` | `src/app/dashboard/rules/page.tsx`, `src/components/rules/*`, `src/actions/rulebook.ts` | `TradingRule`, `TradeRuleCheck`, `TraderGoal` |
 | Trading Style Assessment | `/trading-style`, `/dashboard/settings/trading-style`, `/dashboard/settings/profile` | `src/app/trading-style`, `src/components/trading-style/*`, `src/lib/trading-style/*`, `src/actions/trading-style.ts` | `User.settings.tradingStyle`, 8 Archetypes, 6 Dimensions, scoring engine |
 | Privacy and public sharing | `/dashboard/settings/profile`, `/trader/[username]`, `/share/[id]`, `/api/og/trader/[username]` | `src/lib/profile/privacy-presets.ts`, profile settings, public profile/share/OG routes | `Profile`, public stats queries, privacy flags, verified archetype badge |
 | Reports/analytics | `/dashboard/analytics`, `/dashboard/reports`, `/admin/reports`, `/admin/analytics` | dashboard/admin report pages, `src/lib/analytics.ts`, `src/lib/track.ts` | `PageView`, `AnalyticsEvent`, trade/account/user aggregates |
-| Edge missions | `/dashboard/missions` | missions pages/components, gamification helpers | Edge/XP, missions, daily check-in, achievements |
+| Edge missions, Loyalty & Leaderboard | `/dashboard/learning`, `/dashboard/loyalty`, `/dashboard/leaderboard`, `/admin/loyalty`, `/admin/competitions` | learning/loyalty/leaderboard pages, `src/actions/edge-missions.ts`, `src/lib/gamification.ts` | `EdgeEvent`, `UserMissionProgress`, `LoyaltyTier`, `LoyaltyClaim`, `Competition` |
 | Academy | `/academy`, `/dashboard/academy`, `/admin/academy`, `/certificate/[id]`, `/certificate/master/[userId]` | academy routes/components/actions, `src/lib/certificates/certificate-share.server.ts`, `src/components/academy/CertificateShareModal.tsx`, `CertificateShareScale.tsx` | levels, modules, lessons, quizzes, progress, certificates, public share-cards |
 | Certificate OG images | `/api/og/certificate/[id]`, `/api/og/certificate/master/[userId]` | `src/app/api/og/certificate/[id]/route.tsx`, `src/app/api/og/certificate/master/[userId]/route.tsx` | `next/og` dynamic preview cards for certificate share links |
-| Trading systems | `/trading-systems`, `/dashboard/trading-systems`, `/admin/trading-systems` | trading system public, user, and admin pages | downloads, licenses, products |
+| Trading systems & Unified Licensing | `/trading-systems`, `/dashboard/trading-systems`, `/admin/trading-systems` | trading system public, user, and admin pages, `src/lib/ea/github-license-sync.server.ts` | `EAProduct`, `EALicense`, `ProEntitlement`, `LicenseGitHubSyncJob` (1 License Key unlocks all 3 EAs + GitHub Backup) |
 | Community / GoldScalperNinja | `/community` | `src/app/community/page.tsx`, `src/components/community/*`, `src/config/telegram.ts` | Telegram/community funnel, broker setup guidance |
 | AI Gateway | `/admin/ai`, `/dashboard/intelligence` | `src/actions/admin/ai-gateway.ts`, `src/actions/ai-coach.ts`, `src/lib/ai-gateway/*`, `src/components/admin/ai/*` | providers, models, routing, request logs, audit |
 | Economic calendar | `/tools/economic-calendar` | `src/app/tools/economic-calendar`, `src/lib/services/economic-calendar.ts` | configured calendar provider data |
 | Email Lab | `/admin/email-lab` | `src/app/admin/email-lab`, `src/lib/services/email.service.ts`, `src/lib/emails/*` | SMTP/Mailtrap template testing |
-| Admin users | `/admin/users` | admin user list/detail components | user/profile/country/session/account data |
+| Admin users & 3-Tab CRM | `/admin/users`, `/admin/users/[id]`, `/admin/users/behavior` | `src/app/admin/users/[id]/page.tsx`, `UserDetailTabsWrapper.tsx`, `UserOverviewTab.tsx`, `UserVipProTab.tsx`, `UserCoachingAnalyticsTab.tsx`, `src/actions/admin-impersonate.ts` | 3-Tab CRM (`Overview`, `VIP & Broker`, `Coaching & Analytics`), 1-click IB `CONFIRMED` unlock, Impersonate Trader |
 | Security | `/admin/security` | security admin pages/APIs | `AuditLog`, `SecurityLog`, `BlockedIP` |
 | Email | no single route | `src/lib/services/email.service.ts`, email actions | SMTP provider, templates, send logs later |
 | Storage | media and generated files | `src/lib/storage/object-storage.ts` | R2/local storage adapter |

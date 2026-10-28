@@ -161,41 +161,12 @@ export async function resolveAccountAndDates(
         typeof searchParams?.to === "string" ? searchParams.to : undefined;
     let needsRedirect = false;
 
-    // Resolve accountId if missing
+    // Resolve accountId if missing (Priority 1: Main account in /dashboard/accounts)
     if (!accountId) {
-        let targetId: string | undefined;
-
-        // Priority 1: User's chosen main account
-        const profileMain = await prisma.profile.findUnique({
-            where: { userId },
-            select: { mainTradingAccountId: true },
-        });
-        if (profileMain?.mainTradingAccountId) {
-            const mainExists = await prisma.tradingAccount.findFirst({
-                where: { id: profileMain.mainTradingAccountId, userId },
-                select: { id: true },
-            });
-            if (mainExists) targetId = profileMain.mainTradingAccountId;
-        }
-
-        // Priority 2: Cookie account
-        if (!targetId && lastAccountId) {
-            const cookieAccountExists = await prisma.tradingAccount.findFirst({
-                where: { id: lastAccountId, userId },
-                select: { id: true },
-            });
-            if (cookieAccountExists) targetId = lastAccountId;
-        }
-
-        // Priority 3: Most recent account
-        if (!targetId) {
-            const defaultAccount = await prisma.tradingAccount.findFirst({
-                where: { userId },
-                orderBy: { createdAt: "desc" },
-                select: { id: true },
-            });
-            targetId = defaultAccount?.id;
-        }
+        const { resolveDefaultAccountId } = await import(
+            "@/actions/main-account"
+        );
+        const targetId = await resolveDefaultAccountId(userId, lastAccountId);
 
         if (targetId) {
             accountId = targetId;
@@ -203,7 +174,7 @@ export async function resolveAccountAndDates(
         }
     }
 
-    // Resolve date params if missing
+    // Resolve date params if missing (always default to Start of Month -> Today)
     if (!fromParam || !toParam) {
         const now = new Date();
         const startMonthStr = format(startOfMonth(now), "yyyy-MM-dd");

@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 
 /**
  * Set a trading account as the user's main account.
@@ -22,19 +23,52 @@ export async function setMainAccount(accountId: string | null) {
         if (!account) return { error: "Account not found" };
     }
 
-    await prisma.profile.upsert({
-        where: { userId: user.id },
-        create: {
-            userId: user.id,
-            mainTradingAccountId: accountId,
-        },
-        update: {
-            mainTradingAccountId: accountId,
-        },
-    });
+    await prisma.$transaction([
+        prisma.profile.upsert({
+            where: { userId: user.id },
+            create: {
+                userId: user.id,
+                mainTradingAccountId: accountId,
+            },
+            update: {
+                mainTradingAccountId: accountId,
+            },
+        }),
+        prisma.tradingAccount.updateMany({
+            where: { userId: user.id, isDefault: true },
+            data: { isDefault: false },
+        }),
+        ...(accountId
+            ? [
+                  prisma.tradingAccount.update({
+                      where: { id: accountId, userId: user.id },
+                      data: { isDefault: true },
+                  }),
+              ]
+            : []),
+    ]);
+
+    try {
+        const cookieStore = await cookies();
+        if (accountId) {
+            cookieStore.set("last_account_id", accountId, {
+                path: "/",
+                maxAge: 31536000,
+                sameSite: "lax",
+            });
+        } else {
+            cookieStore.delete("last_account_id");
+        }
+    } catch {
+        // Ignore cookie write errors if called outside action context
+    }
 
     revalidatePath("/dashboard/accounts");
     revalidatePath("/dashboard");
+    revalidatePath("/dashboard/journal");
+    revalidatePath("/dashboard/analytics");
+    revalidatePath("/dashboard/sessions");
+    revalidatePath("/dashboard/intelligence");
     return { success: true };
 }
 
@@ -51,4 +85,56 @@ export async function getMainAccountId(): Promise<string | null> {
     });
 
     return profile?.mainTradingAccountId ?? null;
+}
+
+/**
+ * Unified default account resolution across all User Dashboard pages:
+ * Priority 1: User's Main Account set in /dashboard/accounts (profile.mainTradingAccountId)
+ * Priority 2: Account marked isDefault = true
+ * Priority 3: Valid last_account_id cookie
+ * Priority 4: Most recently created account
+ */
+export async function resolveDefaultAccountId(
+    userId: string,
+    cookieAccountId?: string
+): Promise<string | undefined> {
+    const [profileMain, userAccounts] = await Promise.all([
+        prisma.profile.findUnique({
+            where: { userId },
+            select: { mainTradingAccountId: true },
+        }),
+        prisma.tradingAccount.findMany({
+            where: { userId },
+            select: { id: true, isDefault: true },
+            orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }],
+        }),
+    ]);
+
+    if (userAccounts.length === 0) return undefined;
+
+    // Priority 1: Profile Main Account (set in /dashboard/accounts)
+    if (
+        profileMain?.mainTradingAccountId &&
+        userAccounts.some((a) => a.id === profileMain.mainTradingAccountId)
+    ) {
+        return profileMain.mainTradingAccountId;
+    }
+
+    // Priority 2: Account with isDefault = true
+    const defaultAcc = userAccounts.find((a) => a.isDefault);
+    if (defaultAcc) {
+        return defaultAcc.id;
+    }
+
+    // Priority 3: Cookie last_account_id
+    if (
+        cookieAccountId &&
+        cookieAccountId !== "all" &&
+        userAccounts.some((a) => a.id === cookieAccountId)
+    ) {
+        return cookieAccountId;
+    }
+
+    // Priority 4: Most recent account
+    return userAccounts[0].id;
 }

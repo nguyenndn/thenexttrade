@@ -115,11 +115,20 @@ export interface UserEaUsageEventItem {
     } | null;
 }
 
+export interface UserProEntitlementItem {
+    id: string;
+    tradingAccountId?: string | null;
+    status: string;
+    source?: string | null;
+    accountNumber?: string | null;
+}
+
 interface UserAccountsListProps {
     accounts: TradingAccountItem[];
     userId: string;
     eaProductAccesses?: UserEaProductAccessItem[];
     eaProductUsageEvents?: UserEaUsageEventItem[];
+    proEntitlements?: UserProEntitlementItem[];
 }
 
 const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
@@ -129,7 +138,14 @@ export function UserAccountsList({
     userId,
     eaProductAccesses = [],
     eaProductUsageEvents = [],
+    proEntitlements = [],
 }: UserAccountsListProps) {
+    const hasGlobalPro = proEntitlements.some(
+        (e) =>
+            !e.tradingAccountId &&
+            !e.accountNumber &&
+            (e.status === "ACTIVE" || e.status === "GRACE")
+    );
     const liveAccounts = accounts.filter(
         (a) =>
             a.accountType !== "DEMO" &&
@@ -240,6 +256,18 @@ export function UserAccountsList({
                             Date.now() - new Date(lastActiveDate).getTime() <=
                                 TWENTY_FOUR_HOURS_MS;
                         const accountEas = getAccountActiveEas(acc.id);
+                        const isAccountPro =
+                            hasGlobalPro ||
+                            proEntitlements.some(
+                                (e) =>
+                                    (e.tradingAccountId === acc.id ||
+                                        (!e.tradingAccountId &&
+                                            acc.accountNumber &&
+                                            e.accountNumber ===
+                                                acc.accountNumber)) &&
+                                    (e.status === "ACTIVE" ||
+                                        e.status === "GRACE")
+                            );
 
                         return (
                             <div
@@ -262,6 +290,15 @@ export function UserAccountsList({
                                             ) : (
                                                 <span className="shrink-0 text-[10px] font-bold bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-lg uppercase tracking-wider">
                                                     Real
+                                                </span>
+                                            )}
+                                            {isAccountPro ? (
+                                                <span className="shrink-0 text-[10px] font-black bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-lg uppercase tracking-wider">
+                                                    PRO
+                                                </span>
+                                            ) : (
+                                                <span className="shrink-0 text-[10px] font-bold bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 px-2 py-0.5 rounded-lg uppercase tracking-wider">
+                                                    Free
                                                 </span>
                                             )}
                                             <span className="text-[11px] font-mono text-gray-500">

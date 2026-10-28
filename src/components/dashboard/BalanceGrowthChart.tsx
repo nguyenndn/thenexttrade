@@ -9,6 +9,7 @@ import {
     Tooltip,
     ResponsiveContainer,
 } from "recharts";
+import { TrendingUp } from "lucide-react";
 import { ChartContainer } from "@/components/ui/ChartContainer";
 import { format } from "date-fns";
 
@@ -20,10 +21,32 @@ interface BalanceGrowthChartProps {
 }
 
 export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
+    const header = (
+        <div className="px-5 py-3.5 border-b border-dashboard flex items-center justify-between shrink-0">
+            <div className="flex items-center gap-2.5">
+                <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-500">
+                    <TrendingUp size={18} />
+                </div>
+                <div>
+                    <h3 className="font-bold text-gray-700 dark:text-white text-sm">
+                        Balance Growth
+                    </h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Account equity curve over time
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+
     if (!data || data.length === 0) {
         return (
-            <div className="flex flex-col h-full w-full overflow-hidden items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300">
-                No data available
+            <div className="flex flex-col h-full w-full overflow-hidden">
+                {header}
+                <div className="flex-1 flex flex-col items-center justify-center p-6 text-center font-medium text-sm text-gray-500 dark:text-gray-400">
+                    <TrendingUp size={26} className="mb-2 opacity-40" />
+                    No data available
+                </div>
             </div>
         );
     }
@@ -68,17 +91,20 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
     });
 
     return (
-        <div className="flex flex-col h-full w-full overflow-hidden p-4">
-            <ChartContainer
-                height="100%"
-                minHeight={100}
-                className="w-full pb-6 flex-1"
-            >
+        <div className="flex flex-col h-full w-full overflow-hidden">
+            {header}
+            <div className="flex-1 flex flex-col overflow-hidden p-4 min-h-0">
+                <ChartContainer
+                    height="100%"
+                    minHeight={100}
+                    className="w-full pb-2 flex-1"
+                >
                 <ResponsiveContainer
                     width="100%"
                     height="100%"
                     minWidth={0}
                     minHeight={0}
+                    debounce={50}
                 >
                     <AreaChart
                         data={chartData}
@@ -180,6 +206,7 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
                     </AreaChart>
                 </ResponsiveContainer>
             </ChartContainer>
+            </div>
         </div>
     );
 }

@@ -179,24 +179,10 @@ export function AccountCard({
     onRequestSupport,
 }: AccountCardProps) {
     const [isCloudSyncOpen, setIsCloudSyncOpen] = useState(false);
-    const isSyncing = Boolean(
-        propIsSyncing ||
-        (account.latestJob &&
-            (account.latestJob.status === "PENDING" ||
-                account.latestJob.status === "PROCESSING") &&
-            Date.now() - new Date(account.latestJob.createdAt).getTime() <
-                (account.latestJob.status === "PENDING" ? 60000 : 120000))
-    );
-
+    // Temporarily disabled while Cloud Sync worker infrastructure is offline
+    const isSyncing = false;
     const latestJob = account.latestJob;
-    const isLatestSyncFailed = Boolean(
-        !isSyncing &&
-        latestJob &&
-        latestJob.status === "FAILED" &&
-        (!account.lastSync ||
-            new Date(latestJob.createdAt).getTime() > new Date(account.lastSync).getTime() ||
-            (latestJob.completedAt && new Date(latestJob.completedAt).getTime() > new Date(account.lastSync).getTime()))
-    );
+    const isLatestSyncFailed = false;
 
     // Only trust accountType if account has actually synced at least once
     const hasSynced = !!account.lastSync;
@@ -699,6 +685,7 @@ export function AccountCard({
                                     Dashboard
                                 </Link>
 
+                                {/* Temporarily hidden while Cloud Sync infrastructure is offline
                                 <span className="text-gray-300 dark:text-white/15 select-none text-xs">·</span>
 
                                 {isSyncing ? (
@@ -726,6 +713,7 @@ export function AccountCard({
                                         {isLatestSyncFailed ? "Retry Sync" : "Sync"}
                                     </Button>
                                 )}
+                                */}
                             </>
                         )}
                     </div>

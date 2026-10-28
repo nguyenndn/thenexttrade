@@ -62,13 +62,21 @@ export function DashboardFilter({
     const [symbol, setSymbol] = useState(searchParams.get("symbol") || "");
     const [result, setResult] = useState(searchParams.get("result") || "");
 
-    // Sync state with URL params
+    // Sync state with URL params and purge legacy date range cache
     useEffect(() => {
+        localStorage.removeItem("tnt_date_range");
+        document.cookie = "tnt_date_from=; path=/; max-age=0; SameSite=Lax";
+        document.cookie = "tnt_date_to=; path=/; max-age=0; SameSite=Lax";
+
         if (startStr && endStr) {
-            setDateRange({
-                start: new Date(startStr),
-                end: new Date(endStr),
-            });
+            const parsedStart = new Date(startStr);
+            const parsedEnd = new Date(endStr);
+            if (!isNaN(parsedStart.getTime()) && !isNaN(parsedEnd.getTime())) {
+                setDateRange({
+                    start: parsedStart,
+                    end: parsedEnd,
+                });
+            }
         }
     }, [startStr, endStr]);
 
@@ -91,7 +99,7 @@ export function DashboardFilter({
 
     const hasInitialized = useRef(false);
 
-    // Default to Saved Range or Start of Month to Today on mount if URL is empty
+    // Default to Start of Month -> Today on mount if URL is empty
     useEffect(() => {
         if (hideDateFilter || defaultToAllTime) return;
         if (hasInitialized.current) return;
@@ -101,38 +109,51 @@ export function DashboardFilter({
 
         if (!start && !end) {
             hasInitialized.current = true;
-            const savedRangeStr = localStorage.getItem("tnt_date_range");
-            if (savedRangeStr) {
-                try {
-                    const savedRange = JSON.parse(savedRangeStr);
-                    const params = new URLSearchParams(searchParams.toString());
-                    params.set(
-                        "from",
-                        format(new Date(savedRange.start), "yyyy-MM-dd")
-                    );
-                    params.set(
-                        "to",
-                        format(new Date(savedRange.end), "yyyy-MM-dd")
-                    );
-                    router.replace(`?${params.toString()}`);
-                    return;
-                } catch {
-                    // Fall through to default date range
-                }
+            const liveQuery =
+                typeof window !== "undefined"
+                    ? window.location.search
+                    : searchParams.toString();
+            const params = new URLSearchParams(liveQuery);
+
+            // Preserve resolved accountId in the same replace call so AccountSelector and DashboardFilter never race
+            if (
+                !params.has("accountId") &&
+                currentAccountId &&
+                currentAccountId !== "all"
+            ) {
+                params.set("accountId", currentAccountId);
             }
 
             const monthStart = startOfMonth(new Date());
             const todayEnd = endOfDay(new Date());
+            const fromFormatted = format(monthStart, "yyyy-MM-dd");
+            const toFormatted = format(todayEnd, "yyyy-MM-dd");
 
-            const params = new URLSearchParams(searchParams.toString());
-            params.set("from", format(monthStart, "yyyy-MM-dd"));
-            params.set("to", format(todayEnd, "yyyy-MM-dd"));
+            params.set("from", fromFormatted);
+            params.set("to", toFormatted);
+            router.replace(`?${params.toString()}`);
+        } else if (
+            !searchParams.has("accountId") &&
+            currentAccountId &&
+            currentAccountId !== "all"
+        ) {
+            hasInitialized.current = true;
+            const liveQuery =
+                typeof window !== "undefined"
+                    ? window.location.search
+                    : searchParams.toString();
+            const params = new URLSearchParams(liveQuery);
+            params.set("accountId", currentAccountId);
             router.replace(`?${params.toString()}`);
         }
-    }, []);
+    }, [currentAccountId]);
 
     const handleDateChange = (range: { start: Date; end: Date }) => {
-        const params = new URLSearchParams(searchParams.toString());
+        const liveQuery =
+            typeof window !== "undefined"
+                ? window.location.search
+                : searchParams.toString();
+        const params = new URLSearchParams(liveQuery);
 
         if (
             range.start.getFullYear() <= 2020 ||
@@ -142,18 +163,11 @@ export function DashboardFilter({
         ) {
             params.delete("from");
             params.delete("to");
-            localStorage.removeItem("tnt_date_range");
         } else {
-            params.set("from", format(range.start, "yyyy-MM-dd"));
-            params.set("to", format(range.end, "yyyy-MM-dd"));
-
-            localStorage.setItem(
-                "tnt_date_range",
-                JSON.stringify({
-                    start: range.start.toISOString(),
-                    end: range.end.toISOString(),
-                })
-            );
+            const fromFormatted = format(range.start, "yyyy-MM-dd");
+            const toFormatted = format(range.end, "yyyy-MM-dd");
+            params.set("from", fromFormatted);
+            params.set("to", toFormatted);
         }
 
         setDateRange(range);
@@ -186,7 +200,11 @@ export function DashboardFilter({
     };
 
     const handleApplyFilters = () => {
-        const params = new URLSearchParams(searchParams.toString());
+        const liveQuery =
+            typeof window !== "undefined"
+                ? window.location.search
+                : searchParams.toString();
+        const params = new URLSearchParams(liveQuery);
         if (direction) params.set("direction", direction);
         else params.delete("direction");
         if (source) params.set("source", source);
@@ -204,7 +222,11 @@ export function DashboardFilter({
     };
 
     const handleResetFilters = () => {
-        const params = new URLSearchParams(searchParams.toString());
+        const liveQuery =
+            typeof window !== "undefined"
+                ? window.location.search
+                : searchParams.toString();
+        const params = new URLSearchParams(liveQuery);
         params.delete("direction");
         params.delete("source");
         params.delete("comment");
@@ -253,6 +275,7 @@ export function DashboardFilter({
             )}
         >
             <div className="flex items-center gap-2 w-full md:w-auto flex-1 md:flex-initial">
+                {/* Temporarily hidden while Cloud Sync infrastructure is offline
                 <Button
                     onClick={handleSyncNow}
                     disabled={
@@ -273,6 +296,7 @@ export function DashboardFilter({
                     />
                     <span>Sync Now</span>
                 </Button>
+                */}
 
                 <Popover open={isOpen} onOpenChange={handleOpenChange}>
                     <PopoverTrigger asChild>

@@ -215,6 +215,7 @@ export function AddAccountModal({
     const [proServer, setProServer] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [turnstileToken, setTurnstileToken] = useState("");
+    const [turnstileResetKey, setTurnstileResetKey] = useState(0);
 
     const sessionIdRef = useRef<string>("");
     useEffect(() => {
@@ -356,6 +357,7 @@ export function AddAccountModal({
             const result = await createPartnerProAccount(formData);
             if (result.error) {
                 setError(result.error);
+                setTurnstileResetKey((k) => k + 1);
             } else {
                 trackEvent("signup_complete", { broker: selectedBroker });
                 setCreatedAccount({
@@ -463,6 +465,7 @@ export function AddAccountModal({
             );
             if (result.error) {
                 setError(result.error);
+                setTurnstileResetKey((k) => k + 1);
             } else {
                 setCreatedAccount({
                     id: result.accountId,
@@ -639,11 +642,12 @@ export function AddAccountModal({
                                 brokerFilter={sourceAccount.broker}
                                 label="Select Server"
                                 required={false}
-                                helperText="Broker server name. Required for automated Cloud Sync (Passview)."
+                                helperText="Optional MT5 broker server name."
                             />
 
                             <TurnstileWidget
                                 onVerify={setTurnstileToken}
+                                resetKey={turnstileResetKey}
                                 className="flex justify-center"
                             />
 
@@ -896,10 +900,10 @@ export function AddAccountModal({
                                 }}
                                 label="Select Server"
                                 required={false}
-                                helperText="Broker server name. Required for automated Cloud Sync (Passview)."
+                                helperText="Optional MT5 broker server name."
                             />
 
-                            {/* Cloud Sync (Optional) */}
+                            {/* Cloud Sync (Optional) — temporarily hidden while Cloud Sync infrastructure is offline
                             <div className="space-y-2 pt-3 border-t border-dashboard">
                                 <div className="flex items-center justify-between">
                                     <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
@@ -924,6 +928,7 @@ export function AddAccountModal({
                                     helperText="Read-only investor password. Enables automated 24/7 trade sync without VPS or EA."
                                 />
                             </div>
+                            */}
 
                             <div className="flex gap-3 pt-2">
                                 <Button
@@ -1161,7 +1166,10 @@ export function AddAccountModal({
                                                 size="smd"
                                                 onClick={() => {
                                                     handleClose();
-                                                    onSuccess(createdAccount);
+                                                    onSuccess({
+                                                        ...createdAccount,
+                                                        skipSyncSetup: true,
+                                                    });
                                                 }}
                                                 className="w-full font-bold"
                                             >
@@ -1484,7 +1492,7 @@ export function AddAccountModal({
                                 brokerFilter={selectedBroker}
                                 label="Select Server"
                                 required={false}
-                                helperText={`Select your ${brokerInfo.name} server for automated Cloud Sync.`}
+                                helperText={`Optional ${brokerInfo.name} MT5 server name.`}
                             />
                             <div className="flex justify-end pt-4">
                                 <Button
@@ -1614,6 +1622,7 @@ export function AddAccountModal({
 
                             <TurnstileWidget
                                 onVerify={setTurnstileToken}
+                                resetKey={turnstileResetKey}
                                 className="flex justify-center"
                             />
 

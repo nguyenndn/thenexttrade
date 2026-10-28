@@ -25,6 +25,7 @@ export async function GET(request: NextRequest) {
         const searchParams = request.nextUrl.searchParams;
         const startDateParam = searchParams.get("startDate");
         const endDateParam = searchParams.get("endDate");
+        const accountIdParam = searchParams.get("accountId");
 
         const now = new Date();
         const startDate = startDateParam
@@ -58,6 +59,9 @@ export async function GET(request: NextRequest) {
         const trades = await prisma.journalEntry.findMany({
             where: {
                 userId: user.id,
+                ...(accountIdParam && accountIdParam !== "all"
+                    ? { accountId: accountIdParam }
+                    : {}),
                 status: "CLOSED",
                 entryDate: { gte: startDate, lte: endDate },
             },

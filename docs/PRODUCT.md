@@ -2,9 +2,9 @@
 
 <!-- impeccable:product-schema 1 -->
 
-Last reviewed: 2026-10-22
+Last reviewed: 2026-10-26
 
-This file describes the current product behavior at a practical level. For detailed URL/query-param behavior and QA checklists, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
+This file describes the current product behavior at a practical level. For the complete Vietnamese Business Analyst / SRS specification across all 10 system modules, read [MASTER_BA_SPECIFICATION.md](MASTER_BA_SPECIFICATION.md). For detailed URL/query-param behavior and QA checklists, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
 
 For the scope decision behind each feature group, use [FEATURE_CATALOG.md](FEATURE_CATALOG.md). That file is the guardrail for deciding whether a feature should be central, supporting, retention-only, admin-only, legacy, or removed.
 
@@ -139,14 +139,17 @@ The product becomes confusing when acquisition pages, community, brokers, tools,
 | Free vs Pro comparison | Explain access limits clearly | Active modal | `/dashboard/accounts` |
 | Partner Pro request | Upgrade eligible accounts | Active with eligibility rules | `/dashboard/accounts` |
 | Trade Manager EA Sync | MT5 chart/VPS sync and execution helper | Active, current recommended sync path | `/dashboard/accounts`, `/api/ea/*` |
+| Trade Manager Remote Control | Web/mobile remote position control, SL-to-breakeven, partial close, Telegram alerts | Active | `/dashboard/trade-manager`, `/api/remote/*`, `/api/ea/commands/*` |
 | Manual Journal | No-install fallback for users who are not ready to connect MT5 | Active | `/dashboard/journal` |
 | Trading journal | Manual/imported trade review | Active | `/dashboard/journal` |
+| Strategies & Playbooks | Define setups, tag trades, and compare strategy win rate / profit factor | Active | `/dashboard/strategies` |
 | Performance analytics | User trading insights | Active | `/dashboard/analytics`, `/dashboard/reports` |
-| Mistake tracking | Behavioral review | Active | `/dashboard/mistakes` |
+| Mistake & behavioral leak tracking | Behavioral review inside Analytics & Journal | Active | `/dashboard/analytics`, `/dashboard/journal` |
 | Intelligence/Pro analytics | Premium insight layer | Active/Pro-gated where applicable | `/dashboard/intelligence` |
-| Edge missions | Retention and habit loop | Active | `/dashboard/missions` |
-| Daily check-in | Daily engagement and Edge reward | Active expectation | `/dashboard/missions` |
-| Trading systems/downloads | Unlock and manage GoldScalperNinja, Trade Manager, and GSN - Apex Gold Sentinel | Active | `/trading-systems`, `/dashboard/trading-systems`, `/admin/trading-systems` |
+| Edge missions & daily check-in | Retention, streak, and habit loop | Active | `/dashboard/learning`, `/dashboard/settings/streak` |
+| Leaderboard & Loyalty | Trader discipline leaderboard and IB lot-based loyalty rewards | Active | `/dashboard/leaderboard`, `/dashboard/loyalty`, `/admin/loyalty`, `/admin/competitions` |
+| Trading systems/downloads | Unlock and manage GoldScalperNinja, Trade Manager, and GSN - Apex Gold Sentinel (1 License Key unlocks all 3 EAs) | Active | `/trading-systems`, `/dashboard/trading-systems`, `/admin/trading-systems` |
+| MT5 Cloud Workers | Multi-instance & smart auto-sleep Windows MT5 worker fleet | Active | `/admin/mt5-cloud`, `/api/worker/*` |
 | Admin reports | System health and business reporting | Active | `/admin/reports` |
 | Admin analytics | Traffic, country, campaign, event analysis | Active | `/admin/analytics` |
 | Admin users/detail | User support and management | Active | `/admin/users` |
@@ -309,9 +312,13 @@ Legacy compatibility:
 - Old sync-client code (previously "TNT Connect") and old `/api/sync/*` references may remain in code/history for backwards compatibility, but they are not the current recommended setup path.
 - If legacy sync data is displayed, label it safely as a legacy import/source rather than promoting it as a new onboarding option.
 
-The Sync Wizard (`TradeSyncWizard`) is a 4-step flow: Choose Method → Prepare → Connect → Verify.
+The Sync Wizard (`TradeSyncWizard`) is a streamlined **3-step flow**:
 
-- Server URL for EA configuration comes from `src/lib/sync/sync-urls.ts` (not hardcoded Supabase URL).
+1. **Step 1 — Sync API Key & Registered Accounts**: View/generate the 64-character Sync API Key, copy with 1 click, inspect registered MT5 accounts, and download the EA file.
+2. **Step 2 — Step-by-Step MetaTrader 5 Setup**: Guided 4-action setup inside MT5 (`Tools -> Options -> Expert Advisors`, whitelist WebRequest URL with 1-click Copy button, enable Algo Trading & attach Trade Manager EA, paste Sync API Key in the SYNC tab).
+3. **Step 3 — Verify Connection**: Automated checks for `API key generated`, `MT5 account registered`, `Heartbeat detected`, and `Trades synced` via `/api/sync/status`, plus inline troubleshooting.
+
+- Server URL for EA WebRequest configuration comes from `getSyncServerUrl()` in `src/lib/sync/sync-urls.ts`, driven by environment variables (`NEXT_PUBLIC_SYNC_SERVER_URL || NEXT_PUBLIC_APP_URL`).
 - Verify step checks: API key generated, accounts exist, heartbeat detected, first trade synced.
 - `/api/sync/status` provides a clean summary of sync state.
 
@@ -337,7 +344,7 @@ User-facing sync should explain:
 
 Edge is the product language for progress and trader discipline. The database may still use `xp` internally for compatibility, but user-facing copy should prefer Edge.
 
-Route: `/dashboard/missions`.
+Route: `/dashboard/learning` and `/dashboard/settings/streak`.
 
 User goals:
 
@@ -352,25 +359,25 @@ Daily check-in should appear every new day if unclaimed.
 
 User-facing:
 
-- `/dashboard/analytics`, `/dashboard/reports`, `/dashboard/mistakes`, and `/dashboard/intelligence` help traders understand performance and behavior.
+- `/dashboard/analytics`, `/dashboard/reports`, `/dashboard/sessions`, and `/dashboard/intelligence` help traders understand performance and behavior.
 - Analytics-style pages should not show account/date filters until the user has at least one `JournalEntry`.
 - Once the user has trade data, filters return where relevant:
   - `/dashboard/journal`: account + date filter
   - `/dashboard/sessions`: account + date filter
   - `/dashboard/analytics`: account filter only
   - `/dashboard/intelligence`: account + date filter
-  - `/dashboard/psychology`: date filter only
 
 Admin-facing:
 
 - `/admin/reports` shows north star, lifecycle, quality, revenue, friction, content ROI, alerts, and action queue.
 - `/admin/reports` currently covers activation partially. The next target is to make it the canonical admin view for where new users get stuck before first value.
 - `/admin/analytics` shows traffic, countries, registered user countries, referrers, devices, campaigns, and events.
-- `/admin/users` shows country, activity, user detail, accounts, sessions, notes, and admin actions.
+- `/admin/users` shows country, activity, user detail, accounts, sessions, notes, and admin actions (including 1-click **Impersonate Trader** from row actions).
 - `/admin/users/behavior` is the segmentation console: **Needs Attention** (urgency, risk signals, one-click impersonation) and **Value Radar** (high-IB-value traders, trading tempo, product adoption).
-- `/admin/users/[id]` opens with a **narrative summary** — a template-generated behavioural synopsis at the top of the page (behaviour status, trading cadence, risk and value indicators). It is computed from existing telemetry, never written by AI, and performs zero database writes on view.
+- `/admin/users/[id]` is structured into a high-density left identity column + **3 right-hand tabs** (`Overview`, `VIP & Broker`, `Coaching & Analytics`) and opens with a **narrative summary** — a template-generated behavioural synopsis at the top of the page (behaviour status, trading cadence, risk and value indicators). It is computed from existing telemetry, never written by AI, and performs zero database writes on view.
 - `/admin/trading-systems/brokers` owns per-broker, per-symbol **commission rates** (with a wildcard `*` fallback). These rates drive estimated IB gross revenue.
 - `/admin/ib/sync-requests` covers both worker-driven **Cloud Sync jobs** and **Manual Sync Support Tickets** — the fallback path when an automated sync cannot complete.
+- `/admin/mt5-cloud` manages the **Multi-Instance & Smart Auto-Sleep MT5 Cloud Worker** fleet.
 
 ## IB Business Model
 
@@ -387,10 +394,14 @@ Partner brokers (VIP-eligible) and current rebate on gold:
 
 Rates live in `BrokerCommissionRate` (per broker + symbol, with a `*` wildcard fallback of `0`). Edit them at `/admin/trading-systems/brokers`.
 
-**IB attribution is the gate that decides whether an account earns rebate at all.** Every trading account carries an `ibAttribution` value:
+**IB attribution is the gate that decides whether an account earns rebate and unlocks Partner Pro + all 3 EAs.** Every trading account carries an `ibAttribution` value:
 
-- `CONFIRMED` — verified as belonging to this IB. Counts toward revenue and eligible volume.
-- `NOT_OURS` — verified as *not* this IB. Never counts.
+- `CONFIRMED` — verified as belonging to this IB. Counts toward revenue and eligible volume. Setting an account to `CONFIRMED` in `/admin/users/[id]` (`updateTradingAccountIbAttribution`) automatically:
+  1. Issues/activates the account's unified `TradingAccount.licenseKey`,
+  2. Upserts `ProEntitlement` to `ACTIVE` (`IB_VERIFIED`),
+  3. Upserts `EALicense` to `APPROVED` (unlocking all 3 EAs: Trade Manager, GoldScalperNinja, and GSN - Apex Gold Sentinel), and
+  4. Syncs the updated license list to the GitHub backup repository (`syncLicensesToGitHubBackup`).
+- `NOT_OURS` — verified as *not* this IB. Never counts toward revenue, suspends matching `EALicense` records, and removes `IB_VERIFIED` `ProEntitlement`.
 - `UNKNOWN` — the default, meaning nobody has verified it yet. Never counts.
 
 Revenue stays **$0** unless *both* conditions hold: the account is `CONFIRMED` **and** its broker matches a row in the broker table. A `CONFIRMED` account on a broker the platform does not have a record for still returns $0 — the two gates are independent, and forgetting the second one is an easy mistake when debugging a missing revenue figure.

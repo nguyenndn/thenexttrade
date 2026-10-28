@@ -28,10 +28,10 @@ export async function GET(request: NextRequest) {
                 : 12;
         const skip = (page - 1) * limit;
 
-        const [accounts, total] = await Promise.all([
+        const [accounts, total, profile] = await Promise.all([
             prisma.tradingAccount.findMany({
                 where: { userId: user.id },
-                orderBy: { createdAt: "asc" },
+                orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
                 select: {
                     id: true,
                     name: true,
@@ -49,6 +49,7 @@ export async function GET(request: NextRequest) {
                     balance: true,
                     equity: true,
                     accountType: true,
+                    isDefault: true,
                     useForLeaderboard: true,
                     // Don't expose full API key
                     apiKey: false,
@@ -57,16 +58,27 @@ export async function GET(request: NextRequest) {
                 take: limit,
             }),
             prisma.tradingAccount.count({ where: { userId: user.id } }),
+            prisma.profile.findUnique({
+                where: { userId: user.id },
+                select: { mainTradingAccountId: true },
+            }),
         ]);
 
-        // Calculate connection status based on heartbeat
-        const accountsWithStatus = accounts.map((acc) => ({
-            ...acc,
-            isConnected: acc.lastHeartbeat
-                ? Date.now() - new Date(acc.lastHeartbeat).getTime() <
-                  10 * 60 * 1000 // 10 min
-                : false,
-        }));
+        const mainAccountId = profile?.mainTradingAccountId ?? null;
+
+        // Calculate connection status based on heartbeat and mark Main Account
+        const accountsWithStatus = accounts
+            .map((acc) => ({
+                ...acc,
+                isMain:
+                    acc.id === mainAccountId ||
+                    (!mainAccountId && Boolean(acc.isDefault)),
+                isConnected: acc.lastHeartbeat
+                    ? Date.now() - new Date(acc.lastHeartbeat).getTime() <
+                      10 * 60 * 1000 // 10 min
+                    : false,
+            }))
+            .sort((a, b) => (a.isMain === b.isMain ? 0 : a.isMain ? -1 : 1));
 
         return NextResponse.json({
             accounts: accountsWithStatus,

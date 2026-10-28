@@ -36,13 +36,17 @@ export async function GET(request: NextRequest) {
         const searchParams = request.nextUrl.searchParams;
         const startDateParam = searchParams.get("startDate");
         const endDateParam = searchParams.get("endDate");
+        const accountIdParam = searchParams.get("accountId");
 
         const where: Record<string, unknown> = { userId: user.id };
+        if (accountIdParam && accountIdParam !== "all") {
+            where.accountId = accountIdParam;
+        }
         if (startDateParam) {
             const start = parseISO(startDateParam);
             if (!isNaN(start.getTime())) {
-                where.exitDate = {
-                    ...((where.exitDate as object) || {}),
+                where.entryDate = {
+                    ...((where.entryDate as object) || {}),
                     gte: startOfDay(start),
                 };
             }
@@ -50,8 +54,8 @@ export async function GET(request: NextRequest) {
         if (endDateParam) {
             const end = parseISO(endDateParam);
             if (!isNaN(end.getTime())) {
-                where.exitDate = {
-                    ...((where.exitDate as object) || {}),
+                where.entryDate = {
+                    ...((where.entryDate as object) || {}),
                     lte: endOfDay(end),
                 };
             }

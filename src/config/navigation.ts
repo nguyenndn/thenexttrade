@@ -20,7 +20,6 @@ import {
     FileSpreadsheet,
     Clock,
     Route,
-    Zap,
     Bookmark,
     FolderTree,
     Quote,
@@ -102,12 +101,13 @@ export const dashboardMenuItems = [
         icon: Wallet,
         requiresTradeData: false,
     },
-    {
-        name: "Trade Manager",
-        href: "/dashboard/trade-manager",
-        icon: Zap,
-        requiresTradeData: false,
-    },
+    // Temporarily hidden: Trade Manager (will be reopened later per user request)
+    // {
+    //     name: "Trade Manager",
+    //     href: "/dashboard/trade-manager",
+    //     icon: Zap,
+    //     requiresTradeData: false,
+    // },
 
     // --- PLAYBOOK & EXECUTION ---
     {
@@ -237,7 +237,7 @@ export const adminMenuItems = [
             { name: "Users", href: "/admin/users" },
             { name: "Broadcasts", href: "/admin/notifications" },
             { name: "Feedback", href: "/admin/feedback" },
-            { name: "Inquiries", href: "/admin/messages" },
+            { name: "Messages", href: "/admin/messages" },
             { name: "Settings", href: "/admin/settings" },
             { name: "Email Lab", href: "/admin/email-lab" },
         ],
@@ -256,11 +256,12 @@ export const dashboardMenuGroups = [
                 href: "/dashboard/accounts",
                 icon: Wallet,
             },
-            {
-                name: "Trade Manager",
-                href: "/dashboard/trade-manager",
-                icon: Zap,
-            },
+            // Temporarily hidden: Trade Manager (will be reopened later per user request)
+            // {
+            //     name: "Trade Manager",
+            //     href: "/dashboard/trade-manager",
+            //     icon: Zap,
+            // },
         ],
     },
     {

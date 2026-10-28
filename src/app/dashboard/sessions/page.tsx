@@ -1,6 +1,7 @@
 import { SessionDashboard } from "@/components/sessions/SessionDashboard";
 import { Metadata } from "next";
 import { Suspense } from "react";
+import { cookies } from "next/headers";
 import { Loader2 } from "lucide-react";
 import { TabBar } from "@/components/ui/TabBar";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -8,8 +9,11 @@ import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth-cache";
 import { getUserTradingDataState } from "@/lib/trading-data-state";
+import { resolveDefaultAccountId } from "@/actions/main-account";
 
 import { ANALYTICS_TABS } from "@/config/navigation";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
     title: "Session Analysis | TheNextTrade",
@@ -17,11 +21,27 @@ export const metadata: Metadata = {
         "Analyze your trading performance by market session and time of day",
 };
 
-export default async function SessionAnalysisPage() {
+export default async function SessionAnalysisPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+    const resolvedParams = await searchParams;
     const user = await getAuthUser();
 
     if (!user) {
         redirect("/auth/login");
+    }
+
+    let accountId =
+        typeof resolvedParams?.accountId === "string"
+            ? resolvedParams.accountId
+            : undefined;
+
+    if (!accountId) {
+        const cookieStore = await cookies();
+        const lastAccountId = cookieStore.get("last_account_id")?.value;
+        accountId = await resolveDefaultAccountId(user.id, lastAccountId);
     }
 
     const tradingDataState = await getUserTradingDataState(user.id);
@@ -35,7 +55,10 @@ export default async function SessionAnalysisPage() {
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
                 <TabBar tabs={ANALYTICS_TABS} />
                 {tradingDataState.hasTradeData && (
-                    <DashboardFilter equalWidth />
+                    <DashboardFilter
+                        currentAccountId={accountId}
+                        equalWidth
+                    />
                 )}
             </div>
 
@@ -46,7 +69,7 @@ export default async function SessionAnalysisPage() {
                     </div>
                 }
             >
-                <SessionDashboard />
+                <SessionDashboard currentAccountId={accountId} />
             </Suspense>
         </div>
     );

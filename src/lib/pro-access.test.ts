@@ -817,6 +817,71 @@ describe("User-level Pro Access aggregation", () => {
         expect(result.activityInfo?.rolling30dLots).toBe(0);
     });
 
+    it("propagates global MANUAL_ADMIN entitlement to all trading accounts in getUserProAccess().accounts", async () => {
+        (prisma.tradingAccount.findMany as any).mockResolvedValue([
+            {
+                id: "acc-live-1",
+                name: "VANTAGE 1145",
+                broker: "Vantage",
+                accountNumber: "688801145",
+                balance: 2492.53,
+                currency: "USD",
+                server: "VantageMarkets-Live",
+                accountType: "REAL",
+                status: "CONNECTED",
+                fundingVerifiedAt: null,
+                fundingAmount: null,
+                fundingLastVerifiedAt: null,
+                fundingGraceUntil: null,
+            },
+            {
+                id: "acc-demo-1",
+                name: "StartTrader",
+                broker: "STARTRADER",
+                accountNumber: "1610076587",
+                balance: 30728.51,
+                currency: "USD",
+                server: "STARTRADERFinancial-Demo",
+                accountType: "DEMO",
+                status: "CONNECTED",
+                fundingVerifiedAt: null,
+                fundingAmount: null,
+                fundingLastVerifiedAt: null,
+                fundingGraceUntil: null,
+            },
+        ]);
+        (prisma.user.findUnique as any).mockResolvedValue({
+            createdAt: new Date("2026-04-08T00:00:00Z"),
+        });
+        (prisma.proEntitlement.findMany as any).mockResolvedValue([
+            {
+                id: "ent-global-manual",
+                status: "ACTIVE",
+                source: "MANUAL_ADMIN",
+                tradingAccountId: null,
+                accountNumber: null,
+                broker: null,
+                expiresAt: null,
+                tradingAccount: null,
+            },
+        ]);
+        (prisma.journalEntry.aggregate as any).mockResolvedValue({
+            _sum: { lotSize: 0 },
+        });
+        (prisma.journalEntry.findFirst as any).mockResolvedValue(null);
+
+        const result = await getUserProAccess("user-global-with-accounts");
+
+        expect(result.isPro).toBe(true);
+        expect(result.status).toBe("ACTIVE");
+        const realAccounts = result.accounts.filter((a) => a.tradingAccountId !== "");
+        expect(realAccounts).toHaveLength(2);
+        expect(realAccounts[0].status).toBe("ACTIVE");
+        expect(realAccounts[0].isPro).toBe(true);
+        expect(realAccounts[1].status).toBe("ACTIVE");
+        expect(realAccounts[1].isPro).toBe(true);
+    });
+
     it("preserves aggregate GRACE status for an eligible entitlement", async () => {
         const now = new Date();
         const tradingAccount = {
@@ -910,6 +975,64 @@ describe("User-level Pro Access aggregation", () => {
         expect(result.status).toBe("NONE");
         expect(result.accounts[0].status).toBe("NONE");
         expect(result.accounts[0].isPro).toBe(false);
+    });
+
+    it("enforces Free Plan (isPro = false) when Admin sets status to REVOKED even during 7-day trial window", async () => {
+        const now = new Date();
+        const createdOneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        const tradingAccount = {
+            id: "acc-single",
+            name: "Main MT5",
+            broker: "Exness",
+            accountNumber: "8888",
+            balance: 1000,
+            currency: "USD",
+            server: "Exness-Real",
+            accountType: "REAL",
+            status: "CONNECTED",
+            fundingVerifiedAt: null,
+            fundingAmount: null,
+            fundingLastVerifiedAt: null,
+            fundingGraceUntil: null,
+        };
+
+        (prisma.tradingAccount.findMany as any).mockResolvedValue([tradingAccount]);
+        (prisma.user.findUnique as any).mockResolvedValue({
+            createdAt: createdOneDayAgo,
+        });
+        (prisma.proEntitlement.findMany as any).mockResolvedValue([
+            {
+                id: "ent-revoked",
+                status: "REVOKED",
+                source: "MANUAL_ADMIN",
+                tradingAccountId: "acc-single",
+                accountNumber: "8888",
+                broker: "Exness",
+                expiresAt: now,
+                tradingAccount,
+            },
+        ]);
+        (prisma.journalEntry.aggregate as any).mockResolvedValue({
+            _sum: { lotSize: 0 },
+        });
+        (prisma.journalEntry.findFirst as any).mockResolvedValue(null);
+
+        const userResult = await getUserProAccess("user-revoked-trial");
+        expect(userResult.isPro).toBe(false);
+        expect(userResult.status).toBe("REVOKED");
+
+        (prisma.tradingAccount.findFirst as any).mockResolvedValue(tradingAccount);
+        (prisma.proEntitlement.findUnique as any).mockResolvedValue({
+            id: "ent-revoked",
+            status: "REVOKED",
+            source: "MANUAL_ADMIN",
+            expiresAt: now,
+        });
+        (prisma.proEntitlement.findFirst as any).mockResolvedValue(null);
+
+        const accResult = await getAccountProAccess("user-revoked-trial", "acc-single", now);
+        expect(accResult.isPro).toBe(false);
+        expect(accResult.status).toBe("REVOKED");
     });
 });
 

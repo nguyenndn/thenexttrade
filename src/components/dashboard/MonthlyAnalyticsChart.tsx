@@ -12,6 +12,7 @@ import {
     Cell,
     ReferenceLine,
 } from "recharts";
+import { CalendarRange } from "lucide-react";
 import { ChartContainer } from "@/components/ui/ChartContainer";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
@@ -26,7 +27,7 @@ interface MonthlyAnalyticsChartProps {
 export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
     const yearGroups = useMemo(() => {
         const groups: Record<number, any[]> = {};
-        data.forEach((item) => {
+        (data || []).forEach((item) => {
             const date = new Date(item.date);
             const year = date.getFullYear();
             if (!groups[year]) groups[year] = [];
@@ -89,10 +90,51 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
 
     const chartData = yearGroups[selectedYear] || [];
 
+    const header = (
+        <div className="px-5 py-3.5 border-b border-dashboard flex items-center justify-between gap-2 shrink-0">
+            <div className="flex items-center gap-2.5 min-w-0">
+                <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-500 shrink-0">
+                    <CalendarRange size={18} />
+                </div>
+                <div className="min-w-0">
+                    <h3 className="font-bold text-gray-700 dark:text-white text-sm truncate">
+                        Monthly Analytics
+                    </h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        Monthly net P&L breakdown
+                    </p>
+                </div>
+            </div>
+            {years.length > 0 && (
+                <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide shrink-0">
+                    {years.map((year) => (
+                        <Button
+                            variant="ghost"
+                            key={year}
+                            onClick={() => setSelectedYear(year)}
+                            className={cn(
+                                "px-2.5 py-1 h-7 rounded-lg text-xs font-bold transition-colors",
+                                selectedYear === year
+                                    ? "bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-white/20"
+                                    : "text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
+                            )}
+                        >
+                            {year}
+                        </Button>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+
     if (!data || data.length === 0) {
         return (
-            <div className="flex flex-col w-full h-full overflow-hidden items-center justify-center font-medium text-sm text-gray-600 dark:text-gray-300">
-                No data available
+            <div className="flex flex-col w-full h-full overflow-hidden">
+                {header}
+                <div className="flex-1 flex flex-col items-center justify-center p-6 text-center font-medium text-sm text-gray-500 dark:text-gray-400">
+                    <CalendarRange size={26} className="mb-2 opacity-40" />
+                    No data available
+                </div>
             </div>
         );
     }
@@ -120,128 +162,114 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
     };
 
     return (
-        <div className="flex flex-col h-full w-full overflow-hidden p-4">
-            <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-2 scrollbar-hide shrink-0">
-                {years.map((year) => (
-                    <Button
-                        variant="ghost"
-                        key={year}
-                        onClick={() => setSelectedYear(year)}
-                        className={cn(
-                            "px-4 py-1.5 h-auto rounded-lg text-sm font-bold transition-colors",
-                            selectedYear === year
-                                ? "bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-white/20"
-                                : "text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
-                        )}
-                    >
-                        {year}
-                    </Button>
-                ))}
-            </div>
-
-            <ChartContainer
-                height="100%"
-                minHeight={100}
-                className="w-full h-full flex-1"
-            >
-                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-                    <BarChart
-                        data={chartData}
-                        margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-                    >
-                        <defs>
-                            <linearGradient
-                                id="monthProfitGradient"
-                                x1="0"
-                                y1="0"
-                                x2="0"
-                                y2="1"
-                            >
-                                <stop
-                                    offset="0%"
-                                    stopColor="hsl(var(--primary))"
-                                    stopOpacity={1}
-                                />
-                                <stop
-                                    offset="100%"
-                                    stopColor="hsl(var(--primary))"
-                                    stopOpacity={0.6}
-                                />
-                            </linearGradient>
-                            <linearGradient
-                                id="monthLossGradient"
-                                x1="0"
-                                y1="0"
-                                x2="0"
-                                y2="1"
-                            >
-                                <stop
-                                    offset="0%"
-                                    stopColor="#EF4444"
-                                    stopOpacity={1}
-                                />
-                                <stop
-                                    offset="100%"
-                                    stopColor="#EF4444"
-                                    stopOpacity={0.6}
-                                />
-                            </linearGradient>
-                        </defs>
-                        <CartesianGrid
-                            strokeDasharray="3 3"
-                            vertical={false}
-                            stroke="var(--border-color)"
-                            opacity={0.15}
-                        />
-                        <ReferenceLine
-                            y={0}
-                            stroke="var(--border-color)"
-                            strokeOpacity={0.5}
-                        />
-                        <XAxis
-                            dataKey="monthName"
-                            axisLine={false}
-                            tickLine={false}
-                            tick={{
-                                fill: "var(--text-secondary)",
-                                fontSize: 11,
-                            }}
-                        />
-                        <YAxis
-                            axisLine={false}
-                            tickLine={false}
-                            tick={{
-                                fill: "var(--text-secondary)",
-                                fontSize: 11,
-                            }}
-                            tickFormatter={(value) => `$${value}`}
-                        />
-                        <Tooltip
-                            content={<CustomTooltip />}
-                            cursor={{ fill: "var(--hover-bg)", opacity: 0.06 }}
-                        />
-                        <Bar
-                            dataKey="value"
-                            radius={[6, 6, 0, 0]}
-                            maxBarSize={36}
-                            isAnimationActive={true}
-                            animationDuration={400}
-                            animationEasing="ease-out"
+        <div className="flex flex-col h-full w-full overflow-hidden">
+            {header}
+            <div className="flex-1 flex flex-col overflow-hidden p-4 min-h-0">
+                <ChartContainer
+                    height="100%"
+                    minHeight={100}
+                    className="w-full h-full flex-1"
+                >
+                    <ResponsiveContainer width="100%" height="100%" minWidth={0} debounce={50}>
+                        <BarChart
+                            data={chartData}
+                            margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
                         >
-                            {chartData.map((entry: any, index: number) => (
-                                <Cell
-                                    key={`cell-${index}`}
-                                    fill={
-                                        entry.value >= 0
-                                            ? "url(#monthProfitGradient)"
-                                            : "url(#monthLossGradient)"
-                                    }
-                                />
-                            ))}
-                        </Bar>
-                    </BarChart>
-                </ResponsiveContainer>
-            </ChartContainer>
+                            <defs>
+                                <linearGradient
+                                    id="monthProfitGradient"
+                                    x1="0"
+                                    y1="0"
+                                    x2="0"
+                                    y2="1"
+                                >
+                                    <stop
+                                        offset="0%"
+                                        stopColor="hsl(var(--primary))"
+                                        stopOpacity={1}
+                                    />
+                                    <stop
+                                        offset="100%"
+                                        stopColor="hsl(var(--primary))"
+                                        stopOpacity={0.6}
+                                    />
+                                </linearGradient>
+                                <linearGradient
+                                    id="monthLossGradient"
+                                    x1="0"
+                                    y1="0"
+                                    x2="0"
+                                    y2="1"
+                                >
+                                    <stop
+                                        offset="0%"
+                                        stopColor="#EF4444"
+                                        stopOpacity={1}
+                                    />
+                                    <stop
+                                        offset="100%"
+                                        stopColor="#EF4444"
+                                        stopOpacity={0.6}
+                                    />
+                                </linearGradient>
+                            </defs>
+                            <CartesianGrid
+                                strokeDasharray="3 3"
+                                vertical={false}
+                                stroke="var(--border-color)"
+                                opacity={0.15}
+                            />
+                            <ReferenceLine
+                                y={0}
+                                stroke="var(--border-color)"
+                                strokeOpacity={0.5}
+                            />
+                            <XAxis
+                                dataKey="monthName"
+                                axisLine={false}
+                                tickLine={false}
+                                tick={{
+                                    fill: "var(--text-secondary)",
+                                    fontSize: 11,
+                                }}
+                            />
+                            <YAxis
+                                axisLine={false}
+                                tickLine={false}
+                                tick={{
+                                    fill: "var(--text-secondary)",
+                                    fontSize: 11,
+                                }}
+                                tickFormatter={(value) => `$${value}`}
+                            />
+                            <Tooltip
+                                content={<CustomTooltip />}
+                                cursor={{ fill: "var(--hover-bg)", opacity: 0.06 }}
+                            />
+                            <Bar
+                                dataKey="value"
+                                radius={[6, 6, 0, 0]}
+                                maxBarSize={36}
+                                isAnimationActive={true}
+                                animationDuration={400}
+                                animationEasing="ease-out"
+                            >
+                                {chartData.map((entry: any, index: number) => (
+                                    <Cell
+                                        key={`cell-${index}`}
+                                        fill={
+                                            entry.value >= 0
+                                                ? "url(#monthProfitGradient)"
+                                                : "url(#monthLossGradient)"
+                                        }
+                                    />
+                                ))}
+                            </Bar>
+                        </BarChart>
+                    </ResponsiveContainer>
+                </ChartContainer>
+            </div>
         </div>
     );
 }
+

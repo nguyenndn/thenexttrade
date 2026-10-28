@@ -181,28 +181,10 @@ export function AccountListClient({
     const pendingSupportCount = userTickets.filter((t) => t.status === "PENDING").length;
 
     // Track accounts actively syncing in background: accountId -> { jobId?: string; startedAt: number }
+    // Temporarily initialized empty while Cloud Sync worker infrastructure is offline
     const [activeSyncingAccounts, setActiveSyncingAccounts] = useState<
         Record<string, { jobId?: string; startedAt: number }>
-    >(() => {
-        const initial: Record<string, { jobId?: string; startedAt: number }> = {};
-        for (const acc of initialAccounts) {
-            if (
-                acc.latestJob &&
-                (acc.latestJob.status === "PENDING" ||
-                    acc.latestJob.status === "PROCESSING")
-            ) {
-                const created = new Date(acc.latestJob.createdAt).getTime();
-                const maxAge = acc.latestJob.status === "PENDING" ? 60000 : 120000;
-                if (Date.now() - created < maxAge) {
-                    initial[acc.id] = {
-                        jobId: acc.latestJob.id,
-                        startedAt: created,
-                    };
-                }
-            }
-        }
-        return initial;
-    });
+    >(() => ({}));
 
     const handleSyncStarted = (accountId: string, jobId?: string) => {
         setActiveSyncingAccounts((prev) => ({
@@ -525,6 +507,7 @@ export function AccountListClient({
                         <Crown size={14} className="text-amber-500" />
                         Free vs Pro
                     </Button>
+                    {/* Temporarily hidden while Cloud Sync infrastructure is offline
                     <Button
                         variant="outline"
                         size="smd"
@@ -546,6 +529,7 @@ export function AccountListClient({
                             </span>
                         )}
                     </Button>
+                    */}
                     <Button
                         id="onborda-add-account"
                         variant="gold"
@@ -819,7 +803,11 @@ export function AccountListClient({
                         toast.success(
                             "Account added and automated Cloud Sync queued!"
                         );
-                    } else if (isFreeAccount && defaultSyncMethod !== "MANUAL") {
+                    } else if (
+                        isFreeAccount &&
+                        defaultSyncMethod !== "MANUAL" &&
+                        !_account?.skipSyncSetup
+                    ) {
                         // Free account added from the chooser with an
                         // EA/Trade Manager method: the "Continue to Trade
                         // Manager Setup" CTA promises to continue, so open the

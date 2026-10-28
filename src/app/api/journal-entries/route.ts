@@ -74,6 +74,20 @@ export async function POST(request: Request) {
             rest.accountId = null;
         }
 
+        if (rest.status === "CLOSED") {
+            if (!rest.exitDate) {
+                rest.exitDate = rest.entryDate;
+            }
+            if (!rest.result && typeof rest.pnl === "number") {
+                const netPnl =
+                    (rest.pnl || 0) +
+                    (rest.commission || 0) +
+                    (rest.swap || 0);
+                rest.result =
+                    netPnl > 0 ? "WIN" : netPnl < 0 ? "LOSS" : "BREAK_EVEN";
+            }
+        }
+
         // accountId must stay within the user's own accounts
         if (rest.accountId) {
             const acct = await prisma.tradingAccount.findFirst({

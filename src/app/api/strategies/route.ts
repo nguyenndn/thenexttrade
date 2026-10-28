@@ -9,7 +9,10 @@ const strategySchema = z.object({
     rules: z.string().nullable().optional(),
     color: z
         .string()
-        .regex(/^#[0-9A-Fa-f]{6}$/)
+        .transform((val) =>
+            val === "hsl(var(--primary))" ? "#00C888" : val
+        )
+        .pipe(z.string().regex(/^#[0-9A-Fa-f]{6}$/))
         .optional(),
     isPlaybook: z.boolean().optional(),
     setupType: z.string().nullable().optional(),

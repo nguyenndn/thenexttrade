@@ -122,6 +122,7 @@ interface JournalListProps {
     strategies: any[];
     userTags?: string[];
     hasTradeData?: boolean;
+    currentAccountId?: string;
 }
 
 export default function JournalList({
@@ -131,12 +132,13 @@ export default function JournalList({
     strategies: initialStrategies,
     userTags = [],
     hasTradeData = true,
+    currentAccountId,
 }: JournalListProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
     // Parse URL Params for State
-    const accountId = searchParams.get("accountId");
+    const accountId = searchParams.get("accountId") || currentAccountId || null;
     const page = parseInt(searchParams.get("page") || "1");
     // const pageSize = parseInt(searchParams.get("limit") || "10"); // We can parse this
     const [pageSize, setPageSize] = useState(10); // Keep local for component control, or push to URL
@@ -839,11 +841,20 @@ export default function JournalList({
                                                                         )}
                                                                         {col.id ===
                                                                             "pnl" && (
-                                                                            <PnLDisplay
-                                                                                value={
-                                                                                    entry.pnl
+                                                                            <span
+                                                                                title={
+                                                                                    (entry.commission || 0) !== 0 ||
+                                                                                    (entry.swap || 0) !== 0
+                                                                                        ? `Gross: $${Number(entry.grossProfit ?? entry.pnl ?? 0).toFixed(2)} | Comm: $${Number(entry.commission || 0).toFixed(2)} | Swap: $${Number(entry.swap || 0).toFixed(2)}`
+                                                                                        : undefined
                                                                                 }
-                                                                            />
+                                                                            >
+                                                                                <PnLDisplay
+                                                                                    value={
+                                                                                        entry.pnl
+                                                                                    }
+                                                                                />
+                                                                            </span>
                                                                         )}
                                                                         {col.id ===
                                                                             "tp" && (

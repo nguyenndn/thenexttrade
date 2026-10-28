@@ -517,15 +517,28 @@ export async function addStarterRules() {
     ];
 
     try {
-        await prisma.tradingRule.createMany({
-            data: starters.map((s, idx) => ({
-                userId: user.id,
-                title: s.title,
-                category: s.category,
-                severity: s.severity,
-                sortOrder: idx,
-            })),
+        const existingRules = await prisma.tradingRule.findMany({
+            where: { userId: user.id },
+            select: { title: true },
         });
+        const existingTitleSet = new Set(
+            existingRules.map((r) => r.title.trim().toLowerCase())
+        );
+        const newStarters = starters.filter(
+            (s) => !existingTitleSet.has(s.title.trim().toLowerCase())
+        );
+
+        if (newStarters.length > 0) {
+            await prisma.tradingRule.createMany({
+                data: newStarters.map((s, idx) => ({
+                    userId: user.id,
+                    title: s.title,
+                    category: s.category,
+                    severity: s.severity,
+                    sortOrder: existingRules.length + idx,
+                })),
+            });
+        }
 
         revalidatePath("/dashboard/rules");
         return { success: true };

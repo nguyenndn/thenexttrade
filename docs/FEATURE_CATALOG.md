@@ -1,13 +1,13 @@
 # Feature Catalog And Scope Control
 
-Last reviewed: 2026-09-10
+Last reviewed: 2026-10-26
 
 This file answers two questions:
 
 1. Which features are actually necessary?
 2. Where should each feature appear so the product does not feel overloaded?
 
-Use this as the product scope map before adding, removing, or rebuilding a feature. Use `FEATURE_SPECS.md` for route-level behavior and QA details.
+Use this as the product scope map before adding, removing, or rebuilding a feature. Use [MASTER_BA_SPECIFICATION.md](MASTER_BA_SPECIFICATION.md) for the complete Vietnamese Business Analyst / SRS specification and [FEATURE_SPECS.md](FEATURE_SPECS.md) for route-level behavior and QA details.
 
 ## Product Scope Verdict
 
@@ -104,11 +104,15 @@ Any feature that supports this loop is justified. Any feature that competes with
 | `/dashboard/reports` | Weekly/monthly review hub | Weekly review readiness, coach action plan | Showing weekly review before enough data/time |
 | `/dashboard/reports/weekly` | One weekly action | Keep doing, fix next, checklist | Extra Weekly Focus block if it duplicates action plan |
 | `/dashboard/rules` | Rulebook and goals | Rules, goals, compliance, promote successful experiments | Hidden route/menu |
-| `/dashboard/missions` | Habits and Edge | Daily check-in, missions, progress | Making missions first task before data |
-| `/dashboard/academy` | Logged-in learning | Continue learning, stalled-learning reminder | Rebuilding public Academy inside dashboard (Temporarily hidden in navigation) |
+| `/dashboard/strategies` | Playbook & strategy management | Strategy definitions, trade tagging, per-strategy win rate and profit factor | Overcomplicating basic trade logging |
+| `/dashboard/trade-manager` | Remote EA position control | Live MT5 open positions, SL-to-breakeven, partial close, close all, Telegram rules | Exposing raw commands without clear confirmation |
+| `/dashboard/learning` | Habits, Edge missions & learning | Daily check-in, missions, progress, recommended lessons | Making missions first task before data |
+| `/dashboard/loyalty` | IB loyalty rewards | Tier progression based on IB lot volume, reward claims | Fake subscription upsells |
+| `/dashboard/leaderboard` | Trader discipline leaderboard | Opt-in ranking by Edge score and consistency | Exposing private accounts without opt-in |
+| `/dashboard/academy` | Logged-in learning | Continue learning, stalled-learning reminder | Rebuilding public Academy inside dashboard |
 | `/dashboard/settings/trading-style` | Manage saved style & retake | Archetype summary, 6 dimensions, in-dashboard retake flow | Redirecting out of dashboard to public quiz |
 | `/dashboard/settings/profile` | Public profile & privacy | Mutually exclusive presets, Trading Style toggle, Live 3D Card modal | Multi-preset active bugs, modal vertical clipping |
-| `/dashboard/settings/*` | Account/security/referrals/sync settings | Focused tabs, real data | Fake referral earnings or dead sync copy |
+| `/dashboard/settings/*` | Account/security/referrals/streak/sync settings | Focused tabs, real data | Fake referral earnings or dead sync copy |
 
 ### Admin
 
@@ -116,14 +120,16 @@ Any feature that supports this loop is justified. Any feature that competes with
 | --- | --- | --- | --- |
 | `/admin/reports` | Owner operating cockpit | Activation funnel, stuck users, action queue, system health | Decorative metrics without next action |
 | `/admin/analytics` | Traffic and attribution | Countries, referrers, campaigns, events | Confusing it with user support reports |
-| `/admin/users` | User list and support entry | Role, country, status, search/filter | Unknown country when profile has country |
+| `/admin/users` | User list and support entry | Role, country, status, search/filter, 1-click Impersonate Trader | Unknown country when profile has country |
 | `/admin/users/behavior` | Segmentation console | Needs Attention (urgency, risk signals), Value Radar (IB value, tempo, adoption) | Segments that offer no next action |
-| `/admin/users/[id]` | User support detail | Narrative summary, real-account total balance, accounts, Pro/VIP state, reports, notes | Est. IB revenue without API evidence |
+| `/admin/users/[id]` | User support detail (3-Tab CRM) | Left identity & QuickActions + 3 tabs (`Overview`, `VIP & Broker` with 1-click IB `CONFIRMED` -> All-EA unlock, `Coaching & Analytics`) | Est. IB revenue without API evidence, fragmented 9-tab sprawl |
 | `/admin/ib` | Partner Pro operations overview | Pipeline, trader monitor summary, VIP/account states | Unsupported sync source options |
 | `/admin/ib/pipeline` | Upgrade workflow | Stages, account/user context, actions | 404 from removed route wiring |
 | `/admin/ib/traders` | Trader/account monitoring | User, account count, real balance, activity, product access | Duplicate account rows |
 | `/admin/ib/sync-requests` | Sync operations console | Cloud Sync job telemetry, manual sync support tickets, credential reveal with audit log | Showing investor passwords without `ADMIN_VIEW_CREDENTIAL` logging |
+| `/admin/mt5-cloud` | Cloud worker fleet management | Multi-instance & smart auto-sleep Windows worker telemetry, enrollment tokens | Unauthenticated worker polling |
 | `/admin/trading-systems/brokers` | Commission rates config | Per-broker/per-symbol rates, `*` wildcard fallback, audit log | Rates that silently disagree with the broker's actual rebate |
+| `/admin/loyalty`, `/admin/competitions` | Retention & competition ops | Loyalty tiers, reward claim approvals, trading competitions | Manual DB edits without audit trail |
 | `/admin/ai` | AI Gateway control plane | Providers, models, routing, request logs, audit | User requests bypassing internal logs |
 | `/admin/email-lab` | Email testing | Template buttons, Mailtrap/SMTP results, audit log | Ungated production sends |
 | `/admin/articles/ops` | Content operations | Missing SEO/images, fix actions | Silent overwrites |

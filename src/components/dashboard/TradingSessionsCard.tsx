@@ -70,7 +70,7 @@ export function TradingSessionsCard({ data }: TradingSessionsCardProps) {
             </div>
 
             {/* Sessions List */}
-            <div className="flex-1 px-5 pb-5">
+            <div className="flex-1 px-5 pb-5 overflow-y-auto min-h-0 custom-scrollbar">
                 {data.length === 0 ? (
                     <div className="flex items-center justify-center h-full min-h-[120px]">
                         <p className="text-sm text-gray-400">No session data</p>

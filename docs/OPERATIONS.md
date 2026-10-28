@@ -1,6 +1,6 @@
 # Operations
 
-Last reviewed: 2026-08-18
+Last reviewed: 2026-10-26
 
 This file covers environment, self-hosting, storage, deploy, monitoring, and release operations.
 
@@ -37,7 +37,8 @@ Core env:
 
 ```env
 NODE_ENV=development
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3500
+NEXT_PUBLIC_SYNC_SERVER_URL=https://thenexttrade.com
 DATABASE_URL=
 DIRECT_URL=
 NEXT_PUBLIC_SUPABASE_URL=
@@ -63,7 +64,7 @@ R2_SECRET_ACCESS_KEY=
 ASSET_PUBLIC_BASE_URL=
 ```
 
-SMTP email:
+SMTP & Mailtrap email:
 
 ```env
 SMTP_HOST=
@@ -73,6 +74,17 @@ SMTP_PASS=
 SMTP_SECURE=false
 SMTP_FROM_EMAIL=noreply@thenexttrade.com
 SMTP_FROM_NAME=TheNextTrade
+MAILTRAP_API_TOKEN=
+```
+
+GitHub License Backup & MT5 Cloud Worker:
+
+```env
+GITHUB_TOKEN=
+GITHUB_LICENSE_REPO=
+GITHUB_LICENSE_PATH=accounts.csv
+MT5_WORKER_SHARED_SECRET=
+CREDENTIAL_ENCRYPTION_KEY=
 ```
 
 Optional analytics/security:

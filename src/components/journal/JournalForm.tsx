@@ -97,7 +97,13 @@ export default function JournalForm({
             : "",
         status: initialData?.status || "OPEN",
         result: initialData?.result || "",
-        pnl: initialData?.pnl !== undefined && initialData?.pnl !== null ? initialData.pnl : "",
+        pnl:
+            initialData?.grossProfit !== undefined &&
+            initialData?.grossProfit !== null
+                ? initialData.grossProfit
+                : initialData?.pnl !== undefined && initialData?.pnl !== null
+                  ? initialData.pnl
+                  : "",
         commission: initialData?.commission !== undefined && initialData?.commission !== null ? initialData.commission : "",
         swap: initialData?.swap !== undefined && initialData?.swap !== null ? initialData.swap : "",
         notes: initialData?.notes || "",
@@ -157,6 +163,26 @@ export default function JournalForm({
         loadRules();
     }, [initialData]);
 
+    const applicableRules = useMemo(() => {
+        return activeRules.filter((rule) => {
+            if (
+                rule.accountId &&
+                formData.accountId &&
+                rule.accountId !== formData.accountId
+            ) {
+                return false;
+            }
+            if (
+                rule.strategy?.name &&
+                formData.strategy &&
+                rule.strategy.name !== formData.strategy
+            ) {
+                return false;
+            }
+            return true;
+        });
+    }, [activeRules, formData.accountId, formData.strategy]);
+
     const addCustomTag = () => {
         if (!customTagInput.trim()) return;
         if (!formData.tags.includes(customTagInput.trim())) {
@@ -191,8 +217,29 @@ export default function JournalForm({
             setAccounts(accs);
 
             // Set default account if creating new and none selected
-            if (!isEditMode && !formData.accountId) {
-                const defaultAccount = accs.find((a: any) => a.isDefault);
+            if (!isEditMode && !formData.accountId && accs.length > 0) {
+                const searchParams =
+                    typeof window !== "undefined"
+                        ? new URLSearchParams(window.location.search)
+                        : null;
+                const urlAccountId = searchParams?.get("accountId");
+                const cookieMatch =
+                    typeof document !== "undefined"
+                        ? document.cookie.match(
+                              /(?:^|;\s*)last_account_id=([^;]+)/
+                          )
+                        : null;
+                const cookieAccountId = cookieMatch?.[1];
+
+                const defaultAccount =
+                    (urlAccountId &&
+                        accs.find((a: any) => a.id === urlAccountId)) ||
+                    accs.find((a: any) => a.isMain) ||
+                    accs.find((a: any) => a.isDefault) ||
+                    (cookieAccountId &&
+                        accs.find((a: any) => a.id === cookieAccountId)) ||
+                    accs[0];
+
                 if (defaultAccount) {
                     setFormData((prev) => ({
                         ...prev,
@@ -219,8 +266,16 @@ export default function JournalForm({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Auto-Calculate PnL
+    const hasMountedAutoCalc = useRef(false);
+
+    // Auto-Calculate PnL (skip on initial mount in edit mode to preserve saved Gross PnL)
     useEffect(() => {
+        if (isEditMode && !hasMountedAutoCalc.current) {
+            hasMountedAutoCalc.current = true;
+            return;
+        }
+        hasMountedAutoCalc.current = true;
+
         const { entryPrice, exitPrice, lotSize, type, symbol } = formData;
 
         if (entryPrice && exitPrice && lotSize && symbol) {
@@ -236,10 +291,24 @@ export default function JournalForm({
                     direction: type === "BUY" ? "LONG" : "SHORT",
                     pair: symbol,
                 });
-                setFormData((prev) => ({
-                    ...prev,
-                    pnl: result.profitLoss.toString(),
-                }));
+                setFormData((prev) => {
+                    const netProfit =
+                        result.profitLoss +
+                        (prev.commission !== "" ? parseFloat(String(prev.commission)) || 0 : 0) +
+                        (prev.swap !== "" ? parseFloat(String(prev.swap)) || 0 : 0);
+                    const autoResult =
+                        netProfit > 0
+                            ? "WIN"
+                            : netProfit < 0
+                              ? "LOSS"
+                              : "BREAK_EVEN";
+                    return {
+                        ...prev,
+                        pnl: result.profitLoss.toString(),
+                        status: !isEditMode ? "CLOSED" : prev.status,
+                        result: prev.result || autoResult,
+                    };
+                });
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -295,14 +364,16 @@ export default function JournalForm({
         try {
             const currentImages = formData.images || [];
 
-            // Convert ruleChecks mapping back to ruleChecks payload array
-            const ruleChecksPayload = Object.entries(ruleChecks).map(
-                ([ruleId, check]) => ({
-                    tradingRuleId: ruleId,
-                    status: check.status,
-                    note: check.note || null,
-                })
-            );
+            // Convert applicable ruleChecks mapping back to ruleChecks payload array
+            // (Defaulting visually-selected "FOLLOWED" rules so Compliance Analytics & Goals track them)
+            const ruleChecksPayload = applicableRules.map((rule) => {
+                const check = ruleChecks[rule.id];
+                return {
+                    tradingRuleId: rule.id,
+                    status: check?.status || "FOLLOWED",
+                    note: check?.note || null,
+                };
+            });
 
             // Convert numbers
             const payload: any = {
@@ -1165,7 +1236,7 @@ export default function JournalForm({
                             </div>
 
                             {/* Rulebook Compliance Checklist */}
-                            {activeRules.length > 0 && (
+                            {applicableRules.length > 0 && (
                                 <div className="space-y-3 pt-3 border-t border-dashboard">
                                     <h3 className="text-sm font-bold font-sans tracking-tight text-gray-700 dark:text-white flex items-center gap-1.5">
                                         <ClipboardList
@@ -1175,7 +1246,7 @@ export default function JournalForm({
                                         Rulebook Compliance Checklist
                                     </h3>
                                     <div className="space-y-2.5">
-                                        {activeRules.map((rule) => {
+                                        {applicableRules.map((rule) => {
                                             const currentCheck = ruleChecks[
                                                 rule.id
                                             ] || {

@@ -56,8 +56,8 @@ export const uploadVersionSchema = z.object({
     version: z
         .string()
         .regex(
-            /^\d+\.\d+\.\d+$/,
-            "Version must be in format x.y.z (e.g., 1.0.0)"
+            /^\d+\.\d+(?:\.\d+)?$/,
+            "Version must be in format x.y or x.y.z"
         ),
     changelog: z.string().optional(),
 });

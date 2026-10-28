@@ -36,7 +36,7 @@ const productSchema = z.object({
     type: z.nativeEnum(EAType),
     version: z
         .string()
-        .regex(/^\d+\.\d+\.\d+$/, "Version must be x.y.z (e.g. 1.0.0)"),
+        .regex(/^\d+\.\d+(?:\.\d+)?$/, "Version must be x.y or x.y.z"),
     changelog: z.string().optional(),
     fileMT5: z.string().optional().or(z.literal("")),
     isActive: z.boolean(),
@@ -200,137 +200,133 @@ export function ProductForm({ initialData }: ProductFormProps) {
                         {/* Product Name - full width */}
                         <PremiumInput
                             label="Product Name"
-                            placeholder="TheNextTrade Auto Trader"
                             {...form.register("name")}
                             error={form.formState.errors.name?.message}
                             required
                         />
 
                         {/* Version + Type + Access Tier - 3 columns */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
                             <PremiumInput
                                 label="Version"
-                                placeholder="1.0.0"
                                 {...form.register("version")}
                                 error={form.formState.errors.version?.message}
                                 required
                             />
 
                             {/* Type */}
-                            <div className="flex flex-col gap-2">
-                                <label className="block text-[11px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                            <div className="w-full">
+                                <label className="block text-[11px] font-bold uppercase tracking-wider mb-2 text-gray-600 dark:text-gray-300">
                                     Type
                                 </label>
-                                <div>
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button
-                                                variant="outline"
-                                                className="w-full h-11 bg-white dark:bg-white/5 justify-between text-left font-normal shadow-none border-gray-200 dark:border-white/10"
-                                            >
-                                                <span className="font-medium">
-                                                    {typeValue ===
-                                                    EAType.AUTO_TRADE
-                                                        ? "Auto Trade (Robot)"
-                                                        : typeValue ===
-                                                            EAType.MANUAL_ASSIST
-                                                          ? "Manual Assist (Tool)"
-                                                          : "Indicator"}
-                                                </span>
-                                                <ChevronDown
-                                                    size={14}
-                                                    className="opacity-50"
-                                                />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]">
-                                            <DropdownMenuItem
-                                                onClick={() =>
-                                                    form.setValue(
-                                                        "type",
-                                                        EAType.AUTO_TRADE,
-                                                        { shouldValidate: true }
-                                                    )
-                                                }
-                                            >
-                                                Auto Trade (Robot)
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem
-                                                onClick={() =>
-                                                    form.setValue(
-                                                        "type",
-                                                        EAType.MANUAL_ASSIST,
-                                                        { shouldValidate: true }
-                                                    )
-                                                }
-                                            >
-                                                Manual Assist (Tool)
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem
-                                                onClick={() =>
-                                                    form.setValue(
-                                                        "type",
-                                                        EAType.INDICATOR,
-                                                        { shouldValidate: true }
-                                                    )
-                                                }
-                                            >
-                                                Indicator
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </div>
+                                <DropdownMenu className="w-full block">
+                                    <DropdownMenuTrigger asChild>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className="w-full h-[42px] px-4 rounded-xl bg-gray-50 dark:bg-white/5 justify-between text-left text-sm font-medium shadow-none border-gray-200 dark:border-white/10"
+                                        >
+                                            <span className="truncate pr-2">
+                                                {typeValue ===
+                                                EAType.AUTO_TRADE
+                                                    ? "Auto Trade (Robot)"
+                                                    : typeValue ===
+                                                        EAType.MANUAL_ASSIST
+                                                      ? "Manual Assist (Tool)"
+                                                      : "Indicator"}
+                                            </span>
+                                            <ChevronDown
+                                                size={14}
+                                                className="opacity-50 shrink-0"
+                                            />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]">
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                form.setValue(
+                                                    "type",
+                                                    EAType.AUTO_TRADE,
+                                                    { shouldValidate: true }
+                                                )
+                                            }
+                                        >
+                                            Auto Trade (Robot)
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                form.setValue(
+                                                    "type",
+                                                    EAType.MANUAL_ASSIST,
+                                                    { shouldValidate: true }
+                                                )
+                                            }
+                                        >
+                                            Manual Assist (Tool)
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                form.setValue(
+                                                    "type",
+                                                    EAType.INDICATOR,
+                                                    { shouldValidate: true }
+                                                )
+                                            }
+                                        >
+                                            Indicator
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             </div>
 
                             {/* Access Tier */}
-                            <div className="flex flex-col gap-2">
-                                <label className="block text-[11px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                            <div className="w-full">
+                                <label className="block text-[11px] font-bold uppercase tracking-wider mb-2 text-gray-600 dark:text-gray-300">
                                     Access Tier
                                 </label>
-                                <div>
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button
-                                                variant="outline"
-                                                className="w-full h-11 bg-white dark:bg-white/5 justify-between text-left font-normal shadow-none border-gray-200 dark:border-white/10"
-                                            >
-                                                <span className="font-medium">
-                                                    {isFreeValue
-                                                        ? "Free Download"
-                                                        : "Require Verification (Standard)"}
-                                                </span>
-                                                <ChevronDown
-                                                    size={14}
-                                                    className="opacity-50"
-                                                />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]">
-                                            <DropdownMenuItem
-                                                onClick={() =>
-                                                    form.setValue(
-                                                        "isFree",
-                                                        false,
-                                                        { shouldValidate: true }
-                                                    )
-                                                }
-                                            >
-                                                Require Verification (Standard)
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem
-                                                onClick={() =>
-                                                    form.setValue(
-                                                        "isFree",
-                                                        true,
-                                                        { shouldValidate: true }
-                                                    )
-                                                }
-                                            >
-                                                Free Download
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </div>
+                                <DropdownMenu className="w-full block">
+                                    <DropdownMenuTrigger asChild>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className="w-full h-[42px] px-4 rounded-xl bg-gray-50 dark:bg-white/5 justify-between text-left text-sm font-medium shadow-none border-gray-200 dark:border-white/10"
+                                        >
+                                            <span className="truncate pr-2">
+                                                {isFreeValue
+                                                    ? "Free Download"
+                                                    : "Require Verification (Standard)"}
+                                            </span>
+                                            <ChevronDown
+                                                size={14}
+                                                className="opacity-50 shrink-0"
+                                            />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]">
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                form.setValue(
+                                                    "isFree",
+                                                    false,
+                                                    { shouldValidate: true }
+                                                )
+                                            }
+                                        >
+                                            Require Verification (Standard)
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                form.setValue(
+                                                    "isFree",
+                                                    true,
+                                                    { shouldValidate: true }
+                                                )
+                                            }
+                                        >
+                                            Free Download
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             </div>
                         </div>
 

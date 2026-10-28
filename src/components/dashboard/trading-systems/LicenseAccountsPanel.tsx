@@ -23,6 +23,8 @@ import {
     ChevronDown,
     ChevronUp,
     Edit3,
+    Crown,
+    Send,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
@@ -65,11 +67,15 @@ export interface SelectableTradingAccount {
 interface LicenseAccountsPanelProps {
     items: AccountLicenseItem[];
     userTradingAccounts?: SelectableTradingAccount[];
+    hasApprovedLicense?: boolean;
+    vipLink?: string | null;
 }
 
 export function LicenseAccountsPanel({
     items,
     userTradingAccounts = [],
+    hasApprovedLicense = false,
+    vipLink = null,
 }: LicenseAccountsPanelProps) {
     const [showAddForm, setShowAddForm] = useState(items.length === 0);
     const [showWebRequestGuide, setShowWebRequestGuide] = useState(false);
@@ -231,6 +237,36 @@ export function LicenseAccountsPanel({
                     </div>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap shrink-0">
+                    {!hasApprovedLicense ? (
+                        <Link href="/dashboard/accounts?action=add&intent=unlock-pro">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="rounded-lg text-xs font-bold text-amber-600 dark:text-amber-400 border-amber-500/30 hover:bg-amber-500/10"
+                            >
+                                <Crown size={14} className="text-amber-500" />
+                                <span>Unlock Partner Pro Free</span>
+                                <ArrowRight size={13} />
+                            </Button>
+                        </Link>
+                    ) : vipLink ? (
+                        <a
+                            href={vipLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="rounded-lg text-xs font-bold text-[#2AABEE] border-[#2AABEE]/30 hover:bg-[#2AABEE]/10"
+                            >
+                                <Send size={13} />
+                                <span>VIP Telegram</span>
+                            </Button>
+                        </a>
+                    ) : null}
                     <Button
                         type="button"
                         variant="outline"

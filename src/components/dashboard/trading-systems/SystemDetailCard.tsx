@@ -142,7 +142,7 @@ export function SystemDetailCard({
                             setIsDetailModalOpen(true);
                         }
                     }}
-                    className="relative w-full h-80 sm:h-96 md:h-[400px] bg-[#0E1118] overflow-hidden cursor-pointer group/media border-b border-dashboard dark:border-white/[0.08] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                    className="relative w-full aspect-video bg-[#0E1118] overflow-hidden cursor-pointer group/media border-b border-dashboard dark:border-white/[0.08] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
                 >
                     {/* Top-left Pill Badge */}
                     <div className="absolute top-3.5 left-3.5 px-3 py-1.5 rounded-lg text-[10px] font-extrabold tracking-wider uppercase bg-black/80 backdrop-blur-md text-white/95 border border-white/10 shadow-md z-10 pointer-events-none">
@@ -153,7 +153,7 @@ export function SystemDetailCard({
                         <img
                             src={product.thumbnail}
                             alt={product.name}
-                            className="w-full h-full object-cover group-hover/media:scale-105 transition-transform duration-500 ease-out"
+                            className="w-full h-full object-contain bg-[#0E1118]"
                         />
                     ) : (
                         <div className="w-full h-full relative flex items-center justify-center bg-gradient-to-br from-[#0c0f17] via-[#10131c] to-[#151922] p-6 overflow-hidden">

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useFeatureFlags } from "@/lib/dashboard-context";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { X, LogOut, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { SPRING_SOFT, backdropVariants } from "@/lib/animations";
@@ -38,6 +38,34 @@ interface MobileSidebarProps {
     items?: any[];
 }
 
+const ACCOUNT_SCOPED_ROUTES = new Set([
+    "/dashboard",
+    "/dashboard/journal",
+    "/dashboard/analytics",
+    "/dashboard/sessions",
+    "/dashboard/intelligence",
+    "/dashboard/reports",
+]);
+
+function buildScopedHref(
+    rawHref: string,
+    searchParams: ReturnType<typeof useSearchParams>
+): string {
+    if (!rawHref || rawHref === "#") return rawHref;
+    const cleanPath = rawHref.split("?")[0];
+    if (!ACCOUNT_SCOPED_ROUTES.has(cleanPath)) return rawHref;
+
+    const params = new URLSearchParams(rawHref.split("?")[1] || "");
+    const accountId = searchParams?.get("accountId");
+
+    if (accountId && !params.has("accountId")) {
+        params.set("accountId", accountId);
+    }
+
+    const qs = params.toString();
+    return qs ? `${cleanPath}?${qs}` : cleanPath;
+}
+
 function MobileSidebarItem({
     item,
     activeHref,
@@ -47,8 +75,10 @@ function MobileSidebarItem({
     activeHref: string | null;
     onClose: () => void;
 }) {
+    const searchParams = useSearchParams();
     const Icon = item.icon;
     const hasSubItems = item.items && item.items.length > 0;
+    const resolvedItemHref = buildScopedHref(item.href, searchParams);
     const [isExpanded, setIsExpanded] = useState(() => {
         if (hasSubItems) {
             return item.items.some((sub: any) => sub.href === activeHref);
@@ -100,10 +130,14 @@ function MobileSidebarItem({
                             <div className="absolute left-[21px] top-0 bottom-4 w-px bg-gray-200 dark:bg-white/10" />
                             {item.items.map((sub: any) => {
                                 const isSubActive = sub.href === activeHref;
+                                const resolvedSubHref = buildScopedHref(
+                                    sub.href,
+                                    searchParams
+                                );
                                 return (
                                     <Link
                                         key={sub.name}
-                                        href={sub.href}
+                                        href={resolvedSubHref}
                                         onClick={onClose}
                                         className={cn(
                                             "flex items-center gap-2 py-1.5 pl-1.5 pr-3 rounded-lg text-[13px] font-semibold transition-colors relative",
@@ -129,7 +163,7 @@ function MobileSidebarItem({
                 </div>
             ) : (
                 <Link
-                    href={item.href}
+                    href={resolvedItemHref}
                     onClick={onClose}
                     className={cn(
                         "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text transition-colors mb-0.5",

@@ -40,6 +40,7 @@ export default function SignupPage() {
     const [password, setPassword] = useState("");
     const [confirm, setConfirm] = useState("");
     const [turnstileToken, setTurnstileToken] = useState("");
+    const [turnstileResetKey, setTurnstileResetKey] = useState(0);
     const [referralCode, setReferralCode] = useState("");
 
     const inputClassName =
@@ -181,6 +182,7 @@ export default function SignupPage() {
         if (result?.error) {
             trackEvent("sign_up_failed", { country });
             setError(result.error);
+            setTurnstileResetKey((k) => k + 1);
         } else if (result?.requiresVerification) {
             trackEvent("sign_up_verification_required", { country });
             router.push(
@@ -189,14 +191,12 @@ export default function SignupPage() {
             return;
         } else if (result?.success) {
             trackEvent("sign_up_completed", { country });
-            // Build dashboard URL with accountId + today (same as login)
             const cookieMatch = document.cookie.match(
                 /(?:^|;\s*)last_account_id=([^;]+)/
             );
             const acctId = cookieMatch?.[1];
-            const today = new Date().toISOString().slice(0, 10);
             const dashUrl = acctId
-                ? `/dashboard?accountId=${acctId}&from=${today}&to=${today}`
+                ? `/dashboard?accountId=${acctId}`
                 : "/dashboard";
             router.push(dashUrl);
             return;
@@ -537,6 +537,7 @@ export default function SignupPage() {
                         </div>
 
                         <TurnstileWidget
+                            resetKey={turnstileResetKey}
                             onVerify={setTurnstileToken}
                             className="flex justify-center overflow-hidden max-w-full"
                         />

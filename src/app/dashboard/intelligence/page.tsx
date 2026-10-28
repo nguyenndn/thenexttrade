@@ -35,33 +35,16 @@ export default async function IntelligencePage({
     }
     const tradingDataState = await getUserTradingDataState(user.id);
 
-    // Account filter
+    // Account filter (Priority 1: Main Account from /dashboard/accounts)
     let accountId = resolvedParams?.accountId as string | undefined;
 
     if (!accountId) {
         const cookieStore = await cookies();
         const lastAccountId = cookieStore.get("last_account_id")?.value;
-
-        if (lastAccountId) {
-            const cookieAccountExists = await prisma.tradingAccount.findFirst({
-                where: { id: lastAccountId, userId: user.id },
-                select: { id: true },
-            });
-            if (cookieAccountExists) {
-                accountId = lastAccountId;
-            }
-        }
-
-        if (!accountId) {
-            const firstAccount = await prisma.tradingAccount.findFirst({
-                where: { userId: user.id },
-                orderBy: { createdAt: "desc" },
-                select: { id: true },
-            });
-            if (firstAccount) {
-                accountId = firstAccount.id;
-            }
-        }
+        const { resolveDefaultAccountId } = await import(
+            "@/actions/main-account"
+        );
+        accountId = await resolveDefaultAccountId(user.id, lastAccountId);
     }
 
     // Date range
