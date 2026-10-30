@@ -141,7 +141,7 @@ export function UserReportsNotesTab({
         <div className="space-y-6">
             {/* Top KPI Cards */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <BarChart3 size={14} className="text-primary" /> Generated Reports
                     </div>
@@ -153,7 +153,7 @@ export function UserReportsNotesTab({
                     </div>
                 </div>
 
-                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <DollarSign size={14} className="text-emerald-500" /> Aggregate Reported P&L
                     </div>
@@ -171,7 +171,7 @@ export function UserReportsNotesTab({
                     </div>
                 </div>
 
-                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <Percent size={14} className="text-blue-500" /> Avg Reported Win Rate
                     </div>
@@ -183,7 +183,7 @@ export function UserReportsNotesTab({
                     </div>
                 </div>
 
-                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <Calendar size={14} className="text-amber-500" /> Day Notes & Insights
                     </div>
@@ -252,7 +252,7 @@ export function UserReportsNotesTab({
 
             {/* Section 1: Performance Reports (GAP-8) */}
             {activeSection === "reports" && (
-                <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <BarChart3 size={16} className="text-primary" /> Generated Performance Reports ({filteredReports.length})
@@ -348,7 +348,7 @@ export function UserReportsNotesTab({
 
             {/* Section 2: Trading Day Notes (GAP-10) */}
             {activeSection === "notes" && (
-                <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <Calendar size={16} className="text-amber-500" /> Trading Day Notes & Reflection ({filteredNotes.length})
@@ -398,7 +398,7 @@ export function UserReportsNotesTab({
 
             {/* Section 3: Behavioral Insights (GAP-10) */}
             {activeSection === "insights" && (
-                <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <Lightbulb size={16} className="text-amber-500" /> Algorithmic Behavioral Insights ({filteredInsights.length})
@@ -451,7 +451,7 @@ export function UserReportsNotesTab({
             {/* Report Inspection Modal */}
             {selectedReport && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <h3 className="text-lg font-black text-gray-900 dark:text-white">
@@ -522,7 +522,7 @@ export function UserReportsNotesTab({
             {/* Note Full Modal */}
             {selectedNote && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <h3 className="text-lg font-black text-gray-900 dark:text-white">

@@ -93,6 +93,9 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
         if (screenshotModal) {
             document.body.style.overflow = "hidden";
         }
+        return () => {
+            document.body.style.overflow = "unset";
+        };
     }, [screenshotModal]);
 
     const releaseLightboxLock = () => {
@@ -287,7 +290,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                                 return (
                                     <span
                                         key={ent.id}
-                                        className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 font-medium text-[11px]"
+                                        className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 font-medium text-[11px]"
                                     >
                                         <span>{label}</span>
                                         <span className="text-gray-400">·</span>
@@ -479,7 +482,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                             className="flex flex-wrap items-center justify-between gap-3 text-xs"
                         >
                             <div className="flex flex-wrap items-center gap-2">
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400">
                                     <Clock size={12} /> Pending VIP Request
                                 </span>
                                 <span className="font-bold text-gray-800 dark:text-white">
@@ -564,7 +567,7 @@ export function UserVipProTab({ user }: UserVipProTabProps) {
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="relative max-w-5xl max-h-[90vh] bg-white dark:bg-[#151925] rounded-xl overflow-hidden p-2 shadow-2xl cursor-default"
+                            className="relative max-w-5xl max-h-[90vh] bg-white dark:bg-[#151925] rounded-2xl overflow-hidden p-2 shadow-2xl cursor-default"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <img

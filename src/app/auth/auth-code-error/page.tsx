@@ -5,7 +5,7 @@ import { Logo } from "@/components/ui/Logo";
 
 export default function AuthCodeErrorPage() {
     return (
-        <div className="w-full max-w-[480px] mx-auto bg-white dark:bg-[#1E2028] p-8 rounded-lg border border-dashboard shadow-xl transition-colors duration-300">
+        <div className="w-full max-w-[480px] mx-auto bg-white dark:bg-[#1E2028] p-8 rounded-xl border border-dashboard shadow-xl transition-colors duration-300">
             <div className="flex justify-center mb-6">
                 <Logo />
             </div>

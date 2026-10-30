@@ -169,7 +169,7 @@ export function ConnectMt5Modal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-            <div className="w-full max-w-md rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 p-6 shadow-2xl space-y-5">
+            <div className="w-full max-w-md rounded-2xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 p-6 shadow-2xl space-y-5">
                 <div className="flex items-start justify-between gap-3">
                     <div>
                         <h3 className="text-lg font-extrabold text-gray-900 dark:text-white">
@@ -249,7 +249,7 @@ export function ConnectMt5Modal({
                                         <span className="text-xs font-extrabold text-gray-900 dark:text-white truncate">
                                             {targetAccount.name || "Main Account"}
                                         </span>
-                                        <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 text-[10px] font-black text-emerald-400">
+                                        <span className="rounded-full bg-emerald-500/20 px-1.5 py-0.5 text-[10px] font-black text-emerald-400">
                                             MAIN
                                         </span>
                                     </div>

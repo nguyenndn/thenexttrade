@@ -102,7 +102,7 @@ export function UserProfileCard({ entry, onClose }: UserProfileCardProps) {
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="relative z-10 w-full max-w-sm bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl overflow-hidden border border-dashboard"
+                className="relative z-10 w-full max-w-sm bg-white dark:bg-[#1E2028] rounded-2xl shadow-2xl overflow-hidden border border-dashboard"
             >
                 {/* Glow */}
                 <div
@@ -112,8 +112,9 @@ export function UserProfileCard({ entry, onClose }: UserProfileCardProps) {
 
                 {/* Close */}
                 <Button
-                    variant="ghost"
-                    className="absolute top-3 right-3 p-1.5 z-20 text-gray-500 hover:text-gray-600 dark:hover:text-white w-auto h-auto"
+                    variant="outline"
+                    size="icon"
+                    className="absolute top-3 right-3 z-20 text-gray-500 hover:text-gray-600 dark:hover:text-white rounded-lg"
                     onClick={onClose}
                     aria-label="Close profile card"
                 >

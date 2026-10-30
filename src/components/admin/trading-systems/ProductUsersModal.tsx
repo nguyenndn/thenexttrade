@@ -110,7 +110,7 @@ export function ProductUsersModal({
             onClick={onClose}
         >
             <div
-                className="relative w-full max-w-5xl max-h-[90vh] flex flex-col bg-white dark:bg-[#121624] border border-gray-200 dark:border-white/10 rounded-xl shadow-2xl overflow-hidden"
+                className="relative w-full max-w-5xl max-h-[90vh] flex flex-col bg-white dark:bg-[#121624] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* ── Modal Header ── */}

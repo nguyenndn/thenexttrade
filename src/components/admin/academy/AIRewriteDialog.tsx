@@ -480,7 +480,7 @@ export const AIRewriteDialog = forwardRef<
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="bg-white dark:bg-[#1a1e2e] rounded-lg shadow-2xl border border-gray-200 dark:border-white/10 w-full max-w-2xl mx-4 max-h-[95vh] overflow-hidden flex flex-col"
+                        className="bg-white dark:bg-[#1a1e2e] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 w-full max-w-2xl mx-4 max-h-[95vh] overflow-hidden flex flex-col"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Header */}
@@ -503,10 +503,11 @@ export const AIRewriteDialog = forwardRef<
                                 </div>
                             </div>
                             <Button
-                                variant="ghost"
+                                variant="outline"
                                 size="icon"
                                 onClick={close}
                                 disabled={isLoading}
+                                aria-label="Close dialog"
                                 className="text-gray-500"
                             >
                                 <X size={18} />

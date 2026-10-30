@@ -940,6 +940,7 @@ export default function JournalList({
                                                             <Button
                                                                 variant="outline"
                                                                 size="icon"
+                                                                aria-label={`Edit trade #${entry.id}`}
                                                                 onClick={() =>
                                                                     handleEdit(
                                                                         entry

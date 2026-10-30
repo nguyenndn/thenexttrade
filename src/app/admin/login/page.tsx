@@ -32,7 +32,7 @@ export default function AdminLoginPage() {
     };
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-8 rounded-lg border border-gray-200 dark:border-white/10 shadow-2xl shadow-black/5 dark:shadow-black/20 transition-colors duration-300">
+        <div className="bg-white dark:bg-[#1E2028] p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-2xl shadow-black/5 dark:shadow-black/20 transition-colors duration-300">
             {/* Admin Badge */}
             <div className="flex justify-center mb-6">
                 <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500/10 to-orange-500/10 dark:from-amber-500/5 dark:to-orange-500/5 border border-amber-200 dark:border-amber-500/20 rounded-full">
@@ -56,7 +56,7 @@ export default function AdminLoginPage() {
             </div>
 
             {error && (
-                <div className="p-4 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm text-center mb-6 font-medium">
+                <div className="p-4 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm text-center mb-6 font-medium">
                     {error}
                 </div>
             )}

@@ -79,7 +79,7 @@ export default async function AboutPage() {
 
                     {/* Pure & Elegant Quote Card (No Avatar, No Name Line) */}
                     <ScrollReveal delay={0.15}>
-                        <div className="mt-8 sm:mt-10 max-w-2xl mx-auto p-6 sm:p-7 rounded-lg bg-white/80 dark:bg-slate-900/60 border border-amber-500/20 backdrop-blur-xl shadow-lg shadow-amber-500/[0.02] text-center relative overflow-hidden">
+                        <div className="mt-8 sm:mt-10 max-w-2xl mx-auto p-6 sm:p-7 rounded-xl bg-white/80 dark:bg-slate-900/60 border border-amber-500/20 backdrop-blur-xl shadow-lg shadow-amber-500/[0.02] text-center relative overflow-hidden">
                             <p className="text-base sm:text-lg font-medium text-gray-800 dark:text-gray-200 italic leading-relaxed">
                                 &ldquo;The market never defeats a trader on its own. It is unchecked emotion, oversized lots, and lack of honest journaling that wipe out accounts. When you audit your execution data, discipline becomes repeatable.&rdquo;
                             </p>
@@ -149,7 +149,7 @@ export default async function AboutPage() {
                             const Icon = truth.icon;
                             return (
                                 <ScrollReveal key={idx} delay={0.08 * idx}>
-                                    <div className="h-full p-6 sm:p-7 rounded-lg bg-white dark:bg-slate-900/50 border border-gray-200 dark:border-white/[0.08] hover:border-amber-500/40 transition-all duration-300 shadow-sm hover:shadow-md flex flex-col justify-between group">
+                                    <div className="h-full p-6 sm:p-7 rounded-xl bg-white dark:bg-slate-900/50 border border-gray-200 dark:border-white/[0.08] hover:border-amber-500/40 transition-all duration-300 shadow-sm hover:shadow-md flex flex-col justify-between group">
                                         <div className="space-y-3.5">
                                             <div className="flex items-center justify-between">
                                                 <span className="font-mono text-2xl font-black text-amber-500/60 group-hover:text-amber-500 transition-colors">
@@ -176,7 +176,7 @@ export default async function AboutPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* Mission */}
                         <ScrollReveal delay={0.1} direction="left">
-                            <div className="h-full rounded-lg p-8 sm:p-12 bg-white/90 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden backdrop-blur-md">
+                            <div className="h-full rounded-xl p-8 sm:p-12 bg-white/90 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden backdrop-blur-md">
                                 <Target size={180} className="absolute -bottom-8 -right-8 text-amber-500/[0.03] pointer-events-none" />
                                 <div className="relative z-10 space-y-5">
                                     <div className="flex items-center gap-3.5 sm:gap-4">
@@ -200,7 +200,7 @@ export default async function AboutPage() {
 
                         {/* Vision */}
                         <ScrollReveal delay={0.2} direction="right">
-                            <div className="h-full rounded-lg p-8 sm:p-12 bg-white/90 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden backdrop-blur-md">
+                            <div className="h-full rounded-xl p-8 sm:p-12 bg-white/90 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden backdrop-blur-md">
                                 <TrendingUp size={180} className="absolute -bottom-8 -right-8 text-sky-500/[0.03] pointer-events-none" />
                                 <div className="relative z-10 space-y-5">
                                     <div className="flex items-center gap-3.5 sm:gap-4">
@@ -227,7 +227,7 @@ export default async function AboutPage() {
                 {/* 5. EDITORIAL CONVERSION CTA */}
                 <section className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
                     <ScrollReveal>
-                        <div className="rounded-lg p-8 sm:p-12 md:p-14 text-center border border-gray-200 dark:border-white/10 bg-white/90 dark:bg-white/[0.03] backdrop-blur-md shadow-sm relative overflow-hidden">
+                        <div className="rounded-xl p-8 sm:p-12 md:p-14 text-center border border-gray-200 dark:border-white/10 bg-white/90 dark:bg-white/[0.03] backdrop-blur-md shadow-sm relative overflow-hidden">
                             <div className="relative z-10 space-y-6">
                                 <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-black text-gray-900 dark:text-white tracking-tight sm:whitespace-nowrap">
                                     Start fixing your trading habits

@@ -192,7 +192,7 @@ export function MediaLibraryModal({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="relative z-10 bg-white dark:bg-[#151925] w-full max-w-5xl h-[85vh] rounded-lg shadow-2xl flex flex-col overflow-hidden cursor-default"
+                className="relative z-10 bg-white dark:bg-[#151925] w-full max-w-5xl h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden cursor-default"
             >
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/10">
@@ -201,9 +201,10 @@ export function MediaLibraryModal({
                         Library
                     </h3>
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         size="icon"
                         onClick={onClose}
+                        aria-label="Close modal"
                         className="p-2 h-auto w-auto hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors"
                     >
                         <X size={20} className="text-gray-600" />

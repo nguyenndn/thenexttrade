@@ -363,7 +363,7 @@ export function SyncRequestsClient({
             )}
 
             {/* Unified Data Table Card */}
-            <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] overflow-hidden shadow-sm">
+            <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] overflow-hidden shadow-sm">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs text-gray-600 dark:text-gray-300">
                         <thead className="border-b border-gray-100 bg-gray-50/80 text-[11px] uppercase tracking-wider font-bold text-gray-500 dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-400">
@@ -541,7 +541,7 @@ export function SyncRequestsClient({
                                                         )}
                                                         <div>
                                                             {item.supportTicket?.hasInvestorPassword ? (
-                                                                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                                                                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-lg border border-emerald-500/20">
                                                                     <KeyRound size={10} /> Passview Ready
                                                                 </span>
                                                             ) : (
@@ -788,7 +788,7 @@ export function SyncRequestsClient({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="w-full max-w-md rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4"
+                            className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4"
                         >
                             <div className="flex items-start gap-3">
                                 <div className="p-2.5 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 ring-1 ring-rose-500/20 shrink-0">
@@ -853,7 +853,7 @@ export function SyncRequestsClient({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="w-full max-w-md rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4"
+                            className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4"
                         >
                             <div className="flex items-start gap-3">
                                 <div className="p-2.5 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 ring-1 ring-rose-500/20 shrink-0">
@@ -918,7 +918,7 @@ export function SyncRequestsClient({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="w-full max-w-xl rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-5"
+                            className="w-full max-w-xl rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-5"
                         >
                             <div className="flex items-start justify-between">
                                 <div className="flex items-center gap-3">

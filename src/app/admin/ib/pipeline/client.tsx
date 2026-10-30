@@ -302,7 +302,7 @@ export function VipPipelineClient({
             )}
 
             {/* Filter & Controls Bar */}
-            <div className="bg-white dark:bg-[#1E2028] p-4 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
+            <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
                 <form onSubmit={handleSearchSubmit} className="flex flex-col md:flex-row gap-3 items-center">
                     <div className="w-full md:w-96">
                         <PremiumInput
@@ -490,7 +490,7 @@ export function VipPipelineClient({
             </div>
 
             {/* Pipeline Table */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -635,7 +635,7 @@ export function VipPipelineClient({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="relative bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-6 max-w-md w-full space-y-4 shadow-xl"
+                            className="relative bg-white dark:bg-[#1E2028] rounded-2xl border border-gray-200 dark:border-white/10 p-6 max-w-md w-full space-y-4 shadow-xl"
                         >
                             <h3 className="text-lg font-black text-gray-900 dark:text-white">
                                 Reject VIP Request
@@ -646,7 +646,7 @@ export function VipPipelineClient({
                             <textarea
                                 value={rejectReason}
                                 onChange={(e) => setRejectReason(e.target.value)}
-                                placeholder="Reason for rejection..."
+                                aria-label="Reason for rejection"
                                 className="w-full h-24 p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                             />
                             <div className="flex justify-end gap-2 pt-2">

@@ -239,7 +239,7 @@ export function LoyaltyClaimsTable({
                           variant="ghost"
                           size="icon"
                           onClick={() => handleCopy(claim.id, claim.usdtAddress!)}
-                          className="h-6 w-6 rounded-md p-0 text-gray-400 hover:text-amber-500 transition-colors"
+                          className="h-6 w-6 rounded-lg p-0 text-gray-400 hover:text-amber-500 transition-colors"
                           aria-label="Copy destination wallet address"
                         >
                           {copiedId === claim.id ? (

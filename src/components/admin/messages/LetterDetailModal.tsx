@@ -82,7 +82,7 @@ export function LetterDetailModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-2xl w-full p-0 overflow-hidden bg-white dark:bg-[#161922] border-gray-200 dark:border-white/10 rounded-xl shadow-2xl">
+      <DialogContent className="max-w-2xl w-full p-0 overflow-hidden bg-white dark:bg-[#161922] border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl">
         {/* Top Gold Airmail Accent Bar */}
         <div className="h-1.5 bg-gradient-to-r from-amber-500 via-gold to-amber-600" />
 

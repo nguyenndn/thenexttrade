@@ -181,7 +181,7 @@ function IntelligenceLoadingSkeleton() {
                 <div className="h-6 w-40 bg-gray-200 dark:bg-white/5 rounded-lg animate-pulse" />
                 <div className="h-6 w-20 bg-gray-200 dark:bg-white/5 rounded-full animate-pulse" />
             </div>
-            <div className="h-20 bg-gray-200 dark:bg-white/5 rounded-lg animate-pulse" />
+            <div className="h-20 bg-gray-200 dark:bg-white/5 rounded-xl animate-pulse" />
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 {[1, 2, 3].map((i) => (
                     <div

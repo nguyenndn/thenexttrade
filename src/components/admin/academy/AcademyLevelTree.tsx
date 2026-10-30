@@ -214,14 +214,14 @@ export function AcademyLevelTree({
                                                 {/* Module row */}
                                                 <div className="flex items-center justify-between gap-2 mb-2">
                                                     <div className="flex items-center gap-2">
-                                                        <span className="w-5 h-5 rounded bg-gray-100 dark:bg-white/5 text-[10px] font-bold text-gray-500 flex items-center justify-center shrink-0">
+                                                        <span className="w-5 h-5 rounded-full bg-gray-100 dark:bg-white/5 text-[10px] font-bold text-gray-500 flex items-center justify-center shrink-0">
                                                             {mod.order}
                                                         </span>
                                                         <span className="font-semibold text-xs text-gray-800 dark:text-gray-200">
                                                             {mod.title}
                                                         </span>
                                                         {mod.quiz?.id && (
-                                                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">
+                                                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded-full border border-amber-500/20">
                                                                 <HelpCircle
                                                                     size={10}
                                                                 />

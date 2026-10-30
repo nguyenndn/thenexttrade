@@ -13,6 +13,7 @@ import {
     HelpCircle,
     ChevronRight,
     X,
+    Mail,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
@@ -668,8 +669,8 @@ function StepMobileSyncFallback({
         <div className="space-y-4">
             <div className="p-4 bg-gradient-to-br from-amber-500/[0.05] to-red-500/[0.02] border border-amber-500/15 rounded-lg space-y-3">
                 <div className="flex items-start gap-3">
-                    <div className="p-2.5 bg-amber-500/10 rounded-lg text-amber-500 shrink-0 text-lg">
-                        💻
+                    <div className="p-2.5 bg-amber-500/10 rounded-lg text-amber-500 shrink-0">
+                        <Monitor className="w-5 h-5" />
                     </div>
                     <div>
                         <h3 className="text-sm font-black text-gray-800 dark:text-white">
@@ -692,9 +693,10 @@ function StepMobileSyncFallback({
                     disabled={isPending || linkSent}
                     className="w-full font-bold flex items-center justify-center gap-2"
                 >
+                    <Mail className="w-4 h-4 shrink-0" />
                     {linkSent
-                        ? "📩 Setup Link Sent to Email!"
-                        : "📩 Send Setup Link to Desktop Email"}
+                        ? "Setup Link Sent to Email!"
+                        : "Send Setup Link to Desktop Email"}
                 </Button>
 
                 {/* Action 2: Log manually */}
@@ -705,7 +707,8 @@ function StepMobileSyncFallback({
                     disabled={isPending}
                     className="w-full font-bold flex items-center justify-center gap-2"
                 >
-                    ✍️ Log Trades Manually for Now
+                    <PenLine className="w-4 h-4 shrink-0" />
+                    Log Trades Manually for Now
                 </Button>
 
                 {/* Action 3: Continue anyway */}

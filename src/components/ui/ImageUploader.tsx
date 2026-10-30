@@ -72,7 +72,7 @@ export function ImageUploader({
                 />
                 <div className="flex gap-2 w-full">
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         type="button"
                         onClick={() => setIsInputVisible(false)}
                         className="flex-1 py-1.5 h-auto text-xs font-bold text-gray-600 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg hover:text-gray-600"
@@ -128,6 +128,7 @@ export function ImageUploader({
                                 variant="destructive"
                                 size="icon"
                                 onClick={handleRemove}
+                                aria-label="Remove uploaded image"
                                 className="h-10 w-10 p-2 bg-red-500 rounded-full text-white hover:scale-110 transition-transform"
                             >
                                 <X size={20} />

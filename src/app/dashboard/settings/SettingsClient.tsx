@@ -464,7 +464,7 @@ export default function SettingsClient() {
                                         <img
                                             src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/${normalizeCountryCode(formData.country)!.toLowerCase()}.svg`}
                                             alt={getCountryName(formData.country)}
-                                            className="w-5 h-3.5 rounded object-cover shadow-sm shrink-0"
+                                            className="w-5 h-3.5 rounded-xs object-cover shadow-sm shrink-0"
                                         />
                                     ) : null}
                                     <span className="text-gray-700 dark:text-gray-200 text-sm font-medium truncate">
@@ -719,7 +719,7 @@ export default function SettingsClient() {
                         </div>
                     </div>
 
-                    <div className="rounded-lg bg-amber-500/5 border border-amber-500/15 p-3.5 flex items-start gap-3">
+                    <div className="rounded-xl bg-amber-500/5 border border-amber-500/15 p-3.5 flex items-start gap-3">
                         <ShieldCheck size={18} className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                         <div className="text-xs text-amber-800 dark:text-amber-300/90 leading-relaxed">
                             <span className="font-semibold">Automated Loyalty Claim Integration:</span> When you claim milestone rewards in the Loyalty Dashboard, Admin will verify and dispatch USDT directly to this saved wallet within 24 business hours.

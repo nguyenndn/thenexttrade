@@ -85,7 +85,7 @@ export async function GET(request: NextRequest) {
             entryDate: { gte: startDate, lte: endDate },
         };
 
-        if (accountId) whereClause.accountId = accountId;
+        if (accountId && accountId !== "all") whereClause.accountId = accountId;
 
         // Fetch trades
         const trades = await prisma.journalEntry.findMany({

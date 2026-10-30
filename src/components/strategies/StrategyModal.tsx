@@ -323,7 +323,7 @@ export function StrategyModal({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className={`relative z-10 bg-white dark:bg-[#1E2028] w-full max-h-[90vh] flex flex-col rounded-lg shadow-2xl border border-dashboard ${
+                className={`relative z-10 bg-white dark:bg-[#1E2028] w-full max-h-[90vh] flex flex-col rounded-2xl shadow-2xl border border-dashboard ${
                     formData.isPlaybook ? "max-w-2xl" : "max-w-lg"
                 } transition-all duration-300 overflow-hidden`}
             >
@@ -620,7 +620,6 @@ export function StrategyModal({
                                             <div className="relative">
                                                 <input
                                                     type="text"
-                                                    placeholder="Type or select timeframe..."
                                                     className={inputClasses}
                                                     value={tfInput}
                                                     onFocus={() => setShowTfSuggestions(true)}
@@ -718,7 +717,6 @@ export function StrategyModal({
                                                 </label>
                                                 <input
                                                     type="text"
-                                                    placeholder="50% of OB zone"
                                                     className={inputClasses}
                                                     value={formData.idealEntry}
                                                     onChange={(e) => setFormData({ ...formData, idealEntry: e.target.value })}
@@ -730,7 +728,6 @@ export function StrategyModal({
                                                 </label>
                                                 <input
                                                     type="text"
-                                                    placeholder="Below OB wick"
                                                     className={inputClasses}
                                                     value={formData.idealStopLoss}
                                                     onChange={(e) => setFormData({ ...formData, idealStopLoss: e.target.value })}
@@ -742,7 +739,6 @@ export function StrategyModal({
                                                 </label>
                                                 <input
                                                     type="text"
-                                                    placeholder="Previous high"
                                                     className={inputClasses}
                                                     value={formData.idealTakeProfit}
                                                     onChange={(e) => setFormData({ ...formData, idealTakeProfit: e.target.value })}
@@ -761,7 +757,6 @@ export function StrategyModal({
                                                     step="0.1"
                                                     min="0"
                                                     max="100"
-                                                    placeholder="2.0"
                                                     className={`${inputClasses} max-w-[140px]`}
                                                     value={formData.riskRewardMin ?? ""}
                                                     onChange={(e) =>

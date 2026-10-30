@@ -25,7 +25,7 @@ export const Logo = ({
     return (
         <Link
             href="/"
-            className={`font-outfit font-black flex items-center gap-2.5 ${className}`}
+            className={`font-heading font-black flex items-center gap-2.5 ${className}`}
         >
             <div
                 className="relative shrink-0"

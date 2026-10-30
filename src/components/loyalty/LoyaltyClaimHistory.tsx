@@ -46,12 +46,12 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
   };
 
   return (
-    <div className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-5 sm:p-7 shadow-sm space-y-6">
+    <div className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-5 sm:p-7 shadow-sm space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-100 dark:border-white/10">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="p-1 rounded-md bg-amber-500/10 text-amber-500 border border-amber-500/20">
+            <span className="p-1 rounded-lg bg-amber-500/10 text-amber-500 border border-amber-500/20">
               <Receipt size={14} />
             </span>
             <span className="text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
@@ -163,7 +163,7 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
                     <td className="p-4">
                       {claim.usdtAddress ? (
                         <div className="flex items-center gap-2">
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10 uppercase">
+                          <span className="px-1.5 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10 uppercase">
                             {claim.network || "BEP20"}
                           </span>
                           <span className="font-mono text-xs text-gray-600 dark:text-gray-300">

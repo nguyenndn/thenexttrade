@@ -72,7 +72,7 @@ export default function CreateEABrokerPage() {
                 Back to EA Brokers
             </Link>
 
-            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-6 shadow-sm max-w-2xl">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-6 shadow-sm max-w-2xl">
                 <h1 className="text-xl font-bold dark:text-white mb-6 flex items-center gap-2">
                     <Briefcase className="text-primary" />
                     Add EA Broker
@@ -84,7 +84,6 @@ export default function CreateEABrokerPage() {
                         required
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        placeholder="Exness"
                     />
 
                     <div>

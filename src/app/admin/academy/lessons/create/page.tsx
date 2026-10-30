@@ -172,10 +172,10 @@ function LessonForm() {
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
                 {/* Editor — Left */}
                 <div className="lg:col-span-3 space-y-6">
-                    <div className="bg-white dark:bg-[#151925] rounded-lg p-6 border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
+                    <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
                         <input
                             type="text"
-                            placeholder="Lesson Title"
+                            aria-label="Lesson Title"
                             className="w-full text-3xl font-bold bg-transparent border-none focus:outline-none placeholder:text-gray-300 dark:placeholder:text-gray-700 text-gray-700 dark:text-white"
                             value={formData.title}
                             onChange={(e) => handleTitleChange(e.target.value)}
@@ -232,7 +232,7 @@ function LessonForm() {
 
                 {/* Sidebar — Right */}
                 <div className="lg:col-span-1 space-y-4">
-                    <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm p-4">
+                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-4">
                         {/* Module Selector */}
                         <div>
                             <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
@@ -249,7 +249,7 @@ function LessonForm() {
                     </div>
 
                     {/* Status */}
-                    <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm p-4">
+                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-4">
                         <div>
                             <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
                                 Status
@@ -296,7 +296,7 @@ function LessonForm() {
                     </div>
 
                     {/* Word Count & Reading Time */}
-                    <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm p-4">
+                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2 text-gray-600">
                                 <BookOpen size={14} />

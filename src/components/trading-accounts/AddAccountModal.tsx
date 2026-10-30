@@ -392,6 +392,7 @@ export function AddAccountModal({
                         <Button
                             variant="ghost"
                             size="icon"
+                            aria-label="Back to previous step"
                             onClick={() => {
                                 if (step.startsWith("free-"))
                                     setStep("chooser");
@@ -421,7 +422,7 @@ export function AddAccountModal({
                 </div>
             </div>
             <Button
-                variant="ghost"
+                variant="outline"
                 size="icon"
                 onClick={handleClose}
                 aria-label="Close modal"
@@ -497,7 +498,7 @@ export function AddAccountModal({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="relative z-10 bg-white dark:bg-[#1E2028] rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-dashboard shadow-2xl cursor-default flex flex-col"
+                className="relative z-10 bg-white dark:bg-[#1E2028] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-dashboard shadow-2xl cursor-default flex flex-col"
             >
                 {/* 0. UPGRADE-PRO STEP — prefilled from existing account */}
                 {step === "upgrade-pro" && sourceAccount && (
@@ -515,36 +516,48 @@ export function AddAccountModal({
                             )}
 
                             {/* Read-only account summary */}
-                            <div className="rounded-lg border border-amber-200/60 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 p-5 space-y-4">
+                            <div className="rounded-lg border border-amber-200/60 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 p-4 space-y-3">
                                 <p className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 text-center">
                                     Account to Upgrade
                                 </p>
-                                <div className="grid grid-cols-3 divide-x divide-amber-200/60 dark:divide-amber-500/20">
-                                    <div className="text-center px-2">
-                                        <p className="text-[10px] text-gray-500 uppercase mb-1">
-                                            Broker
-                                        </p>
-                                        <p className="font-bold text-gray-800 dark:text-white leading-tight break-words">
-                                            {sourceAccount.broker || "—"}
-                                        </p>
+                                <div className="rounded-lg border border-amber-200/60 dark:border-amber-500/20 divide-y divide-amber-200/60 dark:divide-amber-500/20 overflow-hidden bg-white/40 dark:bg-black/20">
+                                    <div className="grid grid-cols-2 divide-x divide-amber-200/60 dark:divide-amber-500/20">
+                                        <div className="text-center p-2.5 min-w-0">
+                                            <p className="text-[10px] text-gray-500 uppercase mb-1">
+                                                Broker
+                                            </p>
+                                            <p className="font-bold text-gray-800 dark:text-white leading-tight break-words">
+                                                {sourceAccount.broker || "—"}
+                                            </p>
+                                        </div>
+                                        <div className="text-center p-2.5 min-w-0">
+                                            <p className="text-[10px] text-gray-500 uppercase mb-1">
+                                                Account Number
+                                            </p>
+                                            <p className="font-bold text-gray-800 dark:text-white break-words">
+                                                {sourceAccount.accountNumber || "—"}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div className="text-center px-2">
-                                        <p className="text-[10px] text-gray-500 uppercase mb-1">
-                                            Account Number
-                                        </p>
-                                        <p className="font-bold text-gray-800 dark:text-white break-words">
-                                            {sourceAccount.accountNumber || "—"}
-                                        </p>
-                                    </div>
-                                    <div className="text-center px-2">
-                                        <p className="text-[10px] text-gray-500 uppercase mb-1">
-                                            Balance
-                                        </p>
-                                        <p className="font-bold text-gray-800 dark:text-white break-words">
-                                            {sourceAccount.balance != null
-                                                ? `$${sourceAccount.balance.toLocaleString()}`
-                                                : "—"}
-                                        </p>
+                                    <div className="grid grid-cols-2 divide-x divide-amber-200/60 dark:divide-amber-500/20">
+                                        <div className="text-center p-2.5 min-w-0">
+                                            <p className="text-[10px] text-gray-500 uppercase mb-1">
+                                                Balance
+                                            </p>
+                                            <p className="font-bold text-gray-800 dark:text-white break-words">
+                                                {sourceAccount.balance != null
+                                                    ? `$${sourceAccount.balance.toLocaleString()}`
+                                                    : "—"}
+                                            </p>
+                                        </div>
+                                        <div className="text-center p-2.5 min-w-0">
+                                            <p className="text-[10px] text-gray-500 uppercase mb-1">
+                                                Server
+                                            </p>
+                                            <p className="font-bold text-gray-800 dark:text-white break-words">
+                                                {sourceAccount.server || "Live"}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1538,34 +1551,46 @@ export function AddAccountModal({
                                     <AlertCircle size={16} /> {error}
                                 </div>
                             )}
-                            <div className="rounded-lg border border-dashboard bg-gray-50 dark:bg-[#1E2028] p-5">
-                                <div className="grid grid-cols-3 divide-x divide-dashboard">
-                                    <div className="text-center px-2">
-                                        <p className="text-[10px] text-gray-500 uppercase mb-1">
-                                            Broker
-                                        </p>
-                                        <p className="font-bold text-gray-800 dark:text-white leading-tight break-words">
-                                            {brokerInfo.name}
-                                        </p>
+                            <div className="rounded-lg border border-dashboard bg-gray-50 dark:bg-[#1E2028] p-4 space-y-4">
+                                <div className="rounded-lg border border-dashboard divide-y divide-dashboard overflow-hidden bg-white/40 dark:bg-black/20">
+                                    <div className="grid grid-cols-2 divide-x divide-dashboard">
+                                        <div className="text-center p-2.5 min-w-0">
+                                            <p className="text-[10px] text-gray-500 uppercase mb-1">
+                                                Broker
+                                            </p>
+                                            <p className="font-bold text-gray-800 dark:text-white leading-tight break-words">
+                                                {brokerInfo.name}
+                                            </p>
+                                        </div>
+                                        <div className="text-center p-2.5 min-w-0">
+                                            <p className="text-[10px] text-gray-500 uppercase mb-1">
+                                                Account Number
+                                            </p>
+                                            <p className="font-bold text-gray-800 dark:text-white break-words">
+                                                {accountNumber}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div className="text-center px-2">
-                                        <p className="text-[10px] text-gray-500 uppercase mb-1">
-                                            Account
-                                        </p>
-                                        <p className="font-bold text-gray-800 dark:text-white break-words">
-                                            {accountNumber}
-                                        </p>
-                                    </div>
-                                    <div className="text-center px-2">
-                                        <p className="text-[10px] text-gray-500 uppercase mb-1">
-                                            Balance
-                                        </p>
-                                        <p className="font-bold text-gray-800 dark:text-white break-words">
-                                            ${balance}
-                                        </p>
+                                    <div className="grid grid-cols-2 divide-x divide-dashboard">
+                                        <div className="text-center p-2.5 min-w-0">
+                                            <p className="text-[10px] text-gray-500 uppercase mb-1">
+                                                Balance
+                                            </p>
+                                            <p className="font-bold text-gray-800 dark:text-white break-words">
+                                                ${balance}
+                                            </p>
+                                        </div>
+                                        <div className="text-center p-2.5 min-w-0">
+                                            <p className="text-[10px] text-gray-500 uppercase mb-1">
+                                                Platform
+                                            </p>
+                                            <p className="font-bold text-gray-800 dark:text-white break-words">
+                                                {platform}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="mt-4 pt-4 border-t border-dashboard grid grid-cols-2 gap-4">
+                                <div className="pt-2 border-t border-dashboard grid grid-cols-2 gap-3">
                                     <div className="text-center px-2">
                                         <p className="text-[10px] text-gray-500 uppercase mb-1">
                                             Telegram

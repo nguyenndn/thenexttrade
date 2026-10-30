@@ -156,7 +156,7 @@ export function QuickActions({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative bg-white dark:bg-[#1E2028] rounded-lg w-full max-w-md mx-4 border border-gray-200 dark:border-white/10 shadow-2xl"
+                        className="relative bg-white dark:bg-[#1E2028] rounded-2xl w-full max-w-md mx-4 border border-gray-200 dark:border-white/10 shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-white/10">
@@ -165,7 +165,7 @@ export function QuickActions({
                                 Notification
                             </h3>
                             <Button
-                                variant="ghost"
+                                variant="outline"
                                 size="icon"
                                 onClick={() => setShowNotifyModal(false)}
                                 className="h-8 w-8 rounded-lg"
@@ -185,7 +185,7 @@ export function QuickActions({
                                     onChange={(e) =>
                                         setNotifyTitle(e.target.value)
                                     }
-                                    placeholder="Notification title..."
+                                    aria-label="Notification title"
                                     className="w-full px-3 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors"
                                 />
                             </div>
@@ -198,7 +198,7 @@ export function QuickActions({
                                     onChange={(e) =>
                                         setNotifyMessage(e.target.value)
                                     }
-                                    placeholder="Write your message..."
+                                    aria-label="Notification message"
                                     rows={3}
                                     className="w-full px-3 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0B0E14] text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-primary/50 transition-colors resize-none"
                                 />

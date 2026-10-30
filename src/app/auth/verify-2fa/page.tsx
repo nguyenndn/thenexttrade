@@ -29,7 +29,7 @@ export default function Verify2FAPage() {
             {/* Background Effects */}
             <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.3] pointer-events-none"></div>
 
-            <div className="w-full max-w-[400px] p-8 rounded-lg border border-white/10 bg-[#ffffff0d] backdrop-blur-sm relative z-10 mx-4">
+            <div className="w-full max-w-[400px] p-8 rounded-xl border border-white/10 bg-[#ffffff0d] backdrop-blur-sm relative z-10 mx-4">
                 <div className="text-center mb-8">
                     <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-6 ring-1 ring-primary/30">
                         <Shield size={32} className="text-primary" />
@@ -73,9 +73,9 @@ export default function Verify2FAPage() {
                 </form>
 
                 <Button
-                    variant="ghost"
+                    variant="outline"
                     onClick={() => (window.location.href = "/auth/login")}
-                    className="w-full text-center mt-6 text-sm text-gray-600 hover:text-white transition-colors hover:bg-transparent"
+                    className="w-full text-center mt-6 text-sm font-bold border-white/10 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg"
                 >
                     Back to Login
                 </Button>

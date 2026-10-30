@@ -28,6 +28,10 @@ import { syncLicenseBackupOrQueue } from "@/lib/ea/license-github-sync-outbox.se
 import type { LicenseGitHubSyncOutcome } from "@/lib/ea/license-github-sync-outbox.server";
 import { generateApiKey } from "@/lib/utils/api-key";
 import { filterAccountsByBroker } from "@/lib/trading-account-identity";
+import {
+    sendEmailWithDetails,
+    buildEALicenseEmailHtml,
+} from "@/lib/services/email.service";
 
 export type LicenseMutationResult = {
     success: boolean;
@@ -39,6 +43,7 @@ export type LicenseMutationResult = {
     syncJobId?: string;
     error?: string;
     licenseKey?: string;
+    emailDispatched?: boolean;
 };
 
 function mutationFailure(error: string): LicenseMutationResult {
@@ -116,6 +121,15 @@ export async function approveAccount(
 
         const license = await prisma.eALicense.findUnique({
             where: { id: accountId },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    },
+                },
+            },
         });
 
         if (!license) {
@@ -196,6 +210,43 @@ export async function approveAccount(
             eventKey: buildSyncEventKey("approve", accountId),
         });
 
+        // ─── Dispatch EA License Delivery Email (Non-blocking) ───
+        let emailDispatched = false;
+        if (license.user?.email) {
+            try {
+                const appUrl =
+                    process.env.NEXT_PUBLIC_APP_URL ||
+                    "https://thenexttrade.vercel.app";
+                const emailHtml = buildEALicenseEmailHtml({
+                    userName: license.user.name || "Trader",
+                    eaName: "GoldScalperNinja Pro MT5",
+                    licenseKey,
+                    mt5Account: `${license.accountNumber} (${license.broker})`,
+                    downloadUrl: `${appUrl}/dashboard/trading-systems`,
+                    guideUrl: `${appUrl}/dashboard/trading-systems`,
+                });
+
+                const emailResult = await sendEmailWithDetails({
+                    to: license.user.email,
+                    subject: `Your GoldScalperNinja Pro MT5 Lifetime License Key 🔑`,
+                    html: emailHtml,
+                });
+
+                emailDispatched = emailResult.success;
+                if (!emailResult.success) {
+                    console.warn(
+                        `[approveAccount] License email delivery warning for account ${license.accountNumber}:`,
+                        emailResult.error
+                    );
+                }
+            } catch (emailError) {
+                console.error(
+                    `[approveAccount] Transient email dispatch error for account ${license.accountNumber}:`,
+                    emailError
+                );
+            }
+        }
+
         revalidatePath("/admin/trading-systems");
         revalidatePath("/admin/trading-systems/accounts");
         revalidatePath("/dashboard/trading-systems");
@@ -205,6 +256,7 @@ export async function approveAccount(
             dbUpdated: true,
             accountRetained: false,
             licenseKey,
+            emailDispatched,
             ...syncFields(github),
         };
     } catch (error) {

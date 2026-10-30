@@ -220,9 +220,11 @@ export function ReviewsSection() {
                         <div className="flex items-center gap-1">
                             {Array.from({ length: maxIndex + 1 }).map(
                                 (_, i) => (
-                                    <button
+                                    <Button
                                         key={i}
                                         type="button"
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => setCurrentIndex(i)}
                                         aria-label={`Go to review ${i + 1}`}
                                         aria-current={
@@ -230,7 +232,7 @@ export function ReviewsSection() {
                                                 ? "true"
                                                 : undefined
                                         }
-                                        className="p-2.5 flex items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/50"
+                                        className="w-auto h-auto p-2.5 flex items-center justify-center rounded-full hover:bg-transparent"
                                     >
                                         <span
                                             className={`h-2 rounded-full transition-all duration-300 block ${
@@ -239,7 +241,7 @@ export function ReviewsSection() {
                                                     : "w-2 bg-gray-300 dark:bg-white/20 hover:bg-gray-400 dark:hover:bg-white/40"
                                             }`}
                                         />
-                                    </button>
+                                    </Button>
                                 )
                             )}
                         </div>

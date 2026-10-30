@@ -144,7 +144,7 @@ export function FilterModal({
                     animate="animate"
                     exit="exit"
                     transition={SPRING_SOFT}
-                    className={`relative z-10 w-full max-w-md rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh] cursor-default ${isDark ? "bg-slate-800 text-white" : "bg-white text-gray-700"}`}
+                    className={`relative z-10 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] cursor-default ${isDark ? "bg-slate-800 text-white" : "bg-white text-gray-700"}`}
                 >
                 {/* Header */}
                 <div
@@ -155,7 +155,7 @@ export function FilterModal({
                         Filters
                     </h3>
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         size="icon"
                         onClick={onClose}
                         aria-label="Close Filters"

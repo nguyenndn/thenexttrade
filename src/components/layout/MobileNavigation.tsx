@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { SPRING_SOFT } from "@/lib/animations";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useTheme } from "@/components/providers/ThemeProvider";
 import { menuItems } from "@/config/navigation";
 import {
     ChevronDown,
@@ -47,8 +46,6 @@ export function MobileNavigation({
     onClose,
     user,
 }: MobileNavigationProps) {
-    const { theme } = useTheme();
-    const isDark = theme === "dark";
     const pathname = usePathname();
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const dashboardUrl = useDashboardUrl();
@@ -73,7 +70,7 @@ export function MobileNavigation({
             className="lg:hidden px-2 pb-4 absolute top-full left-0 w-full z-40"
         >
             <div
-                className={`max-w-7xl mx-auto rounded-lg border shadow-lg ${isDark ? "bg-slate-900/95 border-slate-700" : "bg-white border-dashboard"}`}
+                className="max-w-7xl mx-auto rounded-xl border shadow-lg bg-white dark:bg-slate-900/95 border-dashboard dark:border-slate-700"
             >
                 {/* Nav Links */}
                 <nav className="p-4 space-y-2">
@@ -92,12 +89,8 @@ export function MobileNavigation({
                                 className={[
                                     "relative block px-4 py-3 rounded-lg nav-menu-text transition-colors",
                                     isActive
-                                        ? isDark
-                                            ? "bg-amber-400/10 text-amber-300"
-                                            : "bg-amber-50 text-amber-700"
-                                        : isDark
-                                          ? "text-white hover:bg-amber-400/10 hover:text-amber-300"
-                                          : "text-gray-700 hover:bg-amber-50 hover:text-amber-700",
+                                        ? "bg-amber-50 text-amber-700 dark:bg-amber-400/10 dark:text-amber-300"
+                                        : "text-gray-700 hover:bg-amber-50 hover:text-amber-700 dark:text-white dark:hover:bg-amber-400/10 dark:hover:text-amber-300",
                                 ].join(" ")}
                             >
                                 {item.name}
@@ -113,16 +106,12 @@ export function MobileNavigation({
                 </nav>
 
                 {/* Bottom section: user info OR auth buttons */}
-                <div
-                    className={`border-t ${isDark ? "border-slate-700" : "border-dashboard"}`}
-                >
+                <div className="border-t border-dashboard dark:border-slate-700">
                     {user ? (
                         /* ── Logged in: user card + key links ── */
                         <div className="p-4 space-y-1">
                             {/* Avatar + name */}
-                            <div
-                                className={`flex items-center gap-3 px-3 py-3 rounded-lg mb-2 ${isDark ? "bg-slate-800" : "bg-gray-50"}`}
-                            >
+                            <div className="flex items-center gap-3 px-3 py-3 rounded-lg mb-2 bg-gray-50 dark:bg-slate-800">
                                 <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/30 shrink-0">
                                     {user.image ? (
                                         <Image
@@ -133,9 +122,7 @@ export function MobileNavigation({
                                             className="object-cover w-full h-full"
                                         />
                                     ) : (
-                                        <div
-                                            className={`w-full h-full flex items-center justify-center ${isDark ? "bg-slate-700" : "bg-gray-200"}`}
-                                        >
+                                        <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-slate-700">
                                             <UserIcon
                                                 size={20}
                                                 className="text-gray-500"
@@ -144,9 +131,7 @@ export function MobileNavigation({
                                     )}
                                 </div>
                                 <div className="min-w-0">
-                                    <p
-                                        className={`font-semibold text-sm truncate ${isDark ? "text-white" : "text-gray-700"}`}
-                                    >
+                                    <p className="font-semibold text-sm truncate text-gray-700 dark:text-white">
                                         {user.name || "Trader"}
                                     </p>
                                     <p className="text-xs text-primary truncate">
@@ -158,7 +143,7 @@ export function MobileNavigation({
                             <Link
                                 href="/get-started"
                                 onClick={onClose}
-                                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text transition-colors ${isDark ? "text-orange-300 hover:bg-orange-400/10" : "text-orange-700 hover:bg-orange-50"}`}
+                                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text transition-colors text-orange-700 hover:bg-orange-50 dark:text-orange-300 dark:hover:bg-orange-400/10"
                             >
                                 <Compass
                                     size={16}
@@ -169,7 +154,7 @@ export function MobileNavigation({
                             <Link
                                 href={dashboardUrl}
                                 onClick={onClose}
-                                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text transition-colors ${isDark ? "text-gray-300 hover:bg-slate-800 hover:text-white" : "text-gray-700 hover:bg-gray-50"}`}
+                                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text transition-colors text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-white"
                             >
                                 <LayoutDashboard
                                     size={16}
@@ -180,7 +165,7 @@ export function MobileNavigation({
                             <Link
                                 href="/dashboard/settings"
                                 onClick={onClose}
-                                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text transition-colors ${isDark ? "text-gray-300 hover:bg-slate-800 hover:text-white" : "text-gray-700 hover:bg-gray-50"}`}
+                                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text transition-colors text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-white"
                             >
                                 <Settings size={16} className="text-gray-500" />
                                 Settings
@@ -207,7 +192,8 @@ export function MobileNavigation({
                                 onClick={onClose}
                                 className={buttonVariants({
                                     variant: "outline",
-                                    className: `flex min-h-11 items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-bold transition-colors ${isDark ? "border-orange-400/20 bg-orange-400/10 text-orange-300 hover:bg-orange-400/15" : "border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100"}`,
+                                    className:
+                                        "flex min-h-11 items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-bold transition-colors border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100 dark:border-orange-400/20 dark:bg-orange-400/10 dark:text-orange-300 dark:hover:bg-orange-400/15",
                                 })}
                             >
                                 <Compass size={16} />
@@ -219,7 +205,8 @@ export function MobileNavigation({
                                     onClick={onClose}
                                     className={buttonVariants({
                                         variant: "outline",
-                                        className: `flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold border transition-colors ${isDark ? "border-slate-600 text-white hover:bg-slate-800" : "border-dashboard text-gray-800 hover:bg-gray-50"}`,
+                                        className:
+                                            "flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold border transition-colors border-dashboard text-gray-800 hover:bg-gray-50 dark:border-slate-600 dark:text-white dark:hover:bg-slate-800",
                                     })}
                                 >
                                     <LogIn size={16} />

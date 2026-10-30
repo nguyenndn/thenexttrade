@@ -599,7 +599,7 @@ export function UserCoachingAnalyticsTab({
             {/* Plan Detail Modal */}
             {selectedPlan && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <div className="flex items-center gap-2">
@@ -774,7 +774,7 @@ export function UserCoachingAnalyticsTab({
             {/* Strategy Detail Modal */}
             {selectedStrategy && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div className="flex items-center gap-2">
                                 <div
@@ -868,7 +868,7 @@ export function UserCoachingAnalyticsTab({
             {/* Rule Detail Modal */}
             {selectedRule && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <h3 className="text-lg font-black text-gray-900 dark:text-white">
@@ -948,7 +948,7 @@ export function UserCoachingAnalyticsTab({
             {/* Report Detail Modal */}
             {selectedReport && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <h3 className="text-lg font-black text-gray-900 dark:text-white">

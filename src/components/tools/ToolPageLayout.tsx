@@ -160,13 +160,13 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
 
             {/* ── Section 2: Calculator Workbench ── */}
             <div className="mb-8">
-                <div className="relative overflow-hidden bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-6 md:p-8 shadow-sm">
+                <div className="relative overflow-hidden bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 md:p-8 shadow-sm">
                     <div className="relative z-10">{children}</div>
                 </div>
             </div>
 
             {/* Task 7: CTA Strip */}
-            <div className="mb-16 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+            <div className="mb-16 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
                 <div className="text-center md:text-left space-y-1">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                         Use this result in your trading workflow
@@ -188,7 +188,7 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
 
             {/* ── Section 3: How to Use ── */}
             <div className="mb-16">
-                <div className="bg-gray-50/70 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 rounded-lg p-6 md:p-8">
+                <div className="bg-gray-50/70 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 rounded-xl p-6 md:p-8">
                     <div className="flex items-center gap-3 mb-6">
                         <HelpCircle size={22} className="text-gold" />
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -264,7 +264,7 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
 
             {/* ── Section 5: Key Features ── */}
             <div className="mb-16">
-                <div className="bg-white/80 dark:bg-white/[0.02] border border-gold/15 rounded-lg p-6 md:p-8 backdrop-blur-sm">
+                <div className="bg-white/80 dark:bg-white/[0.02] border border-gold/15 rounded-xl p-6 md:p-8 backdrop-blur-sm">
                     <div className="flex items-center gap-3 mb-6">
                         <CheckCircle size={22} className="text-gold" />
                         <h2 className="text-xl font-bold text-gray-800 dark:text-white">

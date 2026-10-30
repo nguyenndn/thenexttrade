@@ -204,7 +204,7 @@ export function AiModelsPanel({
                     <div className="flex justify-end gap-2">
                         <Button
                             type="button"
-                            variant="ghost"
+                            variant="outline"
                             onClick={() => setIsAddingCustom(false)}
                             className="h-auto px-4 py-2 font-semibold"
                         >

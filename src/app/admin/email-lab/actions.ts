@@ -107,9 +107,9 @@ function resolveTemplateContent(templateId: EmailLabTemplateId): {
             const subject = "SMTP Smoke Test 🔥";
             const smokeBodyHtml = `
   <div style="text-align: center; padding: 12px 0;">
-    <h2 style="color: #F59E0B; margin-top: 0; font-size: 22px; font-weight: 800; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">SMTP Connection Check</h2>
-    <p style="color: #475569; line-height: 1.6; font-size: 15px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; margin-top: 16px;">This is a test email sent from the <strong>Email Lab</strong> at ${new Date().toLocaleString()}.</p>
-    <p style="color: #475569; line-height: 1.6; font-size: 15px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">If you are seeing this email, your SMTP relay host and credentials are configured correctly and active.</p>
+    <h2 style="color: #111827; margin-top: 0; font-size: 22px; font-weight: 800; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">SMTP Connection Check</h2>
+    <p style="color: #374151; line-height: 1.6; font-size: 15px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; margin-top: 16px;">This is a test email sent from the <strong>Email Lab</strong> at ${new Date().toLocaleString()}.</p>
+    <p style="color: #374151; line-height: 1.6; font-size: 15px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">If you are seeing this email, your SMTP relay host and credentials are configured correctly and active.</p>
   </div>
   `;
             const html = buildUnifiedEmailHtml({

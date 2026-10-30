@@ -252,7 +252,7 @@ export default async function TradingSystemsIndexPage() {
                     {systems.map((system) => (
                         <article
                             key={system.slug}
-                            className="group relative flex flex-col justify-between overflow-hidden rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]/60 p-7 transition-all duration-300 hover:shadow-xl hover:border-gold/40"
+                            className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]/60 p-7 transition-all duration-300 hover:shadow-xl hover:border-gold/40"
                         >
                             <div className="space-y-5">
                                 <div>
@@ -315,7 +315,7 @@ export default async function TradingSystemsIndexPage() {
 
             {/* Block 3: Frequently Asked Questions - 2 Column Architecture */}
             <section className="mb-14 scroll-mt-24">
-                <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white/70 dark:bg-[#111318]/50 p-6 sm:p-10 shadow-lg backdrop-blur-sm">
+                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white/70 dark:bg-[#111318]/50 p-6 sm:p-10 shadow-lg backdrop-blur-sm">
                     <div className="mb-10 text-center max-w-3xl mx-auto space-y-2">
                         <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 dark:text-white">
                             Frequently Asked Questions
@@ -352,7 +352,7 @@ export default async function TradingSystemsIndexPage() {
             </section>
 
             {/* Block 5: Final CTA + Risk Note */}
-            <section className="mb-4 rounded-lg border border-gold/15 bg-white/85 dark:bg-[#0F1117] p-8 text-center shadow-xl shadow-gold/[0.02] relative overflow-hidden sm:p-12 transition-colors duration-300">
+            <section className="mb-4 rounded-xl border border-gold/15 bg-white/85 dark:bg-[#0F1117] p-8 text-center shadow-xl shadow-gold/[0.02] relative overflow-hidden sm:p-12 transition-colors duration-300">
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.06),transparent_70%)] dark:bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.08),transparent_70%)] pointer-events-none"></div>
                 <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent"></div>
 

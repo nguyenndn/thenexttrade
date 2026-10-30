@@ -11,6 +11,7 @@ import {
     LayoutDashboard,
 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button-variants";
+import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
 import { PreviewConnectView } from "@/components/home/preview/PreviewConnectView";
@@ -101,18 +102,21 @@ export function TradeJournalPreviewSection({
                                 const isActive = activeStep === step.id;
 
                                 return (
-                                    <button
+                                    <Button
+                                        variant="ghost"
                                         key={step.id}
                                         type="button"
                                         role="tab"
                                         aria-selected={isActive}
                                         aria-controls={`preview-panel-${step.id}`}
+                                        aria-label={step.title}
                                         onClick={() => setActiveStep(step.id)}
-                                        className={`group w-full flex items-start gap-3.5 rounded-lg p-3.5 sm:p-4 text-left transition-all duration-300 relative border ${
+                                        className={cn(
+                                            "group w-full h-auto flex items-start gap-3.5 rounded-lg p-3.5 sm:p-4 text-left transition-all duration-300 relative border font-normal",
                                             isActive
-                                                ? "border-gold bg-white dark:bg-white/[0.05] shadow-[0_10px_24px_rgba(229,165,10,0.14)] ring-1 ring-gold/40"
+                                                ? "border-gold bg-white dark:bg-white/[0.05] shadow-[0_10px_24px_rgba(229,165,10,0.14)] ring-1 ring-gold/40 hover:bg-white dark:hover:bg-white/[0.05]"
                                                 : "border-gray-200 bg-white/70 dark:border-white/10 dark:bg-white/[0.02] hover:border-gold/30 hover:bg-white dark:hover:bg-white/[0.04]"
-                                        }`}
+                                        )}
                                     >
                                         {/* Icon Container */}
                                         <div
@@ -164,7 +168,7 @@ export function TradeJournalPreviewSection({
                                                 {step.description}
                                             </p>
                                         </div>
-                                    </button>
+                                    </Button>
                                 );
                             })}
                         </div>
@@ -238,22 +242,26 @@ export function TradeJournalPreviewSection({
                                     className="flex items-center gap-0.5 sm:gap-1 bg-gray-100 dark:bg-white/5 p-0.5 rounded-lg overflow-x-auto scrollbar-hide touch-pan-x"
                                 >
                                     {STEPS.map((step) => (
-                                        <button
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
                                             key={step.id}
                                             type="button"
                                             role="tab"
                                             aria-selected={activeStep === step.id}
                                             aria-controls={`preview-panel-${step.id}`}
+                                            aria-label={`Switch to step ${step.number}: ${step.tag}`}
                                             onClick={() => setActiveStep(step.id)}
-                                            className={`text-[9px] sm:text-[10px] font-bold px-2 sm:px-2.5 py-1 rounded-lg transition-all whitespace-nowrap ${
+                                            className={cn(
+                                                "h-auto text-[9px] sm:text-[10px] font-bold px-2 sm:px-2.5 py-1 rounded-lg transition-all whitespace-nowrap",
                                                 activeStep === step.id
-                                                    ? "bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm border border-gold/30"
-                                                    : "text-gray-500 hover:text-gray-800 dark:hover:text-gray-200"
-                                            }`}
+                                                    ? "bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm border border-gold/30 hover:bg-white dark:hover:bg-white/10"
+                                                    : "text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-transparent"
+                                            )}
                                         >
                                             <span className="hidden sm:inline mr-0.5">{step.number}</span>
                                             <span>{step.tag}</span>
-                                        </button>
+                                        </Button>
                                     ))}
                                 </div>
 

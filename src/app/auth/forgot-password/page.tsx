@@ -37,7 +37,7 @@ export default function ForgotPasswordPage() {
     };
 
     return (
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md bg-white/85 dark:bg-[#11100C]/90 border border-amber-900/10 dark:border-amber-300/15 rounded-xl p-6 sm:p-8 shadow-[0_28px_90px_rgba(88,64,27,0.18)] backdrop-blur-xl">
             <div className="mb-8">
                 <h1 className="text-3xl font-bold mb-2">Reset Password</h1>
                 <p className="text-gray-600 dark:text-gray-300">
@@ -47,7 +47,7 @@ export default function ForgotPasswordPage() {
             </div>
 
             {message ? (
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-6 text-center">
+                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-6 text-center">
                     <div className="w-12 h-12 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
                         <Mail className="text-amber-600 dark:text-gold" size={24} />
                     </div>

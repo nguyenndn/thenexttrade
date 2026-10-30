@@ -5,7 +5,10 @@ import {
     WELCOME_EMAIL_D3,
     WelcomeEmailTemplate,
 } from "../emails/welcome-sequence";
-import { buildUnifiedEmailHtml } from "../services/email.service";
+import {
+    buildUnifiedEmailHtml,
+    GOLD_CTA_BUTTON_STYLE,
+} from "../services/email.service";
 
 export interface ReportEmailData {
     userName: string;
@@ -113,22 +116,7 @@ export function renderWelcomeEmailHtml(
 ): string {
     const appUrl =
         process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
-    const btnStyles = `
-    display: inline-block;
-    padding: 10px 22px;
-    background: #F59E0B;
-    background: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
-    color: #ffffff !important;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 20px;
-    letter-spacing: 0.2px;
-    border-radius: 8px;
-    margin: 16px 0;
-    box-shadow: 0 1px 3px rgba(245,158,11,0.3);
-    vertical-align: middle;
-  `;
+    const btnStyles = `${GOLD_CTA_BUTTON_STYLE} margin: 16px 0;`;
 
     // Format paragraph breaks and bullets
     const bodyFormatted = template.body.bodyText
@@ -141,19 +129,19 @@ export function renderWelcomeEmailHtml(
                 trimmed.startsWith("2.") ||
                 trimmed.startsWith("3.")
             ) {
-                return `<p style="margin: 6px 0; padding-left: 10px; color: #334155;"><strong>${trimmed.substring(0, 2)}</strong>${trimmed.substring(2)}</p>`;
+                return `<p style="margin: 6px 0; padding-left: 10px; color: #374151;"><strong>${trimmed.substring(0, 2)}</strong>${trimmed.substring(2)}</p>`;
             }
             if (trimmed.startsWith("•") || trimmed.startsWith("-")) {
-                return `<li style="margin: 6px 0; margin-left: 20px; color: #334155;">${trimmed.substring(1).trim()}</li>`;
+                return `<li style="margin: 6px 0; margin-left: 20px; color: #374151;">${trimmed.substring(1).trim()}</li>`;
             }
-            return `<p style="margin: 0 0 12px 0; color: #334155;">${trimmed}</p>`;
+            return `<p style="margin: 0 0 12px 0; color: #374151;">${trimmed}</p>`;
         })
         .join("");
 
     const bodyHtml = `
  <p>Hi ${userName},</p>
- <h3 style="color: #0f172a; font-size: 18px; font-weight: 800; margin: 20px 0 10px 0;">${template.body.headline}</h3>
- <p style="color: #64748b; font-style: italic; margin: 0 0 20px 0; font-size: 14px;">${template.body.preheader}</p>
+ <h3 style="color: #111827; font-size: 18px; font-weight: 800; margin: 20px 0 10px 0;">${template.body.headline}</h3>
+ <p style="color: #6B7280; font-style: italic; margin: 0 0 20px 0; font-size: 14px;">${template.body.preheader}</p>
  <div style="margin-bottom: 20px;">
  ${bodyFormatted}
  </div>
@@ -249,7 +237,7 @@ export function getSampleSignupOtpData() {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
     return {
         userName: "Alex Trader",
-        otpCode: "849201",
+        otpCode: "84920173",
         confirmUrl: `${appUrl}/auth/confirm?token=sample-otp-verification-token`,
     };
 }
@@ -258,7 +246,7 @@ export function getSampleResendOtpData() {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
     return {
         userName: "Alex Trader",
-        otpCode: "591384",
+        otpCode: "59138472",
         confirmUrl: `${appUrl}/auth/confirm?token=sample-resend-otp-token`,
     };
 }

@@ -175,7 +175,7 @@ export default function AdminCommentsPage() {
             {/* Data Wrapper */}
             <div className="space-y-6">
                 {/* 1. Toolbar Card */}
-                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-4 shadow-sm flex flex-col gap-4">
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col gap-4">
                     <div className="flex flex-1 gap-4 flex-col lg:flex-row justify-between w-full lg:items-center">
                         <div className="flex-1 w-full max-w-md">
                             <PremiumInput
@@ -225,7 +225,7 @@ export default function AdminCommentsPage() {
                 </div>
 
                 {/* 2. Data Table Card */}
-                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
+                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                     <div className="overflow-x-auto custom-scrollbar">
                         <table className="w-full text-left border-collapse">
                             <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-600 font-bold tracking-wider">

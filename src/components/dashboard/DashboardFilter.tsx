@@ -342,7 +342,7 @@ export function DashboardFilter({
                             </div>
                             <Button
                                 type="button"
-                                variant="ghost"
+                                variant="outline"
                                 size="icon"
                                 onClick={() => setIsOpen(false)}
                                 aria-label="Close filters"

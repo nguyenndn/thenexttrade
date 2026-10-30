@@ -9,7 +9,7 @@ export default async function AcademyLayout({
     const user = await getAuthUser();
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-transparent text-gray-700 dark:text-white font-outfit">
+        <div className="min-h-screen bg-gray-50 dark:bg-transparent text-gray-700 dark:text-white font-sans">
             <PublicHeader user={user} />
             <main>{children}</main>
         </div>

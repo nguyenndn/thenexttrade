@@ -1,7 +1,10 @@
 /**
  * Email templates builder for onboarding activation reminders
  */
-import { buildUnifiedEmailHtml } from "../services/email.service";
+import {
+    buildUnifiedEmailHtml,
+    GOLD_CTA_BUTTON_STYLE,
+} from "../services/email.service";
 
 export type ActivationReminderType =
     | "NO_ACCOUNT_24H"
@@ -41,22 +44,7 @@ export function buildActivationEmailHtml(
         link.split("/dashboard")[0] ||
         process.env.NEXT_PUBLIC_APP_URL ||
         "https://thenexttrade.vercel.app";
-    const btnStyles = `
-    display: inline-block;
-    padding: 10px 22px;
-    background: #F59E0B;
-    background: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
-    color: #ffffff !important;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 20px;
-    letter-spacing: 0.2px;
-    border-radius: 8px;
-    margin: 16px 0;
-    box-shadow: 0 1px 3px rgba(245,158,11,0.3);
-    vertical-align: middle;
-  `;
+    const btnStyles = `${GOLD_CTA_BUTTON_STYLE} margin: 16px 0;`;
 
     let bodyHtml = "";
 
@@ -88,7 +76,7 @@ export function buildActivationEmailHtml(
         bodyHtml = `
  <p>Hi ${userName},</p>
  <p>It's been a few days since you joined, and you are missing out on the core features of TheNextTrade:</p>
- <ul style="padding-left: 20px; margin: 16px 0; color: #475569;">
+ <ul style="padding-left: 20px; margin: 16px 0; color: #374151;">
  <li style="margin-bottom: 8px;"><strong>AI Trade Score</strong>: Professional feedback on every trade.</li>
  <li style="margin-bottom: 8px;"><strong>Psychology Tracker</strong>: Identify mental errors costing you money.</li>
  <li style="margin-bottom: 8px;"><strong>Weekly Performance Reviews</strong>: Direct, actionable feedback every weekend.</li>

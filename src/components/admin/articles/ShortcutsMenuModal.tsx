@@ -91,7 +91,7 @@ export function ShortcutsMenuModal({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="bg-white dark:bg-[#151925] w-full max-w-2xl rounded-lg shadow-xl flex flex-col border border-gray-200 dark:border-white/10 max-h-[85vh]"
+                        className="bg-white dark:bg-[#151925] w-full max-w-2xl rounded-2xl shadow-xl flex flex-col border border-gray-200 dark:border-white/10 max-h-[85vh]"
                     >
                 {/* Header */}
                 <div className="flex flex-wrap items-center justify-between gap-3 p-4 border-b border-gray-200 dark:border-white/10">

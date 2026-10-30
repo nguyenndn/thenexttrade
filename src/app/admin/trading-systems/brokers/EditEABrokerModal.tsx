@@ -149,7 +149,6 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
                             required
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="Exness"
                         />
 
                         <div>
@@ -195,7 +194,7 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
                         </div>
 
                         {/* Active Toggle */}
-                        <div className="flex items-center justify-between py-3 px-4 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
+                        <div className="flex items-center justify-between py-3 px-4 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
                             <div className="flex items-center gap-2">
                                 <Power
                                     size={16}

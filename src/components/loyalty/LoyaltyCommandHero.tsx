@@ -20,7 +20,7 @@ export function LoyaltyCommandHero({ progress }: LoyaltyCommandHeroProps) {
 
 
   return (
-    <div className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-5 sm:p-7 shadow-sm relative overflow-hidden">
+    <div className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-5 sm:p-7 shadow-sm relative overflow-hidden">
 
       {/* Top Bar: Level Badge, Live Telemetry Beacon, and Milestones Claimed */}
       <div className="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-gray-100 dark:border-white/10 relative z-10">
@@ -32,7 +32,7 @@ export function LoyaltyCommandHero({ progress }: LoyaltyCommandHeroProps) {
             <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white tracking-tight">
               {currentTier ? currentTier.name : "Initiating Trader"}
             </h2>
-            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono font-bold uppercase tracking-wide bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-[11px] font-mono font-bold uppercase tracking-wide bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
               Level {currentTier ? currentTier.level : 0}
             </span>
           </div>

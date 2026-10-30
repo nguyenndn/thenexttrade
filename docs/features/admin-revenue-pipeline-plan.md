@@ -14,11 +14,11 @@
 
 ## 1. Mô hình kinh doanh — xác nhận từ tài liệu gốc
 
-Trích trực tiếp [docs/VIP-MEMBERSHIP-AND-TRIAL-SPEC.md:36](docs/VIP-MEMBERSHIP-AND-TRIAL-SPEC.md#L36):
+Trích trực tiếp [docs/VIP-MEMBERSHIP-AND-TRIAL-SPEC.md:36](../VIP-MEMBERSHIP-AND-TRIAL-SPEC.md#L36):
 
 > "TheNextTrade vận hành theo mô hình **Introducing Broker (IB)** hợp tác với các sàn đối tác được cấp phép (Vantage, Exness, VTMarkets, Ultima Markets). **Người dùng không trả phí đăng ký/khóa học.**"
 
-Và [:48](docs/VIP-MEMBERSHIP-AND-TRIAL-SPEC.md#L48):
+Và [:48](../VIP-MEMBERSHIP-AND-TRIAL-SPEC.md#L48):
 
 > "**Doanh thu IB chỉ phát sinh khi tài khoản mở qua link IB của mình và giao dịch thật** — mọi chính sách phải bám theo 2 điều kiện này."
 
@@ -61,7 +61,7 @@ Hệ quả: user mở tài khoản Vantage **không qua link** chủ site, cắm
 
 `isVipEligible` ([schema.prisma:711](prisma/schema.prisma#L711)) cũng chỉ là cờ cấp sàn.
 
-**[docs/VIP-MEMBERSHIP-AND-TRIAL-SPEC.md:62](docs/VIP-MEMBERSHIP-AND-TRIAL-SPEC.md#L62)** đã tự cảnh báo điều này và yêu cầu metric *"tỷ lệ active-ngoài-IB"* — **metric đó chưa được code**.
+**[docs/VIP-MEMBERSHIP-AND-TRIAL-SPEC.md:62](../VIP-MEMBERSHIP-AND-TRIAL-SPEC.md#L62)** đã tự cảnh báo điều này và yêu cầu metric *"tỷ lệ active-ngoài-IB"* — **metric đó chưa được code**.
 
 ### Mắt 2 — Biết mỗi lot trả bao nhiêu → ❌ **ĐỨT**
 
@@ -227,7 +227,7 @@ estimatedIbRevenue = closedLotVolume * brokerConfig.commissionPerLot
 // Gom lot theo (broker, symbol) → nhân rate tương ứng → chỉ cộng account ibAttribution="CONFIRMED"
 ```
 
-**Phải ghi rõ trên UI là "Estimated"** — đây là ước tính từ lot × rate, không phải số sàn đã trả. [docs/FEATURE_CATALOG.md:120](docs/FEATURE_CATALOG.md#L120) đã có quy tắc: `/admin/users/[id]` — *"Must avoid: Est. IB revenue without API evidence"*.
+**Phải ghi rõ trên UI là "Estimated"** — đây là ước tính từ lot × rate, không phải số sàn đã trả. [docs/FEATURE_CATALOG.md:120](../FEATURE_CATALOG.md#L120) đã có quy tắc: `/admin/users/[id]` — *"Must avoid: Est. IB revenue without API evidence"*.
 
 **Cùng lúc, sửa 2 chỗ hardcode:**
 - [ib/client.tsx:279-284](src/app/admin/ib/client.tsx#L279-L284) — đọc `commissionPerLot` + target từ cấu hình, không hardcode
@@ -237,7 +237,7 @@ estimatedIbRevenue = closedLotVolume * brokerConfig.commissionPerLot
 
 ### BƯỚC 5 — Metric "tỷ lệ active-ngoài-IB" (đã được yêu cầu từ trước)
 
-[docs/VIP-MEMBERSHIP-AND-TRIAL-SPEC.md:64](docs/VIP-MEMBERSHIP-AND-TRIAL-SPEC.md#L64) yêu cầu theo dõi *"tỷ lệ active-ngoài-IB"* — **chưa được code**. Sau bước 2, metric này tính được:
+[docs/VIP-MEMBERSHIP-AND-TRIAL-SPEC.md:64](../VIP-MEMBERSHIP-AND-TRIAL-SPEC.md#L64) yêu cầu theo dõi *"tỷ lệ active-ngoài-IB"* — **chưa được code**. Sau bước 2, metric này tính được:
 
 ```
 tỷ lệ active-ngoài-IB = (số user active có account ibAttribution != "CONFIRMED")

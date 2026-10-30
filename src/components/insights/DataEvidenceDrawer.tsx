@@ -50,7 +50,7 @@ export function DataEvidenceDrawer({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="relative w-full max-w-lg p-6 bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-slate-800 rounded-lg shadow-2xl space-y-5 text-slate-900 dark:text-white"
+                className="relative w-full max-w-lg p-6 bg-white dark:bg-[#0B0E14] border border-gray-200 dark:border-slate-800 rounded-2xl shadow-2xl space-y-5 text-slate-900 dark:text-white"
             >
                 <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800/80 pb-4">
                     <div className="flex items-center gap-2.5">

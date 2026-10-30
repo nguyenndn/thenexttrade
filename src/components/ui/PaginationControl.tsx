@@ -118,6 +118,7 @@ export const PaginationControl = ({
                     size="icon"
                     disabled={currentPage <= 1}
                     onClick={() => onPageChange(currentPage - 1)}
+                    aria-label="Previous page"
                     className="text-gray-600 hover:text-gray-700 dark:hover:text-white disabled:opacity-30"
                 >
                     <ChevronLeft size={16} />
@@ -156,6 +157,7 @@ export const PaginationControl = ({
                     size="icon"
                     disabled={currentPage >= totalPages}
                     onClick={() => onPageChange(currentPage + 1)}
+                    aria-label="Next page"
                     className="text-gray-600 hover:text-gray-700 dark:hover:text-white disabled:opacity-30"
                 >
                     <ChevronRight size={16} />

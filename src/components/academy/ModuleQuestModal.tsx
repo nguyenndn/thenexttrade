@@ -258,7 +258,7 @@ export function ModuleQuestModal({
                         stiffness: 340,
                     }}
                     className={cn(
-                        "relative w-full max-w-xl rounded-lg border overflow-hidden",
+                        "relative w-full max-w-xl rounded-2xl border overflow-hidden",
                         "bg-white dark:bg-[#1E2028] text-gray-900 dark:text-white",
                         "border-gray-200 dark:border-white/10 shadow-2xl z-10"
                     )}

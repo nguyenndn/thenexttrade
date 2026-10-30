@@ -271,7 +271,7 @@ export function DailyLimitsAndAlertsCard({
                                     <span className="font-bold text-gray-900 dark:text-white">
                                         {rule.label}
                                     </span>
-                                    <span className="ml-2 text-[10px] uppercase px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 font-bold">
+                                    <span className="ml-2 text-[10px] uppercase px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-bold">
                                         {rule.direction} • ARMED
                                     </span>
                                 </div>

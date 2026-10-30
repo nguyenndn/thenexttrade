@@ -339,7 +339,7 @@ export function AccountCard({
                     )}
                     {isMain && (
                         <span
-                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30"
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30"
                             title="Main Account"
                         >
                             <Star

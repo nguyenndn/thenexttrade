@@ -8,7 +8,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/Dialog";
-import { Button } from "@/components/ui/Button";
+import { Button, buttonVariants } from "@/components/ui/Button";
 import {
     Cable,
     Monitor,
@@ -349,26 +349,22 @@ export function TradeSyncWizard({
                                         </Button>
                                         <Link
                                             href="/dashboard/journal?action=log-trade&source=mobile-fallback"
-                                            className="w-full"
+                                            onClick={async () => {
+                                                const {
+                                                    recordMobileSyncManualFallbackAction,
+                                                } =
+                                                    await import("@/actions/first-session-onboarding");
+                                                await recordMobileSyncManualFallbackAction(
+                                                    syncMethod
+                                                );
+                                                onClose();
+                                            }}
+                                            className={cn(
+                                                buttonVariants({ variant: "ghost", size: "sm" }),
+                                                "w-full text-xs font-bold h-9 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 shrink-0 inline-flex items-center justify-center gap-1.5"
+                                            )}
                                         >
-                                            <Button
-                                                variant="ghost"
-                                                type="button"
-                                                size="sm"
-                                                onClick={async () => {
-                                                    const {
-                                                        recordMobileSyncManualFallbackAction,
-                                                    } =
-                                                        await import("@/actions/first-session-onboarding");
-                                                    await recordMobileSyncManualFallbackAction(
-                                                        syncMethod
-                                                    );
-                                                    onClose();
-                                                }}
-                                                className="w-full text-xs font-bold h-9 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 shrink-0"
-                                            >
-                                                <PenLine size={14} className="shrink-0" /> Log Manually instead
-                                            </Button>
+                                            <PenLine size={14} className="shrink-0" /> Log Manually instead
                                         </Link>
                                     </div>
                                 </div>
@@ -427,6 +423,7 @@ export function TradeSyncWizard({
                                                 onClick={handleCopyKey}
                                                 variant="outline"
                                                 size="icon"
+                                                aria-label={copied ? "Copied API key" : "Copy API key"}
                                                 className="shrink-0 h-[36px] w-[36px] rounded-lg border-dashboard"
                                             >
                                                 {copied ? (
@@ -598,26 +595,22 @@ export function TradeSyncWizard({
                                         </Button>
                                         <Link
                                             href="/dashboard/journal?action=log-trade&source=mobile-fallback"
-                                            className="w-full"
+                                            onClick={async () => {
+                                                const {
+                                                    recordMobileSyncManualFallbackAction,
+                                                } =
+                                                    await import("@/actions/first-session-onboarding");
+                                                await recordMobileSyncManualFallbackAction(
+                                                    syncMethod
+                                                );
+                                                onClose();
+                                            }}
+                                            className={cn(
+                                                buttonVariants({ variant: "ghost", size: "sm" }),
+                                                "w-full text-xs font-bold h-9 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 shrink-0 inline-flex items-center justify-center gap-1.5"
+                                            )}
                                         >
-                                            <Button
-                                                variant="ghost"
-                                                type="button"
-                                                size="sm"
-                                                onClick={async () => {
-                                                    const {
-                                                        recordMobileSyncManualFallbackAction,
-                                                    } =
-                                                        await import("@/actions/first-session-onboarding");
-                                                    await recordMobileSyncManualFallbackAction(
-                                                        syncMethod
-                                                    );
-                                                    onClose();
-                                                }}
-                                                className="w-full text-xs font-bold h-9 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 shrink-0"
-                                            >
-                                                <PenLine size={14} className="shrink-0" /> Log Manually instead
-                                            </Button>
+                                            <PenLine size={14} className="shrink-0" /> Log Manually instead
                                         </Link>
                                     </div>
                                 </div>
@@ -642,7 +635,7 @@ export function TradeSyncWizard({
                                         </span>
                                         <div className="space-y-0.5">
                                             <p className="font-bold text-gray-800 dark:text-gray-200">
-                                                Open Expert Advisors Options (<kbd className="px-1.5 py-0.5 text-[10px] rounded bg-white dark:bg-white/10 border border-dashboard font-mono">Ctrl + O</kbd>)
+                                                Open Expert Advisors Options (<kbd className="px-1.5 py-0.5 text-[10px] rounded-lg bg-white dark:bg-white/10 border border-dashboard font-mono">Ctrl + O</kbd>)
                                             </p>
                                             <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
                                                 In your MT5 top menu bar, click{" "}

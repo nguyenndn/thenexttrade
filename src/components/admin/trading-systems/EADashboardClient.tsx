@@ -239,7 +239,7 @@ export function EADashboardClient({
                                                         {ea.platform} • v{ea.version}
                                                     </p>
                                                 </div>
-                                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shrink-0">
+                                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shrink-0">
                                                     <Radio size={11} />
                                                     {ea.farmStats.onlineAccountsCount} Online
                                                 </span>

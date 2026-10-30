@@ -251,7 +251,7 @@ export default function ProfileClient({
     return (
         <div className="space-y-6">
             {/* Profile Settings Card (Header + Toggle + Headline) */}
-            <div className="bg-white dark:bg-[#0B0E14] rounded-lg border border-dashboard shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                 {/* Header + Toggle Row */}
                 <div className="p-5 flex items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
@@ -390,7 +390,7 @@ export default function ProfileClient({
 
             {/* Privacy Controls (only when public) */}
             {settings.isPublicProfile && (
-                <div className="bg-white dark:bg-[#0B0E14] rounded-lg border border-dashboard shadow-sm overflow-hidden">
+                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                     {/* Section Header */}
                     <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -552,7 +552,7 @@ export default function ProfileClient({
 
             {/* Data Privacy Controls (only when public) */}
             {settings.isPublicProfile && isPrivacyPresetsEnabled() && (
-                <div className="bg-white dark:bg-[#0B0E14] rounded-lg border border-dashboard shadow-sm overflow-hidden">
+                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                     <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className="w-9 h-9 rounded-lg bg-amber-500/10 dark:bg-amber-500/10 flex items-center justify-center">
@@ -629,7 +629,7 @@ export default function ProfileClient({
 
             {/* Save Button when profile is private (no Privacy Controls card shown) */}
             {!settings.isPublicProfile && (
-                <div className="bg-white dark:bg-[#0B0E14] rounded-lg border border-dashboard shadow-sm overflow-hidden">
+                <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                     <div className="px-5 py-4 flex justify-end">
                         <Button
                             type="button"

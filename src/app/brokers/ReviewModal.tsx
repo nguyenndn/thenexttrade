@@ -145,7 +145,7 @@ function ReviewModal({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="relative w-full max-w-lg bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 shadow-2xl overflow-hidden max-h-[85vh] flex flex-col"
+                className="relative w-full max-w-lg bg-white dark:bg-[#151925] rounded-2xl border border-gray-200 dark:border-white/10 shadow-2xl overflow-hidden max-h-[85vh] flex flex-col"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}

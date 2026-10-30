@@ -816,7 +816,7 @@ export function RichTextEditor({
                             <Keyboard size={16} /> Keyboard Shortcuts
                         </h4>
                         <Button
-                            variant="ghost"
+                            variant="outline"
                             size="sm"
                             onClick={() => setIsShortcutsPanelOpen(false)}
                             className="text-xs h-6"
@@ -904,7 +904,7 @@ export function RichTextEditor({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative bg-white dark:bg-[#1E2028] rounded-lg shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4"
+                        className="relative bg-white dark:bg-[#1E2028] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <h3 className="text-lg font-bold text-gray-700 dark:text-white">
@@ -970,7 +970,7 @@ export function RichTextEditor({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative bg-white dark:bg-[#1E2028] rounded-lg shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4"
+                        className="relative bg-white dark:bg-[#1E2028] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <h3 className="text-lg font-bold text-gray-700 dark:text-white">

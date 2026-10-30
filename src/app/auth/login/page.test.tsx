@@ -40,7 +40,7 @@ describe("LoginPage - Responsive Design and Interactivity", () => {
         expect(card?.className).toContain("p-5");
         expect(card?.className).toContain("sm:p-7");
         expect(card?.className).toContain("md:p-8");
-        expect(card?.className).toContain("rounded-lg");
+        expect(card?.className).toContain("rounded-xl");
     });
 
     it("renders header with responsive typography", () => {
@@ -55,21 +55,21 @@ describe("LoginPage - Responsive Design and Interactivity", () => {
         render(<LoginPage />);
 
         // Default: Password mode
-        expect(screen.getByPlaceholderText("Password")).toBeDefined();
+        expect(screen.getByLabelText("Password")).toBeDefined();
         expect(screen.getByRole("button", { name: /^login$/i })).toBeDefined();
 
         // Switch to Magic Link mode
         const magicBtn = screen.getByRole("button", { name: /magic link/i });
         fireEvent.click(magicBtn);
 
-        expect(screen.queryByPlaceholderText("Password")).toBeNull();
+        expect(screen.queryByLabelText("Password")).toBeNull();
         expect(screen.getByRole("button", { name: /send magic link/i })).toBeDefined();
 
         // Switch back to Password mode
         const pwdBtn = screen.getByRole("button", { name: /^password$/i });
         fireEvent.click(pwdBtn);
 
-        expect(screen.getByPlaceholderText("Password")).toBeDefined();
+        expect(screen.getByLabelText("Password")).toBeDefined();
     });
 
     it("renders the Remember Me and Forgot Password row responsively", () => {

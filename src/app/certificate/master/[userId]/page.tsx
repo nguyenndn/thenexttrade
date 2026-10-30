@@ -5,7 +5,7 @@ import { CertificateShareScale } from "@/components/academy/CertificateShareScal
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Crown, ShieldCheck } from "lucide-react";
+import { ArrowRight, CheckCircle2, Crown, ShieldCheck, Star } from "lucide-react";
 import Image from "next/image";
 
 export const dynamic = "force-dynamic";
@@ -80,15 +80,17 @@ export default async function MasterCertificatePage({
                     TheNext
                     <span className="text-amber-500">Trade</span>
                 </Link>
-                <span className="text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-400 px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20">
-                    ★ Master Certificate ★
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-400 px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 shadow-sm">
+                    <Star size={11} className="fill-amber-500 text-amber-500 shrink-0" aria-hidden="true" />
+                    <span>Master Certificate</span>
+                    <Star size={11} className="fill-amber-500 text-amber-500 shrink-0" aria-hidden="true" />
                 </span>
             </header>
 
             <main className="relative flex-1 container mx-auto px-4 py-6 md:py-10 flex flex-col items-center gap-6 md:gap-8">
                 {/* User card */}
                 <div className="w-full max-w-3xl animate-in fade-in slide-in-from-bottom-4 duration-700">
-                    <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 p-5 md:p-6 shadow-2xl shadow-amber-500/20">
+                    <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 p-5 md:p-6 shadow-2xl shadow-amber-500/20">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl"></div>
                         <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full translate-y-1/2 -translate-x-1/4 blur-2xl"></div>
 
@@ -154,7 +156,7 @@ export default async function MasterCertificatePage({
 
                 {/* Verify panel */}
                 <div className="w-full max-w-3xl animate-in fade-in slide-in-from-bottom-10 duration-700 delay-150">
-                    <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard p-5 md:p-6 shadow-xl">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 md:p-6 shadow-xl">
                         <div className="flex items-center gap-2.5 mb-4">
                             <div className="w-7 h-7 rounded-lg bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center">
                                 <ShieldCheck size={14} className="text-amber-500" />
@@ -208,7 +210,7 @@ export default async function MasterCertificatePage({
 
                 {/* CTA */}
                 <div className="w-full max-w-3xl animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200">
-                    <div className="relative overflow-hidden rounded-lg bg-white border border-dashboard p-5 md:p-8 text-center group hover:border-amber-400/20 transition-all duration-500 shadow-xl shadow-gray-200/50 dark:shadow-black/20">
+                    <div className="relative overflow-hidden rounded-xl bg-white border border-dashboard p-5 md:p-8 text-center group hover:border-amber-400/20 transition-all duration-500 shadow-xl shadow-gray-200/50 dark:shadow-black/20">
                         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[2px] bg-gradient-to-r from-transparent via-amber-400/60 to-transparent"></div>
                         <div className="relative z-10 flex flex-col items-center gap-5 md:gap-7">
                             <div className="space-y-3 md:space-y-4">

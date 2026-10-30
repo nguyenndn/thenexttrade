@@ -190,7 +190,7 @@ export default function ShortcutsManagerPage() {
             {/* Main Content */}
             <div className="space-y-6">
                 {/* Search Bar Toolbar Card */}
-                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-4 shadow-sm flex flex-col gap-4">
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col gap-4">
                     <div className="flex-1 w-full max-w-md">
                         <PremiumInput
                             icon={Search}
@@ -202,13 +202,13 @@ export default function ShortcutsManagerPage() {
                 </div>
 
                 {/* List Card */}
-                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm p-6 min-h-[400px]">
+                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm p-6 min-h-[400px]">
                     {isLoading ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
                             {[1, 2, 3, 4, 5, 6].map((i) => (
                                 <div
                                     key={i}
-                                    className="flex flex-col p-6 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg h-[160px] animate-pulse"
+                                    className="flex flex-col p-6 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl h-[160px] animate-pulse"
                                 >
                                     <div className="flex items-center gap-3 mb-4">
                                         <div className="w-5 h-5 rounded-full bg-gray-200 dark:bg-white/10" />
@@ -230,7 +230,7 @@ export default function ShortcutsManagerPage() {
                             {filteredShortcuts.map((shortcut) => (
                                 <div
                                     key={shortcut.id}
-                                    className="group relative flex flex-col p-6 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg hover:shadow-md transition-shadow cursor-pointer"
+                                    className="group relative flex flex-col p-6 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl hover:shadow-md transition-shadow cursor-pointer"
                                 >
                                     <div className="flex items-start justify-between mb-3">
                                         <div className="flex items-center gap-2">
@@ -325,7 +325,7 @@ export default function ShortcutsManagerPage() {
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative z-10 bg-white dark:bg-[#151925] w-full max-w-4xl rounded-lg shadow-xl flex flex-col border border-gray-200 dark:border-white/10 max-h-[90vh] overflow-hidden"
+                        className="relative z-10 bg-white dark:bg-[#151925] w-full max-w-4xl rounded-2xl shadow-xl flex flex-col border border-gray-200 dark:border-white/10 max-h-[90vh] overflow-hidden"
                     >
                         <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-white/10">
                             <h2 className="text-xl font-bold text-gray-700 dark:text-white flex items-center gap-2">
@@ -383,7 +383,7 @@ export default function ShortcutsManagerPage() {
                                                             e.target.value,
                                                     })
                                                 }
-                                                placeholder="Brief description..."
+                                                aria-label="Brief description"
                                                 className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-[#00C888] focus:ring-2 focus:ring-[#00C888]/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 resize-none h-24"
                                             />
                                         </div>

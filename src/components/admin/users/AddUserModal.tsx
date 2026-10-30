@@ -130,7 +130,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-2xl w-full max-w-lg mx-4 p-6"
+                        className="relative bg-white dark:bg-[#1E2028] rounded-2xl border border-gray-200 dark:border-white/10 shadow-2xl w-full max-w-lg mx-4 p-6"
                     >
                 {/* Header */}
                 <div className="flex items-center gap-3 mb-6">

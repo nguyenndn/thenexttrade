@@ -25,7 +25,7 @@ export default function UpdatePasswordPage() {
     };
 
     return (
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md bg-white/85 dark:bg-[#11100C]/90 border border-amber-900/10 dark:border-amber-300/15 rounded-xl p-6 sm:p-8 shadow-[0_28px_90px_rgba(88,64,27,0.18)] backdrop-blur-xl">
             <div className="mb-8">
                 <h1 className="text-3xl font-bold mb-2">Set New Password</h1>
                 <p className="text-gray-600 dark:text-gray-300">

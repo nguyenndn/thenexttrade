@@ -104,7 +104,7 @@ export function ChangeRoleModal({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-2xl w-full max-w-md mx-4 p-6"
+                        className="relative bg-white dark:bg-[#1E2028] rounded-2xl border border-gray-200 dark:border-white/10 shadow-2xl w-full max-w-md mx-4 p-6"
                     >
                 <div className="flex items-center gap-3 mb-6">
                     <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">

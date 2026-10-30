@@ -413,7 +413,7 @@ export function UserOverviewTab({ user }: UserOverviewTabProps) {
                                             >
                                                 {alloc.productName}
                                             </Link>
-                                            <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                                            <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400">
                                                 v{alloc.version}
                                             </span>
                                         </div>

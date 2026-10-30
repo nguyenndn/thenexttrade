@@ -70,12 +70,12 @@ function PartnerCard({
     const hasUrl = item.url && item.url !== "#";
 
     return (
-        <div className="group bg-white/80 dark:bg-[#151925]/80 rounded-lg border border-gray-200 dark:border-white/10 hover:border-amber-500/40 dark:hover:border-gold/40 hover:shadow-[0_12px_32px_rgba(245,158,11,0.08)] dark:hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-300 overflow-hidden flex flex-col backdrop-blur-sm relative h-full">
+        <div className="group bg-white/80 dark:bg-[#151925]/80 rounded-xl border border-gray-200 dark:border-white/10 hover:border-amber-500/40 dark:hover:border-gold/40 hover:shadow-[0_12px_32px_rgba(245,158,11,0.08)] dark:hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-300 overflow-hidden flex flex-col backdrop-blur-sm relative h-full">
             {/* Header: Logo + Info inline */}
-            <div className="p-5 pb-4 flex items-center gap-4 border-b border-gray-100 dark:border-white/[0.06]">
+            <div className="p-5 pb-4 flex items-center gap-4 border-b border-gray-200 dark:border-white/[0.06]">
                 <div
                     className={`w-14 h-14 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden p-1 ${item.logo
-                            ? "bg-white border border-gray-100 dark:border-white/10 shadow-sm"
+                            ? "bg-white border border-gray-200 dark:border-white/10 shadow-sm"
                             : `bg-gradient-to-br ${item.color} text-white text-base font-black shadow-lg`
                         }`}
                 >

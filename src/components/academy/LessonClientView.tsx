@@ -589,7 +589,7 @@ export default function LessonClientView({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow-2xl border border-dashboard p-6 mx-4 max-w-sm text-center"
+                        className="bg-white dark:bg-[#1a1f2e] rounded-2xl shadow-2xl border border-dashboard p-6 mx-4 max-w-sm text-center"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center mx-auto mb-4">

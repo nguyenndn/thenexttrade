@@ -52,7 +52,7 @@ export function LeaderboardMethodologyModal({
                     >
                 {/* Close Button */}
                 <Button
-                    variant="ghost"
+                    variant="outline"
                     size="icon"
                     onClick={onClose}
                     className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 rounded-lg"
@@ -151,7 +151,7 @@ export function LeaderboardMethodologyModal({
                 </div>
 
                 {/* Footer */}
-                <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 flex justify-end">
+                <div className="mt-6 pt-4 border-t border-gray-200 dark:border-white/10 flex justify-end">
                     <Button variant="outline" size="smd" onClick={onClose}>
                         Got it
                     </Button>

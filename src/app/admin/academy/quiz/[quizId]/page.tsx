@@ -247,16 +247,16 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
             </AdminPageHeader>
 
             {/* Quiz Info */}
-            <div className="bg-white dark:bg-[#151925] rounded-lg p-6 border border-gray-200 dark:border-white/10 space-y-4">
+            <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-200 dark:border-white/10 space-y-4">
                 <input
                     className="w-full text-3xl font-bold bg-transparent border-b border-gray-200 dark:border-white/10 pb-4 focus:outline-none focus:border-primary"
-                    placeholder="Quiz Title"
+                    aria-label="Quiz Title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                 />
                 <textarea
                     className="w-full bg-transparent border-none focus:outline-none resize-none text-gray-600 text-sm"
-                    placeholder="Description (Optional)"
+                    aria-label="Quiz Description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                 />
@@ -275,7 +275,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
                     <div className="space-y-6">
                         {questions.map((q, qIndex) => (
                             <SortableItem key={q.id} id={q.id}>
-                                <div className="bg-white dark:bg-[#151925] rounded-lg p-6 border border-gray-200 dark:border-white/10 relative group">
+                                <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-200 dark:border-white/10 relative group">
                                     <Button
                                         onClick={() => removeQuestion(qIndex)}
                                         variant="ghost"
@@ -291,7 +291,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
                                         </span>
                                         <input
                                             className="flex-1 text-lg font-medium bg-transparent border-b border-gray-200 dark:border-white/10 pb-2 focus:outline-none focus:border-primary"
-                                            placeholder="Question text..."
+                                            aria-label="Question text"
                                             value={q.text}
                                             onChange={(e) =>
                                                 updateQuestionText(

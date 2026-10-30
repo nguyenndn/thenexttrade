@@ -7,6 +7,7 @@ import {
     sendEmailWithDetails,
     buildUnifiedEmailHtml,
     EMAIL_GOLD_COLORS,
+    GOLD_CTA_BUTTON_STYLE,
 } from "@/lib/services/email.service";
 
 const contactSchema = z.object({
@@ -119,42 +120,42 @@ export async function submitContactForm(data: ContactFormData) {
 
         const adminBodyHtml = `
             <div style="margin-bottom: 24px;">
-                <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px; font-weight: 700;">
+                <h3 style="margin: 0 0 8px 0; color: #111827; font-size: 18px; font-weight: 700;">
                     New Contact Message Received
                 </h3>
-                <p style="margin: 0; color: #64748b; font-size: 14px;">
+                <p style="margin: 0; color: #6B7280; font-size: 14px;">
                     A trader or visitor has submitted a message via the public contact form.
                 </p>
             </div>
 
-            <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px;">
+            <div style="background-color: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px;">
                 <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
                     <tr>
-                        <td style="padding: 6px 0; color: #64748b; font-weight: 600; width: 90px;">From:</td>
-                        <td style="padding: 6px 0; color: #0f172a; font-weight: 700;">${escapedName}</td>
+                        <td style="padding: 6px 0; color: #6B7280; font-weight: 600; width: 90px;">From:</td>
+                        <td style="padding: 6px 0; color: #111827; font-weight: 700;">${escapedName}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 6px 0; color: #64748b; font-weight: 600;">Email:</td>
-                        <td style="padding: 6px 0; color: #0f172a;"><a href="mailto:${escapedEmail}" style="color: ${EMAIL_GOLD_COLORS.brandGold}; text-decoration: none; font-weight: 600;">${escapedEmail}</a></td>
+                        <td style="padding: 6px 0; color: #6B7280; font-weight: 600;">Email:</td>
+                        <td style="padding: 6px 0; color: #111827;"><a href="mailto:${escapedEmail}" style="color: ${EMAIL_GOLD_COLORS.primaryGold}; text-decoration: none; font-weight: 600;">${escapedEmail}</a></td>
                     </tr>
                     <tr>
-                        <td style="padding: 6px 0; color: #64748b; font-weight: 600;">Subject:</td>
-                        <td style="padding: 6px 0; color: #0f172a; font-weight: 700;">${escapedSubject}</td>
+                        <td style="padding: 6px 0; color: #6B7280; font-weight: 600;">Subject:</td>
+                        <td style="padding: 6px 0; color: #111827; font-weight: 700;">${escapedSubject}</td>
                     </tr>
                 </table>
             </div>
 
             <div style="margin-bottom: 24px;">
-                <h4 style="margin: 0 0 8px 0; color: #0f172a; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                <h4 style="margin: 0 0 8px 0; color: #111827; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
                     Message Content
                 </h4>
-                <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-left: 4px solid ${EMAIL_GOLD_COLORS.brandGold}; border-radius: 8px; padding: 16px; font-size: 14px; color: #334155; line-height: 1.6;">
+                <div style="background-color: #FFFFFF; border: 1px solid #E5E7EB; border-left: 4px solid ${EMAIL_GOLD_COLORS.primaryGold}; border-radius: 8px; padding: 16px; font-size: 14px; color: #374151; line-height: 1.6;">
                     ${escapedMessage}
                 </div>
             </div>
 
             <div style="text-align: center; margin-top: 28px;">
-                <a href="mailto:${escapedEmail}?subject=Re: ${encodeURIComponent(validData.subject)}" style="display: inline-block; background: ${EMAIL_GOLD_COLORS.brandGold}; color: #ffffff !important; text-decoration: none; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 700;">
+                <a href="mailto:${escapedEmail}?subject=Re: ${encodeURIComponent(validData.subject)}" style="${GOLD_CTA_BUTTON_STYLE}">
                     Reply to ${escapedName}
                 </a>
             </div>
@@ -180,24 +181,24 @@ export async function submitContactForm(data: ContactFormData) {
         try {
             const senderReceiptHtml = `
                 <div style="margin-bottom: 24px;">
-                    <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px; font-weight: 700;">
+                    <h3 style="margin: 0 0 8px 0; color: #111827; font-size: 18px; font-weight: 700;">
                         We received your message
                     </h3>
-                    <p style="margin: 0; color: #64748b; font-size: 14px;">
+                    <p style="margin: 0; color: #6B7280; font-size: 14px;">
                         Hi ${escapedName}, thank you for reaching out to TheNextTrade. Our support team has received your message and will review it shortly.
                     </p>
                 </div>
 
-                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px;">
-                    <div style="font-size: 12px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">
+                <div style="background-color: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px;">
+                    <div style="font-size: 12px; font-weight: 700; color: #6B7280; text-transform: uppercase; margin-bottom: 8px;">
                         Inquiry Received
                     </div>
-                    <p style="font-size: 13px; color: #475569; margin: 0; line-height: 1.5;">
+                    <p style="font-size: 13px; color: #374151; margin: 0; line-height: 1.5;">
                         Your inquiry has been successfully queued for our team. We aim to respond within 1-2 business days.
                     </p>
                 </div>
 
-                <p style="font-size: 13px; color: #64748b; margin: 0;">
+                <p style="font-size: 13px; color: #6B7280; margin: 0;">
                     If your inquiry is urgent regarding an active MT5 trade or sync issue, you can also reach us via our Telegram community.
                 </p>
             `;

@@ -70,7 +70,7 @@ export function StatsGrid({ data, vertical = false }: StatsGridProps) {
                 return (
                     <div
                         key={i}
-                        className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-[box-shadow,transform] duration-200 ease-out hover:-translate-y-0.5"
+                        className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 ease-out"
                     >
                         <div className="flex items-center gap-3 mb-3">
                             <div className={`p-3 rounded-lg ${stat.bg}`}>

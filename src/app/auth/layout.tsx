@@ -87,7 +87,7 @@ export default function AuthLayout({
     ];
 
     return (
-        <div className="min-h-[100dvh] w-full flex flex-col items-center justify-center bg-[#F7F4EC] text-slate-800 dark:bg-transparent dark:text-white px-4 py-6 sm:py-10 md:py-16 font-outfit relative overflow-x-hidden transition-colors duration-300">
+        <div className="min-h-[100dvh] w-full flex flex-col items-center justify-center bg-[#F7F4EC] text-slate-800 dark:bg-transparent dark:text-white px-4 py-6 sm:py-10 md:py-16 font-sans relative overflow-x-hidden transition-colors duration-300">
             <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.16)_0%,rgba(255,255,255,0.72)_34%,rgba(16,185,129,0.10)_100%)] dark:bg-[linear-gradient(135deg,rgba(43,35,68,0.60)_0%,rgba(255,255,255,0.02)_40%,rgba(6,69,79,0.38)_100%)]" />
 
             <div className="relative z-10 flex w-full max-w-7xl items-center justify-center gap-10 lg:justify-between lg:gap-14">
@@ -137,7 +137,7 @@ export default function AuthLayout({
                             return (
                                 <div
                                     key={feature.title}
-                                    className="group relative rounded-lg border border-amber-900/10 bg-white/75 p-4.5 sm:p-5 shadow-[0_4px_20px_rgba(88,64,27,0.04)] backdrop-blur-md transition-all duration-300 hover:border-amber-500/30 hover:bg-white/90 hover:shadow-md dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-white/20 dark:hover:bg-white/[0.06]"
+                                    className="group relative rounded-xl border border-amber-900/10 bg-white/75 p-4.5 sm:p-5 shadow-[0_4px_20px_rgba(88,64,27,0.04)] backdrop-blur-md transition-all duration-300 hover:border-amber-500/30 hover:bg-white/90 hover:shadow-md dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-white/20 dark:hover:bg-white/[0.06]"
                                 >
                                     <div className="flex items-start gap-4">
                                         {/* Icon node */}
@@ -185,7 +185,7 @@ export default function AuthLayout({
                     </div>
 
                     {/* Bottom: Also included */}
-                    <div className="mt-5 rounded-lg border border-amber-900/10 bg-white/60 p-4 backdrop-blur-md dark:border-white/10 dark:bg-white/[0.03]">
+                    <div className="mt-5 rounded-xl border border-amber-900/10 bg-white/60 p-4 backdrop-blur-md dark:border-white/10 dark:bg-white/[0.03]">
                         <div className="flex items-center justify-between mb-2.5">
                             <span className="text-[11px] font-black uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
                                 Included with your workspace

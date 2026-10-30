@@ -490,7 +490,7 @@ export function AdminActivationInboxPanel() {
                                         {/* Inline admin notes box */}
                                         <div>
                                             <textarea
-                                                placeholder="Add notes for this user's activation (e.g. Sent discord link...)"
+                                                placeholder="Add notes for this user's activation"
                                                 value={
                                                     activeNotes[sig.id] || ""
                                                 }

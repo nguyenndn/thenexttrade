@@ -409,7 +409,7 @@ export function AiRoutingPanel({
                     <div className="flex justify-end gap-2">
                         <Button
                             type="button"
-                            variant="ghost"
+                            variant="outline"
                             onClick={() => setIsAdding(false)}
                             className="h-auto px-4 py-2 text-sm font-semibold"
                         >

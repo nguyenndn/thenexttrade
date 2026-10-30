@@ -69,23 +69,22 @@ QA checklist:
 - No broken partner links/images.
 - No prop firm section or references.
 
-### `/about`, `/contact`, `/edge`, `/legal/privacy-policy`, `/legal/terms-of-service`, `/legal/cookie-policy`
+### `/about`, `/edge`, `/legal/privacy-policy`, `/legal/terms-of-service`, `/legal/cookie-policy`
 
 Purpose:
 
-- Explain company/product, contact paths, Edge concept, and legal policies.
+- Explain company/product, brand positioning, Edge concept, and legal compliance policies.
 
 Expected behavior:
 
-- Use the public premium background style.
+- Use the public premium background style with solid Gold accents.
 - Pages must be readable in light/dark mode.
-- Contact form should submit or show a clear validation error.
-- Legal pages should not require login.
+- Legal pages (`/legal/*`) must be publicly accessible without authentication.
+- Navigation links between legal policies and public marketing surfaces must remain consistent.
 
 Code paths:
 
 - `src/app/about/page.tsx`
-- `src/app/contact/page.tsx`
 - `src/app/edge/page.tsx`
 - `src/app/legal/*/page.tsx`
 
@@ -94,7 +93,45 @@ QA checklist:
 - Page loads without auth.
 - Header/footer navigation works.
 - Background does not reduce text contrast.
-- Contact validation works.
+- Legal documents render cleanly on mobile viewports.
+
+### `/contact` — Public Contact & Support Inquiry Form
+
+Purpose:
+
+- Inbound lead capture and customer inquiry submission for public visitors and existing traders.
+- Provide a resilient, spam-protected channel for user feedback, support requests, and partner inquiries.
+
+Users:
+
+- Anonymous public visitors and registered traders.
+
+Inputs:
+
+- Form fields: `name` (required, max 255 chars), `email` (required, valid email format), `subject` (optional/required, max 255 chars), `message` (required, min 10 chars).
+- Hidden anti-bot honeypot fields: `website` and `phone_hp` (invisible to genuine users via CSS/DOM hiding).
+
+Expected behavior:
+
+- **Anti-Bot Honeypots**: If either `website` or `phone_hp` contains any input (bot autofill), the server action `submitContactForm` silently returns `{ success: true }` without inserting a row into `ContactMessage` or firing email dispatch. This starves spam bots of feedback without degrading genuine traffic.
+- **In-Memory Rate Limiting**: Enforces a strict ceiling of **at most 3 submissions within a 5-minute rolling window** per IP address and email. Exceeding submissions are rejected with a 429 rate limit error message.
+- **Data Persistence**: Valid submissions are inserted into the `ContactMessage` table (`contact_messages`) with initial status `"new"`.
+- **Fallback Email Dispatch**: Asynchronously dispatches a notification email to the admin team via SMTP (`sendContactNotificationEmail`), logging delivery results to prevent unhandled promise rejections.
+
+Code paths:
+
+- `src/app/contact/page.tsx`
+- `src/app/actions/contact.ts` (`submitContactForm`)
+- `src/lib/services/email.service.ts`
+- `prisma.contactMessage`
+
+QA checklist:
+
+- Valid submission inserts into `ContactMessage` with status `"new"` and displays success state.
+- Filling hidden `website` or `phone_hp` honeypot fields returns success without saving to DB.
+- Attempting a 4th submission within 5 minutes triggers rate limit error.
+- Invalid email address triggers inline validation error.
+- Mobile layout maintains 16px minimum font size for form inputs.
 
 ### `/get-started`
 
@@ -734,6 +771,23 @@ Query param support:
 
 Expected behavior:
 
+- **Membership Tiers & Account Quotas**:
+  - **7-Day Free Trial**: Every newly registered user automatically starts with a **7-Day Free Trial** (`TRIAL_DURATION_DAYS = 7` calculated from `User.createdAt` in `src/lib/pro-access.ts`). During these 7 days, users enjoy full Partner Pro privileges with no limit on connected trading accounts, all 3 EAs unlocked, and full AI analytics.
+  - **Free Tier (Post-Trial Quota)**: Once the 7-day trial expires without an approved IB link, users operate on the Free Tier, which is capped at a maximum of **2 connected trading accounts** (`src/actions/accounts.ts:270` checks `existingCount >= 2`). Adding a 3rd account is strictly blocked with a quota limit error, prompting the user to upgrade to Partner Pro or archive an existing account.
+  - **Partner Pro Tier**: Users who link an account under our partner broker IB codes (Vantage, VT Markets, Ultima Markets, Exness) and receive `CONFIRMED` attribution (or an administrative manual override) receive permanent Partner Pro access (`ProEntitlement.status = ACTIVE`), removing all connected account limits.
+- **Unified Main Account Resolution Architecture (`src/actions/main-account.ts`)**:
+  - All dashboard routes (`/dashboard`, `/dashboard/journal`, `/dashboard/sessions`, `/dashboard/analytics`, `/dashboard/intelligence`, `/dashboard/accounts`) resolve the active trading account via `resolveDefaultAccountId(userId, cookieAccountId?)` using a deterministic **4-Tier Fallback Hierarchy**:
+    1. **Priority 1 (`Profile.mainTradingAccountId`)**: The explicitly designated main account in the user's profile, checked against the user's active accounts to guarantee it has not been deleted or transferred.
+    2. **Priority 2 (`isDefault: true`)**: Any trading account with the legacy `isDefault` flag set in `TradingAccount`.
+    3. **Priority 3 (`last_account_id` cookie)**: The account ID stored in the client cookie (validated to ensure it exists in the user's active portfolio and does not equal `"all"`).
+    4. **Priority 4 (Temporal Fallback)**: The user's most recently created account (`createdAt: desc`).
+    *(If the user owns zero trading accounts, resolution returns `undefined`).*
+  - **`setMainAccount(accountId: string | null)` Action**:
+    - Runs inside an atomic transaction (`prisma.$transaction`) to update `Profile.mainTradingAccountId`, reset old default flags, and mark the new account `isDefault: true`.
+    - Synchronizes client cookie: Sets `last_account_id` with `maxAge: 31536000` (1-year persistence), `sameSite: "lax"`, `path: "/"`. Passing `null` deletes the cookie.
+    - Revalidates 6 key dashboard paths: `["/dashboard/accounts", "/dashboard", "/dashboard/journal", "/dashboard/analytics", "/dashboard/sessions", "/dashboard/intelligence"]`.
+- **Existing Account Upgrade Workflow (`upgradeToPartnerPro`)**:
+  - In addition to creating a brand new Partner Pro account, traders can upgrade any existing connected Free account to Partner Pro via `upgradeToPartnerPro(accountId)` (`src/actions/account-pro.ts:311`). This checks broker eligibility, prompts for IB verification credentials/screenshots, and submits an upgrade request without losing historical journal entries or trade telemetry.
 - Account cards show broker, account number, balance, equity, account type, sync state, and access state.
 - Footer should be compact: sync method row, then access/status plus actions.
 - `PRO` implies EA access.
@@ -765,7 +819,9 @@ Code paths:
 - `src/components/trading-accounts/TradeSyncWizard.tsx`
 - `src/lib/sync/sync-urls.ts`
 - `src/actions/accounts.ts`
-- `src/actions/account-pro.ts`
+- `src/actions/main-account.ts` (`resolveDefaultAccountId`, `setMainAccount`, `getMainAccountId`)
+- `src/actions/account-pro.ts` (`upgradeToPartnerPro`)
+- `src/lib/pro-access.ts`
 - `src/lib/pro-eligibility.ts`
 
 APIs:
@@ -1117,31 +1173,60 @@ QA checklist:
 - Passed quiz.
 - Certificate available/unavailable.
 
-### `/dashboard/trading-systems`
+### `/dashboard/trading-systems` — EA Ecosystem & Unified License Keys Hub
 
 Purpose:
 
-- Give users access to EA/indicator downloads and licenses.
+- User-facing download center and unified licensing management console for all three algorithmic trading systems in the GoldScalperNinja ecosystem.
+- Enable traders to generate license keys, bind MT4/MT5 accounts, edit login credentials, copy activation credentials, and download production `.ex5` files and PDF manuals.
+
+Users:
+
+- Registered traders (Free tier, 7-Day Trial, and Partner Pro).
 
 Expected behavior:
 
-- Free users see locked or upgrade states for Pro-only tools.
-- Pro users see download/license access.
-- Download failures should be clear.
+- **1 Unified License Key Unlocks All 3 EAs**:
+  - The system utilizes a unified licensing architecture (`GSN_EA_License.mqh`). A single verified license key (`TradingAccount.licenseKey`, format `TNT-XXXX-XXXX-XXXX`) activates all three production systems without requiring separate purchases or individual keys:
+    1. **Trade Manager EA (`trade-manager`)**
+    2. **GoldScalperNinja EA (`goldscalperninja`)**
+    3. **GSN - Apex Gold Sentinel / Phoenix Grid (`gsn-phoenix-grid`)**
+- **Interactive License Keys Panel (`LicenseAccountsPanel.tsx`)**:
+  - **Batch Account Selection & Submission (`submitMultipleAccountRequests`)**: Users can check multiple registered MT4/MT5 accounts from their portfolio and request licenses in a single batch operation rather than one-by-one.
+  - **In-Place Numeric Login ID Editing (`updateTradingAccountLoginNumber`)**: If an account was registered with a missing, placeholder, or incorrect login number, users can edit the numeric MT4/MT5 account ID directly inside the table row without deleting and re-creating the account. Validates that the input is strictly numeric.
+  - **Strict 1-to-1 Live Account Binding**: On live trading accounts (`isDemo: false`), license activation strictly validates that the terminal's `AccountNumber()` matches the exact registered account number in the database/GitHub whitelist. For demo accounts (`isDemo: true`), binding verification is bypassed to allow frictionless testing across any demo account number.
+  - **Masked Key Display & Clipboard Copy**: License keys are rendered with a mask toggle (`••••••••` vs plain text) and a 1-click clipboard copy button with transient toast/tooltip confirmation.
+  - **3 Required MT5 WebRequest URLs**: To prevent MetaTrader runtime errors `4014` (ERR_WEBREQUEST_CANNOT_CONNECT) and `4060` (ERR_WEBREQUEST_URL_NOT_ALLOWED), the panel explicitly displays the 3 mandatory URLs that must be whitelisted in MT5 (`Tools -> Options -> Expert Advisors -> Allow WebRequest for listed URL`):
+    1. `https://thenexttrade.com` (Primary API license verification & telemetry heartbeat)
+    2. `https://api.github.com` (Secondary high-availability GitHub license backup check)
+    3. `https://raw.githubusercontent.com` (Secondary raw content fallback verification)
+- **Pro Gating & Access Control**:
+  - During the **7-Day Free Trial**, users have unrestricted download and live license privileges.
+  - After trial expiration on the **Free Tier**, live accounts show an upgrade CTA guiding the user to open/verify an IB account or upgrade existing accounts via `upgradeToPartnerPro`. Demo accounts remain usable.
+  - Partner Pro traders retain perpetual download and active live execution privileges.
 
 Code paths:
 
 - `src/app/dashboard/trading-systems/page.tsx`
-- `src/components/dashboard/ea/*`
+- `src/components/dashboard/trading-systems/TradingSystemsClient.tsx`
+- `src/components/dashboard/trading-systems/LicenseAccountsPanel.tsx`
+- `src/components/dashboard/trading-systems/SystemsList.tsx`
+- `src/components/dashboard/trading-systems/SystemDetailModal.tsx`
+- `src/app/dashboard/trading-systems/actions.ts` (`submitMultipleAccountRequests`, `updateTradingAccountLoginNumber`, `cancelLicenseRequest`)
+- `src/app/api/ea/license/verify/route.ts`
+- `src/lib/ea/github-license-sync.server.ts`
 - `src/app/api/user/downloads/[productId]/route.ts`
 
 QA checklist:
 
-- Free user.
-- Pro user.
-- No licenses.
-- Existing license.
-- Download route.
+- Free user after trial sees locked state on live license generation with Partner Pro upgrade path.
+- Trial user (within 7 days) and Partner Pro user can generate and view license keys.
+- Batch selecting multiple accounts and clicking "Request Licenses" creates pending requests in one action.
+- In-place editing of MT4/MT5 login number updates database and persists on refresh.
+- Copy button copies exact `TNT-XXXX-XXXX-XXXX` string to clipboard.
+- Mask button toggles between hidden dots and visible characters.
+- Panel displays 3 required WebRequest URLs with 1-click copy buttons.
+- Binary `.ex5` and PDF documentation downloads initiate successfully.
 
 ### `/dashboard/settings/*`
 
@@ -1405,34 +1490,62 @@ QA checklist:
 - Import questions.
 - Preview lesson.
 
-### `/admin/trading-systems/*`
+### `/admin/trading-systems/*` — Trading Systems Administration & Telemetry
 
 Purpose:
 
-- Manage trading-system products, brokers/access rules, accounts, pending approvals, licenses, versions, and settings.
+- Administrative control plane for the GoldScalperNinja EA ecosystem: manage algorithm products, software versions, binary file uploads (`.ex5`), pending license requests, broker eligibility rules, and live telemetry.
+- Current product catalog covers exactly 3 production MT5 algorithmic systems:
+  1. **Trade Manager EA (`trade-manager`)**
+  2. **GoldScalperNinja EA (`goldscalperninja`)**
+  3. **GSN - Apex Gold Sentinel / Phoenix Grid (`gsn-phoenix-grid`)**
 
-Expected behavior:
+#### Product Detail & Telemetry Console: `/admin/trading-systems/[id]`
 
-- Admin can review pending accounts/licenses.
-- Products have files/versions.
-- Broker settings affect eligibility/sync behavior as designed.
-- Current product catalog should cover GoldScalperNinja, Trade Manager, and GSN - Apex Gold Sentinel.
-- Do not mention `Partner Toolkit` unless a real product is added.
+Each trading system detail page implements a specialized **2-Tab Operational Architecture** managed by `ProductDetailClient.tsx`:
+
+1. **Tab 1: `Product Configuration` (`value="config"`)**:
+   - Product metadata: Name, slug, EA product type, version string, release date, and full feature descriptions.
+   - Binary Release Management: Secure `.ex5` executable file upload to Cloudflare R2 object storage.
+   - Global Announcement: **`Announce Release`** modal triggering automated broadcast notifications to all eligible traders holding licenses.
+2. **Tab 2: `Telemetry & Accounts` (`value="telemetry"`)**:
+   - Renders `ProductUsersTable.tsx` to monitor all user accounts allocated this EA.
+   - **Real-Time Telemetry Metrics**:
+     - Live MT4/MT5 account login number, broker name, server, and platform.
+     - Pulsing green heartbeat dot with relative time elapsed (`formatDistanceToNow`). Accounts with heartbeat within 24 hours are classified as active.
+     - Real-time balance, equity, open trades count, and currency.
+     - License approval status (`PENDING`, `APPROVED`, `SUSPENDED`, `REJECTED`) and IB confirmation status.
+   - **EA Farm Capital Aggregation (`src/lib/admin/trading-systems/ea-farm-stats.server.ts`)**:
+     - Computes independent capital layers:
+       - **`confirmedFarmBalanceUSD`**: Sum of live equity on accounts with confirmed IB attribution actively running this specific EA.
+       - **`userPoolBalanceUSD`**: Total combined capital pool of all traders possessing download or license access to the product.
+       - **Active Fleet Heartbeat**: Real-time ratio of running terminals sending heartbeats within `< 24h`.
+
+#### Domain Scoping & Boundaries:
+
+- **EA Telemetry Is Live MT4/MT5 Only**: Telemetry ingestion is strictly limited to live/demo execution streams originating from `GSN_EA_Telemetry.mqh` attached to MetaTrader terminals. There is **no backtest telemetry ingestion pipeline, database schema, or admin dashboard**. Strategy Tester compatibility is purely static user documentation.
+- **Drawdown Radar Belongs to Trader Psychology**: "Drawdown Radar", "Tilt Index", and behavioral risk radars do **not** belong to the EA Trading Systems admin portal. In TheNextTrade, these belong exclusively to the **Trader Psychology & Behavioral Leak Radar Engine** (`BehavioralRadarChart.tsx`, `BiasProfileWidget.tsx`, `IntelligenceDashboard.tsx`) for trader discipline and risk assessment.
 
 Code paths:
 
-- `src/app/admin/trading-systems/*`
-- `src/components/admin/trading-systems/*`
+- `src/app/admin/trading-systems/page.tsx`
 - `src/app/admin/trading-systems/actions.ts`
-- `src/lib/admin/trading-systems/*` or product access helpers where applicable
+- `src/app/admin/trading-systems/products/page.tsx`
+- `src/app/admin/trading-systems/[id]/page.tsx`
+- `src/app/admin/trading-systems/[id]/ProductDetailClient.tsx`
+- `src/app/admin/trading-systems/[id]/ProductForm.tsx`
+- `src/app/admin/trading-systems/[id]/ProductUsersTable.tsx`
+- `src/lib/admin/trading-systems/ea-farm-stats.server.ts`
+- `src/lib/ea/telemetry.server.ts`
 
 QA checklist:
 
-- Product list/create/edit.
-- Upload version.
-- Pending account approve/reject.
-- Broker create/list.
-- Settings save.
+- System list displays 3 core EAs with version tags and download counters.
+- Editing product details persists changes and displays updated changelog.
+- Uploading `.ex5` file successfully updates storage URL and release version.
+- Switching between "Product Configuration" and "Telemetry & Accounts" tabs updates URL hash/state without full reload.
+- `ProductUsersTable` accurately renders live account balance, equity, and pulsing heartbeat dot (<24h).
+- EA Farm Capital displays separate `confirmedFarmBalanceUSD` and `userPoolBalanceUSD`.
 
 ### `/admin/ib`, `/admin/ib/pipeline`, `/admin/ib/traders`
 
@@ -1511,6 +1624,57 @@ QA checklist:
 - User sees notification.
 - Read/unread if supported.
 - Scheduled send cron.
+
+### `/admin/messages` — Admin Messages / Inquiries Console
+
+Purpose:
+
+- Centralized administrative triage, status lifecycle tracking, and resolution console for all inbound inquiries and contact messages submitted via `/contact`.
+- Provide customer support staff with multi-field search, status filtering, internal notes collaboration, and direct email client reply dispatch.
+
+Users:
+
+- Admins and Superadmins (`requireAdminPageAccess()`).
+
+Inputs & Filters:
+
+- Tab selection: `All`, `New`, `Read`, `Replied`, `Archived` (with real-time counts from `MessagesStatsGrid.tsx`).
+- Search query: free text filtering across `name`, `email`, `subject`, and `message` content.
+- Actions per message: Click to open detail modal, change status dropdown (`new`, `read`, `replied`, `archived`), save internal staff notes, launch `mailto:` reply link, delete message.
+
+Expected behavior:
+
+- **4-Status Lifecycle**:
+  - `new`: Initial state upon public submission. Indicated with an amber/gold indicator.
+  - `read`: Message has been inspected. Clicking any `new` message row in the list opens `LetterDetailModal` and **automatically triggers the `markAsRead` server action**, converting its state from `new` to `read` in both DB and UI state without manual intervention.
+  - `replied`: Marked after an administrator has contacted the user.
+  - `archived`: Soft-closed inquiry retained for auditing and historical reference.
+- **Client-Side Reply Mechanism**:
+  - Clicking the **Reply** button in `LetterDetailModal` launches the administrator's default desktop or system email client via a formatted `mailto:` link (`mailto:${message.email}?subject=Re: ${encodeURIComponent(message.subject)}&body=...`).
+  - The system intentionally does **not** perform in-app direct SMTP reply dispatching or conversational thread simulation, ensuring all customer correspondence originates authentically from administrative mailboxes.
+- **Internal Staff Notes**:
+  - Administrators can draft and persist internal triage notes (`notes` column in `ContactMessage`) via `updateMessageNotes`. Notes are strictly staff-facing and never exposed to the public user.
+- **Hard Deletion**:
+  - Confirmed spam or abusive submissions can be permanently removed from the database via `deleteMessage`.
+
+Code paths:
+
+- `src/app/admin/messages/page.tsx`
+- `src/actions/admin/messages.ts` (`getMessages`, `markAsRead`, `updateMessageStatus`, `updateMessageNotes`, `deleteMessage`)
+- `src/components/admin/messages/AdminMessagesClient.tsx`
+- `src/components/admin/messages/LetterDetailModal.tsx`
+- `src/components/admin/messages/MessagesStatsGrid.tsx`
+- `prisma.contactMessage` (`contact_messages` table)
+
+QA checklist:
+
+- Admin messages page loads with status counter badges (`new`, `read`, `replied`, `archived`).
+- Clicking a `new` message automatically updates its status to `read` in DB and badges decrement.
+- Changing status dropdown to `replied` or `archived` persists on page refresh.
+- Reply button correctly opens system mail client with prefilled recipient and subject.
+- Saving internal notes retains text across modal reopens and page reloads.
+- Search filters accurately across sender name, email, and message body.
+- Hard delete removes message from database and updates list without full reload.
 
 ## Sync And API Feature Specs
 
@@ -2025,18 +2189,32 @@ Components & Tabs:
 
 1. **User Narrative Summary (Hero)** (`UserNarrativeSummary.tsx`): On-the-fly behavioral synopsis (`classifyUser`), active risk chip badges, trading tempo, product adoption, and value indicator. Strict `persist: false` guarantee (zero DB writes on view).
 2. **Left Identity Column**: Avatar, role, country, Real Capital Breakdown (Live vs Demo accounts), `QuickActions` (`Edit Role`, `Reset Password`, `Notify`), and auto-saving `AdminNotes`. (Note: 1-click **Impersonate Trader** is available in `/admin/users` row actions via `UserRowActions.tsx` and `/admin/users/behavior`).
-3. **Tab 1 — `Overview` (`UserOverviewTab.tsx`)**: Activity overview, connected MT5 trading accounts (`UserAccountsList`), EA licenses (`UserLicensesList`), Academy progress, badges, and activity timeline.
-4. **Tab 2 — `VIP & Broker` (`UserVipProTab.tsx`)**:
-   - **VIP & Partner Pro Status**: Direct toggle to grant/revoke VIP or manage trial expiration.
-   - **IB Attribution & All-EA Access**: Per-account IB attribution selector (`CONFIRMED`, `NOT_OURS`, `UNKNOWN`). Selecting **`CONFIRMED`** (`updateTradingAccountIbAttribution` in `src/app/admin/users/[id]/actions.ts`) automatically executes 4 unified actions:
-     1. Issues/activates `TradingAccount.licenseKey`,
-     2. Upserts `ProEntitlement` to `ACTIVE` (`IB_VERIFIED`),
-     3. Upserts `EALicense` to `APPROVED` (unlocking all 3 EAs: Trade Manager, GoldScalperNinja, and GSN - Apex Gold Sentinel),
-     4. Triggers `syncLicensesToGitHubBackup()`.
-   - Selecting **`NOT_OURS`** suspends matching `EALicense` records and removes `IB_VERIFIED` `ProEntitlement`.
-   - **EA Telemetry & Downloads**: Displays `EAProductAccess`, `EADownload`, and `EAProductUsageEvent` history.
+3. **Tab 1 — `Overview` (`UserOverviewTab.tsx`)**:
+   - High-level activity summary: Academy lessons and quizzes completed, EA downloads, comments, and daily activity streak.
+   - **Active Trading Systems (EAs)** allocation cards: product version, account number, broker, pulsing status dot, relative heartbeat time, and live capital balance/equity.
+   - Unified chronological timeline of trader milestones (accounts connected, downloads, academy completions).
+   - Active user sessions (browser, IP address, device type, last active timestamp).
+   - *(Note: Trading accounts list and EA licenses table are strictly mounted in Tab 2, not Tab 1).*
+4. **Tab 2 — `Accounts & Plan` (`value="accounts"` in `UserDetailTabsWrapper.tsx`)**:
+   - Groups three dedicated subcomponents into a unified account and plan management suite:
+     - **`UserVipProTab.tsx` (VIP & Partner Pro Status)**: Review and approve/reject VIP requests, screenshot lightbox modal, grant manual Partner Pro, grant 7-day Grace Period, and revoke Pro access. Displays EA Product Access, EA Downloads, and EA Usage Event telemetry.
+     - **`UserAccountsList.tsx` (Connected MT4/MT5 Trading Accounts)**: Broker, server, platform, live balance, equity, and per-account EA allocations. Features `AccountIbAttributionBadge` (`CONFIRMED`, `NOT_OURS`, `UNKNOWN`). Selecting **`CONFIRMED`** (`updateTradingAccountIbAttribution` in `src/app/admin/users/[id]/actions.ts`) automatically executes 4 unified actions:
+       1. Issues/activates the account's unified `TradingAccount.licenseKey`,
+       2. Upserts `ProEntitlement` to `ACTIVE` (`IB_VERIFIED`),
+       3. Upserts `EALicense` to `APPROVED` (unlocking all 3 EAs: Trade Manager, GoldScalperNinja, and GSN - Apex Gold Sentinel / Phoenix Grid),
+       4. Triggers `syncLicensesToGitHubBackup()` to maintain high-availability license whitelisting on GitHub.
+       *(Selecting `NOT_OURS` suspends matching `EALicense` records and revokes `IB_VERIFIED` `ProEntitlement`).*
+     - **`UserLicensesList.tsx` (EA Licenses Table)**: Direct oversight of all licenses assigned to the user across brokers, account login numbers, approval status (`PENDING`, `APPROVED`, `REJECTED`, `SUSPENDED`), with 1-click approve/reject actions.
+   *(Legacy URL parameter `tab=vip-broker` is automatically normalized to `accounts`).*
 5. **Tab 3 — `Coaching & Analytics` (`UserCoachingAnalyticsTab.tsx`)**:
-   - Displays computed behavioral signals (`computeTraderSignals`), active weekly coaching focus, rule compliance checks, and recent journal entries with full trade telemetry (entry/exit, SL/TP, commission, swap, psychology notes).
+   - **Unified Summary Strip**: 4 top-level metrics (Rules & Compliance pass rate, Active Goals, Setups & Trade Plans, Reports & Notes).
+   - **Rules & Goals**: Personal rulebook with severity chips (`CRITICAL`, `HIGH`, `MEDIUM`) and historical compliance check counts.
+   - **Playbooks & Strategies**: Setup definitions, playbook tags, and color swatches.
+   - **Trade Plans**: Setup names, planned vs. executed state, and compliance adherence.
+   - **Reports & Daily Notes**: Weekly and monthly performance reports and daily trading journal reflections.
+   *(Note: Full individual trade journal logs with granular tick telemetry were removed during consolidation; full journal inspection lives at `/dashboard/journal`).*
+6. **Unmounted Legacy Components**:
+   - The directory `src/app/admin/users/[id]/` retains `UserJournalTab.tsx`, `UserGrowthCoachTab.tsx`, and `UserIbPerformanceTab.tsx`. These files are unmounted and unused in current production routing, preserved only as historical reference.
 
 Code paths:
 
@@ -2045,6 +2223,8 @@ Code paths:
 - `src/app/admin/users/[id]/UserDetailTabsWrapper.tsx`
 - `src/app/admin/users/[id]/UserOverviewTab.tsx`
 - `src/app/admin/users/[id]/UserVipProTab.tsx`
+- `src/app/admin/users/[id]/UserAccountsList.tsx`
+- `src/app/admin/users/[id]/UserLicensesList.tsx`
 - `src/app/admin/users/[id]/UserCoachingAnalyticsTab.tsx`
 - `src/components/admin/users/UserNarrativeSummary.tsx`
 - `src/components/admin/users/UserRowActions.tsx`

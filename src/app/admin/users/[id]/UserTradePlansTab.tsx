@@ -140,7 +140,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
         <div className="space-y-6">
             {/* Top KPI Cards */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <Compass size={14} className="text-primary" /> Total Trade Plans
                     </div>
@@ -150,7 +150,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                     </div>
                 </div>
 
-                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <CheckCircle2 size={14} className="text-emerald-500" /> Plan Execution Rate
                     </div>
@@ -162,7 +162,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                     </div>
                 </div>
 
-                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <BookOpen size={14} className="text-blue-500" /> Playbook Strategies
                     </div>
@@ -174,7 +174,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                     </div>
                 </div>
 
-                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <XCircle size={14} className="text-rose-500" /> Discarded / Cancelled
                     </div>
@@ -252,7 +252,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
 
             {/* Content Area */}
             {activeSection === "plans" ? (
-                <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <Compass size={16} className="text-primary" /> Pre-Trade Plans ({filteredPlans.length})
@@ -404,7 +404,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                 </div>
             ) : (
                 /* Strategies & Playbook Section */
-                <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <BookOpen size={16} className="text-blue-500" /> Playbooks & Strategy Library ({filteredStrategies.length})
@@ -417,7 +417,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                             {filteredStrategies.map((strat) => (
                                 <div
                                     key={strat.id}
-                                    className="rounded-lg border border-gray-200 bg-gray-50/40 p-4 transition-all hover:border-gray-300 dark:border-white/10 dark:bg-[#1A1D27] dark:hover:border-white/20 flex flex-col justify-between"
+                                    className="rounded-xl border border-gray-200 bg-gray-50/40 p-4 transition-all hover:border-gray-300 dark:border-white/10 dark:bg-[#1A1D27] dark:hover:border-white/20 flex flex-col justify-between"
                                 >
                                     <div>
                                         <div className="flex items-center justify-between gap-2">
@@ -512,7 +512,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
             {/* Plan vs Actual Detail Modal */}
             {selectedPlan && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <div className="flex items-center gap-2">
@@ -636,7 +636,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
             {/* Strategy Detail Modal */}
             {selectedStrategy && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-lg border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div className="flex items-center gap-2">
                                 <div

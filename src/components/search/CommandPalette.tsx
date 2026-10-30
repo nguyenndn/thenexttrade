@@ -201,7 +201,7 @@ export function CommandPalette({
                 className="absolute left-1/2 top-[30%] w-full max-w-[640px] px-4"
             >
                 <Command
-                    className="rounded-lg border border-dashboard dark:border-gray-800 bg-white dark:bg-[#1E2028] shadow-2xl overflow-hidden"
+                    className="rounded-2xl border border-dashboard dark:border-gray-800 bg-white dark:bg-[#1E2028] shadow-2xl overflow-hidden"
                     shouldFilter={true}
                     filter={customFilter}
                 >
@@ -226,9 +226,10 @@ export function CommandPalette({
                             className="flex h-14 w-full bg-transparent py-3 text-lg text-center outline-none placeholder:text-gray-500 dark:placeholder:text-gray-600 border-none px-10"
                         />
                         <Button
-                            variant="ghost"
+                            variant="outline"
                             size="icon"
                             onClick={() => setOpen(false)}
+                            aria-label="Close command palette"
                             className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                         >
                             <X size={16} />

@@ -14,10 +14,11 @@ const Input = React.forwardRef<
         { className, type, error, label, id, startIcon, endIcon, ...props },
         ref
     ) => {
+        const inputId = id || props.name;
         return (
             <div className="w-full">
                 {label && (
-                    <label htmlFor={id} className="label pb-1">
+                    <label htmlFor={inputId} className="label pb-1">
                         <span className="label-text font-medium text-base-content/80 text-sm">
                             {label}
                         </span>
@@ -30,7 +31,7 @@ const Input = React.forwardRef<
                         </div>
                     )}
                     <input
-                        id={id}
+                        id={inputId}
                         type={type}
                         className={cn(
                             "w-full p-2.5 rounded-lg bg-gray-50 dark:bg-[#151925] border border-dashboard text-sm outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition-all",

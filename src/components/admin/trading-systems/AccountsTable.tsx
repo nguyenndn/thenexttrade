@@ -526,7 +526,7 @@ export function AccountsTable({
                                                                 license.id
                                                             )
                                                         }
-                                                        className="h-6 w-6 rounded-md text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                                                        className="h-6 w-6 rounded-lg text-gray-500 hover:text-gray-900 dark:hover:text-white"
                                                         aria-label={
                                                             isRevealed
                                                                 ? "Hide License Key"
@@ -548,7 +548,7 @@ export function AccountsTable({
                                                                 license.accountNumber
                                                             )
                                                         }
-                                                        className="h-6 w-6 rounded-md text-gray-500 hover:text-emerald-500"
+                                                        className="h-6 w-6 rounded-lg text-gray-500 hover:text-emerald-500"
                                                         aria-label="Copy License Key"
                                                     >
                                                         <Copy size={13} />

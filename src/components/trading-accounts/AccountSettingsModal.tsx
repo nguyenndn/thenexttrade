@@ -196,7 +196,7 @@ export function AccountSettingsModal({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="relative z-10 bg-white dark:bg-[#1E2028] rounded-lg w-full max-w-[540px] overflow-hidden border border-dashboard shadow-2xl flex flex-col max-h-[90vh] cursor-default"
+                className="relative z-10 bg-white dark:bg-[#1E2028] rounded-2xl w-full max-w-[540px] overflow-hidden border border-dashboard shadow-2xl flex flex-col max-h-[90vh] cursor-default"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
@@ -205,7 +205,7 @@ export function AccountSettingsModal({
                         Account Settings
                     </h2>
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         size="icon"
                         onClick={onClose}
                         aria-label="Close settings"

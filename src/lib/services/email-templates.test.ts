@@ -45,10 +45,18 @@ describe("Email Templates & Builder Service", () => {
         const html = buildEALicenseEmailHtml(data);
 
         expect(html).toContain("TheNextTrade");
+        expect(html).toContain("logo_thenexttrade_brain.png");
+        expect(html).toContain('TheNext<span style="color:#F59E0B;">Trade</span>');
+        expect(html).not.toContain(">THENEXTTRADE<");
         expect(html).toContain(data.licenseKey);
         expect(html).toContain(data.mt5Account);
         expect(html).toContain(data.downloadUrl);
         expect(html).toContain("Lifetime License Key");
+        expect(html).toContain("#F59E0B");
+        expect(html).toContain("#D97706");
+        expect(html).toContain("#FFFBEB");
+        expect(html).toContain("border: 1.5px dashed #F59E0B");
+        expect(html).not.toContain(">🔑</div>");
     });
 
     it("renders EA Version Update email with release highlights", () => {
@@ -103,14 +111,16 @@ describe("Email Templates & Builder Service", () => {
         expect(html).toContain("Open Trading Journal");
     });
 
-    it("renders Signup OTP email with 6-digit verification code", () => {
+    it("renders Signup OTP email with 8-digit verification code", () => {
         const data = getSampleSignupOtpData();
         const html = buildSignupOtpEmailHtml(data);
 
         expect(html).toContain("TheNextTrade");
         expect(html).toContain(data.otpCode);
         expect(html).toContain("Verify Your Email Address");
+        expect(html).toContain("Your 8-Digit Verification Code");
         expect(html).toContain(data.confirmUrl);
+        expect(html).not.toContain(">✉️</div>");
     });
 
     it("renders Resend OTP email with replacement code", () => {
@@ -120,6 +130,7 @@ describe("Email Templates & Builder Service", () => {
         expect(html).toContain("TheNextTrade");
         expect(html).toContain(data.otpCode);
         expect(html).toContain("Your New Verification Code");
+        expect(html).toContain("New 8-Digit Code");
     });
 
     it("renders Magic Link email with 1-click action link", () => {
@@ -162,6 +173,8 @@ describe("Email Templates & Builder Service", () => {
         expect(html).toContain("TheNextTrade");
         expect(html).toContain("<p>Hello World</p>");
         expect(html).toContain("Manage Preferences");
+        expect(html).toContain("<!--[if (gte mso 9)|(IE)]>");
+        expect(html).not.toContain("Breek");
     });
 
     // ─── VIP Lifecycle Email Template Tests ──────────────────────────────────

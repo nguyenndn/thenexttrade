@@ -300,7 +300,7 @@ export default function OnboardingClient({
     const progressPercent = ((step - 1) / 3) * 100;
 
     return (
-        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#F7F4EC] text-slate-800 dark:bg-transparent dark:text-white p-4 font-outfit relative overflow-hidden transition-colors duration-300">
+        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#F7F4EC] text-slate-800 dark:bg-transparent dark:text-white p-4 font-sans relative overflow-hidden transition-colors duration-300">
             {/* Background gradient overlay to match auth pages exactly */}
             <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.16)_0%,rgba(255,255,255,0.72)_34%,rgba(16,185,129,0.10)_100%)] dark:bg-[linear-gradient(135deg,rgba(43,35,68,0.60)_0%,rgba(25,52,81,0.46)_48%,rgba(6,69,79,0.38)_100%)] pointer-events-none" />
 

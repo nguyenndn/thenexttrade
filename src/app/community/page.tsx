@@ -267,8 +267,8 @@ export default async function CommunityPage() {
                 .filter((file) => /\.(png|jpe?g|webp|gif)$/i.test(file))
                 .map((file) => `/images/feedbacks/${file}`);
         }
-    } catch (error) {
-        console.error("Failed to read feedback images:", error);
+    } catch {
+        // Silently handle missing directory or read errors during render
     }
 
     return (

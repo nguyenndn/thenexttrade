@@ -105,7 +105,7 @@ export function IssueLicenseModal({
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 max-w-md">
+            <DialogContent className="bg-white dark:bg-[#1E2028] rounded-2xl border border-gray-200 dark:border-white/10 max-w-md">
                 <DialogHeader>
                     <DialogTitle className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <KeyRound size={18} className="text-emerald-500" />

@@ -116,7 +116,7 @@ export function MobileBottomTabBar() {
                                 {activeSheet.label}
                             </h3>
                             <Button
-                                variant="ghost"
+                                variant="outline"
                                 size="icon"
                                 onClick={() => setOpenGroup(null)}
                                 className="h-8 w-8 rounded-full text-gray-500 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-300 dark:hover:bg-white/10 transition-colors"

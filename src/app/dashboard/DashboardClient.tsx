@@ -48,7 +48,7 @@ import { DailyWinRateChart } from "@/components/dashboard/DailyWinRateChart";
 
 // Lazy load below-fold chart components — only loaded when user scrolls to them
 const ChartSkeleton = () => (
-    <div className="h-[280px] bg-gray-100 dark:bg-white/5 animate-pulse rounded-lg" />
+    <div className="h-[280px] bg-gray-100 dark:bg-white/5 animate-pulse rounded-xl" />
 );
 const ProfitDistributionChart = dynamic(
     () =>

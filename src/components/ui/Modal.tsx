@@ -82,10 +82,11 @@ export function Modal({ isOpen, onClose, title, children, className, bodyClassNa
                                 {title}
                             </h3>
                             <Button
-                                variant="ghost"
+                                variant="outline"
                                 size="icon"
                                 onClick={onClose}
-                                className="rounded-full w-8 h-8 p-1 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-600 transition-colors"
+                                aria-label="Close dialog"
+                                className="rounded-lg w-8 h-8 p-1 text-gray-500 hover:text-gray-700 dark:hover:text-white transition-colors"
                             >
                                 <X size={18} />
                             </Button>

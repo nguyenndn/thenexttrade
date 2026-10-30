@@ -129,7 +129,7 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="bg-white dark:bg-[#151925] border border-gold/20 rounded-lg max-w-lg w-full p-6 shadow-2xl relative overflow-hidden"
+                        className="bg-white dark:bg-[#151925] border border-gold/20 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative overflow-hidden"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Close Button */}

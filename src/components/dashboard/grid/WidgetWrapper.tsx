@@ -77,7 +77,7 @@ export function WidgetWrapper({
                         {widthBadge && (
                             <span
                                 className={cn(
-                                    "text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/15 px-1.5 py-0.5 rounded-md shrink-0",
+                                    "text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/15 px-1.5 py-0.5 rounded-lg shrink-0",
                                     isStandardPresetWidth && "sm:hidden"
                                 )}
                             >
@@ -92,7 +92,7 @@ export function WidgetWrapper({
                         onTouchStart={(e) => e.stopPropagation()}
                     >
                         {onWidthChange && (
-                            <div className="hidden sm:flex items-center gap-0.5 bg-white/80 dark:bg-black/25 border border-amber-500/20 rounded-md p-0.5">
+                            <div className="hidden sm:flex items-center gap-0.5 bg-white/80 dark:bg-black/25 border border-amber-500/20 rounded-lg p-0.5">
                                 {WIDTH_PRESETS.map((preset) => {
                                     const isDisabled = preset.value < minWidth;
                                     const isActive =
@@ -109,7 +109,7 @@ export function WidgetWrapper({
                                                 onWidthChange(id, preset.value);
                                             }}
                                             className={cn(
-                                                "h-5 px-1.5 text-[10px] font-bold rounded transition-colors min-w-0",
+                                                "h-5 px-1.5 text-[10px] font-bold rounded-lg transition-colors min-w-0",
                                                 isActive
                                                     ? "bg-amber-500 text-white hover:bg-amber-600"
                                                     : "text-slate-600 dark:text-slate-300 hover:bg-amber-500/15 hover:text-amber-600 dark:hover:text-amber-400",
@@ -134,7 +134,7 @@ export function WidgetWrapper({
                             }}
                             variant="ghost"
                             size="icon"
-                            className="no-drag h-6 w-6 p-0 rounded-md text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/15 transition-colors"
+                            className="no-drag h-6 w-6 p-0 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/15 transition-colors"
                             aria-label="Remove widget"
                             title="Remove widget"
                         >

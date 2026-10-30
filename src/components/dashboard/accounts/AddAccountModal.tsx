@@ -766,10 +766,11 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                     <div className="p-8 relative">
                         {/* Close button at top right */}
                         <Button
-                            variant="ghost"
+                            variant="outline"
                             size="icon"
                             type="button"
                             onClick={() => setOpen(false)}
+                            aria-label="Close modal"
                             className="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                         >
                             <XCircle size={18} />
@@ -1097,10 +1098,11 @@ export function AddAccountModal({ brokers }: AddAccountModalProps) {
                     <div className="p-10 relative flex flex-col items-center justify-center min-h-[320px]">
                         {/* Close button at top right */}
                         <Button
-                            variant="ghost"
+                            variant="outline"
                             size="icon"
                             type="button"
                             onClick={() => setOpen(false)}
+                            aria-label="Close modal"
                             className="absolute h-auto w-auto top-4 right-4 p-2 text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors z-10"
                         >
                             <XCircle size={18} />

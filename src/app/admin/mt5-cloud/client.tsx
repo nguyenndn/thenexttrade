@@ -322,7 +322,7 @@ export function Mt5CloudAdminClient({ initialData }: Mt5CloudAdminClientProps) {
                                                         {row.accountNumber}
                                                     </span>
                                                     <span
-                                                        className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${
+                                                        className={`rounded-lg px-1.5 py-0.5 text-[10px] font-bold ${
                                                             row.isDemo
                                                                 ? "bg-cyan-500/15 text-cyan-400"
                                                                 : "bg-emerald-500/15 text-emerald-400"

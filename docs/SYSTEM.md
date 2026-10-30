@@ -31,7 +31,11 @@ flowchart TD
   App --> SMTP[SMTP provider]
   App --> InternalAI[Internal AI Gateway]
   InternalAI --> OpenRouter[OpenRouter / provider gateway]
-  EA[Trade Manager EA / MT5 EA] --> EaApi[/api/ea/*/]
+  App -->|Primary Remote Command: TCP Socket 10-50ms| Bridge[.NET MT5 Direct Socket Bridge Port 5055]
+  Bridge <-->|Direct Socket| EA[Trade Manager EA / MT5 EA]
+  App -->|Fallback Remote Command: create EaCommand| Prisma
+  EA -->|poll /api/ea/commands/pending| EaApi[/api/ea/*/]
+  EA -->|heartbeat & trade sync| EaApi
   LegacySync[Legacy sync clients] --> SyncApi[/api/sync/*/]
   EaApi --> Prisma
   SyncApi --> Prisma
@@ -80,10 +84,10 @@ Use this table when assigning bugs or feature work.
 | Auth & OTP Verification | `/auth/login`, `/auth/signup`, `/auth/verify-email`, `/auth/verify-2fa` | `src/app/auth`, `src/app/auth/actions.ts`, middleware/proxy | Supabase Auth (`generateLink` 8-digit OTP + SMTP fallback), `User`, `Profile`, sessions, security logs |
 | Dashboard shell | `/dashboard/*` | `src/app/dashboard/layout.client.tsx`, `src/components/dashboard`, `src/config/navigation.ts` | Auth session, profile, navigation |
 | Main dashboard | `/dashboard` | `src/app/dashboard/page.tsx`, `src/app/dashboard/DashboardClient.tsx` | dashboard stats, chart queries, performance helpers, first-session activation state |
-| Account hub & Sync Wizard | `/dashboard/accounts` | `src/components/trading-accounts/AccountListClient.tsx`, `AddAccountModal.tsx`, `TradeSyncWizard.tsx`, `src/lib/sync/sync-urls.ts` | `TradingAccount`, Pro eligibility, 3-step EA sync setup (`NEXT_PUBLIC_SYNC_SERVER_URL \|\| NEXT_PUBLIC_APP_URL`) |
+| Account hub & Main Account | `/dashboard/accounts` | `src/components/trading-accounts/AccountListClient.tsx`, `AddAccountModal.tsx`, `TradeSyncWizard.tsx`, `src/actions/main-account.ts`, `src/lib/sync/sync-urls.ts` | `TradingAccount`, Pro eligibility, 4-tier default account hierarchy (`resolveDefaultAccountId`), 1-yr cookie persistence, 2-account Free quota |
 | Sync Health Center | `/dashboard/accounts?health=sync` | `src/components/trading-accounts/SyncHealthCenter.tsx`, `SyncHealthSummaryCard.tsx`, `SyncHealthAccountRow.tsx`, `SyncRecoveryAction.tsx` | `TradingAccount`, `SyncHistory`, `ImportHistory`, `src/lib/sync-health.ts` |
 | Trade Manager EA sync | account setup, EA APIs | `src/app/api/ea/*`, `src/app/api/sync/*`, trading-system download/config surfaces | API key auth, commands, account heartbeat, first-data sync |
-| Trade Manager Remote Control | `/dashboard/trade-manager`, `/api/remote/*`, `/api/ea/commands/*` | `src/app/dashboard/trade-manager/*`, `src/app/api/remote/*`, `src/app/api/ea/commands/*` | `EaCommand`, live MT5 position telemetry, remote SL/TP/close execution, Telegram rules |
+| Trade Manager Remote Control (Hybrid) | `/dashboard/trade-manager`, `/api/remote/*`, `/api/ea/commands/*` | `src/app/dashboard/trade-manager/*`, `src/app/api/remote/*`, `src/app/api/ea/commands/*` | Hybrid execution: Primary .NET MT5 Socket Bridge microservice (Port 5055, 10-50ms TCP) + Secondary `EaCommand` polling fallback |
 | MT5 Cloud Worker Fleet | `/admin/mt5-cloud`, `/api/worker/jobs/*` | `src/app/admin/mt5-cloud/*`, `src/app/api/worker/jobs/*`, `tools/tnt-worker/*` | `Mt5Worker` (Multi-Instance & Smart Auto-Sleep), `Mt5EnrollmentToken`, `Mt5ImportJob`, `TradingAccountCredential` (AES-256-GCM) |
 | Legacy sync compatibility | old sync APIs/app artifacts | `src/app/api/sync`, `src/app/api/app/version` | backwards-compatible import handling only; do not promote in new UI |
 | Journal & Strategies | `/dashboard/journal`, `/dashboard/strategies`, `/api/cron/journal-autopilot` | journal pages/components/actions, `src/app/dashboard/strategies/*`, `src/lib/journal/autopilot.server.ts` | `JournalEntry`, `Strategy`, `TradingDayNote`, imports, manual trades, AI gateway journal autopilot |
@@ -100,7 +104,8 @@ Use this table when assigning bugs or feature work.
 | AI Gateway | `/admin/ai`, `/dashboard/intelligence` | `src/actions/admin/ai-gateway.ts`, `src/actions/ai-coach.ts`, `src/lib/ai-gateway/*`, `src/components/admin/ai/*` | providers, models, routing, request logs, audit |
 | Economic calendar | `/tools/economic-calendar` | `src/app/tools/economic-calendar`, `src/lib/services/economic-calendar.ts` | configured calendar provider data |
 | Email Lab | `/admin/email-lab` | `src/app/admin/email-lab`, `src/lib/services/email.service.ts`, `src/lib/emails/*` | SMTP/Mailtrap template testing |
-| Admin users & 3-Tab CRM | `/admin/users`, `/admin/users/[id]`, `/admin/users/behavior` | `src/app/admin/users/[id]/page.tsx`, `UserDetailTabsWrapper.tsx`, `UserOverviewTab.tsx`, `UserVipProTab.tsx`, `UserCoachingAnalyticsTab.tsx`, `src/actions/admin-impersonate.ts` | 3-Tab CRM (`Overview`, `VIP & Broker`, `Coaching & Analytics`), 1-click IB `CONFIRMED` unlock, Impersonate Trader |
+| Admin users & 3-Tab CRM | `/admin/users`, `/admin/users/[id]`, `/admin/users/behavior` | `src/app/admin/users/[id]/page.tsx`, `UserDetailTabsWrapper.tsx`, `UserOverviewTab.tsx`, `UserVipProTab.tsx`, `UserAccountsList.tsx`, `UserLicensesList.tsx`, `UserCoachingAnalyticsTab.tsx`, `src/actions/admin-impersonate.ts` | 3-Tab CRM (`Overview`, `Accounts & Plan` [value="accounts"] bundling VIP/Pro + Accounts + Licenses, `Coaching & Analytics`), 1-click IB `CONFIRMED` unlock, Impersonate Trader |
+| Admin Inquiries & Messages | `/admin/messages` | `src/app/admin/messages/page.tsx`, `src/actions/admin/messages.ts`, `src/components/admin/messages/*` | `ContactMessage`, 4 statuses (`new`, `read`, `replied`, `archived`), auto-read transition, client-side `mailto:` reply, staff triage notes |
 | Security | `/admin/security` | security admin pages/APIs | `AuditLog`, `SecurityLog`, `BlockedIP` |
 | Email | no single route | `src/lib/services/email.service.ts`, email actions | SMTP provider, templates, send logs later |
 | Storage | media and generated files | `src/lib/storage/object-storage.ts` | R2/local storage adapter |
@@ -194,6 +199,27 @@ Cloud Sync environment failures are expected, not exceptional. The worker distin
 Legacy `/api/sync/*` code may remain for backwards compatibility, but it should not appear as a primary setup path in new product surfaces.
 
 Timezone rule: broker timezones must be validated before writing to the database. Invalid values fall back to `Etc/UTC` so dashboard date ranges cannot crash.
+
+## Hybrid Remote Execution Architecture
+
+The platform implements a resilient, dual-layer remote position execution architecture for Trade Manager Mobile Remote (`/dashboard/trade-manager`, `/api/remote/*`, `/api/ea/commands/*`):
+
+1. **Primary Execution Path: C# .NET MT5 Direct Socket Bridge Microservice**
+   - Configured via environment variable `MT5_BRIDGE_URL` (default listening on TCP port `5055`).
+   - Maintains persistent, bidirectional TCP socket connections directly with active MetaTrader 5 terminal instances.
+   - Achieves sub-second execution speeds (**10–50ms latency**), allowing traders to execute critical risk controls in real time:
+     - `SL_TO_BE`: Instantly move Stop-Loss to entry break-even plus commission offset.
+     - `PARTIAL_CLOSE`: Close a specified percentage (e.g. 50%) or lot fraction of open volume.
+     - `CLOSE_POSITION`: Close a specific MT5 ticket immediately at market.
+     - `CLOSE_ALL`: Emergency kill-switch closing all open positions across the account.
+     - `TRAIL_STOP`: Dynamically adjust trailing stop distances based on ATR or pips.
+
+2. **Secondary / Fallback Path: Asynchronous Command Polling (`EaCommand`)**
+   - If the .NET Socket Bridge is unreachable, unconfigured, or offline, the Next.js API automatically routes execution through the PostgreSQL database via the `EaCommand` table (`ea_commands`).
+   - The remote action inserts an `EaCommand` record with `status: "PENDING"` and a payload containing action type, ticket number, volume, and target prices.
+   - The Trade Manager EA attached to the trader's desktop/VPS terminal polls `GET /api/ea/commands/pending?accountNumber=...` on each timer tick / heartbeat cycle (authenticated via 64-character Sync API Key).
+   - Once executed terminal-side, the EA posts completion telemetry back to `POST /api/ea/commands/[id]` updating status to `"EXECUTED"` (with actual fill price and slippage) or `"FAILED"` (with MT5 error code).
+   - This hybrid design guarantees zero loss of command intent while delivering real-time responsiveness whenever the socket bridge is online.
 
 ## Analytics
 

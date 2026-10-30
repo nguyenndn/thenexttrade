@@ -90,7 +90,7 @@ export function PrescriptionCard({
                             : `Tailored Action Plan for ${archetype.name}`}
                     </h3>
                 </div>
-                <div className="flex items-center rounded border border-dashboard bg-gray-50 px-2.5 py-1 text-[11px] font-mono font-semibold text-gray-600 dark:bg-white/[0.03] dark:text-gray-400">
+                <div className="flex items-center rounded-lg border border-dashboard bg-gray-50 px-2.5 py-1 text-[11px] font-mono font-semibold text-gray-600 dark:bg-white/[0.03] dark:text-gray-400">
                     <span>3 Prescribed Solutions</span>
                 </div>
             </div>
@@ -142,7 +142,7 @@ export function PrescriptionCard({
                                     </span>
                                     {item.stepLabel}
                                 </span>
-                                <span className="rounded border border-dashboard bg-gray-50 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-gray-700 dark:bg-white/[0.04] dark:text-gray-300">
+                                <span className="rounded-lg border border-dashboard bg-gray-50 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-gray-700 dark:bg-white/[0.04] dark:text-gray-300">
                                     {item.badge}
                                 </span>
                             </div>

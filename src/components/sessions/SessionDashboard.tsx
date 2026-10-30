@@ -318,7 +318,7 @@ function SessionLoadingSkeleton() {
     return (
         <div className="space-y-4 animate-pulse">
             <div className="h-24 bg-gray-100 dark:bg-white/5 rounded-lg w-full" />
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[1, 2, 3, 4].map((i) => (
                     <div
                         key={i}
@@ -326,9 +326,9 @@ function SessionLoadingSkeleton() {
                     />
                 ))}
             </div>
-            <div className="grid grid-cols-3 gap-4">
-                <div className="col-span-2 h-80 bg-gray-100 dark:bg-white/5 rounded-lg" />
-                <div className="col-span-1 h-80 bg-gray-100 dark:bg-white/5 rounded-lg" />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div className="lg:col-span-2 h-80 bg-gray-100 dark:bg-white/5 rounded-lg" />
+                <div className="lg:col-span-1 h-80 bg-gray-100 dark:bg-white/5 rounded-lg" />
             </div>
         </div>
     );

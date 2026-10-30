@@ -92,28 +92,28 @@ export function UserDetailTabsWrapper({
         >
             <div className="border-b border-gray-200 dark:border-white/10 pb-4">
                 <TabsList className="h-auto w-full justify-start gap-1 rounded-lg border border-gray-200 bg-[#F1F3F5] p-1.5 dark:border-white/10 dark:bg-[#1A1D27] flex-wrap sm:flex-nowrap">
-                    <TabsTrigger value="overview" className="shrink-0 gap-2 px-3.5 py-2">
+                    <TabsTrigger value="overview" className="shrink-0 gap-2 px-3.5 py-2 whitespace-nowrap">
                         <ShieldCheck size={16} /> Overview
                     </TabsTrigger>
 
-                    <TabsTrigger value="accounts" className="shrink-0 gap-2 px-3.5 py-2">
+                    <TabsTrigger value="accounts" className="shrink-0 gap-2 px-3.5 py-2 whitespace-nowrap">
                         <WalletCards size={16} /> Accounts & Plan
                         {typeof counts?.accounts === "number" && (
-                            <span className="ml-1 rounded-md bg-gray-200 px-1.5 py-0.5 text-[10px] font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
+                            <span className="ml-1 rounded-full bg-gray-200 px-1.5 py-0.5 text-[10px] font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
                                 {counts.accounts}
                             </span>
                         )}
                         {totalVerifyBadge > 0 && (
-                            <span className="rounded-md bg-amber-500/15 border border-amber-500/30 px-1.5 py-0.5 text-[10px] font-black text-amber-600 dark:text-amber-400">
+                            <span className="rounded-full bg-amber-500/15 border border-amber-500/30 px-1.5 py-0.5 text-[10px] font-black text-amber-600 dark:text-amber-400">
                                 {totalVerifyBadge} Verify
                             </span>
                         )}
                     </TabsTrigger>
 
-                    <TabsTrigger value="coaching" className="shrink-0 gap-2 px-3.5 py-2">
+                    <TabsTrigger value="coaching" className="shrink-0 gap-2 px-3.5 py-2 whitespace-nowrap">
                         <Sparkles size={16} /> Coaching & Analytics
                         {coachingTotal > 0 && (
-                            <span className="ml-1 rounded-md bg-gray-200 px-1.5 py-0.5 text-[10px] font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
+                            <span className="ml-1 rounded-full bg-gray-200 px-1.5 py-0.5 text-[10px] font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
                                 {coachingTotal}
                             </span>
                         )}

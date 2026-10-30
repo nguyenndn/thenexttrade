@@ -145,7 +145,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
             </div>
 
             {/* Header Panel */}
-            <div className="relative rounded-lg border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 md:p-8 shadow-sm mb-8 overflow-hidden">
+            <div className="relative rounded-xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 md:p-8 shadow-sm mb-8 overflow-hidden">
                 {/* Ambient background glow inside header */}
                 <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-72 h-72 bg-gold/5 dark:bg-gold/[0.03] rounded-full blur-3xl pointer-events-none" />
 
@@ -195,7 +195,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
             </div>
 
             {/* Built for real MT5 workflow (Outside) */}
-            <div className="mb-8 rounded-lg border border-gold/15 bg-gold/[0.02] p-6 shadow-sm relative overflow-hidden">
+            <div className="mb-8 rounded-xl border border-gold/15 bg-gold/[0.02] p-6 shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
                 <h3 className="text-xs font-black text-gold mb-5 uppercase tracking-[0.18em] flex items-center gap-2 relative z-10">
                     <Server size={14} className="stroke-[2.5]" />
@@ -247,7 +247,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
 
             {/* Recommended VPS Block */}
             {system.slug !== "trade-manager" && (
-                <div className="mb-8 rounded-lg border border-emerald-500/15 dark:border-emerald-500/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 md:p-8 shadow-sm backdrop-blur-md relative overflow-hidden">
+                <div className="mb-8 rounded-xl border border-emerald-500/15 dark:border-emerald-500/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 md:p-8 shadow-sm backdrop-blur-md relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 dark:bg-emerald-500/[0.02] rounded-full blur-2xl pointer-events-none" />
 
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
@@ -310,7 +310,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
             {/* Main vertical stack */}
             <div className="space-y-8">
                 {/* Unlock License (CTA Widget Banner) */}
-                <div className="rounded-lg border border-gold/25 dark:border-gold/15 bg-gold/[0.03] dark:bg-gold/[0.01] p-6 md:p-8 shadow-md relative overflow-hidden">
+                <div className="rounded-xl border border-gold/25 dark:border-gold/15 bg-gold/[0.03] dark:bg-gold/[0.01] p-6 md:p-8 shadow-md relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
 
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
@@ -423,7 +423,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                 </div>
 
                 {/* FAQ */}
-                <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 shadow-sm">
+                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 shadow-sm">
                     <h3 className="text-base font-black text-gray-800 dark:text-white mb-4 uppercase tracking-wider flex items-center gap-2">
                         <HelpCircle size={16} className="text-gold" />
                         Frequently Asked Questions

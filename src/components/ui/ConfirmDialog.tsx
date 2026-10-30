@@ -95,15 +95,16 @@ export function ConfirmDialog({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative w-full max-w-md bg-white dark:bg-[#1E2028] rounded-lg shadow-2xl overflow-hidden border border-dashboard "
+                        className="relative w-full max-w-md bg-white dark:bg-[#1E2028] rounded-2xl shadow-2xl overflow-hidden border border-dashboard "
                         role="alertdialog"
                     >
                         {/* Close Button */}
                         <Button
-                            variant="ghost"
+                            variant="outline"
                             size="icon"
                             onClick={onCancel}
                             disabled={isLoading}
+                            aria-label="Close dialog"
                             className="absolute top-4 right-4 p-2 w-10 h-10 rounded-full text-gray-500 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-300 dark:hover:bg-white/5 transition-colors disabled:opacity-50"
                         >
                             <X size={20} />
@@ -136,7 +137,7 @@ export function ConfirmDialog({
                         {/* Actions */}
                         <div className="bg-gray-50 dark:bg-[#151925] px-6 py-4 flex flex-col-reverse sm:flex-row justify-end gap-3 border-t border-dashboard">
                             <Button
-                                variant="ghost"
+                                variant="outline"
                                 type="button"
                                 size="smd"
                                 onClick={onCancel}

@@ -177,7 +177,7 @@ export function ProBenefitsModal({
                                 </div>
                             </div>
                             <Button
-                                variant="ghost"
+                                variant="outline"
                                 size="icon"
                                 onClick={onClose}
                                 aria-label="Close modal"

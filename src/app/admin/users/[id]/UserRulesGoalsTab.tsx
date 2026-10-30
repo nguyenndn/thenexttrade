@@ -154,7 +154,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
         <div className="space-y-6">
             {/* Top KPI Cards */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <ShieldCheck size={14} className="text-primary" /> Active Rules
                     </div>
@@ -166,7 +166,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                     </div>
                 </div>
 
-                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <CheckCircle2 size={14} className="text-emerald-500" /> Compliance Rate
                     </div>
@@ -178,7 +178,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                     </div>
                 </div>
 
-                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <AlertTriangle size={14} className="text-rose-500" /> Rule Violations
                     </div>
@@ -190,7 +190,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                     </div>
                 </div>
 
-                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <Target size={14} className="text-blue-500" /> Active Goals
                     </div>
@@ -288,7 +288,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
 
             {/* Section 1: Trading Rules */}
             {activeSection === "rules" && (
-                <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <ShieldCheck size={16} className="text-primary" /> Configured Trading Rules ({filteredRules.length})
@@ -388,7 +388,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
 
             {/* Section 2: Behavior Goals */}
             {activeSection === "goals" && (
-                <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <Target size={16} className="text-blue-500" /> Trader Behavior Goals ({filteredGoals.length})
@@ -401,7 +401,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
                             {filteredGoals.map((goal) => (
                                 <div
                                     key={goal.id}
-                                    className="rounded-lg border border-gray-200 bg-gray-50/40 p-4 transition-all hover:border-gray-300 dark:border-white/10 dark:bg-[#1A1D27] dark:hover:border-white/20 flex flex-col justify-between"
+                                    className="rounded-xl border border-gray-200 bg-gray-50/40 p-4 transition-all hover:border-gray-300 dark:border-white/10 dark:bg-[#1A1D27] dark:hover:border-white/20 flex flex-col justify-between"
                                 >
                                     <div>
                                         <div className="flex items-center justify-between gap-2">
@@ -481,7 +481,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
 
             {/* Section 3: Rule Check Telemetry Log */}
             {activeSection === "checks" && (
-                <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <Activity size={16} className="text-emerald-500" /> Trade-Level Rule Verification Log ({filteredChecks.length})
@@ -553,7 +553,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
             {/* Rule Detail Modal */}
             {selectedRule && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <h3 className="text-lg font-black text-gray-900 dark:text-white">
@@ -612,7 +612,7 @@ export function UserRulesGoalsTab({ rules, goals, ruleChecks }: UserRulesGoalsTa
             {/* Goal Detail Modal */}
             {selectedGoal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <h3 className="text-lg font-black text-gray-900 dark:text-white">

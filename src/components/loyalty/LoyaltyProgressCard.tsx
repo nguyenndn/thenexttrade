@@ -19,7 +19,7 @@ export function LoyaltyProgressCard({ progress }: LoyaltyProgressCardProps) {
   } = progress;
 
   return (
-    <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-5 sm:p-6 shadow-sm relative overflow-hidden">
+    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-5 sm:p-6 shadow-sm relative overflow-hidden">
 
       {/* Header Badge */}
       <div className="flex items-center justify-between gap-3 mb-5 relative z-10">
@@ -31,7 +31,7 @@ export function LoyaltyProgressCard({ progress }: LoyaltyProgressCardProps) {
             <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">
               {currentTier ? currentTier.name : "Initiating Trader"}
             </h2>
-            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono font-bold uppercase tracking-wide bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-[11px] font-mono font-bold uppercase tracking-wide bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
               Level {currentTier ? currentTier.level : 0}
             </span>
           </div>

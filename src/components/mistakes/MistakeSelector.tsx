@@ -75,10 +75,11 @@ export function MistakeSelector({
                                     <span>{mistake.emoji}</span>
                                     <span>{mistake.name}</span>
                                     <Button
-                                        variant="ghost"
+                                        variant="outline"
                                         size="icon"
                                         type="button"
                                         onClick={() => removeMistake(code)}
+                                        aria-label="Close selector"
                                         className="hover:opacity-70 p-0.5 h-auto w-auto hover:bg-transparent"
                                     >
                                         <X size={12} />

@@ -213,7 +213,7 @@ export default function AdminQuotesPage() {
             </Tabs>
 
             {/* Table */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left border-collapse">
                         <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-600 font-bold tracking-wider">

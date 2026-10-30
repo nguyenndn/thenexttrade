@@ -118,7 +118,7 @@ export function TradingStyleDashboard({
                                     Normalized score profile across psychological trading spectrums
                                 </p>
                             </div>
-                            <span className="hidden rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-mono font-bold text-gray-600 sm:inline-block dark:bg-white/[0.06] dark:text-gray-300">
+                            <span className="hidden rounded-lg bg-slate-100 px-2 py-0.5 text-[10px] font-mono font-bold text-gray-600 sm:inline-block dark:bg-white/[0.06] dark:text-gray-300">
                                 0–100 Scale
                             </span>
                         </div>

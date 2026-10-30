@@ -30,7 +30,7 @@ export function OnboardingCard({
 
     return (
         <div
-            className="relative bg-white dark:bg-[#1A1D27] rounded-lg border border-dashboard shadow-2xl w-[340px] max-w-[calc(100vw-2rem)] overflow-hidden pointer-events-auto"
+            className="relative bg-white dark:bg-[#1A1D27] rounded-xl border border-dashboard shadow-2xl w-[340px] max-w-[calc(100vw-2rem)] overflow-hidden pointer-events-auto"
             style={{ zIndex: 99999 }}
         >
             {/* Progress Bar */}
@@ -63,11 +63,11 @@ export function OnboardingCard({
                     </div>
                     <Button
                         type="button"
-                        variant="ghost"
+                        variant="outline"
                         size="icon"
                         onClick={handleClose}
                         className="h-7 w-7 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 pointer-events-auto"
-                        aria-label="Close tour"
+                        aria-label="Dismiss"
                     >
                         <X size={16} />
                     </Button>

@@ -246,7 +246,7 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
                 <div className="flex items-center justify-between px-4 py-3 border-b border-dashboard">
                     <Logo />
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         size="icon"
                         onClick={onClose}
                         className="p-1.5 h-auto w-auto text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white rounded-full hover:bg-gray-100 dark:hover:bg-white/10"

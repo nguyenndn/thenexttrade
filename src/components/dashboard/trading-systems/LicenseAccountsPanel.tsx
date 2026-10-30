@@ -27,7 +27,8 @@ import {
     Send,
 } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/Button";
+import { Button, buttonVariants } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 import {
     submitMultipleAccountRequests,
     cancelAccountRequest,
@@ -238,33 +239,29 @@ export function LicenseAccountsPanel({
                 </div>
                 <div className="flex items-center gap-2 flex-wrap shrink-0">
                     {!hasApprovedLicense ? (
-                        <Link href="/dashboard/accounts?action=add&intent=unlock-pro">
-                            <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                className="rounded-lg text-xs font-bold text-amber-600 dark:text-amber-400 border-amber-500/30 hover:bg-amber-500/10"
-                            >
-                                <Crown size={14} className="text-amber-500" />
-                                <span>Unlock Partner Pro Free</span>
-                                <ArrowRight size={13} />
-                            </Button>
+                        <Link
+                            href="/dashboard/accounts?action=add&intent=unlock-pro"
+                            className={cn(
+                                buttonVariants({ variant: "outline", size: "sm" }),
+                                "rounded-lg text-xs font-bold text-amber-600 dark:text-amber-400 border-amber-500/30 hover:bg-amber-500/10 inline-flex items-center gap-1.5"
+                            )}
+                        >
+                            <Crown size={14} className="text-amber-500" />
+                            <span>Unlock Partner Pro Free</span>
+                            <ArrowRight size={13} />
                         </Link>
                     ) : vipLink ? (
                         <a
                             href={vipLink}
                             target="_blank"
                             rel="noopener noreferrer"
+                            className={cn(
+                                buttonVariants({ variant: "outline", size: "sm" }),
+                                "rounded-lg text-xs font-bold text-[#2AABEE] border-[#2AABEE]/30 hover:bg-[#2AABEE]/10 inline-flex items-center gap-1.5"
+                            )}
                         >
-                            <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                className="rounded-lg text-xs font-bold text-[#2AABEE] border-[#2AABEE]/30 hover:bg-[#2AABEE]/10"
-                            >
-                                <Send size={13} />
-                                <span>VIP Telegram</span>
-                            </Button>
+                            <Send size={13} />
+                            <span>VIP Telegram</span>
                         </a>
                     ) : null}
                     <Button
@@ -320,7 +317,7 @@ export function LicenseAccountsPanel({
                             In MetaTrader 5, open{" "}
                             <span className="font-bold">Tools → Options</span>{" "}
                             (or press{" "}
-                            <kbd className="px-1.5 py-0.5 rounded bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 font-mono text-[11px]">
+                            <kbd className="px-1.5 py-0.5 rounded-lg bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 font-mono text-[11px]">
                                 Ctrl + O
                             </kbd>
                             ).
@@ -407,16 +404,15 @@ export function LicenseAccountsPanel({
                                         Cancel
                                     </Button>
                                 )}
-                                <Link href="/dashboard/accounts">
-                                    <Button
-                                        type="button"
-                                        variant="gold"
-                                        size="sm"
-                                        className="rounded-lg font-bold"
-                                    >
-                                        <span>Go to Trading Accounts</span>
-                                        <ArrowRight size={14} />
-                                    </Button>
+                                <Link
+                                    href="/dashboard/accounts"
+                                    className={cn(
+                                        buttonVariants({ variant: "gold", size: "sm" }),
+                                        "rounded-lg font-bold inline-flex items-center gap-1.5"
+                                    )}
+                                >
+                                    <span>Go to Trading Accounts</span>
+                                    <ArrowRight size={14} />
                                 </Link>
                             </div>
                         </div>
@@ -610,16 +606,16 @@ export function LicenseAccountsPanel({
                                                     )
                                                 ) : acc.licenseStatus ===
                                                   "APPROVED" ? (
-                                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                                                    <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                                                         Licensed
                                                     </span>
                                                 ) : acc.licenseStatus ===
                                                   "PENDING" ? (
-                                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                                    <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
                                                         Pending
                                                     </span>
                                                 ) : (
-                                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">
+                                                    <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">
                                                         {acc.licenseStatus ===
                                                         "UNREGISTERED"
                                                             ? "Available"
@@ -633,16 +629,15 @@ export function LicenseAccountsPanel({
                             </div>
 
                             <div className="flex items-center justify-between gap-2 pt-1">
-                                <Link href="/dashboard/accounts">
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        size="sm"
-                                        className="rounded-lg text-xs"
-                                    >
-                                        <Plus size={13} />
-                                        <span>Add New Account</span>
-                                    </Button>
+                                <Link
+                                    href="/dashboard/accounts"
+                                    className={cn(
+                                        buttonVariants({ variant: "outline", size: "sm" }),
+                                        "rounded-lg text-xs inline-flex items-center gap-1.5"
+                                    )}
+                                >
+                                    <Plus size={13} />
+                                    <span>Add New Account</span>
                                 </Link>
 
                                 <div className="flex items-center gap-2">

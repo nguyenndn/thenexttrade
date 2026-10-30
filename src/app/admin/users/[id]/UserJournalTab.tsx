@@ -166,7 +166,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
         <div className="space-y-6">
             {/* KPI Summary Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-4 rounded-lg bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-xl bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
                     <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
                         Total Trades
                     </p>
@@ -180,7 +180,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                     </p>
                 </div>
 
-                <div className="p-4 rounded-lg bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-xl bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
                     <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
                         Win Rate
                     </p>
@@ -192,7 +192,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                     </p>
                 </div>
 
-                <div className="p-4 rounded-lg bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-xl bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
                     <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
                         Net P&L
                     </p>
@@ -211,7 +211,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                     </p>
                 </div>
 
-                <div className="p-4 rounded-lg bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-xl bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
                     <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
                         Direction Bias
                     </p>
@@ -227,7 +227,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
             </div>
 
             {/* Filter Bar */}
-            <div className="p-4 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
+            <div className="p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
                 <div className="w-full md:max-w-xs">
                     <PremiumInput
                         icon={Search}
@@ -325,7 +325,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
             </div>
 
             {/* Entries Table */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left border-collapse text-xs">
                         <thead className="bg-gray-50/70 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-[11px] font-bold uppercase tracking-wider text-gray-500">
@@ -366,7 +366,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                                                 <div className="flex items-center gap-2">
                                                     <span
                                                         className={cn(
-                                                            "px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider",
+                                                            "px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider",
                                                             entry.type === "BUY"
                                                                 ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                                                                 : "bg-rose-500/10 text-rose-600 dark:text-rose-400"
@@ -464,7 +464,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
             {/* Trade Details Inspection Modal */}
             {selectedEntry && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in-0">
-                    <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-6 max-w-lg w-full shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto custom-scrollbar">
+                    <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto custom-scrollbar">
                         <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-white/10">
                             <div className="flex items-center gap-2.5">
                                 <span
@@ -482,17 +482,18 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                                 </h3>
                             </div>
                             <Button
-                                variant="ghost"
+                                variant="outline"
                                 size="icon"
                                 onClick={() => setSelectedEntry(null)}
                                 className="w-8 h-8 rounded-full"
+                                aria-label="Close trade details modal"
                             >
                                 <X size={16} />
                             </Button>
                         </div>
 
                         {/* 2x2 Matrix Card */}
-                        <div className="grid grid-cols-2 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] divide-x divide-y divide-gray-200 dark:divide-white/10">
+                        <div className="grid grid-cols-2 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] divide-x divide-y divide-gray-200 dark:divide-white/10">
                             <div className="p-3">
                                 <span className="text-[10px] font-bold uppercase text-gray-400">Entry Price</span>
                                 <p className="font-mono text-sm font-bold text-gray-900 dark:text-white mt-0.5">

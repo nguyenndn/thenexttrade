@@ -72,7 +72,7 @@ export function LeaderboardTabs({
     return (
         <div
             className={cn(
-                "bg-white dark:bg-[#1E2028] p-1.5 rounded-lg border border-dashboard dark:border-white/[0.08] shadow-sm h-auto",
+                "bg-white dark:bg-[#1E2028] p-1.5 rounded-xl border border-dashboard dark:border-white/[0.08] shadow-sm h-auto",
                 equalWidth
                     ? "w-full flex lg:w-auto lg:inline-flex"
                     : "w-auto inline-flex"

@@ -472,7 +472,7 @@ export function SystemDetailCard({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="bg-white dark:bg-[#1E2028] w-full max-w-3xl rounded-lg shadow-2xl overflow-hidden border border-dashboard dark:border-white/[0.08] relative"
+                            className="bg-white dark:bg-[#1E2028] w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden border border-dashboard dark:border-white/[0.08] relative"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="flex items-center justify-between p-6 border-b border-dashboard dark:border-white/[0.08]">

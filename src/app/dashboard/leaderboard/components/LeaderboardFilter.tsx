@@ -37,7 +37,7 @@ export function LeaderboardFilter({
     return (
         <div className="flex flex-wrap items-center gap-2">
             {/* Period Selector */}
-            <div className="flex items-center bg-gray-50 dark:bg-white/5 p-1 rounded-lg border border-dashboard shrink-0 select-none gap-1">
+            <div className="flex items-center bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-dashboard shrink-0 select-none gap-1">
                 {PERIODS.map((p) => (
                     <Button
                         key={p.value}
@@ -58,7 +58,7 @@ export function LeaderboardFilter({
             </div>
 
             {/* SortBy Selector */}
-            <div className="flex items-center bg-gray-50 dark:bg-white/5 p-1 rounded-lg border border-dashboard shrink-0 select-none gap-1">
+            <div className="flex items-center bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-dashboard shrink-0 select-none gap-1">
                 <Button
                     type="button"
                     variant="ghost"

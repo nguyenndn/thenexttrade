@@ -123,7 +123,7 @@ export function SpreadsheetComparisonSection({
                             return (
                                 <div
                                     key={card.label}
-                                    className="group rounded-lg border border-gold/20 bg-white/80 dark:bg-white/[0.02] p-5 shadow-sm flex flex-col items-center text-center transition-all duration-300 hover:border-gold/50 hover:shadow-lg hover:-translate-y-1"
+                                    className="group rounded-xl border border-gold/20 bg-white/80 dark:bg-white/[0.02] p-5 shadow-sm flex flex-col items-center text-center transition-all duration-300 hover:border-gold/50 hover:shadow-md"
                                 >
                                     <div className="mb-3.5 flex h-12 w-12 items-center justify-center rounded-lg bg-gold/10 text-gold border border-gold/25 shadow-sm group-hover:scale-110 group-hover:bg-gold/15 group-hover:shadow-[0_0_18px_rgba(245,158,11,0.28)] transition-all duration-300">
                                         <motion.div

@@ -224,7 +224,7 @@ export default async function UserAcademyDashboard() {
                         <div
                             id="onborda-academy-resume"
                             className={cn(
-                                "relative overflow-hidden rounded-lg border p-6 shadow-sm transition-all duration-300",
+                                "relative overflow-hidden rounded-xl border p-6 shadow-sm transition-all duration-300",
                                 idleDays >= 7
                                     ? "bg-white dark:bg-[#1E2028] border-amber-500/30 dark:border-amber-500/20"
                                     : "bg-white dark:bg-[#1E2028] border-dashboard dark:border-white/[0.08]"
@@ -300,7 +300,7 @@ export default async function UserAcademyDashboard() {
                             </div>
                         </div>
                     ) : (
-                        <div className="p-6 rounded-lg bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 text-yellow-600 dark:text-yellow-400 flex items-center gap-4">
+                        <div className="p-6 rounded-xl bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 text-yellow-600 dark:text-yellow-400 flex items-center gap-4">
                             <Trophy size={24} />
                             <div>
                                 <h3 className="font-bold">Mission Complete!</h3>
@@ -320,7 +320,7 @@ export default async function UserAcademyDashboard() {
                             isGuest={false}
                             completedLessonIds={completedLessonIds}
                             devMode={academyDevMode}
-                            className="rounded-lg border border-dashboard dark:border-white/[0.08] shadow-sm"
+                            className="rounded-xl border border-dashboard dark:border-white/[0.08] shadow-sm"
                         />
                     </div>
                 </div>
@@ -328,7 +328,7 @@ export default async function UserAcademyDashboard() {
                 {/* Sidebar Stats */}
                 <div id="onborda-academy-sidebar" className="space-y-4">
                     {/* Daily Streak */}
-                    <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-dashboard dark:border-white/[0.08] shadow-sm relative overflow-hidden">
+                    <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard dark:border-white/[0.08] shadow-sm relative overflow-hidden">
                         <div className="relative z-10">
                             <div className="flex items-center gap-2.5 mb-3">
                                 <div className="p-2 bg-amber-500/10 rounded-lg text-amber-500">
@@ -356,7 +356,7 @@ export default async function UserAcademyDashboard() {
                     </div>
 
                     {/* Available Quizzes */}
-                    <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-dashboard dark:border-white/[0.08] shadow-sm">
+                    <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard dark:border-white/[0.08] shadow-sm">
                         <h3 className="font-extrabold text-sm text-gray-700 dark:text-white mb-4 flex items-center gap-2 tracking-wider uppercase">
                             <Trophy size={18} className="text-yellow-500" />{" "}
                             Quizzes
@@ -404,7 +404,7 @@ export default async function UserAcademyDashboard() {
                                         <EmptyState
                                             icon={Target}
                                             description="Complete all lessons in a module to unlock its quiz."
-                                            className="border border-dashed border-dashboard rounded-lg"
+                                            className="border border-dashed border-dashboard rounded-xl"
                                         />
                                     </div>
                                 );
@@ -480,7 +480,7 @@ export default async function UserAcademyDashboard() {
                         href="/dashboard/academy/certificates"
                         className="block"
                     >
-                        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-dashboard dark:border-white/[0.08] shadow-sm hover:border-primary/30 hover:shadow-md transition-all group">
+                        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard dark:border-white/[0.08] shadow-sm hover:border-primary/30 hover:shadow-md transition-all group">
                             <h3 className="font-extrabold text-sm text-gray-700 dark:text-white mb-3 flex items-center gap-2 tracking-wider uppercase">
                                 <Award size={18} className="text-primary" />{" "}
                                 Certificates

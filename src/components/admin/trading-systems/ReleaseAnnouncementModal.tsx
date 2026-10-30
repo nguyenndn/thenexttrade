@@ -193,7 +193,7 @@ export function ReleaseAnnouncementModal({
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
             <div
-                className="relative w-full max-w-7xl h-[95vh] max-h-[960px] flex flex-col bg-white dark:bg-[#121624] border border-gray-200 dark:border-white/10 rounded-lg shadow-2xl overflow-hidden"
+                className="relative w-full max-w-7xl h-[95vh] max-h-[960px] flex flex-col bg-white dark:bg-[#121624] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* ── Modal Header ── */}

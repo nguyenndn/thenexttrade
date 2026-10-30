@@ -319,7 +319,7 @@ export function CertificateCard({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative max-w-[95vw] max-h-[90vh] overflow-auto rounded-lg shadow-2xl"
+                        className="relative max-w-[95vw] max-h-[90vh] overflow-auto rounded-2xl shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Modal header */}

@@ -223,7 +223,7 @@ export function QuizClient({
     const sidebarContent = (
         <>
             {/* Quiz Info Card */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm p-5 space-y-3">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5 space-y-3">
                 <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
                     Module Quiz
                 </h3>
@@ -281,7 +281,7 @@ export function QuizClient({
 
             {/* Lessons in Module */}
             {moduleLessons.length > 0 && (
-                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm overflow-hidden">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                     <div className="p-4 border-b border-dashboard flex items-center justify-between">
                         <h3 className="font-bold text-sm text-gray-700 dark:text-white">
                             Lessons in Module
@@ -368,7 +368,7 @@ export function QuizClient({
 
             {/* Previous Attempts */}
             {previousAttempts.length > 0 && (
-                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm p-5 space-y-3">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5 space-y-3">
                     <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
                         Previous Attempts
                     </h3>
@@ -469,7 +469,7 @@ export function QuizClient({
                 <div className="lg:col-span-2 space-y-4">
                     {/* Result Screen */}
                     {result ? (
-                        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm overflow-hidden">
+                        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                             <div
                                 className={cn(
                                     "p-8 lg:p-12 text-center",
@@ -538,7 +538,7 @@ export function QuizClient({
 
                             {/* Certificate Earned Banner */}
                             {certificateEarned && (
-                                <div className="mx-8 mb-8 p-4 rounded-lg bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/20">
+                                <div className="mx-8 mb-8 p-4 rounded-xl bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/20">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0">
                                             <Award
@@ -568,7 +568,7 @@ export function QuizClient({
                     ) : (
                         <>
                             {/* Quiz Card */}
-                            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm overflow-hidden">
+                            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                                 {/* Quiz Header */}
                                 <div className="px-6 lg:px-8 pt-6 lg:pt-8 pb-4">
                                     <h1 className="text-2xl lg:text-3xl font-black text-gray-700 dark:text-white leading-tight tracking-tight">
@@ -667,7 +667,7 @@ export function QuizClient({
                             </div>
 
                             {/* Navigation */}
-                            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm p-6 flex items-center justify-between gap-4">
+                            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-6 flex items-center justify-between gap-4">
                                 <Button
                                     variant="outline"
                                     onClick={handlePrev}

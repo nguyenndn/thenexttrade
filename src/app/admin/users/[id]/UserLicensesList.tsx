@@ -103,7 +103,7 @@ export function UserLicensesList({ licenses }: UserLicensesListProps) {
             </div>
 
             {licenses.length > 0 ? (
-                <div className="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white shadow-sm dark:divide-white/10 dark:border-white/10 dark:bg-[#151925]">
+                <div className="divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white shadow-sm dark:divide-white/10 dark:border-white/10 dark:bg-[#151925]">
                     {licenses.map((lic) => (
                         <div
                             key={lic.id}
@@ -200,7 +200,7 @@ export function UserLicensesList({ licenses }: UserLicensesListProps) {
                                     </Button>
                                 )}
                                 <span
-                                    className={`inline-block text-[11px] font-bold px-3 py-1 rounded-md uppercase tracking-wider border ${
+                                    className={`inline-block text-[11px] font-bold px-3 py-1 rounded-lg uppercase tracking-wider border ${
                                         licenseStatusStyles[lic.status] || "bg-gray-100 text-gray-600 border-gray-200"
                                     }`}
                                 >
@@ -211,7 +211,7 @@ export function UserLicensesList({ licenses }: UserLicensesListProps) {
                     ))}
                 </div>
             ) : (
-                <div className="rounded-lg border border-gray-200 bg-white p-12 text-center shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-12 text-center shadow-sm dark:border-white/10 dark:bg-[#151925]">
                     <Key size={32} className="mx-auto text-gray-400 mb-3" />
                     <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                         No EA licenses registered.

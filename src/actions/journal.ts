@@ -170,14 +170,28 @@ export async function getJournalEntries(
     }
 
     // Determine sorting
-    let orderBy: any = { entryDate: "desc" };
-    if (sortBy) {
-        let field = sortBy;
-        if (sortBy === "date" || sortBy === "openTime") field = "entryDate";
-        if (sortBy === "closeTime") field = "exitDate";
+    const ALLOWED_SORT_FIELDS = new Set([
+        "entryDate",
+        "exitDate",
+        "profit",
+        "lots",
+        "symbol",
+        "pnl",
+        "createdAt",
+    ]);
 
-        orderBy = { [field]: sortOrder || "desc" };
+    let field = "entryDate";
+    if (sortBy) {
+        let candidateField = sortBy;
+        if (sortBy === "date" || sortBy === "openTime") candidateField = "entryDate";
+        if (sortBy === "closeTime") candidateField = "exitDate";
+
+        if (ALLOWED_SORT_FIELDS.has(candidateField)) {
+            field = candidateField;
+        }
     }
+
+    const orderBy: any = { [field]: sortOrder === "asc" ? "asc" : "desc" };
 
     // Summary statistics (Realized P&L, completed setups, win rate) strictly
     // reflect closed trades by default (matching MT5 History and Dashboard),

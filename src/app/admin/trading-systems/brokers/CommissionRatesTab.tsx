@@ -148,7 +148,7 @@ export function CommissionRatesTab({
     return (
         <div className="space-y-4">
             {/* Header / Actions Bar */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]">
                 <div>
                     <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <DollarSign size={16} className="text-gold" />
@@ -170,7 +170,7 @@ export function CommissionRatesTab({
             </div>
 
             {/* Rates Table */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden overflow-x-auto shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden overflow-x-auto shadow-sm">
                 <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-white/5 text-left">
                         <tr>

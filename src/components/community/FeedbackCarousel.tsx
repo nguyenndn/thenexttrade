@@ -349,7 +349,7 @@ function FeedbackLightboxModal({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative my-auto w-full max-w-[440px] sm:max-w-[520px] aspect-[1290/2796] rounded-lg overflow-hidden bg-slate-950 border border-gold/30 shadow-[0_0_50px_rgba(245,158,11,0.2)] flex items-center justify-center"
+                        className="relative my-auto w-full max-w-[440px] sm:max-w-[520px] aspect-[1290/2796] rounded-2xl overflow-hidden bg-slate-950 border border-gold/30 shadow-[0_0_50px_rgba(245,158,11,0.2)] flex items-center justify-center"
                         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking the card
                     >
                         {/* Close Button at top-right of the card */}

@@ -122,18 +122,33 @@ Any feature that supports this loop is justified. Any feature that competes with
 | `/admin/analytics` | Traffic and attribution | Countries, referrers, campaigns, events | Confusing it with user support reports |
 | `/admin/users` | User list and support entry | Role, country, status, search/filter, 1-click Impersonate Trader | Unknown country when profile has country |
 | `/admin/users/behavior` | Segmentation console | Needs Attention (urgency, risk signals), Value Radar (IB value, tempo, adoption) | Segments that offer no next action |
-| `/admin/users/[id]` | User support detail (3-Tab CRM) | Left identity & QuickActions + 3 tabs (`Overview`, `VIP & Broker` with 1-click IB `CONFIRMED` -> All-EA unlock, `Coaching & Analytics`) | Est. IB revenue without API evidence, fragmented 9-tab sprawl |
+| `/admin/users/[id]` | User support detail (3-Tab CRM) | Left identity & QuickActions + 3 tabs (`Overview`, `Accounts & Plan` [value="accounts"] bundling VIP/Pro + Accounts + Licenses with 1-click IB `CONFIRMED` -> All-EA unlock, `Coaching & Analytics`) | Est. IB revenue without API evidence, fragmented 9-tab sprawl |
+| `/admin/messages` | Inbound inquiries & contact triage console | 4-status lifecycle (`new`, `read`, `replied`, `archived`), auto-read transition on click, client-side `mailto:` reply link, internal triage notes, multi-field search | In-app SMTP direct reply dispatching, unauthenticated access |
 | `/admin/ib` | Partner Pro operations overview | Pipeline, trader monitor summary, VIP/account states | Unsupported sync source options |
 | `/admin/ib/pipeline` | Upgrade workflow | Stages, account/user context, actions | 404 from removed route wiring |
 | `/admin/ib/traders` | Trader/account monitoring | User, account count, real balance, activity, product access | Duplicate account rows |
 | `/admin/ib/sync-requests` | Sync operations console | Cloud Sync job telemetry, manual sync support tickets, credential reveal with audit log | Showing investor passwords without `ADMIN_VIEW_CREDENTIAL` logging |
 | `/admin/mt5-cloud` | Cloud worker fleet management | Multi-instance & smart auto-sleep Windows worker telemetry, enrollment tokens | Unauthenticated worker polling |
+| `/admin/trading-systems/[id]` | Product config & telemetry console | 2 tabs: `Product Configuration` (metadata, `.ex5` upload, announce) vs `Telemetry & Accounts` (live MT4/MT5 accounts, heartbeat <24h, EA Farm capital: `confirmedFarmBalanceUSD` vs `userPoolBalanceUSD`) | Ingesting backtest telemetry (live only), placing Drawdown Radar here (belongs to Trader Psychology) |
 | `/admin/trading-systems/brokers` | Commission rates config | Per-broker/per-symbol rates, `*` wildcard fallback, audit log | Rates that silently disagree with the broker's actual rebate |
 | `/admin/loyalty`, `/admin/competitions` | Retention & competition ops | Loyalty tiers, reward claim approvals, trading competitions | Manual DB edits without audit trail |
 | `/admin/ai` | AI Gateway control plane | Providers, models, routing, request logs, audit | User requests bypassing internal logs |
 | `/admin/email-lab` | Email testing | Template buttons, Mailtrap/SMTP results, audit log | Ungated production sends |
 | `/admin/articles/ops` | Content operations | Missing SEO/images, fix actions | Silent overwrites |
 | `/admin/security` | Security operations | Logs, blocked IPs, explicit actions | Overly broad actions |
+
+## Plan Matrix & Access Quotas
+
+| Dimension / Tier | Free Tier (Post-Trial) | 7-Day Free Trial | Partner Pro Tier |
+| --- | --- | --- | --- |
+| **Eligibility / Trigger** | Default state after 7-day trial expires without approved IB link | Auto-activated upon account registration (`User.createdAt`) | Live MT4/MT5 account linked under partner broker IB (Vantage, VT Markets, Ultima Markets, Exness) + Admin `CONFIRMED` attribution |
+| **Duration** | Perpetual | **Exactly 7 calendar days** (`TRIAL_DURATION_DAYS = 7` in `src/lib/pro-access.ts`) | Perpetual while active under verified IB retention policy |
+| **Connected Accounts Quota** | **Max 2 connected accounts** (`existingCount >= 2` limit in `src/actions/accounts.ts:270`) | **Unlimited** connected accounts | **Unlimited** connected accounts |
+| **EA Ecosystem Access** | Demo accounts only (Live execution locked) | **All 3 EAs unlocked** on Live & Demo (`trade-manager`, `goldscalperninja`, `gsn-phoenix-grid`) | **All 3 EAs unlocked** on Live & Demo via 1 unified license key |
+| **Trade Sync & Journaling** | Trade Manager EA + Manual Journal | Trade Manager EA + Manual Journal | Trade Manager EA + Manual Journal + MT5 Cloud Sync |
+| **Mobile Remote Control** | Read-only open position telemetry | Full remote execution (SL-to-BE, partial close, close all) | Full remote execution (SL-to-BE, partial close, close all) |
+| **AI Analytics & Intelligence** | Standard metrics & basic journal review | Full AI Intelligence & Behavioral Radar | Full AI Intelligence, Behavioral Radar & Weekly Coach |
+| **Pricing / Cost** | **$0** (Free forever) | **$0** (No credit card required) | **$0** (Funded via partner broker IB rebate commissions) |
 
 ## Visibility Rules By User State
 

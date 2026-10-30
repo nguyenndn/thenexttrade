@@ -111,7 +111,7 @@ export default async function AdminNotificationsPage({
                     <h2 className="text-sm font-bold text-gray-700 dark:text-white">
                         Broadcast campaigns
                     </h2>
-                    <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                         {broadcasts.length === 0 ? (
                             <div className="p-12 text-center text-gray-600">
                                 <Megaphone

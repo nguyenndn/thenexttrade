@@ -2,7 +2,6 @@
 
 import type { LeaderboardEntry, LeaderboardType } from "../actions";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/Button";
 
 interface TopMedalStripProps {
     entries: LeaderboardEntry[];
@@ -351,12 +350,19 @@ export function TopMedalStrip({
                 const stats2x2 = get2x2Stats(entry, type);
 
                 return (
-                    <Button
-                        variant="ghost"
+                    <div
+                        role="button"
+                        tabIndex={0}
                         key={entry.userId}
                         onClick={() => onUserClick?.(entry)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                onUserClick?.(entry);
+                            }
+                        }}
                         className={cn(
-                            "group flex flex-col items-stretch h-auto rounded-xl border p-4 text-left transition shadow-sm bg-white dark:bg-[#1E2028] font-normal hover:bg-white dark:hover:bg-[#1E2028]",
+                            "group flex flex-col items-stretch h-auto rounded-xl border p-4 text-left cursor-pointer transition shadow-sm bg-white dark:bg-[#1E2028] font-normal",
                             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
                             config.borderColor,
                             config.hoverBorderColor,
@@ -438,7 +444,7 @@ export function TopMedalStrip({
                                 </div>
                             ))}
                         </div>
-                    </Button>
+                    </div>
                 );
             })}
         </div>

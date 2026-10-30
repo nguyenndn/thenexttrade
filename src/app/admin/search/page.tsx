@@ -117,7 +117,7 @@ function AdminSearchContent() {
                                     <Link
                                         key={`${result.type}-${result.id}`}
                                         href={result.slug}
-                                        className="flex bg-white dark:bg-[#151925] p-4 rounded-lg border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-primary hover:shadow-md transition-all group shadow-sm"
+                                        className="flex bg-white dark:bg-[#151925] p-4 rounded-xl border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-primary hover:shadow-md transition-all group shadow-sm"
                                     >
                                         <div
                                             className={`p-3 rounded-lg shrink-0 mr-4 h-fit ${
@@ -186,7 +186,7 @@ function AdminSearchContent() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-12 bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm">
+                            <div className="text-center py-12 bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
                                 <AlertCircle
                                     className="mx-auto text-gray-300 mb-4"
                                     size={48}

@@ -213,10 +213,10 @@ export function MilestoneCelebrationModal() {
                 {/* Close */}
                 <Button
                     onClick={() => handleCelebrate(false)}
-                    variant="ghost"
+                    variant="outline"
                     size="icon"
                     className="absolute top-4 right-4 z-20 h-8 w-8 p-0 text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-white/10"
-                    aria-label="Close"
+                    aria-label="Close celebration"
                 >
                     <X size={18} />
                 </Button>

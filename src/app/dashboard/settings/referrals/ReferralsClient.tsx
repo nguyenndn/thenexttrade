@@ -54,7 +54,7 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
 
     return (
         <div className="space-y-5">
-            <div className="overflow-hidden rounded-lg border border-dashboard bg-white shadow-sm border-dashboard dark:bg-[#0B0E14]">
+            <div className="overflow-hidden rounded-xl border border-dashboard bg-white shadow-sm border-dashboard dark:bg-[#0B0E14]">
                 <div className="flex items-start justify-between gap-4 p-5">
                     <div className="flex items-start gap-4">
                         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
@@ -139,7 +139,7 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
                 </div>
             </div>
 
-            <div className="overflow-hidden rounded-lg border border-dashboard bg-white shadow-sm border-dashboard dark:bg-[#0B0E14]">
+            <div className="overflow-hidden rounded-xl border border-dashboard bg-white shadow-sm border-dashboard dark:bg-[#0B0E14]">
                 <div className="border-b border-dashboard px-6 py-4 border-dashboard">
                     <h3 className="text-sm font-bold text-gray-700 dark:text-white">
                         Recent Referrals

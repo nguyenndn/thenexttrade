@@ -85,13 +85,12 @@ export default function CreateBroadcastPage() {
                 </p>
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] rounded-lg p-8 border border-gray-200 dark:border-white/10 shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div className="space-y-2">
                         <PremiumInput
                             label="Title"
                             {...register("title")}
-                            placeholder="System Maintenance"
                             error={errors.title ? "Required" : undefined}
                         />
                     </div>
@@ -103,8 +102,8 @@ export default function CreateBroadcastPage() {
                         <textarea
                             {...register("message")}
                             rows={4}
+                            aria-label="Notification message"
                             className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-700 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
-                            placeholder="We will be performing scheduled maintenance on..."
                         />
                         {errors.message && (
                             <p className="text-xs text-red-500">Required</p>

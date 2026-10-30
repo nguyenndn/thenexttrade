@@ -48,7 +48,7 @@ describe("SignupPage - Step 3 Password Strength Indicator", () => {
         const utils = render(<SignupPage />);
 
         // Step 1: Full Name & Country
-        const nameInput = screen.getByPlaceholderText("Full Name");
+        const nameInput = screen.getByLabelText("Full Name");
         fireEvent.change(nameInput, { target: { value: "Alex Trader" } });
         const countrySelect = screen.getByTestId("country-select");
         fireEvent.change(countrySelect, { target: { value: "US" } });
@@ -57,7 +57,7 @@ describe("SignupPage - Step 3 Password Strength Indicator", () => {
         fireEvent.click(continueBtn1);
 
         // Step 2: Email
-        const emailInput = screen.getByPlaceholderText("Email Address");
+        const emailInput = screen.getByLabelText("Email Address");
         fireEvent.change(emailInput, { target: { value: "alex@example.com" } });
 
         const continueBtn2 = screen.getByRole("button", { name: /continue/i });
@@ -69,8 +69,8 @@ describe("SignupPage - Step 3 Password Strength Indicator", () => {
     it("navigates to step 3 and renders password fields with popover initially hidden", async () => {
         await navigateToStep3();
 
-        const passwordInput = screen.getByPlaceholderText("Password");
-        const confirmInput = screen.getByPlaceholderText("Confirm Password");
+        const passwordInput = screen.getByLabelText("Password");
+        const confirmInput = screen.getByLabelText("Confirm Password");
         expect(passwordInput).toBeDefined();
         expect(confirmInput).toBeDefined();
 
@@ -84,7 +84,7 @@ describe("SignupPage - Step 3 Password Strength Indicator", () => {
     it("shows the password strength popover when password input is focused", async () => {
         await navigateToStep3();
 
-        const passwordInput = screen.getByPlaceholderText("Password");
+        const passwordInput = screen.getByLabelText("Password");
         fireEvent.focus(passwordInput);
 
         const popover = screen.getByTestId("password-strength-popover");
@@ -98,7 +98,7 @@ describe("SignupPage - Step 3 Password Strength Indicator", () => {
     it("dynamically updates password strength as user types in password input", async () => {
         await navigateToStep3();
 
-        const passwordInput = screen.getByPlaceholderText("Password");
+        const passwordInput = screen.getByLabelText("Password");
         fireEvent.focus(passwordInput);
 
         // Type weak password
@@ -137,7 +137,7 @@ describe("SignupPage - Step 3 Password Strength Indicator", () => {
         vi.useFakeTimers();
         await navigateToStep3();
 
-        const passwordInput = screen.getByPlaceholderText("Password");
+        const passwordInput = screen.getByLabelText("Password");
         fireEvent.focus(passwordInput);
 
         const popover = screen.getByTestId("password-strength-popover");
@@ -156,8 +156,8 @@ describe("SignupPage - Step 3 Password Strength Indicator", () => {
     it("validates password against passwordSchema when submitting step 3", async () => {
         await navigateToStep3();
 
-        const passwordInput = screen.getByPlaceholderText("Password");
-        const confirmInput = screen.getByPlaceholderText("Confirm Password");
+        const passwordInput = screen.getByLabelText("Password");
+        const confirmInput = screen.getByLabelText("Confirm Password");
         const termsCheckbox = screen.getByRole("checkbox");
 
         // Enter password without number or uppercase
@@ -176,8 +176,8 @@ describe("SignupPage - Step 3 Password Strength Indicator", () => {
     it("allows focusing and filling Confirm Password without obstruction while password meter is active", async () => {
         await navigateToStep3();
 
-        const passwordInput = screen.getByPlaceholderText("Password");
-        const confirmInput = screen.getByPlaceholderText("Confirm Password");
+        const passwordInput = screen.getByLabelText("Password");
+        const confirmInput = screen.getByLabelText("Confirm Password");
 
         // Focus and type password
         fireEvent.focus(passwordInput);
@@ -199,7 +199,7 @@ describe("SignupPage - Step 3 Password Strength Indicator", () => {
     it("dismisses popover immediately when clicked", async () => {
         await navigateToStep3();
 
-        const passwordInput = screen.getByPlaceholderText("Password");
+        const passwordInput = screen.getByLabelText("Password");
         fireEvent.focus(passwordInput);
 
         const popover = screen.getByTestId("password-strength-popover");
@@ -212,7 +212,7 @@ describe("SignupPage - Step 3 Password Strength Indicator", () => {
     it("re-shows popover when user resumes typing in password input after click dismissal", async () => {
         await navigateToStep3();
 
-        const passwordInput = screen.getByPlaceholderText("Password");
+        const passwordInput = screen.getByLabelText("Password");
         fireEvent.focus(passwordInput);
 
         const popover = screen.getByTestId("password-strength-popover");
@@ -231,14 +231,14 @@ describe("SignupPage - Step 3 Password Strength Indicator", () => {
     it("cleans up password focus state when navigating back to step 2", async () => {
         await navigateToStep3();
 
-        const passwordInput = screen.getByPlaceholderText("Password");
+        const passwordInput = screen.getByLabelText("Password");
         fireEvent.focus(passwordInput);
 
         const backBtn = screen.getByRole("button", { name: /back/i });
         fireEvent.click(backBtn);
 
         // Should now be on step 2 (Email field visible)
-        expect(screen.getByPlaceholderText("Email Address")).toBeDefined();
+        expect(screen.getByLabelText("Email Address")).toBeDefined();
     });
 });
 
@@ -264,7 +264,7 @@ describe("SignupPage - Responsive Step Wizard & Container", () => {
         expect(card?.className).toContain("p-5");
         expect(card?.className).toContain("sm:p-7");
         expect(card?.className).toContain("md:p-8");
-        expect(card?.className).toContain("rounded-lg");
+        expect(card?.className).toContain("rounded-xl");
     });
 
     it("renders all 3 step pills with visible, non-wrapping labels", async () => {
@@ -319,7 +319,7 @@ describe("SignupPage - Responsive Step Wizard & Container", () => {
         expect(identityLabel.className).toContain("text-slate-950");
 
         // Fill Step 1
-        fireEvent.change(screen.getByPlaceholderText("Full Name"), {
+        fireEvent.change(screen.getByLabelText("Full Name"), {
             target: { value: "Alex Trader" },
         });
         fireEvent.change(screen.getByTestId("country-select"), {

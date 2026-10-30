@@ -123,6 +123,7 @@ export function FileUpload({
                             size="icon"
                             type="button"
                             onClick={handleRemove}
+                            aria-label="Remove uploaded file"
                             className="p-2 h-10 w-10 bg-red-500 rounded-full text-white hover:scale-110 transition-transform shadow-lg"
                         >
                             <X size={20} />

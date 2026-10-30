@@ -265,7 +265,7 @@ export default function SyncSettingsClient() {
                             ({ icon: Icon, label, desc, color, bg }) => (
                                 <div
                                     key={label}
-                                    className="group flex items-center gap-3.5 px-4 py-3.5 rounded-lg bg-white dark:bg-[#252731] border border-gray-200 dark:border-white/10 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_20px_-8px_rgba(0,0,0,0.1)] dark:shadow-none transition-all duration-300 hover:border-gray-200 dark:hover:border-white/10"
+                                    className="group flex items-center gap-3.5 px-4 py-3.5 rounded-xl bg-white dark:bg-[#252731] border border-gray-200 dark:border-white/10 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_20px_-8px_rgba(0,0,0,0.1)] dark:shadow-none transition-all duration-300 hover:border-gray-200 dark:hover:border-white/10"
                                 >
                                     <div
                                         className={cn(
@@ -518,10 +518,10 @@ export default function SyncSettingsClient() {
                                     key={stepItem.id}
                                     onClick={() => toggleStep(stepItem.id)}
                                     className={cn(
-                                        "group relative flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-lg border transition-all duration-200 cursor-pointer select-none",
+                                        "group relative flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border transition-all duration-200 cursor-pointer select-none",
                                         isDone
                                             ? "bg-emerald-500/[0.03] border-emerald-500/30 dark:bg-emerald-500/[0.05] dark:border-emerald-500/20 shadow-sm"
-                                            : "bg-gray-50/60 dark:bg-white/[0.02] border-gray-200 dark:border-white/5 hover:border-primary/40 dark:hover:border-primary/40 hover:bg-gray-50 dark:hover:bg-white/[0.04]"
+                                            : "bg-gray-50/60 dark:bg-white/[0.02] border-gray-200 dark:border-white/10 hover:border-primary/40 dark:hover:border-primary/40 hover:bg-gray-50 dark:hover:bg-white/[0.04]"
                                     )}
                                 >
                                     <div className="flex items-start sm:items-center gap-3.5 min-w-0">

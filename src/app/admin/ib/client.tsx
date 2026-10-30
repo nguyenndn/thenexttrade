@@ -328,7 +328,7 @@ export function IbOverviewClient({
                     {(overview.vipUsersWithoutFirstSync || 0) > 0 && (
                         <Link
                             href="/admin/ib/traders?vip=ACTIVE&accountHealth=NEVER_SYNCED"
-                            className="flex items-center justify-between gap-4 rounded-lg border border-amber-500/30 bg-white dark:bg-[#1E2028] p-4 shadow-sm hover:shadow-md hover:border-amber-500/50 transition-all group"
+                            className="flex items-center justify-between gap-4 rounded-xl border border-amber-500/30 bg-white dark:bg-[#1E2028] p-4 shadow-sm hover:shadow-md hover:border-amber-500/50 transition-all group"
                         >
                             <div className="flex items-center gap-3">
                                 <div className="p-2 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
@@ -351,7 +351,7 @@ export function IbOverviewClient({
                         {/* Retention & Health */}
                         <Link
                             href="/admin/ib/traders?accountHealth=STALE"
-                            className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md hover:border-orange-500/30 transition-all space-y-2 group block"
+                            className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md hover:border-orange-500/30 transition-all space-y-2 group block"
                         >
                             <div className="flex items-center justify-between">
                                 <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
@@ -361,7 +361,7 @@ export function IbOverviewClient({
                                     <div className="p-2.5 rounded-lg bg-orange-500/10 text-orange-600 dark:text-orange-400 ring-1 ring-orange-500/20">
                                         <AlertTriangle size={16} />
                                     </div>
-                                    <ArrowUpRight size={14} className="text-gray-400 group-hover:text-orange-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                                    <ArrowUpRight size={14} className="text-gray-400 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
                                 </div>
                             </div>
                             <p className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
@@ -378,7 +378,7 @@ export function IbOverviewClient({
                         {/* Trade Manager Active */}
                         <Link
                             href="/admin/ib/traders?syncSource=EA_SYNC"
-                            className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md hover:border-cyan-500/30 transition-all space-y-2 group block"
+                            className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md hover:border-cyan-500/30 transition-all space-y-2 group block"
                         >
                             <div className="flex items-center justify-between">
                                 <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
@@ -388,7 +388,7 @@ export function IbOverviewClient({
                                     <div className="p-2.5 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 ring-1 ring-cyan-500/20">
                                         <Zap size={16} />
                                     </div>
-                                    <ArrowUpRight size={14} className="text-gray-400 group-hover:text-cyan-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                                    <ArrowUpRight size={14} className="text-gray-400 group-hover:text-cyan-500 group-hover:translate-x-0.5 transition-all" />
                                 </div>
                             </div>
                             <p className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
@@ -402,7 +402,7 @@ export function IbOverviewClient({
                         {/* Out-of-IB Active Ratio */}
                         <Link
                             href="/admin/users/behavior?tab=radar"
-                            className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md hover:border-emerald-500/30 transition-all space-y-2 group block"
+                            className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md hover:border-emerald-500/30 transition-all space-y-2 group block"
                         >
                             <div className="flex items-center justify-between">
                                 <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
@@ -412,7 +412,7 @@ export function IbOverviewClient({
                                     <div className="p-2.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/20">
                                         <Compass size={16} />
                                     </div>
-                                    <ArrowUpRight size={14} className="text-gray-400 group-hover:text-emerald-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                                    <ArrowUpRight size={14} className="text-gray-400 group-hover:text-emerald-500 group-hover:translate-x-0.5 transition-all" />
                                 </div>
                             </div>
                             <p className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
@@ -424,7 +424,7 @@ export function IbOverviewClient({
                         </Link>
                     </div>
                     {/* Active Pro Traders Highlight Banner (High-depth card) */}
-                    <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 sm:p-7 shadow-sm relative overflow-hidden">
+                    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 sm:p-7 shadow-sm relative overflow-hidden">
                         <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-amber-500" />
                         <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
                             <div className="max-w-xl">
@@ -447,7 +447,7 @@ export function IbOverviewClient({
                                 </p>
                             </div>
                             <div className="grid flex-1 gap-3 sm:grid-cols-3">
-                                <div className="rounded-lg border border-gray-100 bg-gray-50/80 p-4 shadow-sm dark:border-white/5 dark:bg-white/[0.03]">
+                                <div className="rounded-xl border border-gray-200 bg-gray-50/80 p-4 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
                                     <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                                         Leads
                                     </p>
@@ -458,7 +458,7 @@ export function IbOverviewClient({
                                         {rangeLabel}
                                     </p>
                                 </div>
-                                <div className="rounded-lg border border-gray-100 bg-gray-50/80 p-4 shadow-sm dark:border-white/5 dark:bg-white/[0.03]">
+                                <div className="rounded-xl border border-gray-200 bg-gray-50/80 p-4 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
                                     <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                                         Requests
                                     </p>
@@ -469,7 +469,7 @@ export function IbOverviewClient({
                                         submitted in range
                                     </p>
                                 </div>
-                                <div className="rounded-lg border border-gray-100 bg-gray-50/80 p-4 shadow-sm dark:border-white/5 dark:bg-white/[0.03]">
+                                <div className="rounded-xl border border-gray-200 bg-gray-50/80 p-4 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
                                     <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                                         Conversion
                                     </p>
@@ -485,7 +485,7 @@ export function IbOverviewClient({
                     </div>
 
                     {/* Pending VIP Requests Table (matching pipeline) */}
-                    <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-sm space-y-4">
+                    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-sm space-y-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
@@ -516,7 +516,7 @@ export function IbOverviewClient({
                         </div>
 
                         {pendingRequests.length === 0 ? (
-                            <div className="py-10 flex flex-col items-center justify-center text-center text-gray-500 dark:text-gray-400 border border-dashed border-gray-200 dark:border-white/10 rounded-lg">
+                            <div className="py-10 flex flex-col items-center justify-center text-center text-gray-500 dark:text-gray-400 border border-dashed border-gray-200 dark:border-white/10 rounded-xl">
                                 <CheckCircle2 className="w-8 h-8 text-emerald-500 mb-2 opacity-60" />
                                 <p className="text-sm font-bold text-gray-700 dark:text-gray-300">
                                     All caught up!
@@ -527,7 +527,7 @@ export function IbOverviewClient({
                                 </p>
                             </div>
                         ) : (
-                            <div className="rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden">
+                            <div className="rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden">
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left text-xs">
                                         <thead className="bg-gray-50/80 dark:bg-white/[0.03] text-[11px] uppercase text-gray-500 dark:text-gray-400 font-bold tracking-wider border-b border-gray-100 dark:border-white/5">
@@ -671,7 +671,7 @@ export function IbOverviewClient({
                                 <Link
                                     key={action.title}
                                     href={action.href}
-                                    className="group rounded-lg border border-gray-200 dark:border-white/10 bg-white p-5 shadow-sm hover:shadow-md transition-all dark:bg-[#1E2028] hover:border-primary/30 flex flex-col justify-between"
+                                    className="group rounded-xl border border-gray-200 dark:border-white/10 bg-white p-5 shadow-sm hover:shadow-md transition-all dark:bg-[#1E2028] hover:border-primary/30 flex flex-col justify-between"
                                 >
                                     <div>
                                         <div className="flex items-start justify-between gap-4">
@@ -709,7 +709,7 @@ export function IbOverviewClient({
                         {CANONICAL_PRODUCTS.map((prod) => (
                             <div
                                 key={prod.id}
-                                className="p-5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm hover:shadow-md transition-all space-y-3 relative overflow-hidden group"
+                                className="p-5 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm hover:shadow-md transition-all space-y-3 relative overflow-hidden group"
                             >
                                 <div className="absolute top-0 inset-x-0 h-0.5 bg-gold/40 group-hover:bg-gold transition-colors" />
                                 <div className="flex items-center justify-between">
@@ -747,7 +747,7 @@ export function IbOverviewClient({
                     {/* Capital Analytics Overview Cards */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {/* Reported Capital */}
-                        <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md transition-all space-y-2 group">
+                        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md transition-all space-y-2 group">
                             <div className="flex items-center justify-between">
                                 <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
                                     Reported Capital
@@ -766,7 +766,7 @@ export function IbOverviewClient({
                         </div>
 
                         {/* Fresh Capital (24h) */}
-                        <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md transition-all space-y-2 group">
+                        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md transition-all space-y-2 group">
                             <div className="flex items-center justify-between">
                                 <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
                                     Fresh Capital (24h)
@@ -792,7 +792,7 @@ export function IbOverviewClient({
                         </div>
                     </div>
 
-                    <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-sm space-y-5">
+                    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-sm space-y-5">
                         <div className="flex items-center justify-between">
                             <h3 className="font-bold text-sm text-gray-900 dark:text-white">
                                 Broker Referral Breakdown
@@ -851,7 +851,7 @@ export function IbOverviewClient({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="w-full max-w-md rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4"
+                            className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4"
                         >
                             <h3 className="text-base font-bold text-gray-900 dark:text-white">
                                 Reject VIP Request

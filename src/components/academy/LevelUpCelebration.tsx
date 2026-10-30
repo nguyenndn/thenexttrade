@@ -600,7 +600,7 @@ export function LevelUpCelebration({
                         {/* Text card */}
                         <motion.div
                             className={cn(
-                                "text-center rounded-lg px-8 py-7 border shadow-[0_20px_50px_rgba(245,158,11,0.15)] max-w-md backdrop-blur-md transition-all duration-300 relative overflow-hidden",
+                                "text-center rounded-2xl px-8 py-7 border shadow-[0_20px_50px_rgba(245,158,11,0.15)] max-w-md backdrop-blur-md transition-all duration-300 relative overflow-hidden",
                                 "bg-[#FCF9F2]/95 border-amber-500/25 text-gray-900",
                                 "dark:bg-[#151411]/95 dark:border-amber-500/10 dark:text-white"
                             )}

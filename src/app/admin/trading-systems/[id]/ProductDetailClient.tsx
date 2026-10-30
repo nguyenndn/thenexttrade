@@ -72,16 +72,16 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                     <TabsList className="h-auto w-full sm:w-auto justify-start gap-1 rounded-lg border border-gray-200 bg-[#F1F3F5] p-1.5 dark:border-white/10 dark:bg-[#1A1D27]">
                         <TabsTrigger
                             value="config"
-                            className="shrink-0 gap-2 px-4 py-2"
+                            className="shrink-0 gap-2 px-4 py-2 whitespace-nowrap"
                         >
                             <Settings size={15} /> Product Configuration
                         </TabsTrigger>
                         <TabsTrigger
                             value="telemetry"
-                            className="shrink-0 gap-2 px-4 py-2"
+                            className="shrink-0 gap-2 px-4 py-2 whitespace-nowrap"
                         >
                             <Users size={15} /> Telemetry & Accounts
-                            <span className="ml-1 rounded-md bg-gray-200 px-1.5 py-0.5 text-[10px] font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
+                            <span className="ml-1 rounded-full bg-gray-200 px-1.5 py-0.5 text-[10px] font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
                                 {allocationsCount}
                             </span>
                         </TabsTrigger>

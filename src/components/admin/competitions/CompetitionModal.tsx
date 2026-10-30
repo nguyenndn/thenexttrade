@@ -258,7 +258,7 @@ export function CompetitionModal({
                                     step="50"
                                     value={prizePool}
                                     onChange={(e) => setPrizePool(Number(e.target.value))}
-                                    className="w-24 px-2.5 py-1 rounded-md border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-right font-black text-amber-600 dark:text-amber-400 focus:outline-none"
+                                    className="w-24 px-2.5 py-1 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-right font-black text-amber-600 dark:text-amber-400 focus:outline-none"
                                 />
                             </div>
                         </div>

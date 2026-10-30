@@ -298,7 +298,7 @@ export default function AdminFeedbackPage() {
             </div>
 
             {/* Unified Toolbar: Search + Filters + Actions */}
-            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-4 shadow-sm flex flex-col gap-4">
+            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col gap-4">
                 <div className="flex flex-1 gap-4 flex-col lg:flex-row justify-between w-full lg:items-center">
                     <div className="flex flex-1 gap-2 flex-col sm:flex-row w-full lg:max-w-xl">
                         <div className="flex-1 w-full sm:max-w-md">
@@ -509,7 +509,7 @@ export default function AdminFeedbackPage() {
 
             {/* Error */}
             {error && (
-                <div className="bg-red-50 dark:bg-red-500/10 rounded-lg p-6 text-center text-red-600 dark:text-red-400">
+                <div className="bg-red-50 dark:bg-red-500/10 rounded-xl p-6 text-center text-red-600 dark:text-red-400">
                     <AlertCircle className="mx-auto mb-2" size={24} />
                     <p className="text-sm font-medium">
                         Failed to load feedback
@@ -519,7 +519,7 @@ export default function AdminFeedbackPage() {
 
             {/* Empty */}
             {!isLoading && !error && filtered.length === 0 && (
-                <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm text-center py-20">
+                <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm text-center py-20">
                     <MessageSquare
                         size={48}
                         className="mx-auto mb-4 text-gray-300"
@@ -552,7 +552,7 @@ export default function AdminFeedbackPage() {
                             <div
                                 key={fb.id}
                                 className={cn(
-                                    "bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 p-5 shadow-sm transition-all",
+                                    "bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm transition-all",
                                     "border-l-4",
                                     isBug
                                         ? "border-l-red-500"

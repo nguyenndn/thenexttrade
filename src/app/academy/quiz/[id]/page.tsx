@@ -49,8 +49,7 @@ export default function QuizRunnerPage() {
                 setQuiz(data);
                 setLoading(false);
             })
-            .catch((e) => {
-                console.error(e);
+            .catch(() => {
                 router.push("/academy");
             });
     }, [quizId, router]);
@@ -124,7 +123,7 @@ export default function QuizRunnerPage() {
     if (results) {
         return (
             <div className="min-h-screen bg-gray-50 dark:bg-transparent flex items-center justify-center p-4">
-                <div className="bg-white dark:bg-[#151925] rounded-lg p-8 max-w-md w-full text-center shadow-xl border border-dashboard space-y-6">
+                <div className="bg-white dark:bg-[#151925] rounded-xl p-8 max-w-md w-full text-center shadow-xl border border-dashboard space-y-6">
                     <div
                         className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto ${results.passed ? "bg-green-100 text-green-500" : "bg-red-100 text-red-500"}`}
                     >
@@ -322,7 +321,7 @@ export default function QuizRunnerPage() {
             {/* Auth prompt modal for guests */}
             {showAuthModal && (
                 <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-[#151925] rounded-xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl border border-dashboard space-y-6">
+                    <div className="bg-white dark:bg-[#151925] rounded-2xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl border border-dashboard space-y-6">
                         <div className="w-14 h-14 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto">
                             <Trophy size={28} />
                         </div>

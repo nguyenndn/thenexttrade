@@ -84,7 +84,7 @@ export function MobileExperimentBottomSheet({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 32 }}
                 transition={SPRING_SOFT}
-                className="w-full max-w-lg p-6 bg-white dark:bg-[#0B0E14] border-t sm:border border-gray-200 dark:border-slate-800 rounded-t-lg sm:rounded-lg shadow-2xl space-y-4 text-slate-900 dark:text-white"
+                className="w-full max-w-lg p-6 bg-white dark:bg-[#0B0E14] border-t sm:border border-gray-200 dark:border-slate-800 rounded-t-2xl sm:rounded-2xl shadow-2xl space-y-4 text-slate-900 dark:text-white"
             >
                 <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 pb-3">
                     <div className="flex items-center gap-2">

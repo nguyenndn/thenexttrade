@@ -224,7 +224,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                         <Button
                                             type="button"
                                             variant="outline"
-                                            className="w-full h-[42px] px-4 rounded-xl bg-gray-50 dark:bg-white/5 justify-between text-left text-sm font-medium shadow-none border-gray-200 dark:border-white/10"
+                                            className="w-full h-[42px] px-4 rounded-lg bg-gray-50 dark:bg-white/5 justify-between text-left text-sm font-medium shadow-none border-gray-200 dark:border-white/10"
                                         >
                                             <span className="truncate pr-2">
                                                 {typeValue ===
@@ -289,7 +289,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                         <Button
                                             type="button"
                                             variant="outline"
-                                            className="w-full h-[42px] px-4 rounded-xl bg-gray-50 dark:bg-white/5 justify-between text-left text-sm font-medium shadow-none border-gray-200 dark:border-white/10"
+                                            className="w-full h-[42px] px-4 rounded-lg bg-gray-50 dark:bg-white/5 justify-between text-left text-sm font-medium shadow-none border-gray-200 dark:border-white/10"
                                         >
                                             <span className="truncate pr-2">
                                                 {isFreeValue

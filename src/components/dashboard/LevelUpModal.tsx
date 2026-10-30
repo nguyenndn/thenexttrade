@@ -117,7 +117,7 @@ export function LevelUpModal() {
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative z-10 w-full max-w-md bg-[#0D111A] border border-amber-500/30 rounded-lg shadow-2xl shadow-amber-500/10 overflow-hidden p-8 text-center"
+                        className="relative z-10 w-full max-w-md bg-[#0D111A] border border-amber-500/30 rounded-2xl shadow-2xl shadow-amber-500/10 overflow-hidden p-8 text-center"
                     >
                 {/* Glowing Auroras */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-amber-500/10 rounded-full blur-[90px] pointer-events-none" />
@@ -125,7 +125,8 @@ export function LevelUpModal() {
 
                 {/* Close Button */}
                 <Button
-                    variant="ghost"
+                    variant="outline"
+                    aria-label="Close modal"
                     className="absolute top-4 right-4 p-1.5 text-gray-400 hover:text-white transition-colors rounded-lg w-auto h-auto hover:bg-white/5"
                     onClick={() => setIsOpen(false)}
                 >

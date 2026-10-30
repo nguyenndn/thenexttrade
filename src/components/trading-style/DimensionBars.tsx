@@ -63,7 +63,7 @@ export function DimensionBars({ scores }: DimensionBarsProps) {
                                 {label && (
                                     <span
                                         className={cn(
-                                            "rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider",
+                                            "rounded-lg px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider",
                                             label === "Needs work"
                                                 ? "bg-rose-500/10 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400"
                                                 : "bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400",

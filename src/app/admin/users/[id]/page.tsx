@@ -443,7 +443,7 @@ export default async function UserDetailPage({
                 backHref="/admin/users"
             />
 
-            <section className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925]">
+            <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925]">
                 <div className="grid grid-cols-1 divide-y divide-gray-200 dark:divide-white/10 sm:grid-cols-2 sm:divide-y-0 xl:grid-cols-4">
                     <div className="flex min-w-0 items-center gap-3 p-4 sm:p-5 sm:border-r sm:border-gray-200 sm:dark:border-white/10">
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
@@ -519,7 +519,7 @@ export default async function UserDetailPage({
 
             <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[420px_minmax(0,1fr)] 2xl:grid-cols-[460px_minmax(0,1fr)]">
                 <div className="min-w-0 space-y-6">
-                    <div className="relative overflow-hidden rounded-lg border border-gray-200 dark:border-white/10 bg-white shadow-sm dark:bg-[#151925]">
+                    <div className="relative overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white shadow-sm dark:bg-[#151925]">
                         <div className="h-28 bg-gradient-to-br from-emerald-100 via-teal-50 to-white dark:from-primary/20 dark:via-primary/5 dark:to-transparent" />
 
                         <div className="px-6 pb-5 text-center">

@@ -132,7 +132,7 @@ export default function EASettingsPage() {
                 </AdminPageHeader>
 
                 {/* General Settings */}
-                <div className="bg-white dark:bg-[#151925] rounded-lg p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="bg-white dark:bg-[#151925] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm">
                     <h2 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-white/10 pb-4 mb-6">
                         <ShieldAlert className="text-red-500" size={20} />
                         General Configuration
@@ -186,7 +186,7 @@ export default function EASettingsPage() {
                 </div>
 
                 {/* Email Notifications */}
-                <div className="bg-white dark:bg-[#151925] rounded-lg p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="bg-white dark:bg-[#151925] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm">
                     <h2 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-white/10 pb-4 mb-6">
                         <Bell className="text-blue-500" size={20} />
                         Email Notifications
@@ -236,7 +236,7 @@ export default function EASettingsPage() {
                 </div>
 
                 {/* Telegram Webhook */}
-                <div className="bg-white dark:bg-[#151925] rounded-lg p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm mb-10">
+                <div className="bg-white dark:bg-[#151925] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm mb-10">
                     <h2 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-white/10 pb-4 mb-6">
                         <MessageCircle className="text-sky-500" size={20} />
                         Telegram Webhook
@@ -273,7 +273,7 @@ export default function EASettingsPage() {
                                     </label>
                                     <Input
                                         {...register("telegramBotToken")}
-                                        placeholder="123456789:ABCdefGHIjklMNO..."
+                                        aria-label="Telegram Bot Token"
                                     />
                                 </div>
                                 <div>
@@ -282,7 +282,7 @@ export default function EASettingsPage() {
                                     </label>
                                     <Input
                                         {...register("telegramChatId")}
-                                        placeholder="-1001234567890"
+                                        aria-label="Telegram Chat ID"
                                     />
                                 </div>
                             </div>

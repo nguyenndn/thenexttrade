@@ -198,11 +198,12 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
             {/* Progress Bar Indicators */}
             <div className="absolute bottom-5 right-5 md:right-10 z-20 flex gap-1.5 items-center">
                 {articles.map((_, idx) => (
-                    <button
+                    <Button
                         key={idx}
+                        variant="ghost"
                         onClick={() => goToSlide(idx)}
                         aria-label={`Go to slide ${idx + 1}`}
-                        className="relative h-1 rounded-full overflow-hidden transition-all duration-300 bg-white/20"
+                        className="relative h-1 p-0 rounded-full overflow-hidden transition-all duration-300 bg-white/20 border-0 hover:bg-white/30"
                         style={{ width: idx === current ? 40 : 12 }}
                     >
                         {idx === current && (
@@ -214,7 +215,7 @@ export function HeroCarousel({ articles }: { articles: ArticleBase[] }) {
                                 }}
                             />
                         )}
-                    </button>
+                    </Button>
                 ))}
             </div>
         </div>

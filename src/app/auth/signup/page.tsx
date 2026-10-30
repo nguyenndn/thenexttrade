@@ -206,7 +206,7 @@ export default function SignupPage() {
     };
 
     return (
-        <div className="w-full max-w-[440px] sm:max-w-[480px] mx-auto rounded-lg border border-amber-900/10 bg-white/85 p-5 sm:p-7 md:p-8 shadow-[0_28px_90px_rgba(88,64,27,0.18)] backdrop-blur-xl transition-colors duration-300 dark:border-amber-300/15 dark:bg-[#11100C]/90 dark:shadow-[0_28px_90px_rgba(0,0,0,0.45)]">
+        <div className="w-full max-w-[440px] sm:max-w-[480px] mx-auto rounded-xl border border-amber-900/10 bg-white/85 p-5 sm:p-7 md:p-8 shadow-[0_28px_90px_rgba(88,64,27,0.18)] backdrop-blur-xl transition-colors duration-300 dark:border-amber-300/15 dark:bg-[#11100C]/90 dark:shadow-[0_28px_90px_rgba(0,0,0,0.45)]">
             <div className="flex justify-center mb-5 sm:mb-6">
                 <Logo />
             </div>
@@ -274,7 +274,6 @@ export default function SignupPage() {
                         <Input
                             name="fullName"
                             type="text"
-                            placeholder="Full Name"
                             label="Full Name"
                             required
                             value={fullName}
@@ -319,7 +318,6 @@ export default function SignupPage() {
                         <Input
                             name="email"
                             type="email"
-                            placeholder="Email Address"
                             label="Email Address"
                             required
                             value={email}
@@ -384,7 +382,6 @@ export default function SignupPage() {
                             <Input
                                 name="password"
                                 type={showPassword ? "text" : "password"}
-                                placeholder="Password"
                                 label="Password"
                                 required
                                 value={password}
@@ -455,7 +452,6 @@ export default function SignupPage() {
                         <Input
                             name="confirm"
                             type={showConfirm ? "text" : "password"}
-                            placeholder="Confirm Password"
                             label="Confirm Password"
                             required
                             value={confirm}

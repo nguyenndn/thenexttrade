@@ -36,6 +36,22 @@ TheNextTrade connects to a trader's MT5 account (Trade Manager EA sync or Manual
 - **One next action, not a dashboard wall.** The loop is `Connect/log trades -> Understand what happened -> Take one next action -> Improve`.
 - **Owned EA ecosystem.** One IB-verified trading account = one License Key that unlocks all three GoldScalperNinja EAs.
 
+## Membership Tiers & Access Quotas
+
+The platform operates on a 100% free-to-trader model powered by broker IB rebates:
+
+- **7-Day Free Trial**: Every newly registered user automatically starts with a **7-Day Free Trial** (`TRIAL_DURATION_DAYS = 7` calculated from `User.createdAt` in `src/lib/pro-access.ts`). During these 7 days, users enjoy full Partner Pro privileges with no limit on connected trading accounts, all 3 EAs unlocked on Live and Demo, and full AI analytics without requiring a credit card.
+- **Free Tier (Post-Trial)**: If a user does not link an approved partner broker account within 7 days, they revert to the Free Tier:
+  - Capped at **2 connected trading accounts** (`existingCount >= 2` limit in `src/actions/accounts.ts:270`).
+  - Includes manual journaling, basic EA trade syncing, personal rulebook, and dashboard analytics.
+  - Live EA execution is locked (demo testing remains supported).
+- **Partner Pro Tier**: Unlocked when a trader opens or links a live account with a supported partner broker (**Vantage Markets, VT Markets, Ultima Markets, Exness**) under our official IB referral code and receives admin confirmation (`ibAttribution = CONFIRMED`) or an admin manual grant:
+  - **Unlimited connected accounts** (no 2-account cap).
+  - **1 unified License Key unlocks all 3 EAs** (`Trade Manager EA`, `GoldScalperNinja EA`, `GSN - Apex Gold Sentinel / Phoenix Grid`) on live accounts.
+  - Full mobile remote trade management (SL-to-BE, partial close, close all).
+  - Deep AI behavioral leak radar and personalized weekly coaching.
+  - **Two-Layer Retention Policy**: Requires maintaining a minimum $200 funded balance (with 7-day funding grace), 2.0 lots rolling 30-day trading volume on live accounts, and no more than 14 market trading days of inactivity before privileges are paused.
+
 ## Operating Context
 
 - Traders work in MT5 on desktop or VPS. Mobile users can review data but cannot run EA sync from the phone.
@@ -374,8 +390,10 @@ Admin-facing:
 - `/admin/analytics` shows traffic, countries, registered user countries, referrers, devices, campaigns, and events.
 - `/admin/users` shows country, activity, user detail, accounts, sessions, notes, and admin actions (including 1-click **Impersonate Trader** from row actions).
 - `/admin/users/behavior` is the segmentation console: **Needs Attention** (urgency, risk signals, one-click impersonation) and **Value Radar** (high-IB-value traders, trading tempo, product adoption).
-- `/admin/users/[id]` is structured into a high-density left identity column + **3 right-hand tabs** (`Overview`, `VIP & Broker`, `Coaching & Analytics`) and opens with a **narrative summary** — a template-generated behavioural synopsis at the top of the page (behaviour status, trading cadence, risk and value indicators). It is computed from existing telemetry, never written by AI, and performs zero database writes on view.
+- `/admin/users/[id]` is structured into a high-density left identity column + **3 right-hand tabs** (`Overview`, `Accounts & Plan` [value="accounts"] bundling VIP/Pro status, connected trading accounts with 1-click IB attribution, and EA license oversight, and `Coaching & Analytics`) and opens with a **narrative summary** — a template-generated behavioural synopsis at the top of the page (behaviour status, trading cadence, risk and value indicators). It is computed from existing telemetry, never written by AI, and performs zero database writes on view.
+- `/admin/trading-systems/[id]` is the dual-tab EA product detail console: **Product Configuration** (binary upload, versioning, release announcements) and **Telemetry & Accounts** (live MT4/MT5 accounts, pulsing heartbeat status, and EA Farm Capital telemetry aggregating `confirmedFarmBalanceUSD` vs `userPoolBalanceUSD`).
 - `/admin/trading-systems/brokers` owns per-broker, per-symbol **commission rates** (with a wildcard `*` fallback). These rates drive estimated IB gross revenue.
+- `/admin/messages` is the customer inquiry triage console: 4-status lifecycle (`new`, `read`, `replied`, `archived`), auto-read on click, client-side `mailto:` reply link, internal triage notes, and multi-field search.
 - `/admin/ib/sync-requests` covers both worker-driven **Cloud Sync jobs** and **Manual Sync Support Tickets** — the fallback path when an automated sync cannot complete.
 - `/admin/mt5-cloud` manages the **Multi-Instance & Smart Auto-Sleep MT5 Cloud Worker** fleet.
 
@@ -399,7 +417,7 @@ Rates live in `BrokerCommissionRate` (per broker + symbol, with a `*` wildcard f
 - `CONFIRMED` — verified as belonging to this IB. Counts toward revenue and eligible volume. Setting an account to `CONFIRMED` in `/admin/users/[id]` (`updateTradingAccountIbAttribution`) automatically:
   1. Issues/activates the account's unified `TradingAccount.licenseKey`,
   2. Upserts `ProEntitlement` to `ACTIVE` (`IB_VERIFIED`),
-  3. Upserts `EALicense` to `APPROVED` (unlocking all 3 EAs: Trade Manager, GoldScalperNinja, and GSN - Apex Gold Sentinel), and
+  3. Upserts `EALicense` to `APPROVED` (unlocking all 3 EAs: Trade Manager, GoldScalperNinja, and GSN - Apex Gold Sentinel / Phoenix Grid), and
   4. Syncs the updated license list to the GitHub backup repository (`syncLicensesToGitHubBackup`).
 - `NOT_OURS` — verified as *not* this IB. Never counts toward revenue, suspends matching `EALicense` records, and removes `IB_VERIFIED` `ProEntitlement`.
 - `UNKNOWN` — the default, meaning nobody has verified it yet. Never counts.
@@ -416,13 +434,14 @@ Revenue stays **$0** unless *both* conditions hold: the account is `CONFIRMED` *
 
 Admin modules:
 
-- Users and user detail (with narrative summary and per-account IB attribution).
-- User behaviour segmentation and value radar.
-- Reports and analytics.
+- Users and user detail (with narrative summary, 3-tab CRM [Overview, Accounts & Plan, Coaching & Analytics], and per-account IB attribution).
+- User behaviour segmentation and value radar (`/admin/users/behavior`).
+- Customer inquiries and contact message triage (`/admin/messages`: 4 statuses, auto-read, client-side mailto: reply, internal notes).
+- Reports and analytics (`/admin/reports`, `/admin/analytics`).
 - Articles and article ops, including SEO/image fixes.
-- Academy management.
-- IB/VIP pipeline, trader monitor, and the sync request console.
-- EA products, accounts, brokers (including commission rates), settings.
-- Security logs and blocked IPs.
+- Academy management (`/admin/academy`).
+- IB/VIP pipeline, trader monitor, and the sync request console (`/admin/ib/*`).
+- EA products, accounts, brokers (including commission rates), settings, and live telemetry fleet stats (`/admin/trading-systems/*`).
+- Security logs and blocked IPs (`/admin/security`).
 
 Admin screens should be action-oriented: each report should make the next action obvious.

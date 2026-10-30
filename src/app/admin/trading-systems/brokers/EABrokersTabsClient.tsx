@@ -37,7 +37,7 @@ export function EABrokersTabsClient({
                 <TabsList className="bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-1">
                     <TabsTrigger
                         value="brokers"
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold"
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap"
                     >
                         <Building2 size={15} />
                         <span>Partner Brokers</span>
@@ -47,7 +47,7 @@ export function EABrokersTabsClient({
                     </TabsTrigger>
                     <TabsTrigger
                         value="rates"
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold"
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap"
                     >
                         <DollarSign size={15} />
                         <span>Commission Rates</span>
@@ -72,7 +72,7 @@ export function EABrokersTabsClient({
 
             {/* TAB 1: Partner Brokers */}
             <TabsContent value="brokers" className="space-y-4 outline-hidden">
-                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden overflow-x-auto shadow-sm hover:shadow-md transition-shadow">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden overflow-x-auto shadow-sm hover:shadow-md transition-shadow">
                     <table className="w-full">
                         <thead className="bg-gray-50 dark:bg-white/5 text-left">
                             <tr>

@@ -107,7 +107,7 @@ export function FirstSyncSuccessModal({
                     animate="animate"
                     exit="exit"
                     transition={SPRING_SOFT}
-                    className="relative z-10 bg-white dark:bg-[#1E2028] rounded-lg w-full max-w-md overflow-hidden border border-dashboard shadow-2xl"
+                    className="relative z-10 bg-white dark:bg-[#1E2028] rounded-2xl w-full max-w-md overflow-hidden border border-dashboard shadow-2xl"
                 >
                 {/* Close button */}
                 <Button

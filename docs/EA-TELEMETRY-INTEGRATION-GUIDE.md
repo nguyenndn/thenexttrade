@@ -127,7 +127,7 @@ Admin có đầy đủ 9 quyền quản trị vòng đời License:
 ### 4.1. Bài Toán Multi-Deal Trên MetaTrader 5 & Công Thức Chuẩn
 Trên MT5, mỗi vị thế (`POSITION_IDENTIFIER`) gồm nhiều lượt khớp lệnh (`Deals`): Deal mở (`DEAL_ENTRY_IN`), Deal đóng (`DEAL_ENTRY_OUT`), đóng từng phần (`Partial Close`), đảo chiều (`DEAL_ENTRY_INOUT`) hoặc đóng đối ứng (`DEAL_ENTRY_OUT_BY`). Trên các sàn ECN/Raw Spread, phí `DEAL_COMMISSION` thường bị trừ ngay ở Deal mở (`DEAL_ENTRY_IN`).
 
-Để không mất 50%–100% Commission và Swap, `CGSNTradeSyncEngine::FindOpeningDealWithSLTP` và `BuildTradeJson` trong [`public/Include/GSN_EA_Telemetry.mqh`](file:///c:/laragon/www/gsn-crm/public/Include/GSN_EA_Telemetry.mqh) thực hiện:
+Để không mất 50%–100% Commission và Swap, `CGSNTradeSyncEngine::FindOpeningDealWithSLTP` và `BuildTradeJson` trong [`public/Include/GSN_EA_Telemetry.mqh`](../public/Include/GSN_EA_Telemetry.mqh) thực hiện:
 1. Gọi `HistorySelectByPosition(positionId)` (kèm Fallback sâu `HistorySelect(0, TimeCurrent()) + 3600` nếu thiếu `DEAL_ENTRY_IN` đối với các lệnh Swing Trade mở ngoài khoảng thời gian truy vấn).
 2. Cộng dồn toàn bộ các deal thuộc cùng `DEAL_POSITION_ID == positionId`:
    $$\text{Total Gross Profit} = \sum \text{DEAL\_PROFIT}_i$$
@@ -175,7 +175,7 @@ Trên MT5, mỗi vị thế (`POSITION_IDENTIFIER`) gồm nhiều lượt khớp
 }
 ```
 
-Các quy tắc chuẩn hóa & bảo vệ tại [`src/lib/ea/utils.ts`](file:///c:/laragon/www/gsn-crm/src/lib/ea/utils.ts), [`src/app/api/ea/trades/route.ts`](file:///c:/laragon/www/gsn-crm/src/app/api/ea/trades/route.ts) và [`src/app/api/ea/history/route.ts`](file:///c:/laragon/www/gsn-crm/src/app/api/ea/history/route.ts):
+Các quy tắc chuẩn hóa & bảo vệ tại [`src/lib/ea/utils.ts`](../src/lib/ea/utils.ts), [`src/app/api/ea/trades/route.ts`](../src/app/api/ea/trades/route.ts) và [`src/app/api/ea/history/route.ts`](../src/app/api/ea/history/route.ts):
 - **Chuẩn hóa múi giờ UTC (`B1` & `B6`)**: EA gửi `openTime`/`closeTime` theo epoch giây của broker kèm `gmtOffset` (giây) và `clientTime` chuẩn ISO UTC (`Z`). Backend trừ `gmtOffsetSeconds` **đúng 1 lần** khi ingest để lưu `entryDate`/`exitDate` chuẩn UTC vào DB. Các mốc epoch `<= 0` (như `0` hoặc `"1970.01.01 00:00:00"`) luôn được hiểu là `closeTime = null` (lệnh đang mở).
 - **Chặn Floating PnL trên lệnh `OPEN` (`B2`)**: Với lệnh đang mở (`closeTime === null`), EA gửi `"profit": 0.00` + `"unrealizedPnl": <floating>`, và Backend ép cứng `pnl = 0`, `result = null`. Khi lọc `status = OPEN` trên `/dashboard/journal`, `totalPnL` realized luôn bằng `0`.
 - **Tôn trọng cấu hình `syncOpenTrades` (`B3`)**: EA gọi `GET /api/ea/config?accountNumber=...` khi khởi tạo (và mỗi 15 phút) để đọc `syncOpenTrades`. Nếu `syncOpenTrades === false`, cả EA lẫn Backend đều bỏ qua các lệnh đang mở (`closeTime === null`).
@@ -188,10 +188,10 @@ Các quy tắc chuẩn hóa & bảo vệ tại [`src/lib/ea/utils.ts`](file:///c
 
 ### 4.3. Hiển Thị Commission & Swap Trên Giao Diện (`/dashboard/journal` & `/dashboard/analytics`)
 - **Trang `/dashboard/journal`**:
-  - Thẻ KPI **`Total Swap`** nằm cạnh thẻ **`Commission`** trên thanh 8 thẻ thống kê đầu trang ([`JournalStats.tsx`](file:///c:/laragon/www/gsn-crm/src/components/journal/JournalStats.tsx)).
-  - Cột **`Swap`** riêng biệt nằm cạnh cột **`Comm`** trong bảng danh sách lệnh ([`JournalList.tsx`](file:///c:/laragon/www/gsn-crm/src/components/journal/JournalList.tsx)).
+  - Thẻ KPI **`Total Swap`** nằm cạnh thẻ **`Commission`** trên thanh 8 thẻ thống kê đầu trang ([`JournalStats.tsx`](../src/components/journal/JournalStats.tsx)).
+  - Cột **`Swap`** riêng biệt nằm cạnh cột **`Comm`** trong bảng danh sách lệnh ([`JournalList.tsx`](../src/components/journal/JournalList.tsx)).
 - **Trang `/dashboard/analytics`**:
-  - Header biểu đồ [`EquityCurve.tsx`](file:///c:/laragon/www/gsn-crm/src/components/analytics/EquityCurve.tsx), popup chi tiết ngày trên lịch ([`DayTradeList.tsx`](file:///c:/laragon/www/gsn-crm/src/components/analytics/DayTradeList.tsx)) và bảng [`RecentTradesTable.tsx`](file:///c:/laragon/www/gsn-crm/src/components/analytics/RecentTradesTable.tsx) đều hiển thị đầy đủ 2 chỉ số/cột **`Comm`** và **`Swap`**.
+  - Header biểu đồ [`EquityCurve.tsx`](../src/components/analytics/EquityCurve.tsx), popup chi tiết ngày trên lịch ([`DayTradeList.tsx`](../src/components/analytics/DayTradeList.tsx)) và bảng [`RecentTradesTable.tsx`](../src/components/analytics/RecentTradesTable.tsx) đều hiển thị đầy đủ 2 chỉ số/cột **`Comm`** và **`Swap`**.
 
 ---
 

@@ -1086,6 +1086,7 @@ export default function JournalForm({
                                                                 type="button"
                                                                 variant="ghost"
                                                                 key={url}
+                                                                aria-label={`View reference screenshot ${idx + 1}`}
                                                                 onClick={() => setFormLightboxIndex(idx)}
                                                                 className="w-16 h-11 p-0 min-h-0 rounded-lg overflow-hidden border border-dashboard hover:border-primary transition-colors cursor-pointer"
                                                             >

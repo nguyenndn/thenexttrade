@@ -73,7 +73,7 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
             : 0;
 
     return (
-        <section className="relative overflow-hidden rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm hover:shadow-md transition-shadow p-5 sm:p-6 space-y-6">
+        <section className="relative overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm hover:shadow-md transition-shadow p-5 sm:p-6 space-y-6">
             {/* Top Accent Gradient Line */}
             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 via-sky-400 to-amber-500" />
 
@@ -191,7 +191,7 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
                         return (
                             <div
                                 key={step.key}
-                                className="relative p-4 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-white/[0.02] hover:bg-white dark:hover:bg-white/[0.05] shadow-xs hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 group flex flex-col justify-between"
+                                className="relative p-4 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-white/[0.02] hover:bg-white dark:hover:bg-white/[0.05] shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between"
                             >
                                 <div>
                                     {/* Icon & Step Number */}
