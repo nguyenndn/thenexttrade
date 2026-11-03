@@ -64,7 +64,7 @@ export function AdminDashboardClient(props: Props) {
                         Here&apos;s what&apos;s happening across TheNextTrade platform today.
                     </p>
                 </div>
-                <div className="text-sm text-gray-500 font-medium pl-4.5 md:pl-0">
+                <div className="text-sm text-gray-500 font-medium font-mono tabular-nums pl-4.5 md:pl-0">
                     {dateStr}
                 </div>
             </motion.div>
@@ -77,7 +77,7 @@ export function AdminDashboardClient(props: Props) {
                     sparklineData={props.users.sparkline}
                     trendPercent={props.users.trendPercent}
                     icon={Users}
-                    color="blue"
+                    color="amber"
                     index={0}
                 />
                 <AnimatedStatCard
@@ -95,7 +95,7 @@ export function AdminDashboardClient(props: Props) {
                     sparklineData={props.vipRequests.sparkline}
                     trendPercent={props.vipRequests.trendPercent}
                     icon={Crown}
-                    color="cyan"
+                    color="amber"
                     index={2}
                 />
             </div>
@@ -113,13 +113,13 @@ export function AdminDashboardClient(props: Props) {
                         title: "Pro Users",
                         value: props.proEntitlementsCount.toLocaleString(),
                         icon: ShieldCheck,
-                        color: "teal",
+                        color: "emerald",
                     },
                     {
                         title: "Volume",
                         value: `${props.tradingVolume.toFixed(2)} Lots`,
                         icon: BarChart3,
-                        color: "indigo",
+                        color: "amber",
                     },
                     {
                         title: "Lessons",

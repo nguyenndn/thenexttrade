@@ -92,11 +92,11 @@ export function AdminLoyaltyClient({
       {/* Meta Row (matching admin/ib standard) */}
       <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2">
-          <span className="text-gray-400">As of {asOfTimestamp}</span>
+          <span className="text-gray-400 font-mono tabular-nums">As of {asOfTimestamp}</span>
           <span className="text-gray-300 dark:text-gray-600">·</span>
           <span className="text-gray-500 dark:text-gray-400">Live MT5 Telemetry</span>
           <span className="text-gray-300 dark:text-gray-600">·</span>
-          <span className="text-amber-600 dark:text-amber-400 font-bold">
+          <span className="text-amber-600 dark:text-amber-400 font-bold font-mono tabular-nums">
             {tiers.length} Milestone Tiers Active
           </span>
         </div>
@@ -139,7 +139,7 @@ export function AdminLoyaltyClient({
                   <Icon size={15} />
                   <span>{t.label}</span>
                   {t.count !== undefined && t.count > 0 && (
-                    <span className="px-1.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-black ml-1">
+                    <span className="px-1.5 py-0.5 rounded-lg text-[10px] font-mono tabular-nums font-black bg-gold text-white ml-1">
                       {t.count}
                     </span>
                   )}

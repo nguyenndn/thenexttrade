@@ -80,7 +80,7 @@ export function LoyaltyClaimsTable({
   }, [claims, currentStatus, searchQuery]);
 
   return (
-    <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm overflow-hidden">
+    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm overflow-hidden">
       {/* Header Controls: Standard Admin Tabs & Search */}
       <div className="p-4 sm:p-5 border-b border-gray-100 dark:border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Standard Admin Tabs */}
@@ -107,7 +107,7 @@ export function LoyaltyClaimsTable({
                     <span>{tab.label}</span>
                     <span
                       className={cn(
-                        "px-1.5 py-0.2 rounded-full text-[10px] font-mono",
+                        "px-1.5 py-0.2 rounded-lg text-[10px] font-mono tabular-nums",
                         isSelected
                           ? "bg-white/20 text-white font-bold"
                           : "bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-400"
@@ -195,7 +195,7 @@ export function LoyaltyClaimsTable({
                   {/* Milestone Tier */}
                   <td className="p-4">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                      <span className="font-mono tabular-nums text-xs font-bold px-2 py-0.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
                         L{claim.level}
                       </span>
                       <span className="font-bold text-gray-900 dark:text-white">
@@ -206,10 +206,10 @@ export function LoyaltyClaimsTable({
 
                   {/* Volume */}
                   <td className="p-4">
-                    <span className="font-mono font-bold text-gray-900 dark:text-white">
+                    <span className="font-mono tabular-nums font-bold text-gray-900 dark:text-white">
                       {claim.actualLots.toLocaleString()}
                     </span>
-                    <span className="text-xs text-gray-400 ml-1">
+                    <span className="text-xs font-mono tabular-nums text-gray-400 ml-1">
                       / {claim.requiredLots.toLocaleString()} Lots
                     </span>
                   </td>
@@ -217,7 +217,7 @@ export function LoyaltyClaimsTable({
                   {/* Reward */}
                   <td className="p-4">
                     {claim.cashAmount && claim.cashAmount > 0 ? (
-                      <span className="font-mono font-black text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                      <span className="font-mono tabular-nums font-black text-amber-600 dark:text-amber-400 flex items-center gap-1">
                         <Coins size={14} className="shrink-0" />
                         ${claim.cashAmount.toLocaleString()} USDT
                       </span>
@@ -232,7 +232,7 @@ export function LoyaltyClaimsTable({
                   <td className="p-4">
                     {claim.usdtAddress ? (
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs text-gray-600 dark:text-gray-300">
+                        <span className="font-mono tabular-nums text-xs text-gray-600 dark:text-gray-300">
                           {claim.usdtAddress.slice(0, 6)}...{claim.usdtAddress.slice(-4)}
                         </span>
                         <Button
@@ -260,17 +260,17 @@ export function LoyaltyClaimsTable({
                   {/* Status */}
                   <td className="p-4">
                     {claim.status === "COMPLETED" ? (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                         <CheckCircle2 size={13} />
                         Completed
                       </span>
                     ) : claim.status === "PENDING" ? (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
                         <Clock size={13} />
                         Pending
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
                         <XCircle size={13} />
                         Rejected
                       </span>

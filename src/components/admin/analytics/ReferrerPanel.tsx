@@ -46,9 +46,9 @@ const CATEGORY_CONFIG = {
     direct: {
         label: "Direct",
         icon: Globe,
-        color: "#6366f1",
-        bgColor: "bg-indigo-50 dark:bg-indigo-500/10",
-        textColor: "text-indigo-500",
+        color: "#f59e0b",
+        bgColor: "bg-amber-50 dark:bg-amber-500/10",
+        textColor: "text-amber-500",
     },
     organic: {
         label: "Organic Search",
@@ -60,16 +60,16 @@ const CATEGORY_CONFIG = {
     social: {
         label: "Social Media",
         icon: Users,
-        color: "#06b6d4",
-        bgColor: "bg-cyan-50 dark:bg-cyan-500/10",
-        textColor: "text-cyan-500",
+        color: "#10b981",
+        bgColor: "bg-emerald-50 dark:bg-emerald-500/10",
+        textColor: "text-emerald-600 dark:text-emerald-400",
     },
     referral: {
         label: "Referral",
         icon: Link2,
-        color: "#f59e0b",
+        color: "#d97706",
         bgColor: "bg-amber-50 dark:bg-amber-500/10",
-        textColor: "text-amber-500",
+        textColor: "text-amber-600 dark:text-amber-400",
     },
 } as const;
 
@@ -109,9 +109,9 @@ export function ReferrerPanel({ referrers }: Props) {
     }));
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
             <div className="flex items-center gap-2 mb-4">
-                <Share2 className="w-4 h-4 text-indigo-500" />
+                <Share2 className="w-4 h-4 text-amber-500" />
                 <h2 className="text-sm font-bold text-gray-900 dark:text-white">
                     Traffic Sources
                 </h2>
@@ -178,10 +178,10 @@ export function ReferrerPanel({ referrers }: Props) {
                                 <span className="text-xs text-gray-600 dark:text-gray-300 flex-1">
                                     {config.label}
                                 </span>
-                                <span className="text-xs font-bold text-gray-900 dark:text-white">
+                                <span className="text-xs font-bold font-mono tabular-nums text-gray-900 dark:text-white">
                                     {c.views.toLocaleString()}
                                 </span>
-                                <span className="text-[10px] text-gray-400 w-8 text-right">
+                                <span className="text-[10px] text-gray-400 font-mono tabular-nums w-8 text-right">
                                     {pct}%
                                 </span>
                             </div>
@@ -215,7 +215,7 @@ export function ReferrerPanel({ referrers }: Props) {
                                         <span className="text-xs text-gray-600 dark:text-gray-300 truncate max-w-[70%]">
                                             {r.referrer}
                                         </span>
-                                        <span className="text-xs font-semibold text-gray-900 dark:text-white">
+                                        <span className="text-xs font-semibold font-mono tabular-nums text-gray-900 dark:text-white">
                                             {r.views.toLocaleString()}
                                         </span>
                                     </div>

@@ -194,7 +194,7 @@ export default function ShortcutsManagerPage() {
                     <div className="flex-1 w-full max-w-md">
                         <PremiumInput
                             icon={Search}
-                            placeholder="Search shortcuts..."
+                            aria-label="Search shortcuts"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -202,13 +202,13 @@ export default function ShortcutsManagerPage() {
                 </div>
 
                 {/* List Card */}
-                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm p-6 min-h-[400px]">
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm p-6 min-h-[400px]">
                     {isLoading ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
                             {[1, 2, 3, 4, 5, 6].map((i) => (
                                 <div
                                     key={i}
-                                    className="flex flex-col p-6 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl h-[160px] animate-pulse"
+                                    className="flex flex-col p-6 bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl h-[160px] animate-pulse"
                                 >
                                     <div className="flex items-center gap-3 mb-4">
                                         <div className="w-5 h-5 rounded-full bg-gray-200 dark:bg-white/10" />
@@ -230,7 +230,7 @@ export default function ShortcutsManagerPage() {
                             {filteredShortcuts.map((shortcut) => (
                                 <div
                                     key={shortcut.id}
-                                    className="group relative flex flex-col p-6 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl hover:shadow-md transition-shadow cursor-pointer"
+                                    className="group relative flex flex-col p-6 bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl hover:shadow-md transition-shadow cursor-pointer"
                                 >
                                     <div className="flex items-start justify-between mb-3">
                                         <div className="flex items-center gap-2">
@@ -252,7 +252,7 @@ export default function ShortcutsManagerPage() {
                                                 onClick={() =>
                                                     handleOpenModal(shortcut)
                                                 }
-                                                className="w-auto h-auto p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors"
+                                                className="w-auto h-auto p-2 text-gray-500 hover:text-amber-600 dark:hover:text-gold hover:bg-gold/10 rounded-lg transition-colors"
                                                 title="Edit"
                                                 aria-label="Edit Shortcut"
                                             >
@@ -278,7 +278,7 @@ export default function ShortcutsManagerPage() {
                                     </p>
                                     <div className="mt-4 pt-4 border-t border-gray-200 dark:border-white/10 text-xs text-gray-500 flex items-center justify-between">
                                         <span>HTML Snippet</span>
-                                        <span>
+                                        <span className="font-mono tabular-nums">
                                             {new Date(
                                                 shortcut.createdAt
                                             ).toLocaleDateString("en-US")}
@@ -288,8 +288,8 @@ export default function ShortcutsManagerPage() {
                             ))}
                         </div>
                     ) : (
-                        <div className="flex flex-col items-center justify-center text-center p-12 bg-gray-50 dark:bg-white/5 rounded-lg border border-dashed border-gray-200 dark:border-white/10 my-10 max-w-lg mx-auto">
-                            <div className="w-16 h-16 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-full flex items-center justify-center mb-4 shadow-sm">
+                        <div className="flex flex-col items-center justify-center text-center p-12 bg-gray-50/80 dark:bg-[#151925] rounded-xl border border-dashed border-gray-200 dark:border-white/10 my-10 max-w-lg mx-auto">
+                            <div className="w-16 h-16 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl flex items-center justify-center mb-4 shadow-sm">
                                 <Zap size={28} className="text-yellow-500" />
                             </div>
                             <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-2">

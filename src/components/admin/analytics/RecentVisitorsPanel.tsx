@@ -47,7 +47,7 @@ export function RecentVisitorsPanel() {
     }, []);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                     <Radio className="w-4 h-4 text-emerald-500" />
@@ -55,13 +55,13 @@ export function RecentVisitorsPanel() {
                         Recent Visitors
                     </h2>
                     {onlineCount > 0 && (
-                        <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                        <span className="flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold font-mono tabular-nums bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
                             <Wifi size={10} />
                             {onlineCount} online
                         </span>
                     )}
                 </div>
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-gray-400 font-mono tabular-nums">
                     Auto-refreshing 15s
                 </span>
             </div>
@@ -155,7 +155,7 @@ export function RecentVisitorsPanel() {
                                         )}
                                     </td>
                                     <td className="py-2.5 text-right">
-                                        <span className="text-xs text-gray-400 tabular-nums">
+                                        <span className="text-xs text-gray-400 font-mono tabular-nums">
                                             {new Date(
                                                 v.createdAt
                                             ).toLocaleTimeString("en", {

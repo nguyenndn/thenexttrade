@@ -143,6 +143,7 @@ export function TagInput({ value, onChange }: TagInputProps) {
             <div className="relative">
                 <input
                     type="text"
+                    aria-label="Add a tag"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => {
@@ -155,8 +156,7 @@ export function TagInput({ value, onChange }: TagInputProps) {
                             }
                         }
                     }}
-                    placeholder="Add a tag..."
-                    className="w-full p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
+                    className="w-full p-2 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary"
                 />
 
                 {(isLoading || isCreating) && (
@@ -169,7 +169,7 @@ export function TagInput({ value, onChange }: TagInputProps) {
                 )}
 
                 {suggestions.length > 0 && (
-                    <div className="absolute z-10 w-full mt-1 bg-white dark:bg-[#1A1D24] border border-gray-200 dark:border-white/10 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                    <div className="absolute z-10 w-full mt-1 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg shadow-lg max-h-48 overflow-y-auto">
                         {suggestions.map((tag) => (
                             <Button
                                 key={tag.id}

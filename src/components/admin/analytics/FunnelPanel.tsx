@@ -16,13 +16,13 @@ const STAGES = [
         key: "visitors",
         label: "Active Users",
         desc: "Total active sessions",
-        color: "#6366f1",
+        color: "#f59e0b",
     },
     {
         key: "interested",
         label: "Explored Leaderboard",
         desc: "Viewed Leaderboard",
-        color: "#22d3ee",
+        color: "#d97706",
     },
     {
         key: "signedUp",
@@ -34,7 +34,7 @@ const STAGES = [
         key: "activated",
         label: "Adopted EA",
         desc: "Downloaded EA",
-        color: "#f59e0b",
+        color: "#059669",
     },
 ] as const;
 
@@ -42,9 +42,9 @@ export function FunnelPanel({ funnel }: Props) {
     const hasData = funnel && funnel.visitors > 0;
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
             <div className="flex items-center gap-2 mb-4">
-                <Filter className="w-4 h-4 text-indigo-500" />
+                <Filter className="w-4 h-4 text-amber-500" />
                 <h2 className="text-sm font-bold text-gray-900 dark:text-white">
                     Engagement Funnel
                 </h2>
@@ -82,7 +82,7 @@ export function FunnelPanel({ funnel }: Props) {
                                 {/* Drop-off indicator */}
                                 {i > 0 && dropRate > 0 && (
                                     <div className="text-center mb-1">
-                                        <span className="text-[10px] text-red-400 font-medium">
+                                        <span className="text-[10px] text-red-400 font-medium font-mono tabular-nums">
                                             ↓ {dropRate}% drop-off
                                         </span>
                                     </div>
@@ -105,12 +105,12 @@ export function FunnelPanel({ funnel }: Props) {
                                         </div>
                                         <div className="text-right">
                                             <p
-                                                className="text-xl font-bold"
+                                                className="text-xl font-bold font-mono tabular-nums"
                                                 style={{ color: stage.color }}
                                             >
                                                 {value.toLocaleString()}
                                             </p>
-                                            <p className="text-[11px] text-gray-400">
+                                            <p className="text-[11px] text-gray-400 font-mono tabular-nums">
                                                 {pct}%
                                             </p>
                                         </div>

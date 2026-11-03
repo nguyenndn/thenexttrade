@@ -132,9 +132,9 @@ export default function EASettingsPage() {
                 </AdminPageHeader>
 
                 {/* General Settings */}
-                <div className="bg-white dark:bg-[#151925] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm">
                     <h2 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-white/10 pb-4 mb-6">
-                        <ShieldAlert className="text-red-500" size={20} />
+                        <ShieldAlert className="text-rose-500" size={20} />
                         General Configuration
                     </h2>
 
@@ -186,9 +186,9 @@ export default function EASettingsPage() {
                 </div>
 
                 {/* Email Notifications */}
-                <div className="bg-white dark:bg-[#151925] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm">
                     <h2 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-white/10 pb-4 mb-6">
-                        <Bell className="text-blue-500" size={20} />
+                        <Bell className="text-amber-600 dark:text-gold" size={20} />
                         Email Notifications
                     </h2>
 
@@ -199,11 +199,10 @@ export default function EASettingsPage() {
                             </label>
                             <Input
                                 {...register("adminAlertEmail")}
-                                placeholder="admin@example.com"
                                 className="max-w-md"
                             />
                             {errors.adminAlertEmail && (
-                                <p className="text-red-500 text-xs mt-1">
+                                <p className="text-rose-500 text-xs mt-1">
                                     {errors.adminAlertEmail.message}
                                 </p>
                             )}
@@ -236,9 +235,9 @@ export default function EASettingsPage() {
                 </div>
 
                 {/* Telegram Webhook */}
-                <div className="bg-white dark:bg-[#151925] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm mb-10">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-sm mb-10">
                     <h2 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2 border-b border-gray-200 dark:border-white/10 pb-4 mb-6">
-                        <MessageCircle className="text-sky-500" size={20} />
+                        <MessageCircle className="text-amber-600 dark:text-gold" size={20} />
                         Telegram Webhook
                     </h2>
 
@@ -288,7 +287,7 @@ export default function EASettingsPage() {
                             </div>
                         )}
                         {errors.telegramEnabled && isTelegramEnabled && (
-                            <p className="text-red-500 text-sm mt-2">
+                            <p className="text-rose-500 text-sm mt-2">
                                 {errors.telegramEnabled.message}
                             </p>
                         )}

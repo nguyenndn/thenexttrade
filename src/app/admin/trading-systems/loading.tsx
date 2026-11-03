@@ -16,10 +16,10 @@ export default function Loading() {
             </div>
 
             {/* Toolbar Card Skeleton */}
-            <div className="h-16 bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 animate-pulse mb-6" />
+            <div className="h-16 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 animate-pulse mb-6" />
 
             {/* Table Card Skeleton */}
-            <div className="h-96 bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 flex flex-col p-4 animate-pulse">
+            <div className="h-96 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 flex flex-col p-4 animate-pulse">
                 <div className="h-10 w-full bg-gray-100 dark:bg-white/5 rounded-lg mb-4" />
                 <div className="space-y-4">
                     {[1, 2, 3, 4, 5].map((i) => (

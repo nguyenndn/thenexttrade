@@ -93,11 +93,11 @@ const _ArticleRow = memo(function ArticleRow({
                         <img
                             src={article.thumbnail}
                             alt=""
-                            className="w-12 h-12 rounded-lg object-cover bg-gray-100 dark:bg-slate-800"
+                            className="w-12 h-12 rounded-lg object-cover bg-gray-100 dark:bg-[#151925]"
                             loading="lazy"
                         />
                     ) : (
-                        <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-slate-800 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-[#151925] flex items-center justify-center">
                             <FileText className="w-5 h-5 text-gray-500" />
                         </div>
                     )}
@@ -116,7 +116,7 @@ const _ArticleRow = memo(function ArticleRow({
             </td>
             <td className="px-6 py-4 whitespace-nowrap">
                 <span
-                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
+                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium ${
                         article.status === "PUBLISHED"
                             ? "bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400"
                             : article.status === "DRAFT"
@@ -133,10 +133,10 @@ const _ArticleRow = memo(function ArticleRow({
                     {article.status}
                 </span>
             </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-500">
+            <td className="px-6 py-4 whitespace-nowrap text-sm font-mono tabular-nums text-gray-600 dark:text-gray-500">
                 {article.views.toLocaleString()}
             </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+            <td className="px-6 py-4 whitespace-nowrap text-sm font-mono tabular-nums text-gray-600 dark:text-gray-300">
                 {new Date(article.createdAt).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
@@ -336,13 +336,13 @@ export const ArticleList = memo(function ArticleList({
     return (
         <div className="space-y-6">
             {/* Unified Toolbar: Search + Filters + Pagination Info */}
-            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-4 shadow-sm flex flex-col gap-4">
+            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col gap-4">
                 <div className="flex flex-1 gap-4 flex-col lg:flex-row justify-between w-full lg:items-center">
                     <div className="flex flex-1 gap-2 flex-col sm:flex-row w-full lg:max-w-xl">
                         <div className="flex-1 w-full sm:max-w-md">
                             <PremiumInput
                                 icon={Search}
-                                placeholder="Search articles..."
+                                aria-label="Search articles"
                                 defaultValue={searchParams.get("q")?.toString()}
                                 onChange={(e) => handleSearch(e.target.value)}
                             />
@@ -409,7 +409,7 @@ export const ArticleList = memo(function ArticleList({
                                 transition={SPRING_SOFT}
                                 className="flex items-center gap-1.5 bg-primary/10 px-4 h-[42px] rounded-lg text-sm shrink-0"
                             >
-                                <span className="font-bold text-primary mr-2">
+                                <span className="font-bold font-mono tabular-nums text-primary mr-2">
                                     {selectedIds.size} selected
                                 </span>
 
@@ -483,7 +483,7 @@ export const ArticleList = memo(function ArticleList({
             </div>
 
             {/* Table */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -770,7 +770,7 @@ export const ArticleList = memo(function ArticleList({
                                                                         article
                                                                     )
                                                                 }
-                                                                className="text-[10px] flex items-center gap-1 text-blue-500 opacity-0 pointer-events-none group-hover:opacity-100 focus-within:opacity-100 group-hover:pointer-events-auto focus-within:pointer-events-auto transition-opacity duration-200 h-auto p-0 hover:bg-transparent"
+                                                                className="text-[10px] flex items-center gap-1 text-amber-600 dark:text-gold opacity-0 pointer-events-none group-hover:opacity-100 focus-within:opacity-100 group-hover:pointer-events-auto focus-within:pointer-events-auto transition-opacity duration-200 h-auto p-0 hover:bg-transparent"
                                                                 aria-label="Quick Edit"
                                                             >
                                                                 <Edit2
@@ -788,7 +788,7 @@ export const ArticleList = memo(function ArticleList({
                                             </td>
                                             <td className="px-6 py-5">
                                                 <span
-                                                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                                                    className={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-bold border ${
                                                         article.status ===
                                                         "PUBLISHED"
                                                             ? "bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 border-green-200 dark:border-green-500/20"
@@ -810,7 +810,7 @@ export const ArticleList = memo(function ArticleList({
                                                         size={14}
                                                         aria-hidden="true"
                                                     />
-                                                    <span className="font-semibold">
+                                                    <span className="font-semibold font-mono tabular-nums">
                                                         {article.views.toLocaleString()}
                                                     </span>
                                                 </div>
@@ -837,18 +837,18 @@ export const ArticleList = memo(function ArticleList({
                 <div className="px-6 py-4 border-t border-gray-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-50/50 dark:bg-white/[0.02]">
                     <div className="text-sm text-gray-600 dark:text-gray-400">
                         Showing{" "}
-                        <span className="font-semibold text-gray-800 dark:text-white">
+                        <span className="font-semibold font-mono tabular-nums text-gray-800 dark:text-white">
                             {(pagination.currentPage - 1) * 20 + 1}
                         </span>
                         –
-                        <span className="font-semibold text-gray-800 dark:text-white">
+                        <span className="font-semibold font-mono tabular-nums text-gray-800 dark:text-white">
                             {Math.min(
                                 pagination.currentPage * 20,
                                 pagination.totalCount
                             )}
                         </span>{" "}
                         of{" "}
-                        <span className="font-semibold text-primary">
+                        <span className="font-semibold font-mono tabular-nums text-primary">
                             {pagination.totalCount.toLocaleString()}
                         </span>{" "}
                         articles
@@ -905,7 +905,7 @@ export const ArticleList = memo(function ArticleList({
                                         onClick={() =>
                                             handlePageChange(p as number)
                                         }
-                                        className={`h-8 w-8 text-xs font-semibold rounded-lg ${
+                                        className={`h-8 w-8 text-xs font-semibold font-mono tabular-nums rounded-lg ${
                                             p === currentPage
                                                 ? "shadow-sm shadow-amber-500/20"
                                                 : "bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300"
@@ -951,7 +951,7 @@ export const ArticleList = memo(function ArticleList({
                 open={!!previewImage}
                 onOpenChange={(open) => !open && setPreviewImage(null)}
             >
-                <DialogContent className="max-w-4xl p-1 bg-white dark:bg-slate-900 border-gray-200 dark:border-white/10 dark:border-white/20 sm:rounded-2xl shadow-2xl">
+                <DialogContent className="max-w-4xl p-1 bg-white dark:bg-[#151925] border-gray-200 dark:border-white/10 sm:rounded-2xl shadow-2xl">
                     <DialogHeader className="sr-only">
                         <DialogTitle>Image Preview</DialogTitle>
                     </DialogHeader>

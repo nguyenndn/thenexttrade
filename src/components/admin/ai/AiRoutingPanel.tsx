@@ -78,7 +78,7 @@ export function AiRoutingPanel({
     return (
         <div className="space-y-4">
             {isAdding && (
-                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm">
                     <h3 className="text-gray-900 dark:text-white font-medium mb-4">
                         New Routing Policy
                     </h3>
@@ -88,8 +88,7 @@ export function AiRoutingPanel({
                                 Policy Name
                             </label>
                             <input
-                                
-                                className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
+                                className="w-full bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
                                 value={form.name}
                                 onChange={(e) =>
                                     setForm({ ...form, name: e.target.value })
@@ -105,7 +104,7 @@ export function AiRoutingPanel({
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        className="w-full justify-between h-auto bg-gray-50 dark:bg-[#151925] border-gray-200 dark:border-white/10 px-3 py-2 text-sm font-normal text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20"
+                                        className="w-full justify-between h-auto bg-gray-50/80 dark:bg-[#151925] border-gray-200 dark:border-white/10 px-3 py-2 text-sm font-normal text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20"
                                     >
                                         {form.scopeType === "GLOBAL"
                                             ? "Global (Default for all tasks)"
@@ -150,7 +149,7 @@ export function AiRoutingPanel({
                                         <Button
                                             type="button"
                                             variant="outline"
-                                            className="w-full justify-between h-auto bg-gray-50 dark:bg-[#151925] border-gray-200 dark:border-white/10 px-3 py-2 text-sm font-normal text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20"
+                                            className="w-full justify-between h-auto bg-gray-50/80 dark:bg-[#151925] border-gray-200 dark:border-white/10 px-3 py-2 text-sm font-normal text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20"
                                         >
                                             {selectedTask ? (
                                                 <span className="truncate">
@@ -208,7 +207,7 @@ export function AiRoutingPanel({
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        className="w-full justify-between h-auto bg-gray-50 dark:bg-[#151925] border-gray-200 dark:border-white/10 px-3 py-2 text-sm font-normal text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20"
+                                        className="w-full justify-between h-auto bg-gray-50/80 dark:bg-[#151925] border-gray-200 dark:border-white/10 px-3 py-2 text-sm font-normal text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20"
                                     >
                                         {form.mode === "FIXED"
                                             ? "Fixed (Single Model)"
@@ -249,7 +248,7 @@ export function AiRoutingPanel({
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        className="w-full justify-between h-auto bg-gray-50 dark:bg-[#151925] border-gray-200 dark:border-white/10 px-3 py-2 text-sm font-normal text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20"
+                                        className="w-full justify-between h-auto bg-gray-50/80 dark:bg-[#151925] border-gray-200 dark:border-white/10 px-3 py-2 text-sm font-normal text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20"
                                     >
                                         {selectedModel ? (
                                             <span className="truncate">
@@ -305,7 +304,7 @@ export function AiRoutingPanel({
                             </label>
                             <input
                                 type="number"
-                                className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
+                                className="w-full bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-gray-900 dark:text-white text-sm font-mono tabular-nums focus:outline-none focus:border-primary"
                                 value={form.timeoutMs}
                                 onChange={(e) =>
                                     setForm({
@@ -326,11 +325,11 @@ export function AiRoutingPanel({
                                             <Button
                                                 type="button"
                                                 variant="outline"
-                                                className="w-full justify-between h-auto bg-gray-50 dark:bg-[#151925] border-gray-200 dark:border-white/10 px-3 py-2 text-sm font-normal text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20"
+                                                className="w-full justify-between h-auto bg-gray-50/80 dark:bg-[#151925] border-gray-200 dark:border-white/10 px-3 py-2 text-sm font-normal text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20"
                                             >
                                                 {form.fallbackConfigJson.length >
                                                 0 ? (
-                                                    <span className="truncate">
+                                                    <span className="truncate font-mono tabular-nums">
                                                         {
                                                             form
                                                                 .fallbackConfigJson
@@ -391,7 +390,7 @@ export function AiRoutingPanel({
                                     </label>
                                     <input
                                         type="number"
-                                        className="w-full bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary"
+                                        className="w-full bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-gray-900 dark:text-white text-sm font-mono tabular-nums focus:outline-none focus:border-primary"
                                         value={form.maxAttempts}
                                         onChange={(e) =>
                                             setForm({
@@ -430,11 +429,11 @@ export function AiRoutingPanel({
                 {policies.map((policy) => (
                     <div
                         key={policy.id}
-                        className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-5 shadow-sm"
+                        className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm"
                     >
                         <div className="flex justify-between items-start mb-4">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-500">
+                                <div className="w-10 h-10 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center text-amber-600 dark:text-gold">
                                     <Route className="w-5 h-5" />
                                 </div>
                                 <div>
@@ -442,7 +441,7 @@ export function AiRoutingPanel({
                                         {policy.name}
                                     </h3>
                                     <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                        <span className="font-mono">
+                                        <span className="font-mono tabular-nums">
                                             v{policy.version}
                                         </span>
                                         <span>•</span>
@@ -457,7 +456,7 @@ export function AiRoutingPanel({
                                 </div>
                             </div>
                             <span
-                                className={`px-2 py-1 rounded-lg text-xs font-medium flex items-center ${policy.enabled ? "bg-green-100 dark:bg-green-500/10 text-green-700 dark:text-green-500" : "bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400"}`}
+                                className={`px-2 py-1 rounded-lg text-xs font-medium flex items-center ${policy.enabled ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" : "bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400"}`}
                             >
                                 <Power className="w-3 h-3 mr-1" />{" "}
                                 {policy.enabled ? "Enabled" : "Disabled"}
@@ -504,7 +503,7 @@ export function AiRoutingPanel({
                                 <p className="text-xs text-gray-500 mb-1">
                                     Timeout
                                 </p>
-                                <p className="text-sm text-gray-900 dark:text-white">
+                                <p className="text-sm text-gray-900 dark:text-white font-mono tabular-nums">
                                     {policy.timeoutMs}ms
                                 </p>
                             </div>
@@ -512,7 +511,7 @@ export function AiRoutingPanel({
                                 <p className="text-xs text-gray-500 mb-1">
                                     Max Attempts
                                 </p>
-                                <p className="text-sm text-gray-900 dark:text-white">
+                                <p className="text-sm text-gray-900 dark:text-white font-mono tabular-nums">
                                     {policy.maxAttempts}
                                 </p>
                             </div>
@@ -520,7 +519,7 @@ export function AiRoutingPanel({
                                 <p className="text-xs text-gray-500 mb-1">
                                     Last Updated
                                 </p>
-                                <p className="text-sm text-gray-900 dark:text-white">
+                                <p className="text-sm text-gray-900 dark:text-white font-mono tabular-nums">
                                     {format(
                                         new Date(policy.updatedAt),
                                         "MMM d, yyyy HH:mm"
@@ -531,7 +530,7 @@ export function AiRoutingPanel({
                     </div>
                 ))}
                 {policies.length === 0 && (
-                    <div className="text-center py-12 text-sm text-gray-500 bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm">
+                    <div className="text-center py-12 text-sm text-gray-500 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
                         No routing policies configured. The system will use
                         default routing.
                     </div>

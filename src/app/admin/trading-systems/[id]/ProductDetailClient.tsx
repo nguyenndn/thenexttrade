@@ -17,17 +17,17 @@ const TYPE_LABELS: Record<string, { label: string; color: string; icon: any }> =
     {
         AUTO_TRADE: {
             label: "Auto Trade",
-            color: "text-blue-500 bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/20",
+            color: "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
             icon: Zap,
         },
         MANUAL_ASSIST: {
             label: "Manual Assist",
-            color: "text-amber-500 bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/20",
+            color: "text-amber-600 dark:text-gold bg-gold/10 border-gold/20",
             icon: Activity,
         },
         INDICATOR: {
             label: "Indicator",
-            color: "text-cyan-500 bg-cyan-50 dark:bg-cyan-500/10 border-cyan-200 dark:border-cyan-500/20",
+            color: "text-amber-600 dark:text-gold bg-gold/10 border-gold/20",
             icon: Activity,
         },
     };
@@ -48,7 +48,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
             >
                 <Button
                     onClick={() => setIsAnnouncementOpen(true)}
-                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-lg px-4 py-2 font-bold flex items-center gap-2 shadow-md shadow-amber-500/20"
+                    className="bg-gold hover:bg-amber-600 !text-white rounded-lg px-4 py-2 font-bold flex items-center gap-2 shadow-md shadow-amber-500/20"
                 >
                     <Sparkles size={16} />
                     <span>Announce Release</span>
@@ -81,7 +81,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                             className="shrink-0 gap-2 px-4 py-2 whitespace-nowrap"
                         >
                             <Users size={15} /> Telemetry & Accounts
-                            <span className="ml-1 rounded-full bg-gray-200 px-1.5 py-0.5 text-[10px] font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
+                            <span className="ml-1 rounded-lg bg-gray-200 px-1.5 py-0.5 text-[10px] font-mono tabular-nums font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
                                 {allocationsCount}
                             </span>
                         </TabsTrigger>
@@ -103,12 +103,12 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                         />
 
                         {/* Recent Downloads */}
-                        <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 space-y-4">
+                        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 space-y-4">
                             <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-3">
                                 <h3 className="text-base font-bold text-gray-700 dark:text-white">
                                     Recent Downloads
                                 </h3>
-                                <span className="text-xs font-bold text-gray-500 bg-gray-100 dark:bg-white/5 px-2.5 py-1 rounded-lg">
+                                <span className="text-xs font-mono tabular-nums font-bold text-gray-500 bg-gray-100 dark:bg-white/5 px-2.5 py-1 rounded-lg">
                                     {product._count?.downloads || 0} total
                                 </span>
                             </div>
@@ -141,12 +141,12 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                                                             dl.user?.email ||
                                                             "Unknown"}
                                                     </p>
-                                                    <p className="text-[10px] text-gray-500 font-medium">
+                                                    <p className="text-[10px] text-gray-500 font-mono tabular-nums font-medium">
                                                         v{dl.version} · {dl.platform}
                                                     </p>
                                                 </div>
                                             </div>
-                                            <span className="text-[10px] text-gray-500 font-medium whitespace-nowrap">
+                                            <span className="text-[10px] text-gray-500 font-mono tabular-nums font-medium whitespace-nowrap">
                                                 {new Date(dl.createdAt).toLocaleDateString(
                                                     "en-GB",
                                                     {

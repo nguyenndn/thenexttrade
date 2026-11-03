@@ -117,7 +117,7 @@ export function ShortcutsMenuModal({
                         <Link
                             href="/admin/articles/shortcuts"
                             target="_blank"
-                            className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-1 bg-blue-50 dark:bg-blue-500/10 px-3 py-1.5 rounded-lg transition-colors"
+                            className="text-sm font-medium text-amber-600 dark:text-gold hover:text-amber-700 flex items-center gap-1 bg-gold/10 border border-gold/20 px-3 py-1.5 rounded-lg transition-colors"
                         >
                             <Plus size={16} /> Manage
                         </Link>
@@ -134,10 +134,10 @@ export function ShortcutsMenuModal({
                 </div>
 
                 {/* Search */}
-                <div className="p-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-black/20">
+                <div className="p-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#1E2028]">
                     <PremiumInput
                         icon={Search}
-                        placeholder="Search for content snippets..."
+                        aria-label="Search for content snippets"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         autoFocus
@@ -171,14 +171,14 @@ export function ShortcutsMenuModal({
                                             shortcut.name
                                         )
                                     }
-                                    className="flex flex-col items-start p-4 text-left border border-gray-200 dark:border-white/10 rounded-lg hover:border-blue-500/30 hover:bg-blue-50/50 dark:hover:bg-blue-500/5 transition-all group focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer"
+                                    className="flex flex-col items-start p-4 text-left border border-gray-200 dark:border-white/10 rounded-lg hover:border-gold/30 hover:bg-gold/5 transition-all group focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer"
                                 >
                                     <div className="flex items-center gap-2 w-full mb-1">
                                         <Zap
                                             size={14}
                                             className="text-yellow-500"
                                         />
-                                        <span className="font-semibold text-gray-700 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 truncate w-full transition-colors">
+                                        <span className="font-semibold text-gray-700 dark:text-white group-hover:text-amber-600 dark:group-hover:text-gold truncate w-full transition-colors">
                                             {shortcut.name}
                                         </span>
                                     </div>
@@ -212,7 +212,7 @@ export function ShortcutsMenuModal({
                                 <Button
                                     variant="outline"
                                     size="smd"
-                                    className="bg-white border-blue-200 text-blue-600 hover:bg-blue-50"
+                                    className="border-gold/30 text-amber-600 dark:text-gold hover:bg-gold/10"
                                 >
                                     Create First Shortcut
                                 </Button>

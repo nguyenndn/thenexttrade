@@ -25,13 +25,13 @@ const funnelSteps = [
         key: "newUsers",
         label: "New Users",
         icon: Users,
-        gradient: "bg-gradient-to-br from-blue-500 to-indigo-600",
+        gradient: "bg-gradient-to-br from-amber-500 to-amber-600",
     },
     {
         key: "connectedAccountUsers",
         label: "Connected",
         icon: Wallet,
-        gradient: "bg-gradient-to-br from-cyan-500 to-teal-600",
+        gradient: "bg-gradient-to-br from-emerald-500 to-emerald-600",
     },
     {
         key: "firstTradeUsers",
@@ -43,19 +43,19 @@ const funnelSteps = [
         key: "weeklyReportUsers",
         label: "Weekly Rep",
         icon: FileText,
-        gradient: "bg-gradient-to-br from-amber-500 to-orange-600",
+        gradient: "bg-gradient-to-br from-amber-500 to-amber-600",
     },
     {
         key: "proRequestUsers",
         label: "Pro Req",
         icon: Crown,
-        gradient: "bg-gradient-to-br from-orange-500 to-rose-600",
+        gradient: "bg-gradient-to-br from-amber-500 to-rose-600",
     },
     {
         key: "proUnlockedUsers",
         label: "Pro Active",
         icon: Zap,
-        gradient: "bg-gradient-to-br from-primary via-teal-500 to-emerald-500",
+        gradient: "bg-gradient-to-br from-primary to-emerald-500",
     },
 ] as const;
 
@@ -75,12 +75,12 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
     return (
         <section className="relative overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm hover:shadow-md transition-shadow p-5 sm:p-6 space-y-6">
             {/* Top Accent Gradient Line */}
-            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 via-sky-400 to-amber-500" />
+            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 via-amber-400 to-amber-500" />
 
             {/* Top Header: North Star Badge, Primary Metric & Action */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
                 <div className="space-y-3">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-xs">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-xs">
                         <span className="relative flex h-2 w-2">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -93,7 +93,7 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
                             <p className="text-xs font-bold text-gray-500 dark:text-gray-400">
                                 Weekly active traders
                             </p>
-                            <p className="mt-0.5 text-4xl sm:text-5xl font-black text-gray-900 dark:text-white tabular-nums tracking-tight">
+                            <p className="mt-0.5 text-4xl sm:text-5xl font-black text-gray-900 dark:text-white font-mono tabular-nums tracking-tight">
                                 {data.activeTraders.toLocaleString()}
                             </p>
                         </div>
@@ -101,7 +101,7 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
                         {/* Trend Percentage Badge */}
                         <span
                             className={cn(
-                                "mb-1 inline-flex items-center gap-1.5 rounded-lg border px-3 py-1 text-xs font-black tabular-nums shadow-xs",
+                                "mb-1 inline-flex items-center gap-1.5 rounded-lg border px-3 py-1 text-xs font-black font-mono tabular-nums shadow-xs",
                                 isPositive &&
                                     "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20",
                                 isNegative &&
@@ -118,11 +118,11 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
 
                         {/* Secondary Stats Capsules */}
                         <div className="flex items-center gap-2 mb-0.5">
-                            <div className="px-3 py-1.5 rounded-lg bg-gray-50/90 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 shadow-xs">
+                            <div className="px-3 py-1.5 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-xs">
                                 <p className="text-[10px] font-black uppercase tracking-wider text-gray-400">
                                     Previous
                                 </p>
-                                <p className="text-sm font-black text-gray-900 dark:text-white tabular-nums mt-0.5">
+                                <p className="text-sm font-black text-gray-900 dark:text-white font-mono tabular-nums mt-0.5">
                                     {data.previousActiveTraders.toLocaleString()}
                                 </p>
                             </div>
@@ -131,7 +131,7 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
                                 <p className="text-[10px] font-black uppercase tracking-wider text-amber-700 dark:text-amber-400">
                                     Pro Activation
                                 </p>
-                                <p className="text-sm font-black text-amber-700 dark:text-amber-300 tabular-nums mt-0.5">
+                                <p className="text-sm font-black text-amber-700 dark:text-amber-300 font-mono tabular-nums mt-0.5">
                                     {activationRate}%
                                 </p>
                             </div>
@@ -170,7 +170,7 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
                         </div>
                     </div>
 
-                    <span className="self-start sm:self-auto px-3 py-1 rounded-full text-xs font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10">
+                    <span className="self-start sm:self-auto px-3 py-1 rounded-lg text-xs font-bold font-mono tabular-nums text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10">
                         {data.proUnlockedUsers.toLocaleString()} of{" "}
                         {data.newUsers.toLocaleString()} users reached Pro Active
                     </span>
@@ -191,7 +191,7 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
                         return (
                             <div
                                 key={step.key}
-                                className="relative p-4 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-white/[0.02] hover:bg-white dark:hover:bg-white/[0.05] shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between"
+                                className="relative p-4 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] hover:bg-white dark:hover:bg-white/[0.05] shadow-xs hover:shadow-md transition-all duration-200 group flex flex-col justify-between"
                             >
                                 <div>
                                     {/* Icon & Step Number */}
@@ -206,11 +206,11 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
                                         </div>
 
                                         <div className="flex items-center gap-1.5">
-                                            <span className="text-[10px] font-extrabold text-gray-400">
+                                            <span className="text-[10px] font-extrabold font-mono tabular-nums text-gray-400">
                                                 #{i + 1}
                                             </span>
                                             {convRate !== null && (
-                                                <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[10px] font-black text-emerald-600 dark:text-emerald-400 tabular-nums">
+                                                <span className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[10px] font-black text-emerald-600 dark:text-emerald-400 font-mono tabular-nums">
                                                     {convRate}%
                                                 </span>
                                             )}
@@ -219,7 +219,7 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
 
                                     {/* Value & Step Label */}
                                     <div>
-                                        <p className="text-2xl font-black text-gray-900 dark:text-white tabular-nums tracking-tight truncate">
+                                        <p className="text-2xl font-black text-gray-900 dark:text-white font-mono tabular-nums tracking-tight truncate">
                                             {value.toLocaleString()}
                                         </p>
                                         <p className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mt-1 truncate">
@@ -232,7 +232,7 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
                                 <div className="mt-3.5 pt-2 border-t border-gray-200 dark:border-white/5">
                                     <div className="h-1.5 w-full rounded-full bg-gray-200 dark:bg-white/10 overflow-hidden shadow-inner">
                                         <div
-                                            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-500"
+                                            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-500"
                                             style={{
                                                 width: `${Math.max(6, Math.min(100, i === 0 ? 100 : (convRate ?? 0)))}%`,
                                             }}
@@ -249,7 +249,7 @@ export function NorthStarPanel({ data }: NorthStarPanelProps) {
                     <span>
                         Pro activation rate is calculated as Pro Active divided by New Users for this period.
                     </span>
-                    <span className="inline-flex items-center gap-1.5 font-bold px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-300 w-fit">
+                    <span className="inline-flex items-center gap-1.5 font-bold font-mono tabular-nums px-2.5 py-0.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-300 w-fit">
                         {activationRate}% activation
                     </span>
                 </div>

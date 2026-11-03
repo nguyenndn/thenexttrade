@@ -119,13 +119,16 @@ export function ArticleSeoFixModal({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-2xl flex flex-col"
+                className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-2xl flex flex-col"
             >
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] sticky top-0 z-10 shrink-0">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] sticky top-0 z-10 shrink-0">
                     <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center">
-                            <WandSparkles size={18} className="text-blue-500" />
+                        <div className="w-9 h-9 rounded-lg bg-gold/10 flex items-center justify-center">
+                            <WandSparkles
+                                size={18}
+                                className="text-amber-600 dark:text-gold"
+                            />
                         </div>
                         <div>
                             <h2 className="text-base font-bold text-gray-800 dark:text-white">
@@ -178,7 +181,7 @@ export function ArticleSeoFixModal({
                                     Meta Title
                                 </label>
                                 <span
-                                    className={`text-xs ${isMetaTitleValid ? "text-gray-500" : "text-red-500 font-bold"}`}
+                                    className={`text-xs font-mono tabular-nums ${isMetaTitleValid ? "text-gray-500" : "text-red-500 font-bold"}`}
                                 >
                                     {formData.metaTitle.length}/60
                                 </span>
@@ -192,8 +195,7 @@ export function ArticleSeoFixModal({
                                         metaTitle: e.target.value,
                                     })
                                 }
-                                className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-                                
+                                className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold transition-all"
                             />
                         </div>
 
@@ -204,7 +206,7 @@ export function ArticleSeoFixModal({
                                     Meta Description
                                 </label>
                                 <span
-                                    className={`text-xs ${isMetaDescValid ? "text-gray-500" : "text-red-500 font-bold"}`}
+                                    className={`text-xs font-mono tabular-nums ${isMetaDescValid ? "text-gray-500" : "text-red-500 font-bold"}`}
                                 >
                                     {formData.metaDescription.length}/160
                                 </span>
@@ -218,8 +220,7 @@ export function ArticleSeoFixModal({
                                     })
                                 }
                                 rows={3}
-                                className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none"
-                                
+                                className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold transition-all resize-none"
                             />
                         </div>
 
@@ -245,8 +246,7 @@ export function ArticleSeoFixModal({
                                             focusKeyword: e.target.value,
                                         })
                                     }
-                                    className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-                                    placeholder="focus keyword"
+                                    className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold transition-all"
                                 />
                             </div>
 
@@ -302,7 +302,7 @@ export function ArticleSeoFixModal({
                                     Excerpt (Blog Grid)
                                 </label>
                                 <span
-                                    className={`text-xs ${isExcerptValid ? "text-gray-500" : "text-red-500 font-bold"}`}
+                                    className={`text-xs font-mono tabular-nums ${isExcerptValid ? "text-gray-500" : "text-red-500 font-bold"}`}
                                 >
                                     {formData.excerpt.length}/200
                                 </span>
@@ -316,14 +316,13 @@ export function ArticleSeoFixModal({
                                     })
                                 }
                                 rows={3}
-                                className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none"
-                                
+                                className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold transition-all resize-none"
                             />
                         </div>
                     </div>
                 </div>
 
-                <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] rounded-b-lg shrink-0">
+                <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] rounded-b-2xl shrink-0">
                     <Button
                         variant="outline"
                         size="smd"

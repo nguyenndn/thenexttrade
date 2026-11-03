@@ -10,9 +10,9 @@ export function TopPagesPanel({ pages }: Props) {
     const maxViews = pages[0]?.views ?? 1;
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
             <div className="flex items-center gap-2 mb-4">
-                <FileText className="w-4 h-4 text-cyan-500" />
+                <FileText className="w-4 h-4 text-amber-500" />
                 <h2 className="text-sm font-bold text-gray-900 dark:text-white">
                     Top Pages
                 </h2>
@@ -31,14 +31,14 @@ export function TopPagesPanel({ pages }: Props) {
                         <div key={p.pathname} className="relative group">
                             {/* Background bar */}
                             <div
-                                className="absolute inset-0 bg-indigo-50 dark:bg-indigo-500/5 rounded-lg transition-all"
+                                className="absolute inset-0 bg-amber-50 dark:bg-amber-500/5 rounded-lg transition-all"
                                 style={{ width: `${pct}%` }}
                             />
                             <div className="relative flex items-center justify-between py-2.5 px-3">
                                 <span className="text-sm text-gray-700 dark:text-gray-300 truncate max-w-[75%] font-mono text-xs">
                                     {p.pathname}
                                 </span>
-                                <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                                <span className="text-sm font-semibold font-mono tabular-nums text-gray-900 dark:text-white">
                                     {p.views.toLocaleString()}
                                 </span>
                             </div>

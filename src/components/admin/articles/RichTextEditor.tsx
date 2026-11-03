@@ -154,7 +154,7 @@ export function RichTextEditor({
             Link.configure({
                 openOnClick: false,
                 HTMLAttributes: {
-                    class: "text-blue-600 dark:text-blue-400 font-medium hover:underline cursor-pointer",
+                    class: "text-amber-600 dark:text-gold font-medium hover:underline cursor-pointer",
                 },
             }),
             Image.configure({
@@ -193,7 +193,7 @@ export function RichTextEditor({
             Figure,
             FigCaption,
             Placeholder.configure({
-                placeholder: "Start writing amazingly...",
+                placeholder: "",
             }),
         ],
         content,
@@ -663,7 +663,7 @@ export function RichTextEditor({
                         {/* Utility */}
                         <div className="flex items-center gap-0.5 ml-auto">
                             {isUploading && (
-                                <span className="flex items-center gap-1 text-xs text-blue-500 mr-2">
+                                <span className="flex items-center gap-1 text-xs text-amber-600 dark:text-gold mr-2">
                                     <Loader2
                                         size={14}
                                         className="animate-spin"
@@ -695,8 +695,8 @@ export function RichTextEditor({
 
                     {/* Contextual Toolbar: Table */}
                     {editor.isActive("table") && (
-                        <div className="flex flex-wrap items-center gap-2 p-2 bg-blue-50 dark:bg-blue-900/10 border-t border-blue-100 dark:border-blue-800 text-xs">
-                            <span className="font-bold text-blue-600 dark:text-blue-400 px-2">
+                        <div className="flex flex-wrap items-center gap-2 p-2 bg-gold/5 dark:bg-gold/10 border-t border-gold/20 text-xs">
+                            <span className="font-bold text-amber-600 dark:text-gold px-2">
                                 Table:
                             </span>
                             <div className="flex gap-1">
@@ -739,7 +739,7 @@ export function RichTextEditor({
                                 >
                                     Del Col
                                 </Button>
-                                <div className="w-[1px] bg-blue-200 dark:bg-blue-800 mx-1"></div>
+                                <div className="w-[1px] bg-gold/20 mx-1"></div>
                                 <Button
                                     size="sm"
                                     variant="ghost"
@@ -775,7 +775,7 @@ export function RichTextEditor({
                                 >
                                     Del Row
                                 </Button>
-                                <div className="w-[1px] bg-blue-200 dark:bg-blue-800 mx-1"></div>
+                                <div className="w-[1px] bg-gold/20 mx-1"></div>
                                 <Button
                                     size="sm"
                                     variant="ghost"
@@ -796,7 +796,7 @@ export function RichTextEditor({
 
                     {/* Upload Drop Zone indicator */}
                     {isUploading && (
-                        <div className="h-1 bg-gradient-to-r from-primary via-emerald-400 to-teal-500 animate-pulse" />
+                        <div className="h-1 bg-gradient-to-r from-primary to-emerald-500" />
                     )}
                 </div>
             )}
@@ -904,7 +904,7 @@ export function RichTextEditor({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative bg-white dark:bg-[#1E2028] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4"
+                        className="relative bg-white dark:bg-[#151925] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <h3 className="text-lg font-bold text-gray-700 dark:text-white">
@@ -913,6 +913,7 @@ export function RichTextEditor({
                         <input
                             ref={linkInputRef}
                             type="url"
+                            aria-label="Link URL"
                             value={linkUrl}
                             onChange={(e) => setLinkUrl(e.target.value)}
                             onKeyDown={(e) => {
@@ -920,8 +921,7 @@ export function RichTextEditor({
                                 if (e.key === "Escape")
                                     setLinkDialogOpen(false);
                             }}
-                            placeholder="https://example.com"
-                            className="w-full p-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                            className="w-full p-3 rounded-lg bg-gray-50/80 dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
                         />
                         <div className="flex justify-end gap-2">
                             <Button
@@ -970,7 +970,7 @@ export function RichTextEditor({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative bg-white dark:bg-[#1E2028] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4"
+                        className="relative bg-white dark:bg-[#151925] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 p-6 w-full max-w-md mx-4 space-y-4"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <h3 className="text-lg font-bold text-gray-700 dark:text-white">
@@ -979,6 +979,7 @@ export function RichTextEditor({
                         <input
                             ref={youtubeInputRef}
                             type="url"
+                            aria-label="YouTube Video URL"
                             value={youtubeUrl}
                             onChange={(e) => setYoutubeUrl(e.target.value)}
                             onKeyDown={(e) => {
@@ -986,8 +987,7 @@ export function RichTextEditor({
                                 if (e.key === "Escape")
                                     setYoutubeDialogOpen(false);
                             }}
-                            placeholder="https://www.youtube.com/watch?v=..."
-                            className="w-full p-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                            className="w-full p-3 rounded-lg bg-gray-50/80 dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
                         />
                         <div className="flex justify-end gap-2">
                             <Button
@@ -1011,7 +1011,7 @@ export function RichTextEditor({
 
             {/* Fullscreen: ESC hint */}
             {isFullscreen && (
-                <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-black/80 text-white text-xs px-4 py-2 rounded-full backdrop-blur-sm pointer-events-none opacity-60">
+                <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-black/80 text-white text-xs px-4 py-2 rounded-lg backdrop-blur-sm pointer-events-none opacity-60">
                     Press{" "}
                     <kbd className="px-1.5 py-0.5 font-mono bg-white/20 rounded-lg mx-1">
                         ESC

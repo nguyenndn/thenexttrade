@@ -34,7 +34,7 @@ export function SortableLesson({ lesson, onEdit, onDelete }: LessonProps) {
         <div
             ref={setNodeRef}
             style={style}
-            className="flex items-center justify-between p-3 bg-white dark:bg-[#1A1F2C] border border-gray-100 dark:border-white/5 rounded-lg hover:border-gray-200 dark:hover:border-white/10 transition-all shadow-sm group"
+            className="flex items-center justify-between p-3 bg-white dark:bg-[#151925] border border-gray-100 dark:border-white/5 rounded-lg hover:border-gray-200 dark:hover:border-white/10 transition-all shadow-sm group"
         >
             <div className="flex items-center gap-3">
                 <Button
@@ -56,7 +56,7 @@ export function SortableLesson({ lesson, onEdit, onDelete }: LessonProps) {
                             "p-1.5 rounded-lg transition-colors group-hover/link:bg-primary/10",
                             lesson.videoUrl
                                 ? "bg-red-50 text-red-500 group-hover/link:text-primary"
-                                : "bg-blue-50 text-blue-500 group-hover/link:text-primary"
+                                : "bg-gold/10 text-amber-600 dark:text-gold group-hover/link:text-primary"
                         )}
                     >
                         {lesson.videoUrl ? (
@@ -70,7 +70,7 @@ export function SortableLesson({ lesson, onEdit, onDelete }: LessonProps) {
                         <span className="text-sm font-medium text-gray-700 dark:text-white group-hover/link:text-primary group-hover/link:underline transition-colors">
                             {lesson.title}
                         </span>
-                        <span className="text-[10px] text-gray-500 font-mono">
+                        <span className="text-[10px] text-gray-500 font-mono tabular-nums">
                             {lesson.duration ? `${lesson.duration} min` : "Text"}
                         </span>
                     </div>
@@ -82,7 +82,7 @@ export function SortableLesson({ lesson, onEdit, onDelete }: LessonProps) {
                     variant="ghost"
                     size="icon"
                     onClick={() => onEdit(lesson)}
-                    className="p-1.5 h-auto w-auto text-gray-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors"
+                    className="p-1.5 h-auto w-auto text-gray-500 hover:text-amber-600 dark:hover:text-gold hover:bg-gold/10 rounded-lg transition-colors"
                 >
                     <Edit size={14} />
                 </Button>

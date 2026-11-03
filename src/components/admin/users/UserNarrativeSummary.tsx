@@ -9,7 +9,7 @@ interface UserNarrativeSummaryProps {
 export function UserNarrativeSummary({ classification }: UserNarrativeSummaryProps) {
     if (!classification) {
         return (
-            <div className="rounded-lg border border-zinc-200/80 bg-white/70 p-5 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/70 shadow-xs">
+            <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-xs">
                 <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 text-sm">
                     <Activity className="h-4 w-4" />
                     <span>Behavioral telemetry is being calculated...</span>
@@ -87,7 +87,7 @@ export function UserNarrativeSummary({ classification }: UserNarrativeSummaryPro
     return (
         <section
             aria-label="Trader behavioral summary"
-            className="mb-6 rounded-lg border border-zinc-200/80 bg-white p-5 shadow-xs transition-colors dark:border-zinc-800 dark:bg-zinc-900/90"
+            className="mb-6 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-xs transition-colors"
         >
             {/* Header: Title & Pulse Status Dot */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-100 pb-3.5 dark:border-zinc-800/70">
@@ -135,7 +135,7 @@ export function UserNarrativeSummary({ classification }: UserNarrativeSummaryPro
 
             {/* Next Action Suggestion */}
             {actionSuggestion && (
-                <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-zinc-200/60 bg-zinc-50/80 p-3 text-xs text-zinc-700 dark:border-zinc-800/60 dark:bg-zinc-800/40 dark:text-zinc-300">
+                <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-3 text-xs text-zinc-700 dark:text-zinc-300">
                     <span className="font-semibold text-zinc-900 dark:text-zinc-100">
                         Recommended Action:
                     </span>

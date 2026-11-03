@@ -44,7 +44,7 @@ export function ReleaseAnnouncementModal({
 }: ReleaseAnnouncementModalProps) {
     const [version, setVersion] = useState(product.version || "1.0.0");
     const [subject, setSubject] = useState(
-        `Update Available: ${product.name} v${product.version || "1.0.0"} 🚀`
+        `Update Available: ${product.name} v${product.version || "1.0.0"}`
     );
     const [rawHighlights, setRawHighlights] = useState(
         product.changelog ||
@@ -74,7 +74,7 @@ export function ReleaseAnnouncementModal({
 
     // Update subject automatically when version changes
     useEffect(() => {
-        setSubject(`Update Available: ${product.name} v${version} 🚀`);
+        setSubject(`Update Available: ${product.name} v${version}`);
     }, [version, product.name]);
 
     // Fetch audience count on mount
@@ -193,13 +193,13 @@ export function ReleaseAnnouncementModal({
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
             <div
-                className="relative w-full max-w-7xl h-[95vh] max-h-[960px] flex flex-col bg-white dark:bg-[#121624] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden"
+                className="relative w-full max-w-7xl h-[95vh] max-h-[960px] flex flex-col bg-white dark:bg-[#0D111C] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* ── Modal Header ── */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/75 dark:bg-[#181E32]/75">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925]">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 rounded-lg bg-amber-500/10 text-amber-500">
+                        <div className="p-2.5 rounded-lg bg-gold/10 text-amber-600 dark:text-gold">
                             <Sparkles size={22} />
                         </div>
                         <div>
@@ -207,7 +207,7 @@ export function ReleaseAnnouncementModal({
                                 <h3 className="text-base font-bold text-gray-900 dark:text-white">
                                     Release Announcement Studio
                                 </h3>
-                                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                <span className="px-2.5 py-0.5 rounded-lg text-[11px] font-semibold bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">
                                     {product.name}
                                 </span>
                             </div>
@@ -226,7 +226,7 @@ export function ReleaseAnnouncementModal({
                                 onClick={() => setViewMode("desktop")}
                                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all h-auto ${
                                     viewMode === "desktop"
-                                        ? "bg-white dark:bg-[#0C0F1B] text-amber-500 shadow-sm"
+                                        ? "bg-white dark:bg-[#0D111C] text-amber-600 dark:text-gold shadow-sm"
                                         : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                                 }`}
                                 aria-label="Desktop Preview"
@@ -240,7 +240,7 @@ export function ReleaseAnnouncementModal({
                                 onClick={() => setViewMode("mobile")}
                                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all h-auto ${
                                     viewMode === "mobile"
-                                        ? "bg-white dark:bg-[#0C0F1B] text-amber-500 shadow-sm"
+                                        ? "bg-white dark:bg-[#0D111C] text-amber-600 dark:text-gold shadow-sm"
                                         : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                                 }`}
                                 aria-label="Mobile Preview"
@@ -265,23 +265,23 @@ export function ReleaseAnnouncementModal({
                 {/* ── Modal Body: 2-Column Split (Editor & Live Preview) ── */}
                 <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 overflow-hidden divide-y lg:divide-y-0 lg:divide-x divide-gray-200 dark:divide-white/10">
                     {/* Left Column: Form Controls (lg:col-span-5) */}
-                    <div className="lg:col-span-5 h-full overflow-y-auto p-5 sm:p-6 space-y-5 bg-white dark:bg-[#121624]">
+                    <div className="lg:col-span-5 h-full overflow-y-auto p-5 sm:p-6 space-y-5 bg-white dark:bg-[#0D111C]">
                         {/* 1. Target Audience Selection */}
                         <div className="space-y-2">
                             <label className="block text-xs font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
-                                🎯 Target Audience
+                                Target Audience
                             </label>
                             <div className="grid grid-cols-1 gap-2">
                                 <div
                                     onClick={() => setTargetAudience("ACTIVE_HOLDERS")}
                                     className={`p-3 rounded-lg border cursor-pointer transition-all flex items-center justify-between ${
                                         targetAudience === "ACTIVE_HOLDERS"
-                                            ? "border-amber-500/50 bg-amber-500/5 dark:bg-amber-500/10 text-amber-500"
+                                            ? "border-gold/50 bg-gold/10 text-amber-600 dark:text-gold"
                                             : "border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20"
                                     }`}
                                 >
                                     <div className="flex items-center gap-2.5 min-w-0">
-                                        <ShieldCheck size={16} className={targetAudience === "ACTIVE_HOLDERS" ? "text-amber-500" : "text-gray-400"} />
+                                        <ShieldCheck size={16} className={targetAudience === "ACTIVE_HOLDERS" ? "text-amber-600 dark:text-gold" : "text-gray-400"} />
                                         <div className="min-w-0">
                                             <p className="text-xs font-bold text-gray-800 dark:text-white truncate">
                                                 Active EA Holders
@@ -291,7 +291,7 @@ export function ReleaseAnnouncementModal({
                                             </p>
                                         </div>
                                     </div>
-                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                                    <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono tabular-nums font-bold bg-gold/15 text-amber-600 dark:text-gold">
                                         {audienceCounts.ACTIVE_HOLDERS} users
                                     </span>
                                 </div>
@@ -300,12 +300,12 @@ export function ReleaseAnnouncementModal({
                                     onClick={() => setTargetAudience("PRO_TRADERS")}
                                     className={`p-3 rounded-lg border cursor-pointer transition-all flex items-center justify-between ${
                                         targetAudience === "PRO_TRADERS"
-                                            ? "border-amber-500/50 bg-amber-500/5 dark:bg-amber-500/10 text-amber-500"
+                                            ? "border-gold/50 bg-gold/10 text-amber-600 dark:text-gold"
                                             : "border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20"
                                     }`}
                                 >
                                     <div className="flex items-center gap-2.5 min-w-0">
-                                        <Crown size={16} className={targetAudience === "PRO_TRADERS" ? "text-amber-500" : "text-gray-400"} />
+                                        <Crown size={16} className={targetAudience === "PRO_TRADERS" ? "text-amber-600 dark:text-gold" : "text-gray-400"} />
                                         <div className="min-w-0">
                                             <p className="text-xs font-bold text-gray-800 dark:text-white truncate">
                                                 All Pro Members
@@ -315,7 +315,7 @@ export function ReleaseAnnouncementModal({
                                             </p>
                                         </div>
                                     </div>
-                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                                    <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono tabular-nums font-bold bg-gold/15 text-amber-600 dark:text-gold">
                                         {audienceCounts.PRO_TRADERS} users
                                     </span>
                                 </div>
@@ -324,12 +324,12 @@ export function ReleaseAnnouncementModal({
                                     onClick={() => setTargetAudience("ALL_USERS")}
                                     className={`p-3 rounded-lg border cursor-pointer transition-all flex items-center justify-between ${
                                         targetAudience === "ALL_USERS"
-                                            ? "border-amber-500/50 bg-amber-500/5 dark:bg-amber-500/10 text-amber-500"
+                                            ? "border-gold/50 bg-gold/10 text-amber-600 dark:text-gold"
                                             : "border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20"
                                     }`}
                                 >
                                     <div className="flex items-center gap-2.5 min-w-0">
-                                        <Users size={16} className={targetAudience === "ALL_USERS" ? "text-amber-500" : "text-gray-400"} />
+                                        <Users size={16} className={targetAudience === "ALL_USERS" ? "text-amber-600 dark:text-gold" : "text-gray-400"} />
                                         <div className="min-w-0">
                                             <p className="text-xs font-bold text-gray-800 dark:text-white truncate">
                                                 All Community Users
@@ -339,7 +339,7 @@ export function ReleaseAnnouncementModal({
                                             </p>
                                         </div>
                                     </div>
-                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">
+                                    <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono tabular-nums font-bold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">
                                         {audienceCounts.ALL_USERS} users
                                     </span>
                                 </div>
@@ -355,8 +355,7 @@ export function ReleaseAnnouncementModal({
                                 <PremiumInput
                                     value={version}
                                     onChange={(e) => setVersion(e.target.value)}
-                                    placeholder="2.5.0"
-                                    className="h-9 text-xs font-mono font-bold"
+                                    className="h-9 text-xs font-mono tabular-nums font-bold"
                                 />
                             </div>
                             <div className="col-span-2 space-y-1.5">
@@ -366,7 +365,6 @@ export function ReleaseAnnouncementModal({
                                 <PremiumInput
                                     value={subject}
                                     onChange={(e) => setSubject(e.target.value)}
-                                    placeholder="Update Available: ..."
                                     className="h-9 text-xs"
                                 />
                             </div>
@@ -378,7 +376,7 @@ export function ReleaseAnnouncementModal({
                                 <label className="block text-xs font-bold text-gray-700 dark:text-gray-200">
                                     What's New (One feature per line)
                                 </label>
-                                <span className="text-[11px] text-gray-400">
+                                <span className="text-[11px] font-mono tabular-nums text-gray-400">
                                     {getHighlightsArray().length} bullet points
                                 </span>
                             </div>
@@ -386,8 +384,7 @@ export function ReleaseAnnouncementModal({
                                 value={rawHighlights}
                                 onChange={(e) => setRawHighlights(e.target.value)}
                                 rows={4}
-                                
-                                className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/5 p-3 text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all font-sans leading-relaxed resize-none"
+                                className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-3 text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all font-sans leading-relaxed resize-none"
                             />
                         </div>
 
@@ -400,14 +397,13 @@ export function ReleaseAnnouncementModal({
                                 value={licenseNote}
                                 onChange={(e) => setLicenseNote(e.target.value)}
                                 rows={2}
-                                placeholder="Instructions regarding license key..."
-                                className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/5 p-3 text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all font-sans leading-relaxed resize-none"
+                                className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-3 text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all font-sans leading-relaxed resize-none"
                             />
                         </div>
 
                         {/* 5. Test Send Box */}
-                        <div className="p-3.5 rounded-lg bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/20 space-y-2">
-                            <div className="flex items-center gap-1.5 text-xs font-bold text-amber-600 dark:text-amber-400">
+                        <div className="p-3.5 rounded-lg bg-gold/10 border border-gold/20 space-y-2">
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-amber-600 dark:text-gold">
                                 <Mail size={14} />
                                 <span>Send Test Email First</span>
                             </div>
@@ -415,8 +411,7 @@ export function ReleaseAnnouncementModal({
                                 <PremiumInput
                                     value={testRecipient}
                                     onChange={(e) => setTestRecipient(e.target.value)}
-                                    
-                                    className="h-8 text-xs flex-1 bg-white dark:bg-[#0C0F1B]"
+                                    className="h-8 text-xs flex-1 bg-white dark:bg-[#151925]"
                                 />
                                 <Button
                                     onClick={handleSendTest}
@@ -463,11 +458,11 @@ export function ReleaseAnnouncementModal({
                 </div>
 
                 {/* ── Modal Footer: Action Bar ── */}
-                <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-white/10 bg-white dark:bg-[#121624]">
+                <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925]">
                     <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
                         <CheckCircle2 size={15} className="text-emerald-500" />
                         <span>
-                            Ready to send to <strong>{currentCount}</strong> recipients in group <strong>{targetAudience.replace("_", " ")}</strong>.
+                            Ready to send to <strong className="font-mono tabular-nums">{currentCount}</strong> recipients in group <strong>{targetAudience.replace("_", " ")}</strong>.
                         </span>
                     </div>
 
@@ -482,7 +477,7 @@ export function ReleaseAnnouncementModal({
                         <Button
                             onClick={handleLaunchBroadcast}
                             disabled={isBroadcasting || currentCount === 0}
-                            className="rounded-lg h-10 px-6 text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white flex items-center gap-2 shadow-md shadow-amber-500/20"
+                            className="rounded-lg h-10 px-6 text-xs font-bold bg-gold hover:bg-amber-600 !text-white flex items-center gap-2 shadow-md shadow-amber-500/20"
                         >
                             {isBroadcasting ? (
                                 <>
@@ -492,7 +487,7 @@ export function ReleaseAnnouncementModal({
                             ) : (
                                 <>
                                     <Send size={16} />
-                                    <span>Launch Broadcast ({currentCount} Traders)</span>
+                                    <span className="font-mono tabular-nums">Launch Broadcast ({currentCount} Traders)</span>
                                 </>
                             )}
                         </Button>

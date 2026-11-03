@@ -13,16 +13,16 @@ interface ContentDistributionChartProps {
 }
 
 const COLORS = [
-    "#3B82F6", // blue
+    "#F59E0B", // gold / amber
     "#10B981", // emerald
-    "#F59E0B", // amber
-    "#06B6D4", // cyan
-    "#EF4444", // red
-    "#8B5CF6", // violet
-    "#EC4899", // pink
-    "#14B8A6", // teal
-    "#F97316", // orange
-    "#6366F1", // indigo
+    "#D97706", // dark amber
+    "#059669", // dark emerald
+    "#F43F5E", // rose
+    "#64748B", // slate
+    "#B45309", // bronze
+    "#34D399", // light emerald
+    "#FB7185", // light rose
+    "#94A3B8", // light slate
 ];
 
 export function ContentDistributionChart({
@@ -30,7 +30,7 @@ export function ContentDistributionChart({
 }: ContentDistributionChartProps) {
     if (!data || data.length === 0) {
         return (
-            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm h-full flex items-center justify-center">
+            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm h-full flex items-center justify-center">
                 <p className="text-gray-500 text-sm">
                     No content data available
                 </p>
@@ -46,7 +46,7 @@ export function ContentDistributionChart({
     const total = chartData.reduce((sum, item) => sum + item.value, 0);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col">
+        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm h-full flex flex-col">
             <h3 className="text-sm font-bold text-gray-700 dark:text-white mb-3">
                 Content Distribution
             </h3>
@@ -110,7 +110,7 @@ export function ContentDistributionChart({
                                 <span className="text-gray-600 dark:text-gray-400 truncate flex-1">
                                     {entry.name}
                                 </span>
-                                <span className="text-gray-700 dark:text-white font-bold tabular-nums">
+                                <span className="text-gray-700 dark:text-white font-bold font-mono tabular-nums">
                                     {pct}%
                                 </span>
                             </div>

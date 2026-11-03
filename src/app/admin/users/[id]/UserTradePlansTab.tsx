@@ -140,46 +140,46 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
         <div className="space-y-6">
             {/* Top KPI Cards */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1E2028]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                        <Compass size={14} className="text-primary" /> Total Trade Plans
+                        <Compass size={14} className="text-amber-600 dark:text-gold" /> Total Trade Plans
                     </div>
                     <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-gray-900 dark:text-white">{stats.total}</span>
-                        <span className="text-xs text-gray-500">{stats.planned} pending</span>
+                        <span className="text-2xl font-black text-gray-900 dark:text-white font-mono tabular-nums">{stats.total}</span>
+                        <span className="text-xs text-gray-500 font-mono tabular-nums">{stats.planned} pending</span>
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1E2028]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <CheckCircle2 size={14} className="text-emerald-500" /> Plan Execution Rate
                     </div>
                     <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
+                        <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono tabular-nums">
                             {stats.executionRate}%
                         </span>
-                        <span className="text-xs text-gray-500">{stats.executed} executed</span>
+                        <span className="text-xs text-gray-500 font-mono tabular-nums">{stats.executed} executed</span>
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1E2028]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                        <BookOpen size={14} className="text-blue-500" /> Playbook Strategies
+                        <BookOpen size={14} className="text-amber-600 dark:text-gold" /> Playbook Strategies
                     </div>
                     <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-blue-600 dark:text-blue-400">
+                        <span className="text-2xl font-black text-amber-600 dark:text-gold font-mono tabular-nums">
                             {stats.playbooks}
                         </span>
-                        <span className="text-xs text-gray-500">of {stats.totalStrategies} total</span>
+                        <span className="text-xs text-gray-500 font-mono tabular-nums">of {stats.totalStrategies} total</span>
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1E2028]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <XCircle size={14} className="text-rose-500" /> Discarded / Cancelled
                     </div>
                     <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-rose-600 dark:text-rose-400">
+                        <span className="text-2xl font-black text-rose-600 dark:text-rose-400 font-mono tabular-nums">
                             {stats.cancelled}
                         </span>
                         <span className="text-xs text-gray-500">plans dropped</span>
@@ -189,15 +189,15 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
 
             {/* Sub-Section Navigation & Filter Bar */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex rounded-lg border border-gray-200 bg-[#F1F3F5] p-1 dark:border-white/10 dark:bg-[#1A1D27] w-fit">
+                <div className="flex rounded-lg border border-gray-200 bg-gray-50/80 p-1 dark:border-white/10 dark:bg-[#151925] w-fit">
                     <Button
                         type="button"
                         variant="ghost"
                         onClick={() => setActiveSection("plans")}
                         className={cn(
-                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
+                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors font-mono tabular-nums",
                             activeSection === "plans"
-                                ? "bg-white text-gray-900 shadow-sm dark:bg-[#252936] dark:text-white"
+                                ? "bg-gold !text-white shadow-sm hover:bg-gold/90"
                                 : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                         )}
                     >
@@ -208,9 +208,9 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                         variant="ghost"
                         onClick={() => setActiveSection("strategies")}
                         className={cn(
-                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
+                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors font-mono tabular-nums",
                             activeSection === "strategies"
-                                ? "bg-white text-gray-900 shadow-sm dark:bg-[#252936] dark:text-white"
+                                ? "bg-gold !text-white shadow-sm hover:bg-gold/90"
                                 : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                         )}
                     >
@@ -221,14 +221,14 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                 <div className="flex flex-wrap items-center gap-2">
                     <div className="w-full sm:w-64">
                         <PremiumInput
-                            placeholder={activeSection === "plans" ? "Search symbol, setup, thesis..." : "Search strategy, pairs..."}
+                            aria-label="Search trade plans or strategies"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             prefix={<Search size={14} className="text-gray-400" />}
                         />
                     </div>
                     {activeSection === "plans" && (
-                        <div className="flex items-center gap-1 overflow-x-auto rounded-lg border border-gray-200 bg-white p-1 dark:border-white/10 dark:bg-[#151925]">
+                        <div className="flex items-center gap-1 overflow-x-auto rounded-lg border border-gray-200 bg-gray-50/80 p-1 dark:border-white/10 dark:bg-[#151925]">
                             {["ALL", "PLANNED", "EXECUTED", "CANCELLED"].map((st) => (
                                 <Button
                                     key={st}
@@ -238,7 +238,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                                     className={cn(
                                         "h-auto rounded-lg px-2.5 py-1 text-[11px] font-bold uppercase transition-colors",
                                         statusFilter === st
-                                            ? "bg-primary text-white hover:bg-primary"
+                                            ? "bg-gold !text-white hover:bg-gold/90"
                                             : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/5"
                                     )}
                                 >
@@ -252,10 +252,10 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
 
             {/* Content Area */}
             {activeSection === "plans" ? (
-                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#1E2028] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
-                        <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            <Compass size={16} className="text-primary" /> Pre-Trade Plans ({filteredPlans.length})
+                        <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2 font-mono tabular-nums">
+                            <Compass size={16} className="text-amber-600 dark:text-gold" /> Pre-Trade Plans ({filteredPlans.length})
                         </h3>
                         <span className="text-xs text-gray-500">Read-Only Telemetry View</span>
                     </div>
@@ -311,7 +311,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                                                             className={cn(
                                                                 "text-[10px] font-bold px-2 py-0.5 rounded-lg uppercase tracking-wider",
                                                                 plan.status === "EXECUTED"
-                                                                    ? "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300"
+                                                                    ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300"
                                                                     : plan.status === "CANCELLED"
                                                                     ? "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400"
                                                                     : "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300"
@@ -320,17 +320,17 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                                                             {plan.status}
                                                         </span>
                                                         {plan.setupName && (
-                                                            <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-lg">
+                                                            <span className="text-xs font-semibold text-amber-600 dark:text-gold bg-gold/10 px-2 py-0.5 rounded-lg">
                                                                 {plan.setupName}
                                                             </span>
                                                         )}
                                                     </div>
 
-                                                    <p className="mt-1 text-xs text-gray-500 flex items-center gap-2 flex-wrap">
+                                                    <p className="mt-1 text-xs text-gray-500 flex items-center gap-2 flex-wrap font-mono tabular-nums">
                                                         <span>Planned: {format(new Date(plan.plannedAt), "MMM d, yyyy HH:mm")}</span>
                                                         <span>({formatDistanceToNow(new Date(plan.plannedAt), { addSuffix: true })})</span>
                                                         {plan.account && (
-                                                            <span>· Account: {plan.account.name || plan.account.broker}</span>
+                                                            <span className="font-sans">· Account: {plan.account.name || plan.account.broker}</span>
                                                         )}
                                                     </p>
 
@@ -344,7 +344,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
 
                                             <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
                                                 {/* Plan Specs Overview */}
-                                                <div className="text-right text-xs">
+                                                <div className="text-right text-xs font-mono tabular-nums">
                                                     <div className="font-semibold text-gray-900 dark:text-white">
                                                         Entry: {plan.plannedEntry?.toLocaleString() || "Market"}
                                                     </div>
@@ -366,12 +366,12 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
 
                                         {/* Plan vs Actual Quick Strip if executed */}
                                         {hasActual && plan.journalEntry && (
-                                            <div className="mt-3 rounded-lg border border-blue-100 bg-blue-50/50 p-2.5 dark:border-blue-900/30 dark:bg-blue-950/20 text-xs flex items-center justify-between flex-wrap gap-2">
-                                                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300 font-semibold">
+                                            <div className="mt-3 rounded-lg border border-gold/20 bg-gold/10 p-2.5 text-xs flex items-center justify-between flex-wrap gap-2 font-mono tabular-nums">
+                                                <div className="flex items-center gap-2 text-amber-700 dark:text-gold font-semibold">
                                                     <ArrowRight size={14} /> Linked Execution: {plan.journalEntry.lotSize} lots @ {plan.journalEntry.entryPrice}
                                                 </div>
                                                 <div className="flex items-center gap-2">
-                                                    <span className="text-gray-500">Result:</span>
+                                                    <span className="text-gray-500 font-sans">Result:</span>
                                                     <span
                                                         className={cn(
                                                             "font-bold",
@@ -386,7 +386,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                                                             ? `${plan.journalEntry.pnl >= 0 ? "+" : ""}$${plan.journalEntry.pnl.toFixed(2)}`
                                                             : "Open"}
                                                     </span>
-                                                    <span className="text-[10px] uppercase px-1.5 py-0.5 rounded-lg bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 font-bold">
+                                                    <span className="text-[10px] uppercase px-1.5 py-0.5 rounded-lg bg-gold/20 text-amber-700 dark:text-gold font-bold font-sans">
                                                         {plan.journalEntry.result || plan.journalEntry.status}
                                                     </span>
                                                 </div>
@@ -404,10 +404,10 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                 </div>
             ) : (
                 /* Strategies & Playbook Section */
-                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#1E2028] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
-                        <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            <BookOpen size={16} className="text-blue-500" /> Playbooks & Strategy Library ({filteredStrategies.length})
+                        <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2 font-mono tabular-nums">
+                            <BookOpen size={16} className="text-amber-600 dark:text-gold" /> Playbooks & Strategy Library ({filteredStrategies.length})
                         </h3>
                         <span className="text-xs text-gray-500">User Setup Catalog</span>
                     </div>
@@ -417,14 +417,14 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                             {filteredStrategies.map((strat) => (
                                 <div
                                     key={strat.id}
-                                    className="rounded-xl border border-gray-200 bg-gray-50/40 p-4 transition-all hover:border-gray-300 dark:border-white/10 dark:bg-[#1A1D27] dark:hover:border-white/20 flex flex-col justify-between"
+                                    className="rounded-lg border border-gray-200 bg-gray-50/80 p-4 transition-all hover:border-gray-300 dark:border-white/10 dark:bg-[#151925] dark:hover:border-white/20 flex flex-col justify-between"
                                 >
                                     <div>
                                         <div className="flex items-center justify-between gap-2">
                                             <div className="flex items-center gap-2 min-w-0">
                                                 <div
                                                     className="w-3.5 h-3.5 rounded-full shrink-0"
-                                                    style={{ backgroundColor: strat.color || "#6366F1" }}
+                                                    style={{ backgroundColor: strat.color || "#F59E0B" }}
                                                 />
                                                 <h4 className="font-bold text-gray-900 dark:text-white truncate text-sm">
                                                     {strat.name}
@@ -434,7 +434,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                                                 className={cn(
                                                     "text-[10px] font-bold px-2 py-0.5 rounded-lg uppercase tracking-wider shrink-0",
                                                     strat.isPlaybook
-                                                        ? "bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-300"
+                                                        ? "bg-gold/10 text-amber-700 dark:text-gold"
                                                         : "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400"
                                                 )}
                                             >
@@ -443,7 +443,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                                         </div>
 
                                         {strat.setupType && (
-                                            <p className="mt-1 text-xs font-semibold text-primary">
+                                            <p className="mt-1 text-xs font-semibold text-amber-600 dark:text-gold">
                                                 Setup: {strat.setupType}
                                             </p>
                                         )}
@@ -455,7 +455,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                                         )}
 
                                         {/* 2x2 Matrix Card for Specs */}
-                                        <div className="mt-3 rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-[#151925] divide-y divide-gray-200 dark:divide-white/10 text-xs">
+                                        <div className="mt-3 rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-[#1E2028] divide-y divide-gray-200 dark:divide-white/10 text-xs">
                                             <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/10">
                                                 <div className="p-2.5">
                                                     <span className="block text-[10px] font-semibold text-gray-400 uppercase">Target Pairs</span>
@@ -473,13 +473,13 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                                             <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/10">
                                                 <div className="p-2.5">
                                                     <span className="block text-[10px] font-semibold text-gray-400 uppercase">Min Risk:Reward</span>
-                                                    <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                                                    <span className="font-bold text-emerald-600 dark:text-emerald-400 font-mono tabular-nums">
                                                         {strat.riskRewardMin ? `1 : ${strat.riskRewardMin}` : "Discretionary"}
                                                     </span>
                                                 </div>
                                                 <div className="p-2.5">
                                                     <span className="block text-[10px] font-semibold text-gray-400 uppercase">Linked Rules</span>
-                                                    <span className="font-bold text-gray-800 dark:text-gray-200">
+                                                    <span className="font-bold text-gray-800 dark:text-gray-200 font-mono tabular-nums">
                                                         {strat._count?.tradingRules || 0} Rules
                                                     </span>
                                                 </div>
@@ -487,13 +487,13 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                                         </div>
                                     </div>
 
-                                    <div className="mt-3 pt-3 border-t border-gray-200 dark:border-white/10 flex items-center justify-between text-[11px] text-gray-500">
+                                    <div className="mt-3 pt-3 border-t border-gray-200 dark:border-white/10 flex items-center justify-between text-[11px] text-gray-500 font-mono tabular-nums">
                                         <span>Created {format(new Date(strat.createdAt), "MMM d, yyyy")}</span>
                                         <Button
                                             variant="outline"
                                             size="sm"
                                             onClick={() => setSelectedStrategy(strat)}
-                                            className="rounded-lg h-7 px-2.5 text-xs font-semibold"
+                                            className="rounded-lg h-7 px-2.5 text-xs font-semibold font-sans"
                                         >
                                             View Setup
                                         </Button>
@@ -512,7 +512,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
             {/* Plan vs Actual Detail Modal */}
             {selectedPlan && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#0D111C]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <div className="flex items-center gap-2">
@@ -533,7 +533,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                                         {selectedPlan.status}
                                     </span>
                                 </div>
-                                <p className="mt-0.5 text-xs text-gray-500">
+                                <p className="mt-0.5 text-xs text-gray-500 font-mono tabular-nums">
                                     Planned on {format(new Date(selectedPlan.plannedAt), "PPP 'at' HH:mm")}
                                 </p>
                             </div>
@@ -551,10 +551,10 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                         <div className="mt-4 space-y-4">
                             {/* 2x2 Matrix Specs Comparison */}
                             <div className="rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden divide-y divide-gray-200 dark:divide-white/10 text-xs">
-                                <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/10 bg-gray-50/50 dark:bg-white/[0.02]">
+                                <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/10 bg-gray-50/80 dark:bg-[#151925]">
                                     <div className="p-3">
                                         <span className="block text-[10px] font-bold text-gray-400 uppercase">Pre-Trade Plan</span>
-                                        <div className="mt-1 space-y-1 font-semibold text-gray-800 dark:text-gray-200">
+                                        <div className="mt-1 space-y-1 font-semibold text-gray-800 dark:text-gray-200 font-mono tabular-nums">
                                             <div>Planned Entry: <span className="font-bold">{selectedPlan.plannedEntry || "Market"}</span></div>
                                             <div>Stop Loss: <span className="font-bold text-rose-500">{selectedPlan.plannedStopLoss || "None"}</span></div>
                                             <div>Take Profit: <span className="font-bold text-emerald-500">{selectedPlan.plannedTakeProfit || "None"}</span></div>
@@ -565,7 +565,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                                     <div className="p-3">
                                         <span className="block text-[10px] font-bold text-gray-400 uppercase">Actual Execution</span>
                                         {selectedPlan.journalEntry ? (
-                                            <div className="mt-1 space-y-1 font-semibold text-gray-800 dark:text-gray-200">
+                                            <div className="mt-1 space-y-1 font-semibold text-gray-800 dark:text-gray-200 font-mono tabular-nums">
                                                 <div>Actual Entry: <span className="font-bold">{selectedPlan.journalEntry.entryPrice}</span></div>
                                                 <div>Actual Exit: <span className="font-bold">{selectedPlan.journalEntry.exitPrice || "Open"}</span></div>
                                                 <div>Net P&L: <span className={cn("font-bold", (selectedPlan.journalEntry.pnl || 0) >= 0 ? "text-emerald-500" : "text-rose-500")}>
@@ -584,7 +584,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
 
                             {/* Thesis & Reasoning */}
                             {selectedPlan.thesis && (
-                                <div className="rounded-lg border border-gray-200 bg-gray-50/50 p-4 dark:border-white/10 dark:bg-white/[0.02]">
+                                <div className="rounded-lg border border-gray-200 bg-gray-50/80 p-4 dark:border-white/10 dark:bg-[#151925]">
                                     <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500">Trade Thesis & Context</h4>
                                     <p className="mt-1.5 text-xs text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-line">
                                         {selectedPlan.thesis}
@@ -607,12 +607,12 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                             {/* Tags & Psychology */}
                             <div className="flex flex-wrap items-center gap-2 pt-2">
                                 {selectedPlan.emotionBefore && (
-                                    <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300">
+                                    <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-gold/10 text-amber-700 dark:text-gold">
                                         Pre-Trade Emotion: {selectedPlan.emotionBefore}
                                     </span>
                                 )}
                                 {selectedPlan.confidenceLevel && (
-                                    <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300">
+                                    <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-gold/10 text-amber-700 dark:text-gold font-mono tabular-nums">
                                         Confidence: {selectedPlan.confidenceLevel} / 5
                                     </span>
                                 )}
@@ -636,12 +636,12 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
             {/* Strategy Detail Modal */}
             {selectedStrategy && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#0D111C]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div className="flex items-center gap-2">
                                 <div
                                     className="w-4 h-4 rounded-full"
-                                    style={{ backgroundColor: selectedStrategy.color || "#6366F1" }}
+                                    style={{ backgroundColor: selectedStrategy.color || "#F59E0B" }}
                                 />
                                 <div>
                                     <h3 className="text-lg font-black text-gray-900 dark:text-white">
@@ -690,7 +690,7 @@ export function UserTradePlansTab({ plans, strategies }: UserTradePlansTabProps)
                             {selectedStrategy.rules && (
                                 <div>
                                     <span className="font-bold text-gray-400 uppercase tracking-wider block">Setup Checklist / Rules</span>
-                                    <pre className="mt-1 p-3 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-sans">
+                                    <pre className="mt-1 p-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-sans">
                                         {selectedStrategy.rules}
                                     </pre>
                                 </div>

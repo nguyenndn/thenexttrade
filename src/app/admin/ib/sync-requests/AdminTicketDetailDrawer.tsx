@@ -126,7 +126,7 @@ export function AdminTicketDetailDrawer({
             <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
                 <SheetContent
                     side="right"
-                    className="w-full sm:max-w-xl p-0 flex flex-col bg-white dark:bg-[#15171E] border-l border-gray-200 dark:border-white/10 shadow-2xl"
+                    className="w-full sm:max-w-xl p-0 flex flex-col bg-white dark:bg-[#0D111C] border-l border-gray-200 dark:border-white/10 shadow-2xl"
                 >
                     {/* Header */}
                     <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-start justify-between gap-4">
@@ -135,12 +135,12 @@ export function AdminTicketDetailDrawer({
                                 <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
                                     <LifeBuoy size={18} />
                                 </div>
-                                <SheetTitle className="text-base font-bold text-gray-900 dark:text-white">
+                                <SheetTitle className="text-base font-bold font-mono tabular-nums text-gray-900 dark:text-white">
                                     Support Ticket #{ticketNumber}
                                 </SheetTitle>
                                 <span
                                     className={cn(
-                                        "text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full",
+                                        "text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-lg",
                                         isPending &&
                                             "bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30",
                                         isVerified &&
@@ -171,7 +171,7 @@ export function AdminTicketDetailDrawer({
                     {/* Scrollable Body */}
                     <div className="flex-1 overflow-y-auto p-6 space-y-5">
                         {/* Trader Profile Row */}
-                        <div className="p-4 rounded-lg border border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex items-center justify-between gap-3">
+                        <div className="p-4 rounded-lg border border-gray-100 dark:border-white/5 bg-gray-50/80 dark:bg-[#151925] flex items-center justify-between gap-3">
                             <div className="flex items-center gap-3 min-w-0">
                                 <Link
                                     href={`/admin/users/${item.user.id}`}
@@ -206,7 +206,7 @@ export function AdminTicketDetailDrawer({
                                         href={`https://t.me/${item.user.telegramId.replace("@", "")}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-sky-500/10 text-sky-600 dark:text-sky-400 hover:bg-sky-500/20 transition-colors"
+                                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-gold/10 text-amber-600 dark:text-gold hover:bg-gold/20 transition-colors"
                                     >
                                         <Send size={12} />
                                         <span>@{item.user.telegramId.replace("@", "")}</span>
@@ -227,12 +227,12 @@ export function AdminTicketDetailDrawer({
                             <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">
                                 Account Specifications
                             </span>
-                            <div className="grid grid-cols-2 divide-x divide-y divide-gray-100 dark:divide-white/5 border border-gray-100 dark:border-white/5 rounded-lg bg-gray-50/50 dark:bg-white/[0.02] overflow-hidden">
+                            <div className="grid grid-cols-2 divide-x divide-y divide-gray-100 dark:divide-white/5 border border-gray-100 dark:border-white/5 rounded-lg bg-gray-50/80 dark:bg-[#151925] overflow-hidden">
                                 <div className="p-3">
                                     <span className="text-[11px] font-bold text-gray-400 block">
                                         Account Number
                                     </span>
-                                    <span className="text-xs font-bold font-mono text-gray-900 dark:text-white truncate block mt-0.5">
+                                    <span className="text-xs font-bold font-mono tabular-nums text-gray-900 dark:text-white truncate block mt-0.5">
                                         #{item.account.accountNumber}
                                     </span>
                                 </div>
@@ -256,7 +256,7 @@ export function AdminTicketDetailDrawer({
                                     <span className="text-[11px] font-bold text-gray-400 block">
                                         Balance
                                     </span>
-                                    <span className="text-xs font-bold font-mono text-emerald-600 dark:text-emerald-400 truncate block mt-0.5">
+                                    <span className="text-xs font-bold font-mono tabular-nums text-emerald-600 dark:text-emerald-400 truncate block mt-0.5">
                                         {item.account.balance !== null && item.account.balance !== undefined
                                             ? `${item.account.currency || "USD"} ${item.account.balance.toLocaleString()}`
                                             : "N/A"}
@@ -329,7 +329,7 @@ export function AdminTicketDetailDrawer({
                             </div>
 
                             {passview ? (
-                                <div className="grid grid-cols-2 gap-2 text-xs bg-white dark:bg-[#1E2028] p-3 rounded-lg border border-emerald-500/20 font-mono">
+                                <div className="grid grid-cols-2 gap-2 text-xs bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-emerald-500/20 font-mono tabular-nums">
                                     <div>
                                         <span className="text-[10px] text-gray-400 block font-sans">
                                             Login (MT5 #)
@@ -366,10 +366,10 @@ export function AdminTicketDetailDrawer({
                         </div>
 
                         {/* Telemetry Timestamps */}
-                        <div className="text-xs text-gray-400 space-y-1 pt-2 border-t border-gray-100 dark:border-white/5">
+                        <div className="text-xs text-gray-400 space-y-1 pt-2 border-t border-gray-100 dark:border-white/5 font-mono tabular-nums">
                             <div className="flex items-center gap-1.5">
                                 <Clock size={13} />
-                                <span>Requested:</span>
+                                <span className="font-sans">Requested:</span>
                                 <span className="font-medium text-gray-600 dark:text-gray-300">
                                     {formatDistanceToNow(new Date(item.createdAt), {
                                         addSuffix: true,
@@ -382,7 +382,7 @@ export function AdminTicketDetailDrawer({
                             {item.supportTicket?.verifiedAt && (
                                 <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
                                     <ShieldCheck size={13} />
-                                    <span>Resolved:</span>
+                                    <span className="font-sans">Resolved:</span>
                                     <span className="font-medium">
                                         {format(
                                             new Date(item.supportTicket.verifiedAt),
@@ -441,7 +441,7 @@ export function AdminTicketDetailDrawer({
 
             {/* Mark Failed Confirmation Dialog */}
             <Dialog open={isFailDialogOpen} onOpenChange={setIsFailDialogOpen}>
-                <DialogContent className="sm:max-w-md rounded-2xl">
+                <DialogContent className="sm:max-w-md rounded-2xl bg-white dark:bg-[#0D111C] border border-gray-200 dark:border-white/10">
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2 text-rose-600 dark:text-rose-400">
                             <AlertTriangle size={18} />
@@ -460,7 +460,7 @@ export function AdminTicketDetailDrawer({
                             value={failReason}
                             onChange={(e) => setFailReason(e.target.value)}
                             rows={3}
-                            className="w-full text-xs p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-800 dark:text-white focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500"
+                            className="w-full text-xs p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-gray-800 dark:text-white focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500"
                         />
                     </div>
 

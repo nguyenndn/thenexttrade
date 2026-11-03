@@ -34,10 +34,10 @@ const itemVariants = {
 
 export function RecentIBLeadsWidget({ leads }: { leads: IBLead[] }) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
             <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
                 <Magnet
-                    className="w-5 h-5 text-indigo-500"
+                    className="w-5 h-5 text-amber-500"
                     aria-hidden="true"
                 />
                 Recent Partner Referrals
@@ -110,7 +110,7 @@ export function RecentIBLeadsWidget({ leads }: { leads: IBLead[] }) {
                                 >
                                     {lead.convertedAt ? "Converted" : "Clicked"}
                                 </div>
-                                <div className="text-[11px] text-gray-500">
+                                <div className="text-[11px] text-gray-500 font-mono tabular-nums">
                                     {formatDistanceToNow(
                                         new Date(lead.clickedAt),
                                         { addSuffix: true }

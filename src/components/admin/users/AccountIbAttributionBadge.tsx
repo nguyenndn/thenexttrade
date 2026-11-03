@@ -119,7 +119,7 @@ export function AccountIbAttributionBadge({
                         type="button"
                         variant="ghost"
                         disabled={isPending}
-                        className={`h-auto inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-bold tracking-tight transition-all hover:scale-105 active:scale-95 cursor-pointer ${config.bgColor} ${config.textColor}`}
+                        className={`h-auto inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[11px] font-bold tracking-tight transition-all hover:scale-105 active:scale-95 cursor-pointer ${config.bgColor} ${config.textColor}`}
                         title="Click to toggle IB attribution"
                         aria-label={`Toggle IB attribution for account ${accountNumber || accountId}`}
                     >
@@ -134,7 +134,7 @@ export function AccountIbAttributionBadge({
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuLabel className="text-[11px] uppercase tracking-wider text-gray-400">
+                    <DropdownMenuLabel className="text-[11px] uppercase tracking-wider text-gray-400 font-mono tabular-nums">
                         Set IB Attribution {accountNumber ? `(#${accountNumber})` : ""}
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />

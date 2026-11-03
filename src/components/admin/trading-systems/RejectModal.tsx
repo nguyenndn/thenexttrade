@@ -65,15 +65,15 @@ export function RejectModal({ license, isOpen, onClose }: RejectModalProps) {
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="bg-white dark:bg-[#1E2028] rounded-2xl border-0 dark:border max-w-md">
+            <DialogContent className="bg-white dark:bg-[#0D111C] rounded-2xl border border-gray-200 dark:border-white/10 max-w-md">
                 <DialogHeader>
-                    <DialogTitle className="text-xl font-bold text-red-600 dark:text-red-500 flex items-center gap-2">
+                    <DialogTitle className="text-xl font-bold text-rose-600 dark:text-rose-500 flex items-center gap-2">
                         <AlertTriangle size={24} />
                         Reject Account
                     </DialogTitle>
                     <DialogDescription>
                         This action will reject the account request{" "}
-                        <span className="font-bold text-gray-700 dark:text-white">
+                        <span className="font-bold font-mono tabular-nums text-gray-700 dark:text-white">
                             {license.accountNumber}
                         </span>
                         .
@@ -90,7 +90,6 @@ export function RejectModal({ license, isOpen, onClose }: RejectModalProps) {
                             <PremiumInput
                                 label="Rejection Reason"
                                 {...register("reason")}
-                                placeholder="Account not found in IB Dashboard..."
                                 error={errors.reason?.message}
                             />
                         </div>

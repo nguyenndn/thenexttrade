@@ -14,14 +14,14 @@ interface ReportMetricCardProps {
 }
 
 const toneGradients: Record<string, string> = {
-    default: "from-indigo-500 to-blue-600",
-    good: "from-emerald-500 to-teal-600",
-    warning: "from-amber-500 to-orange-500",
+    default: "from-amber-500 to-amber-600",
+    good: "from-emerald-500 to-emerald-600",
+    warning: "from-amber-500 to-amber-600",
     danger: "from-rose-500 to-red-600",
-    purple: "from-indigo-500 to-purple-600",
-    cyan: "from-cyan-500 to-blue-500",
-    emerald: "from-emerald-500 to-teal-600",
-    amber: "from-amber-500 to-orange-500",
+    purple: "from-amber-500 to-amber-600",
+    cyan: "from-emerald-500 to-emerald-600",
+    emerald: "from-emerald-500 to-emerald-600",
+    amber: "from-amber-500 to-amber-600",
 };
 
 export function ReportMetricCard({
@@ -40,7 +40,7 @@ export function ReportMetricCard({
     const content = (
         <div
             className={cn(
-                "rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default",
+                "rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default",
                 href && "hover:border-primary/40 cursor-pointer"
             )}
         >
@@ -56,14 +56,14 @@ export function ReportMetricCard({
 
                 <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                        <p className="text-xl font-black text-gray-900 dark:text-white tabular-nums leading-none truncate">
+                        <p className="text-xl font-black text-gray-900 dark:text-white font-mono tabular-nums leading-none truncate">
                             {typeof value === "number" ? value.toLocaleString() : value}
                         </p>
 
                         {trendPercent !== null && trendPercent !== undefined && (
                             <span
                                 className={cn(
-                                    "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-lg text-[10px] font-bold shrink-0",
+                                    "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-lg text-[10px] font-bold font-mono tabular-nums shrink-0",
                                     trendPercent > 0
                                         ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400"
                                         : trendPercent < 0

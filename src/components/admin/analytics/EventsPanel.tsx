@@ -28,7 +28,7 @@ export function EventsPanel({ events, recentEvents }: Props) {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Event Breakdown */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
                 <div className="flex items-center gap-2 mb-4">
                     <Zap className="w-4 h-4 text-amber-500" />
                     <h2 className="text-sm font-bold text-gray-900 dark:text-white">
@@ -77,7 +77,7 @@ export function EventsPanel({ events, recentEvents }: Props) {
                                 />
                                 <Bar
                                     dataKey="count"
-                                    fill="#6366f1"
+                                    fill="#f59e0b"
                                     radius={[0, 4, 4, 0]}
                                     barSize={24}
                                 />
@@ -95,9 +95,9 @@ export function EventsPanel({ events, recentEvents }: Props) {
             </div>
 
             {/* Live Event Feed */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
                 <div className="flex items-center gap-2 mb-4">
-                    <Clock className="w-4 h-4 text-cyan-500" />
+                    <Clock className="w-4 h-4 text-emerald-500" />
                     <h2 className="text-sm font-bold text-gray-900 dark:text-white">
                         Live Feed
                     </h2>
@@ -122,7 +122,7 @@ export function EventsPanel({ events, recentEvents }: Props) {
                                     </p>
                                 )}
                             </div>
-                            <span className="text-[11px] text-gray-400 shrink-0 tabular-nums">
+                            <span className="text-[11px] text-gray-400 shrink-0 font-mono tabular-nums">
                                 {new Date(e.createdAt).toLocaleTimeString(
                                     "en",
                                     { hour: "2-digit", minute: "2-digit" }

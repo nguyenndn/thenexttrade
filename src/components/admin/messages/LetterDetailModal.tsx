@@ -82,7 +82,7 @@ export function LetterDetailModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-2xl w-full p-0 overflow-hidden bg-white dark:bg-[#161922] border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl">
+      <DialogContent className="max-w-2xl w-full p-0 overflow-hidden bg-white dark:bg-[#151925] border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl">
         {/* Top Gold Airmail Accent Bar */}
         <div className="h-1.5 bg-gradient-to-r from-amber-500 via-gold to-amber-600" />
 
@@ -93,7 +93,7 @@ export function LetterDetailModal({
                 <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
                 Dispatch Inward Record
               </span>
-              <span className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">
+              <span className="text-[11px] text-gray-500 dark:text-gray-400 font-mono tabular-nums">
                 {formatDistanceToNow(new Date(message.createdAt), { addSuffix: true })}
               </span>
             </div>
@@ -103,7 +103,7 @@ export function LetterDetailModal({
           </DialogHeader>
 
           {/* 2x2 Sender Memorandum Card */}
-          <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-white/[0.02] grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-gray-200 dark:divide-white/10 text-xs">
+          <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-gray-200 dark:divide-white/10 text-xs">
             <div className="p-3.5 space-y-1">
               <div className="text-[10px] font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1">
                 <User size={12} className="text-amber-500" />
@@ -134,7 +134,7 @@ export function LetterDetailModal({
               <MessageSquare size={12} className="text-amber-500" />
               <span>Correspondence Body</span>
             </div>
-            <div className="p-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.01] text-xs sm:text-sm text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap max-h-64 overflow-y-auto font-normal">
+            <div className="p-4 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-xs sm:text-sm text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap max-h-64 overflow-y-auto font-normal">
               {message.message}
             </div>
           </div>
@@ -150,7 +150,8 @@ export function LetterDetailModal({
                 rows={2}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="flex-1 px-3 py-2 rounded-lg bg-gray-50/70 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 text-xs text-gray-900 dark:text-white outline-none focus:border-amber-500 transition-colors resize-none"
+                aria-label="Internal admin notes"
+                className="flex-1 px-3 py-2 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-xs text-gray-900 dark:text-white outline-none focus:border-amber-500 transition-colors resize-none"
               />
               <Button
                 variant="outline"

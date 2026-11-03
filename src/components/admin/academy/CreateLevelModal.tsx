@@ -76,7 +76,6 @@ export function CreateLevelModal({ isOpen, onClose }: CreateLevelModalProps) {
                 <PremiumInput
                     label="Level Title"
                     {...register("title")}
-                    placeholder="Level 1: Foundation"
                     error={errors.title?.message}
                     icon={BookOpen}
                     autoFocus
@@ -91,8 +90,7 @@ export function CreateLevelModal({ isOpen, onClose }: CreateLevelModalProps) {
                     </label>
                     <textarea
                         {...register("description")}
-                        className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[100px] resize-none font-medium"
-                        placeholder="Describe what students will learn in this level..."
+                        className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all min-h-[100px] resize-none font-medium"
                     />
                 </div>
 

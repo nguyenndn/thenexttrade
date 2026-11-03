@@ -121,7 +121,7 @@ export function ModuleSelector({
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={SPRING_SOFT}
                     style={{ transformOrigin: "top" }}
-                    className="absolute z-50 mt-1 w-full bg-white dark:bg-[#1a1e2e] border border-gray-200 dark:border-white/10 rounded-lg shadow-xl overflow-hidden"
+                    className="absolute z-50 mt-1 w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg shadow-xl overflow-hidden"
                 >
                     {/* Search */}
                     <div className="p-2 border-b border-gray-200 dark:border-white/10">
@@ -133,10 +133,10 @@ export function ModuleSelector({
                             <input
                                 ref={inputRef}
                                 type="text"
-                                placeholder="Search modules..."
+                                aria-label="Search modules"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                className="w-full pl-8 pr-3 py-2 text-sm bg-gray-50 dark:bg-white/5 rounded-lg border-none focus:outline-none text-gray-700 dark:text-white placeholder:text-gray-500"
+                                className="w-full pl-8 pr-3 py-2 text-sm bg-gray-50 dark:bg-white/5 rounded-lg border-none focus:outline-none text-gray-700 dark:text-white"
                             />
                         </div>
                     </div>

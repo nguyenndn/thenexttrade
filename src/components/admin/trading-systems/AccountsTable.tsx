@@ -319,7 +319,7 @@ export function AccountsTable({
         <div className="flex flex-col h-full">
             {/* Toolbar Card */}
             <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
-                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md h-[38px]">
+                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50/80 dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md h-[38px]">
                     <Search
                         size={16}
                         className="text-gray-500"
@@ -422,7 +422,7 @@ export function AccountsTable({
             </div>
 
             {/* Data Table Card */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm flex flex-col relative w-full flex-1">
+            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm flex flex-col relative w-full flex-1">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm">
                         <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
@@ -474,7 +474,7 @@ export function AccountsTable({
                                                     />
                                                 </div>
                                                 <div>
-                                                    <p className="font-bold text-gray-900 dark:text-white font-mono group-hover:text-primary transition-colors">
+                                                    <p className="font-bold text-gray-900 dark:text-white font-mono tabular-nums group-hover:text-primary transition-colors">
                                                         #{license.accountNumber}
                                                     </p>
                                                     <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
@@ -506,12 +506,12 @@ export function AccountsTable({
                                         {/* License Key */}
                                         <td className="px-5 py-4">
                                             {effectiveKey ? (
-                                                <div className="inline-flex items-center gap-1.5 bg-gray-100/80 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg px-2.5 py-1.5">
+                                                <div className="inline-flex items-center gap-1.5 bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg px-2.5 py-1.5">
                                                     <KeyRound
                                                         size={13}
                                                         className="text-emerald-500 shrink-0"
                                                     />
-                                                    <span className="font-mono text-xs font-bold text-gray-800 dark:text-gray-200 select-all">
+                                                    <span className="font-mono tabular-nums text-xs font-bold text-gray-800 dark:text-gray-200 select-all">
                                                         {isRevealed
                                                             ? effectiveKey
                                                             : maskSyncApiKey(
@@ -573,7 +573,7 @@ export function AccountsTable({
                                                                     : "bg-gray-400"
                                                             }`}
                                                         />
-                                                        <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                                                        <span className="text-xs font-mono tabular-nums font-medium text-gray-700 dark:text-gray-300">
                                                             {formatDistanceToNow(
                                                                 lastHbDate,
                                                                 {
@@ -584,7 +584,7 @@ export function AccountsTable({
                                                     </div>
                                                     {typeof license.balance ===
                                                         "number" && (
-                                                        <p className="text-xs font-mono text-gray-500 dark:text-gray-400">
+                                                        <p className="text-xs font-mono tabular-nums text-gray-500 dark:text-gray-400">
                                                             Bal: $
                                                             {license.balance.toLocaleString(
                                                                 "en-US",
@@ -621,7 +621,7 @@ export function AccountsTable({
 
                                         {/* Expiry / Note */}
                                         <td className="px-5 py-4 text-xs text-gray-600 dark:text-gray-300">
-                                            <p className="font-semibold">
+                                            <p className="font-semibold font-mono tabular-nums">
                                                 {license.expiryDate
                                                     ? `Exp: ${format(
                                                           new Date(
@@ -686,7 +686,7 @@ export function AccountsTable({
                                                                     license
                                                                 )
                                                             }
-                                                            className="text-blue-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 h-8 w-8 rounded-lg transition-colors"
+                                                            className="text-amber-600 dark:text-gold hover:text-amber-500 hover:bg-gold/10 h-8 w-8 rounded-lg transition-colors"
                                                             aria-label="Regenerate License Key"
                                                         >
                                                             <KeyRound
@@ -701,7 +701,7 @@ export function AccountsTable({
                                                                     license
                                                                 )
                                                             }
-                                                            className="text-amber-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 h-8 w-8 rounded-lg transition-colors"
+                                                            className="text-amber-600 dark:text-gold hover:text-amber-500 hover:bg-gold/10 h-8 w-8 rounded-lg transition-colors"
                                                             aria-label="Suspend License"
                                                         >
                                                             <Ban size={15} />
@@ -773,7 +773,7 @@ export function AccountsTable({
                         </tbody>
                     </table>
                 </div>
-                <div className="border-t border-gray-200 dark:border-white/10 py-3 px-6 bg-gray-50/50 dark:bg-white/5 flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mt-auto">
+                <div className="border-t border-gray-200 dark:border-white/10 py-3 px-6 bg-gray-50/50 dark:bg-white/5 flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mt-auto font-mono tabular-nums">
                     <span>
                         Showing {filteredLicenses.length} of {licenses.length}{" "}
                         licenses

@@ -70,22 +70,22 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
         <div className="space-y-6">
             {/* Overview stats cards */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-5 shadow-sm flex items-center gap-4">
-                    <div className="p-3 bg-blue-500/10 text-blue-500 rounded-lg">
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm flex items-center gap-4">
+                    <div className="p-3 bg-gold/10 text-amber-600 dark:text-gold rounded-lg">
                         <Users size={22} />
                     </div>
                     <div>
                         <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">
                             Broker Link Activity
                         </p>
-                        <h4 className="text-2xl font-black text-gray-700 dark:text-white mt-1">
+                        <h4 className="text-2xl font-black text-gray-700 dark:text-white mt-1 font-mono tabular-nums">
                             {convertedLeads}{" "}
                             <span className="text-xs font-bold text-gray-600">
                                 / {totalLeads} clicks
                             </span>
                         </h4>
                         <p className="text-[11px] text-gray-600 mt-1">
-                            <span className="font-bold text-blue-500">
+                            <span className="font-bold text-amber-600 dark:text-gold font-mono tabular-nums">
                                 {conversionRate}%
                             </span>{" "}
                             linked-account rate
@@ -93,15 +93,15 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-5 shadow-sm flex items-center gap-4">
-                    <div className="p-3 bg-green-500/10 text-green-500 rounded-lg">
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm flex items-center gap-4">
+                    <div className="p-3 bg-emerald-500/10 text-emerald-500 rounded-lg">
                         <Layers size={22} />
                     </div>
                     <div>
                         <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">
                             Recorded Broker Volume
                         </p>
-                        <h4 className="text-2xl font-black text-gray-700 dark:text-white mt-1">
+                        <h4 className="text-2xl font-black text-gray-700 dark:text-white mt-1 font-mono tabular-nums">
                             {totalLots.toFixed(2)}{" "}
                             <span className="text-xs font-bold text-gray-600">
                                 Lots
@@ -113,15 +113,15 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-5 shadow-sm flex items-center gap-4">
-                    <div className="p-3 bg-purple-500/10 text-purple-500 rounded-lg">
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm flex items-center gap-4">
+                    <div className="p-3 bg-gold/10 text-amber-600 dark:text-gold rounded-lg">
                         <FileSpreadsheet size={22} />
                     </div>
                     <div>
                         <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">
                             Generated Reports
                         </p>
-                        <h4 className="text-2xl font-black text-gray-700 dark:text-white mt-1">
+                        <h4 className="text-2xl font-black text-gray-700 dark:text-white mt-1 font-mono tabular-nums">
                             {user.tradingReports.length}{" "}
                             <span className="text-xs font-bold text-gray-600">
                                 Generated
@@ -139,10 +139,10 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                 {/* IB Leads & Activity */}
                 <div className="xl:col-span-2 space-y-6">
                     {/* IB Leads table */}
-                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
+                    <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                         <div className="p-4 sm:p-5 border-b border-gray-200 dark:border-white/10">
                             <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
-                                <Users size={16} className="text-primary" />{" "}
+                                <Users size={16} className="text-amber-600 dark:text-gold" />{" "}
                                 Broker Referral Journey
                             </h3>
                             <p className="text-xs text-gray-500 mt-0.5">
@@ -155,7 +155,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                             <div className="overflow-x-auto max-h-[300px] overflow-y-auto">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
-                                        <tr className="border-b border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.01] text-[10px] font-bold text-gray-500 uppercase tracking-wider sticky top-0 backdrop-blur-md">
+                                        <tr className="border-b border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-[10px] font-bold text-gray-500 uppercase tracking-wider sticky top-0 backdrop-blur-md">
                                             <th className="p-3 sm:px-5">
                                                 Broker
                                             </th>
@@ -194,7 +194,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                                             : ""}
                                                     </p>
                                                 </td>
-                                                <td className="p-3 text-gray-600">
+                                                <td className="p-3 text-gray-600 font-mono tabular-nums">
                                                     {format(
                                                         new Date(
                                                             lead.clickedAt
@@ -204,7 +204,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                                 </td>
                                                 <td className="p-3 text-right">
                                                     {lead.convertedAt ? (
-                                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-green-50 text-green-700 border border-green-200 dark:bg-green-500/10 dark:text-green-400 dark:border-green-500/20 font-bold">
+                                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20 font-bold">
                                                             <CheckCircle2
                                                                 size={10}
                                                             />{" "}
@@ -234,12 +234,12 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                     </div>
 
                     {/* IB Activity Snapshots */}
-                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
+                    <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                         <div className="p-4 sm:p-5 border-b border-gray-200 dark:border-white/10">
                             <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
                                 <LineChart
                                     size={16}
-                                    className="text-green-500"
+                                    className="text-emerald-500"
                                 />{" "}
                                 Broker-linked Trading Snapshots
                             </h3>
@@ -253,7 +253,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                             <div className="overflow-x-auto max-h-[300px] overflow-y-auto">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
-                                        <tr className="border-b border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.01] text-[10px] font-bold text-gray-500 uppercase tracking-wider sticky top-0 backdrop-blur-md">
+                                        <tr className="border-b border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-[10px] font-bold text-gray-500 uppercase tracking-wider sticky top-0 backdrop-blur-md">
                                             <th className="p-3 sm:px-5">
                                                 Snapshot Period
                                             </th>
@@ -271,7 +271,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                                     key={snap.id}
                                                     className="hover:bg-gray-50/20 dark:hover:bg-white/[0.01] transition-colors"
                                                 >
-                                                    <td className="p-3 sm:px-5">
+                                                    <td className="p-3 sm:px-5 font-mono tabular-nums">
                                                         <p className="font-bold text-gray-700 dark:text-white">
                                                             {format(
                                                                 new Date(
@@ -293,7 +293,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                                                 "Unknown"}
                                                         </p>
                                                     </td>
-                                                    <td className="p-3 font-medium text-gray-700 dark:text-white">
+                                                    <td className="p-3 font-medium text-gray-700 dark:text-white font-mono tabular-nums">
                                                         {snap.tradeCount} trades
                                                         {snap.lastTradeAt && (
                                                             <p className="text-[9px] text-gray-500 mt-0.5">
@@ -307,7 +307,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                                             </p>
                                                         )}
                                                     </td>
-                                                    <td className="p-3 font-bold text-gray-700 dark:text-white">
+                                                    <td className="p-3 font-bold text-gray-700 dark:text-white font-mono tabular-nums">
                                                         {snap.closedLotVolume.toFixed(
                                                             2
                                                         )}{" "}
@@ -315,7 +315,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                                     </td>
                                                     <td className="p-3">
                                                         <span
-                                                            className={`font-bold ${snap.netPnl >= 0 ? "text-green-500" : "text-red-500"}`}
+                                                            className={`font-bold font-mono tabular-nums ${snap.netPnl >= 0 ? "text-emerald-500" : "text-rose-500"}`}
                                                         >
                                                             {snap.netPnl >= 0
                                                                 ? "+"
@@ -347,12 +347,12 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                 </div>
 
                 {/* Right column: generated reports */}
-                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm flex flex-col">
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm flex flex-col">
                     <div className="p-4 sm:p-5 border-b border-gray-200 dark:border-white/10">
                         <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
                             <FileSpreadsheet
                                 size={16}
-                                className="text-purple-500"
+                                className="text-amber-600 dark:text-gold"
                             />{" "}
                             Generated Performance Reports
                         </h3>
@@ -377,18 +377,18 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                         className="p-4 space-y-3 hover:bg-gray-50/30 dark:hover:bg-white/[0.01] transition-colors"
                                     >
                                     <div className="flex items-center justify-between">
-                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20">
+                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-gold/10 text-amber-700 border border-gold/20 dark:text-gold">
                                             {report.type}
                                         </span>
-                                        <span className="text-[10px] text-gray-600 flex items-center gap-1 font-medium">
+                                        <span className="text-[10px] text-gray-600 flex items-center gap-1 font-medium font-mono tabular-nums">
                                             <Calendar size={11} />{" "}
                                             {report.periodLabel}
                                         </span>
                                     </div>
 
-                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center text-xs bg-gray-50 dark:bg-white/5 p-2 rounded-lg border border-gray-200 dark:border-white/10">
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center text-xs bg-gray-50/80 dark:bg-[#151925] p-2 rounded-lg border border-gray-200 dark:border-white/10 font-mono tabular-nums">
                                         <div>
-                                            <p className="text-[10px] text-gray-600 uppercase font-medium">
+                                            <p className="text-[10px] text-gray-600 uppercase font-medium font-sans">
                                                 Trades
                                             </p>
                                             <p className="font-bold text-gray-700 dark:text-white mt-0.5">
@@ -396,7 +396,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                             </p>
                                         </div>
                                         <div>
-                                            <p className="text-[10px] text-gray-600 uppercase font-medium">
+                                            <p className="text-[10px] text-gray-600 uppercase font-medium font-sans">
                                                 Win Rate
                                             </p>
                                             <p className="font-bold text-gray-700 dark:text-white mt-0.5">
@@ -404,11 +404,11 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                             </p>
                                         </div>
                                         <div>
-                                            <p className="text-[10px] text-gray-600 uppercase font-medium">
+                                            <p className="text-[10px] text-gray-600 uppercase font-medium font-sans">
                                                 Net PnL
                                             </p>
                                             <p
-                                                className={`font-bold mt-0.5 ${report.netPnL >= 0 ? "text-green-500" : "text-red-500"}`}
+                                                className={`font-bold mt-0.5 ${report.netPnL >= 0 ? "text-emerald-500" : "text-rose-500"}`}
                                             >
                                                 {report.netPnL >= 0 ? "+" : ""}$
                                                 {report.netPnL.toFixed(2)}
@@ -416,10 +416,10 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center justify-between text-[10px] text-gray-600">
+                                    <div className="flex items-center justify-between text-[10px] text-gray-600 font-mono tabular-nums">
                                         <span>
                                             Wins / BE / Losses:{" "}
-                                            <span className="font-bold text-green-500">
+                                            <span className="font-bold text-emerald-500">
                                                 {report.winCount}
                                             </span>{" "}
                                             /{" "}
@@ -427,7 +427,7 @@ export function UserIbPerformanceTab({ user }: UserIbPerformanceTabProps) {
                                                 {breakEvenCount}
                                             </span>{" "}
                                             /{" "}
-                                            <span className="font-bold text-red-500">
+                                            <span className="font-bold text-rose-500">
                                                 {report.lossCount}
                                             </span>
                                         </span>

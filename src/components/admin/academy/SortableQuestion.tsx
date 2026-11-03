@@ -37,7 +37,7 @@ export function SortableQuestion({
             ref={setNodeRef}
             style={style}
             className={clsx(
-                "bg-white dark:bg-[#1C212E] border rounded-lg p-4 shadow-sm transition-colors",
+                "bg-white dark:bg-[#1E2028] border rounded-xl p-4 shadow-sm transition-colors",
                 isDragging
                     ? "border-primary"
                     : "border-gray-200 dark:border-white/10 "
@@ -82,7 +82,7 @@ export function SortableQuestion({
                         variant="ghost"
                         size="icon"
                         onClick={onEdit}
-                        className="text-gray-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors"
+                        className="text-gray-500 hover:text-amber-600 dark:hover:text-gold hover:bg-gold/10 rounded-lg transition-colors"
                     >
                         <Edit size={16} />
                     </Button>

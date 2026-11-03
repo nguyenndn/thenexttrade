@@ -8,13 +8,13 @@ interface UserLifecyclePanelProps {
 
 const stageColors: Record<string, string> = {
     "Signed Up": "bg-gray-400",
-    "Profile Ready": "bg-blue-400",
-    "Account Connected": "bg-indigo-400",
-    "First Trade": "bg-violet-500",
-    "Weekly Review": "bg-purple-500",
+    "Profile Ready": "bg-amber-400",
+    "Account Connected": "bg-amber-500",
+    "First Trade": "bg-emerald-400",
+    "Weekly Review": "bg-emerald-500",
     "Pro Candidate": "bg-amber-500",
     "Pro User": "bg-emerald-500",
-    "At Risk": "bg-orange-500",
+    "At Risk": "bg-rose-400",
     Churned: "bg-red-500",
 };
 
@@ -45,7 +45,7 @@ export function UserLifecyclePanel({ data }: UserLifecyclePanelProps) {
                                     width: `${Math.max((stage.count / maxCount) * 100, 2)}%`,
                                 }}
                             />
-                            <span className="absolute inset-0 flex items-center px-2 text-xs font-bold text-gray-700 dark:text-white">
+                            <span className="absolute inset-0 flex items-center px-2 text-xs font-bold font-mono tabular-nums text-gray-700 dark:text-white">
                                 {stage.count > 0 &&
                                     `${stage.count} (${stage.percent}%)`}
                             </span>
@@ -93,10 +93,10 @@ export function UserLifecyclePanel({ data }: UserLifecyclePanelProps) {
                                         <td className="px-3 py-2 text-gray-700 dark:text-gray-200">
                                             {d.toStage}
                                         </td>
-                                        <td className="px-3 py-2 text-right tabular-nums font-bold text-red-500">
+                                        <td className="px-3 py-2 text-right font-mono tabular-nums font-bold text-red-500">
                                             {d.dropCount}
                                         </td>
-                                        <td className="px-3 py-2 text-right tabular-nums text-gray-500">
+                                        <td className="px-3 py-2 text-right font-mono tabular-nums text-gray-500">
                                             {d.dropRate}%
                                         </td>
                                         <td className="px-3 py-2 text-gray-500">

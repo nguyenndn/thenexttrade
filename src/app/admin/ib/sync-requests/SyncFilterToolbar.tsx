@@ -53,7 +53,7 @@ export function SyncFilterToolbar({
     onSearchChange,
     onSearchSubmit,
     onClearSearch,
-    searchPlaceholder = "Search...",
+    searchPlaceholder: _searchPlaceholder = "Search...",
     statusTabs,
     activeStatus,
     onStatusChange,
@@ -107,7 +107,7 @@ export function SyncFilterToolbar({
                                         <span>{tab.label}</span>
                                         <span
                                             className={cn(
-                                                "text-[11px] px-2 py-0.5 rounded-full font-mono font-bold tabular-nums transition-colors",
+                                                "text-[11px] px-2 py-0.5 rounded-lg font-mono font-bold tabular-nums transition-colors",
                                                 isActive
                                                     ? "bg-white/20 text-white"
                                                     : "bg-gray-200/80 text-gray-600 dark:bg-white/10 dark:text-gray-300"
@@ -124,7 +124,7 @@ export function SyncFilterToolbar({
             )}
 
             {/* Standalone Toolbar Card (Breek UI Guide Section 13.4, 13.5, 13.6) */}
-            <div className="bg-white dark:bg-[#1E2028] p-4 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
+            <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
                 {/* Search Input (Section 13.4: 38px height) */}
                 <form
                     onSubmit={(e) => {
@@ -133,15 +133,14 @@ export function SyncFilterToolbar({
                     }}
                     className="w-full md:w-96"
                 >
-                    <div className="flex items-center gap-2 px-3.5 py-2 bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors w-full h-[38px]">
+                    <div className="flex items-center gap-2 px-3.5 py-2 bg-gray-50/80 dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors w-full h-[38px]">
                         <Search size={16} className="text-gray-400 shrink-0" />
                         <input
                             type="text"
                             value={search}
                             onChange={(e) => onSearchChange(e.target.value)}
-                            aria-label="Search items"
-                            placeholder={searchPlaceholder}
-                            className="bg-transparent text-xs focus:outline-none w-full text-gray-800 dark:text-white placeholder:text-gray-400"
+                            aria-label="Search sync requests"
+                            className="bg-transparent text-xs focus:outline-none w-full text-gray-800 dark:text-white"
                         />
                         {search && (
                             <Button

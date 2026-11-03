@@ -172,11 +172,11 @@ function LessonForm() {
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
                 {/* Editor — Left */}
                 <div className="lg:col-span-3 space-y-6">
-                    <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
                         <input
                             type="text"
                             aria-label="Lesson Title"
-                            className="w-full text-3xl font-bold bg-transparent border-none focus:outline-none placeholder:text-gray-300 dark:placeholder:text-gray-700 text-gray-700 dark:text-white"
+                            className="w-full text-3xl font-bold bg-transparent border-none focus:outline-none text-gray-700 dark:text-white"
                             value={formData.title}
                             onChange={(e) => handleTitleChange(e.target.value)}
                         />
@@ -201,7 +201,7 @@ function LessonForm() {
                             <div>
                                 <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1">
                                     <Search size={12} className="inline-block mr-1 align-[-1px]" /> Meta Description{" "}
-                                    <span className="font-normal text-gray-500">
+                                    <span className="font-normal font-mono tabular-nums text-gray-500">
                                         ({formData.metaDescription.length}/160)
                                     </span>
                                 </label>
@@ -216,7 +216,7 @@ function LessonForm() {
                                     }
                                     rows={2}
                                     maxLength={160}
-                                    className="w-full px-3 py-2 text-sm bg-blue-50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-900/30 rounded-lg text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-400 resize-none"
+                                    className="w-full px-3 py-2 text-sm bg-gold/5 dark:bg-gold/10 border border-gold/20 rounded-lg text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-gold/40 resize-none"
                                 />
                             </div>
                         )}
@@ -232,7 +232,7 @@ function LessonForm() {
 
                 {/* Sidebar — Right */}
                 <div className="lg:col-span-1 space-y-4">
-                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-4">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-4">
                         {/* Module Selector */}
                         <div>
                             <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
@@ -249,7 +249,7 @@ function LessonForm() {
                     </div>
 
                     {/* Status */}
-                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-4">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-4">
                         <div>
                             <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
                                 Status
@@ -296,17 +296,17 @@ function LessonForm() {
                     </div>
 
                     {/* Word Count & Reading Time */}
-                    <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-4">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2 text-gray-600">
                                 <BookOpen size={14} />
-                                <span className="text-xs font-medium">
+                                <span className="text-xs font-medium font-mono tabular-nums">
                                     {wordCount.toLocaleString()} words
                                 </span>
                             </div>
                             <div className="flex items-center gap-2 text-gray-600">
                                 <Clock size={14} />
-                                <span className="text-xs font-medium">
+                                <span className="text-xs font-medium font-mono tabular-nums">
                                     {readingTime} min read
                                 </span>
                             </div>

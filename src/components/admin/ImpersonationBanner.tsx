@@ -34,7 +34,7 @@ export function ImpersonationBanner({ user }: Props) {
     return (
         <div className="w-full bg-amber-500/10 border-b border-amber-500/25 px-4 py-2 flex items-center justify-between z-50 text-xs">
             <div className="flex items-center gap-2 text-amber-800 dark:text-amber-200 font-medium">
-                <ShieldAlert size={16} className="text-amber-500 shrink-0 animate-pulse" />
+                <ShieldAlert size={16} className="text-amber-500 shrink-0" />
                 <span>
                     <strong className="font-bold">Admin Impersonation:</strong> You are viewing TheNextTrade as{" "}
                     <span className="font-bold text-amber-950 dark:text-amber-100 font-mono">

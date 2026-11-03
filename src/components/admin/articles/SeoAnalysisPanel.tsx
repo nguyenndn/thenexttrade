@@ -473,7 +473,7 @@ export function SeoAnalysisPanel({
     }, [content]);
 
     return (
-        <div className="bg-white dark:bg-[#151925] rounded-lg p-6 border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <h3 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2">
                     <Search size={20} className="text-primary" />
@@ -554,17 +554,17 @@ export function SeoAnalysisPanel({
                         </div>
                         <input
                             type="text"
+                            aria-label="Focus Keyphrase"
                             value={focusKeyword}
                             readOnly={autoKeyphrase}
                             onChange={(e) => {
                                 if (!autoKeyphrase)
                                     setFocusKeyword(e.target.value);
                             }}
-                            placeholder="forex trading"
                             className={`w-full p-2 rounded-lg border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-primary ${
                                 autoKeyphrase
                                     ? "bg-emerald-50/50 dark:bg-emerald-500/5 text-gray-500 dark:text-gray-400"
-                                    : "bg-gray-50 dark:bg-white/5"
+                                    : "bg-gray-50/80 dark:bg-[#151925]"
                             }`}
                         />
                         {autoKeyphrase && (
@@ -574,7 +574,7 @@ export function SeoAnalysisPanel({
                         )}
                     </div>
                     {/* Google Preview */}
-                    <div className="bg-gray-50 dark:bg-[#0B0E14] p-4 rounded-lg border border-gray-200 dark:border-white/10">
+                    <div className="bg-gray-50/80 dark:bg-[#151925] p-4 rounded-lg border border-gray-200 dark:border-white/10">
                         <div className="flex items-center justify-between mb-3">
                             <span className="text-xs font-bold text-gray-600 uppercase">
                                 Google Preview
@@ -583,16 +583,18 @@ export function SeoAnalysisPanel({
                                 <Button
                                     variant="ghost"
                                     size="icon"
+                                    aria-label="Mobile preview"
                                     onClick={() => setPreviewMode("mobile")}
-                                    className={`p-1.5 h-auto w-auto rounded-lg ${previewMode === "mobile" ? "bg-indigo-50 text-indigo-500 hover:bg-indigo-50" : "text-gray-500 hover:bg-gray-100"}`}
+                                    className={`p-1.5 h-auto w-auto rounded-lg ${previewMode === "mobile" ? "bg-gold/10 text-amber-600 dark:text-gold hover:bg-gold/15" : "text-gray-500 hover:bg-gray-100"}`}
                                 >
                                     <Smartphone size={14} />
                                 </Button>
                                 <Button
                                     variant="ghost"
                                     size="icon"
+                                    aria-label="Desktop preview"
                                     onClick={() => setPreviewMode("desktop")}
-                                    className={`p-1.5 h-auto w-auto rounded-lg ${previewMode === "desktop" ? "bg-indigo-50 text-indigo-500 hover:bg-indigo-50" : "text-gray-500 hover:bg-gray-100"}`}
+                                    className={`p-1.5 h-auto w-auto rounded-lg ${previewMode === "desktop" ? "bg-gold/10 text-amber-600 dark:text-gold hover:bg-gold/15" : "text-gray-500 hover:bg-gray-100"}`}
                                 >
                                     <Monitor size={14} />
                                 </Button>
@@ -655,7 +657,7 @@ export function SeoAnalysisPanel({
                             type="button"
                             variant="ghost"
                             onClick={() => onAiGenerate?.("title")}
-                            className="text-xs flex items-center gap-1 px-3 py-1.5 h-auto bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors"
+                            className="text-xs flex items-center gap-1 px-3 py-1.5 h-auto bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 rounded-lg hover:bg-gold/20 transition-colors"
                         >
                             <Wand2 size={12} /> Generate Title
                         </Button>
@@ -663,7 +665,7 @@ export function SeoAnalysisPanel({
                             type="button"
                             variant="ghost"
                             onClick={() => onAiGenerate?.("description")}
-                            className="text-xs flex items-center gap-1 px-3 py-1.5 h-auto bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors"
+                            className="text-xs flex items-center gap-1 px-3 py-1.5 h-auto bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 rounded-lg hover:bg-gold/20 transition-colors"
                         >
                             <Wand2 size={12} /> Generate Meta Desc
                         </Button>
@@ -735,8 +737,8 @@ export function SeoAnalysisPanel({
                                 </div>
                             ))}
                         </div>
-                        <div className="mt-6 p-4 rounded-lg bg-purple-500/[0.05] border border-purple-500/10 dark:border-purple-500/20">
-                            <h5 className="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider flex items-center gap-1.5 mb-1.5">
+                        <div className="mt-6 p-4 rounded-lg bg-gold/5 dark:bg-gold/10 border border-gold/20">
+                            <h5 className="text-xs font-bold text-amber-600 dark:text-gold uppercase tracking-wider flex items-center gap-1.5 mb-1.5">
                                 <Wand2 size={12} />
                                 <span>What is AI-SEO?</span>
                             </h5>
@@ -760,14 +762,14 @@ export function SeoAnalysisPanel({
                         <Button
                             variant="ghost"
                             onClick={() => setSocialPlatform("facebook")}
-                            className={`flex items-center gap-2 px-3 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${socialPlatform === "facebook" ? "bg-blue-50 text-blue-600 hover:bg-blue-100" : "bg-gray-50 text-gray-600 hover:bg-gray-100"}`}
+                            className={`flex items-center gap-2 px-3 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${socialPlatform === "facebook" ? "bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 hover:bg-gold/20" : "bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-100"}`}
                         >
                             <Facebook size={14} /> Facebook
                         </Button>
                         <Button
                             variant="ghost"
                             onClick={() => setSocialPlatform("twitter")}
-                            className={`flex items-center gap-2 px-3 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${socialPlatform === "twitter" ? "bg-sky-50 text-sky-500 hover:bg-sky-100" : "bg-gray-50 text-gray-600 hover:bg-gray-100"}`}
+                            className={`flex items-center gap-2 px-3 py-1.5 h-auto rounded-lg text-xs font-bold transition-all ${socialPlatform === "twitter" ? "bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 hover:bg-gold/20" : "bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-100"}`}
                         >
                             <Twitter size={14} /> Twitter
                         </Button>

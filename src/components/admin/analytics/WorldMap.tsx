@@ -83,13 +83,13 @@ function WorldMapInner({ countries }: Props) {
 
     const maxViews = countries[0]?.views ?? 1;
 
-    // Color scale: transparent → primary blue
+    // Color scale: transparent → locked gold
     function getColor(alpha2: string): string {
         const views = viewMap.get(alpha2);
         if (!views) return "rgba(255,255,255,0.03)";
         const intensity = Math.min(views / maxViews, 1);
         const alpha = 0.15 + intensity * 0.7;
-        return `rgba(99, 102, 241, ${alpha})`; // indigo-500
+        return `rgba(245, 158, 11, ${alpha})`; // amber-500 / gold
     }
 
     return (
@@ -144,7 +144,7 @@ function WorldMapInner({ countries }: Props) {
                                             hover: {
                                                 fill:
                                                     views > 0
-                                                        ? "rgba(99, 102, 241, 0.9)"
+                                                        ? "rgba(245, 158, 11, 0.9)"
                                                         : "rgba(255,255,255,0.06)",
                                                 outline: "none",
                                             },
@@ -165,7 +165,7 @@ function WorldMapInner({ countries }: Props) {
                     style={{ left: tooltip.x + 10, top: tooltip.y - 30 }}
                 >
                     <span className="font-semibold">{tooltip.name}</span>
-                    <span className="text-gray-300 ml-2">
+                    <span className="text-gray-300 font-mono tabular-nums ml-2">
                         {tooltip.views.toLocaleString()} views
                     </span>
                 </div>

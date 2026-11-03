@@ -56,7 +56,7 @@ const statusOptions = [
     {
         value: "OPEN",
         label: "Open",
-        color: "text-blue-500 bg-blue-500/10",
+        color: "text-amber-600 dark:text-gold bg-gold/10",
         icon: Clock,
     },
     {
@@ -271,7 +271,7 @@ export default function AdminFeedbackPage() {
                     title="Open"
                     value={stats.OPEN}
                     icon={Clock}
-                    color="blue"
+                    color="amber"
                     trendPercent={null}
                 />
                 <AnimatedStatCard
@@ -292,7 +292,7 @@ export default function AdminFeedbackPage() {
                     title="Total"
                     value={totalCount}
                     icon={MessageSquare}
-                    color="cyan"
+                    color="amber"
                     trendPercent={null}
                 />
             </div>
@@ -304,7 +304,7 @@ export default function AdminFeedbackPage() {
                         <div className="flex-1 w-full sm:max-w-md">
                             <PremiumInput
                                 icon={Search}
-                                placeholder="Search feedback..."
+                                aria-label="Search feedback"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
@@ -447,7 +447,7 @@ export default function AdminFeedbackPage() {
                                         className="text-gray-400 dark:text-gray-500"
                                     />
                                 )}
-                                <span>
+                                <span className="font-mono tabular-nums">
                                     {selectedIds.size > 0
                                         ? `${selectedIds.size} of ${filtered.length} selected`
                                         : `Select All (${filtered.length})`}
@@ -519,7 +519,7 @@ export default function AdminFeedbackPage() {
 
             {/* Empty */}
             {!isLoading && !error && filtered.length === 0 && (
-                <div className="bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm text-center py-20">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm text-center py-20">
                     <MessageSquare
                         size={48}
                         className="mx-auto mb-4 text-gray-300"
@@ -552,7 +552,7 @@ export default function AdminFeedbackPage() {
                             <div
                                 key={fb.id}
                                 className={cn(
-                                    "bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm transition-all",
+                                    "bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 shadow-sm transition-all",
                                     "border-l-4",
                                     isBug
                                         ? "border-l-red-500"
@@ -634,7 +634,7 @@ export default function AdminFeedbackPage() {
                                             </p>
 
                                             {/* Time */}
-                                            <p className="text-[11px] text-gray-500 mt-2">
+                                            <p className="text-[11px] font-mono tabular-nums text-gray-500 mt-2">
                                                 {formatDistanceToNow(
                                                     new Date(fb.createdAt)
                                                 )}{" "}

@@ -135,9 +135,9 @@ const TONES: Array<{
 ];
 
 const SOURCE_ICONS: Record<string, { icon: LucideIcon; color: string }> = {
-    google: { icon: Globe, color: "text-blue-500" },
+    google: { icon: Globe, color: "text-amber-600 dark:text-gold" },
     reddit: { icon: MessageCircle, color: "text-orange-500" },
-    twitter: { icon: Twitter, color: "text-sky-500" },
+    twitter: { icon: Twitter, color: "text-amber-600 dark:text-gold" },
     youtube: { icon: Youtube, color: "text-red-500" },
 };
 
@@ -480,7 +480,7 @@ export const AIRewriteDialog = forwardRef<
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="bg-white dark:bg-[#1a1e2e] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 w-full max-w-2xl mx-4 max-h-[95vh] overflow-hidden flex flex-col"
+                        className="bg-white dark:bg-[#151925] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 w-full max-w-2xl mx-4 max-h-[95vh] overflow-hidden flex flex-col"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Header */}
@@ -584,7 +584,6 @@ export const AIRewriteDialog = forwardRef<
                                                     if (e.key === "Enter")
                                                         handleSearch();
                                                 }}
-                                                placeholder="https://www.babypips.com/learn/forex/what-is-forex"
                                                 disabled={isLoading}
                                                 className="flex-1 p-3 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all disabled:opacity-50"
                                             />
@@ -737,7 +736,6 @@ export const AIRewriteDialog = forwardRef<
                                         onChange={(e) =>
                                             setPastedContent(e.target.value)
                                         }
-                                        placeholder="Copy the article content from BabyPips and paste it here..."
                                         disabled={isLoading}
                                         rows={5}
                                         className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all disabled:opacity-50 resize-y"
@@ -977,7 +975,7 @@ export const AIRewriteDialog = forwardRef<
                                         className={cn(
                                             "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 h-auto rounded-lg text-sm font-medium transition-all border",
                                             mode === "summary"
-                                                ? "bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 ring-1 ring-blue-200 dark:ring-blue-800"
+                                                ? "bg-gold/10 border-gold/30 text-amber-700 dark:text-gold ring-1 ring-gold/20"
                                                 : "bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-600 hover:bg-gray-100 dark:hover:bg-white/10"
                                         )}
                                     >
@@ -1012,12 +1010,12 @@ export const AIRewriteDialog = forwardRef<
                                 )}
                             >
                                 <Shield size={14} />
-                                <span>
+                                <span className="font-mono tabular-nums">
                                     Copyright Protection: {copyrightScore}/5
                                     layers
                                 </span>
                                 {totalSources >= 2 && (
-                                    <span className="text-emerald-500 flex items-center gap-1">
+                                    <span className="text-emerald-500 flex items-center gap-1 font-mono tabular-nums">
                                         • {totalSources} sources → merge enabled
                                         <Check size={12} className="inline-block" />
                                     </span>
@@ -1086,7 +1084,7 @@ export const AIRewriteDialog = forwardRef<
                                         )}
                                         {(result.sourceUrls?.length || 0) >
                                             1 && (
-                                            <span className="text-xs font-normal text-gray-500">
+                                            <span className="text-xs font-normal font-mono tabular-nums text-gray-500">
                                                 • {result.sourceUrls!.length}{" "}
                                                 sources merged
                                             </span>
@@ -1103,11 +1101,16 @@ export const AIRewriteDialog = forwardRef<
                                     </div>
 
                                     {result.metaDescription && (
-                                        <div className="p-3 bg-blue-50 dark:bg-blue-500/5 rounded-lg border border-blue-100 dark:border-blue-900/30">
-                                            <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest flex items-center gap-1">
+                                        <div className="p-3 bg-gold/5 dark:bg-gold/10 rounded-lg border border-gold/20">
+                                            <span className="text-[10px] font-bold text-amber-600 dark:text-gold uppercase tracking-widest flex items-center gap-1">
                                                 <Search size={12} />
                                                 Meta Description (
-                                                {result.metaDescription.length}{" "}
+                                                <span className="font-mono tabular-nums">
+                                                    {
+                                                        result.metaDescription
+                                                            .length
+                                                    }
+                                                </span>{" "}
                                                 chars)
                                             </span>
                                             <p className="text-xs text-gray-600 dark:text-gray-500 mt-1">

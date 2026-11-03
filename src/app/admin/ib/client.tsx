@@ -245,7 +245,7 @@ export function IbOverviewClient({
             description: `${overview.activeProUsers} active VIP trader${overview.activeProUsers !== 1 ? "s" : ""} currently monitored`,
             href: "/admin/ib/traders?vip=ACTIVE",
             value: overview.activeProUsers,
-            tone: "cyan",
+            tone: "emerald",
             icon: Activity,
             cta: "View traders",
         },
@@ -266,7 +266,7 @@ export function IbOverviewClient({
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-xs font-bold text-gray-400">
                     <Clock size={13} /> Updated as of{" "}
-                    <span className="font-mono text-gray-700 dark:text-gray-300">
+                    <span className="font-mono tabular-nums text-gray-700 dark:text-gray-300">
                         {asOfTimestamp}
                     </span>
                     <span className="text-gray-300 dark:text-gray-600">·</span>
@@ -334,7 +334,7 @@ export function IbOverviewClient({
                                 <div className="p-2 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
                                     <AlertTriangle size={18} />
                                 </div>
-                                <span className="font-bold text-sm text-gray-900 dark:text-white">
+                                <span className="font-bold text-sm text-gray-900 dark:text-white tabular-nums">
                                     {overview.vipUsersWithoutFirstSync} active VIP user
                                     {overview.vipUsersWithoutFirstSync === 1 ? "" : "s"} have
                                     not completed a first sync.
@@ -351,23 +351,23 @@ export function IbOverviewClient({
                         {/* Retention & Health */}
                         <Link
                             href="/admin/ib/traders?accountHealth=STALE"
-                            className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md hover:border-orange-500/30 transition-all space-y-2 group block"
+                            className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md hover:border-amber-500/30 transition-all space-y-2 group block"
                         >
                             <div className="flex items-center justify-between">
                                 <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
                                     Retention & Health
                                 </span>
                                 <div className="flex items-center gap-1.5">
-                                    <div className="p-2.5 rounded-lg bg-orange-500/10 text-orange-600 dark:text-orange-400 ring-1 ring-orange-500/20">
+                                    <div className="p-2.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20">
                                         <AlertTriangle size={16} />
                                     </div>
-                                    <ArrowUpRight size={14} className="text-gray-400 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
+                                    <ArrowUpRight size={14} className="text-gray-400 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all" />
                                 </div>
                             </div>
-                            <p className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
-                                {overview?.staleAccounts || 0} <span className="text-sm font-bold text-orange-600 dark:text-orange-400">sync overdue</span>
+                            <p className="text-2xl font-black font-mono tabular-nums text-gray-900 dark:text-white tracking-tight">
+                                {overview?.staleAccounts || 0} <span className="text-sm font-sans font-bold text-amber-600 dark:text-amber-400">sync overdue</span>
                             </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 pt-1.5 border-t border-gray-100 dark:border-white/5">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 pt-1.5 border-t border-gray-100 dark:border-white/5 tabular-nums">
                                 {overview?.disconnectedAccounts || 0} inactive (&gt;7d) · {overview?.duplicateAccountWarnings || 0} dup warnings
                                 <span className="block text-[11px] text-gray-400 dark:text-gray-500">
                                     All accounts, demo included
@@ -378,21 +378,21 @@ export function IbOverviewClient({
                         {/* Trade Manager Active */}
                         <Link
                             href="/admin/ib/traders?syncSource=EA_SYNC"
-                            className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md hover:border-cyan-500/30 transition-all space-y-2 group block"
+                            className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm hover:shadow-md hover:border-gold/30 transition-all space-y-2 group block"
                         >
                             <div className="flex items-center justify-between">
                                 <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
                                     Trade Manager Active
                                 </span>
                                 <div className="flex items-center gap-1.5">
-                                    <div className="p-2.5 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 ring-1 ring-cyan-500/20">
+                                    <div className="p-2.5 rounded-lg bg-gold/10 text-amber-600 dark:text-gold ring-1 ring-gold/20">
                                         <Zap size={16} />
                                     </div>
-                                    <ArrowUpRight size={14} className="text-gray-400 group-hover:text-cyan-500 group-hover:translate-x-0.5 transition-all" />
+                                    <ArrowUpRight size={14} className="text-gray-400 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all" />
                                 </div>
                             </div>
-                            <p className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
-                                {overview?.activeToolUsers || 0} <span className="text-sm font-bold text-cyan-600 dark:text-cyan-400">active EA users</span>
+                            <p className="text-2xl font-black font-mono tabular-nums text-gray-900 dark:text-white tracking-tight">
+                                {overview?.activeToolUsers || 0} <span className="text-sm font-sans font-bold text-amber-600 dark:text-gold">active EA users</span>
                             </p>
                             <p className="text-xs text-gray-500 dark:text-gray-400 pt-1.5 border-t border-gray-100 dark:border-white/5">
                                 Sending live telemetry within 24h
@@ -415,25 +415,25 @@ export function IbOverviewClient({
                                     <ArrowUpRight size={14} className="text-gray-400 group-hover:text-emerald-500 group-hover:translate-x-0.5 transition-all" />
                                 </div>
                             </div>
-                            <p className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
-                                {overview?.outOfIbActiveRatio ?? 0}% <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">non-IB active</span>
+                            <p className="text-2xl font-black font-mono tabular-nums text-gray-900 dark:text-white tracking-tight">
+                                {overview?.outOfIbActiveRatio ?? 0}% <span className="text-sm font-sans font-bold text-emerald-600 dark:text-emerald-400">non-IB active</span>
                             </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 pt-1.5 border-t border-gray-100 dark:border-white/5">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 pt-1.5 border-t border-gray-100 dark:border-white/5 tabular-nums">
                                 {overview?.outOfIbActiveCount ?? 0} of {overview?.totalActiveUsers ?? 0} active traders · View in Value Radar
                             </p>
                         </Link>
                     </div>
                     {/* Active Pro Traders Highlight Banner (High-depth card) */}
                     <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 sm:p-7 shadow-sm relative overflow-hidden">
-                        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-amber-500" />
+                        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-500 via-emerald-400 to-amber-500" />
                         <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
                             <div className="max-w-xl">
-                                <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                                <div className="mb-3 inline-flex items-center gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
                                     <Crown size={13} />
                                     Active Pro Traders
                                 </div>
                                 <div className="flex items-end gap-3">
-                                    <p className="text-5xl font-black tracking-tight text-gray-900 dark:text-white">
+                                    <p className="text-5xl font-black font-mono tabular-nums tracking-tight text-gray-900 dark:text-white">
                                         {overview.activeProUsers}
                                     </p>
                                     <p className="pb-2 text-sm font-bold text-gray-500 dark:text-gray-400">
@@ -447,33 +447,33 @@ export function IbOverviewClient({
                                 </p>
                             </div>
                             <div className="grid flex-1 gap-3 sm:grid-cols-3">
-                                <div className="rounded-xl border border-gray-200 bg-gray-50/80 p-4 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
+                                <div className="rounded-lg border border-gray-200 bg-gray-50/80 p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                                     <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                                         Leads
                                     </p>
-                                    <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">
+                                    <p className="mt-2 text-2xl font-black font-mono tabular-nums text-gray-900 dark:text-white">
                                         {leadStats.totalLeads}
                                     </p>
                                     <p className="mt-1 text-xs font-medium text-gray-500 dark:text-gray-400">
                                         {rangeLabel}
                                     </p>
                                 </div>
-                                <div className="rounded-xl border border-gray-200 bg-gray-50/80 p-4 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
+                                <div className="rounded-lg border border-gray-200 bg-gray-50/80 p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                                     <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                                         Requests
                                     </p>
-                                    <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">
+                                    <p className="mt-2 text-2xl font-black font-mono tabular-nums text-gray-900 dark:text-white">
                                         {vipStats.total}
                                     </p>
                                     <p className="mt-1 text-xs font-medium text-gray-500 dark:text-gray-400">
                                         submitted in range
                                     </p>
                                 </div>
-                                <div className="rounded-xl border border-gray-200 bg-gray-50/80 p-4 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
+                                <div className="rounded-lg border border-gray-200 bg-gray-50/80 p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
                                     <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                                         Conversion
                                     </p>
-                                    <p className="mt-2 text-2xl font-black text-emerald-600 dark:text-emerald-400">
+                                    <p className="mt-2 text-2xl font-black font-mono tabular-nums text-emerald-600 dark:text-emerald-400">
                                         {leadStats.conversionRate.toFixed(1)}%
                                     </p>
                                     <p className="mt-1 text-xs font-medium text-gray-500 dark:text-gray-400">
@@ -495,7 +495,7 @@ export function IbOverviewClient({
                                     <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
                                         Pending VIP Requests
                                         {pendingRequests.length > 0 && (
-                                            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/20">
+                                            <span className="px-2.5 py-0.5 rounded-lg text-xs font-bold font-mono tabular-nums bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/20">
                                                 {pendingRequests.length} Pending
                                             </span>
                                         )}
@@ -584,18 +584,18 @@ export function IbOverviewClient({
                                                         </div>
                                                     </td>
                                                     <td className="px-4 py-3.5">
-                                                        <span className="font-mono font-bold text-xs text-gray-900 dark:text-white">
+                                                        <span className="font-mono tabular-nums font-bold text-xs text-gray-900 dark:text-white">
                                                             {req.submittedBalance
                                                                 ? `$${Number(req.submittedBalance).toLocaleString()}`
                                                                 : "N/A"}
                                                         </span>
                                                         {req.liveBalance !== null && (
-                                                            <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-0.5">
+                                                            <div className="text-[10px] font-mono tabular-nums text-emerald-600 dark:text-emerald-400 font-bold mt-0.5">
                                                                 Live: ${req.liveBalance.toLocaleString()}
                                                             </div>
                                                         )}
                                                     </td>
-                                                    <td className="px-4 py-3.5 text-xs text-gray-400 whitespace-nowrap">
+                                                    <td className="px-4 py-3.5 text-xs text-gray-400 whitespace-nowrap font-mono tabular-nums">
                                                         <div className="flex items-center gap-1">
                                                             <Clock size={12} className="opacity-60" />
                                                             {formatDistanceToNow(
@@ -663,8 +663,8 @@ export function IbOverviewClient({
                             const toneClass =
                                 action.tone === "amber"
                                     ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20"
-                                    : action.tone === "cyan"
-                                      ? "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 ring-1 ring-cyan-500/20"
+                                    : action.tone === "emerald"
+                                      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/20"
                                       : "bg-rose-500/10 text-rose-600 dark:text-rose-400 ring-1 ring-rose-500/20";
 
                             return (
@@ -680,7 +680,7 @@ export function IbOverviewClient({
                                             >
                                                 <Icon size={20} strokeWidth={2.5} />
                                             </div>
-                                            <span className="text-3xl font-black tracking-tight text-gray-900 dark:text-white">
+                                            <span className="text-3xl font-black font-mono tabular-nums tracking-tight text-gray-900 dark:text-white">
                                                 {action.value}
                                             </span>
                                         </div>
@@ -713,7 +713,7 @@ export function IbOverviewClient({
                             >
                                 <div className="absolute top-0 inset-x-0 h-0.5 bg-gold/40 group-hover:bg-gold transition-colors" />
                                 <div className="flex items-center justify-between">
-                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-gold dark:text-amber-400 border border-amber-500/20">
+                                    <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-gold dark:text-amber-400 border border-amber-500/20">
                                         {prod.slug}
                                     </span>
                                     <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
@@ -756,11 +756,11 @@ export function IbOverviewClient({
                                     <DollarSign size={16} />
                                 </div>
                             </div>
-                            <p className="text-2xl font-black text-gray-900 dark:text-white font-mono tracking-tight">
+                            <p className="text-2xl font-black text-gray-900 dark:text-white font-mono tabular-nums tracking-tight">
                                 {formatUsd(overview.reportedCapitalUSD)}
                             </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 pt-1.5 border-t border-gray-100 dark:border-white/5">
-                                Equity: <span className="font-semibold text-gray-700 dark:text-gray-300">{formatUsd(overview.reportedEquityUSD)}</span>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 pt-1.5 border-t border-gray-100 dark:border-white/5 tabular-nums">
+                                Equity: <span className="font-semibold font-mono text-gray-700 dark:text-gray-300">{formatUsd(overview.reportedEquityUSD)}</span>
                                 {formatCurrencySubtitle(overview.currencyBreakdown) ? ` · ${formatCurrencySubtitle(overview.currencyBreakdown)}` : ""}
                             </p>
                         </div>
@@ -775,11 +775,11 @@ export function IbOverviewClient({
                                     <ShieldCheck size={16} />
                                 </div>
                             </div>
-                            <p className="text-2xl font-black text-gray-900 dark:text-white font-mono tracking-tight">
+                            <p className="text-2xl font-black text-gray-900 dark:text-white font-mono tabular-nums tracking-tight">
                                 {formatUsd(overview.freshCapitalUSD)}
                             </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 pt-1.5 border-t border-gray-100 dark:border-white/5">
-                                <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 pt-1.5 border-t border-gray-100 dark:border-white/5 tabular-nums">
+                                <span className="font-bold font-mono text-emerald-600 dark:text-emerald-400">
                                     {overview.accountCounts?.connectedLiveAccounts24h ?? overview.activeAccounts24h ?? 0}
                                 </span>{" "}
                                 live accounts active in 24h
@@ -797,7 +797,7 @@ export function IbOverviewClient({
                             <h3 className="font-bold text-sm text-gray-900 dark:text-white">
                                 Broker Referral Breakdown
                             </h3>
-                            <span className="text-xs text-gray-400 font-medium">
+                            <span className="text-xs text-gray-400 font-medium font-mono tabular-nums">
                                 Total: {leadStats.totalLeads} leads
                             </span>
                         </div>
@@ -816,7 +816,7 @@ export function IbOverviewClient({
                                             <span className="text-gray-800 dark:text-gray-200">
                                                 {item.broker}
                                             </span>
-                                            <span className="font-mono text-primary font-bold">
+                                            <span className="font-mono tabular-nums text-primary font-bold">
                                                 {item.count} leads ({percentage}%)
                                             </span>
                                         </div>
@@ -851,7 +851,7 @@ export function IbOverviewClient({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4"
+                            className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0D111C] p-6 shadow-2xl space-y-4"
                         >
                             <h3 className="text-base font-bold text-gray-900 dark:text-white">
                                 Reject VIP Request
@@ -864,7 +864,7 @@ export function IbOverviewClient({
                                 value={rejectReason}
                                 onChange={(e) => setRejectReason(e.target.value)}
                                 aria-label="Rejection reason"
-                                className="w-full h-24 p-3 text-xs rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
+                                className="w-full h-24 p-3 text-xs rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
                             />
                             <div className="flex items-center justify-end gap-2 pt-2">
                                 <Button

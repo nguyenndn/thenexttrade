@@ -58,7 +58,11 @@ export function AcademyLevelTree({
             {/* Tree Control Header */}
             <div className="flex items-center justify-between px-1">
                 <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                    Hierarchical Curriculum Breakdown ({levels.length} Levels)
+                    Hierarchical Curriculum Breakdown (
+                    <span className="font-mono tabular-nums">
+                        {levels.length}
+                    </span>{" "}
+                    Levels)
                 </span>
                 <div className="flex items-center gap-2">
                     <Button
@@ -102,7 +106,7 @@ export function AcademyLevelTree({
                     return (
                         <div
                             key={level.id}
-                            className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm transition-all"
+                            className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm transition-all"
                         >
                             {/* Level Node Header */}
                             <div className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 bg-gray-50/40 dark:bg-white/[0.01]">
@@ -126,7 +130,7 @@ export function AcademyLevelTree({
                                         )}
                                     </Button>
 
-                                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500/10 to-teal-500/20 border border-cyan-500/20 flex items-center justify-center font-black text-cyan-600 dark:text-cyan-400 text-xs shrink-0">
+                                    <div className="w-8 h-8 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center font-black font-mono tabular-nums text-amber-600 dark:text-gold text-xs shrink-0">
                                         {String(level.order).padStart(2, "0")}
                                     </div>
 
@@ -136,15 +140,15 @@ export function AcademyLevelTree({
                                                 {level.title}
                                             </h4>
                                             <span
-                                                className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${stage.badgeClass}`}
+                                                className={`text-[10px] font-bold px-2 py-0.5 rounded-lg border ${stage.badgeClass}`}
                                             >
                                                 {stage.name}
                                             </span>
                                             <span
-                                                className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                                                className={`text-[10px] font-bold px-2 py-0.5 rounded-lg border ${
                                                     isPublic
                                                         ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
-                                                        : "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20"
+                                                        : "bg-gold/10 text-amber-600 dark:text-gold border-gold/20"
                                                 }`}
                                             >
                                                 {isPublic
@@ -157,7 +161,7 @@ export function AcademyLevelTree({
 
                                 {/* Counts & Actions */}
                                 <div className="flex items-center gap-3 pl-8 md:pl-0">
-                                    <div className="flex items-center gap-3 text-xs text-gray-500">
+                                    <div className="flex items-center gap-3 text-xs font-mono tabular-nums text-gray-500">
                                         <span className="flex items-center gap-1">
                                             <Layers size={13} />
                                             {moduleCount} Modules
@@ -214,14 +218,14 @@ export function AcademyLevelTree({
                                                 {/* Module row */}
                                                 <div className="flex items-center justify-between gap-2 mb-2">
                                                     <div className="flex items-center gap-2">
-                                                        <span className="w-5 h-5 rounded-full bg-gray-100 dark:bg-white/5 text-[10px] font-bold text-gray-500 flex items-center justify-center shrink-0">
+                                                        <span className="w-5 h-5 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] font-bold font-mono tabular-nums text-gray-500 flex items-center justify-center shrink-0">
                                                             {mod.order}
                                                         </span>
                                                         <span className="font-semibold text-xs text-gray-800 dark:text-gray-200">
                                                             {mod.title}
                                                         </span>
                                                         {mod.quiz?.id && (
-                                                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded-full border border-amber-500/20">
+                                                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded-lg border border-amber-500/20">
                                                                 <HelpCircle
                                                                     size={10}
                                                                 />
@@ -229,7 +233,7 @@ export function AcademyLevelTree({
                                                             </span>
                                                         )}
                                                     </div>
-                                                    <span className="text-[11px] text-gray-400 font-medium">
+                                                    <span className="text-[11px] font-mono tabular-nums text-gray-400 font-medium">
                                                         {mod.lessons?.length ||
                                                             0}{" "}
                                                         lessons
@@ -254,8 +258,12 @@ export function AcademyLevelTree({
                                                                                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
                                                                             </span>
                                                                             <span className="text-xs text-gray-600 dark:text-gray-300 truncate font-medium group-hover:text-primary transition-colors">
-                                                                                {les.order}
-                                                                                .{" "}
+                                                                                <span className="font-mono tabular-nums">
+                                                                                    {
+                                                                                        les.order
+                                                                                    }
+                                                                                    .
+                                                                                </span>{" "}
                                                                                 {
                                                                                     les.title
                                                                                 }

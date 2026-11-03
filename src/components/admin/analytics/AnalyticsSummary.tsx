@@ -35,7 +35,7 @@ function TrendBadge({ value }: { value: number | undefined }) {
 
     return (
         <span
-            className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-lg text-[10px] font-bold ${color}`}
+            className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-lg text-[10px] font-bold font-mono tabular-nums ${color}`}
         >
             <Icon size={10} />
             {Math.abs(value)}%
@@ -49,14 +49,14 @@ export function AnalyticsSummary({ summary, realTime }: Props) {
             label: "Total Views",
             value: summary.pageviews,
             icon: Eye,
-            gradient: "from-indigo-500 to-indigo-600",
+            gradient: "from-amber-500 to-amber-600",
             trend: summary.viewsTrend,
         },
         {
             label: "Unique Visitors",
             value: summary.uniqueVisitors,
             icon: Users,
-            gradient: "from-cyan-500 to-blue-500",
+            gradient: "from-emerald-500 to-emerald-600",
             trend: summary.visitorsTrend,
         },
         {
@@ -70,7 +70,7 @@ export function AnalyticsSummary({ summary, realTime }: Props) {
             label: "Pages / Visit",
             value: summary.avgPagesPerVisitor,
             icon: TrendingUp,
-            gradient: "from-amber-500 to-orange-500",
+            gradient: "from-amber-500 to-amber-600",
             decimal: true,
         },
     ];
@@ -82,7 +82,7 @@ export function AnalyticsSummary({ summary, realTime }: Props) {
                 return (
                     <div
                         key={card.label}
-                        className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default"
+                        className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default"
                     >
                         <div className="flex items-center gap-3">
                             <div
@@ -91,12 +91,12 @@ export function AnalyticsSummary({ summary, realTime }: Props) {
                                 <Icon
                                     size={16}
                                     aria-hidden="true"
-                                    className={`text-white ${card.pulse ? "animate-pulse" : ""}`}
+                                    className="text-white"
                                 />
                             </div>
                             <div>
                                 <div className="flex items-center gap-2">
-                                    <p className="text-xl font-black text-gray-800 dark:text-white tabular-nums leading-none">
+                                    <p className="text-xl font-black text-gray-800 dark:text-white font-mono tabular-nums leading-none">
                                         {card.decimal
                                             ? card.value.toFixed(1)
                                             : card.value.toLocaleString()}

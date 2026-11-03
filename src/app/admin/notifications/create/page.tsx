@@ -103,7 +103,7 @@ export default function CreateBroadcastPage() {
                             {...register("message")}
                             rows={4}
                             aria-label="Notification message"
-                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-700 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
+                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-3 text-sm text-gray-700 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
                         />
                         {errors.message && (
                             <p className="text-xs text-red-500">Required</p>
@@ -119,7 +119,7 @@ export default function CreateBroadcastPage() {
                                 <DropdownMenuTrigger asChild>
                                     <Button
                                         variant="outline"
-                                        className="w-full justify-between rounded-lg border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium capitalize"
+                                        className="w-full justify-between rounded-lg border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium capitalize"
                                     >
                                         <span>{typeValue.toLowerCase()}</span>
                                         <ChevronDown
@@ -156,7 +156,7 @@ export default function CreateBroadcastPage() {
                                 <DropdownMenuTrigger asChild>
                                     <Button
                                         variant="outline"
-                                        className="w-full justify-between rounded-lg border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium capitalize"
+                                        className="w-full justify-between rounded-lg border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium capitalize"
                                     >
                                         <span>
                                             {priorityValue.toLowerCase()}
@@ -196,7 +196,6 @@ export default function CreateBroadcastPage() {
                         <PremiumInput
                             label="Link (Optional)"
                             {...register("link")}
-                            placeholder="/dashboard/..."
                         />
                     </div>
 

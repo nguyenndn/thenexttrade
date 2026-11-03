@@ -21,11 +21,11 @@ const COLOR_MAP: Record<
     { hex: string; bg: string; text: string; ring: string; borderTop: string }
 > = {
     blue: {
-        hex: "#3b82f6",
-        bg: "bg-blue-50/50 dark:bg-blue-500/10",
-        text: "text-blue-600 dark:text-blue-400",
-        ring: "ring-1 ring-blue-500/20",
-        borderTop: "border-t-blue-500",
+        hex: "#f59e0b",
+        bg: "bg-amber-50/50 dark:bg-amber-500/10",
+        text: "text-amber-600 dark:text-amber-400",
+        ring: "ring-1 ring-amber-500/20",
+        borderTop: "border-t-amber-500",
     },
     emerald: {
         hex: "#10b981",
@@ -35,11 +35,11 @@ const COLOR_MAP: Record<
         borderTop: "border-t-emerald-500",
     },
     cyan: {
-        hex: "#06b6d4",
-        bg: "bg-cyan-50/50 dark:bg-cyan-500/10",
-        text: "text-cyan-600 dark:text-cyan-400",
-        ring: "ring-1 ring-cyan-500/20",
-        borderTop: "border-t-cyan-500",
+        hex: "#f59e0b",
+        bg: "bg-amber-50/50 dark:bg-amber-500/10",
+        text: "text-amber-600 dark:text-amber-400",
+        ring: "ring-1 ring-amber-500/20",
+        borderTop: "border-t-amber-500",
     },
     green: {
         hex: "#22c55e",
@@ -124,7 +124,7 @@ export function AnimatedStatCard({
                 ease: [0.25, 0.46, 0.45, 0.94],
             }}
             whileHover={{ y: -2, transition: { duration: 0.2 } }}
-            className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default"
+            className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default"
         >
             <div className="flex items-center gap-3">
                 <div
@@ -134,7 +134,7 @@ export function AnimatedStatCard({
                 </div>
                 <div>
                     <div className="flex items-center gap-2">
-                        <p className="text-xl font-black text-gray-800 dark:text-white tabular-nums leading-none">
+                        <p className="text-xl font-black text-gray-800 dark:text-white font-mono tabular-nums leading-none">
                             {displayValue}
                             {suffix && (
                                 <span className="text-sm font-medium text-gray-500 ml-0.5">
@@ -145,7 +145,7 @@ export function AnimatedStatCard({
                         {trendPercent !== null &&
                             trendPercent !== undefined && (
                                 <span
-                                    className={`text-[10px] font-bold px-1.5 py-0.5 rounded-lg ${
+                                    className={`text-[10px] font-bold font-mono tabular-nums px-1.5 py-0.5 rounded-lg ${
                                         trendPercent > 0
                                             ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400"
                                             : trendPercent < 0

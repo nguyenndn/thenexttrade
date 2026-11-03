@@ -155,11 +155,11 @@ export function CompetitionModal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
-            <div className="relative w-full max-w-2xl bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl p-6 sm:p-8 space-y-6 my-8">
+            <div className="relative w-full max-w-2xl bg-white dark:bg-[#0D111C] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl p-6 sm:p-8 space-y-6 my-8">
                 {/* Header */}
                 <div className="flex items-center justify-between border-b border-dashboard pb-4">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
+                        <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
                             <Trophy size={20} />
                         </div>
                         <div>
@@ -195,7 +195,7 @@ export function CompetitionModal({
                                 required
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
-                                className="w-full px-3.5 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+                                className="w-full px-3.5 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/40"
                             />
                         </div>
                         <div className="space-y-1.5">
@@ -203,8 +203,8 @@ export function CompetitionModal({
                                 Status
                             </label>
                             <Select value={status} onValueChange={(val: any) => setStatus(val)}>
-                                <SelectTrigger className="w-full px-3.5 py-2 h-auto rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#1E2230] text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/40">
-                                    <SelectValue placeholder="Select status" />
+                                <SelectTrigger className="w-full px-3.5 py-2 h-auto rounded-lg border border-gray-300 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/40">
+                                    <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="DRAFT">DRAFT (Hidden)</SelectItem>
@@ -227,7 +227,7 @@ export function CompetitionModal({
                                 required
                                 value={startDate}
                                 onChange={(e) => setStartDate(e.target.value)}
-                                className="w-full px-3.5 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+                                className="w-full px-3.5 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] font-mono tabular-nums text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/40"
                             />
                         </div>
                         <div className="space-y-1.5">
@@ -239,13 +239,13 @@ export function CompetitionModal({
                                 required
                                 value={endDate}
                                 onChange={(e) => setEndDate(e.target.value)}
-                                className="w-full px-3.5 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+                                className="w-full px-3.5 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] font-mono tabular-nums text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/40"
                             />
                         </div>
                     </div>
 
                     {/* Prize Pool & Breakdown */}
-                    <div className="p-4 rounded-xl border border-amber-500/20 bg-amber-500/[0.03] space-y-4">
+                    <div className="p-4 rounded-lg border border-amber-500/20 bg-gray-50/80 dark:bg-[#151925] space-y-4">
                         <div className="flex items-center justify-between">
                             <span className="text-xs font-black uppercase tracking-wider text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
                                 <DollarSign size={14} /> Prize Pool Structure
@@ -258,7 +258,7 @@ export function CompetitionModal({
                                     step="50"
                                     value={prizePool}
                                     onChange={(e) => setPrizePool(Number(e.target.value))}
-                                    className="w-24 px-2.5 py-1 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-right font-black text-amber-600 dark:text-amber-400 focus:outline-none"
+                                    className="w-24 px-2.5 py-1 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#0D111C] font-mono tabular-nums text-sm text-right font-black text-amber-600 dark:text-amber-400 focus:outline-none"
                                 />
                             </div>
                         </div>
@@ -272,7 +272,7 @@ export function CompetitionModal({
                                     type="text"
                                     value={rank1Reward}
                                     onChange={(e) => setRank1Reward(e.target.value)}
-                                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-xs text-gray-900 dark:text-white"
+                                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#0D111C] font-mono tabular-nums text-xs text-gray-900 dark:text-white"
                                 />
                             </div>
                             <div className="space-y-1">
@@ -283,7 +283,7 @@ export function CompetitionModal({
                                     type="text"
                                     value={rank2Reward}
                                     onChange={(e) => setRank2Reward(e.target.value)}
-                                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-xs text-gray-900 dark:text-white"
+                                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#0D111C] font-mono tabular-nums text-xs text-gray-900 dark:text-white"
                                 />
                             </div>
                             <div className="space-y-1">
@@ -294,7 +294,7 @@ export function CompetitionModal({
                                     type="text"
                                     value={rank3Reward}
                                     onChange={(e) => setRank3Reward(e.target.value)}
-                                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-xs text-gray-900 dark:text-white"
+                                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#0D111C] font-mono tabular-nums text-xs text-gray-900 dark:text-white"
                                 />
                             </div>
                         </div>
@@ -311,7 +311,7 @@ export function CompetitionModal({
                                 min="1"
                                 value={minTrades}
                                 onChange={(e) => setMinTrades(Number(e.target.value))}
-                                className="w-full px-3.5 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white focus:outline-none"
+                                className="w-full px-3.5 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] font-mono tabular-nums text-sm text-gray-900 dark:text-white focus:outline-none"
                             />
                         </div>
                         <div className="space-y-1.5">
@@ -325,7 +325,7 @@ export function CompetitionModal({
                                 step="0.5"
                                 value={maxDrawdown}
                                 onChange={(e) => setMaxDrawdown(Number(e.target.value))}
-                                className="w-full px-3.5 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white focus:outline-none"
+                                className="w-full px-3.5 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] font-mono tabular-nums text-sm text-gray-900 dark:text-white focus:outline-none"
                             />
                         </div>
                         <div className="space-y-1.5">
@@ -333,8 +333,8 @@ export function CompetitionModal({
                                 Scoring Metric
                             </label>
                             <Select value={scoringMetric} onValueChange={(val: any) => setScoringMetric(val)}>
-                                <SelectTrigger className="w-full px-3.5 py-2 h-auto rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#1E2230] text-sm text-gray-900 dark:text-white focus:outline-none">
-                                    <SelectValue placeholder="Select metric" />
+                                <SelectTrigger className="w-full px-3.5 py-2 h-auto rounded-lg border border-gray-300 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-sm text-gray-900 dark:text-white focus:outline-none">
+                                    <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="currency">Net PnL ($ USD)</SelectItem>
@@ -353,7 +353,7 @@ export function CompetitionModal({
                             type="text"
                             value={eligibleBrokers}
                             onChange={(e) => setEligibleBrokers(e.target.value)}
-                            className="w-full px-3.5 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white focus:outline-none"
+                            className="w-full px-3.5 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-sm text-gray-900 dark:text-white focus:outline-none"
                         />
                     </div>
 
@@ -366,7 +366,7 @@ export function CompetitionModal({
                             rows={3}
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            className="w-full px-3.5 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white focus:outline-none"
+                            className="w-full px-3.5 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-sm text-gray-900 dark:text-white focus:outline-none"
                         />
                     </div>
 
@@ -384,8 +384,9 @@ export function CompetitionModal({
                             type="submit"
                             variant="primary"
                             disabled={isSubmitting}
+                            className="bg-gold hover:bg-amber-600 text-white"
                         >
-                            {isSubmitting ? "Saving..." : isEdit ? "Update Competition" : "Create Competition"}
+                            {isSubmitting ? "Saving..." : isEdit ? "Save Changes" : "Create Competition"}
                         </Button>
                     </div>
                 </form>

@@ -16,6 +16,9 @@ import {
     Pencil,
     SearchCheck,
     X,
+    CheckSquare,
+    Square,
+    Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
@@ -80,7 +83,7 @@ function SummaryCard({
     color: string;
 }) {
     return (
-        <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4">
+        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-4">
             <div className="flex items-center gap-3">
                 <div
                     className={`w-9 h-9 rounded-lg flex items-center justify-center ${color}`}
@@ -88,7 +91,7 @@ function SummaryCard({
                     <Icon size={16} />
                 </div>
                 <div>
-                    <p className="text-xl font-black text-gray-800 dark:text-white tabular-nums">
+                    <p className="text-xl font-black text-gray-800 dark:text-white font-mono tabular-nums">
                         {value}
                     </p>
                     <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">
@@ -231,7 +234,7 @@ export function ArticleOpsDashboard({
                             label="Needs SEO"
                             value={summary.needsSeo}
                             icon={Search}
-                            color="bg-blue-100 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400"
+                            color="bg-gold/10 text-amber-600 dark:text-gold"
                         />
                         <SummaryCard
                             label="Missing Files"
@@ -263,7 +266,7 @@ export function ArticleOpsDashboard({
                 {/* Bulk Toolbar */}
                 {selectedIds.size > 0 && (
                     <div className="flex flex-wrap items-center gap-3 px-4 py-2.5 bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-lg">
-                        <span className="text-sm font-bold text-gray-700 dark:text-gray-200">
+                        <span className="text-sm font-bold font-mono tabular-nums text-gray-700 dark:text-gray-200">
                             {selectedIds.size} selected
                         </span>
                         {rows.some(
@@ -308,19 +311,18 @@ export function ArticleOpsDashboard({
                 )}
 
                 {/* Table */}
-                <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
                                 <tr className="border-b border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.02]">
                                     <th className="px-3 py-3 w-10">
-                                        <input
-                                            type="checkbox"
-                                            checked={
-                                                rows.length > 0 &&
-                                                selectedIds.size === rows.length
-                                            }
-                                            onChange={() => {
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="icon"
+                                            aria-label="Select all articles"
+                                            onClick={() => {
                                                 if (
                                                     selectedIds.size ===
                                                     rows.length
@@ -335,8 +337,18 @@ export function ArticleOpsDashboard({
                                                         )
                                                     );
                                             }}
-                                            className="rounded-lg border-gray-300 text-primary focus:ring-primary"
-                                        />
+                                            className="w-5 h-5 min-w-0 min-h-0 p-0 text-gray-500 hover:text-primary hover:bg-transparent"
+                                        >
+                                            {rows.length > 0 &&
+                                            selectedIds.size === rows.length ? (
+                                                <CheckSquare
+                                                    size={16}
+                                                    className="text-primary"
+                                                />
+                                            ) : (
+                                                <Square size={16} />
+                                            )}
+                                        </Button>
                                     </th>
                                     <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                         Article
@@ -393,12 +405,12 @@ export function ArticleOpsDashboard({
                                             className="border-b border-gray-50 hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors"
                                         >
                                             <td className="px-3 py-3">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={selectedIds.has(
-                                                        row.id
-                                                    )}
-                                                    onChange={() => {
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    aria-label={`Select ${row.title}`}
+                                                    onClick={() => {
                                                         setSelectedIds(
                                                             (prev) => {
                                                                 const next =
@@ -421,8 +433,17 @@ export function ArticleOpsDashboard({
                                                             }
                                                         );
                                                     }}
-                                                    className="rounded-lg border-gray-300 text-primary focus:ring-primary"
-                                                />
+                                                    className="w-5 h-5 min-w-0 min-h-0 p-0 text-gray-500 hover:text-primary hover:bg-transparent"
+                                                >
+                                                    {selectedIds.has(row.id) ? (
+                                                        <CheckSquare
+                                                            size={16}
+                                                            className="text-primary"
+                                                        />
+                                                    ) : (
+                                                        <Square size={16} />
+                                                    )}
+                                                </Button>
                                             </td>
                                             <td className="px-4 py-3">
                                                 <span className="text-sm font-semibold text-gray-800 dark:text-white line-clamp-1 max-w-[250px]">
@@ -469,7 +490,7 @@ export function ArticleOpsDashboard({
                                                         ))}
                                                     {row.readiness.issues
                                                         .length > 2 && (
-                                                        <span className="text-[10px] text-gray-400">
+                                                        <span className="text-[10px] font-mono tabular-nums text-gray-400">
                                                             +
                                                             {row.readiness
                                                                 .issues.length -
@@ -506,14 +527,14 @@ export function ArticleOpsDashboard({
                                                 )}
                                             </td>
                                             <td className="px-4 py-3 text-center">
-                                                <span className="text-xs tabular-nums text-gray-600 dark:text-gray-400">
+                                                <span className="text-xs font-mono tabular-nums text-gray-600 dark:text-gray-400">
                                                     {
                                                         row.readiness
                                                             .inlineImageCount
                                                     }
                                                 </span>
                                             </td>
-                                            <td className="px-4 py-3 text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                                            <td className="px-4 py-3 text-xs font-mono tabular-nums text-gray-500 dark:text-gray-400 whitespace-nowrap">
                                                 {new Date(
                                                     row.updatedAt
                                                 ).toLocaleDateString("en-US", {
@@ -556,15 +577,15 @@ export function ArticleOpsDashboard({
                                                         className="p-1.5 h-auto w-auto rounded-lg hover:bg-gold/10 transition-colors text-gray-400 hover:text-gold disabled:opacity-50"
                                                         aria-label="Generate image prompts"
                                                     >
-                                                        <Wand2
-                                                            size={14}
-                                                            className={
-                                                                loadingPromptId ===
-                                                                row.id
-                                                                    ? "animate-pulse"
-                                                                    : ""
-                                                            }
-                                                        />
+                                                        {loadingPromptId ===
+                                                        row.id ? (
+                                                            <Loader2
+                                                                size={14}
+                                                                className="animate-spin"
+                                                            />
+                                                        ) : (
+                                                            <Wand2 size={14} />
+                                                        )}
                                                     </Button>
                                                     {hasSeoIssues(row) && (
                                                         <Button
@@ -580,19 +601,21 @@ export function ArticleOpsDashboard({
                                                                 loadingSeoId ===
                                                                 row.id
                                                             }
-                                                            className="p-1.5 h-auto w-auto rounded-lg hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 disabled:opacity-50"
+                                                            className="p-1.5 h-auto w-auto rounded-lg hover:bg-gold/10 transition-colors text-gray-400 hover:text-amber-600 dark:hover:text-gold disabled:opacity-50"
                                                             aria-label="Fix SEO"
                                                             title="Fix SEO"
                                                         >
-                                                            <SearchCheck
-                                                                size={14}
-                                                                className={
-                                                                    loadingSeoId ===
-                                                                    row.id
-                                                                        ? "animate-pulse"
-                                                                        : ""
-                                                                }
-                                                            />
+                                                            {loadingSeoId ===
+                                                            row.id ? (
+                                                                <Loader2
+                                                                    size={14}
+                                                                    className="animate-spin"
+                                                                />
+                                                            ) : (
+                                                                <SearchCheck
+                                                                    size={14}
+                                                                />
+                                                            )}
                                                         </Button>
                                                     )}
                                                 </div>

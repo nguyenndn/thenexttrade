@@ -96,11 +96,11 @@ const TYPE_COLORS: Record<string, string> = {
     LOGIN_FAILED:
         "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20",
     TURNSTILE_FAILED:
-        "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
+        "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
     AUTH_FAILED:
         "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
     CRON_FAILED:
-        "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20",
+        "bg-amber-500/10 text-amber-600 dark:text-gold border-amber-500/20",
     IP_BLOCKED:
         "bg-red-500/10 text-red-700 dark:text-red-300 border-red-500/30",
     IP_UNBLOCKED:
@@ -308,7 +308,7 @@ export default function SecurityDashboard() {
                 {/* Admin Page Header — matching AdminPageHeader */}
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
                     <div className="flex items-center gap-4">
-                        <div className="w-1 self-stretch min-h-[40px] rounded-full bg-gradient-to-b from-primary via-emerald-400 to-teal-500 shrink-0" />
+                        <div className="w-1 self-stretch min-h-[40px] rounded-full bg-gradient-to-b from-primary via-emerald-400 to-emerald-500 shrink-0" />
                         <div>
                             <h1 className="text-xl font-bold text-gray-700 dark:text-white tracking-tight">
                                 Security
@@ -321,13 +321,13 @@ export default function SecurityDashboard() {
                     <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full lg:w-auto">
                         <div className="hidden xl:flex items-center gap-2 text-xs font-bold text-gray-400">
                             <Clock size={13} /> Updated as of{" "}
-                            <span className="font-mono text-gray-700 dark:text-gray-300">
+                            <span className="font-mono tabular-nums text-gray-700 dark:text-gray-300">
                                 {asOfTimestamp}
                             </span>
                             <span className="text-gray-300 dark:text-gray-600">
                                 ·
                             </span>
-                            <span className="text-gray-500 dark:text-gray-400 capitalize">
+                            <span className="font-mono tabular-nums text-gray-500 dark:text-gray-400 capitalize">
                                 {displayRangeLabel}
                             </span>
                         </div>
@@ -361,8 +361,8 @@ export default function SecurityDashboard() {
                                 label: "Total Events",
                                 value: summary.totalEvents,
                                 icon: Globe,
-                                color: "text-indigo-600 dark:text-indigo-400",
-                                bg: "bg-indigo-100 dark:bg-indigo-500/15",
+                                color: "text-amber-600 dark:text-gold",
+                                bg: "bg-gold/10",
                             },
                             {
                                 label: "Rate Limits",
@@ -388,7 +388,7 @@ export default function SecurityDashboard() {
                         ].map((card) => (
                             <div
                                 key={card.label}
-                                className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default"
+                                className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default"
                             >
                                 <div className="flex items-center gap-3">
                                     <div
@@ -400,7 +400,7 @@ export default function SecurityDashboard() {
                                         />
                                     </div>
                                     <div>
-                                        <p className="text-xl font-black text-gray-800 dark:text-white tabular-nums leading-none">
+                                        <p className="text-xl font-black text-gray-800 dark:text-white font-mono tabular-nums leading-none">
                                             {card.value.toLocaleString()}
                                         </p>
                                         <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-1 uppercase tracking-wider">
@@ -425,7 +425,7 @@ export default function SecurityDashboard() {
                                     key={i}
                                     className="flex-1 flex flex-col items-center gap-1 group relative"
                                 >
-                                    <div className="absolute -top-6 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] px-1.5 py-0.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
+                                    <div className="absolute -top-6 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-mono tabular-nums px-1.5 py-0.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
                                         {t.date}: {t.count}
                                     </div>
                                     <div
@@ -468,16 +468,16 @@ export default function SecurityDashboard() {
                     <div className="space-y-4">
                         {/* Toolbar Card */}
                         <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                            <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md">
+                            <div className="flex items-center gap-2 px-4 py-2 bg-gray-50/80 dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md">
                                 <Search size={16} className="text-gray-500" />
                                 <input
                                     type="text"
-                                    placeholder="Search IP..."
+                                    aria-label="Search IP"
                                     value={ipSearch}
                                     onChange={(e) =>
                                         setIpSearch(e.target.value)
                                     }
-                                    className="bg-transparent text-sm focus:outline-none w-full text-gray-700 dark:text-white placeholder:text-gray-500"
+                                    className="bg-transparent font-mono tabular-nums text-sm focus:outline-none w-full text-gray-700 dark:text-white"
                                 />
                                 {ipSearch && (
                                     <Button
@@ -537,14 +537,14 @@ export default function SecurityDashboard() {
                                         duration: "",
                                     });
                                 }}
-                                className="bg-red-600 hover:bg-red-700 shadow-lg shadow-red-600/20"
+                                className="bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-600/20"
                             >
                                 <Ban size={14} /> Block IP
                             </Button>
                         </div>
 
                         {/* Data Table Card */}
-                        <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+                        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                             <div className="overflow-x-auto custom-scrollbar">
                                 <table className="w-full text-left border-collapse">
                                     <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
@@ -592,7 +592,7 @@ export default function SecurityDashboard() {
                                                             )}
                                                         </span>
                                                     </td>
-                                                    <td className="px-6 py-4 font-mono text-xs font-bold text-gray-700 dark:text-gray-300">
+                                                    <td className="px-6 py-4 font-mono tabular-nums text-xs font-bold text-gray-700 dark:text-gray-300">
                                                         {ev.ip}
                                                     </td>
                                                     <td className="px-6 py-4 text-gray-500 dark:text-gray-400 hidden md:table-cell max-w-[200px] truncate">
@@ -601,7 +601,7 @@ export default function SecurityDashboard() {
                                                     <td className="px-6 py-4 text-gray-500 dark:text-gray-400 hidden lg:table-cell max-w-[300px] truncate text-xs">
                                                         {ev.detail || "-"}
                                                     </td>
-                                                    <td className="px-6 py-4 text-right text-gray-400 text-xs whitespace-nowrap">
+                                                    <td className="px-6 py-4 text-right font-mono tabular-nums text-gray-400 text-xs whitespace-nowrap">
                                                         {timeAgo(ev.createdAt)}
                                                     </td>
                                                 </tr>
@@ -612,7 +612,7 @@ export default function SecurityDashboard() {
                             </div>
                             {pagination && pagination.totalPages > 1 && (
                                 <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02]">
-                                    <p className="text-xs font-bold text-gray-500">
+                                    <p className="text-xs font-mono tabular-nums font-bold text-gray-500">
                                         {pagination.total} events total
                                     </p>
                                     <div className="flex items-center gap-1">
@@ -630,7 +630,7 @@ export default function SecurityDashboard() {
                                         >
                                             <ChevronLeft size={16} />
                                         </Button>
-                                        <span className="text-xs font-bold text-gray-500 px-3">
+                                        <span className="text-xs font-mono tabular-nums font-bold text-gray-500 px-3">
                                             {page} / {pagination.totalPages}
                                         </span>
                                         <Button
@@ -663,7 +663,7 @@ export default function SecurityDashboard() {
                 {tab === "blocked" && (
                     <div className="space-y-4">
                         <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex items-center justify-between">
-                            <p className="text-sm font-bold text-gray-700 dark:text-white">
+                            <p className="text-sm font-mono tabular-nums font-bold text-gray-700 dark:text-white">
                                 Blocked IPs ({blockedIPs.length})
                             </p>
                             <Button
@@ -676,12 +676,12 @@ export default function SecurityDashboard() {
                                         duration: "",
                                     });
                                 }}
-                                className="bg-red-600 hover:bg-red-700 shadow-lg shadow-red-600/20"
+                                className="bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-600/20"
                             >
                                 <Ban size={14} /> Block IP
                             </Button>
                         </div>
-                        <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+                        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                             <div className="overflow-x-auto custom-scrollbar">
                                 <table className="w-full text-left border-collapse">
                                     <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
@@ -719,20 +719,20 @@ export default function SecurityDashboard() {
                                                     key={ip.id}
                                                     className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
                                                 >
-                                                    <td className="px-6 py-4 font-mono text-xs font-bold text-red-600 dark:text-red-400">
+                                                    <td className="px-6 py-4 font-mono tabular-nums text-xs font-bold text-red-600 dark:text-red-400">
                                                         {ip.ip}
                                                     </td>
                                                     <td className="px-6 py-4 text-gray-600 dark:text-gray-400">
                                                         {ip.reason || "-"}
                                                     </td>
-                                                    <td className="px-6 py-4 text-gray-500 text-xs hidden md:table-cell">
+                                                    <td className="px-6 py-4 font-mono tabular-nums text-gray-500 text-xs hidden md:table-cell">
                                                         {ip.expiresAt
                                                             ? new Date(
                                                                   ip.expiresAt
                                                               ).toLocaleString()
                                                             : "Permanent"}
                                                     </td>
-                                                    <td className="px-6 py-4 text-gray-400 text-xs hidden md:table-cell">
+                                                    <td className="px-6 py-4 font-mono tabular-nums text-gray-400 text-xs hidden md:table-cell">
                                                         {timeAgo(ip.createdAt)}
                                                     </td>
                                                     <td className="px-6 py-4 text-right">
@@ -775,7 +775,7 @@ export default function SecurityDashboard() {
                                             key={i}
                                             className="flex items-center gap-3"
                                         >
-                                            <span className="text-xs font-mono font-bold text-gray-700 dark:text-gray-300 w-36 truncate">
+                                            <span className="text-xs font-mono tabular-nums font-bold text-gray-700 dark:text-gray-300 w-36 truncate">
                                                 {t.ip}
                                             </span>
                                             <div className="flex-1 h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
@@ -786,7 +786,7 @@ export default function SecurityDashboard() {
                                                     }}
                                                 />
                                             </div>
-                                            <span className="text-xs font-bold text-gray-500 w-10 text-right">
+                                            <span className="text-xs font-mono tabular-nums font-bold text-gray-500 w-10 text-right">
                                                 {t.count}
                                             </span>
                                         </div>
@@ -821,7 +821,7 @@ export default function SecurityDashboard() {
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="relative z-10 w-full max-w-md bg-white dark:bg-[#1E2028] rounded-2xl shadow-xl overflow-hidden"
+                            className="relative z-10 w-full max-w-md bg-white dark:bg-[#0D111C] rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-white/10"
                         >
                             <div className="p-6 space-y-5">
                                 <div className="flex items-center gap-2">
@@ -848,7 +848,7 @@ export default function SecurityDashboard() {
                                                     ip: e.target.value,
                                                 }))
                                             }
-                                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] font-mono tabular-nums px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                                         />
                                     </div>
                                     <div className="group">
@@ -868,7 +868,7 @@ export default function SecurityDashboard() {
                                                     reason: e.target.value,
                                                 }))
                                             }
-                                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                                         />
                                     </div>
                                     <div className="group">
@@ -888,7 +888,7 @@ export default function SecurityDashboard() {
                                                     duration: e.target.value,
                                                 }))
                                             }
-                                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] font-mono tabular-nums px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                                         />
                                     </div>
                                 </div>
@@ -904,7 +904,7 @@ export default function SecurityDashboard() {
                                         onClick={handleBlockIP}
                                         disabled={!blockForm.ip || blocking}
                                         isLoading={blocking}
-                                        className="bg-red-600 hover:bg-red-700"
+                                        className="bg-red-600 hover:bg-red-700 text-white"
                                     >
                                         Block IP
                                     </Button>

@@ -165,66 +165,66 @@ export function UserGrowthCoachTab({
         <div className="space-y-6">
             {/* Top KPI Cards */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1E2028]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <Flame size={14} className="text-amber-500" /> Total Edge XP
                     </div>
                     <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-amber-600 dark:text-amber-400">
+                        <span className="text-2xl font-black text-amber-600 dark:text-amber-400 font-mono tabular-nums">
                             {stats.totalXp.toLocaleString()} XP
                         </span>
-                        <span className="text-xs text-gray-500">{stats.edgeEventCount} events</span>
+                        <span className="text-xs text-gray-500 font-mono tabular-nums">{stats.edgeEventCount} events</span>
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1E2028]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <Target size={14} className="text-emerald-500" /> Missions Cleared
                     </div>
                     <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
+                        <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono tabular-nums">
                             {stats.completedMissions}
                         </span>
-                        <span className="text-xs text-gray-500">of {stats.totalMissions} tracked</span>
+                        <span className="text-xs text-gray-500 font-mono tabular-nums">of {stats.totalMissions} tracked</span>
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1E2028]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                        <Sparkles size={14} className="text-purple-500" /> 10-Trade Sprints
+                        <Sparkles size={14} className="text-amber-600 dark:text-gold" /> 10-Trade Sprints
                     </div>
                     <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-purple-600 dark:text-purple-400">
+                        <span className="text-2xl font-black text-amber-600 dark:text-gold font-mono tabular-nums">
                             {stats.activeExperiments}
                         </span>
-                        <span className="text-xs text-gray-500">of {stats.totalExperiments} total</span>
+                        <span className="text-xs text-gray-500 font-mono tabular-nums">of {stats.totalExperiments} total</span>
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1E2028]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                        <Brain size={14} className="text-blue-500" /> Coach Action Plans
+                        <Brain size={14} className="text-amber-600 dark:text-gold" /> Coach Action Plans
                     </div>
                     <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-blue-600 dark:text-blue-400">
+                        <span className="text-2xl font-black text-amber-600 dark:text-gold font-mono tabular-nums">
                             {stats.totalCoachPlans}
                         </span>
-                        <span className="text-xs text-gray-500">{stats.activeCoachPlans} active</span>
+                        <span className="text-xs text-gray-500 font-mono tabular-nums">{stats.activeCoachPlans} active</span>
                     </div>
                 </div>
             </div>
 
             {/* Sub-Section Navigation & Filters */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex rounded-lg border border-gray-200 bg-[#F1F3F5] p-1 dark:border-white/10 dark:bg-[#1A1D27] w-fit">
+                <div className="flex rounded-lg border border-gray-200 bg-gray-50/80 p-1 dark:border-white/10 dark:bg-[#151925] w-fit">
                     <Button
                         type="button"
                         variant="ghost"
                         onClick={() => setActiveSection("experiments")}
                         className={cn(
-                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
+                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors font-mono tabular-nums",
                             activeSection === "experiments"
-                                ? "bg-white text-gray-900 shadow-sm dark:bg-[#252936] dark:text-white"
+                                ? "bg-gold !text-white shadow-sm hover:bg-gold/90"
                                 : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                         )}
                     >
@@ -235,9 +235,9 @@ export function UserGrowthCoachTab({
                         variant="ghost"
                         onClick={() => setActiveSection("coach")}
                         className={cn(
-                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
+                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors font-mono tabular-nums",
                             activeSection === "coach"
-                                ? "bg-white text-gray-900 shadow-sm dark:bg-[#252936] dark:text-white"
+                                ? "bg-gold !text-white shadow-sm hover:bg-gold/90"
                                 : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                         )}
                     >
@@ -248,9 +248,9 @@ export function UserGrowthCoachTab({
                         variant="ghost"
                         onClick={() => setActiveSection("missions")}
                         className={cn(
-                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
+                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors font-mono tabular-nums",
                             activeSection === "missions"
-                                ? "bg-white text-gray-900 shadow-sm dark:bg-[#252936] dark:text-white"
+                                ? "bg-gold !text-white shadow-sm hover:bg-gold/90"
                                 : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                         )}
                     >
@@ -260,7 +260,7 @@ export function UserGrowthCoachTab({
 
                 <div className="w-full sm:w-64">
                     <PremiumInput
-                        placeholder="Search growth telemetry..."
+                        aria-label="Search growth telemetry"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         prefix={<Search size={14} className="text-gray-400" />}
@@ -270,10 +270,10 @@ export function UserGrowthCoachTab({
 
             {/* Section 1: 10-Trade Experiments (GAP-6) */}
             {activeSection === "experiments" && (
-                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#1E2028] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
-                        <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            <Sparkles size={16} className="text-purple-500" /> Behavioral Improvement Experiments ({filteredExperiments.length})
+                        <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2 font-mono tabular-nums">
+                            <Sparkles size={16} className="text-amber-600 dark:text-gold" /> Behavioral Improvement Experiments ({filteredExperiments.length})
                         </h3>
                         <span className="text-xs text-gray-500">10-Trade Sprint Protocol</span>
                     </div>
@@ -286,7 +286,7 @@ export function UserGrowthCoachTab({
                                     className="p-4 sm:p-5 transition-colors hover:bg-gray-50/60 dark:hover:bg-white/[0.02] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
                                 >
                                     <div className="flex items-start gap-3 min-w-0">
-                                        <div className="p-2.5 rounded-lg bg-purple-50 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400 shrink-0 mt-0.5">
+                                        <div className="p-2.5 rounded-lg bg-gold/10 text-amber-600 dark:text-gold shrink-0 mt-0.5">
                                             <Sparkles size={18} />
                                         </div>
 
@@ -301,13 +301,13 @@ export function UserGrowthCoachTab({
                                                         exp.status === "COMPLETED"
                                                             ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300"
                                                             : exp.status === "IN_PROGRESS" || exp.status === "ACTIVE"
-                                                            ? "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300"
+                                                            ? "bg-gold/10 text-amber-700 dark:text-gold"
                                                             : "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400"
                                                     )}
                                                 >
                                                     {exp.status}
                                                 </span>
-                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 uppercase">
+                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-gold/10 text-amber-700 dark:text-gold uppercase">
                                                     Metric: {exp.primaryMetric}
                                                 </span>
                                             </div>
@@ -316,11 +316,11 @@ export function UserGrowthCoachTab({
                                                 Hypothesis: "{exp.hypothesis}"
                                             </p>
 
-                                            <div className="mt-2 flex items-center gap-3 text-[11px] text-gray-500 flex-wrap">
+                                            <div className="mt-2 flex items-center gap-3 text-[11px] text-gray-500 flex-wrap font-mono tabular-nums">
                                                 <span>Created {format(new Date(exp.createdAt), "MMM d, yyyy")}</span>
                                                 <span>· Target: {exp.targetTradeCount} trades</span>
                                                 {exp.outcome && (
-                                                    <span className="font-semibold text-primary">· Outcome: {exp.outcome}</span>
+                                                    <span className="font-semibold text-amber-600 dark:text-gold">· Outcome: {exp.outcome}</span>
                                                 )}
                                             </div>
                                         </div>
@@ -347,10 +347,10 @@ export function UserGrowthCoachTab({
 
             {/* Section 2: Coach Action Plans (GAP-7) */}
             {activeSection === "coach" && (
-                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#1E2028] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
-                        <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            <Brain size={16} className="text-blue-500" /> AI Coach Weekly Action Plans ({filteredCoachPlans.length})
+                        <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2 font-mono tabular-nums">
+                            <Brain size={16} className="text-amber-600 dark:text-gold" /> AI Coach Weekly Action Plans ({filteredCoachPlans.length})
                         </h3>
                         <span className="text-xs text-gray-500">Performance Feedback</span>
                     </div>
@@ -363,7 +363,7 @@ export function UserGrowthCoachTab({
                                     className="p-4 sm:p-5 transition-colors hover:bg-gray-50/60 dark:hover:bg-white/[0.02] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
                                 >
                                     <div className="flex items-start gap-3 min-w-0">
-                                        <div className="p-2.5 rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 shrink-0 mt-0.5">
+                                        <div className="p-2.5 rounded-lg bg-gold/10 text-amber-600 dark:text-gold shrink-0 mt-0.5">
                                             <Brain size={18} />
                                         </div>
 
@@ -382,7 +382,7 @@ export function UserGrowthCoachTab({
                                                 >
                                                     {plan.status}
                                                 </span>
-                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 uppercase">
+                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-gold/10 text-amber-700 dark:text-gold uppercase">
                                                     {plan.type}
                                                 </span>
                                             </div>
@@ -391,7 +391,7 @@ export function UserGrowthCoachTab({
                                                 {plan.summary}
                                             </p>
 
-                                            <div className="mt-2 flex items-center gap-3 text-[11px] text-gray-500 flex-wrap">
+                                            <div className="mt-2 flex items-center gap-3 text-[11px] text-gray-500 flex-wrap font-mono tabular-nums">
                                                 <span>Issued {format(new Date(plan.createdAt), "MMM d, yyyy")}</span>
                                                 <span>· {plan.items?.length || 0} Action Items</span>
                                                 {plan.items?.filter((i) => i.status === "DONE").length > 0 && (
@@ -426,9 +426,9 @@ export function UserGrowthCoachTab({
             {activeSection === "missions" && (
                 <div className="space-y-6">
                     {/* Missions Grid */}
-                    <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                    <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#1E2028] overflow-hidden">
                         <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
-                            <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                            <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2 font-mono tabular-nums">
                                 <Award size={16} className="text-amber-500" /> User Mission Progress ({filteredMissions.length})
                             </h3>
                             <span className="text-xs text-gray-500">Gamification Telemetry</span>
@@ -442,7 +442,7 @@ export function UserGrowthCoachTab({
                                     return (
                                         <div
                                             key={mission.id}
-                                            className="rounded-lg border border-gray-200 bg-gray-50/50 p-3.5 dark:border-white/10 dark:bg-[#1A1D27] text-xs flex flex-col justify-between"
+                                            className="rounded-lg border border-gray-200 bg-gray-50/80 p-3.5 dark:border-white/10 dark:bg-[#151925] text-xs flex flex-col justify-between"
                                         >
                                             <div>
                                                 <div className="flex items-center justify-between gap-1">
@@ -453,7 +453,7 @@ export function UserGrowthCoachTab({
                                                         className={cn(
                                                             "text-[9px] font-bold px-1.5 py-0.5 rounded-lg uppercase shrink-0",
                                                             mission.claimed
-                                                                ? "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300"
+                                                                ? "bg-gold/10 text-amber-700 dark:text-gold"
                                                                 : isDone
                                                                 ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
                                                                 : "bg-gray-100 text-gray-600 dark:bg-white/10"
@@ -466,20 +466,20 @@ export function UserGrowthCoachTab({
                                                 <div className="mt-2.5">
                                                     <div className="flex justify-between text-[11px] text-gray-500 mb-1">
                                                         <span>Progress</span>
-                                                        <span className="font-bold text-gray-800 dark:text-gray-200">
+                                                        <span className="font-bold text-gray-800 dark:text-gray-200 font-mono tabular-nums">
                                                             {mission.progress} / {mission.target} ({pct}%)
                                                         </span>
                                                     </div>
                                                     <div className="h-1.5 w-full bg-gray-200 dark:bg-white/10 rounded-full overflow-hidden">
                                                         <div
-                                                            className="h-full bg-primary transition-all rounded-full"
+                                                            className="h-full bg-gold transition-all rounded-full"
                                                             style={{ width: `${pct}%` }}
                                                         />
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div className="mt-3 pt-2 border-t border-gray-200 dark:border-white/10 text-[10px] text-gray-400 flex justify-between">
+                                            <div className="mt-3 pt-2 border-t border-gray-200 dark:border-white/10 text-[10px] text-gray-400 flex justify-between font-mono tabular-nums">
                                                 <span>{mission.periodKey}</span>
                                                 {mission.claimedAt && (
                                                     <span>Claimed {format(new Date(mission.claimedAt), "MMM d")}</span>
@@ -497,9 +497,9 @@ export function UserGrowthCoachTab({
                     </div>
 
                     {/* Edge Event Telemetry Feed */}
-                    <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                    <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#1E2028] overflow-hidden">
                         <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
-                            <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                            <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2 font-mono tabular-nums">
                                 <Activity size={16} className="text-emerald-500" /> Recent Edge XP Event Feed ({edgeEvents.length})
                             </h3>
                             <span className="text-xs text-gray-500">Real-time Telemetry</span>
@@ -530,7 +530,7 @@ export function UserGrowthCoachTab({
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center gap-3 shrink-0">
+                                        <div className="flex items-center gap-3 shrink-0 font-mono tabular-nums">
                                             <span className="font-bold text-amber-600 dark:text-amber-400">
                                                 +{evt.xpAwarded} XP
                                             </span>
@@ -553,7 +553,7 @@ export function UserGrowthCoachTab({
             {/* Experiment Detail Modal */}
             {selectedExp && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#0D111C]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <h3 className="text-lg font-black text-gray-900 dark:text-white">
@@ -575,15 +575,15 @@ export function UserGrowthCoachTab({
                         </div>
 
                         <div className="mt-4 space-y-4 text-xs">
-                            <div className="rounded-lg border border-gray-200 bg-gray-50/50 p-4 dark:border-white/10 dark:bg-white/[0.02]">
+                            <div className="rounded-lg border border-gray-200 bg-gray-50/80 p-4 dark:border-white/10 dark:bg-[#151925]">
                                 <span className="font-bold text-gray-400 uppercase tracking-wider block">Hypothesis</span>
                                 <p className="mt-1 text-gray-800 dark:text-gray-200 leading-relaxed italic">
                                     "{selectedExp.hypothesis}"
                                 </p>
                             </div>
 
-                            <div className="rounded-lg border border-purple-100 bg-purple-50/50 p-4 dark:border-purple-900/30 dark:bg-purple-950/20">
-                                <span className="font-bold text-purple-700 dark:text-purple-300 block">Instruction & Constraint</span>
+                            <div className="rounded-lg border border-gold/20 bg-gold/10 p-4">
+                                <span className="font-bold text-amber-700 dark:text-gold block">Instruction & Constraint</span>
                                 <p className="mt-1 text-gray-800 dark:text-gray-200 leading-relaxed">
                                     {selectedExp.instruction}
                                 </p>
@@ -591,15 +591,15 @@ export function UserGrowthCoachTab({
 
                             {/* Baseline vs Follow-up Comparison */}
                             <div className="grid grid-cols-2 gap-3">
-                                <div className="p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
+                                <div className="p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925]">
                                     <span className="block text-[10px] font-bold text-gray-400 uppercase">Baseline State</span>
-                                    <pre className="mt-1 text-[11px] text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-sans">
+                                    <pre className="mt-1 text-[11px] text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-mono tabular-nums">
                                         {JSON.stringify(selectedExp.baseline, null, 2)}
                                     </pre>
                                 </div>
-                                <div className="p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
+                                <div className="p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925]">
                                     <span className="block text-[10px] font-bold text-gray-400 uppercase">Follow-Up Results</span>
-                                    <pre className="mt-1 text-[11px] text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-sans">
+                                    <pre className="mt-1 text-[11px] text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-mono tabular-nums">
                                         {selectedExp.followUp ? JSON.stringify(selectedExp.followUp, null, 2) : "In tracking (underway)"}
                                     </pre>
                                 </div>
@@ -618,13 +618,13 @@ export function UserGrowthCoachTab({
             {/* Coach Plan Detail Modal */}
             {selectedCoachPlan && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#0D111C]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <h3 className="text-lg font-black text-gray-900 dark:text-white">
                                     {selectedCoachPlan.title}
                                 </h3>
-                                <p className="text-xs text-gray-500">
+                                <p className="text-xs text-gray-500 font-mono tabular-nums">
                                     Issued {format(new Date(selectedCoachPlan.createdAt), "PPP")}
                                 </p>
                             </div>
@@ -642,7 +642,7 @@ export function UserGrowthCoachTab({
                         <div className="mt-4 space-y-4 text-xs">
                             <div>
                                 <span className="font-bold text-gray-400 uppercase tracking-wider block">Performance Summary</span>
-                                <p className="mt-1 text-gray-800 dark:text-gray-200 leading-relaxed bg-gray-50 dark:bg-white/5 p-3 rounded-lg border border-gray-200 dark:border-white/10">
+                                <p className="mt-1 text-gray-800 dark:text-gray-200 leading-relaxed bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-gray-200 dark:border-white/10">
                                     {selectedCoachPlan.summary}
                                 </p>
                             </div>
@@ -669,7 +669,7 @@ export function UserGrowthCoachTab({
                                     {selectedCoachPlan.items?.map((item) => (
                                         <div
                                             key={item.id}
-                                            className="p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] flex items-start gap-2.5"
+                                            className="p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] flex items-start gap-2.5"
                                         >
                                             <div className="mt-0.5 shrink-0">
                                                 {item.status === "DONE" ? (

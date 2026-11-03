@@ -346,23 +346,23 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
 
             {/* Overview KPI Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-4 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-500">
+                        <div className="p-2.5 rounded-lg bg-gold/10 text-amber-600 dark:text-gold">
                             <Users size={20} />
                         </div>
                         <div>
                             <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">
                                 Total Traders (In Filter)
                             </p>
-                            <p className="text-xl font-black text-gray-900 dark:text-white mt-0.5">
+                            <p className="text-xl font-black font-mono tabular-nums text-gray-900 dark:text-white mt-0.5">
                                 {summary.totalTradersInFilter}
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div className="p-4 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500">
                             <DollarSign size={20} />
@@ -371,7 +371,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                             <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">
                                 Reported Capital (USD)
                             </p>
-                            <p className="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5 font-mono">
+                            <p className="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5 font-mono tabular-nums">
                                 {summary.totalReportedCapitalUSD !== null
                                     ? `$${summary.totalReportedCapitalUSD.toLocaleString("en-US", { minimumFractionDigits: 2 })}`
                                     : "Multiple Currencies"}
@@ -380,7 +380,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                     </div>
                 </div>
 
-                <div className="p-4 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-500">
                             <Crown size={20} />
@@ -389,23 +389,23 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                             <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">
                                 Active VIP Traders
                             </p>
-                            <p className="text-xl font-black text-gray-900 dark:text-white mt-0.5">
+                            <p className="text-xl font-black font-mono tabular-nums text-gray-900 dark:text-white mt-0.5">
                                 {summary.activeVipTraders}
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div className="p-4 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 rounded-lg bg-cyan-50 dark:bg-cyan-500/10 text-cyan-500">
+                        <div className="p-2.5 rounded-lg bg-gold/10 text-amber-600 dark:text-gold">
                             <Briefcase size={20} />
                         </div>
                         <div>
                             <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">
                                 Connected Accounts
                             </p>
-                            <p className="text-xl font-black text-gray-900 dark:text-white mt-0.5">
+                            <p className="text-xl font-black font-mono tabular-nums text-gray-900 dark:text-white mt-0.5">
                                 {summary.connectedAccountsCount}
                             </p>
                         </div>
@@ -414,11 +414,11 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
             </div>
 
             {/* Filter & Controls Bar */}
-            <div className="bg-white dark:bg-[#1E2028] p-4 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
+            <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-4">
                 <form onSubmit={handleSearchSubmit} className="flex flex-col md:flex-row gap-3 items-center">
                     <div className="w-full md:w-96">
                         <PremiumInput
-                            placeholder="Search trader name, email or account #..."
+                            aria-label="Search traders by name, email, or account number"
                             value={searchInputValue}
                             onChange={(e) => setSearchInputValue(e.target.value)}
                             icon={Search}
@@ -431,7 +431,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                     {currentFilters.q && (
                         <Button
                             type="button"
-                            variant="ghost"
+                            variant="outline"
                             className="h-[42px] px-4 font-bold text-xs"
                             onClick={() => {
                                 setSearchInputValue("");
@@ -684,7 +684,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
             </div>
 
             {/* Main Trader Table */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -779,15 +779,15 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                 {/* VIP Status */}
                                                 <td className="py-3.5 px-4">
                                                     {trader.vipStatus === "ACTIVE" ? (
-                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
+                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-xs font-bold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
                                                             <Crown size={10} /> Active VIP
                                                         </span>
                                                     ) : trader.vipStatus === "GRACE" ? (
-                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20">
+                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-xs font-bold bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20">
                                                             <Clock size={10} /> Temporary VIP
                                                         </span>
                                                     ) : (
-                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10">
+                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-xs font-bold bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10">
                                                             Free Plan
                                                         </span>
                                                     )}
@@ -796,18 +796,18 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                 {/* Funding State */}
                                                 <td className="py-3.5 px-4">
                                                     {trader.fundingState === "VERIFIED" ? (
-                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
+                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-xs font-bold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
                                                             <CheckCircle2 size={10} /> Verified
                                                         </span>
                                                     ) : trader.fundingState === "GRACE" ? (
                                                         <span
-                                                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20"
+                                                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-xs font-bold bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20"
                                                             title={trader.fundingGraceUntil ? `Grace until ${new Date(trader.fundingGraceUntil).toLocaleDateString()}` : undefined}
                                                         >
                                                             <Clock size={10} /> Grace
                                                         </span>
                                                     ) : trader.fundingState === "EXPIRED" ? (
-                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/20">
+                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-xs font-bold bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/20">
                                                             <ShieldAlert size={10} /> Expired
                                                         </span>
                                                     ) : (
@@ -818,7 +818,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                 {/* Activity Policy */}
                                                 <td className="py-3.5 px-4">
                                                     <span
-                                                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                                                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-xs font-bold border ${
                                                             trader.policyState === "ACTIVE"
                                                                 ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20"
                                                                 : trader.policyState === "WARNED"
@@ -847,7 +847,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                                 className={`px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider border ${p.usageState === "ACTIVE"
                                                                         ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20"
                                                                         : p.usageState === "RECENTLY_USED"
-                                                                            ? "bg-cyan-50 text-cyan-700 border-cyan-200 dark:bg-cyan-500/10 dark:text-cyan-300 dark:border-cyan-500/20"
+                                                                            ? "bg-gold/10 text-amber-700 border-gold/20 dark:text-gold"
                                                                             : p.usageState === "DOWNLOADED"
                                                                                 ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/20"
                                                                                 : "bg-gray-50 text-gray-400 border-gray-200 dark:bg-white/5 dark:text-gray-500 dark:border-white/10"
@@ -862,7 +862,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                 {/* Trading Style */}
                                                 <td className="py-3.5 px-4">
                                                     {trader.tradingStyle ? (
-                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20">
+                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-xs font-bold bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20">
                                                             {trader.tradingStyle}
                                                         </span>
                                                     ) : (
@@ -873,7 +873,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                 {/* Accounts & Capital */}
                                                 <td className="py-3.5 px-4">
                                                     <div>
-                                                        <p className="font-mono font-bold text-gray-900 dark:text-white text-xs sm:text-sm">
+                                                        <p className="font-mono tabular-nums font-bold text-gray-900 dark:text-white text-xs sm:text-sm">
                                                             {(() => {
                                                                 const currencies = Object.entries(trader.reportedCapitalByCurrency || {});
                                                                 if (currencies.length === 0) return "$0.00";
@@ -885,7 +885,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                                 return currencies.map(([c, v]) => `${c === "USD" ? "$" : ""}${v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}${c !== "USD" ? ` ${c}` : ""}`).join(" · ");
                                                             })()}
                                                         </p>
-                                                        <p className="text-xs text-gray-500 font-medium">
+                                                        <p className="text-xs font-mono tabular-nums text-gray-500 font-medium">
                                                             {trader.registeredAccountCount} registered
                                                             {trader.demoAccountCount > 0
                                                                 ? ` (${trader.demoAccountCount} demo)`
@@ -897,7 +897,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
 
                                                 {/* 30d Activity */}
                                                 <td className="py-3.5 px-4">
-                                                    <div>
+                                                    <div className="font-mono tabular-nums">
                                                         <p className="font-bold text-gray-900 dark:text-white">
                                                             {trader.totalTrades30d} trades
                                                         </p>
@@ -943,7 +943,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                 <tr className="bg-gray-50/80 dark:bg-white/[0.01]">
                                                     <td colSpan={10} className="p-4 border-t border-b border-gray-100 dark:border-white/5">
                                                         <div className="space-y-3">
-                                                            <h4 className="text-xs font-black uppercase tracking-wider text-gray-500">
+                                                            <h4 className="text-xs font-black uppercase tracking-wider text-gray-500 tabular-nums">
                                                                 Linked Trading Accounts ({trader.accounts.length})
                                                             </h4>
                                                             {trader.accounts.length === 0 ? (
@@ -953,10 +953,10 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                                     {trader.accounts.map((acc) => (
                                                                         <div
                                                                             key={acc.id}
-                                                                            className="p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] space-y-1.5"
+                                                                            className="p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] space-y-1.5"
                                                                         >
                                                                             <div className="flex items-center justify-between gap-2">
-                                                                                <span className="font-mono font-bold text-xs text-gray-900 dark:text-white truncate">
+                                                                                <span className="font-mono tabular-nums font-bold text-xs text-gray-900 dark:text-white truncate">
                                                                                     {acc.accountNumber}
                                                                                 </span>
                                                                                 <div className="flex items-center gap-1.5 shrink-0">
@@ -966,20 +966,20 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                                                         userId={trader.userId}
                                                                                         accountNumber={acc.accountNumber}
                                                                                     />
-                                                                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20">
+                                                                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-gold/10 text-amber-700 dark:text-gold border border-gold/20">
                                                                                         {acc.syncSourceLabel}
                                                                                     </span>
                                                                                 </div>
                                                                             </div>
                                                                             <div className="flex items-center justify-between text-xs text-gray-500">
                                                                                 <span>{acc.broker} ({acc.platform})</span>
-                                                                                <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                                                                                <span className="font-mono tabular-nums font-bold text-emerald-600 dark:text-emerald-400">
                                                                                     ${acc.balance.toLocaleString("en-US")} {acc.currency}
                                                                                 </span>
                                                                             </div>
-                                                                            <div className="text-[11px] text-gray-400 flex items-center justify-between pt-1 border-t border-gray-100 dark:border-white/5">
+                                                                            <div className="text-[11px] font-mono tabular-nums text-gray-400 flex items-center justify-between pt-1 border-t border-gray-100 dark:border-white/5">
                                                                                 <span>Trades: {acc.totalTrades}</span>
-                                                                                <span className="flex items-center gap-1">
+                                                                                <span className="flex items-center gap-1 font-sans">
                                                                                     Fresh:{" "}
                                                                                     {acc.isFresh ? (
                                                                                         <Check size={12} className="text-emerald-500" />
@@ -1007,7 +1007,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
 
                 {/* Pagination */}
                 <div className="p-4 border-t border-gray-200 dark:border-white/10 flex items-center justify-between text-xs text-gray-500">
-                    <div>
+                    <div className="font-mono tabular-nums">
                         Showing page <span className="font-bold text-gray-900 dark:text-white">{page}</span> of{" "}
                         <span className="font-bold text-gray-900 dark:text-white">{totalPages}</span> ({total} total traders)
                     </div>
@@ -1034,8 +1034,8 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
 
             {/* Floating Bulk Action Bar */}
             {selectedUserIds.size > 0 && (
-                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 bg-gray-950/95 dark:bg-[#1A1C24]/95 backdrop-blur-md border border-gray-800 dark:border-white/10 px-5 py-3 rounded-lg shadow-2xl text-white animate-in fade-in slide-in-from-bottom-4 duration-200">
-                    <div className="flex items-center gap-2 pr-3 border-r border-gray-800 dark:border-white/10 text-xs font-bold">
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 bg-gray-950/95 dark:bg-[#0D111C]/95 backdrop-blur-md border border-gray-800 dark:border-white/10 px-5 py-3 rounded-lg shadow-2xl text-white animate-in fade-in slide-in-from-bottom-4 duration-200">
+                    <div className="flex items-center gap-2 pr-3 border-r border-gray-800 dark:border-white/10 text-xs font-bold font-mono tabular-nums">
                         <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
                         <span>
                             {selectedUserIds.size} {selectedUserIds.size === 1 ? "trader" : "traders"} selected
@@ -1069,7 +1069,7 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                         <Button
                             size="sm"
                             variant="outline"
-                            className="h-8 text-xs font-bold gap-1.5 border-blue-500/30 text-blue-400 hover:bg-blue-500/10 rounded-lg"
+                            className="h-8 text-xs font-bold gap-1.5 border-gold/30 text-amber-400 hover:bg-gold/10 rounded-lg"
                             onClick={() => setIsBulkReminderOpen(true)}
                         >
                             <BellRing size={13} />

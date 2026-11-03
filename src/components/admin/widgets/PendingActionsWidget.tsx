@@ -18,12 +18,12 @@ interface PendingItem {
 
 export function PendingActionsWidget({ items }: { items: PendingItem[] }) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
             <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-amber-500" />
                 Actions Required
                 {items.length > 0 && (
-                    <span className="bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400 text-xs px-2 py-0.5 rounded-full">
+                    <span className="bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400 text-xs font-mono tabular-nums px-2 py-0.5 rounded-lg">
                         {items.length}
                     </span>
                 )}
@@ -41,16 +41,16 @@ export function PendingActionsWidget({ items }: { items: PendingItem[] }) {
                     items.map((item) => (
                         <div
                             key={item.id}
-                            className="group flex items-start gap-3 p-3 rounded-lg border border-gray-50 bg-gray-50/50 dark:bg-white/[0.02] hover:bg-white dark:hover:bg-white/5 hover:border-amber-200 dark:hover:border-amber-500/30 transition-all cursor-pointer"
+                            className="group flex items-start gap-3 p-3 rounded-lg border border-gray-100 dark:border-white/5 bg-gray-50/80 dark:bg-[#151925] hover:bg-white dark:hover:bg-white/5 hover:border-amber-200 dark:hover:border-amber-500/30 transition-all cursor-pointer"
                         >
                             <div
                                 className={cn(
                                     "w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0",
                                     item.type === "ARTICLE"
-                                        ? "bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400"
+                                        ? "bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400"
                                         : item.type === "REPORT"
                                           ? "bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400"
-                                          : "bg-purple-100 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400"
+                                          : "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400"
                                 )}
                             >
                                 <FileText className="w-4 h-4" />
@@ -61,7 +61,7 @@ export function PendingActionsWidget({ items }: { items: PendingItem[] }) {
                                     {item.title}
                                 </h4>
                                 <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-xs text-gray-600 dark:text-gray-300 flex items-center gap-1">
+                                    <span className="text-xs text-gray-600 dark:text-gray-300 font-mono tabular-nums flex items-center gap-1">
                                         <Clock className="w-3 h-3" />
                                         {new Date(
                                             item.createdAt

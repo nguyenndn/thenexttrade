@@ -104,26 +104,26 @@ export function CompetitionListClient({
         switch (status) {
             case "ACTIVE":
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                         ACTIVE
                     </span>
                 );
             case "UPCOMING":
                 return (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
                         <Clock size={11} /> UPCOMING
                     </span>
                 );
             case "ENDED":
                 return (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-gray-500/10 text-gray-600 dark:text-gray-400 border border-gray-500/20">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-xs font-bold bg-gray-500/10 text-gray-600 dark:text-gray-400 border border-gray-500/20">
                         <CheckCircle size={11} /> ENDED
                     </span>
                 );
             default:
                 return (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-500/20">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-bold bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-500/20">
                         DRAFT
                     </span>
                 );
@@ -146,7 +146,7 @@ export function CompetitionListClient({
                 <Button
                     variant="primary"
                     onClick={handleCreateClick}
-                    className="flex items-center gap-2 shrink-0 font-bold"
+                    className="flex items-center gap-2 shrink-0 font-bold bg-gold hover:bg-amber-600 text-white"
                 >
                     <Plus size={16} /> Create Competition
                 </Button>
@@ -154,21 +154,21 @@ export function CompetitionListClient({
 
             {/* Stats Overview */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="rounded-xl border border-dashboard bg-white dark:bg-[#151925] p-4 space-y-1 shadow-xs">
+                <div className="rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] p-4 space-y-1 shadow-xs">
                     <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Total Tournaments</p>
-                    <p className="text-2xl font-black text-gray-900 dark:text-white">{stats.totalCompetitions}</p>
+                    <p className="text-2xl font-black font-mono tabular-nums text-gray-900 dark:text-white">{stats.totalCompetitions}</p>
                 </div>
                 <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/[0.03] p-4 space-y-1 shadow-xs">
                     <p className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Active Live Sprints</p>
-                    <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">{stats.activeCount}</p>
+                    <p className="text-2xl font-black font-mono tabular-nums text-emerald-600 dark:text-emerald-400">{stats.activeCount}</p>
                 </div>
                 <div className="rounded-xl border border-amber-500/30 bg-amber-500/[0.03] p-4 space-y-1 shadow-xs">
                     <p className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">Total Prize Pool</p>
-                    <p className="text-2xl font-black text-amber-600 dark:text-amber-400">${stats.totalPrizePool.toLocaleString()}</p>
+                    <p className="text-2xl font-black font-mono tabular-nums text-amber-600 dark:text-amber-400">${stats.totalPrizePool.toLocaleString()}</p>
                 </div>
-                <div className="rounded-xl border border-dashboard bg-white dark:bg-[#151925] p-4 space-y-1 shadow-xs">
+                <div className="rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] p-4 space-y-1 shadow-xs">
                     <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Enrolled Traders</p>
-                    <p className="text-2xl font-black text-gray-900 dark:text-white">{stats.totalParticipants}</p>
+                    <p className="text-2xl font-black font-mono tabular-nums text-gray-900 dark:text-white">{stats.totalParticipants}</p>
                 </div>
             </div>
 
@@ -185,7 +185,7 @@ export function CompetitionListClient({
                         className={cn(
                             "h-auto px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap",
                             selectedTab === tab
-                                ? "bg-amber-500 text-white shadow-xs hover:bg-amber-500 hover:text-white"
+                                ? "bg-gold text-white shadow-xs hover:bg-gold hover:text-white"
                                 : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
                         )}
                     >
@@ -195,7 +195,7 @@ export function CompetitionListClient({
             </div>
 
             {/* Competitions Table */}
-            <div className="rounded-xl border border-dashboard bg-white dark:bg-[#151925] overflow-hidden shadow-xs">
+            <div className="rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] overflow-hidden shadow-xs">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm">
                         <thead className="border-b border-dashboard bg-gray-50 dark:bg-white/[0.02] text-xs font-bold uppercase tracking-wider text-gray-500">
@@ -235,23 +235,23 @@ export function CompetitionListClient({
                                                 <p className="text-xs text-gray-400 font-mono mt-0.5">/{comp.slug}</p>
                                             </td>
                                             <td className="px-4 py-4">{getStatusBadge(comp.status)}</td>
-                                            <td className="px-4 py-4 text-xs font-medium text-gray-600 dark:text-gray-300">
+                                            <td className="px-4 py-4 text-xs font-mono tabular-nums font-medium text-gray-600 dark:text-gray-300">
                                                 <div className="flex items-center gap-1.5">
                                                     <Calendar size={13} className="text-gray-400" />
                                                     <span>{start} &rarr; {end}</span>
                                                 </div>
                                             </td>
                                             <td className="px-4 py-4">
-                                                <span className="font-black text-amber-600 dark:text-amber-400 text-base">
+                                                <span className="font-mono tabular-nums font-black text-amber-600 dark:text-amber-400 text-base">
                                                     ${comp.prizePool?.toLocaleString()}
                                                 </span>
                                             </td>
-                                            <td className="px-4 py-4 text-xs space-y-0.5 text-gray-600 dark:text-gray-300">
+                                            <td className="px-4 py-4 text-xs font-mono tabular-nums space-y-0.5 text-gray-600 dark:text-gray-300">
                                                 <p>&bull; Min: <strong>{comp.minTrades}</strong> trades</p>
                                                 <p>&bull; Max DD: <strong className="text-red-500">{comp.maxDrawdown}%</strong></p>
                                             </td>
                                             <td className="px-4 py-4">
-                                                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-700 dark:text-gray-300">
+                                                <span className="inline-flex items-center gap-1.5 text-xs font-mono tabular-nums font-bold text-gray-700 dark:text-gray-300">
                                                     <Users size={14} className="text-gray-400" />
                                                     {comp._count?.participants ?? 0}
                                                 </span>

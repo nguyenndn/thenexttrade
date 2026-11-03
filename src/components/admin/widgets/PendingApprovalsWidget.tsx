@@ -41,7 +41,7 @@ export function PendingApprovalsWidget({
     approvals: PendingApproval[];
 }) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-bold text-gray-700 dark:text-white flex items-center gap-2">
                     <Clock
@@ -51,7 +51,7 @@ export function PendingApprovalsWidget({
                     Pending Approvals
                 </h3>
                 {approvals.length > 0 && (
-                    <span className="bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400 text-xs font-bold px-2.5 py-0.5 rounded-full">
+                    <span className="bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400 text-xs font-bold font-mono tabular-nums px-2.5 py-0.5 rounded-lg">
                         {approvals.length} Actions
                     </span>
                 )}
@@ -85,7 +85,7 @@ export function PendingApprovalsWidget({
                                     <div
                                         className={cn(
                                             "w-10 h-10 rounded-lg flex items-center justify-center shadow-sm shrink-0",
-                                            "bg-purple-50 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400 ring-1 ring-purple-500/20"
+                                            "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400 ring-1 ring-amber-500/20"
                                         )}
                                     >
                                         {item.user?.image ? (
@@ -105,22 +105,26 @@ export function PendingApprovalsWidget({
                                             {item.user?.name || "Unknown User"}
                                         </div>
                                         <div className="text-xs text-gray-500 truncate mt-0.5">
-                                            <span className="font-medium mr-1 text-purple-500">
+                                            <span className="font-medium mr-1 text-amber-600 dark:text-gold">
                                                 {item.title}
                                             </span>
-                                            • {item.broker} ({item.account})
+                                            • {item.broker} (
+                                            <span className="font-mono tabular-nums">
+                                                {item.account}
+                                            </span>
+                                            )
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="text-right shrink-0 flex flex-col items-end gap-1">
-                                    <div className="text-xs text-gray-400 whitespace-nowrap">
+                                    <div className="text-xs text-gray-400 font-mono tabular-nums whitespace-nowrap">
                                         {formatDistanceToNow(
                                             new Date(item.createdAt),
                                             { addSuffix: true }
                                         )}
                                     </div>
-                                    <div className="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center group-hover:bg-gold group-hover:text-white transition-colors">
+                                    <div className="w-6 h-6 rounded-lg bg-gray-100 dark:bg-white/10 flex items-center justify-center group-hover:bg-gold group-hover:text-white transition-colors">
                                         <ArrowRight size={12} />
                                     </div>
                                 </div>

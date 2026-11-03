@@ -93,57 +93,57 @@ export function UserCoachingAnalyticsTab({
         <div className="space-y-6">
             {/* 1. Unified Summary Strip */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1E2028]">
                     <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">
-                        <ShieldCheck size={14} className="text-primary" /> Rules & Compliance
+                        <ShieldCheck size={14} className="text-amber-600 dark:text-gold" /> Rules & Compliance
                     </div>
                     <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-gray-900 dark:text-white">
+                        <span className="text-2xl font-black text-gray-900 dark:text-white font-mono tabular-nums">
                             {stats.activeRules}
                         </span>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-gray-500 font-mono tabular-nums">
                             active · {stats.complianceRate}% pass ({stats.violations} violations)
                         </span>
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1E2028]">
                     <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">
-                        <Target size={14} className="text-blue-500" /> Behavior Goals
+                        <Target size={14} className="text-amber-600 dark:text-gold" /> Behavior Goals
                     </div>
                     <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-blue-600 dark:text-blue-400">
+                        <span className="text-2xl font-black text-amber-600 dark:text-gold font-mono tabular-nums">
                             {stats.activeGoals}
                         </span>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-gray-500 font-mono tabular-nums">
                             active of {stats.totalGoals} goals
                         </span>
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1E2028]">
                     <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">
                         <Compass size={14} className="text-emerald-500" /> Setups & Trade Plans
                     </div>
                     <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
+                        <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono tabular-nums">
                             {stats.totalPlans}
                         </span>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-gray-500 font-mono tabular-nums">
                             plans ({stats.executedPlans} executed) · {stats.totalStrategies} setups
                         </span>
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1E2028]">
                     <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">
                         <BarChart3 size={14} className="text-amber-500" /> Reports & Notes
                     </div>
                     <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-amber-600 dark:text-amber-400">
+                        <span className="text-2xl font-black text-amber-600 dark:text-amber-400 font-mono tabular-nums">
                             {stats.totalReports + stats.totalNotes}
                         </span>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-gray-500 font-mono tabular-nums">
                             {stats.totalReports} reports · {stats.totalNotes} day notes
                         </span>
                     </div>
@@ -153,12 +153,12 @@ export function UserCoachingAnalyticsTab({
             {/* 2. Side-by-Side: Rules & Goals (Left) + Playbook Setups (Right) */}
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 {/* Left Card: Trading Rules & Behavior Goals */}
-                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden flex flex-col">
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#1E2028] overflow-hidden flex flex-col">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            <ShieldCheck size={16} className="text-primary" /> Execution Rules & Goals
+                            <ShieldCheck size={16} className="text-amber-600 dark:text-gold" /> Execution Rules & Goals
                         </h3>
-                        <span className="text-xs font-bold text-gray-500">
+                        <span className="text-xs font-bold text-gray-500 font-mono tabular-nums">
                             {rules.length} Rules · {goals.length} Goals
                         </span>
                     </div>
@@ -196,7 +196,7 @@ export function UserCoachingAnalyticsTab({
                                                     {rule.category}
                                                 </span>
                                             </div>
-                                            <p className="mt-1 text-xs text-gray-500">
+                                            <p className="mt-1 text-xs text-gray-500 font-mono tabular-nums">
                                                 {rule._count?.checks || 0} trade checks
                                                 {rule.strategy ? ` · ${rule.strategy.name}` : ""}
                                             </p>
@@ -215,19 +215,19 @@ export function UserCoachingAnalyticsTab({
                                 {goals.map((goal) => (
                                     <div
                                         key={goal.id}
-                                        className="p-4 flex items-center justify-between gap-3 bg-blue-50/20 dark:bg-blue-500/[0.03]"
+                                        className="p-4 flex items-center justify-between gap-3 bg-gold/[0.03]"
                                     >
                                         <div className="min-w-0">
                                             <div className="flex flex-wrap items-center gap-2">
-                                                <Target size={14} className="text-blue-500 shrink-0" />
+                                                <Target size={14} className="text-amber-600 dark:text-gold shrink-0" />
                                                 <span className="text-sm font-bold text-gray-900 dark:text-white">
                                                     {goal.title}
                                                 </span>
-                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 uppercase">
+                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-gold/10 text-amber-700 dark:text-gold uppercase">
                                                     {goal.period} Goal
                                                 </span>
                                             </div>
-                                            <p className="mt-1 text-xs text-gray-500">
+                                            <p className="mt-1 text-xs text-gray-500 font-mono tabular-nums">
                                                 Type: {goal.type}
                                                 {goal.targetValue !== null
                                                     ? ` · Target: ${goal.targetValue}`
@@ -253,12 +253,12 @@ export function UserCoachingAnalyticsTab({
                 </div>
 
                 {/* Right Card: Playbooks & Strategies */}
-                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden flex flex-col">
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#1E2028] overflow-hidden flex flex-col">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            <BookOpen size={16} className="text-blue-500" /> Playbooks & Strategies
+                            <BookOpen size={16} className="text-amber-600 dark:text-gold" /> Playbooks & Strategies
                         </h3>
-                        <span className="text-xs font-bold text-gray-500">
+                        <span className="text-xs font-bold text-gray-500 font-mono tabular-nums">
                             {strategies.length} Setups
                         </span>
                     </div>
@@ -280,7 +280,7 @@ export function UserCoachingAnalyticsTab({
                                                 className="w-3 h-3 rounded-full shrink-0"
                                                 style={{
                                                     backgroundColor:
-                                                        strat.color || "#6366F1",
+                                                        strat.color || "#F59E0B",
                                                 }}
                                             />
                                             <span className="text-sm font-bold text-gray-900 dark:text-white truncate">
@@ -290,7 +290,7 @@ export function UserCoachingAnalyticsTab({
                                                 className={cn(
                                                     "text-[10px] font-bold px-2 py-0.5 rounded-lg uppercase shrink-0",
                                                     strat.isPlaybook
-                                                        ? "bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-300"
+                                                        ? "bg-gold/10 text-amber-700 dark:text-gold"
                                                         : "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400"
                                                 )}
                                             >
@@ -299,7 +299,7 @@ export function UserCoachingAnalyticsTab({
                                                     : "Strategy"}
                                             </span>
                                         </div>
-                                        <p className="mt-1 text-xs text-gray-500 truncate">
+                                        <p className="mt-1 text-xs text-gray-500 truncate font-mono tabular-nums">
                                             {strat.pairs?.length > 0
                                                 ? strat.pairs.join(", ")
                                                 : "All Pairs"}
@@ -327,9 +327,9 @@ export function UserCoachingAnalyticsTab({
             </div>
 
             {/* 3. Pre-Trade Plans Table */}
-            <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+            <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#1E2028] overflow-hidden">
                 <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
-                    <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2 font-mono tabular-nums">
                         <Compass size={16} className="text-emerald-500" /> Pre-Trade Plans ({plans.length})
                     </h3>
                     {plans.length > 6 && (
@@ -338,7 +338,7 @@ export function UserCoachingAnalyticsTab({
                             variant="outline"
                             size="sm"
                             onClick={() => setShowAllPlans((v) => !v)}
-                            className="h-7 text-xs font-bold rounded-lg"
+                            className="h-7 text-xs font-bold rounded-lg font-mono tabular-nums"
                         >
                             {showAllPlans
                                 ? "Show Recent (6)"
@@ -394,7 +394,7 @@ export function UserCoachingAnalyticsTab({
                                                 className={cn(
                                                     "text-[10px] font-bold px-2 py-0.5 rounded-lg uppercase",
                                                     plan.status === "EXECUTED"
-                                                        ? "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300"
+                                                        ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300"
                                                         : plan.status === "CANCELLED"
                                                           ? "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400"
                                                           : "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300"
@@ -403,12 +403,12 @@ export function UserCoachingAnalyticsTab({
                                                 {plan.status}
                                             </span>
                                             {plan.setupName && (
-                                                <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-lg">
+                                                <span className="text-xs font-semibold text-amber-600 dark:text-gold bg-gold/10 px-2 py-0.5 rounded-lg">
                                                     {plan.setupName}
                                                 </span>
                                             )}
                                         </div>
-                                        <p className="mt-1 text-xs text-gray-500">
+                                        <p className="mt-1 text-xs text-gray-500 font-mono tabular-nums">
                                             {format(
                                                 new Date(plan.plannedAt),
                                                 "MMM d, yyyy · HH:mm"
@@ -430,7 +430,7 @@ export function UserCoachingAnalyticsTab({
                                     {plan.journalEntry && (
                                         <span
                                             className={cn(
-                                                "text-xs font-bold",
+                                                "text-xs font-bold font-mono tabular-nums",
                                                 (plan.journalEntry.pnl || 0) >= 0
                                                     ? "text-emerald-600 dark:text-emerald-400"
                                                     : "text-rose-600 dark:text-rose-400"
@@ -463,12 +463,12 @@ export function UserCoachingAnalyticsTab({
             {/* 4. Side-by-Side: Performance Reports & Day Notes/Insights */}
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 {/* Left: Performance Reports */}
-                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden flex flex-col">
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#1E2028] overflow-hidden flex flex-col">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            <BarChart3 size={16} className="text-primary" /> Performance Reports
+                            <BarChart3 size={16} className="text-amber-600 dark:text-gold" /> Performance Reports
                         </h3>
-                        <span className="text-xs font-bold text-gray-500">
+                        <span className="text-xs font-bold text-gray-500 font-mono tabular-nums">
                             {reports.length} Cycles
                         </span>
                     </div>
@@ -489,11 +489,11 @@ export function UserCoachingAnalyticsTab({
                                             <span className="text-sm font-bold text-gray-900 dark:text-white">
                                                 {report.periodLabel}
                                             </span>
-                                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-primary/10 text-primary uppercase">
+                                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-gold/10 text-amber-600 dark:text-gold uppercase">
                                                 {report.type}
                                             </span>
                                         </div>
-                                        <p className="mt-1 text-xs text-gray-500">
+                                        <p className="mt-1 text-xs text-gray-500 font-mono tabular-nums">
                                             {report.totalTrades} trades ·{" "}
                                             {report.winRate.toFixed(1)}% WR ·{" "}
                                             <span
@@ -524,12 +524,12 @@ export function UserCoachingAnalyticsTab({
                 </div>
 
                 {/* Right: Day Notes & Behavioral Insights */}
-                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden flex flex-col">
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#1E2028] overflow-hidden flex flex-col">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <Calendar size={16} className="text-amber-500" /> Day Notes & Behavioral Insights
                         </h3>
-                        <span className="text-xs font-bold text-gray-500">
+                        <span className="text-xs font-bold text-gray-500 font-mono tabular-nums">
                             {dayNotes.length} Notes · {insights.length} Insights
                         </span>
                     </div>
@@ -572,13 +572,13 @@ export function UserCoachingAnalyticsTab({
                                         className="p-4 space-y-1 hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors"
                                     >
                                         <div className="flex items-center justify-between gap-2">
-                                            <span className="text-xs font-bold text-amber-700 dark:text-amber-300">
+                                            <span className="text-xs font-bold text-amber-700 dark:text-amber-300 font-mono tabular-nums">
                                                 {format(
                                                     new Date(dn.date),
                                                     "EEE, MMM d, yyyy"
                                                 )}
                                             </span>
-                                            <span className="text-[11px] text-gray-400">
+                                            <span className="text-[11px] text-gray-400 font-mono tabular-nums">
                                                 {formatDistanceToNow(
                                                     new Date(dn.updatedAt),
                                                     { addSuffix: true }
@@ -599,7 +599,7 @@ export function UserCoachingAnalyticsTab({
             {/* Plan Detail Modal */}
             {selectedPlan && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#0D111C]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <div className="flex items-center gap-2">
@@ -610,7 +610,7 @@ export function UserCoachingAnalyticsTab({
                                         {selectedPlan.status}
                                     </span>
                                 </div>
-                                <p className="mt-0.5 text-xs text-gray-500">
+                                <p className="mt-0.5 text-xs text-gray-500 font-mono tabular-nums">
                                     Planned on{" "}
                                     {format(
                                         new Date(selectedPlan.plannedAt),
@@ -630,13 +630,13 @@ export function UserCoachingAnalyticsTab({
                         </div>
 
                         <div className="mt-4 space-y-4">
-                            <div className="rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden divide-y divide-gray-200 dark:divide-white/10 text-xs">
-                                <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/10 bg-gray-50/50 dark:bg-white/[0.02]">
+                            <div className="rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden divide-y divide-gray-200 dark:divide-white/10 text-xs">
+                                <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/10 bg-gray-50/80 dark:bg-[#151925]">
                                     <div className="p-3">
                                         <span className="block text-[10px] font-bold text-gray-400 uppercase">
                                             Pre-Trade Plan
                                         </span>
-                                        <div className="mt-1 space-y-1 font-semibold text-gray-800 dark:text-gray-200">
+                                        <div className="mt-1 space-y-1 font-semibold text-gray-800 dark:text-gray-200 font-mono tabular-nums">
                                             <div>
                                                 Planned Entry:{" "}
                                                 <span className="font-bold">
@@ -674,7 +674,7 @@ export function UserCoachingAnalyticsTab({
                                             Actual Execution
                                         </span>
                                         {selectedPlan.journalEntry ? (
-                                            <div className="mt-1 space-y-1 font-semibold text-gray-800 dark:text-gray-200">
+                                            <div className="mt-1 space-y-1 font-semibold text-gray-800 dark:text-gray-200 font-mono tabular-nums">
                                                 <div>
                                                     Actual Entry:{" "}
                                                     <span className="font-bold">
@@ -736,7 +736,7 @@ export function UserCoachingAnalyticsTab({
                             </div>
 
                             {selectedPlan.thesis && (
-                                <div className="rounded-xl border border-gray-200 bg-gray-50/50 p-4 dark:border-white/10 dark:bg-white/[0.02]">
+                                <div className="rounded-lg border border-gray-200 bg-gray-50/80 p-4 dark:border-white/10 dark:bg-[#151925]">
                                     <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500">
                                         Trade Thesis
                                     </h4>
@@ -747,7 +747,7 @@ export function UserCoachingAnalyticsTab({
                             )}
 
                             {selectedPlan.invalidation && (
-                                <div className="rounded-xl border border-rose-100 bg-rose-50/50 p-4 dark:border-rose-900/30 dark:bg-rose-950/20">
+                                <div className="rounded-lg border border-rose-100 bg-rose-50/50 p-4 dark:border-rose-900/30 dark:bg-rose-950/20">
                                     <h4 className="text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
                                         Invalidation & Hard Stop Criteria
                                     </h4>
@@ -774,14 +774,14 @@ export function UserCoachingAnalyticsTab({
             {/* Strategy Detail Modal */}
             {selectedStrategy && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#0D111C]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div className="flex items-center gap-2">
                                 <div
                                     className="w-4 h-4 rounded-full"
                                     style={{
                                         backgroundColor:
-                                            selectedStrategy.color || "#6366F1",
+                                            selectedStrategy.color || "#F59E0B",
                                     }}
                                 />
                                 <div>
@@ -845,7 +845,7 @@ export function UserCoachingAnalyticsTab({
                                     <span className="font-bold text-gray-400 uppercase tracking-wider block">
                                         Setup Checklist / Rules
                                     </span>
-                                    <pre className="mt-1 p-3 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-sans">
+                                    <pre className="mt-1 p-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-sans">
                                         {selectedStrategy.rules}
                                     </pre>
                                 </div>
@@ -868,7 +868,7 @@ export function UserCoachingAnalyticsTab({
             {/* Rule Detail Modal */}
             {selectedRule && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#0D111C]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <h3 className="text-lg font-black text-gray-900 dark:text-white">
@@ -896,14 +896,14 @@ export function UserCoachingAnalyticsTab({
                                     <span className="font-bold text-gray-400 uppercase tracking-wider block">
                                         Rule Description
                                     </span>
-                                    <p className="mt-1 text-gray-800 dark:text-gray-200 leading-relaxed bg-gray-50 dark:bg-white/5 p-3 rounded-lg border border-gray-200 dark:border-white/10">
+                                    <p className="mt-1 text-gray-800 dark:text-gray-200 leading-relaxed bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-gray-200 dark:border-white/10">
                                         {selectedRule.description}
                                     </p>
                                 </div>
                             )}
 
                             <div className="grid grid-cols-2 gap-3">
-                                <div className="p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
+                                <div className="p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925]">
                                     <span className="block text-[10px] font-bold text-gray-400 uppercase">
                                         Status
                                     </span>
@@ -920,7 +920,7 @@ export function UserCoachingAnalyticsTab({
                                             : "Disabled"}
                                     </span>
                                 </div>
-                                <div className="p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
+                                <div className="p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925]">
                                     <span className="block text-[10px] font-bold text-gray-400 uppercase">
                                         Linked Strategy
                                     </span>
@@ -948,13 +948,13 @@ export function UserCoachingAnalyticsTab({
             {/* Report Detail Modal */}
             {selectedReport && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#0D111C]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <h3 className="text-lg font-black text-gray-900 dark:text-white">
                                     {selectedReport.periodLabel}
                                 </h3>
-                                <p className="text-xs text-gray-500">
+                                <p className="text-xs text-gray-500 font-mono tabular-nums">
                                     Cycle:{" "}
                                     {format(
                                         new Date(selectedReport.periodStart),
@@ -979,13 +979,13 @@ export function UserCoachingAnalyticsTab({
                         </div>
 
                         <div className="mt-4 space-y-4 text-xs">
-                            <div className="rounded-xl border border-gray-200 dark:border-white/10 divide-y divide-gray-200 dark:divide-white/10 overflow-hidden">
-                                <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/10 bg-gray-50/50 dark:bg-white/[0.02]">
+                            <div className="rounded-lg border border-gray-200 dark:border-white/10 divide-y divide-gray-200 dark:divide-white/10 overflow-hidden">
+                                <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/10 bg-gray-50/80 dark:bg-[#151925]">
                                     <div className="p-3">
                                         <span className="block text-[10px] font-bold text-gray-400 uppercase">
                                             Win / Loss Metrics
                                         </span>
-                                        <div className="mt-1 space-y-1 font-semibold text-gray-800 dark:text-gray-200">
+                                        <div className="mt-1 space-y-1 font-semibold text-gray-800 dark:text-gray-200 font-mono tabular-nums">
                                             <div>
                                                 Win Rate:{" "}
                                                 <span className="font-bold text-emerald-500">
@@ -1029,7 +1029,7 @@ export function UserCoachingAnalyticsTab({
                                         <span className="block text-[10px] font-bold text-gray-400 uppercase">
                                             P&L & Extremes
                                         </span>
-                                        <div className="mt-1 space-y-1 font-semibold text-gray-800 dark:text-gray-200">
+                                        <div className="mt-1 space-y-1 font-semibold text-gray-800 dark:text-gray-200 font-mono tabular-nums">
                                             <div>
                                                 Net P&L:{" "}
                                                 <span
@@ -1070,7 +1070,7 @@ export function UserCoachingAnalyticsTab({
                                             </div>
                                             <div>
                                                 Plan Compliance:{" "}
-                                                <span className="text-blue-500">
+                                                <span className="text-amber-600 dark:text-gold">
                                                     {selectedReport.planCompliance
                                                         ? `${selectedReport.planCompliance.toFixed(0)}%`
                                                         : "N/A"}

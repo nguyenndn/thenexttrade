@@ -2,24 +2,32 @@
 
 import { Monitor, Smartphone, Tablet } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { PIE_COLORS } from "./types";
 
 interface Props {
     devices: Array<{ device: string; count: number }>;
     browsers: Array<{ browser: string; count: number }>;
 }
 
+const CHART_COLORS = [
+    "#f59e0b",
+    "#10b981",
+    "#d97706",
+    "#059669",
+    "#f43f5e",
+    "#64748b",
+];
+
 const DEVICE_CONFIG: Record<string, { icon: typeof Monitor; color: string }> = {
-    desktop: { icon: Monitor, color: "#6366f1" },
-    mobile: { icon: Smartphone, color: "#22d3ee" },
-    tablet: { icon: Tablet, color: "#f59e0b" },
+    desktop: { icon: Monitor, color: "#f59e0b" },
+    mobile: { icon: Smartphone, color: "#10b981" },
+    tablet: { icon: Tablet, color: "#d97706" },
 };
 
 export function TechPanel({ devices, browsers }: Props) {
     const totalDevices = devices.reduce((s, d) => s + d.count, 0) || 1;
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
             <h2 className="text-sm font-bold text-gray-900 dark:text-white mb-4">
                 Technology
             </h2>
@@ -38,13 +46,13 @@ export function TechPanel({ devices, browsers }: Props) {
                         return (
                             <div
                                 key={d.device}
-                                className="text-center p-3 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10"
+                                className="text-center p-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10"
                             >
                                 <Icon
                                     className="w-5 h-5 mx-auto mb-1.5"
                                     style={{ color: cfg.color }}
                                 />
-                                <p className="text-xl font-bold text-gray-900 dark:text-white">
+                                <p className="text-xl font-bold font-mono tabular-nums text-gray-900 dark:text-white">
                                     {pct}%
                                 </p>
                                 <p className="text-xs text-gray-500 capitalize">
@@ -85,8 +93,8 @@ export function TechPanel({ devices, browsers }: Props) {
                                             <Cell
                                                 key={i}
                                                 fill={
-                                                    PIE_COLORS[
-                                                        i % PIE_COLORS.length
+                                                    CHART_COLORS[
+                                                        i % CHART_COLORS.length
                                                     ]
                                                 }
                                             />
@@ -118,13 +126,16 @@ export function TechPanel({ devices, browsers }: Props) {
                                         <span
                                             className="w-2.5 h-2.5 rounded-full shrink-0"
                                             style={{
-                                                backgroundColor: PIE_COLORS[i],
+                                                backgroundColor:
+                                                    CHART_COLORS[
+                                                        i % CHART_COLORS.length
+                                                    ],
                                             }}
                                         />
                                         <span className="text-xs text-gray-600 dark:text-gray-300 flex-1 truncate">
                                             {b.browser}
                                         </span>
-                                        <span className="text-xs font-medium text-gray-900 dark:text-white">
+                                        <span className="text-xs font-medium font-mono tabular-nums text-gray-900 dark:text-white">
                                             {pct}%
                                         </span>
                                     </div>

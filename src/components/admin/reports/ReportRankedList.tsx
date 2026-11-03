@@ -62,7 +62,7 @@ export function ReportRankedList({
                                     : ""
                             )}
                         >
-                            <span className="text-xs font-bold text-gray-400 w-5 text-right tabular-nums">
+                            <span className="text-xs font-bold text-gray-400 w-5 text-right font-mono tabular-nums">
                                 {idx + 1}
                             </span>
                             <div className="flex-1 min-w-0">
@@ -86,13 +86,13 @@ export function ReportRankedList({
                                     </div>
                                 )}
                             </div>
-                            <span className="text-sm font-bold text-gray-700 dark:text-white tabular-nums shrink-0">
+                            <span className="text-sm font-bold text-gray-700 dark:text-white font-mono tabular-nums shrink-0">
                                 {typeof item.value === "number"
                                     ? item.value.toLocaleString()
                                     : item.value}
                             </span>
                             {item.percent !== undefined && (
-                                <span className="text-xs text-gray-400 tabular-nums w-10 text-right">
+                                <span className="text-xs text-gray-400 font-mono tabular-nums w-10 text-right">
                                     {item.percent}%
                                 </span>
                             )}

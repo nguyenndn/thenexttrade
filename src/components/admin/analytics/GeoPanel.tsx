@@ -26,16 +26,16 @@ export function GeoPanel({ countries }: Props) {
     const total = countries.reduce((s, c) => s + c.views, 0);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                    <Globe className="w-4 h-4 text-indigo-500" />
+                    <Globe className="w-4 h-4 text-amber-500" />
                     <h2 className="text-sm font-bold text-gray-900 dark:text-white">
                         Visitor Countries
                     </h2>
                 </div>
                 <div className="flex items-center gap-1">
-                    <span className="text-xs text-gray-400 mr-2">
+                    <span className="text-xs text-gray-400 font-mono tabular-nums mr-2">
                         {countries.length} countries
                     </span>
                     <Button
@@ -43,7 +43,7 @@ export function GeoPanel({ countries }: Props) {
                         variant="ghost"
                         size="icon"
                         onClick={() => setView("map")}
-                        className={`p-1.5 h-auto w-auto rounded-lg transition-colors ${view === "map" ? "bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500" : "text-gray-400 hover:text-gray-600"}`}
+                        className={`p-1.5 h-auto w-auto rounded-lg transition-colors ${view === "map" ? "bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-gold" : "text-gray-400 hover:text-gray-600"}`}
                         aria-label="Map view"
                     >
                         <Map size={14} />
@@ -53,7 +53,7 @@ export function GeoPanel({ countries }: Props) {
                         variant="ghost"
                         size="icon"
                         onClick={() => setView("table")}
-                        className={`p-1.5 h-auto w-auto rounded-lg transition-colors ${view === "table" ? "bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500" : "text-gray-400 hover:text-gray-600"}`}
+                        className={`p-1.5 h-auto w-auto rounded-lg transition-colors ${view === "table" ? "bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-gold" : "text-gray-400 hover:text-gray-600"}`}
                         aria-label="Table view"
                     >
                         <List size={14} />
@@ -63,7 +63,7 @@ export function GeoPanel({ countries }: Props) {
 
             {/* Map View */}
             {view === "map" && countries.length > 0 && (
-                <div className="mb-4 rounded-lg overflow-hidden border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#12141a]">
+                <div className="mb-4 rounded-lg overflow-hidden border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925]">
                     <WorldMap countries={countries} />
                 </div>
             )}
@@ -80,7 +80,7 @@ export function GeoPanel({ countries }: Props) {
                             key={c.country}
                             className="group flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors"
                         >
-                            <span className="text-xs w-5 text-center shrink-0 text-gray-400 font-mono">
+                            <span className="text-xs w-5 text-center shrink-0 text-gray-400 font-mono tabular-nums">
                                 {i + 1}
                             </span>
                             <span className="text-base shrink-0">
@@ -92,17 +92,17 @@ export function GeoPanel({ countries }: Props) {
                                         {COUNTRY_NAMES[c.country] || c.country}
                                     </span>
                                     <div className="flex items-center gap-2 shrink-0 ml-2">
-                                        <span className="text-xs text-gray-400">
+                                        <span className="text-xs text-gray-400 font-mono tabular-nums">
                                             {pct}%
                                         </span>
-                                        <span className="text-sm font-semibold text-gray-900 dark:text-white w-12 text-right">
+                                        <span className="text-sm font-semibold font-mono tabular-nums text-gray-900 dark:text-white w-12 text-right">
                                             {c.views.toLocaleString()}
                                         </span>
                                     </div>
                                 </div>
                                 <div className="w-full bg-gray-100 dark:bg-white/5 rounded-full h-1">
                                     <div
-                                        className="bg-gradient-to-r from-indigo-500 to-purple-500 h-1 rounded-full transition-all duration-500"
+                                        className="bg-gradient-to-r from-amber-500 to-emerald-500 h-1 rounded-full transition-all duration-500"
                                         style={{
                                             width: `${Math.max(pct, 1)}%`,
                                         }}

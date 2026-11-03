@@ -138,7 +138,7 @@ export function ImportQuestionsModal({
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent
                 hideCloseButton={false}
-                className="max-w-2xl h-[80vh] flex flex-col p-0 overflow-hidden bg-white dark:bg-[#151925]"
+                className="max-w-2xl h-[80vh] flex flex-col p-0 overflow-hidden rounded-2xl bg-white dark:bg-[#151925]"
             >
                 <DialogHeader className="p-6 pb-2 shrink-0">
                     <DialogTitle className="text-xl">
@@ -154,7 +154,7 @@ export function ImportQuestionsModal({
                             <div className="px-6 mb-4">
                                 <PremiumInput
                                     icon={Search}
-                                    placeholder="Search quizzes..."
+                                    aria-label="Search quizzes"
                                     value={searchQuiz}
                                     onChange={(e) =>
                                         setSearchQuiz(e.target.value)
@@ -186,7 +186,7 @@ export function ImportQuestionsModal({
                                                 <h4 className="font-bold text-gray-700 dark:text-white text-base">
                                                     {quiz.title}
                                                 </h4>
-                                                <p className="text-xs text-gray-600 font-normal mt-0.5">
+                                                <p className="text-xs font-mono tabular-nums text-gray-600 font-normal mt-0.5">
                                                     {quiz._count?.questions ||
                                                         0}{" "}
                                                     Questions
@@ -205,7 +205,10 @@ export function ImportQuestionsModal({
                         <div className="flex flex-col h-full">
                             <div className="px-6 mb-4 flex gap-2 justify-between items-center">
                                 <div className="text-sm font-bold text-gray-500 uppercase tracking-wider">
-                                    Select Questions ({selectedQuestionIds.size}
+                                    Select Questions (
+                                    <span className="font-mono tabular-nums">
+                                        {selectedQuestionIds.size}
+                                    </span>
                                     )
                                 </div>
                                 <Button
@@ -303,7 +306,7 @@ export function ImportQuestionsModal({
 
                             <div className="p-6 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 flex justify-end gap-3">
                                 <Button
-                                    variant="ghost"
+                                    variant="outline"
                                     size="smd"
                                     onClick={() => setStep("quiz-select")}
                                     className="font-bold text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
@@ -327,7 +330,10 @@ export function ImportQuestionsModal({
                                         />
                                     )}
                                     <span>
-                                        Import {selectedQuestionIds.size}{" "}
+                                        Import{" "}
+                                        <span className="font-mono tabular-nums">
+                                            {selectedQuestionIds.size}
+                                        </span>{" "}
                                         Questions
                                     </span>
                                 </Button>

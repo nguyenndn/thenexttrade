@@ -247,7 +247,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
             </AdminPageHeader>
 
             {/* Quiz Info */}
-            <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-200 dark:border-white/10 space-y-4">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 border border-gray-200 dark:border-white/10 space-y-4">
                 <input
                     className="w-full text-3xl font-bold bg-transparent border-b border-gray-200 dark:border-white/10 pb-4 focus:outline-none focus:border-primary"
                     aria-label="Quiz Title"
@@ -275,7 +275,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
                     <div className="space-y-6">
                         {questions.map((q, qIndex) => (
                             <SortableItem key={q.id} id={q.id}>
-                                <div className="bg-white dark:bg-[#151925] rounded-xl p-6 border border-gray-200 dark:border-white/10 relative group">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 border border-gray-200 dark:border-white/10 relative group">
                                     <Button
                                         onClick={() => removeQuestion(qIndex)}
                                         variant="ghost"
@@ -286,7 +286,7 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
                                     </Button>
 
                                     <div className="flex gap-4 mb-6">
-                                        <span className="font-bold text-gray-300 text-xl">
+                                        <span className="font-bold font-mono tabular-nums text-gray-300 text-xl">
                                             #{qIndex + 1}
                                         </span>
                                         <input
@@ -331,8 +331,8 @@ export default function QuizEditorPage({ params }: QuizEditorPageProps) {
                                                     )}
                                                 </Button>
                                                 <input
-                                                    className="flex-1 bg-gray-50 dark:bg-white/5 px-4 py-2 rounded-lg text-sm border-transparent focus:outline-none focus:border-primary border"
-                                                    placeholder={`Option ${oIndex + 1}`}
+                                                    className="flex-1 bg-gray-50 dark:bg-[#151925] px-4 py-2 rounded-lg text-sm border-transparent focus:outline-none focus:border-primary border"
+                                                    aria-label={`Option ${oIndex + 1}`}
                                                     value={opt.text}
                                                     onChange={(e) =>
                                                         updateOption(

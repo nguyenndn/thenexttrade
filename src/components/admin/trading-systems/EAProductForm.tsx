@@ -118,7 +118,6 @@ export function EAProductForm({ product }: EAProductFormProps) {
                     <PremiumInput
                         label="Product Name"
                         {...register("name")}
-                        placeholder="TheNextTrade Auto Trader"
                         error={errors.name?.message}
                     />
                 </div>
@@ -128,7 +127,6 @@ export function EAProductForm({ product }: EAProductFormProps) {
                     <PremiumInput
                         label="Slug"
                         {...register("slug")}
-                        placeholder="tnt-auto-trader"
                         disabled={isEdit}
                         error={errors.slug?.message}
                     />
@@ -143,7 +141,7 @@ export function EAProductForm({ product }: EAProductFormProps) {
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="outline"
-                                className="w-full justify-between rounded-lg border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium"
+                                className="w-full justify-between rounded-lg border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium"
                             >
                                 <span>
                                     {typeValue === EAType.AUTO_TRADE
@@ -193,7 +191,7 @@ export function EAProductForm({ product }: EAProductFormProps) {
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="outline"
-                                className="w-full justify-between rounded-lg border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium"
+                                className="w-full justify-between rounded-lg border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium"
                             >
                                 <span>
                                     {platformValue === PlatformType.BOTH
@@ -243,11 +241,10 @@ export function EAProductForm({ product }: EAProductFormProps) {
                 <textarea
                     {...register("description")}
                     rows={4}
-                    className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-700 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[100px]"
-                    placeholder="Product details..."
+                    className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-3 text-sm text-gray-700 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all min-h-[100px]"
                 />
                 {errors.description && (
-                    <p className="text-xs text-red-500 font-bold">
+                    <p className="text-xs text-rose-500 font-bold">
                         {String(errors.description.message)}
                     </p>
                 )}

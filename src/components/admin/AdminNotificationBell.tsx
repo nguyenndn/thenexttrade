@@ -142,7 +142,7 @@ export function AdminNotificationBell() {
                 >
                     <Bell size={20} />
                     {stats.unreadCount > 0 && (
-                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 animate-pulse shadow-sm">
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold font-mono tabular-nums rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 shadow-sm">
                             {stats.unreadCount > 99
                                 ? "99+"
                                 : stats.unreadCount}
@@ -152,7 +152,7 @@ export function AdminNotificationBell() {
             </PopoverTrigger>
 
             <PopoverContent
-                className="w-[calc(100vw-2rem)] max-w-96 p-0 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-xl overflow-hidden"
+                className="w-[calc(100vw-2rem)] max-w-96 p-0 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-xl overflow-hidden"
                 align="end"
             >
                 <div className="p-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
@@ -160,7 +160,7 @@ export function AdminNotificationBell() {
                         Notifications
                     </h3>
                     {stats.unreadCount > 0 && (
-                        <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[11px] font-bold px-2 py-0.5 rounded-lg">
+                        <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[11px] font-bold font-mono tabular-nums px-2 py-0.5 rounded-lg">
                             {stats.unreadCount} unread
                         </span>
                     )}
@@ -181,7 +181,7 @@ export function AdminNotificationBell() {
                                     <Crown size={18} />
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="font-bold text-amber-900 dark:text-amber-300 text-xs">
+                                    <p className="font-bold text-amber-900 dark:text-amber-300 text-xs tabular-nums">
                                         {stats.pendingVipRequests} pending VIP
                                         request
                                         {stats.pendingVipRequests > 1
@@ -205,7 +205,7 @@ export function AdminNotificationBell() {
                 {/* Pending EA Licenses Alert (work queue, not an unread notification) */}
                 {stats.pendingLicenses > 0 && (
                     <div
-                        className="p-3.5 bg-orange-50/80 dark:bg-orange-500/10 border-b border-orange-200/50 dark:border-orange-500/20 cursor-pointer hover:bg-orange-100/80 dark:hover:bg-orange-500/20 transition-colors"
+                        className="p-3.5 bg-amber-50/80 dark:bg-amber-500/10 border-b border-amber-200/50 dark:border-amber-500/20 cursor-pointer hover:bg-amber-100/80 dark:hover:bg-amber-500/20 transition-colors"
                         onClick={() => {
                             setIsOpen(false);
                             router.push(
@@ -215,22 +215,22 @@ export function AdminNotificationBell() {
                     >
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3 min-w-0">
-                                <div className="w-9 h-9 rounded-lg bg-orange-100 dark:bg-orange-500/20 flex items-center justify-center text-orange-600 dark:text-orange-400 shrink-0">
+                                <div className="w-9 h-9 rounded-lg bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
                                     <KeyRound size={18} />
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="font-bold text-orange-900 dark:text-orange-300 text-xs">
+                                    <p className="font-bold text-amber-900 dark:text-amber-300 text-xs tabular-nums">
                                         {stats.pendingLicenses} pending license
                                         {stats.pendingLicenses > 1 ? "s" : ""}
                                     </p>
-                                    <p className="text-[11px] text-orange-700 dark:text-orange-400/80 truncate">
+                                    <p className="text-[11px] text-amber-700 dark:text-amber-400/80 truncate">
                                         Approve trading system EA licenses
                                     </p>
                                 </div>
                             </div>
                             <ExternalLink
                                 size={14}
-                                className="text-orange-600 dark:text-orange-400 shrink-0 ml-2"
+                                className="text-amber-600 dark:text-amber-400 shrink-0 ml-2"
                             />
                         </div>
                     </div>
@@ -255,7 +255,7 @@ export function AdminNotificationBell() {
                                 className={cn(
                                     "p-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer transition-colors",
                                     !n.isRead &&
-                                        "bg-blue-50/40 dark:bg-blue-900/10"
+                                        "bg-amber-50/40 dark:bg-amber-500/10"
                                 )}
                                 onClick={() => {
                                     if (!n.isRead) {
@@ -269,7 +269,7 @@ export function AdminNotificationBell() {
                                     <p className="text-xs font-bold text-gray-800 dark:text-gray-200 truncate">
                                         {n.title}
                                     </p>
-                                    <span className="text-[10px] text-gray-400 shrink-0">
+                                    <span className="text-[10px] text-gray-400 font-mono tabular-nums shrink-0">
                                         {formatDistanceToNow(
                                             new Date(n.createdAt),
                                             { addSuffix: true, locale: enUS }

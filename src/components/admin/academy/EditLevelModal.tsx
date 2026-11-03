@@ -77,7 +77,6 @@ export function EditLevelModal({
                         label="Title"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        placeholder="Level 1: Foundation"
                         icon={BookOpen}
                         autoFocus
                     />
@@ -94,8 +93,7 @@ export function EditLevelModal({
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 rows={3}
-                                className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-sm text-gray-700 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
-                                placeholder="Describe this level..."
+                                className="w-full bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-sm text-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
                             />
                         </div>
                     </div>

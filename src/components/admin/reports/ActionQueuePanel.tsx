@@ -24,9 +24,9 @@ const severityConfig = {
     },
     medium: {
         icon: Info,
-        color: "text-blue-500",
-        bg: "bg-blue-50 dark:bg-blue-500/10",
-        border: "border-blue-200 dark:border-blue-500/20",
+        color: "text-amber-600 dark:text-gold",
+        bg: "bg-amber-50/70 dark:bg-amber-500/10",
+        border: "border-amber-200 dark:border-amber-500/20",
     },
     low: {
         icon: CheckCircle2,
@@ -81,7 +81,7 @@ export function ActionQueuePanel({ data }: ActionQueuePanelProps) {
                                     <span className="text-sm font-bold text-gray-700 dark:text-white">
                                         {item.title}
                                     </span>
-                                    <span className="text-xs font-bold text-gray-400 bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-lg tabular-nums">
+                                    <span className="text-xs font-bold font-mono tabular-nums text-gray-400 bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-lg">
                                         {item.count}
                                     </span>
                                 </div>

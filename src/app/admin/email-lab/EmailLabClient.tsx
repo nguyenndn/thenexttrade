@@ -466,7 +466,7 @@ export function EmailLabClient({
 
             {/* Category Filter Segmented Pill Bar */}
             <div className="overflow-x-auto scrollbar-hide flex">
-                <div className="inline-flex items-center bg-[#F1F3F5] dark:bg-[#1A1D27] border border-dashboard rounded-xl p-1 gap-1 shrink-0">
+                <div className="inline-flex items-center bg-gray-50/80 dark:bg-[#151925] border border-dashboard rounded-xl p-1 gap-1 shrink-0">
                     {filterTabs.map((tab) => {
                         const Icon = tab.icon;
                         const isActive = activeTab === tab.id;

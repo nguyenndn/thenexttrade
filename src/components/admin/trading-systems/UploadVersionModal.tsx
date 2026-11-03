@@ -103,7 +103,7 @@ export function UploadVersionModal({
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="bg-white dark:bg-[#1E2028] rounded-2xl border-0 dark:border max-w-md">
+            <DialogContent className="bg-white dark:bg-[#0D111C] rounded-2xl border border-gray-200 dark:border-white/10 max-w-md">
                 <DialogHeader>
                     <DialogTitle className="text-xl font-bold text-gray-700 dark:text-white">
                         Upload New Version
@@ -122,8 +122,8 @@ export function UploadVersionModal({
                         <PremiumInput
                             label="New Version"
                             {...register("version")}
-                            placeholder="1.1.0"
                             defaultValue={product.version}
+                            className="font-mono tabular-nums"
                             error={errors.version ? "Required" : undefined}
                         />
                     </div>
@@ -134,8 +134,7 @@ export function UploadVersionModal({
                         </label>
                         <textarea
                             {...register("changelog")}
-                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-3 text-sm text-gray-700 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[80px]"
-                            placeholder="What's new in this version?"
+                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-3 text-sm text-gray-700 dark:text-white font-medium outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all min-h-[80px]"
                         />
                     </div>
 
@@ -146,11 +145,11 @@ export function UploadVersionModal({
                                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
                                     MT4 File (.ex4)
                                 </label>
-                                <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2">
+                                <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-2">
                                     <input
                                         type="file"
                                         accept=".ex4"
-                                        className="text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gold file:text-white hover:file:bg-amber-600 cursor-pointer"
+                                        className="text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gold file:!text-white hover:file:bg-amber-600 cursor-pointer"
                                         onChange={(e) =>
                                             setFileMT4(
                                                 e.target.files?.[0] || null
@@ -167,11 +166,11 @@ export function UploadVersionModal({
                                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
                                     MT5 File (.ex5)
                                 </label>
-                                <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925] p-2">
+                                <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-2">
                                     <input
                                         type="file"
                                         accept=".ex5"
-                                        className="text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gold file:text-white hover:file:bg-amber-600 cursor-pointer"
+                                        className="text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gold file:!text-white hover:file:bg-amber-600 cursor-pointer"
                                         onChange={(e) =>
                                             setFileMT5(
                                                 e.target.files?.[0] || null
@@ -198,7 +197,7 @@ export function UploadVersionModal({
                             type="submit"
                             variant="primary"
                             size="smd"
-                            className="bg-gold hover:bg-amber-600 text-white font-bold border-none shadow-md shadow-amber-500/20"
+                            className="bg-gold hover:bg-amber-600 !text-white font-bold border-none shadow-md shadow-amber-500/20"
                             disabled={isSubmitting}
                         >
                             {isSubmitting && (

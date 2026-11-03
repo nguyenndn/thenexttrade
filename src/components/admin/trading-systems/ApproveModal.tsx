@@ -69,14 +69,14 @@ export function ApproveModal({ license, isOpen, onClose }: ApproveModalProps) {
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="bg-white dark:bg-[#1E2028] rounded-2xl border-0 dark:border max-w-md">
+            <DialogContent className="bg-white dark:bg-[#0D111C] rounded-2xl border border-gray-200 dark:border-white/10 max-w-md">
                 <DialogHeader>
                     <DialogTitle className="text-xl font-bold text-gray-700 dark:text-white">
                         Approve Account
                     </DialogTitle>
                     <DialogDescription>
                         You are approving account{" "}
-                        <span className="font-bold text-gray-700 dark:text-white">
+                        <span className="font-bold font-mono tabular-nums text-gray-700 dark:text-white">
                             {license.accountNumber}
                         </span>{" "}
                         for {license.user.name || license.user.email}
@@ -109,7 +109,6 @@ export function ApproveModal({ license, isOpen, onClose }: ApproveModalProps) {
                             <PremiumInput
                                 label="Internal Note"
                                 {...register("note")}
-                                placeholder="Note for other admins..."
                             />
                         </div>
                     </div>
@@ -129,7 +128,7 @@ export function ApproveModal({ license, isOpen, onClose }: ApproveModalProps) {
                             type="submit"
                             variant="primary"
                             size="smd"
-                            className="bg-gold hover:bg-amber-600 text-white font-bold border-none shadow-md shadow-amber-500/20"
+                            className="bg-gold hover:bg-amber-600 !text-white font-bold border-none shadow-md shadow-amber-500/20"
                             disabled={isSubmitting}
                         >
                             {isSubmitting && (

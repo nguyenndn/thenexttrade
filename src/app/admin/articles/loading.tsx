@@ -14,7 +14,7 @@ export default function Loading() {
             </div>
 
             {/* Table Skeleton */}
-            <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden">
                 {/* Toolbar */}
                 <div className="p-6 border-b border-gray-200 dark:border-white/10 flex gap-4">
                     <div className="h-10 flex-1 bg-gray-50 dark:bg-white/5 rounded-lg" />
@@ -39,7 +39,7 @@ export default function Loading() {
                                 <div className="h-5 w-3/4 bg-gray-100 dark:bg-white/5 rounded-lg" />
                                 <div className="h-3 w-1/2 bg-gray-50 dark:bg-white/5 rounded-lg" />
                             </div>
-                            <div className="h-6 w-24 bg-gray-100 dark:bg-white/5 rounded-full shrink-0" />
+                            <div className="h-6 w-24 bg-gray-100 dark:bg-white/5 rounded-lg shrink-0" />
                             <div className="h-8 w-8 bg-gray-100 dark:bg-white/5 rounded-lg shrink-0" />
                         </div>
                     ))}

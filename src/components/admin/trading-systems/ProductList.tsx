@@ -158,9 +158,9 @@ export function ProductList({ products }: ProductListProps) {
     return (
         <div className="flex flex-col h-full">
             {/* Toolbar Card */}
-            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-4 shadow-sm flex flex-col md:flex-row gap-4 mb-6">
+            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm flex flex-col md:flex-row gap-4 mb-6">
                 {/* Search */}
-                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md h-[38px]">
+                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50/80 dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors flex-1 w-full max-w-md h-[38px]">
                     <Search
                         size={16}
                         className="text-gray-500"
@@ -168,10 +168,10 @@ export function ProductList({ products }: ProductListProps) {
                     />
                     <input
                         type="text"
-                        placeholder="Search products..."
+                        aria-label="Search products"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="bg-transparent text-sm focus:outline-none w-full text-gray-700 dark:text-white placeholder:text-gray-500"
+                        className="bg-transparent text-sm focus:outline-none w-full text-gray-700 dark:text-white"
                     />
                 </div>
 
@@ -229,10 +229,10 @@ export function ProductList({ products }: ProductListProps) {
             </div>
 
             {/* Content Section - Data Table Card */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm flex flex-col relative w-full flex-1">
+            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm flex flex-col relative w-full flex-1">
                 {/* Empty State */}
                 {sortedProducts.length === 0 ? (
-                    <div className="text-center py-24 bg-white dark:bg-[#1E2028] rounded-lg">
+                    <div className="text-center py-24 bg-white dark:bg-[#1E2028] rounded-xl">
                         <div className="w-20 h-20 mx-auto bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mb-6">
                             <Bot
                                 size={40}
@@ -369,7 +369,7 @@ export function ProductList({ products }: ProductListProps) {
                                                         <p className="font-bold text-gray-700 dark:text-white text-base group-hover/product:text-primary transition-colors">
                                                             {product.name}
                                                         </p>
-                                                        <p className="text-xs text-gray-600 mt-0.5">
+                                                        <p className="text-xs font-mono tabular-nums text-gray-600 mt-0.5">
                                                             {format(
                                                                 new Date(
                                                                     product.createdAt
@@ -389,16 +389,16 @@ export function ProductList({ products }: ProductListProps) {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-lg text-xs font-bold font-mono">
+                                                <span className="bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 px-2.5 py-1 rounded-lg text-xs font-bold font-mono tabular-nums">
                                                     v{product.version}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="flex flex-col items-start gap-1">
-                                                    <div className="flex items-center gap-1.5 text-gray-700 dark:text-gray-200 font-semibold text-xs">
+                                                    <div className="flex items-center gap-1.5 text-gray-700 dark:text-gray-200 font-semibold text-xs font-mono tabular-nums">
                                                         <Download
                                                             size={13}
-                                                            className="text-amber-500"
+                                                            className="text-amber-600 dark:text-gold"
                                                             aria-hidden="true"
                                                         />
                                                         <span>{product.totalDownloads || (product as any)._count?.downloads || 0} downloads</span>
@@ -418,7 +418,7 @@ export function ProductList({ products }: ProductListProps) {
                                                             className="text-emerald-500 group-hover/users:scale-110 transition-transform"
                                                             aria-hidden="true"
                                                         />
-                                                        <span className="hover:underline decoration-dotted underline-offset-2 font-medium">
+                                                        <span className="hover:underline decoration-dotted underline-offset-2 font-mono tabular-nums font-medium">
                                                             {tradersCount} {tradersCount === 1 ? "trader" : "traders"} · {(product as any).activeUsers?.length ?? 0} accts
                                                         </span>
                                                     </Button>
@@ -436,7 +436,7 @@ export function ProductList({ products }: ProductListProps) {
                                                     title="Click to inspect EA Farm capital & account telemetry"
                                                 >
                                                     <div className="flex items-center gap-1.5">
-                                                        <span className="font-mono font-bold text-xs text-emerald-600 dark:text-emerald-400 group-hover/farm:underline">
+                                                        <span className="font-mono tabular-nums font-bold text-xs text-emerald-600 dark:text-emerald-400 group-hover/farm:underline">
                                                             ${confirmedBalance.toLocaleString("en-US", {
                                                                 minimumFractionDigits: 2,
                                                                 maximumFractionDigits: 2,
@@ -444,7 +444,7 @@ export function ProductList({ products }: ProductListProps) {
                                                         </span>
                                                         {onlineCount > 0 && (
                                                             <span
-                                                                className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400"
+                                                                className="inline-flex items-center gap-1 text-[10px] font-mono tabular-nums font-semibold text-emerald-600 dark:text-emerald-400"
                                                                 title={`${onlineCount} account(s) online in the last 24h`}
                                                             >
                                                                 <span className="relative flex h-1.5 w-1.5">
@@ -455,7 +455,7 @@ export function ProductList({ products }: ProductListProps) {
                                                             </span>
                                                         )}
                                                     </div>
-                                                    <span className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">
+                                                    <span className="text-[11px] text-gray-500 dark:text-gray-400 font-mono tabular-nums">
                                                         Pool: ${poolBalance.toLocaleString("en-US", {
                                                             minimumFractionDigits: 2,
                                                             maximumFractionDigits: 2,
@@ -495,7 +495,7 @@ export function ProductList({ products }: ProductListProps) {
                                                         <Button
                                                             size="icon"
                                                             variant="ghost"
-                                                            className="h-8 w-8 text-gray-600 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                                                            className="h-8 w-8 text-gray-600 hover:text-amber-600 dark:hover:text-gold hover:bg-gold/10 rounded-lg transition-colors"
                                                             aria-label={`Edit ${product.name}`}
                                                             title="Edit Product"
                                                         >

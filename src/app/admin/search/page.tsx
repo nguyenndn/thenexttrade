@@ -77,7 +77,7 @@ function AdminSearchContent() {
                     regex.test(part) ? (
                         <span
                             key={i}
-                            className="bg-yellow-300 dark:bg-yellow-600/50 text-gray-700 dark:text-white px-0.5 rounded-lg"
+                            className="bg-amber-500/20 dark:bg-gold/30 text-gray-700 dark:text-white px-0.5 rounded-lg"
                         >
                             {part}
                         </span>
@@ -117,14 +117,14 @@ function AdminSearchContent() {
                                     <Link
                                         key={`${result.type}-${result.id}`}
                                         href={result.slug}
-                                        className="flex bg-white dark:bg-[#151925] p-4 rounded-xl border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-primary hover:shadow-md transition-all group shadow-sm"
+                                        className="flex bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-primary hover:shadow-md transition-all group shadow-sm"
                                     >
                                         <div
                                             className={`p-3 rounded-lg shrink-0 mr-4 h-fit ${
                                                 result.type === "article"
-                                                    ? "bg-blue-50 text-blue-500 dark:bg-blue-500/10"
+                                                    ? "bg-gold/10 text-amber-600 dark:text-gold"
                                                     : result.type === "user"
-                                                      ? "bg-purple-50 text-purple-500 dark:bg-purple-500/10"
+                                                      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                                                       : "bg-gray-50 text-gray-600"
                                             }`}
                                         >
@@ -140,8 +140,8 @@ function AdminSearchContent() {
                                                     className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-lg ${
                                                         result.type ===
                                                         "article"
-                                                            ? "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300"
-                                                            : "bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-300"
+                                                            ? "bg-gold/10 text-amber-600 dark:text-gold"
+                                                            : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                                                     }`}
                                                 >
                                                     {result.type}
@@ -152,14 +152,14 @@ function AdminSearchContent() {
                                                             result.meta
                                                                 .status ===
                                                             "PUBLISHED"
-                                                                ? "bg-green-100 text-green-700"
-                                                                : "bg-yellow-100 text-yellow-700"
+                                                                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                                                                : "bg-amber-500/10 text-amber-600 dark:text-gold"
                                                         }`}
                                                     >
                                                         {result.meta.status}
                                                     </span>
                                                 )}
-                                                <span className="text-xs text-gray-500 font-medium ml-auto">
+                                                <span className="text-xs font-mono tabular-nums text-gray-500 font-medium ml-auto">
                                                     {result.date &&
                                                         formatDistanceToNow(
                                                             new Date(
@@ -186,7 +186,7 @@ function AdminSearchContent() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-12 bg-white dark:bg-[#151925] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
+                            <div className="text-center py-12 bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm">
                                 <AlertCircle
                                     className="mx-auto text-gray-300 mb-4"
                                     size={48}

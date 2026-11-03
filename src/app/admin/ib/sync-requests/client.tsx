@@ -274,7 +274,7 @@ export function SyncRequestsClient({
                     title="Total Requests"
                     value={stats.totalAll}
                     icon={CloudSync}
-                    color="blue"
+                    color="amber"
                     index={0}
                     trendPercent={null}
                 />
@@ -300,7 +300,7 @@ export function SyncRequestsClient({
                     title="Active Queue / Pending"
                     value={stats.queueCount}
                     icon={RefreshCw}
-                    color="cyan"
+                    color="amber"
                     index={3}
                     trendPercent={null}
                 />
@@ -315,7 +315,6 @@ export function SyncRequestsClient({
                     setSearch("");
                     updateFilters({ q: "", page: "1" });
                 }}
-                searchPlaceholder="Search trader, email, MT5 #, server, notes..."
                 statusTabs={statusTabs}
                 activeStatus={currentParams.status || "ALL"}
                 onStatusChange={(val) => updateFilters({ status: val, page: "1" })}
@@ -334,7 +333,7 @@ export function SyncRequestsClient({
             {selectedIds.size > 0 && (
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 px-4 rounded-lg bg-primary/10 border border-primary/20 text-xs shadow-sm">
                     <div className="flex items-center gap-2">
-                        <span className="font-bold text-gray-900 dark:text-white">
+                        <span className="font-bold font-mono tabular-nums text-gray-900 dark:text-white">
                             {selectedIds.size} of {initialData.items.length} {selectedIds.size === 1 ? "request" : "requests"} selected
                         </span>
                         <span className="text-gray-400">•</span>
@@ -353,7 +352,7 @@ export function SyncRequestsClient({
                             variant="outline"
                             size="sm"
                             onClick={() => setIsBulkDeleteModalOpen(true)}
-                            className="rounded-lg text-xs font-bold text-rose-600 hover:text-rose-700 border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10 gap-1.5 h-8 px-3.5"
+                            className="rounded-lg text-xs font-bold font-mono tabular-nums text-rose-600 hover:text-rose-700 border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10 gap-1.5 h-8 px-3.5"
                         >
                             <Trash2 size={13} />
                             Delete Selected ({selectedIds.size})
@@ -505,8 +504,8 @@ export function SyncRequestsClient({
                                                         Support Ticket
                                                     </span>
                                                 ) : (
-                                                    <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20 inline-flex items-center gap-1.5 shrink-0">
-                                                        <CloudSync size={12} className="text-cyan-600 dark:text-cyan-400" />
+                                                    <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-gold/10 text-amber-700 dark:text-gold border border-gold/20 inline-flex items-center gap-1.5 shrink-0">
+                                                        <CloudSync size={12} className="text-amber-600 dark:text-gold" />
                                                         Cloud Sync
                                                     </span>
                                                 )}
@@ -572,7 +571,7 @@ export function SyncRequestsClient({
                                             {/* Status Badge */}
                                             <td className="px-4 py-3.5">
                                                 {isCompleted && (
-                                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20 inline-flex items-center gap-1">
+                                                    <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-black font-mono tabular-nums uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20 inline-flex items-center gap-1">
                                                         <CheckCircle2 size={12} />
                                                         {isSupport
                                                             ? "VERIFIED"
@@ -581,7 +580,7 @@ export function SyncRequestsClient({
                                                 )}
                                                 {isFailed && (
                                                     <div className="space-y-0.5">
-                                                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/20 inline-flex items-center gap-1">
+                                                        <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/20 inline-flex items-center gap-1">
                                                             <XCircle size={12} />
                                                             {item.cloudJob?.errorCode || "FAILED"}
                                                         </span>
@@ -596,7 +595,7 @@ export function SyncRequestsClient({
                                                     </div>
                                                 )}
                                                 {isQueue && (
-                                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/20 inline-flex items-center gap-1.5">
+                                                    <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/20 inline-flex items-center gap-1.5">
                                                         <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
                                                         {item.status}
                                                     </span>
@@ -605,7 +604,7 @@ export function SyncRequestsClient({
 
                                             {/* Requested */}
                                             <td className="px-4 py-3.5">
-                                                <div className="text-[11px] text-gray-700 dark:text-gray-300 flex items-center gap-1 font-medium">
+                                                <div className="text-[11px] font-mono tabular-nums text-gray-700 dark:text-gray-300 flex items-center gap-1 font-medium">
                                                     <Clock className="h-3 w-3 text-gray-400" />
                                                     <span>{formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}</span>
                                                 </div>
@@ -788,7 +787,7 @@ export function SyncRequestsClient({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4"
+                            className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0D111C] p-6 shadow-2xl space-y-4"
                         >
                             <div className="flex items-start gap-3">
                                 <div className="p-2.5 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 ring-1 ring-rose-500/20 shrink-0">
@@ -800,7 +799,7 @@ export function SyncRequestsClient({
                                     </h3>
                                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                         Are you sure you want to permanently delete this request for{" "}
-                                        <span className="font-bold text-gray-800 dark:text-gray-200">
+                                        <span className="font-bold font-mono tabular-nums text-gray-800 dark:text-gray-200">
                                             #{deleteTargetJob.accountNumber || deleteTargetJob.id}
                                         </span>
                                         {deleteTargetJob.trader ? ` (${deleteTargetJob.trader})` : ""}?
@@ -853,19 +852,19 @@ export function SyncRequestsClient({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4"
+                            className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0D111C] p-6 shadow-2xl space-y-4"
                         >
                             <div className="flex items-start gap-3">
                                 <div className="p-2.5 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 ring-1 ring-rose-500/20 shrink-0">
                                     <Trash2 className="h-5 w-5" />
                                 </div>
                                 <div>
-                                    <h3 className="text-base font-bold text-gray-900 dark:text-white">
+                                    <h3 className="text-base font-bold font-mono tabular-nums text-gray-900 dark:text-white">
                                         Delete {selectedIds.size} Selected {selectedIds.size === 1 ? "Request" : "Requests"}
                                     </h3>
                                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                         Are you sure you want to permanently delete{" "}
-                                        <span className="font-bold text-gray-800 dark:text-gray-200">
+                                        <span className="font-bold font-mono tabular-nums text-gray-800 dark:text-gray-200">
                                             {selectedIds.size}
                                         </span>{" "}
                                         selected sync {selectedIds.size === 1 ? "request" : "requests"}?
@@ -886,7 +885,7 @@ export function SyncRequestsClient({
                                     variant="primary"
                                     disabled={isBulkDeleting}
                                     onClick={handleBulkDelete}
-                                    className="bg-rose-600 hover:bg-rose-500 text-white font-bold gap-2"
+                                    className="bg-rose-600 hover:bg-rose-500 text-white font-bold font-mono tabular-nums gap-2"
                                 >
                                     {isBulkDeleting ? (
                                         <RefreshCw className="h-4 w-4 animate-spin" />
@@ -918,7 +917,7 @@ export function SyncRequestsClient({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="w-full max-w-xl rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-5"
+                            className="w-full max-w-xl rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0D111C] p-6 shadow-2xl space-y-5"
                         >
                             <div className="flex items-start justify-between">
                                 <div className="flex items-center gap-3">
@@ -962,7 +961,7 @@ export function SyncRequestsClient({
                             </div>
 
                             {/* 2x2 Matrix Card */}
-                            <div className="grid grid-cols-2 divide-x divide-y divide-gray-100 dark:divide-white/5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] text-xs">
+                            <div className="grid grid-cols-2 divide-x divide-y divide-gray-100 dark:divide-white/5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-xs">
                                 <div className="p-3">
                                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
                                         Broker & Server

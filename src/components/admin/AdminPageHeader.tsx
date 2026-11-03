@@ -38,7 +38,7 @@ export function AdminPageHeader({
                     </Link>
                 )}
                 {/* Gradient Bar */}
-                <div className="w-1 self-stretch min-h-[40px] rounded-full bg-gradient-to-b from-primary via-emerald-400 to-teal-500 shrink-0" />
+                <div className="w-1 self-stretch min-h-[40px] rounded-full bg-gradient-to-b from-primary to-emerald-500 shrink-0" />
                 <div>
                     <h1 className="text-xl font-bold text-gray-700 dark:text-white tracking-tight">
                         {title}

@@ -146,12 +146,12 @@ export function AcademyEditor({ initialLevels }: AcademyEditorProps) {
             {levels.map((level) => (
                 <div
                     key={level.id}
-                    className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm"
+                    className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm"
                 >
                     {/* Level Headers are static for now, or could be draggable if we add a wrapper */}
-                    <div className="p-4 bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
+                    <div className="p-4 bg-gray-50/50 dark:bg-[#151925] border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <span className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-500/20 text-[#2F80ED] flex items-center justify-center font-bold text-sm">
+                            <span className="w-8 h-8 rounded-lg bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold flex items-center justify-center font-bold font-mono tabular-nums text-sm">
                                 {level.order}
                             </span>
                             <h2 className="font-bold text-lg text-gray-700 dark:text-white">

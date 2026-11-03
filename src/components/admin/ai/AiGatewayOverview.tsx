@@ -28,54 +28,54 @@ export function AiGatewayOverview({ stats }: { stats: any }) {
         <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Total Requests */}
-                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm">
                     <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 mb-3">
                         <BarChart3 className="w-5 h-5 text-primary" />
                         <h3 className="text-sm font-semibold">
                             Requests Today
                         </h3>
                     </div>
-                    <div className="text-3xl font-bold text-gray-900 dark:text-white tabular-nums">
+                    <div className="text-3xl font-bold text-gray-900 dark:text-white font-mono tabular-nums">
                         {stats.totalRequestsToday}
                     </div>
                 </div>
 
                 {/* Success Rate */}
-                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm">
                     <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 mb-3">
-                        <Activity className="w-5 h-5 text-green-500" />
+                        <Activity className="w-5 h-5 text-emerald-500" />
                         <h3 className="text-sm font-semibold">Success Rate</h3>
                     </div>
                     <div className="flex items-baseline gap-2">
-                        <div className="text-3xl font-bold text-gray-900 dark:text-white tabular-nums">
+                        <div className="text-3xl font-bold text-gray-900 dark:text-white font-mono tabular-nums">
                             {successRate}%
                         </div>
-                        <div className="text-xs text-red-500 dark:text-red-400 font-semibold">
+                        <div className="text-xs text-rose-500 font-semibold font-mono tabular-nums">
                             {errorCount} errors
                         </div>
                     </div>
                 </div>
 
                 {/* Avg Latency */}
-                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm">
                     <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 mb-3">
                         <Clock className="w-5 h-5 text-amber-500" />
                         <h3 className="text-sm font-semibold">Avg Latency</h3>
                     </div>
-                    <div className="text-3xl font-bold text-gray-900 dark:text-white tabular-nums">
+                    <div className="text-3xl font-bold text-gray-900 dark:text-white font-mono tabular-nums">
                         {stats.avgLatency ? Math.round(stats.avgLatency) : 0}ms
                     </div>
                 </div>
 
                 {/* Total Cost */}
-                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm">
                     <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 mb-3">
-                        <Coins className="w-5 h-5 text-purple-500" />
+                        <Coins className="w-5 h-5 text-amber-600 dark:text-gold" />
                         <h3 className="text-sm font-semibold">
                             Total Cost Today
                         </h3>
                     </div>
-                    <div className="text-3xl font-bold text-gray-900 dark:text-white tabular-nums">
+                    <div className="text-3xl font-bold text-gray-900 dark:text-white font-mono tabular-nums">
                         $
                         {stats.totalCostToday
                             ? stats.totalCostToday.toFixed(4)
@@ -85,7 +85,7 @@ export function AiGatewayOverview({ stats }: { stats: any }) {
             </div>
 
             {/* Provider Health */}
-            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-5 shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm">
                 <h3 className="text-gray-900 dark:text-white font-semibold mb-4">
                     Provider Health Status
                 </h3>
@@ -93,7 +93,7 @@ export function AiGatewayOverview({ stats }: { stats: any }) {
                     {stats.providers.map((p: any) => (
                         <div
                             key={p.providerCode}
-                            className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10"
+                            className="flex items-center justify-between p-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10"
                         >
                             <span className="text-gray-900 dark:text-white font-medium">
                                 {p.displayName}

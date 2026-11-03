@@ -71,9 +71,9 @@ export function RejectLicenseModal({
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-md bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10">
+            <DialogContent className="max-w-md bg-white dark:bg-[#0D111C] rounded-2xl border border-gray-200 dark:border-white/10">
                 <DialogHeader>
-                    <DialogTitle className="text-red-500">
+                    <DialogTitle className="text-rose-500">
                         Reject Request
                     </DialogTitle>
                 </DialogHeader>
@@ -81,7 +81,7 @@ export function RejectLicenseModal({
                 <div className="space-y-6 py-4">
                     <p className="text-sm text-gray-600 dark:text-gray-300">
                         You are about to reject the request for account{" "}
-                        <span className="font-bold text-gray-700 dark:text-white">
+                        <span className="font-bold font-mono tabular-nums text-gray-700 dark:text-white">
                             {license.accountNumber}
                         </span>
                         .
@@ -102,7 +102,7 @@ export function RejectLicenseModal({
                                         name="reason"
                                         checked={reason === r}
                                         onChange={() => setReason(r)}
-                                        className="w-4 h-4 text-red-500 focus:ring-red-500"
+                                        className="w-4 h-4 text-rose-500 focus:ring-rose-500"
                                     />
                                     <span className="text-sm text-gray-700 dark:text-gray-300">
                                         {r}
@@ -115,7 +115,7 @@ export function RejectLicenseModal({
                                     name="reason"
                                     checked={reason === "Other"}
                                     onChange={() => setReason("Other")}
-                                    className="w-4 h-4 text-red-500 focus:ring-red-500"
+                                    className="w-4 h-4 text-rose-500 focus:ring-rose-500"
                                 />
                                 <span className="text-sm text-gray-700 dark:text-gray-300">
                                     Other
@@ -125,8 +125,7 @@ export function RejectLicenseModal({
 
                         {reason === "Other" && (
                             <textarea
-                                className="w-full min-h-[80px] px-4 py-3 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg focus:ring-2 focus:ring-red-500 outline-none text-sm transition-all text-gray-700 dark:text-white placeholder:text-gray-500"
-                                placeholder="Violation of terms regarding..."
+                                className="w-full min-h-[80px] px-4 py-3 bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg focus:ring-2 focus:ring-rose-500 outline-none text-sm transition-all text-gray-700 dark:text-white"
                                 value={customReason}
                                 onChange={(e) =>
                                     setCustomReason(e.target.value)

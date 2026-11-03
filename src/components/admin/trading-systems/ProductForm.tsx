@@ -192,7 +192,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* LEFT COLUMN: Basic Information */}
                 <div className="space-y-6">
-                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-6 space-y-6">
+                    <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 space-y-6">
                         <h3 className="text-lg font-bold text-gray-700 dark:text-white border-b border-gray-200 dark:border-white/10 pb-4">
                             Basic Information
                         </h3>
@@ -211,6 +211,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                 label="Version"
                                 {...form.register("version")}
                                 error={form.formState.errors.version?.message}
+                                className="font-mono tabular-nums"
                                 required
                             />
 
@@ -224,7 +225,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                         <Button
                                             type="button"
                                             variant="outline"
-                                            className="w-full h-[42px] px-4 rounded-lg bg-gray-50 dark:bg-white/5 justify-between text-left text-sm font-medium shadow-none border-gray-200 dark:border-white/10"
+                                            className="w-full h-[42px] px-4 rounded-lg bg-gray-50/80 dark:bg-[#151925] justify-between text-left text-sm font-medium shadow-none border-gray-200 dark:border-white/10"
                                         >
                                             <span className="truncate pr-2">
                                                 {typeValue ===
@@ -289,7 +290,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                         <Button
                                             type="button"
                                             variant="outline"
-                                            className="w-full h-[42px] px-4 rounded-lg bg-gray-50 dark:bg-white/5 justify-between text-left text-sm font-medium shadow-none border-gray-200 dark:border-white/10"
+                                            className="w-full h-[42px] px-4 rounded-lg bg-gray-50/80 dark:bg-[#151925] justify-between text-left text-sm font-medium shadow-none border-gray-200 dark:border-white/10"
                                         >
                                             <span className="truncate pr-2">
                                                 {isFreeValue
@@ -356,7 +357,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                 {/* RIGHT COLUMN: Product Assets (1/3 width) */}
                 <div className="space-y-6">
                     {/* Thumbnail */}
-                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-6 space-y-4">
+                    <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 space-y-4">
                         <h3 className="text-base font-bold text-gray-700 dark:text-white border-b border-gray-200 dark:border-white/10 pb-3">
                             Thumbnail
                         </h3>
@@ -390,13 +391,13 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                 </div>
                             ) : (
                                 <div className="flex flex-col items-center gap-2 py-6">
-                                    <div className="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-500 rounded-full group-hover:scale-110 transition-transform">
+                                    <div className="p-3 bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 rounded-lg group-hover:scale-110 transition-transform">
                                         <ImageIcon size={24} />
                                     </div>
                                     <p className="text-sm font-medium text-gray-600 dark:text-gray-500">
                                         Upload Image
                                     </p>
-                                    <p className="text-[10px] text-gray-500">
+                                    <p className="text-[10px] font-mono tabular-nums text-gray-500">
                                         1200x630 (Rec)
                                     </p>
                                 </div>
@@ -405,13 +406,13 @@ export function ProductForm({ initialData }: ProductFormProps) {
                     </div>
 
                     {/* MT5 File */}
-                    <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-6 space-y-4">
+                    <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 space-y-4">
                         <div className="flex justify-between items-center border-b border-gray-200 dark:border-white/10 pb-3">
                             <h3 className="text-base font-bold text-gray-700 dark:text-white">
                                 MT5 File (.ex5)
                             </h3>
                             {initialData?.fileMT5 && !mt5File && (
-                                <span className="text-xs text-green-500 flex items-center gap-1 font-bold">
+                                <span className="text-xs text-emerald-500 flex items-center gap-1 font-bold">
                                     <FileCode size={12} /> Uploaded
                                 </span>
                             )}
@@ -426,7 +427,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                 }
                             />
                             <div className="flex flex-col items-center gap-2 py-4">
-                                <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 rounded-full group-hover:scale-110 transition-transform">
+                                <div className="p-3 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-lg group-hover:scale-110 transition-transform">
                                     <Upload size={20} />
                                 </div>
                                 <p className="text-sm font-medium text-gray-600 dark:text-gray-500">
@@ -437,7 +438,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                     </div>
 
                     {/* Info Note */}
-                    <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-lg flex items-start gap-3 text-gray-600 text-xs border border-gray-200 dark:border-white/10">
+                    <div className="p-4 bg-gray-50/80 dark:bg-[#151925] rounded-xl flex items-start gap-3 text-gray-600 dark:text-gray-400 text-xs border border-gray-200 dark:border-white/10">
                         <Info size={16} className="shrink-0 mt-0.5" />
                         <p>
                             Files are uploaded to secure storage. Uploading a

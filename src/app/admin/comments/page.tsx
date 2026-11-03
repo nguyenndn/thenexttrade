@@ -180,7 +180,7 @@ export default function AdminCommentsPage() {
                         <div className="flex-1 w-full max-w-md">
                             <PremiumInput
                                 icon={Search}
-                                placeholder="Search comments..."
+                                aria-label="Search comments"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
@@ -196,7 +196,7 @@ export default function AdminCommentsPage() {
                                 transition={SPRING_SOFT}
                                 className="flex items-center gap-1.5 bg-primary/10 px-4 h-[42px] rounded-lg text-sm shrink-0"
                             >
-                                <span className="font-bold text-primary mr-2">
+                                <span className="font-bold font-mono tabular-nums text-primary mr-2">
                                     {selectedIds.size} selected
                                 </span>
 
@@ -225,7 +225,7 @@ export default function AdminCommentsPage() {
                 </div>
 
                 {/* 2. Data Table Card */}
-                <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                     <div className="overflow-x-auto custom-scrollbar">
                         <table className="w-full text-left border-collapse">
                             <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-600 font-bold tracking-wider">
@@ -375,7 +375,7 @@ export default function AdminCommentsPage() {
                                                 <div className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-2 mb-1">
                                                     {comment.content}
                                                 </div>
-                                                <div className="text-xs text-gray-500">
+                                                <div className="text-xs font-mono tabular-nums text-gray-500">
                                                     {formatDistanceToNow(
                                                         new Date(
                                                             comment.createdAt
@@ -389,7 +389,7 @@ export default function AdminCommentsPage() {
                                                     <Link
                                                         href={`/articles/${comment.article.slug}`}
                                                         target="_blank"
-                                                        className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline max-w-[200px] truncate"
+                                                        className="inline-flex items-center gap-1.5 text-sm font-medium text-amber-600 dark:text-gold hover:underline max-w-[200px] truncate"
                                                     >
                                                         <ExternalLink
                                                             size={14}
@@ -397,7 +397,7 @@ export default function AdminCommentsPage() {
                                                         {comment.article.title}
                                                     </Link>
                                                 ) : comment.lesson ? (
-                                                    <span className="inline-flex items-center gap-1.5 text-sm font-medium text-purple-600 dark:text-purple-400 max-w-[200px] truncate">
+                                                    <span className="inline-flex items-center gap-1.5 text-sm font-medium text-amber-600 dark:text-gold max-w-[200px] truncate">
                                                         <ExternalLink
                                                             size={14}
                                                         />

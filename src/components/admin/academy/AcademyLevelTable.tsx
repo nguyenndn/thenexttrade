@@ -15,7 +15,7 @@ export function AcademyLevelTable({
     onDelete,
 }: AcademyLevelTableProps) {
     return (
-        <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
+        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm">
                     <thead className="bg-gray-50/75 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-[11px] font-bold uppercase tracking-wider text-gray-400">
@@ -56,7 +56,7 @@ export function AcademyLevelTable({
                                     {/* Level & Order */}
                                     <td className="py-4 px-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-500/10 to-teal-500/20 border border-cyan-500/20 flex items-center justify-center shrink-0 font-black text-cyan-600 dark:text-cyan-400 text-xs">
+                                            <div className="w-9 h-9 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0 font-black font-mono tabular-nums text-amber-600 dark:text-gold text-xs">
                                                 {String(level.order).padStart(
                                                     2,
                                                     "0"
@@ -81,7 +81,7 @@ export function AcademyLevelTable({
                                     {/* Stage */}
                                     <td className="py-4 px-4 whitespace-nowrap">
                                         <span
-                                            className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${stage.badgeClass}`}
+                                            className={`text-[11px] font-bold px-2 py-0.5 rounded-lg border ${stage.badgeClass}`}
                                         >
                                             {stage.name}
                                         </span>
@@ -90,10 +90,10 @@ export function AcademyLevelTable({
                                     {/* Access Tier */}
                                     <td className="py-4 px-4 whitespace-nowrap">
                                         <span
-                                            className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${
+                                            className={`text-[11px] font-bold px-2 py-0.5 rounded-lg border ${
                                                 isPublic
                                                     ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
-                                                    : "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20"
+                                                    : "bg-gold/10 text-amber-600 dark:text-gold border-gold/20"
                                             }`}
                                         >
                                             {isPublic
@@ -104,7 +104,7 @@ export function AcademyLevelTable({
 
                                     {/* Modules Count */}
                                     <td className="py-4 px-4 text-center whitespace-nowrap">
-                                        <div className="inline-flex items-center gap-1 text-xs font-semibold text-gray-700 dark:text-gray-300">
+                                        <div className="inline-flex items-center gap-1 text-xs font-semibold font-mono tabular-nums text-gray-700 dark:text-gray-300">
                                             <Layers
                                                 size={13}
                                                 className="text-gray-400"
@@ -115,7 +115,7 @@ export function AcademyLevelTable({
 
                                     {/* Lessons Count */}
                                     <td className="py-4 px-4 text-center whitespace-nowrap">
-                                        <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-700 dark:text-gray-300">
+                                        <div className="inline-flex items-center gap-1.5 text-xs font-semibold font-mono tabular-nums text-gray-700 dark:text-gray-300">
                                             <span className="relative flex h-1.5 w-1.5">
                                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                                                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
@@ -130,7 +130,7 @@ export function AcademyLevelTable({
 
                                     {/* Quizzes */}
                                     <td className="py-4 px-4 text-center whitespace-nowrap">
-                                        <span className="text-xs font-medium text-gray-500">
+                                        <span className="text-xs font-medium font-mono tabular-nums text-gray-500">
                                             {quizCount > 0
                                                 ? `${quizCount} Quizzes`
                                                 : "—"}

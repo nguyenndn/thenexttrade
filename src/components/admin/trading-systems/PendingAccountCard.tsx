@@ -24,10 +24,10 @@ export function PendingAccountCard({
     const brokerConfig = BROKERS[license.broker];
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-lg p-6 border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center group h-full relative">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center group h-full relative">
             {/* Time Absolute */}
             <div className="absolute top-5 right-5">
-                <span className="text-[10px] bg-gray-100 dark:bg-white/10 px-2 py-1 rounded-full text-gray-600 font-bold">
+                <span className="text-[10px] bg-gray-100 dark:bg-white/10 px-2 py-1 rounded-lg text-gray-600 dark:text-gray-300 font-mono tabular-nums font-bold">
                     {formatDistanceToNow(new Date(license.createdAt), {
                         addSuffix: true,
                         locale: enUS,
@@ -42,7 +42,7 @@ export function PendingAccountCard({
 
             {/* Info */}
             <div className="flex-1 flex flex-col items-center justify-center space-y-1 mb-6">
-                <p className="font-black text-gray-700 dark:text-white font-mono text-2xl tracking-tight">
+                <p className="font-black text-gray-700 dark:text-white font-mono tabular-nums text-2xl tracking-tight">
                     {license.accountNumber}
                 </p>
                 <div className="flex flex-col items-center">
@@ -61,7 +61,7 @@ export function PendingAccountCard({
                 <Button
                     variant="ghost"
                     size="sm"
-                    className="col-span-1 h-10 bg-cyan-50 dark:bg-cyan-900/10 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-100 dark:hover:bg-cyan-900/20 rounded-lg font-bold text-xs px-2 whitespace-nowrap"
+                    className="col-span-1 h-10 bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 hover:bg-gold/20 rounded-lg font-bold text-xs px-2 whitespace-nowrap"
                     onClick={() =>
                         window.open(brokerConfig?.ibDashboardUrl, "_blank")
                     }

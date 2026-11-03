@@ -213,7 +213,7 @@ export default function AdminQuotesPage() {
             </Tabs>
 
             {/* Table */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left border-collapse">
                         <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-600 font-bold tracking-wider">
@@ -294,7 +294,7 @@ export default function AdminQuotesPage() {
                                                 onClick={() =>
                                                     handleToggleActive(quote)
                                                 }
-                                                className={`inline-flex items-center px-2.5 py-1 h-auto rounded-full text-xs font-bold transition-all ${
+                                                className={`inline-flex items-center px-2.5 py-1 h-auto rounded-lg text-xs font-bold transition-all ${
                                                     quote.isActive
                                                         ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-500/20"
                                                         : "bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-gray-600 hover:bg-gray-200 dark:hover:bg-white/10"
@@ -385,7 +385,7 @@ export default function AdminQuotesPage() {
                         <textarea
                             value={formText}
                             onChange={(e) => setFormText(e.target.value)}
-                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 min-h-[100px] resize-none"
+                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all min-h-[100px] resize-none"
                             aria-label="Quote text content"
                         />
                     </div>
@@ -401,7 +401,7 @@ export default function AdminQuotesPage() {
                             type="text"
                             value={formAuthor}
                             onChange={(e) => setFormAuthor(e.target.value)}
-                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600"
+                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                             aria-label="Quote author name"
                         />
                     </div>

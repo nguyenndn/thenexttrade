@@ -151,7 +151,7 @@ export function CommissionRatesTab({
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]">
                 <div>
                     <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        <DollarSign size={16} className="text-gold" />
+                        <DollarSign size={16} className="text-amber-600 dark:text-gold" />
                         Commission Rate Table
                     </h3>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
@@ -224,7 +224,7 @@ export function CommissionRatesTab({
                                         </span>
                                     </td>
                                     <td className="p-4">
-                                        <span className="font-mono text-sm font-black text-gray-900 dark:text-white">
+                                        <span className="font-mono tabular-nums text-sm font-black text-gray-900 dark:text-white">
                                             ${rate.commissionPerLot.toFixed(2)}
                                         </span>
                                         <span className="text-xs text-gray-400 ml-1">/ lot</span>
@@ -272,7 +272,7 @@ export function CommissionRatesTab({
 
             {/* Modal: Add / Edit Rate */}
             <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-                <DialogContent className="max-w-md">
+                <DialogContent className="max-w-md bg-white dark:bg-[#0D111C] rounded-2xl border border-gray-200 dark:border-white/10">
                     <DialogHeader>
                         <DialogTitle>
                             {editingRate ? "Edit Commission Rate" : "Add Commission Rate"}
@@ -288,8 +288,8 @@ export function CommissionRatesTab({
                                 Select Partner Broker
                             </label>
                             <Select value={brokerId} onValueChange={setBrokerId}>
-                                <SelectTrigger className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] text-sm text-gray-900 dark:text-white">
-                                    <SelectValue placeholder="Select broker" />
+                                <SelectTrigger className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-sm text-gray-900 dark:text-white">
+                                    <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925]">
                                     {availableBrokers.map((b) => (

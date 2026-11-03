@@ -173,9 +173,9 @@ export function AdminNotificationList({
     };
 
     return (
-        <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
             <div className="px-4 py-3 border-b border-gray-200 dark:border-white/10 flex flex-wrap items-center justify-between gap-2">
-                <span className="text-xs font-bold text-gray-600 dark:text-gray-300">
+                <span className="text-xs font-mono tabular-nums font-bold text-gray-600 dark:text-gray-300">
                     {unreadCount > 0
                         ? `${unreadCount} unread notification${
                               unreadCount > 1 ? "s" : ""
@@ -215,7 +215,7 @@ export function AdminNotificationList({
                             className={cn(
                                 "w-full h-auto block text-left font-normal rounded-none px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors",
                                 !notification.isRead &&
-                                    "bg-blue-50/40 dark:bg-blue-900/10"
+                                    "bg-amber-500/[0.04] dark:bg-gold/[0.04]"
                             )}
                             onClick={() => {
                                 if (!notification.isRead) {
@@ -236,11 +236,11 @@ export function AdminNotificationList({
                                 <div className="flex items-center gap-2 shrink-0">
                                     {!notification.isRead && (
                                         <span
-                                            className="w-2 h-2 rounded-full bg-blue-500"
+                                            className="w-2 h-2 rounded-full bg-gold"
                                             aria-label="Unread"
                                         />
                                     )}
-                                    <span className="text-[10px] text-gray-400 whitespace-nowrap">
+                                    <span className="text-[10px] font-mono tabular-nums text-gray-400 whitespace-nowrap">
                                         {formatDistanceToNow(
                                             new Date(notification.createdAt),
                                             { addSuffix: true, locale: enUS }

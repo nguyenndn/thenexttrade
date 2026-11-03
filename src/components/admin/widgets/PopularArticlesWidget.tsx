@@ -31,7 +31,7 @@ export function PopularArticlesWidget({ articles }: { articles: Article[] }) {
     const maxViews = Math.max(...articles.map((a) => a.views), 1);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
             <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
                 <TrendingUp
                     className="w-5 h-5 text-emerald-500"
@@ -59,7 +59,7 @@ export function PopularArticlesWidget({ articles }: { articles: Article[] }) {
                                     <div className="font-medium text-gray-800 dark:text-gray-200 line-clamp-2 text-sm group-hover:text-emerald-500 transition-colors">
                                         {article.title}
                                     </div>
-                                    <div className="flex items-center gap-1 text-xs font-bold text-gray-500 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-full whitespace-nowrap">
+                                    <div className="flex items-center gap-1 text-xs font-bold font-mono tabular-nums text-gray-500 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-lg whitespace-nowrap">
                                         <Eye size={12} aria-hidden="true" />
                                         {article.views.toLocaleString()}
                                     </div>

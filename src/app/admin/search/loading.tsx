@@ -11,7 +11,7 @@ export default function Loading() {
                 {[...Array(6)].map((_, i) => (
                     <div
                         key={i}
-                        className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-6 shadow-sm"
+                        className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm"
                     >
                         <div className="flex items-center gap-4 mb-4">
                             <div className="h-10 w-10 bg-gray-100 dark:bg-white/5 rounded-lg" />

@@ -66,9 +66,8 @@ export function AcademyToolbar({
                         type="text"
                         value={searchQuery}
                         onChange={(e) => onSearchChange(e.target.value)}
-                        placeholder="Search levels, modules, lessons..."
                         aria-label="Search levels, modules, lessons"
-                        className="w-full pl-10 pr-10 py-2.5 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg text-sm text-gray-800 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
+                        className="w-full pl-10 pr-10 py-2.5 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
                     />
                     {searchQuery && (
                         <Button
@@ -95,11 +94,15 @@ export function AcademyToolbar({
                             onClick={() => onAccessFilterChange("ALL")}
                             className={`h-auto px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
                                 accessFilter === "ALL"
-                                    ? "bg-white dark:bg-[#1e2330] text-gray-900 dark:text-white shadow-sm hover:bg-white dark:hover:bg-[#1e2330]"
+                                    ? "bg-white dark:bg-[#1E2028] text-gray-900 dark:text-white shadow-sm hover:bg-white dark:hover:bg-[#1E2028]"
                                     : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                             }`}
                         >
-                            All ({totalCount})
+                            All (
+                            <span className="font-mono tabular-nums">
+                                {totalCount}
+                            </span>
+                            )
                         </Button>
                         <Button
                             type="button"
@@ -172,7 +175,7 @@ export function AcademyToolbar({
                             onClick={() => onViewModeChange("grid")}
                             className={`h-8 w-8 p-2 rounded-lg transition-all ${
                                 viewMode === "grid"
-                                    ? "bg-white dark:bg-[#1e2330] text-primary shadow-sm hover:bg-white dark:hover:bg-[#1e2330]"
+                                    ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm hover:bg-white dark:hover:bg-[#1E2028]"
                                     : "text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-transparent"
                             }`}
                             aria-label="Grid view"
@@ -187,7 +190,7 @@ export function AcademyToolbar({
                             onClick={() => onViewModeChange("table")}
                             className={`h-8 w-8 p-2 rounded-lg transition-all ${
                                 viewMode === "table"
-                                    ? "bg-white dark:bg-[#1e2330] text-primary shadow-sm hover:bg-white dark:hover:bg-[#1e2330]"
+                                    ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm hover:bg-white dark:hover:bg-[#1E2028]"
                                     : "text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-transparent"
                             }`}
                             aria-label="Table view"
@@ -202,7 +205,7 @@ export function AcademyToolbar({
                             onClick={() => onViewModeChange("tree")}
                             className={`h-8 w-8 p-2 rounded-lg transition-all ${
                                 viewMode === "tree"
-                                    ? "bg-white dark:bg-[#1e2330] text-primary shadow-sm hover:bg-white dark:hover:bg-[#1e2330]"
+                                    ? "bg-white dark:bg-[#1E2028] text-primary shadow-sm hover:bg-white dark:hover:bg-[#1E2028]"
                                     : "text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-transparent"
                             }`}
                             aria-label="Hierarchy tree view"
@@ -227,10 +230,12 @@ export function AcademyToolbar({
             <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 px-1">
                 <span>
                     Showing{" "}
-                    <strong className="text-gray-800 dark:text-white font-bold">
+                    <strong className="text-gray-800 dark:text-white font-bold font-mono tabular-nums">
                         {filteredCount}
                     </strong>{" "}
-                    of {totalCount} levels
+                    of{" "}
+                    <span className="font-mono tabular-nums">{totalCount}</span>{" "}
+                    levels
                     {searchQuery && (
                         <span>
                             {" "}

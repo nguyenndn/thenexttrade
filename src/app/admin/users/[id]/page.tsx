@@ -443,7 +443,7 @@ export default async function UserDetailPage({
                 backHref="/admin/users"
             />
 
-            <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925]">
+            <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#1E2028]">
                 <div className="grid grid-cols-1 divide-y divide-gray-200 dark:divide-white/10 sm:grid-cols-2 sm:divide-y-0 xl:grid-cols-4">
                     <div className="flex min-w-0 items-center gap-3 p-4 sm:p-5 sm:border-r sm:border-gray-200 sm:dark:border-white/10">
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
@@ -453,7 +453,7 @@ export default async function UserDetailPage({
                             <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
                                 Real Accounts
                             </p>
-                            <p className="mt-0.5 text-lg font-black text-gray-800 dark:text-white">
+                            <p className="mt-0.5 font-mono tabular-nums text-lg font-black text-gray-800 dark:text-white">
                                 {realAccounts.length}
                             </p>
                             <p className="text-[11px] text-gray-500">
@@ -463,14 +463,14 @@ export default async function UserDetailPage({
                     </div>
 
                     <div className="flex min-w-0 items-center gap-3 p-4 sm:p-5 xl:border-r xl:border-gray-200 xl:dark:border-white/10">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gold/10 text-amber-600 dark:text-gold">
                             <CircleDollarSign size={19} />
                         </div>
                         <div className="min-w-0">
                             <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
                                 Total Real Balance
                             </p>
-                            <p className="mt-0.5 truncate text-lg font-black text-gray-800 dark:text-white" title={formatCurrencyBreakdown(capital.byCurrency)}>
+                            <p className="mt-0.5 truncate font-mono tabular-nums text-lg font-black text-gray-800 dark:text-white" title={formatCurrencyBreakdown(capital.byCurrency)}>
                                 {formatCurrencyBreakdown(capital.byCurrency)}
                             </p>
                             <p className="text-[11px] text-gray-500">Real accounts only</p>
@@ -485,7 +485,7 @@ export default async function UserDetailPage({
                             <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
                                 Total Real Equity
                             </p>
-                            <p className="mt-0.5 truncate text-lg font-black text-gray-800 dark:text-white" title={formatCurrencyBreakdown(capital.equityByCurrency)}>
+                            <p className="mt-0.5 truncate font-mono tabular-nums text-lg font-black text-gray-800 dark:text-white" title={formatCurrencyBreakdown(capital.equityByCurrency)}>
                                 {formatCurrencyBreakdown(capital.equityByCurrency)}
                             </p>
                             <p className="text-[11px] text-gray-500">No currency conversion</p>
@@ -493,7 +493,7 @@ export default async function UserDetailPage({
                     </div>
 
                     <div className="flex min-w-0 items-center gap-3 p-4 sm:p-5">
-                        <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${isSyncCurrent ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400" : "bg-orange-50 text-orange-600 dark:bg-orange-500/10 dark:text-orange-400"}`}>
+                        <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${isSyncCurrent ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400" : "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400"}`}>
                             <RefreshCw size={19} />
                         </div>
                         <div className="min-w-0">
@@ -507,7 +507,7 @@ export default async function UserDetailPage({
                                       ? "Up to date"
                                       : "Sync overdue"}
                             </p>
-                            <p className="truncate text-[11px] text-gray-500">
+                            <p className="truncate font-mono tabular-nums text-[11px] text-gray-500">
                                 {latestRealAccountSignal
                                     ? `Last signal ${formatDistanceToNow(latestRealAccountSignal, { addSuffix: true })}`
                                     : "No sync signal from a real account"}
@@ -519,16 +519,16 @@ export default async function UserDetailPage({
 
             <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[420px_minmax(0,1fr)] 2xl:grid-cols-[460px_minmax(0,1fr)]">
                 <div className="min-w-0 space-y-6">
-                    <div className="relative overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white shadow-sm dark:bg-[#151925]">
-                        <div className="h-28 bg-gradient-to-br from-emerald-100 via-teal-50 to-white dark:from-primary/20 dark:via-primary/5 dark:to-transparent" />
+                    <div className="relative overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white shadow-sm dark:bg-[#1E2028]">
+                        <div className="h-28 bg-gradient-to-br from-amber-100/60 via-amber-50/30 to-white dark:from-gold/20 dark:via-gold/5 dark:to-transparent" />
 
                         <div className="px-6 pb-5 text-center">
-                            <Avatar className="mx-auto -mt-14 mb-4 h-28 w-28 border-[6px] border-white shadow-xl dark:border-[#151925]">
+                            <Avatar className="mx-auto -mt-14 mb-4 h-28 w-28 border-[6px] border-white shadow-xl dark:border-[#1E2028]">
                                 <AvatarImage
                                     src={user.image || undefined}
                                     alt={user.name || "User"}
                                 />
-                                <AvatarFallback className="bg-gradient-to-tr from-primary to-blue-500 text-white font-bold text-3xl">
+                                <AvatarFallback className="bg-gradient-to-tr from-gold to-amber-600 text-white font-bold text-3xl">
                                     {user.name?.[0]?.toUpperCase() || "U"}
                                 </AvatarFallback>
                             </Avatar>
@@ -542,16 +542,16 @@ export default async function UserDetailPage({
                             </p>
 
                             <span
-                                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${
+                                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold border ${
                                     user.profile?.role === "ADMIN"
                                         ? "border-red-200 bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20"
-                                        : "border-blue-200 bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20"
+                                        : "border-gold/20 bg-gold/10 text-amber-700 dark:text-gold"
                                 }`}
                             >
                                 <ShieldCheck size={14} />{" "}
                                 {user.profile?.role || "USER"}
                             </span>
-                            <div className="mt-3 inline-flex max-w-full items-center gap-2 rounded-full border border-gray-200 dark:border-white/10 bg-white/80 px-3 py-1 text-xs font-bold text-gray-700 shadow-sm dark:bg-white/5 dark:text-gray-200">
+                            <div className="mt-3 inline-flex max-w-full items-center gap-2 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 px-3 py-1 text-xs font-bold text-gray-700 shadow-sm dark:bg-[#151925] dark:text-gray-200">
                                 {countryCode ? (
                                     <>
                                         <img
@@ -581,7 +581,7 @@ export default async function UserDetailPage({
                             </div>
                         </div>
 
-                        <div className="border-t border-gray-200 dark:border-white/10 bg-gray-50/70 p-4 dark:bg-[#1a1f2e] sm:px-6 sm:py-4">
+                        <div className="border-t border-gray-200 dark:border-white/10 bg-gray-50/80 p-4 dark:bg-[#151925] sm:px-6 sm:py-4">
                             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                 <div className="flex min-w-0 items-center gap-2.5 text-sm">
                                     <Mail
@@ -597,7 +597,7 @@ export default async function UserDetailPage({
                                         size={15}
                                         className="text-gray-500 shrink-0"
                                     />
-                                    <span className="font-medium text-gray-700 dark:text-white text-xs">
+                                    <span className="font-mono tabular-nums font-medium text-gray-700 dark:text-white text-xs">
                                         {format(
                                             new Date(user.createdAt),
                                             "MMM d, yyyy"
@@ -618,7 +618,7 @@ export default async function UserDetailPage({
                                         size={15}
                                         className="text-gray-500 shrink-0"
                                     />
-                                    <span className="font-medium text-gray-700 dark:text-white text-xs">
+                                    <span className="font-mono tabular-nums font-medium text-gray-700 dark:text-white text-xs">
                                         {lastActive
                                             ? `Active ${formatDistanceToNow(lastActive, {
                                                   addSuffix: true,
@@ -629,7 +629,7 @@ export default async function UserDetailPage({
                             </div>
                         </div>
 
-                        <div className="border-t border-gray-200 dark:border-white/10 px-6 py-2.5 bg-gray-50/40 dark:bg-white/[0.02] flex items-center justify-between">
+                        <div className="border-t border-gray-200 dark:border-white/10 px-6 py-2.5 bg-gray-50/80 dark:bg-[#151925] flex items-center justify-between">
                             <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
                                 User ID
                             </span>

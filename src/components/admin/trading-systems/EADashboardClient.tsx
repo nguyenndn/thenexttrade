@@ -96,27 +96,27 @@ const quickActions = [
         description: "View & manage active licenses",
         href: "/admin/trading-systems/accounts",
         icon: Users,
-        textColor: "text-blue-500",
-        bgColor: "bg-blue-50 dark:bg-blue-500/10",
-        borderColor: "hover:border-blue-500/30",
+        textColor: "text-emerald-500",
+        bgColor: "bg-emerald-500/10",
+        borderColor: "hover:border-emerald-500/30",
     },
     {
         title: "Trading Systems",
         description: "Configure EAs & Indicators",
         href: "/admin/trading-systems/products",
         icon: Bot,
-        textColor: "text-cyan-500",
-        bgColor: "bg-cyan-50 dark:bg-cyan-500/10",
-        borderColor: "hover:border-cyan-500/30",
+        textColor: "text-amber-600 dark:text-gold",
+        bgColor: "bg-gold/10",
+        borderColor: "hover:border-gold/30",
     },
     {
         title: "Partner Brokers",
         description: "Broker integrations & setup",
         href: "/admin/trading-systems/brokers",
         icon: Briefcase,
-        textColor: "text-amber-500",
-        bgColor: "bg-amber-50 dark:bg-amber-500/10",
-        borderColor: "hover:border-amber-500/30",
+        textColor: "text-amber-600 dark:text-gold",
+        bgColor: "bg-gold/10",
+        borderColor: "hover:border-gold/30",
     },
 ];
 
@@ -148,7 +148,7 @@ export function EADashboardClient({
                                 key={t.id}
                                 value={t.id}
                                 className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10 transition-colors"
-                                activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
+                                activeIndicatorClassName="!bg-gold shadow-md shadow-amber-500/20 border-0"
                                 activeTextClassName="!text-white"
                             >
                                 {t.label}
@@ -188,7 +188,7 @@ export function EADashboardClient({
                             sparklineData={products.sparkline}
                             trendPercent={products.trendPercent}
                             icon={Bot}
-                            color="cyan"
+                            color="amber"
                             index={2}
                         />
                         <AnimatedStatCard
@@ -197,7 +197,7 @@ export function EADashboardClient({
                             sparklineData={downloads.sparkline}
                             trendPercent={downloads.trendPercent}
                             icon={Download}
-                            color="blue"
+                            color="green"
                             index={3}
                         />
                     </div>
@@ -228,18 +228,18 @@ export function EADashboardClient({
                                         <Link
                                             key={ea.id}
                                             href={`/admin/trading-systems/${ea.id}`}
-                                            className="group rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/60 dark:bg-[#151925]/80 hover:border-emerald-500/40 transition-all overflow-hidden flex flex-col"
+                                            className="group rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] hover:border-emerald-500/40 transition-all overflow-hidden flex flex-col"
                                         >
                                             <div className="px-4 py-3 border-b border-gray-200 dark:border-white/10 flex items-center justify-between gap-2">
                                                 <div className="min-w-0">
                                                     <h4 className="font-bold text-sm text-gray-900 dark:text-white truncate group-hover:text-emerald-500 transition-colors">
                                                         {ea.name}
                                                     </h4>
-                                                    <p className="text-[11px] font-mono text-gray-500 dark:text-gray-400">
+                                                    <p className="text-[11px] font-mono tabular-nums text-gray-500 dark:text-gray-400">
                                                         {ea.platform} • v{ea.version}
                                                     </p>
                                                 </div>
-                                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shrink-0">
+                                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg text-[10px] font-mono tabular-nums font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shrink-0">
                                                     <Radio size={11} />
                                                     {ea.farmStats.onlineAccountsCount} Online
                                                 </span>
@@ -249,21 +249,21 @@ export function EADashboardClient({
                                                     <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
                                                         Confirmed Farm
                                                     </p>
-                                                    <p className="text-sm font-black font-mono text-gray-900 dark:text-white mt-0.5 truncate">
+                                                    <p className="text-sm font-black font-mono tabular-nums text-gray-900 dark:text-white mt-0.5 truncate">
                                                         {formatUsd(ea.farmStats.confirmedFarmBalanceUSD)}
                                                     </p>
-                                                    <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate">
+                                                    <p className="text-[10px] font-mono tabular-nums text-gray-500 dark:text-gray-400 truncate">
                                                         Eq: {formatUsd(ea.farmStats.confirmedFarmEquityUSD)} ({ea.farmStats.confirmedAccountsCount} acc)
                                                     </p>
                                                 </div>
                                                 <div className="p-3">
-                                                    <p className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                                                    <p className="text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-gold">
                                                         User Pool
                                                     </p>
-                                                    <p className="text-sm font-black font-mono text-gray-900 dark:text-white mt-0.5 truncate">
+                                                    <p className="text-sm font-black font-mono tabular-nums text-gray-900 dark:text-white mt-0.5 truncate">
                                                         {formatUsd(ea.farmStats.userPoolBalanceUSD)}
                                                     </p>
-                                                    <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate">
+                                                    <p className="text-[10px] font-mono tabular-nums text-gray-500 dark:text-gray-400 truncate">
                                                         {ea.farmStats.uniqueTradersCount} traders • {ea.farmStats.totalAccountsCount} acc
                                                         {ea.farmStats.demoAccountsCount > 0
                                                             ? ` (${ea.farmStats.demoAccountsCount} demo)`
@@ -284,10 +284,10 @@ export function EADashboardClient({
                         <div className="lg:col-span-7 space-y-6">
                             {/* Management Shortcuts */}
                             <AnimatedSection delay={0.2}>
-                                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm p-5">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-5">
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-2">
-                                            <Zap className="text-amber-500" size={16} />
+                                            <Zap className="text-amber-600 dark:text-gold" size={16} />
                                             Management Shortcuts
                                         </h3>
                                     </div>
@@ -296,7 +296,7 @@ export function EADashboardClient({
                                             <Link
                                                 key={action.href}
                                                 href={action.href}
-                                                className={`group p-4 rounded-lg bg-gray-50/70 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 ${action.borderColor} hover:bg-white dark:hover:bg-white/[0.06] hover:shadow-md transition-all flex items-start gap-3.5`}
+                                                className={`group p-4 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 ${action.borderColor} hover:bg-white dark:hover:bg-white/[0.06] hover:shadow-md transition-all flex items-start gap-3.5`}
                                             >
                                                 <div
                                                     className={`p-3 rounded-lg ${action.bgColor} ${action.textColor} group-hover:scale-110 transition-transform shrink-0`}
@@ -325,11 +325,11 @@ export function EADashboardClient({
 
                             {/* Pending License Queue Widget */}
                             <AnimatedSection delay={0.3}>
-                                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm p-6">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6">
                                     <div className="flex items-center justify-between mb-4">
                                         <div>
                                             <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                                <ShieldAlert className="text-amber-500" size={18} />
+                                                <ShieldAlert className="text-amber-600 dark:text-gold" size={18} />
                                                 Pending Verification Queue
                                             </h3>
                                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
@@ -337,7 +337,7 @@ export function EADashboardClient({
                                             </p>
                                         </div>
                                         <Link href="/admin/trading-systems/accounts/pending">
-                                            <Button variant="outline" size="sm" className="text-xs font-bold rounded-lg">
+                                            <Button variant="outline" size="sm" className="text-xs font-bold rounded-lg font-mono tabular-nums">
                                                 Manage All ({recentPending.length})
                                             </Button>
                                         </Link>
@@ -358,14 +358,14 @@ export function EADashboardClient({
                                             {recentPending.slice(0, 4).map((license) => (
                                                 <div
                                                     key={license.id}
-                                                    className="flex items-center justify-between p-3.5 rounded-lg bg-gray-50/80 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 hover:border-amber-500/30 transition-all"
+                                                    className="flex items-center justify-between p-3.5 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 hover:border-amber-500/30 transition-all"
                                                 >
                                                     <div className="flex items-center gap-3.5">
-                                                        <div className="p-2 bg-white dark:bg-[#151925] rounded-lg shadow-sm border border-gray-200 dark:border-white/10 shrink-0">
+                                                        <div className="p-2 bg-white dark:bg-[#1E2028] rounded-lg shadow-sm border border-gray-200 dark:border-white/10 shrink-0">
                                                             <BrokerLogo broker={license.broker} size={32} />
                                                         </div>
                                                         <div className="min-w-0">
-                                                            <p className="font-bold text-sm text-gray-900 dark:text-white font-mono">
+                                                            <p className="font-bold text-sm text-gray-900 dark:text-white font-mono tabular-nums">
                                                                 #{license.accountNumber}
                                                             </p>
                                                             <p className="text-xs text-gray-500 truncate mt-0.5">
@@ -374,7 +374,7 @@ export function EADashboardClient({
                                                         </div>
                                                     </div>
                                                     <div className="text-right shrink-0">
-                                                        <span className="text-[11px] font-medium text-gray-400 block mb-1">
+                                                        <span className="text-[11px] font-mono tabular-nums font-medium text-gray-400 block mb-1">
                                                             {formatDistanceToNow(new Date(license.createdAt), { addSuffix: true, locale: enUS })}
                                                         </span>
                                                         <StatusBadge status={license.status} />
@@ -391,7 +391,7 @@ export function EADashboardClient({
                         <div className="lg:col-span-5 space-y-6">
                             {/* Active Licenses by Broker */}
                             <AnimatedSection delay={0.2}>
-                                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm p-6">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6">
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-2">
                                             <Briefcase className="text-emerald-500" size={16} />
@@ -424,13 +424,13 @@ export function EADashboardClient({
                                                                     {stat.broker.toLowerCase()}
                                                                 </span>
                                                             </div>
-                                                            <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                                                            <span className="font-mono tabular-nums font-bold text-emerald-600 dark:text-emerald-400">
                                                                 {stat._count.id} active
                                                             </span>
                                                         </div>
                                                         <div className="h-1.5 w-full bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
                                                             <div
-                                                                className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full"
+                                                                className="h-full bg-emerald-500 rounded-full"
                                                                 style={{ width: `${percentage}%` }}
                                                             ></div>
                                                         </div>
@@ -444,10 +444,10 @@ export function EADashboardClient({
 
                             {/* Recent Activity Feed */}
                             <AnimatedSection delay={0.3}>
-                                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm p-6">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6">
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-2">
-                                            <Activity className="text-blue-500" size={16} />
+                                            <Activity className="text-amber-600 dark:text-gold" size={16} />
                                             Recent Activity Feed
                                         </h3>
                                         <Link
@@ -468,13 +468,13 @@ export function EADashboardClient({
                                             {recentActivity.slice(0, 5).map((item) => (
                                                 <div
                                                     key={item.id}
-                                                    className="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50/50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10"
+                                                    className="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10"
                                                 >
                                                     <div
                                                         className={`p-1.5 rounded-lg shrink-0 ${
                                                             item.action === "APPROVED"
                                                                 ? "bg-emerald-500/10 text-emerald-500"
-                                                                : "bg-red-500/10 text-red-500"
+                                                                : "bg-rose-500/10 text-rose-500"
                                                         }`}
                                                     >
                                                         {item.action === "APPROVED" ? (
@@ -484,10 +484,10 @@ export function EADashboardClient({
                                                         )}
                                                     </div>
                                                     <div className="flex-1 min-w-0 text-xs">
-                                                        <p className="font-bold text-gray-800 dark:text-white truncate">
+                                                        <p className="font-bold font-mono tabular-nums text-gray-800 dark:text-white truncate">
                                                             Acc #{item.accountNumber} ({item.broker})
                                                         </p>
-                                                        <p className="text-[11px] text-gray-500 truncate">
+                                                        <p className="text-[11px] font-mono tabular-nums text-gray-500 truncate">
                                                             {item.userName || "User"} • {formatDistanceToNow(new Date(item.timestamp), { addSuffix: true, locale: enUS })}
                                                         </p>
                                                     </div>
@@ -495,7 +495,7 @@ export function EADashboardClient({
                                                         className={`text-[10px] font-bold px-2 py-0.5 rounded-lg uppercase ${
                                                             item.action === "APPROVED"
                                                                 ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                                                                : "bg-red-500/10 text-red-600 dark:text-red-400"
+                                                                : "bg-rose-500/10 text-rose-600 dark:text-rose-400"
                                                         }`}
                                                     >
                                                         {item.action}
@@ -516,11 +516,11 @@ export function EADashboardClient({
                     className="mt-6 space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300"
                 >
                     <AnimatedSection delay={0.1}>
-                        <div className="bg-white dark:bg-[#1E2028] rounded-lg p-6 border border-gray-200 dark:border-white/10 shadow-sm">
+                        <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm">
                             <div className="flex items-center justify-between mb-6">
                                 <div>
                                     <h2 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                        <Clock className="text-amber-500" size={18} />
+                                        <Clock className="text-amber-600 dark:text-gold" size={18} />
                                         Pending License Verification Requests
                                     </h2>
                                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
@@ -553,17 +553,17 @@ export function EADashboardClient({
                                     recentPending.map((license) => (
                                         <div
                                             key={license.id}
-                                            className="flex items-center justify-between p-4 rounded-lg bg-gray-50/80 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 hover:border-amber-500/30 transition-all"
+                                            className="flex items-center justify-between p-4 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 hover:border-amber-500/30 transition-all"
                                         >
                                             <div className="flex items-center gap-4">
-                                                <div className="p-2.5 bg-white dark:bg-[#151925] rounded-lg shadow-sm border border-gray-200 dark:border-white/10">
+                                                <div className="p-2.5 bg-white dark:bg-[#1E2028] rounded-lg shadow-sm border border-gray-200 dark:border-white/10">
                                                     <BrokerLogo
                                                         broker={license.broker}
                                                         size={36}
                                                     />
                                                 </div>
                                                 <div>
-                                                    <p className="font-bold text-base text-gray-900 dark:text-white font-mono">
+                                                    <p className="font-bold text-base text-gray-900 dark:text-white font-mono tabular-nums">
                                                         #{license.accountNumber}
                                                     </p>
                                                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
@@ -572,7 +572,7 @@ export function EADashboardClient({
                                                 </div>
                                             </div>
                                             <div className="text-right flex flex-col items-end gap-1.5">
-                                                <span className="text-xs font-medium text-gray-400">
+                                                <span className="text-xs font-mono tabular-nums font-medium text-gray-400">
                                                     {formatDistanceToNow(
                                                         new Date(license.createdAt),
                                                         { addSuffix: true, locale: enUS }
@@ -594,7 +594,7 @@ export function EADashboardClient({
                     className="mt-6 space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300"
                 >
                     <AnimatedSection delay={0.1}>
-                        <div className="bg-white dark:bg-[#1E2028] rounded-lg p-6 border border-gray-200 dark:border-white/10 shadow-sm">
+                        <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 border border-gray-200 dark:border-white/10 shadow-sm">
                             <h2 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
                                 <Briefcase className="text-primary" size={18} />
                                 Active Licenses Distribution by Broker
@@ -619,7 +619,7 @@ export function EADashboardClient({
                                             >
                                                 <div className="flex justify-between items-center text-sm">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="p-1.5 bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10">
+                                                        <div className="p-1.5 bg-gray-50/80 dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10">
                                                             <BrokerLogo
                                                                 broker={stat.broker}
                                                                 size={28}
@@ -629,14 +629,14 @@ export function EADashboardClient({
                                                             {stat.broker.toLowerCase()}
                                                         </span>
                                                     </div>
-                                                    <span className="px-3 py-1 rounded-lg text-xs font-bold tracking-wider uppercase inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                                                    <span className="px-3 py-1 rounded-lg text-xs font-mono tabular-nums font-bold tracking-wider uppercase inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                                         {stat._count.id} ACTIVE
                                                     </span>
                                                 </div>
                                                 <div className="h-2.5 w-full bg-gray-100 dark:bg-[#151925] rounded-full overflow-hidden">
                                                     <div
-                                                        className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-1000"
+                                                        className="h-full bg-emerald-500 rounded-full transition-all duration-1000"
                                                         style={{ width: `${percentage}%` }}
                                                     ></div>
                                                 </div>

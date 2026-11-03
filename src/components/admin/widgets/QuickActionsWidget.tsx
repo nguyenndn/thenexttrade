@@ -18,24 +18,24 @@ export function QuickActionsWidget() {
             description: "View user directory",
             icon: Users,
             href: "/admin/users",
-            textColor: "text-blue-500",
-            bgColor: "bg-blue-50 dark:bg-blue-500/10",
+            textColor: "text-amber-600 dark:text-gold",
+            bgColor: "bg-amber-50 dark:bg-amber-500/10",
         },
         {
             title: "Trader Behavior",
             description: "Live behavioral radar",
             icon: Activity,
             href: "/admin/users/behavior",
-            textColor: "text-indigo-500",
-            bgColor: "bg-indigo-50 dark:bg-indigo-500/10",
+            textColor: "text-emerald-500",
+            bgColor: "bg-emerald-50 dark:bg-emerald-500/10",
         },
         {
             title: "Review VIPs",
             description: "Pending approvals",
             icon: ShieldCheck,
             href: "/admin/ib/pipeline",
-            textColor: "text-purple-500",
-            bgColor: "bg-purple-50 dark:bg-purple-500/10",
+            textColor: "text-amber-600 dark:text-gold",
+            bgColor: "bg-amber-50 dark:bg-amber-500/10",
         },
         {
             title: "Business Reports",
@@ -50,7 +50,7 @@ export function QuickActionsWidget() {
             description: "Models & routing",
             icon: Cpu,
             href: "/admin/ai",
-            textColor: "text-amber-500",
+            textColor: "text-amber-600 dark:text-gold",
             bgColor: "bg-amber-50 dark:bg-amber-500/10",
         },
         {
@@ -66,8 +66,8 @@ export function QuickActionsWidget() {
             description: "Configure system",
             icon: Settings,
             href: "/admin/settings",
-            textColor: "text-cyan-500",
-            bgColor: "bg-cyan-50 dark:bg-cyan-500/10",
+            textColor: "text-gray-600 dark:text-gray-300",
+            bgColor: "bg-gray-100 dark:bg-white/5",
         },
     ];
 
@@ -77,7 +77,7 @@ export function QuickActionsWidget() {
                 <Link
                     key={idx}
                     href={action.href}
-                    className="flex flex-col items-center gap-2.5 p-4 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md hover:border-primary/30 transition-all group text-center"
+                    className="flex flex-col items-center gap-2.5 p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md hover:border-primary/30 transition-all group text-center"
                 >
                     <div
                         className={`p-3 rounded-lg ${action.bgColor} ${action.textColor} group-hover:scale-110 transition-transform`}

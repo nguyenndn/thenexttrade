@@ -14,7 +14,7 @@ const ROLES = [
         value: "USER",
         label: "User",
         description: "Standard member with no admin access",
-        color: "bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400",
+        color: "bg-gold/10 border-gold/20 text-amber-700 dark:text-gold",
     },
     {
         value: "EDITOR",
@@ -104,11 +104,11 @@ export function ChangeRoleModal({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative bg-white dark:bg-[#1E2028] rounded-2xl border border-gray-200 dark:border-white/10 shadow-2xl w-full max-w-md mx-4 p-6"
+                        className="relative bg-white dark:bg-[#0D111C] rounded-2xl border border-gray-200 dark:border-white/10 shadow-2xl w-full max-w-md mx-4 p-6"
                     >
                 <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <ShieldCheck size={20} className="text-primary" />
+                    <div className="w-10 h-10 rounded-lg bg-gold/10 flex items-center justify-center">
+                        <ShieldCheck size={20} className="text-amber-600 dark:text-gold" />
                     </div>
                     <div>
                         <h3 className="text-lg font-bold text-gray-700 dark:text-white">
@@ -127,19 +127,19 @@ export function ChangeRoleModal({
                             onClick={() => setSelectedRole(role.value)}
                             className={`w-full h-auto flex items-start gap-3 p-4 rounded-lg border-2 transition-all text-left font-normal ${
                                 selectedRole === role.value
-                                    ? "border-primary bg-primary/5 dark:bg-primary/5 hover:bg-primary/5"
-                                    : "border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 hover:bg-transparent"
+                                    ? "border-gold bg-gold/5 dark:bg-gold/5 hover:bg-gold/5"
+                                    : "border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-100/60 dark:hover:bg-[#151925]"
                             }`}
                         >
                             <div
                                 className={`w-4 h-4 mt-0.5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
                                     selectedRole === role.value
-                                        ? "border-primary"
+                                        ? "border-gold"
                                         : "border-gray-200 dark:border-white/10"
                                 }`}
                             >
                                 {selectedRole === role.value && (
-                                    <div className="w-2 h-2 rounded-full bg-primary" />
+                                    <div className="w-2 h-2 rounded-full bg-gold" />
                                 )}
                             </div>
                             <div className="flex-1">
@@ -148,7 +148,7 @@ export function ChangeRoleModal({
                                         {role.label}
                                     </span>
                                     {currentRole === role.value && (
-                                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-full">
+                                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-lg">
                                             Current
                                         </span>
                                     )}
@@ -181,7 +181,7 @@ export function ChangeRoleModal({
                         {isLoading ? (
                             <Loader2 size={14} className="animate-spin" />
                         ) : (
-                            "Save"
+                            "Save Changes"
                         )}
                     </Button>
                 </div>

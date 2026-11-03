@@ -47,7 +47,7 @@ export function LoyaltyTiersMatrix({ tiers }: LoyaltyTiersMatrixProps) {
             Configured volume requirements, direct USDT payouts, and automated privilege access.
           </p>
         </div>
-        <div className="text-xs font-mono font-bold text-gray-400">
+        <div className="text-xs font-mono tabular-nums font-bold text-gray-400">
           {tiers.length} Tiers Configured
         </div>
       </div>
@@ -59,7 +59,7 @@ export function LoyaltyTiersMatrix({ tiers }: LoyaltyTiersMatrixProps) {
           return (
             <div
               key={tier.level}
-              className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-4 shadow-sm flex flex-col justify-between space-y-3 relative overflow-hidden group hover:border-gray-300 dark:hover:border-white/20 transition-all"
+              className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-4 shadow-sm flex flex-col justify-between space-y-3 relative overflow-hidden group hover:border-gray-300 dark:hover:border-white/20 transition-all"
             >
               {/* Top Accent Line */}
               <div
@@ -80,12 +80,12 @@ export function LoyaltyTiersMatrix({ tiers }: LoyaltyTiersMatrixProps) {
                     >
                       <IconComponent size={16} />
                     </div>
-                    <span className="font-mono text-xs font-bold text-gray-500 dark:text-gray-400">
+                    <span className="font-mono tabular-nums text-xs font-bold text-gray-500 dark:text-gray-400">
                       Level {tier.level}
                     </span>
                   </div>
 
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300">
                     {tier.isActive ? "Active" : "Paused"}
                   </span>
                 </div>
@@ -94,11 +94,11 @@ export function LoyaltyTiersMatrix({ tiers }: LoyaltyTiersMatrixProps) {
                   {tier.name}
                 </h4>
 
-                <div className="mt-2 p-2.5 rounded-lg bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5">
+                <div className="mt-2 p-2.5 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-100 dark:border-white/5">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-0.5">
                     Milestone Volume
                   </span>
-                  <p className="font-mono text-base font-black text-gray-900 dark:text-white">
+                  <p className="font-mono tabular-nums text-base font-black text-gray-900 dark:text-white">
                     {tier.requiredLots.toLocaleString()} <span className="text-xs text-gray-400">Lots</span>
                   </p>
                 </div>
@@ -108,7 +108,7 @@ export function LoyaltyTiersMatrix({ tiers }: LoyaltyTiersMatrixProps) {
                     Reward Benefit
                   </span>
                   {tier.cashAmount > 0 ? (
-                    <p className="font-mono text-sm font-black text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                    <p className="font-mono tabular-nums text-sm font-black text-amber-600 dark:text-amber-400 flex items-center gap-1">
                       <Coins size={14} className="shrink-0" />
                       ${tier.cashAmount.toLocaleString()} USDT Cash
                     </p>
@@ -124,7 +124,7 @@ export function LoyaltyTiersMatrix({ tiers }: LoyaltyTiersMatrixProps) {
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-gray-100 dark:border-white/5 text-[10px] font-mono text-gray-400 flex items-center justify-between">
+              <div className="pt-2 border-t border-gray-100 dark:border-white/5 text-[10px] font-mono tabular-nums text-gray-400 flex items-center justify-between">
                 <span>Payout: USDT</span>
                 <span>Order #{tier.order}</span>
               </div>

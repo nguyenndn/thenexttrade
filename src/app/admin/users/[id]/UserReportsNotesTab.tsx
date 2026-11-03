@@ -141,26 +141,26 @@ export function UserReportsNotesTab({
         <div className="space-y-6">
             {/* Top KPI Cards */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1E2028]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                        <BarChart3 size={14} className="text-primary" /> Generated Reports
+                        <BarChart3 size={14} className="text-amber-600 dark:text-gold" /> Generated Reports
                     </div>
                     <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-gray-900 dark:text-white">
+                        <span className="text-2xl font-black text-gray-900 dark:text-white font-mono tabular-nums">
                             {stats.totalReports}
                         </span>
                         <span className="text-xs text-gray-500">weekly / monthly</span>
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1E2028]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <DollarSign size={14} className="text-emerald-500" /> Aggregate Reported P&L
                     </div>
                     <div className="mt-2 flex items-baseline gap-2">
                         <span
                             className={cn(
-                                "text-2xl font-black",
+                                "text-2xl font-black font-mono tabular-nums",
                                 stats.totalPnL >= 0
                                     ? "text-emerald-600 dark:text-emerald-400"
                                     : "text-rose-600 dark:text-rose-400"
@@ -171,42 +171,42 @@ export function UserReportsNotesTab({
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1E2028]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                        <Percent size={14} className="text-blue-500" /> Avg Reported Win Rate
+                        <Percent size={14} className="text-amber-600 dark:text-gold" /> Avg Reported Win Rate
                     </div>
                     <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-blue-600 dark:text-blue-400">
+                        <span className="text-2xl font-black text-amber-600 dark:text-gold font-mono tabular-nums">
                             {stats.avgWinRate}%
                         </span>
                         <span className="text-xs text-gray-500">across cycles</span>
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1E2028]">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         <Calendar size={14} className="text-amber-500" /> Day Notes & Insights
                     </div>
                     <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-amber-600 dark:text-amber-400">
+                        <span className="text-2xl font-black text-amber-600 dark:text-amber-400 font-mono tabular-nums">
                             {stats.totalNotes + stats.totalInsights}
                         </span>
-                        <span className="text-xs text-gray-500">{stats.totalNotes} notes · {stats.totalInsights} insights</span>
+                        <span className="text-xs text-gray-500 font-mono tabular-nums">{stats.totalNotes} notes · {stats.totalInsights} insights</span>
                     </div>
                 </div>
             </div>
 
             {/* Sub-Section Navigation & Filters */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex rounded-lg border border-gray-200 bg-[#F1F3F5] p-1 dark:border-white/10 dark:bg-[#1A1D27] w-fit">
+                <div className="flex rounded-lg border border-gray-200 bg-gray-50/80 p-1 dark:border-white/10 dark:bg-[#151925] w-fit">
                     <Button
                         type="button"
                         variant="ghost"
                         onClick={() => setActiveSection("reports")}
                         className={cn(
-                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
+                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors font-mono tabular-nums",
                             activeSection === "reports"
-                                ? "bg-white text-gray-900 shadow-sm dark:bg-[#252936] dark:text-white"
+                                ? "bg-gold !text-white shadow-sm hover:bg-gold/90"
                                 : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                         )}
                     >
@@ -217,9 +217,9 @@ export function UserReportsNotesTab({
                         variant="ghost"
                         onClick={() => setActiveSection("notes")}
                         className={cn(
-                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
+                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors font-mono tabular-nums",
                             activeSection === "notes"
-                                ? "bg-white text-gray-900 shadow-sm dark:bg-[#252936] dark:text-white"
+                                ? "bg-gold !text-white shadow-sm hover:bg-gold/90"
                                 : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                         )}
                     >
@@ -230,9 +230,9 @@ export function UserReportsNotesTab({
                         variant="ghost"
                         onClick={() => setActiveSection("insights")}
                         className={cn(
-                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors",
+                            "h-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors font-mono tabular-nums",
                             activeSection === "insights"
-                                ? "bg-white text-gray-900 shadow-sm dark:bg-[#252936] dark:text-white"
+                                ? "bg-gold !text-white shadow-sm hover:bg-gold/90"
                                 : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                         )}
                     >
@@ -242,7 +242,7 @@ export function UserReportsNotesTab({
 
                 <div className="w-full sm:w-64">
                     <PremiumInput
-                        placeholder="Search reports or notes..."
+                        aria-label="Search reports or notes"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         prefix={<Search size={14} className="text-gray-400" />}
@@ -252,10 +252,10 @@ export function UserReportsNotesTab({
 
             {/* Section 1: Performance Reports (GAP-8) */}
             {activeSection === "reports" && (
-                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#1E2028] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
-                        <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            <BarChart3 size={16} className="text-primary" /> Generated Performance Reports ({filteredReports.length})
+                        <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2 font-mono tabular-nums">
+                            <BarChart3 size={16} className="text-amber-600 dark:text-gold" /> Generated Performance Reports ({filteredReports.length})
                         </h3>
                         <span className="text-xs text-gray-500">Historical Cycles</span>
                     </div>
@@ -273,25 +273,25 @@ export function UserReportsNotesTab({
                                                 <h4 className="font-bold text-gray-900 dark:text-white text-sm">
                                                     {report.periodLabel}
                                                 </h4>
-                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-primary/10 text-primary uppercase">
+                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-gold/10 text-amber-600 dark:text-gold uppercase">
                                                     {report.type}
                                                 </span>
-                                                <span className="text-xs text-gray-500">
+                                                <span className="text-xs text-gray-500 font-mono tabular-nums">
                                                     {format(new Date(report.periodStart), "MMM d")} – {format(new Date(report.periodEnd), "MMM d, yyyy")}
                                                 </span>
                                             </div>
 
                                             {/* 2x2 Matrix Card for Specs */}
-                                            <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50/50 dark:border-white/10 dark:bg-[#1A1D27] divide-y divide-gray-200 dark:divide-white/10 text-xs sm:w-96">
+                                            <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50/80 dark:border-white/10 dark:bg-[#151925] divide-y divide-gray-200 dark:divide-white/10 text-xs sm:w-96 font-mono tabular-nums">
                                                 <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/10">
                                                     <div className="p-2.5">
-                                                        <span className="block text-[10px] font-semibold text-gray-400 uppercase">Trades & Win Rate</span>
+                                                        <span className="block text-[10px] font-semibold text-gray-400 uppercase font-sans">Trades & Win Rate</span>
                                                         <span className="font-bold text-gray-800 dark:text-gray-200">
                                                             {report.totalTrades} trades · {report.winRate.toFixed(1)}% WR
                                                         </span>
                                                     </div>
                                                     <div className="p-2.5">
-                                                        <span className="block text-[10px] font-semibold text-gray-400 uppercase">Net P&L</span>
+                                                        <span className="block text-[10px] font-semibold text-gray-400 uppercase font-sans">Net P&L</span>
                                                         <span
                                                             className={cn(
                                                                 "font-bold",
@@ -306,14 +306,14 @@ export function UserReportsNotesTab({
                                                 </div>
                                                 <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/10">
                                                     <div className="p-2.5">
-                                                        <span className="block text-[10px] font-semibold text-gray-400 uppercase">Profit Factor</span>
+                                                        <span className="block text-[10px] font-semibold text-gray-400 uppercase font-sans">Profit Factor</span>
                                                         <span className="font-bold text-gray-800 dark:text-gray-200">
                                                             {report.profitFactor ? report.profitFactor.toFixed(2) : "—"}
                                                         </span>
                                                     </div>
                                                     <div className="p-2.5">
-                                                        <span className="block text-[10px] font-semibold text-gray-400 uppercase">Plan Compliance</span>
-                                                        <span className="font-bold text-blue-600 dark:text-blue-400">
+                                                        <span className="block text-[10px] font-semibold text-gray-400 uppercase font-sans">Plan Compliance</span>
+                                                        <span className="font-bold text-amber-600 dark:text-gold">
                                                             {report.planCompliance !== null ? `${report.planCompliance.toFixed(0)}%` : "N/A"}
                                                         </span>
                                                     </div>
@@ -322,7 +322,7 @@ export function UserReportsNotesTab({
                                         </div>
 
                                         <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 shrink-0">
-                                            <span className="text-[11px] text-gray-400">
+                                            <span className="text-[11px] text-gray-400 font-mono tabular-nums">
                                                 Generated {format(new Date(report.createdAt), "MMM d, HH:mm")}
                                             </span>
                                             <Button
@@ -348,9 +348,9 @@ export function UserReportsNotesTab({
 
             {/* Section 2: Trading Day Notes (GAP-10) */}
             {activeSection === "notes" && (
-                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#1E2028] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
-                        <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2 font-mono tabular-nums">
                             <Calendar size={16} className="text-amber-500" /> Trading Day Notes & Reflection ({filteredNotes.length})
                         </h3>
                         <span className="text-xs text-gray-500">Trader Daily Journal</span>
@@ -364,7 +364,7 @@ export function UserReportsNotesTab({
                                     className="p-4 sm:p-5 transition-colors hover:bg-gray-50/60 dark:hover:bg-white/[0.02] flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3"
                                 >
                                     <div className="min-w-0">
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-2 font-mono tabular-nums">
                                             <span className="text-xs font-bold px-2 py-0.5 rounded-lg bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300">
                                                 {format(new Date(dn.date), "EEEE, MMM d, yyyy")}
                                             </span>
@@ -398,9 +398,9 @@ export function UserReportsNotesTab({
 
             {/* Section 3: Behavioral Insights (GAP-10) */}
             {activeSection === "insights" && (
-                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#151925] overflow-hidden">
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#1E2028] overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
-                        <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2 font-mono tabular-nums">
                             <Lightbulb size={16} className="text-amber-500" /> Algorithmic Behavioral Insights ({filteredInsights.length})
                         </h3>
                         <span className="text-xs text-gray-500">Behavioral Leak Radar</span>
@@ -425,14 +425,14 @@ export function UserReportsNotesTab({
                                                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 uppercase">
                                                     {ins.insightType}
                                                 </span>
-                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300 uppercase">
+                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-gold/10 text-amber-700 dark:text-gold uppercase">
                                                     Confidence: {ins.confidence}
                                                 </span>
                                             </div>
                                             <p className="mt-1 text-gray-600 dark:text-gray-300 leading-relaxed">
                                                 {ins.summary}
                                             </p>
-                                            <div className="mt-1.5 text-[11px] text-gray-400">
+                                            <div className="mt-1.5 text-[11px] text-gray-400 font-mono tabular-nums">
                                                 Evaluated over sample size of {ins.sampleSize} trades · {format(new Date(ins.createdAt), "MMM d, yyyy")}
                                             </div>
                                         </div>
@@ -451,13 +451,13 @@ export function UserReportsNotesTab({
             {/* Report Inspection Modal */}
             {selectedReport && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#0D111C]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
                                 <h3 className="text-lg font-black text-gray-900 dark:text-white">
                                     {selectedReport.periodLabel}
                                 </h3>
-                                <p className="text-xs text-gray-500">
+                                <p className="text-xs text-gray-500 font-mono tabular-nums">
                                     Cycle: {format(new Date(selectedReport.periodStart), "PPP")} – {format(new Date(selectedReport.periodEnd), "PPP")}
                                 </p>
                             </div>
@@ -475,10 +475,10 @@ export function UserReportsNotesTab({
                         <div className="mt-4 space-y-4 text-xs">
                             {/* 2x2 Matrix Card */}
                             <div className="rounded-lg border border-gray-200 dark:border-white/10 divide-y divide-gray-200 dark:divide-white/10 overflow-hidden">
-                                <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/10 bg-gray-50/50 dark:bg-white/[0.02]">
+                                <div className="grid grid-cols-2 divide-x divide-gray-200 dark:divide-white/10 bg-gray-50/80 dark:bg-[#151925]">
                                     <div className="p-3">
                                         <span className="block text-[10px] font-bold text-gray-400 uppercase">Win / Loss Metrics</span>
-                                        <div className="mt-1 space-y-1 font-semibold text-gray-800 dark:text-gray-200">
+                                        <div className="mt-1 space-y-1 font-semibold text-gray-800 dark:text-gray-200 font-mono tabular-nums">
                                             <div>Win Rate: <span className="font-bold text-emerald-500">{selectedReport.winRate.toFixed(1)}%</span> ({selectedReport.winCount}W / {selectedReport.lossCount}L)</div>
                                             <div>Profit Factor: <span className="font-bold">{selectedReport.profitFactor?.toFixed(2) || "—"}</span></div>
                                             <div>Avg Win: <span className="text-emerald-500">${selectedReport.avgWin?.toFixed(2) || "0.00"}</span></div>
@@ -487,13 +487,13 @@ export function UserReportsNotesTab({
                                     </div>
                                     <div className="p-3">
                                         <span className="block text-[10px] font-bold text-gray-400 uppercase">P&L & Extremes</span>
-                                        <div className="mt-1 space-y-1 font-semibold text-gray-800 dark:text-gray-200">
+                                        <div className="mt-1 space-y-1 font-semibold text-gray-800 dark:text-gray-200 font-mono tabular-nums">
                                             <div>Net P&L: <span className={cn("font-bold", selectedReport.netPnL >= 0 ? "text-emerald-500" : "text-rose-500")}>
                                                 {selectedReport.netPnL >= 0 ? "+" : ""}${selectedReport.netPnL.toFixed(2)}
                                             </span></div>
                                             <div>Largest Win: <span className="text-emerald-500">${selectedReport.largestWin?.toFixed(2) || "0.00"}</span></div>
                                             <div>Largest Loss: <span className="text-rose-500">${selectedReport.largestLoss?.toFixed(2) || "0.00"}</span></div>
-                                            <div>Plan Compliance: <span className="text-blue-500">{selectedReport.planCompliance ? `${selectedReport.planCompliance.toFixed(0)}%` : "N/A"}</span></div>
+                                            <div>Plan Compliance: <span className="text-amber-600 dark:text-gold">{selectedReport.planCompliance ? `${selectedReport.planCompliance.toFixed(0)}%` : "N/A"}</span></div>
                                         </div>
                                     </div>
                                 </div>
@@ -503,7 +503,7 @@ export function UserReportsNotesTab({
                             {Boolean(selectedReport.topMistakes) && (
                                 <div className="rounded-lg border border-rose-100 bg-rose-50/50 p-4 dark:border-rose-900/30 dark:bg-rose-950/20">
                                     <span className="font-bold text-rose-700 dark:text-rose-300 block">Top Behavioral Mistakes</span>
-                                    <pre className="mt-1 text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-sans text-xs">
+                                    <pre className="mt-1 text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-mono tabular-nums text-xs">
                                         {JSON.stringify(selectedReport.topMistakes, null, 2)}
                                     </pre>
                                 </div>
@@ -522,10 +522,10 @@ export function UserReportsNotesTab({
             {/* Note Full Modal */}
             {selectedNote && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                    <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#151925]">
+                    <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#0D111C]">
                         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
                             <div>
-                                <h3 className="text-lg font-black text-gray-900 dark:text-white">
+                                <h3 className="text-lg font-black text-gray-900 dark:text-white font-mono tabular-nums">
                                     {format(new Date(selectedNote.date), "EEEE, MMMM d, yyyy")}
                                 </h3>
                                 <p className="text-xs text-gray-500">Day Note Inspection</p>
@@ -542,7 +542,7 @@ export function UserReportsNotesTab({
                         </div>
 
                         <div className="mt-4">
-                            <p className="text-xs text-gray-800 dark:text-gray-200 whitespace-pre-line leading-relaxed bg-gray-50 dark:bg-white/5 p-4 rounded-lg border border-gray-200 dark:border-white/10">
+                            <p className="text-xs text-gray-800 dark:text-gray-200 whitespace-pre-line leading-relaxed bg-gray-50/80 dark:bg-[#151925] p-4 rounded-lg border border-gray-200 dark:border-white/10">
                                 {selectedNote.note}
                             </p>
                         </div>

@@ -139,21 +139,21 @@ export function AdminMessagesClient({
     switch (status.toLowerCase()) {
       case "new":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-gold border border-amber-500/20">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-gold border border-amber-500/20">
             <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
             New
           </span>
         );
       case "replied":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
             <CheckCircle2 size={10} />
             Replied
           </span>
         );
       case "archived":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gray-500/10 text-gray-500 border border-gray-500/20">
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-gray-500/10 text-gray-500 border border-gray-500/20">
             <Archive size={10} />
             Archived
           </span>
@@ -161,7 +161,7 @@ export function AdminMessagesClient({
       case "read":
       default:
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">
             <Clock size={10} />
             Read
           </span>
@@ -175,7 +175,7 @@ export function AdminMessagesClient({
       <MessagesStatsGrid stats={stats} />
 
       {/* Control Bar: Filter Tabs + Search */}
-      <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#161922] p-4 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+      <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-4 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
         {/* Status Tabs */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
           {tabs.map((tab) => {
@@ -194,7 +194,7 @@ export function AdminMessagesClient({
               >
                 <span>{tab.label}</span>
                 <span
-                  className={`ml-1.5 px-1.5 py-0.2 rounded-full text-[10px] font-mono ${
+                  className={`ml-1.5 px-1.5 py-0.2 rounded-lg text-[10px] font-mono tabular-nums ${
                     isActive
                       ? "bg-white/20 text-white"
                       : "bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400"
@@ -217,15 +217,14 @@ export function AdminMessagesClient({
             type="text"
             value={searchTerm}
             onChange={handleSearchChange}
-            placeholder="Search inquiries..."
             aria-label="Search inquiries"
-            className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-gray-50/70 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 text-xs font-medium text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors"
+            className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-xs font-medium text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors"
           />
         </form>
       </div>
 
       {/* Messages Table Container */}
-      <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#161922] shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead className="bg-gray-50/80 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-[10px] font-black uppercase tracking-wider text-gray-400 select-none">
@@ -286,7 +285,7 @@ export function AdminMessagesClient({
                       </div>
                     </td>
 
-                    <td className="py-3 px-4 whitespace-nowrap text-[11px] text-gray-500 dark:text-gray-400">
+                    <td className="py-3 px-4 whitespace-nowrap text-[11px] font-mono tabular-nums text-gray-500 dark:text-gray-400">
                       {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
                     </td>
 

@@ -44,28 +44,28 @@ export function AcademyLevelCard({
     const remainingModules = Math.max(0, moduleCount - previewModules.length);
 
     return (
-        <div className="group flex flex-col justify-between bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-5 shadow-sm hover:shadow-md hover:border-gray-300 dark:hover:border-white/20 transition-all">
+        <div className="group flex flex-col justify-between bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm hover:shadow-md hover:border-gray-300 dark:hover:border-white/20 transition-all">
             {/* Header: Order, Stage, Access & Actions */}
             <div>
                 <div className="flex items-start justify-between gap-2 mb-3">
                     <div className="flex items-center gap-2.5 flex-wrap">
-                        <div className="w-11 h-11 rounded-lg bg-gradient-to-br from-cyan-500/10 to-teal-500/20 border border-cyan-500/20 flex items-center justify-center shrink-0">
-                            <span className="text-base font-black text-cyan-600 dark:text-cyan-400">
+                        <div className="w-11 h-11 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0">
+                            <span className="text-base font-black font-mono tabular-nums text-amber-600 dark:text-gold">
                                 {String(level.order).padStart(2, "0")}
                             </span>
                         </div>
                         <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-1.5 flex-wrap">
                                 <span
-                                    className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${stage.badgeClass}`}
+                                    className={`text-[11px] font-bold px-2 py-0.5 rounded-lg border ${stage.badgeClass}`}
                                 >
                                     {stage.name}
                                 </span>
                                 <span
-                                    className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${
+                                    className={`text-[11px] font-bold px-2 py-0.5 rounded-lg border ${
                                         isPublic
                                             ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
-                                            : "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20"
+                                            : "bg-gold/10 text-amber-600 dark:text-gold border-gold/20"
                                     }`}
                                 >
                                     {isPublic ? "Public Access" : "Member Only"}
@@ -121,14 +121,14 @@ export function AcademyLevelCard({
                 </p>
 
                 {/* 2x2 Specs Matrix Card */}
-                <div className="grid grid-cols-2 divide-x divide-y divide-gray-200 dark:divide-white/10 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/60 dark:bg-white/[0.02] mb-4 overflow-hidden">
+                <div className="grid grid-cols-2 divide-x divide-y divide-gray-200 dark:divide-white/10 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] mb-4 overflow-hidden">
                     {/* Matrix Cell 1: Modules */}
                     <div className="p-2.5">
                         <div className="flex items-center gap-1.5 text-[11px] font-semibold text-gray-400 dark:text-gray-500 mb-0.5">
                             <Layers size={13} />
                             <span>Modules</span>
                         </div>
-                        <div className="text-sm font-bold text-gray-800 dark:text-white truncate">
+                        <div className="text-sm font-bold font-mono tabular-nums text-gray-800 dark:text-white truncate">
                             {moduleCount} Modules
                         </div>
                     </div>
@@ -139,7 +139,7 @@ export function AcademyLevelCard({
                             <BookOpen size={13} />
                             <span>Lessons</span>
                         </div>
-                        <div className="text-sm font-bold text-gray-800 dark:text-white truncate">
+                        <div className="text-sm font-bold font-mono tabular-nums text-gray-800 dark:text-white truncate">
                             {lessonCount} Lessons
                         </div>
                     </div>
@@ -150,7 +150,7 @@ export function AcademyLevelCard({
                             <HelpCircle size={13} />
                             <span>Evaluations</span>
                         </div>
-                        <div className="text-sm font-bold text-gray-800 dark:text-white truncate">
+                        <div className="text-sm font-bold font-mono tabular-nums text-gray-800 dark:text-white truncate">
                             {quizCount > 0 ? `${quizCount} Quizzes` : "None"}
                         </div>
                     </div>
@@ -184,7 +184,7 @@ export function AcademyLevelCard({
                                 </span>
                             ))}
                             {remainingModules > 0 && (
-                                <span className="text-[11px] font-medium px-2 py-0.5 bg-gray-100 dark:bg-white/5 text-gray-500 rounded-lg">
+                                <span className="text-[11px] font-medium font-mono tabular-nums px-2 py-0.5 bg-gray-100 dark:bg-white/5 text-gray-500 rounded-lg">
                                     +{remainingModules} more
                                 </span>
                             )}
@@ -195,7 +195,7 @@ export function AcademyLevelCard({
 
             {/* Footer Action */}
             <div className="pt-3 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <span className="text-xs text-gray-400 font-medium">
+                <span className="text-xs font-mono tabular-nums text-gray-400 font-medium">
                     Order index #{level.order}
                 </span>
                 <Link

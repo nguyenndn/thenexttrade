@@ -47,14 +47,14 @@ export function AiRequestsExplorer({ requests: initialRequests }: { requests: an
                     <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
                         type="text"
-                        placeholder="Search request ID, task key, or user..."
+                        aria-label="Search request ID, task key, or user"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-primary text-gray-900 dark:text-white"
+                        className="w-full bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-primary text-gray-900 dark:text-white"
                     />
                 </div>
                 <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-                    <span className="text-xs text-gray-500 font-medium">
+                    <span className="text-xs text-gray-500 font-medium font-mono tabular-nums">
                         Updated {format(lastUpdated, "HH:mm:ss")}
                     </span>
                     <Button
@@ -79,7 +79,7 @@ export function AiRequestsExplorer({ requests: initialRequests }: { requests: an
             </div>
 
             {/* Data Table Card */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left border-collapse">
                         <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 font-bold tracking-wider">
@@ -112,7 +112,7 @@ export function AiRequestsExplorer({ requests: initialRequests }: { requests: an
                                 <React.Fragment key={req.id}>
                                     <tr className="group hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-colors">
                                         <td
-                                            className="px-6 py-4 font-mono text-xs text-gray-700 dark:text-gray-300 font-medium"
+                                            className="px-6 py-4 font-mono tabular-nums text-xs text-gray-700 dark:text-gray-300 font-medium"
                                             title={req.requestId}
                                         >
                                             {formatRequestId(req.requestId)}
@@ -129,25 +129,25 @@ export function AiRequestsExplorer({ requests: initialRequests }: { requests: an
                                         </td>
                                         <td className="px-6 py-4">
                                             <span
-                                                className={`inline-flex items-center px-2 py-0.5 rounded-lg text-[11px] font-bold ${
+                                                className={`inline-flex items-center px-2 py-0.5 rounded-lg text-[11px] font-bold border ${
                                                     req.status === "COMPLETED"
-                                                        ? "bg-green-100 dark:bg-green-500/10 text-green-700 dark:text-green-400"
+                                                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
                                                         : req.status === "FAILED"
-                                                          ? "bg-red-100 dark:bg-red-500/10 text-red-700 dark:text-red-400"
+                                                          ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
                                                           : req.status === "REJECTED"
-                                                            ? "bg-purple-100 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400"
-                                                            : "bg-yellow-100 dark:bg-yellow-500/10 text-yellow-700 dark:text-yellow-400"
+                                                            ? "bg-gold/10 text-amber-600 dark:text-gold border-gold/20"
+                                                            : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
                                                 }`}
                                             >
                                                 {req.status}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-700 dark:text-gray-300">
+                                        <td className="px-6 py-4 font-medium font-mono tabular-nums text-gray-700 dark:text-gray-300">
                                             {req.totalLatencyMs
                                                 ? `${req.totalLatencyMs}ms`
                                                 : "-"}
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                        <td className="px-6 py-4 whitespace-nowrap font-mono tabular-nums text-gray-500 dark:text-gray-400">
                                             {format(
                                                 new Date(req.createdAt),
                                                 "MMM d, HH:mm:ss"
@@ -178,7 +178,7 @@ export function AiRequestsExplorer({ requests: initialRequests }: { requests: an
                                     </tr>
 
                                     {expandedId === req.id && (
-                                        <tr className="bg-gray-50/50 dark:bg-black/20">
+                                        <tr className="bg-gray-50/80 dark:bg-[#151925]">
                                             <td
                                                 colSpan={7}
                                                 className="px-6 py-4 border-l-2 border-primary"
@@ -189,7 +189,7 @@ export function AiRequestsExplorer({ requests: initialRequests }: { requests: an
                                                             <p className="text-gray-500 mb-1 font-semibold uppercase tracking-wider">
                                                                 Full Request ID
                                                             </p>
-                                                            <p className="font-mono text-gray-900 dark:text-gray-300 font-medium">
+                                                            <p className="font-mono tabular-nums text-gray-900 dark:text-gray-300 font-medium">
                                                                 {req.requestId}
                                                             </p>
                                                         </div>
@@ -197,7 +197,7 @@ export function AiRequestsExplorer({ requests: initialRequests }: { requests: an
                                                             <p className="text-gray-500 mb-1 font-semibold uppercase tracking-wider">
                                                                 Cost (USD)
                                                             </p>
-                                                            <p className="font-mono text-primary font-bold">
+                                                            <p className="font-mono tabular-nums text-primary font-bold">
                                                                 $
                                                                 {req.estimatedCostUsd?.toFixed(
                                                                     6
@@ -208,7 +208,7 @@ export function AiRequestsExplorer({ requests: initialRequests }: { requests: an
                                                             <p className="text-gray-500 mb-1 font-semibold uppercase tracking-wider">
                                                                 Tokens
                                                             </p>
-                                                            <p className="text-gray-900 dark:text-gray-300 font-medium">
+                                                            <p className="text-gray-900 dark:text-gray-300 font-medium font-mono tabular-nums">
                                                                 In:{" "}
                                                                 {req.inputTokens ||
                                                                     0}{" "}
@@ -224,7 +224,7 @@ export function AiRequestsExplorer({ requests: initialRequests }: { requests: an
                                                             <p className="text-gray-900 dark:text-gray-300 font-medium">
                                                                 {req.routingPolicyId ||
                                                                     "Default"}{" "}
-                                                                <span className="text-gray-500 font-normal">
+                                                                <span className="text-gray-500 font-normal font-mono tabular-nums">
                                                                     v
                                                                     {req.routingPolicyVersion ||
                                                                         1}
@@ -254,13 +254,13 @@ export function AiRequestsExplorer({ requests: initialRequests }: { requests: an
                                                                             >
                                                                                 <div className="flex items-center gap-3">
                                                                                     <div
-                                                                                        className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold ${
+                                                                                        className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold font-mono tabular-nums ${
                                                                                             attempt.status ===
                                                                                             "COMPLETED"
-                                                                                                ? "bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400"
+                                                                                                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                                                                                                 : attempt.status ===
                                                                                                     "ERROR"
-                                                                                                  ? "bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400"
+                                                                                                  ? "bg-rose-500/10 text-rose-600 dark:text-rose-400"
                                                                                                   : "bg-gray-100 dark:bg-gray-500/20 text-gray-700 dark:text-gray-400"
                                                                                         }`}
                                                                                     >
@@ -275,7 +275,7 @@ export function AiRequestsExplorer({ requests: initialRequests }: { requests: an
                                                                                                 attempt.providerId ||
                                                                                                 "Unknown Provider"}
                                                                                         </p>
-                                                                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-medium">
+                                                                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-medium font-mono tabular-nums">
                                                                                             {attempt.modelName ||
                                                                                                 attempt.modelId ||
                                                                                                 "Unknown Model"}{" "}
@@ -289,11 +289,11 @@ export function AiRequestsExplorer({ requests: initialRequests }: { requests: an
                                                                                 </div>
                                                                                 <div className="text-right">
                                                                                     <span
-                                                                                        className={`text-xs px-2 py-0.5 rounded-lg font-bold ${
+                                                                                        className={`text-xs px-2 py-0.5 rounded-lg font-bold font-mono tabular-nums ${
                                                                                             attempt.httpStatus ===
                                                                                             200
-                                                                                                ? "bg-green-100 dark:bg-green-500/10 text-green-700 dark:text-green-400"
-                                                                                                : "bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400"
+                                                                                                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                                                                                                : "bg-rose-500/10 text-rose-600 dark:text-rose-400"
                                                                                         }`}
                                                                                     >
                                                                                         HTTP{" "}

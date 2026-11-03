@@ -178,53 +178,53 @@ export function BehaviorConsoleClient() {
         <div className="space-y-6">
             {/* Top Stat Matrix Cards */}
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                <div className="rounded-lg border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-4 shadow-xs">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
                             Needs Attention
                         </span>
                         <AlertCircle className="h-4 w-4 text-amber-500" />
                     </div>
-                    <p className="mt-2 text-2xl font-bold text-zinc-900 dark:text-white">
+                    <p className="mt-2 font-mono tabular-nums text-2xl font-bold text-zinc-900 dark:text-white">
                         {summary?.needsAttentionCount ?? 0}
                     </p>
                     <p className="mt-1 text-[11px] text-zinc-400">Critical & follow-up queue</p>
                 </div>
 
-                <div className="rounded-lg border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-4 shadow-xs">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
                             Steady Active
                         </span>
                         <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                     </div>
-                    <p className="mt-2 text-2xl font-bold text-zinc-900 dark:text-white">
+                    <p className="mt-2 font-mono tabular-nums text-2xl font-bold text-zinc-900 dark:text-white">
                         {summary?.steadyTradersCount ?? 0}
                     </p>
                     <p className="mt-1 text-[11px] text-zinc-400">Consistent execution</p>
                 </div>
 
-                <div className="rounded-lg border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-4 shadow-xs">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
                             Loss Streaks
                         </span>
                         <Flame className="h-4 w-4 text-rose-500" />
                     </div>
-                    <p className="mt-2 text-2xl font-bold text-zinc-900 dark:text-white">
+                    <p className="mt-2 font-mono tabular-nums text-2xl font-bold text-zinc-900 dark:text-white">
                         {summary?.lossStreakCount ?? 0}
                     </p>
                     <p className="mt-1 text-[11px] text-zinc-400">≥3 consecutive losses</p>
                 </div>
 
-                <div className="rounded-lg border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-4 shadow-xs">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
                             Never Synced
                         </span>
                         <Clock className="h-4 w-4 text-zinc-400" />
                     </div>
-                    <p className="mt-2 text-2xl font-bold text-zinc-900 dark:text-white">
+                    <p className="mt-2 font-mono tabular-nums text-2xl font-bold text-zinc-900 dark:text-white">
                         {summary?.registeredNeverTradedCount ?? 0}
                     </p>
                     <p className="mt-1 text-[11px] text-zinc-400">Account linked &gt;72h, 0 trades</p>
@@ -234,7 +234,7 @@ export function BehaviorConsoleClient() {
             {/* Navigation Tabs & Search Controls */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 {/* 2 Primary Tabs */}
-                <div className="inline-flex rounded-lg border border-zinc-200/80 bg-zinc-100/80 p-1 dark:border-zinc-800 dark:bg-zinc-800/80">
+                <div className="inline-flex rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 p-1 dark:bg-[#151925]">
                     <Button
                         type="button"
                         variant="ghost"
@@ -244,7 +244,7 @@ export function BehaviorConsoleClient() {
                         }}
                         className={`h-auto rounded-lg px-4 py-2 text-xs font-semibold transition-all ${
                             activeTab === "needs-attention"
-                                ? "bg-white text-zinc-900 shadow-xs dark:bg-zinc-900 dark:text-white"
+                                ? "bg-gold !text-white shadow-xs hover:bg-gold/90"
                                 : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-transparent"
                         }`}
                     >
@@ -259,7 +259,7 @@ export function BehaviorConsoleClient() {
                         }}
                         className={`h-auto rounded-lg px-4 py-2 text-xs font-semibold transition-all ${
                             activeTab === "value"
-                                ? "bg-white text-zinc-900 shadow-xs dark:bg-zinc-900 dark:text-white"
+                                ? "bg-gold !text-white shadow-xs hover:bg-gold/90"
                                 : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-transparent"
                         }`}
                     >
@@ -274,7 +274,7 @@ export function BehaviorConsoleClient() {
                             type="text"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="h-9 w-60 rounded-lg border border-zinc-200/80 bg-white pl-9 pr-3 text-xs text-zinc-900 outline-hidden focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+                            className="h-9 w-60 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 pl-9 pr-3 text-xs text-zinc-900 outline-hidden focus:border-gold dark:bg-[#151925] dark:text-zinc-100"
                             aria-label="Search traders by name or email"
                         />
                         <Search className="absolute left-3 top-2.5 h-4 w-4 text-zinc-400" />
@@ -289,11 +289,11 @@ export function BehaviorConsoleClient() {
                     >
                         <SelectTrigger
                             aria-label="Filter by behavior group"
-                            className="h-9 rounded-lg border border-zinc-200/80 bg-white px-3 text-xs font-medium text-zinc-700 outline-hidden dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300"
+                            className="h-9 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 px-3 text-xs font-medium text-zinc-700 outline-hidden dark:bg-[#151925] dark:text-zinc-300"
                         >
-                            <SelectValue placeholder="All Groups" />
+                            <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="rounded-lg border border-zinc-200/80 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+                        <SelectContent className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0D111C]">
                             <SelectItem value="ALL" className="rounded-lg text-xs">All Groups</SelectItem>
                             <SelectItem value="REGISTERED_NEVER_TRADED" className="rounded-lg text-xs">Never Synced</SelectItem>
                             <SelectItem value="LOSING_STREAK" className="rounded-lg text-xs">Losing Streak</SelectItem>
@@ -306,7 +306,7 @@ export function BehaviorConsoleClient() {
             </div>
 
             {/* Table Presentation */}
-            <div className="overflow-hidden rounded-lg border border-zinc-200/80 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+            <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-xs">
                 {isLoading ? (
                     <div className="flex h-64 items-center justify-center">
                         <Loader2 className="h-6 w-6 animate-spin text-zinc-400" />
@@ -377,13 +377,13 @@ export function BehaviorConsoleClient() {
                                                         "Normal execution pattern"}
                                                 </p>
                                             </td>
-                                            <td className="px-3 py-3.5 align-middle font-medium text-zinc-800 dark:text-zinc-200">
+                                            <td className="px-3 py-3.5 align-middle font-mono tabular-nums font-medium text-zinc-800 dark:text-zinc-200">
                                                 {m.activeDays30} active days
                                                 <span className="block text-[11px] font-normal text-zinc-400">
                                                     {m.closedTrades30} trades logged
                                                 </span>
                                             </td>
-                                            <td className="px-3 py-3.5 align-middle text-zinc-500">
+                                            <td className="px-3 py-3.5 align-middle font-mono tabular-nums text-zinc-500">
                                                 {item.lastActivityAt
                                                     ? formatDistanceToNow(
                                                           new Date(item.lastActivityAt),
@@ -491,7 +491,7 @@ export function BehaviorConsoleClient() {
                                                     </span>
                                                 )}
                                             </td>
-                                            <td className="px-3 py-3.5 align-middle font-medium text-zinc-800 dark:text-zinc-200">
+                                            <td className="px-3 py-3.5 align-middle font-mono tabular-nums font-medium text-zinc-800 dark:text-zinc-200">
                                                 {m.activeDays30} days / 30d
                                                 <span className="block text-[11px] font-normal text-zinc-400">
                                                     {m.closedTrades30} closed trades
@@ -516,7 +516,7 @@ export function BehaviorConsoleClient() {
                                             </td>
                                             <td className="px-3 py-3.5 align-middle">
                                                 <div className="flex items-center gap-1.5">
-                                                    <span className="font-semibold text-zinc-800 dark:text-zinc-200">
+                                                    <span className="font-mono tabular-nums font-semibold text-zinc-800 dark:text-zinc-200">
                                                         {m.productAdoptionCount} / 8
                                                     </span>
                                                     <span className="text-[11px] text-zinc-400">
@@ -539,7 +539,7 @@ export function BehaviorConsoleClient() {
                                                     </span>
                                                 )}
                                             </td>
-                                            <td className="px-3 py-3.5 align-middle text-zinc-500">
+                                            <td className="px-3 py-3.5 align-middle font-mono tabular-nums text-zinc-500">
                                                 {item.lastActivityAt
                                                     ? formatDistanceToNow(
                                                           new Date(item.lastActivityAt),
@@ -569,8 +569,8 @@ export function BehaviorConsoleClient() {
 
                 {/* Pagination Controls */}
                 {data && data.totalPages > 1 && (
-                    <div className="flex items-center justify-between border-t border-zinc-200/80 px-4 py-3 dark:border-zinc-800">
-                        <span className="text-xs text-zinc-500">
+                    <div className="flex items-center justify-between border-t border-gray-200 dark:border-white/10 px-4 py-3">
+                        <span className="font-mono tabular-nums text-xs text-zinc-500">
                             Page {data.page} of {data.totalPages} ({data.totalCount} traders)
                         </span>
                         <div className="flex items-center gap-2">

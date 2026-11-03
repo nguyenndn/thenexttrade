@@ -23,9 +23,9 @@ const alertConfig = {
     },
     info: {
         icon: Info,
-        color: "text-blue-500",
-        bg: "bg-blue-50 dark:bg-blue-500/10",
-        border: "border-blue-200 dark:border-blue-500/20",
+        color: "text-amber-600 dark:text-gold",
+        bg: "bg-amber-50 dark:bg-amber-500/10",
+        border: "border-amber-200 dark:border-amber-500/20",
     },
 };
 
@@ -78,7 +78,7 @@ export function AlertsPanel({ data }: AlertsPanelProps) {
                                     <p className="text-xs text-gray-500 mt-0.5">
                                         {alert.description}
                                     </p>
-                                    <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-400">
+                                    <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-400 font-mono tabular-nums">
                                         <span>
                                             Current:{" "}
                                             <strong className="text-gray-600 dark:text-gray-300">

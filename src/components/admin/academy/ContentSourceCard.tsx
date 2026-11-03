@@ -61,8 +61,8 @@ export function ContentSourceCard({
         if (url.includes("reddit.com"))
             return <MessageCircle size={11} className="text-orange-500" />;
         if (url.includes("x.com") || url.includes("twitter.com"))
-            return <Twitter size={11} className="text-sky-500" />;
-        return <Globe size={11} className="text-blue-500" />;
+            return <Twitter size={11} className="text-amber-600 dark:text-gold" />;
+        return <Globe size={11} className="text-amber-600 dark:text-gold" />;
     };
 
     const getSourceDomain = (url: string) => {
@@ -74,7 +74,7 @@ export function ContentSourceCard({
     };
 
     return (
-        <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm p-4 space-y-3">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-4 space-y-3">
             <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider flex items-center gap-1.5">
                 <Bot size={13} />
                 AI Source Info
@@ -94,7 +94,11 @@ export function ContentSourceCard({
             {sourceUrls && sourceUrls.length > 0 && (
                 <div className="space-y-1">
                     <span className="text-xs text-gray-500">
-                        Sources ({sourceUrls.length}):
+                        Sources (
+                        <span className="font-mono tabular-nums">
+                            {sourceUrls.length}
+                        </span>
+                        ):
                     </span>
                     {sourceUrls.map((url, i) => (
                         <a
@@ -102,7 +106,7 @@ export function ContentSourceCard({
                             href={url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1.5 text-[11px] text-blue-600 dark:text-blue-400 hover:underline truncate"
+                            className="flex items-center gap-1.5 text-[11px] text-amber-600 dark:text-gold hover:underline truncate"
                         >
                             {getSourceIcon(url)}
                             {getSourceDomain(url)}

@@ -17,7 +17,7 @@ export default function Loading() {
                 {[...Array(5)].map((_, i) => (
                     <div
                         key={i}
-                        className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-6 shadow-sm animate-pulse"
+                        className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm animate-pulse"
                     >
                         <div className="flex justify-between items-start mb-4">
                             <div className="flex items-center gap-3">
@@ -27,7 +27,7 @@ export default function Loading() {
                                     <div className="h-3 w-24 bg-gray-100 dark:bg-white/5 rounded-lg" />
                                 </div>
                             </div>
-                            <div className="h-6 w-20 bg-gray-100 dark:bg-white/5 rounded-full" />
+                            <div className="h-6 w-20 bg-gray-100 dark:bg-white/5 rounded-lg" />
                         </div>
                         <div className="space-y-2">
                             <div className="h-4 w-full bg-gray-50 dark:bg-white/5 rounded-lg" />

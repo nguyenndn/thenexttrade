@@ -39,7 +39,7 @@ function HealthCard({
     href?: string;
 }) {
     return (
-        <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-5 flex flex-col justify-between">
+        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 flex flex-col justify-between shadow-sm">
             <div>
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2.5">
@@ -82,7 +82,7 @@ function StatRow({
         <div className="flex items-center justify-between text-sm">
             <span className="text-gray-500 dark:text-gray-400">{label}</span>
             <span
-                className={`font-bold tabular-nums ${warn ? "text-amber-600 dark:text-amber-400" : "text-gray-800 dark:text-white"}`}
+                className={`font-bold font-mono tabular-nums ${warn ? "text-amber-600 dark:text-amber-400" : "text-gray-800 dark:text-white"}`}
             >
                 {value}
             </span>
@@ -108,10 +108,10 @@ function FunnelRow({
                     {label}
                 </span>
                 <div className="flex items-center gap-2">
-                    <span className="font-bold tabular-nums text-gray-800 dark:text-white">
+                    <span className="font-bold font-mono tabular-nums text-gray-800 dark:text-white">
                         {count}
                     </span>
-                    <span className="text-xs text-gray-400 tabular-nums w-10 text-right">
+                    <span className="text-xs text-gray-400 font-mono tabular-nums w-10 text-right">
                         {rate}%
                     </span>
                 </div>
@@ -299,7 +299,7 @@ export function ReleaseHealthDashboard({ data }: Props) {
                             </TabsTrigger>
                         </TabsList>
                     </div>
-                    <div className="text-sm font-medium text-gray-500 whitespace-nowrap">
+                    <div className="text-sm font-medium font-mono tabular-nums text-gray-500 whitespace-nowrap">
                         Last updated:{" "}
                         {new Date().toLocaleString("en-US", {
                             dateStyle: "medium",

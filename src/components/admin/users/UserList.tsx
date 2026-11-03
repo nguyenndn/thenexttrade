@@ -65,13 +65,13 @@ interface UserListProps {
 const ROLE_STYLES: Record<string, string> = {
     ADMIN: "border-red-200 bg-red-50 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-400",
     EDITOR: "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400",
-    USER: "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400",
+    USER: "border-gold/20 bg-gold/10 text-amber-700 dark:border-gold/20 dark:bg-gold/10 dark:text-gold",
 };
 
 function RoleBadge({ role }: { role: string }) {
     return (
         <span
-            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-xs font-bold border ${
                 ROLE_STYLES[role] || ROLE_STYLES.USER
             }`}
         >
@@ -230,14 +230,14 @@ export function UserList({
 
     // ─── Render ────────────────────────────────────────────────────
     return (
-        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
             {/* Toolbar */}
             <div className="p-4 border-b border-gray-200 dark:border-white/10">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                     {/* Search */}
                     <div className="flex-1 w-full sm:max-w-xs">
                         <PremiumInput
-                            placeholder="Search by name or email..."
+                            aria-label="Search users by name or email"
                             defaultValue={currentQuery}
                             onChange={(e) => debouncedSearch(e.target.value)}
                             icon={Search}
@@ -346,7 +346,7 @@ export function UserList({
                         <Button
                             variant="outline"
                             onClick={() => setIsBulkConfirmOpen(true)}
-                            className="rounded-lg text-sm font-medium h-10 px-4 text-red-500 border-red-200 hover:bg-red-50 dark:border-red-500/20 dark:hover:bg-red-500/10"
+                            className="rounded-lg text-sm font-medium font-mono tabular-nums h-10 px-4 text-red-500 border-red-200 hover:bg-red-50 dark:border-red-500/20 dark:hover:bg-red-500/10"
                         >
                             <Trash2 size={14} className="mr-2" />
                             Delete ({selectedIds.size})
@@ -430,7 +430,7 @@ export function UserList({
                                                     src={user.image || undefined}
                                                     alt={user.name || "User"}
                                                 />
-                                                <AvatarFallback className="bg-gradient-to-tr from-cyan-400 to-blue-500 text-white font-bold text-xs">
+                                                <AvatarFallback className="bg-gradient-to-tr from-gold to-amber-600 text-white font-bold text-xs">
                                                     {user.name?.[0]?.toUpperCase() || (
                                                         <Users size={14} />
                                                     )}
@@ -466,7 +466,7 @@ export function UserList({
 
                                     {/* Joined */}
                                     <td className="px-4 py-4">
-                                        <div className="flex flex-col">
+                                        <div className="flex flex-col font-mono tabular-nums">
                                             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                                 {new Date(
                                                     user.createdAt
@@ -490,11 +490,11 @@ export function UserList({
                                     {/* Accounts */}
                                     <td className="px-4 py-4">
                                         <div className="flex gap-2">
-                                            <div className="flex flex-col items-center min-w-[52px] px-2 py-1.5 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
+                                            <div className="flex flex-col items-center min-w-[52px] px-2 py-1.5 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10">
                                                 <span className="text-[9px] text-gray-400 uppercase tracking-widest font-bold">
                                                     Linked
                                                 </span>
-                                                <span className="text-sm font-bold text-gray-700 dark:text-white">
+                                                <span className="text-sm font-bold font-mono tabular-nums text-gray-700 dark:text-white">
                                                     {
                                                         user._count
                                                             .tradingAccounts
@@ -545,7 +545,7 @@ export function UserList({
             {/* Pagination */}
             {pagination.totalPages > 1 && (
                 <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-white/10">
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 font-mono tabular-nums">
                         Page {currentPage} of {pagination.totalPages}
                     </p>
                     <div className="flex gap-2">

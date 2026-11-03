@@ -19,21 +19,21 @@ export function RevenueOpportunityPanel({ data }: Props) {
                     label="Pro Users"
                     value={data.proUsers}
                     icon={Crown}
-                    gradient="from-emerald-500 to-teal-600"
+                    gradient="from-emerald-500 to-emerald-600"
                     tone="good"
                 />
                 <ReportMetricCard
                     label="Candidates"
                     value={data.proCandidates}
                     icon={Users}
-                    gradient="from-indigo-500 to-purple-600"
+                    gradient="from-amber-500 to-amber-600"
                     tone="warning"
                 />
                 <ReportMetricCard
                     label="Pending"
                     value={data.pendingProRequests}
                     icon={Clock}
-                    gradient="from-amber-500 to-orange-500"
+                    gradient="from-amber-500 to-amber-600"
                     tone={data.pendingProRequests > 0 ? "warning" : "default"}
                     href="/admin/ib/pipeline"
                 />
@@ -45,7 +45,7 @@ export function RevenueOpportunityPanel({ data }: Props) {
                             : "N/A"
                     }
                     icon={DollarSign}
-                    gradient="from-cyan-500 to-blue-500"
+                    gradient="from-emerald-500 to-emerald-600"
                 />
             </div>
             {data.opportunities.length > 0 ? (
@@ -84,7 +84,7 @@ export function RevenueOpportunityPanel({ data }: Props) {
                                     <td className="px-4 py-2.5 text-gray-600">
                                         {o.broker || "—"}
                                     </td>
-                                    <td className="px-4 py-2.5 text-right tabular-nums font-bold">
+                                    <td className="px-4 py-2.5 text-right font-mono tabular-nums font-bold">
                                         ${o.balance.toLocaleString()}
                                     </td>
                                     <td className="px-4 py-2.5">

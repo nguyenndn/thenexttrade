@@ -63,7 +63,7 @@ export function SortableModule({
         <div ref={setNodeRef} style={style} className="mb-4">
             <div
                 className={clsx(
-                    "bg-white dark:bg-[#1C212E] border rounded-lg overflow-hidden shadow-sm transition-colors",
+                    "bg-white dark:bg-[#1E2028] border rounded-xl overflow-hidden shadow-sm transition-colors",
                     isDragging
                         ? "border-primary"
                         : "border-gray-200 dark:border-white/10 "
@@ -99,7 +99,7 @@ export function SortableModule({
                             <h3 className="font-bold text-gray-700 dark:text-white text-sm">
                                 {module.title}
                             </h3>
-                            <span className="text-xs text-gray-600">
+                            <span className="text-xs font-mono tabular-nums text-gray-600">
                                 {module.lessons?.length || 0} Lessons
                             </span>
                         </div>
@@ -114,8 +114,8 @@ export function SortableModule({
                             className={clsx(
                                 "text-xs h-8 px-2 border-dashed",
                                 module.quiz
-                                    ? "border-blue-200 text-blue-600 bg-blue-50 hover:bg-blue-100 hover:border-blue-300"
-                                    : "text-gray-500 border-gray-300 hover:text-blue-500 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10"
+                                    ? "border-gold/30 text-amber-600 dark:text-gold bg-gold/10 hover:bg-gold/20"
+                                    : "text-gray-500 border-gray-300 hover:text-amber-600 dark:hover:text-gold hover:border-gold/30 hover:bg-gold/10"
                             )}
                         >
                             {module.quiz ? "Edit Quiz" : "Add Quiz"}

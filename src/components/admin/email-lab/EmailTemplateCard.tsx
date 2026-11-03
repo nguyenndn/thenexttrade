@@ -109,7 +109,7 @@ export function EmailTemplateCard({
                         type="button"
                         variant="primary"
                         size="smd"
-                        className="w-full text-xs font-bold rounded-lg flex items-center justify-center gap-1.5"
+                        className="w-full text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 bg-gold hover:bg-amber-600 text-white"
                         isLoading={isSending}
                         onClick={() =>
                             onSend(template.id as EmailLabTemplateId)

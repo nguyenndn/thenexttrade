@@ -233,9 +233,9 @@ export function MediaLibraryModal({
                     {/* Main Content Area */}
                     <div className="flex-1 flex flex-col p-4 overflow-y-auto">
                         {activeTab === "upload" && (
-                            <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 rounded-lg m-4 bg-gray-50 dark:bg-black/20">
+                            <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 rounded-xl m-4 bg-gray-50/80 dark:bg-[#1E2028]">
                                 <div className="text-center space-y-4">
-                                    <div className="w-16 h-16 bg-gray-200 dark:bg-white/10 rounded-full flex items-center justify-center mx-auto text-gray-500">
+                                    <div className="w-16 h-16 bg-gold/10 border border-gold/20 rounded-xl flex items-center justify-center mx-auto text-amber-600 dark:text-gold">
                                         <Upload size={32} />
                                     </div>
                                     <div>
@@ -277,7 +277,7 @@ export function MediaLibraryModal({
                                     <div className="relative flex-1 max-w-md">
                                         <PremiumInput
                                             icon={Search}
-                                            placeholder="Search by filename..."
+                                            aria-label="Search by filename"
                                             value={search}
                                             onChange={(e) =>
                                                 setSearch(e.target.value)
@@ -345,13 +345,13 @@ export function MediaLibraryModal({
                                     <div className="font-bold text-gray-700 dark:text-gray-300 line-clamp-1">
                                         {selectedMedia.filename}
                                     </div>
-                                    <div>
+                                    <div className="font-mono tabular-nums">
                                         {selectedMedia.createdAt.substring(
                                             0,
                                             10
                                         )}
                                     </div>
-                                    <div>
+                                    <div className="font-mono tabular-nums">
                                         {(selectedMedia.size / 1024).toFixed(1)}{" "}
                                         KB
                                     </div>
@@ -372,12 +372,12 @@ export function MediaLibraryModal({
                                     </label>
                                     <input
                                         type="text"
+                                        aria-label="Alt Text"
                                         value={selectedMedia.alt || ""}
                                         onChange={(e) =>
                                             handleUpdate("alt", e.target.value)
                                         }
-                                        className="w-full p-2.5 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500"
-                                        placeholder="Describe this image..."
+                                        className="w-full p-2.5 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                                     />
                                     <p className="text-[10px] text-gray-500 mt-1">
                                         Describe these images for better SEO and
@@ -390,6 +390,7 @@ export function MediaLibraryModal({
                                     </label>
                                     <textarea
                                         rows={3}
+                                        aria-label="Caption"
                                         value={selectedMedia.caption || ""}
                                         onChange={(e) =>
                                             handleUpdate(
@@ -397,8 +398,7 @@ export function MediaLibraryModal({
                                                 e.target.value
                                             )
                                         }
-                                        className="w-full p-2.5 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-500 resize-none"
-                                        placeholder="Add a caption for this image..."
+                                        className="w-full p-2.5 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all resize-none"
                                     />
                                 </div>
                             </div>
@@ -416,9 +416,9 @@ export function MediaLibraryModal({
                                     Insert Media
                                 </Button>
                                 <Button
-                                    variant="ghost"
+                                    variant="outline"
                                     onClick={confirmDelete}
-                                    className="w-full py-2.5 h-auto text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 text-xs font-bold rounded-lg transition-all"
+                                    className="w-full py-2.5 h-auto text-red-500 border-red-200 dark:border-red-500/20 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 text-xs font-bold rounded-lg transition-all"
                                 >
                                     Delete Permanently
                                 </Button>

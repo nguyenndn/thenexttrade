@@ -67,11 +67,11 @@ export function ProductUsersTable({
     };
 
     return (
-        <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
             {/* Header & Search */}
             <div className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 dark:border-white/10">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500">
+                    <div className="p-2 rounded-lg bg-gold/10 text-amber-600 dark:text-gold">
                         <Users size={20} />
                     </div>
                     <div>
@@ -79,7 +79,7 @@ export function ProductUsersTable({
                             <h3 className="text-base font-bold text-gray-900 dark:text-white">
                                 EA Farm Telemetry & Active Accounts
                             </h3>
-                            <span className="text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-lg border border-amber-500/20">
+                            <span className="text-xs font-mono tabular-nums font-bold text-amber-600 dark:text-gold bg-gold/10 px-2.5 py-0.5 rounded-lg border border-gold/20">
                                 {users.length} allocations
                             </span>
                         </div>
@@ -100,7 +100,7 @@ export function ProductUsersTable({
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             aria-label="Filter traders by name, email, account number, or broker"
-                            className="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
+                            className="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
                         />
                     </div>
                 )}
@@ -114,23 +114,23 @@ export function ProductUsersTable({
                             <span>Confirmed EA Farm Capital</span>
                             <Wallet size={14} />
                         </div>
-                        <p className="text-lg font-extrabold text-gray-900 dark:text-white mt-1 font-mono">
+                        <p className="text-lg font-extrabold text-gray-900 dark:text-white mt-1 font-mono tabular-nums">
                             {formatMoney(farmStats.confirmedFarmBalanceUSD)}
                         </p>
-                        <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+                        <p className="text-[11px] font-mono tabular-nums text-gray-500 dark:text-gray-400 mt-0.5">
                             Eq: {formatMoney(farmStats.confirmedFarmEquityUSD)} · {farmStats.confirmedAccountsCount} linked accts
                         </p>
                     </div>
 
                     <div className="p-4">
-                        <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                        <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-gold">
                             <span>User Pool Capital</span>
                             <Layers size={14} />
                         </div>
-                        <p className="text-lg font-extrabold text-gray-900 dark:text-white mt-1 font-mono">
+                        <p className="text-lg font-extrabold text-gray-900 dark:text-white mt-1 font-mono tabular-nums">
                             {formatMoney(farmStats.userPoolBalanceUSD)}
                         </p>
-                        <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+                        <p className="text-[11px] font-mono tabular-nums text-gray-500 dark:text-gray-400 mt-0.5">
                             Eq: {formatMoney(farmStats.userPoolEquityUSD)} · {farmStats.totalAccountsCount} total accts
                             {farmStats.demoAccountsCount > 0
                                 ? ` (${farmStats.demoAccountsCount} demo)`
@@ -139,7 +139,7 @@ export function ProductUsersTable({
                     </div>
 
                     <div className="p-4">
-                        <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                        <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-gold">
                             <span>Online Telemetry (24h)</span>
                             <Activity size={14} />
                         </div>
@@ -156,27 +156,27 @@ export function ProductUsersTable({
                                     }`}
                                 />
                             </span>
-                            <p className="text-lg font-extrabold text-gray-900 dark:text-white font-mono">
+                            <p className="text-lg font-extrabold text-gray-900 dark:text-white font-mono tabular-nums">
                                 {farmStats.onlineAccountsCount} / {farmStats.totalAccountsCount}
                                 <span className="text-xs font-bold text-gray-400 dark:text-gray-500 ml-1">
                                     ({farmStats.liveAccountsCount} live)
                                 </span>
                             </p>
                         </div>
-                        <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+                        <p className="text-[11px] font-mono tabular-nums text-gray-500 dark:text-gray-400 mt-0.5">
                             Fresh capital: {formatMoney(farmStats.confirmedFreshBalanceUSD)}
                         </p>
                     </div>
 
                     <div className="p-4">
-                        <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+                        <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-gold">
                             <span>Licensed Traders</span>
                             <Users size={14} />
                         </div>
-                        <p className="text-lg font-extrabold text-gray-900 dark:text-white mt-1 font-mono">
+                        <p className="text-lg font-extrabold text-gray-900 dark:text-white mt-1 font-mono tabular-nums">
                             {farmStats.uniqueTradersCount}
                         </p>
-                        <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+                        <p className="text-[11px] font-mono tabular-nums text-gray-500 dark:text-gray-400 mt-0.5">
                             {users.length} account allocations
                         </p>
                     </div>
@@ -283,7 +283,7 @@ export function ProductUsersTable({
                                             <td className="py-3 px-4">
                                                 <div className="flex flex-col gap-0.5">
                                                     <div className="flex items-center gap-1.5 flex-wrap">
-                                                        <span className="font-mono font-bold text-gray-800 dark:text-gray-200">
+                                                        <span className="font-mono tabular-nums font-bold text-gray-800 dark:text-gray-200">
                                                             {user.accountNumber &&
                                                             user.accountNumber !== "—"
                                                                 ? `#${user.accountNumber}`
@@ -292,7 +292,7 @@ export function ProductUsersTable({
                                                         {user.platform &&
                                                             user.accountNumber !==
                                                                 "—" && (
-                                                                <span className="px-1.5 py-0.2 rounded-lg text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-mono">
+                                                                <span className="px-1.5 py-0.2 rounded-lg text-[10px] font-bold bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 font-mono">
                                                                     {user.platform}
                                                                 </span>
                                                             )}
@@ -309,7 +309,7 @@ export function ProductUsersTable({
                                                         )}
                                                         {user.isConfirmedAccount && (
                                                             <span
-                                                                className="px-1.5 py-0.2 rounded-lg text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                                                                className="px-1.5 py-0.2 rounded-lg text-[10px] font-bold bg-gold/10 text-amber-600 dark:text-gold border border-gold/20"
                                                                 title="Account confirmed running this EA via telemetry"
                                                             >
                                                                 EA Linked
@@ -331,7 +331,7 @@ export function ProductUsersTable({
                                                 user.balance !== undefined ? (
                                                     <div className="flex flex-col gap-0.5">
                                                         <span
-                                                            className={`font-mono font-bold text-xs ${
+                                                            className={`font-mono tabular-nums font-bold text-xs ${
                                                                 isDemo
                                                                     ? "text-gray-500 dark:text-gray-400"
                                                                     : "text-gray-900 dark:text-white"
@@ -342,7 +342,7 @@ export function ProductUsersTable({
                                                                 user.currency || "USD"
                                                             )}
                                                         </span>
-                                                        <span className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">
+                                                        <span className="text-[11px] text-gray-500 dark:text-gray-400 font-mono tabular-nums">
                                                             Eq:{" "}
                                                             {formatMoney(
                                                                 user.equity ??
@@ -383,7 +383,7 @@ export function ProductUsersTable({
                                                                 }`}
                                                             />
                                                         </span>
-                                                        <span className="text-xs font-medium text-gray-800 dark:text-gray-200">
+                                                        <span className="text-xs font-mono tabular-nums font-medium text-gray-800 dark:text-gray-200">
                                                             {lastSignal
                                                                 ? formatDistanceToNow(
                                                                       new Date(
@@ -397,7 +397,7 @@ export function ProductUsersTable({
                                                         </span>
                                                     </div>
                                                     {user.grantedAt && (
-                                                        <span className="text-[10px] text-gray-400 pl-4">
+                                                        <span className="text-[10px] font-mono tabular-nums text-gray-400 pl-4">
                                                             Granted{" "}
                                                             {format(
                                                                 new Date(

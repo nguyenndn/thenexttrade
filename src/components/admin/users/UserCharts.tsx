@@ -48,7 +48,7 @@ export function UserCharts({
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             {/* Signups Trend */}
-            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm flex flex-col justify-between">
+            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm flex flex-col justify-between">
                 <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200 mb-4">
                     User Signups Trend
                 </h3>
@@ -58,7 +58,7 @@ export function UserCharts({
             </div>
 
             {/* Role Distribution */}
-            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm flex flex-col justify-between">
+            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm flex flex-col justify-between">
                 <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200 mb-4">
                     Role Distribution
                 </h3>
@@ -68,7 +68,7 @@ export function UserCharts({
             </div>
 
             {/* Registered Users by Country */}
-            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm flex flex-col justify-between">
+            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm flex flex-col justify-between">
                 <div className="flex items-center justify-between gap-4 mb-4">
                     <div>
                         <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200">
@@ -78,7 +78,7 @@ export function UserCharts({
                             Based on account profile.
                         </p>
                     </div>
-                    <span className="text-[10px] font-bold text-gray-500 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-lg">
+                    <span className="text-[10px] font-bold font-mono tabular-nums text-gray-500 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-lg">
                         {knownCountryUsers} known
                     </span>
                 </div>
@@ -95,7 +95,7 @@ export function UserCharts({
                             return (
                                 <div
                                     key={country.country}
-                                    className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] p-2.5"
+                                    className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-2.5"
                                 >
                                     <div className="flex items-center justify-between gap-3 mb-1.5">
                                         <div className="flex items-center gap-2 min-w-0">
@@ -113,7 +113,7 @@ export function UserCharts({
                                                 </p>
                                             </div>
                                         </div>
-                                        <div className="text-right shrink-0 flex items-baseline gap-1">
+                                        <div className="text-right shrink-0 flex items-baseline gap-1 font-mono tabular-nums">
                                             <span className="text-xs font-black text-gray-800 dark:text-white">
                                                 {country.value}
                                             </span>

@@ -41,7 +41,7 @@ export function EABrokersTabsClient({
                     >
                         <Building2 size={15} />
                         <span>Partner Brokers</span>
-                        <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-gray-200 dark:bg-white/10 font-mono">
+                        <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded-lg bg-gray-200 dark:bg-white/10 font-mono tabular-nums">
                             {brokers.length}
                         </span>
                     </TabsTrigger>
@@ -51,7 +51,7 @@ export function EABrokersTabsClient({
                     >
                         <DollarSign size={15} />
                         <span>Commission Rates</span>
-                        <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-gray-200 dark:bg-white/10 font-mono">
+                        <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded-lg bg-gray-200 dark:bg-white/10 font-mono tabular-nums">
                             {commissionRates.length}
                         </span>
                     </TabsTrigger>
@@ -103,7 +103,7 @@ export function EABrokersTabsClient({
                                     className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                                 >
                                     <td className="p-4">
-                                        <span className="text-sm font-mono text-gray-500">
+                                        <span className="text-sm font-mono tabular-nums text-gray-500">
                                             {broker.order}
                                         </span>
                                     </td>
@@ -128,7 +128,7 @@ export function EABrokersTabsClient({
                                                                 broker.color,
                                                         }}
                                                     />
-                                                    <span className="text-xs text-gray-500">
+                                                    <span className="text-xs font-mono text-gray-500">
                                                         {broker.color}
                                                     </span>
                                                 </div>
@@ -161,11 +161,11 @@ export function EABrokersTabsClient({
                                     </td>
                                     <td className="p-4">
                                         {broker.isActive ? (
-                                            <span className="inline-flex items-center gap-1 text-xs font-bold text-green-500 bg-green-500/10 px-2 py-1 rounded-full">
+                                            <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-1 rounded-lg">
                                                 <Power size={10} /> Active
                                             </span>
                                         ) : (
-                                            <span className="inline-flex items-center gap-1 text-xs font-bold text-gray-500 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-full">
+                                            <span className="inline-flex items-center gap-1 text-xs font-bold text-gray-500 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 px-2 py-1 rounded-lg">
                                                 <Power size={10} /> Inactive
                                             </span>
                                         )}

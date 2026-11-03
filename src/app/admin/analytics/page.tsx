@@ -190,14 +190,14 @@ export default function AnalyticsDashboard() {
                 {/* Header with Title + Real-time badge + Elevated DateRangePicker */}
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                     <div className="flex items-center gap-4">
-                        <div className="w-1 self-stretch min-h-[40px] rounded-full bg-gradient-to-b from-primary via-emerald-400 to-teal-500 shrink-0" />
+                        <div className="w-1 self-stretch min-h-[40px] rounded-full bg-gradient-to-b from-primary to-emerald-500 shrink-0" />
                         <div>
                             <div className="flex items-center gap-3">
                                 <h1 className="text-xl font-bold text-gray-700 dark:text-white tracking-tight">
                                     Analytics
                                 </h1>
                                 {/* Real-time badge */}
-                                <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                                <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold font-mono tabular-nums bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                                     <span className="relative flex h-2 w-2">
                                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                                         <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -213,13 +213,13 @@ export default function AnalyticsDashboard() {
                     <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full lg:w-auto">
                         <div className="hidden xl:flex items-center gap-2 text-xs font-bold text-gray-400">
                             <Clock size={13} /> Updated as of{" "}
-                            <span className="font-mono text-gray-700 dark:text-gray-300">
+                            <span className="font-mono tabular-nums text-gray-700 dark:text-gray-300">
                                 {asOfTimestamp}
                             </span>
                             <span className="text-gray-300 dark:text-gray-600">
                                 ·
                             </span>
-                            <span className="text-gray-500 dark:text-gray-400 capitalize">
+                            <span className="text-gray-500 dark:text-gray-400 font-mono tabular-nums capitalize">
                                 {displayRangeLabel}
                             </span>
                         </div>
@@ -354,7 +354,7 @@ function LoadingSkeleton() {
                 {[1, 2, 3, 4].map((i) => (
                     <div
                         key={i}
-                        className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 animate-pulse"
+                        className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-4 animate-pulse"
                     >
                         <div className="flex items-center gap-3">
                             <div className="w-9 h-9 shrink-0 rounded-lg bg-gray-200 dark:bg-white/5" />

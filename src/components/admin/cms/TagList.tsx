@@ -187,12 +187,12 @@ export default function TagList({ hideHeader }: { hideHeader?: boolean }) {
             )}
 
             {/* Toolbar: Search + Bulk Actions */}
-            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-4 shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 shadow-sm">
                 <div className="flex flex-1 gap-4 flex-col lg:flex-row justify-between w-full lg:items-center">
                     <div className="flex-1 w-full max-w-md">
                         <PremiumInput
                             icon={Search}
-                            placeholder="Search tags..."
+                            aria-label="Search tags"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -207,7 +207,7 @@ export default function TagList({ hideHeader }: { hideHeader?: boolean }) {
                             transition={SPRING_SOFT}
                             className="flex items-center gap-1.5 bg-primary/10 px-4 h-[42px] rounded-lg text-sm shrink-0"
                         >
-                            <span className="font-bold text-primary mr-2">
+                            <span className="font-bold text-primary mr-2 font-mono tabular-nums">
                                 {selectedIds.size} selected
                             </span>
                             <div className="w-[1px] h-4 bg-gray-300 dark:bg-white/10 mx-1" />
@@ -233,7 +233,7 @@ export default function TagList({ hideHeader }: { hideHeader?: boolean }) {
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left border-collapse">
                         <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-600 font-bold tracking-wider">

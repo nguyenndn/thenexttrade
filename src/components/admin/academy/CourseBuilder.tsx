@@ -390,13 +390,13 @@ export function CourseBuilder({ level }: CourseBuilderProps) {
             </DndContext>
 
             {modules.length === 0 && (
-                <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-lg border border-dashed border-gray-200 dark:border-white/10">
+                <div className="text-center py-20 bg-gray-50/80 dark:bg-[#151925] rounded-xl border border-dashed border-gray-200 dark:border-white/10">
                     <p className="text-gray-600 mb-4">
                         This course has no content yet.
                     </p>
                     <Button
                         onClick={() => setIsModuleModalOpen(true)}
-                        className="bg-blue-500 hover:bg-blue-600 text-white border-none shadow-lg shadow-blue-500/40 rounded-lg px-6"
+                        className="bg-gold hover:bg-amber-600 text-white border-none shadow-md shadow-amber-500/20 rounded-lg px-6 font-bold"
                     >
                         Create First Module
                     </Button>

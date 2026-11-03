@@ -48,7 +48,7 @@ export function ContentAnalyticsPanel({
                 {[1, 2].map((i) => (
                     <div
                         key={i}
-                        className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5 animate-pulse"
+                        className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 animate-pulse"
                     >
                         <div className="h-4 bg-gray-200 dark:bg-white/5 rounded-lg w-1/4 mb-4" />
                         <div className="space-y-3">
@@ -68,13 +68,13 @@ export function ContentAnalyticsPanel({
     return (
         <div className="space-y-4">
             {/* Summary stat */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-500/10">
-                        <Eye className="w-4 h-4 text-indigo-500" />
+                    <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-500/10">
+                        <Eye className="w-4 h-4 text-amber-500" />
                     </div>
                     <div>
-                        <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                        <p className="text-2xl font-bold font-mono tabular-nums text-gray-900 dark:text-white">
                             {totalArticleViews.toLocaleString()}
                         </p>
                         <p className="text-xs text-gray-500">
@@ -85,13 +85,13 @@ export function ContentAnalyticsPanel({
             </div>
 
             {/* Top Articles */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
                 <div className="flex items-center gap-2 mb-4">
-                    <FileText className="w-4 h-4 text-indigo-500" />
+                    <FileText className="w-4 h-4 text-amber-500" />
                     <h2 className="text-sm font-bold text-gray-900 dark:text-white">
                         Top Articles
                     </h2>
-                    <span className="text-xs text-gray-400 ml-auto">
+                    <span className="text-xs text-gray-400 font-mono tabular-nums ml-auto">
                         {content.length} articles
                     </span>
                 </div>
@@ -107,12 +107,12 @@ export function ContentAnalyticsPanel({
                         return (
                             <div key={item.pathname} className="relative group">
                                 <div
-                                    className="absolute inset-0 bg-indigo-50 dark:bg-indigo-500/5 rounded-lg transition-all"
+                                    className="absolute inset-0 bg-amber-50 dark:bg-amber-500/5 rounded-lg transition-all"
                                     style={{ width: `${pct}%` }}
                                 />
                                 <div className="relative flex items-center justify-between py-2.5 px-3">
                                     <div className="flex items-center gap-2 min-w-0 flex-1">
-                                        <span className="text-xs text-gray-400 w-5 shrink-0 font-mono">
+                                        <span className="text-xs text-gray-400 w-5 shrink-0 font-mono tabular-nums">
                                             {idx + 1}
                                         </span>
                                         <div className="min-w-0 flex-1">
@@ -138,7 +138,7 @@ export function ContentAnalyticsPanel({
                                             </div>
                                         </div>
                                     </div>
-                                    <span className="text-sm font-bold text-gray-900 dark:text-white shrink-0 ml-3">
+                                    <span className="text-sm font-bold font-mono tabular-nums text-gray-900 dark:text-white shrink-0 ml-3">
                                         {item.views.toLocaleString()}
                                     </span>
                                 </div>
@@ -156,9 +156,9 @@ export function ContentAnalyticsPanel({
             {/* Author & Category side by side */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Author Analytics */}
-                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
                     <div className="flex items-center gap-2 mb-4">
-                        <User className="w-4 h-4 text-cyan-500" />
+                        <User className="w-4 h-4 text-emerald-500" />
                         <h2 className="text-sm font-bold text-gray-900 dark:text-white">
                             Author Performance
                         </h2>
@@ -171,14 +171,14 @@ export function ContentAnalyticsPanel({
                             return (
                                 <div key={a.name} className="relative">
                                     <div
-                                        className="absolute inset-0 bg-cyan-50 dark:bg-cyan-500/5 rounded-lg"
+                                        className="absolute inset-0 bg-emerald-50 dark:bg-emerald-500/5 rounded-lg"
                                         style={{ width: `${pct}%` }}
                                     />
                                     <div className="relative flex items-center justify-between py-2.5 px-3">
                                         <span className="text-sm text-gray-700 dark:text-gray-300">
                                             {a.name}
                                         </span>
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white">
+                                        <span className="text-sm font-bold font-mono tabular-nums text-gray-900 dark:text-white">
                                             {a.views.toLocaleString()}
                                         </span>
                                     </div>
@@ -194,7 +194,7 @@ export function ContentAnalyticsPanel({
                 </div>
 
                 {/* Category Analytics */}
-                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 p-5">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5">
                     <div className="flex items-center gap-2 mb-4">
                         <FolderOpen className="w-4 h-4 text-amber-500" />
                         <h2 className="text-sm font-bold text-gray-900 dark:text-white">
@@ -216,7 +216,7 @@ export function ContentAnalyticsPanel({
                                         <span className="text-sm text-gray-700 dark:text-gray-300">
                                             {c.name}
                                         </span>
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white">
+                                        <span className="text-sm font-bold font-mono tabular-nums text-gray-900 dark:text-white">
                                             {c.views.toLocaleString()}
                                         </span>
                                     </div>

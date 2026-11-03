@@ -13,7 +13,7 @@ interface UserQualityPanelProps {
 
 const bandColors: Record<string, string> = {
     "High Quality": "text-emerald-600 bg-emerald-500/10",
-    Warm: "text-blue-600 bg-blue-500/10",
+    Warm: "text-amber-600 dark:text-gold bg-amber-500/10",
     "Low Intent": "text-amber-600 bg-amber-500/10",
     "Empty Signup": "text-gray-500 bg-gray-500/10",
 };
@@ -33,7 +33,7 @@ export function UserQualityPanel({ data }: UserQualityPanelProps) {
                     value={data.averageScore}
                     helper="Average 0-100"
                     icon={Award}
-                    gradient="from-indigo-500 to-purple-600"
+                    gradient="from-amber-500 to-amber-600"
                     tone={
                         data.averageScore >= 60
                             ? "good"
@@ -46,20 +46,20 @@ export function UserQualityPanel({ data }: UserQualityPanelProps) {
                     label="With Account"
                     value={data.usersWithAccount}
                     icon={Users}
-                    gradient="from-cyan-500 to-blue-500"
+                    gradient="from-amber-500 to-amber-600"
                 />
                 <ReportMetricCard
                     label="Real Account"
                     value={data.realAccountUsers}
                     icon={CheckCircle2}
-                    gradient="from-emerald-500 to-teal-600"
+                    gradient="from-emerald-500 to-emerald-600"
                     tone="good"
                 />
                 <ReportMetricCard
                     label="Inactive 24h"
                     value={data.inactiveAfterSignup}
                     icon={Clock}
-                    gradient="from-amber-500 to-orange-500"
+                    gradient="from-amber-500 to-amber-600"
                     tone={data.inactiveAfterSignup > 10 ? "warning" : "default"}
                 />
             </div>
@@ -136,16 +136,16 @@ function UserRow({ user }: { user: UserQualityRow }) {
                     {user.qualityBand}
                 </span>
             </td>
-            <td className="px-4 py-2.5 text-right tabular-nums font-bold text-gray-700 dark:text-white">
+            <td className="px-4 py-2.5 text-right font-mono tabular-nums font-bold text-gray-700 dark:text-white">
                 {user.qualityScore}
             </td>
-            <td className="px-4 py-2.5 text-right tabular-nums">
+            <td className="px-4 py-2.5 text-right font-mono tabular-nums">
                 {user.accountCount}
             </td>
-            <td className="px-4 py-2.5 text-right tabular-nums">
+            <td className="px-4 py-2.5 text-right font-mono tabular-nums">
                 {user.tradeJournalCount}
             </td>
-            <td className="px-4 py-2.5 text-right tabular-nums font-medium">
+            <td className="px-4 py-2.5 text-right font-mono tabular-nums font-medium">
                 ${user.balance.toLocaleString()}
             </td>
             <td className="px-4 py-2.5 text-gray-500">

@@ -21,14 +21,14 @@ export function StatsWidget({
     color = "blue",
 }: StatsWidgetProps) {
     const colorStyles = {
-        blue: "text-blue-500 bg-blue-50 dark:bg-blue-500/10",
+        blue: "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10",
         green: "text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10",
-        purple: "text-purple-500 bg-purple-50 dark:bg-purple-500/10",
-        orange: "text-orange-500 bg-orange-50 dark:bg-orange-500/10",
+        purple: "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10",
+        orange: "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10",
     };
 
     return (
-        <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
+        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-4 shadow-sm hover:shadow-md transition-shadow cursor-default">
             <div className="flex items-center gap-3">
                 <div
                     className={cn(
@@ -40,13 +40,13 @@ export function StatsWidget({
                 </div>
                 <div>
                     <div className="flex items-center gap-2">
-                        <p className="text-xl font-black text-gray-800 dark:text-white tabular-nums leading-none">
+                        <p className="text-xl font-black text-gray-800 dark:text-white font-mono tabular-nums leading-none">
                             {value}
                         </p>
                         {trend && (
                             <span
                                 className={cn(
-                                    "text-[10px] font-bold px-1.5 py-0.5 rounded-lg",
+                                    "text-[10px] font-bold font-mono tabular-nums px-1.5 py-0.5 rounded-lg",
                                     trend.isPositive
                                         ? "text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400"
                                         : "text-red-600 bg-red-50 dark:bg-red-500/10 dark:text-red-400"

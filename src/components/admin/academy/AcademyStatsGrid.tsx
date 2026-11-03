@@ -48,16 +48,16 @@ export function AcademyStatsGrid({ levels }: AcademyStatsGridProps) {
             value: totalLevels,
             meta: `${publicLevels} Public · ${memberLevels} Member`,
             icon: Layers,
-            iconColor: "text-blue-500 dark:text-blue-400",
-            iconBg: "bg-blue-500/10",
+            iconColor: "text-amber-600 dark:text-gold",
+            iconBg: "bg-gold/10",
         },
         {
             label: "Curriculum Modules",
             value: totalModules,
             meta: `Avg ${avgModulesPerLevel} modules / level`,
             icon: BookOpen,
-            iconColor: "text-cyan-500 dark:text-cyan-400",
-            iconBg: "bg-cyan-500/10",
+            iconColor: "text-amber-600 dark:text-gold",
+            iconBg: "bg-gold/10",
         },
         {
             label: "Active Lessons",
@@ -73,8 +73,8 @@ export function AcademyStatsGrid({ levels }: AcademyStatsGridProps) {
             value: totalQuizzes,
             meta: "Interactive evaluations",
             icon: CheckCircle2,
-            iconColor: "text-amber-500 dark:text-amber-400",
-            iconBg: "bg-amber-500/10",
+            iconColor: "text-amber-600 dark:text-gold",
+            iconBg: "bg-gold/10",
         },
     ];
 
@@ -85,7 +85,7 @@ export function AcademyStatsGrid({ levels }: AcademyStatsGridProps) {
                 return (
                     <div
                         key={idx}
-                        className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-4 sm:p-5 shadow-sm hover:border-gray-300 dark:hover:border-white/20 transition-all"
+                        className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-4 sm:p-5 shadow-sm hover:border-gray-300 dark:hover:border-white/20 transition-all"
                     >
                         <div className="flex items-center justify-between mb-3">
                             <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
@@ -98,7 +98,7 @@ export function AcademyStatsGrid({ levels }: AcademyStatsGridProps) {
                             </div>
                         </div>
                         <div className="flex items-baseline gap-2">
-                            <span className="text-2xl sm:text-3xl font-black text-gray-800 dark:text-white tracking-tight">
+                            <span className="text-2xl sm:text-3xl font-black font-mono tabular-nums text-gray-800 dark:text-white tracking-tight">
                                 {stat.value}
                             </span>
                         </div>
@@ -109,7 +109,7 @@ export function AcademyStatsGrid({ levels }: AcademyStatsGridProps) {
                                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                                 </span>
                             )}
-                            <span className="text-xs text-gray-500 dark:text-gray-400 font-medium truncate">
+                            <span className="text-xs font-mono tabular-nums text-gray-500 dark:text-gray-400 font-medium truncate">
                                 {stat.meta}
                             </span>
                         </div>

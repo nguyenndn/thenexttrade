@@ -105,14 +105,13 @@ export default function CreateEABrokerPage() {
                         type="url"
                         value={affiliateUrl}
                         onChange={(e) => setAffiliateUrl(e.target.value)}
-                        placeholder="https://one.exnessonelink.com/..."
+                        helperText="Partner registration or IB referral URL"
                     />
 
                     <PremiumInput
                         label="IB Code / Number"
                         value={ibCode}
                         onChange={(e) => setIBCode(e.target.value)}
-                        
                     />
 
                     <div className="grid grid-cols-2 gap-4">
@@ -136,7 +135,7 @@ export default function CreateEABrokerPage() {
                             type="submit"
                             disabled={loading}
                             isLoading={loading}
-                            className="w-full md:w-auto px-8 py-3 h-auto text-base font-bold rounded-lg bg-gold hover:bg-amber-600 text-white border-none shadow-md shadow-amber-500/20 transition-all"
+                            className="w-full md:w-auto px-8 py-3 h-auto text-base font-bold rounded-lg bg-gold hover:bg-amber-600 !text-white border-none shadow-md shadow-amber-500/20 transition-all"
                         >
                             {!loading && (
                                 <Briefcase size={20} className="mr-2" />

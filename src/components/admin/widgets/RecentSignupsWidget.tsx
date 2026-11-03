@@ -12,9 +12,9 @@ interface NewUser {
 
 export function RecentSignupsWidget({ users }: { users: NewUser[] }) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
             <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
-                <UserPlus className="w-5 h-5 text-indigo-500" />
+                <UserPlus className="w-5 h-5 text-amber-500" />
                 New Users
             </h3>
 
@@ -30,7 +30,7 @@ export function RecentSignupsWidget({ users }: { users: NewUser[] }) {
                                     className="object-cover"
                                 />
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center text-indigo-500 font-bold">
+                                <div className="w-full h-full flex items-center justify-center text-amber-600 dark:text-gold font-bold">
                                     {user.name?.charAt(0) || "U"}
                                 </div>
                             )}
@@ -43,7 +43,7 @@ export function RecentSignupsWidget({ users }: { users: NewUser[] }) {
                                 {user.email}
                             </p>
                         </div>
-                        <div className="text-xs text-gray-500 whitespace-nowrap">
+                        <div className="text-xs text-gray-500 font-mono tabular-nums whitespace-nowrap">
                             {formatDistanceToNow(new Date(user.createdAt), {
                                 addSuffix: true,
                             })}

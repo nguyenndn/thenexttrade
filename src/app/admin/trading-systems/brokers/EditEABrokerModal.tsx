@@ -126,14 +126,14 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
                 variant="ghost"
                 size="icon"
                 onClick={handleOpen}
-                className="w-auto h-auto p-2 hover:bg-blue-500/10 text-blue-500 hover:text-blue-600 rounded-lg transition-colors"
+                className="w-auto h-auto p-2 hover:bg-gold/10 text-amber-600 dark:text-gold hover:text-amber-500 rounded-lg transition-colors"
                 aria-label={`Edit ${broker.name}`}
             >
                 <Edit size={16} />
             </Button>
 
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="bg-white dark:bg-[#1E2028] rounded-2xl border-0 dark:border border-gray-200 dark:border-white/10 max-w-md">
+                <DialogContent className="bg-white dark:bg-[#0D111C] rounded-2xl border border-gray-200 dark:border-white/10 max-w-md">
                     <DialogHeader>
                         <DialogTitle className="text-xl font-bold text-gray-700 dark:text-white">
                             Edit Broker
@@ -167,7 +167,6 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
                             type="url"
                             value={affiliateUrl}
                             onChange={(e) => setAffiliateUrl(e.target.value)}
-                            placeholder="https://one.exnessonelink.com/..."
                         />
 
                         <PremiumInput
@@ -194,13 +193,13 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
                         </div>
 
                         {/* Active Toggle */}
-                        <div className="flex items-center justify-between py-3 px-4 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
+                        <div className="flex items-center justify-between py-3 px-4 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925]">
                             <div className="flex items-center gap-2">
                                 <Power
                                     size={16}
                                     className={
                                         isActive
-                                            ? "text-green-500"
+                                            ? "text-emerald-500"
                                             : "text-gray-500"
                                     }
                                 />
@@ -220,10 +219,10 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
                     <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-white/10">
                         <Button
                             type="button"
-                            variant="ghost"
+                            variant="outline"
                             onClick={confirmDelete}
                             disabled={saving || deleting}
-                            className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 hover:text-red-600"
+                            className="border-rose-500/20 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 hover:text-rose-600"
                             aria-label="Delete Broker"
                         >
                             {deleting ? (
@@ -248,7 +247,7 @@ export function EditEABrokerModal({ broker }: EditEABrokerModalProps) {
                             variant="primary"
                             onClick={handleSave}
                             disabled={saving || deleting}
-                            className="bg-gold hover:bg-amber-600 text-white border-none shadow-md shadow-amber-500/20"
+                            className="bg-gold hover:bg-amber-600 !text-white border-none shadow-md shadow-amber-500/20"
                         >
                             {saving && (
                                 <Loader2

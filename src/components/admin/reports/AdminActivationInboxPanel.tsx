@@ -44,7 +44,7 @@ const stageConfig: Record<
     NO_ACCOUNT: {
         stage: "Registered (No Account)",
         action: "Send account setup guide & welcome message.",
-        badgeColor: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+        badgeColor: "bg-amber-500/10 text-amber-600 dark:text-gold border-amber-500/20",
     },
     ACCOUNT_NEVER_SYNCED: {
         stage: "Account Exists (No Sync)",
@@ -59,12 +59,12 @@ const stageConfig: Record<
     NO_FIRST_TRADE: {
         stage: "Configured (No Trades)",
         action: "Nudge user to synchronize or manually log first trade.",
-        badgeColor: "bg-indigo-500/10 text-indigo-500 border-indigo-500/20",
+        badgeColor: "bg-amber-500/10 text-amber-600 dark:text-gold border-amber-500/20",
     },
     NO_WEEKLY_REVIEW: {
         stage: "Has Trades (No Report)",
         action: "Nudge user to run their first Weekly Coach review.",
-        badgeColor: "bg-purple-500/10 text-purple-500 border-purple-500/20",
+        badgeColor: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
     },
     NO_LESSON_STARTED: {
         stage: "Inactive Academy Learner",
@@ -91,9 +91,9 @@ const severityConfig: Record<
     },
     INFO: {
         icon: Info,
-        color: "text-blue-500",
-        border: "border-blue-500/20",
-        bg: "bg-blue-500/5",
+        color: "text-amber-600 dark:text-gold",
+        border: "border-amber-500/20",
+        bg: "bg-amber-500/5",
     },
     LOW: {
         icon: CheckCircle2,
@@ -228,7 +228,7 @@ export function AdminActivationInboxPanel() {
     return (
         <div className="space-y-6">
             {/* Header controls */}
-            <div className="flex flex-col sm:flex-row gap-4 items-center justify-between p-4 bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg backdrop-blur-sm">
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-between p-4 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl shadow-sm">
                 <div className="relative w-full sm:max-w-md">
                     <Search
                         className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"
@@ -236,10 +236,10 @@ export function AdminActivationInboxPanel() {
                     />
                     <input
                         type="text"
-                        placeholder="Search trader username, name, or signal content..."
+                        aria-label="Search activation signals"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 text-sm bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:border-amber-500 dark:focus:border-amber-500/40 text-slate-800 dark:text-white"
+                        className="w-full pl-10 pr-4 py-2 text-sm bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:border-amber-500 dark:focus:border-amber-500/40 text-slate-800 dark:text-white"
                     />
                 </div>
 
@@ -328,10 +328,10 @@ export function AdminActivationInboxPanel() {
                     </Button>
                 </div>
             ) : filteredSignals.length === 0 ? (
-                <div className="text-center py-16 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg shadow-sm">
+                <div className="text-center py-16 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl shadow-sm">
                     <CheckCircle2
                         size={44}
-                        className="mx-auto text-emerald-500 mb-3 animate-pulse"
+                        className="mx-auto text-emerald-500 mb-3"
                     />
                     <h3 className="text-base font-black text-slate-800 dark:text-white">
                         Inbox Completely Clear!
@@ -358,7 +358,7 @@ export function AdminActivationInboxPanel() {
                             <div
                                 key={sig.id}
                                 className={cn(
-                                    "p-5 rounded-lg border bg-white dark:bg-[#1E2028] shadow-sm relative overflow-hidden transition-shadow hover:shadow-md",
+                                    "p-5 rounded-xl border bg-white dark:bg-[#1E2028] shadow-sm relative overflow-hidden transition-shadow hover:shadow-md",
                                     sig.metadata.adminContactedAt
                                         ? "border-emerald-500/20 dark:border-emerald-500/10 opacity-80"
                                         : "border-gray-200 dark:border-white/10"
@@ -393,11 +393,11 @@ export function AdminActivationInboxPanel() {
                                                 {sig.user.email || "No Email"}
                                             </p>
                                             <div className="flex items-center gap-1.5 mt-1">
-                                                <span className="text-[9px] font-black tracking-wider uppercase text-amber-600 dark:text-amber-400">
+                                                <span className="text-[9px] font-black font-mono tabular-nums tracking-wider uppercase text-amber-600 dark:text-amber-400">
                                                     LV {sig.user.level}
                                                 </span>
                                                 <span className="h-1 w-1 rounded-full bg-gray-300 dark:bg-gray-700" />
-                                                <span className="text-[9px] font-medium text-gray-400 dark:text-gray-500">
+                                                <span className="text-[9px] font-medium font-mono tabular-nums text-gray-400 dark:text-gray-500">
                                                     Joined{" "}
                                                     {format(
                                                         new Date(
@@ -457,7 +457,7 @@ export function AdminActivationInboxPanel() {
                                             </p>
                                         </div>
 
-                                        <div className="flex items-center gap-4 text-[10px] text-gray-400 dark:text-gray-500 pt-1 border-t border-gray-200 dark:border-white/10 dark:border-white/[0.03]">
+                                        <div className="flex items-center gap-4 text-[10px] text-gray-400 dark:text-gray-500 font-mono tabular-nums pt-1 border-t border-gray-200 dark:border-white/10 dark:border-white/[0.03]">
                                             <span className="flex items-center gap-1">
                                                 <Calendar size={11} /> First
                                                 seen:{" "}
@@ -490,7 +490,7 @@ export function AdminActivationInboxPanel() {
                                         {/* Inline admin notes box */}
                                         <div>
                                             <textarea
-                                                placeholder="Add notes for this user's activation"
+                                                aria-label="Admin activation notes"
                                                 value={
                                                     activeNotes[sig.id] || ""
                                                 }
@@ -501,7 +501,7 @@ export function AdminActivationInboxPanel() {
                                                             e.target.value,
                                                     }))
                                                 }
-                                                className="w-full text-[11px] p-2 bg-slate-50 dark:bg-[#07090f] border border-gray-200 dark:border-white/10 rounded-lg h-14 focus:outline-none focus:border-amber-500 dark:focus:border-amber-500/40 text-slate-800 dark:text-white resize-none"
+                                                className="w-full text-[11px] p-2 bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg h-14 focus:outline-none focus:border-amber-500 dark:focus:border-amber-500/40 text-slate-800 dark:text-white resize-none"
                                             />
                                         </div>
 

@@ -37,7 +37,7 @@ export function PendingLicensesList({
 
     if (licenses.length === 0) {
         return (
-            <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-lg border-2 border-dashed border-gray-200 dark:border-white/10">
+            <div className="text-center py-20 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10">
                 <Check className="mx-auto text-gray-300 mb-4" size={48} />
                 <h3 className="text-lg font-medium text-gray-700 dark:text-white">
                     All caught up!
@@ -54,18 +54,18 @@ export function PendingLicensesList({
             {licenses.map((req) => (
                 <Card
                     key={req.id}
-                    className="p-6 transition-all hover:shadow-md border-l-4 border-l-yellow-500"
+                    className="p-6 rounded-xl bg-white dark:bg-[#1E2028] transition-all hover:shadow-md border-l-4 border-l-gold"
                 >
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <div className="space-y-1">
                             <div className="flex items-center gap-3">
-                                <span className="text-xl font-bold text-gray-700 dark:text-white font-mono">
+                                <span className="text-xl font-bold text-gray-700 dark:text-white font-mono tabular-nums">
                                     {req.accountNumber}
                                 </span>
-                                <span className="text-xs px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 font-bold tracking-wide">
+                                <span className="text-xs px-2.5 py-0.5 rounded-lg bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 font-bold tracking-wide">
                                     {req.broker}
                                 </span>
-                                <span className="text-xs text-gray-500">
+                                <span className="text-xs font-mono tabular-nums text-gray-500">
                                     {formatDistanceToNow(
                                         new Date(req.createdAt)
                                     )}{" "}

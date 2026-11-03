@@ -166,39 +166,39 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
         <div className="space-y-6">
             {/* KPI Summary Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-4 rounded-xl bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
                     <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
                         Total Trades
                     </p>
-                    <p className="text-xl font-black text-gray-900 dark:text-white mt-1">
+                    <p className="text-xl font-black text-gray-900 dark:text-white mt-1 font-mono tabular-nums">
                         {totalCount.toLocaleString()}
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 mt-1 font-mono tabular-nums">
                         {filteredEntries.length !== entries.length
                             ? `Filtered: ${filteredEntries.length} of ${entries.length} recent`
                             : `Showing latest ${entries.length} of ${totalCount.toLocaleString()}`}
                     </p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
                     <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
                         Win Rate
                     </p>
-                    <p className="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-1">
+                    <p className="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-1 font-mono tabular-nums">
                         {stats.winRate.toFixed(1)}%
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 mt-1 font-mono tabular-nums">
                         {stats.wins}W - {stats.losses}L
                     </p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
                     <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
                         Net P&L
                     </p>
                     <p
                         className={cn(
-                            "text-xl font-black mt-1",
+                            "text-xl font-black mt-1 font-mono tabular-nums",
                             stats.totalPnl >= 0
                                 ? "text-emerald-600 dark:text-emerald-400"
                                 : "text-rose-600 dark:text-rose-400"
@@ -206,19 +206,19 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                     >
                         {stats.totalPnl >= 0 ? "+" : ""}${stats.totalPnl.toFixed(2)}
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 mt-1 font-mono tabular-nums">
                         PF: {stats.profitFactor.toFixed(2)}
                     </p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-4 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
                     <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
                         Direction Bias
                     </p>
-                    <p className="text-xl font-black text-gray-900 dark:text-white mt-1">
+                    <p className="text-xl font-black text-gray-900 dark:text-white mt-1 font-mono tabular-nums">
                         {stats.buys} Long / {stats.sells} Short
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 mt-1 font-mono tabular-nums">
                         {stats.totalTrades > 0
                             ? `${Math.round((stats.buys / stats.totalTrades) * 100)}% Long`
                             : "No trades"}
@@ -231,7 +231,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                 <div className="w-full md:max-w-xs">
                     <PremiumInput
                         icon={Search}
-                        placeholder="Search symbol, notes, strategy..."
+                        aria-label="Search symbol, notes, or strategy"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -257,7 +257,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                             <DropdownMenuContent align="end" className="w-52">
                                 <DropdownMenuItem
                                     onClick={() => setAccountFilter("ALL")}
-                                    className={cn("text-xs cursor-pointer", accountFilter === "ALL" && "font-bold text-primary")}
+                                    className={cn("text-xs cursor-pointer font-mono tabular-nums", accountFilter === "ALL" && "font-bold text-amber-600 dark:text-gold")}
                                 >
                                     All Accounts ({entries.length})
                                 </DropdownMenuItem>
@@ -265,7 +265,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                                     <DropdownMenuItem
                                         key={acc.id}
                                         onClick={() => setAccountFilter(acc.id)}
-                                        className={cn("text-xs cursor-pointer", accountFilter === acc.id && "font-bold text-primary")}
+                                        className={cn("text-xs cursor-pointer", accountFilter === acc.id && "font-bold text-amber-600 dark:text-gold")}
                                     >
                                         {acc.label}
                                     </DropdownMenuItem>
@@ -273,7 +273,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                                 {hasManualEntries && (
                                     <DropdownMenuItem
                                         onClick={() => setAccountFilter("MANUAL")}
-                                        className={cn("text-xs cursor-pointer", accountFilter === "MANUAL" && "font-bold text-primary")}
+                                        className={cn("text-xs cursor-pointer", accountFilter === "MANUAL" && "font-bold text-amber-600 dark:text-gold")}
                                     >
                                         Manual Logs
                                     </DropdownMenuItem>
@@ -283,7 +283,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                     )}
 
                     {/* Result Filter */}
-                    <div className="flex rounded-lg border border-gray-200 dark:border-white/10 p-0.5 bg-gray-50 dark:bg-white/[0.03]">
+                    <div className="flex rounded-lg border border-gray-200 dark:border-white/10 p-0.5 bg-gray-50/80 dark:bg-[#151925]">
                         {["ALL", "WIN", "LOSS"].map((res) => (
                             <Button
                                 key={res}
@@ -293,7 +293,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                                 className={cn(
                                     "px-2.5 py-1 h-auto text-xs font-semibold rounded-lg transition-colors cursor-pointer",
                                     resultFilter === res
-                                        ? "bg-white dark:bg-white/10 text-primary shadow-sm"
+                                        ? "bg-gold !text-white shadow-sm hover:bg-gold/90"
                                         : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                                 )}
                             >
@@ -303,7 +303,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                     </div>
 
                     {/* Type Filter */}
-                    <div className="flex rounded-lg border border-gray-200 dark:border-white/10 p-0.5 bg-gray-50 dark:bg-white/[0.03]">
+                    <div className="flex rounded-lg border border-gray-200 dark:border-white/10 p-0.5 bg-gray-50/80 dark:bg-[#151925]">
                         {["ALL", "BUY", "SELL"].map((t) => (
                             <Button
                                 key={t}
@@ -313,7 +313,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                                 className={cn(
                                     "px-2.5 py-1 h-auto text-xs font-semibold rounded-lg transition-colors cursor-pointer",
                                     typeFilter === t
-                                        ? "bg-white dark:bg-white/10 text-primary shadow-sm"
+                                        ? "bg-gold !text-white shadow-sm hover:bg-gold/90"
                                         : "text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                                 )}
                             >
@@ -325,10 +325,10 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
             </div>
 
             {/* Entries Table */}
-            <div className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left border-collapse text-xs">
-                        <thead className="bg-gray-50/70 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-[11px] font-bold uppercase tracking-wider text-gray-500">
+                        <thead className="bg-gray-50/80 dark:bg-[#151925] border-b border-gray-200 dark:border-white/10 text-[11px] font-bold uppercase tracking-wider text-gray-500">
                             <tr>
                                 <th className="py-3.5 px-4">Trade</th>
                                 <th className="py-3.5 px-4">Account</th>
@@ -378,7 +378,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                                                         {entry.symbol}
                                                     </span>
                                                 </div>
-                                                <p className="text-[10px] text-gray-400 mt-0.5">
+                                                <p className="text-[10px] text-gray-400 mt-0.5 font-mono tabular-nums">
                                                     {format(new Date(entry.entryDate), "MMM d, HH:mm")}
                                                 </p>
                                             </td>
@@ -394,7 +394,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                                                 )}
                                             </td>
 
-                                            <td className="py-3 px-4 font-mono text-[11px]">
+                                            <td className="py-3 px-4 font-mono tabular-nums text-[11px]">
                                                 <div>
                                                     <span className="text-gray-500">In:</span> {entry.entryPrice}
                                                 </div>
@@ -405,14 +405,14 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                                                 )}
                                             </td>
 
-                                            <td className="py-3 px-4 font-mono font-medium text-gray-700 dark:text-gray-300">
+                                            <td className="py-3 px-4 font-mono tabular-nums font-medium text-gray-700 dark:text-gray-300">
                                                 {entry.lotSize} lots
                                             </td>
 
                                             <td className="py-3 px-4">
                                                 <span
                                                     className={cn(
-                                                        "font-bold font-mono text-sm",
+                                                        "font-bold font-mono tabular-nums text-sm",
                                                         isProfit
                                                             ? "text-emerald-600 dark:text-emerald-400"
                                                             : isLoss
@@ -429,12 +429,12 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                                             <td className="py-3 px-4">
                                                 <div className="flex items-center gap-1.5 flex-wrap">
                                                     {entry.strategy && (
-                                                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-primary/10 text-primary">
+                                                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-gold/10 text-amber-600 dark:text-gold">
                                                             {entry.strategy}
                                                         </span>
                                                     )}
                                                     {entry.tradePlan && (
-                                                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                                                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-gold/10 text-amber-600 dark:text-gold">
                                                             Plan: {entry.tradePlan.setupName || "Linked"}
                                                         </span>
                                                     )}
@@ -464,7 +464,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
             {/* Trade Details Inspection Modal */}
             {selectedEntry && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in-0">
-                    <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto custom-scrollbar">
+                    <div className="bg-white dark:bg-[#0D111C] border border-gray-200 dark:border-white/10 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto custom-scrollbar">
                         <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-white/10">
                             <div className="flex items-center gap-2.5">
                                 <span
@@ -485,7 +485,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                                 variant="outline"
                                 size="icon"
                                 onClick={() => setSelectedEntry(null)}
-                                className="w-8 h-8 rounded-full"
+                                className="w-8 h-8 rounded-lg"
                                 aria-label="Close trade details modal"
                             >
                                 <X size={16} />
@@ -493,22 +493,22 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                         </div>
 
                         {/* 2x2 Matrix Card */}
-                        <div className="grid grid-cols-2 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] divide-x divide-y divide-gray-200 dark:divide-white/10">
+                        <div className="grid grid-cols-2 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] divide-x divide-y divide-gray-200 dark:divide-white/10">
                             <div className="p-3">
                                 <span className="text-[10px] font-bold uppercase text-gray-400">Entry Price</span>
-                                <p className="font-mono text-sm font-bold text-gray-900 dark:text-white mt-0.5">
+                                <p className="font-mono tabular-nums text-sm font-bold text-gray-900 dark:text-white mt-0.5">
                                     {selectedEntry.entryPrice}
                                 </p>
                             </div>
                             <div className="p-3">
                                 <span className="text-[10px] font-bold uppercase text-gray-400">Exit Price</span>
-                                <p className="font-mono text-sm font-bold text-gray-900 dark:text-white mt-0.5">
+                                <p className="font-mono tabular-nums text-sm font-bold text-gray-900 dark:text-white mt-0.5">
                                     {selectedEntry.exitPrice ?? "In Market"}
                                 </p>
                             </div>
                             <div className="p-3">
                                 <span className="text-[10px] font-bold uppercase text-gray-400">Volume</span>
-                                <p className="font-mono text-sm font-bold text-gray-900 dark:text-white mt-0.5">
+                                <p className="font-mono tabular-nums text-sm font-bold text-gray-900 dark:text-white mt-0.5">
                                     {selectedEntry.lotSize} lots
                                 </p>
                             </div>
@@ -516,7 +516,7 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                                 <span className="text-[10px] font-bold uppercase text-gray-400">Net P&L</span>
                                 <p
                                     className={cn(
-                                        "font-mono text-sm font-bold mt-0.5",
+                                        "font-mono tabular-nums text-sm font-bold mt-0.5",
                                         (selectedEntry.pnl || 0) >= 0
                                             ? "text-emerald-600 dark:text-emerald-400"
                                             : "text-rose-600 dark:text-rose-400"
@@ -528,25 +528,25 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
                         </div>
 
                         {/* Timing */}
-                        <div className="text-xs space-y-1 text-gray-600 dark:text-gray-400">
+                        <div className="text-xs space-y-1 text-gray-600 dark:text-gray-400 font-mono tabular-nums">
                             <p>
-                                <strong>Opened:</strong>{" "}
+                                <strong className="font-sans">Opened:</strong>{" "}
                                 {format(new Date(selectedEntry.entryDate), "MMM d, yyyy HH:mm:ss")}
                             </p>
                             {selectedEntry.exitDate && (
                                 <p>
-                                    <strong>Closed:</strong>{" "}
+                                    <strong className="font-sans">Closed:</strong>{" "}
                                     {format(new Date(selectedEntry.exitDate), "MMM d, yyyy HH:mm:ss")}
                                 </p>
                             )}
-                            <p>
+                            <p className="font-sans">
                                 <strong>Account:</strong> {selectedEntry.account?.name || "Manual"}
                             </p>
                         </div>
 
                         {/* Trader Notes */}
                         {selectedEntry.notes && (
-                            <div className="p-3.5 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/5 space-y-1">
+                            <div className="p-3.5 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 space-y-1">
                                 <span className="text-[10px] font-bold uppercase text-gray-400">Trader Notes</span>
                                 <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
                                     {selectedEntry.notes}
@@ -556,8 +556,8 @@ export function UserJournalTab({ entries, totalCount }: UserJournalTabProps) {
 
                         {/* Psychology & Emotions */}
                         {(selectedEntry.emotionBefore || selectedEntry.emotionAfter || selectedEntry.notesPsychology) && (
-                            <div className="p-3.5 rounded-lg bg-purple-50/50 dark:bg-purple-500/5 border border-purple-200/50 dark:border-purple-500/10 space-y-1">
-                                <span className="text-[10px] font-bold uppercase text-purple-600 dark:text-purple-400">
+                            <div className="p-3.5 rounded-lg bg-gold/10 border border-gold/20 space-y-1">
+                                <span className="text-[10px] font-bold uppercase text-amber-600 dark:text-gold">
                                     Psychology & Emotions
                                 </span>
                                 <div className="text-xs space-y-1 text-gray-700 dark:text-gray-300">

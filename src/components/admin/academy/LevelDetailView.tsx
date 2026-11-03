@@ -243,34 +243,34 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
 
             {/* Stats Bar */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 p-4 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-cyan-50 dark:bg-cyan-500/10 flex items-center justify-center text-cyan-500">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-4 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-gold/10 flex items-center justify-center text-amber-600 dark:text-gold">
                         <Layers size={20} />
                     </div>
                     <div>
-                        <p className="text-2xl font-bold text-gray-700 dark:text-white">
+                        <p className="text-2xl font-bold font-mono tabular-nums text-gray-700 dark:text-white">
                             {level.modules.length}
                         </p>
                         <p className="text-xs text-gray-600">Modules</p>
                     </div>
                 </div>
-                <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 p-4 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-500">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-4 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-gold/10 flex items-center justify-center text-amber-600 dark:text-gold">
                         <FileText size={20} />
                     </div>
                     <div>
-                        <p className="text-2xl font-bold text-gray-700 dark:text-white">
+                        <p className="text-2xl font-bold font-mono tabular-nums text-gray-700 dark:text-white">
                             {totalLessons}
                         </p>
                         <p className="text-xs text-gray-600">Lessons</p>
                     </div>
                 </div>
-                <div className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 p-4 flex items-center gap-3">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-4 flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-500">
                         <Clock size={20} />
                     </div>
                     <div>
-                        <p className="text-2xl font-bold text-gray-700 dark:text-white">
+                        <p className="text-2xl font-bold font-mono tabular-nums text-gray-700 dark:text-white">
                             {totalDuration}m
                         </p>
                         <p className="text-xs text-gray-600">Total Duration</p>
@@ -281,7 +281,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
             {/* Modules Accordion */}
             <div className="space-y-4">
                 {level.modules.length === 0 ? (
-                    <div className="text-center py-20 bg-white dark:bg-[#151925] rounded-lg border-2 border-dashed border-gray-200 dark:border-white/10">
+                    <div className="text-center py-20 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10">
                         <Layers
                             size={48}
                             className="mx-auto text-gray-300 dark:text-gray-700 mb-4"
@@ -303,7 +303,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                     level.modules.map((module, mIndex) => (
                         <div
                             key={module.id}
-                            className="bg-white dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden"
+                            className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden"
                         >
                             {/* Module Header */}
                             <div
@@ -311,7 +311,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                 onClick={() => toggleModule(module.id)}
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-bold text-sm">
+                                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold font-bold font-mono tabular-nums text-sm">
                                         {mIndex + 1}
                                     </div>
                                     <div>
@@ -319,7 +319,10 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                             {module.title}
                                         </h3>
                                         <p className="text-xs text-gray-600">
-                                            {module._count.lessons} lessons
+                                            <span className="font-mono tabular-nums">
+                                                {module._count.lessons}
+                                            </span>{" "}
+                                            lessons
                                             {module.description &&
                                                 ` · ${module.description}`}
                                         </p>
@@ -473,7 +476,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                                                 size={14}
                                                                 className="text-gray-300 dark:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
                                                             />
-                                                            <span className="text-xs font-mono text-gray-500 w-5">
+                                                            <span className="text-xs font-mono tabular-nums text-gray-500 w-5">
                                                                 {lIndex + 1}.
                                                             </span>
                                                             <Link
@@ -483,7 +486,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                                             >
                                                                 <FileText
                                                                     size={16}
-                                                                    className="text-blue-400 group-hover/title:text-primary transition-colors flex-shrink-0"
+                                                                    className="text-amber-600 dark:text-gold group-hover/title:text-primary transition-colors flex-shrink-0"
                                                                 />
                                                                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover/title:text-primary transition-colors hover:underline">
                                                                     {lesson.title}
@@ -493,7 +496,7 @@ export function LevelDetailView({ level }: LevelDetailViewProps) {
                                                                 lesson.content.trim()
                                                                     .length >
                                                                     0 && (
-                                                                    <span className="text-xs text-gray-500 flex items-center gap-1">
+                                                                    <span className="text-xs font-mono tabular-nums text-gray-500 flex items-center gap-1">
                                                                         <Clock
                                                                             size={
                                                                                 12

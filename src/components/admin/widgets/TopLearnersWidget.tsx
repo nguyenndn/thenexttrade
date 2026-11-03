@@ -38,7 +38,7 @@ export function TopLearnersWidget({ users }: { users: TopUser[] }) {
     const maxProgress = Math.max(...users.map((u) => u.progressCount), 1);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 h-full flex flex-col shadow-sm hover:shadow-md transition-shadow">
             <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
                 <Trophy className="w-5 h-5 text-amber-500" aria-hidden="true" />
                 Top Learners
@@ -60,12 +60,12 @@ export function TopLearnersWidget({ users }: { users: TopUser[] }) {
                             className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                         >
                             <div className="flex-shrink-0 relative">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm shadow-inner">
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white font-bold text-sm shadow-inner">
                                     {user.name?.charAt(0) || "U"}
                                 </div>
                                 {rank && (
                                     <div
-                                        className={`absolute -top-1 -right-1 ${rank.bg} ${rank.text} w-4.5 h-4.5 rounded-full flex items-center justify-center text-[10px] font-black ring-2 ${rank.ring}`}
+                                        className={`absolute -top-1 -right-1 ${rank.bg} ${rank.text} w-4.5 h-4.5 rounded-full flex items-center justify-center text-[10px] font-black font-mono tabular-nums ring-2 ${rank.ring}`}
                                     >
                                         {index + 1}
                                     </div>
@@ -85,12 +85,12 @@ export function TopLearnersWidget({ users }: { users: TopUser[] }) {
                                             duration: 0.8,
                                             ease: "easeOut",
                                         }}
-                                        className="h-full bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-full"
+                                        className="h-full bg-gradient-to-r from-amber-500 to-emerald-500 rounded-full"
                                     />
                                 </div>
                             </div>
                             <div className="text-right">
-                                <div className="font-bold text-indigo-600 dark:text-indigo-400 text-sm">
+                                <div className="font-bold text-amber-600 dark:text-gold font-mono tabular-nums text-sm">
                                     {user.progressCount}
                                 </div>
                                 <div className="text-[10px] text-gray-500 uppercase font-medium">

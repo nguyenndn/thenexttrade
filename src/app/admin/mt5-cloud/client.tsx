@@ -172,7 +172,7 @@ export function Mt5CloudAdminClient({ initialData }: Mt5CloudAdminClientProps) {
                             {isBridgeOnline ? "Online" : "Offline"}
                         </span>
                     </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400 font-semibold">
+                    <div className="text-xs text-gray-500 dark:text-gray-400 font-semibold font-mono tabular-nums">
                         RAM: {health.memoryMb.toFixed(1)} MB • Uptime:{" "}
                         {formatUptime(health.uptimeSeconds)}
                     </div>
@@ -183,15 +183,15 @@ export function Mt5CloudAdminClient({ initialData }: Mt5CloudAdminClientProps) {
                         <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
                             Connected Accounts
                         </span>
-                        <CloudSync size={16} className="text-cyan-400" />
+                        <CloudSync size={16} className="text-amber-600 dark:text-gold" />
                     </div>
-                    <div className="text-xl font-black text-gray-900 dark:text-white">
+                    <div className="text-xl font-black text-gray-900 dark:text-white font-mono tabular-nums">
                         {health.connectedAccounts} Active{" "}
                         <span className="text-sm font-semibold text-gray-400">
                             / {health.totalAccounts} Total
                         </span>
                     </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400 font-semibold">
+                    <div className="text-xs text-gray-500 dark:text-gray-400 font-semibold font-mono tabular-nums">
                         {rows.filter((r) => r.status === "IDLE_SLEEP").length > 0
                             ? `${rows.filter((r) => r.status === "IDLE_SLEEP").length} Smart Sleep (0 MB) • Build ${health.mt5Build}`
                             : `MT5 Protocol Build ${health.mt5Build}`}
@@ -205,14 +205,14 @@ export function Mt5CloudAdminClient({ initialData }: Mt5CloudAdminClientProps) {
                         </span>
                         <DollarSign size={16} className="text-amber-400" />
                     </div>
-                    <div className="text-xl font-black text-gray-900 dark:text-white">
+                    <div className="text-xl font-black text-gray-900 dark:text-white font-mono tabular-nums">
                         $
                         {health.totalLiveEquity.toLocaleString("en-US", {
                             maximumFractionDigits: 0,
                         })}
                     </div>
                     <div
-                        className={`text-xs font-extrabold ${
+                        className={`text-xs font-extrabold font-mono tabular-nums ${
                             health.totalFloatingPnl >= 0
                                 ? "text-emerald-400"
                                 : "text-red-400"
@@ -234,7 +234,7 @@ export function Mt5CloudAdminClient({ initialData }: Mt5CloudAdminClientProps) {
                         </span>
                         <ShieldCheck size={16} className="text-emerald-400" />
                     </div>
-                    <div className="text-xl font-black text-gray-900 dark:text-white">
+                    <div className="text-xl font-black text-gray-900 dark:text-white font-mono tabular-nums">
                         {health.armedRulesCount} Active Guards
                     </div>
                     <div className="text-xs text-gray-500 dark:text-gray-400 font-semibold">
@@ -248,7 +248,7 @@ export function Mt5CloudAdminClient({ initialData }: Mt5CloudAdminClientProps) {
                 <div className="p-4 border-b border-gray-100 dark:border-white/5 flex flex-wrap items-center justify-between gap-3">
                     <div>
                         <h2 className="text-sm font-extrabold text-gray-900 dark:text-white">
-                            Live Connected MT5 Accounts ({filteredRows.length})
+                            Live Connected MT5 Accounts (<span className="font-mono tabular-nums">{filteredRows.length}</span>)
                         </h2>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
                             Filter by trader name, email, MT5 login number, or broker server.
@@ -260,7 +260,7 @@ export function Mt5CloudAdminClient({ initialData }: Mt5CloudAdminClientProps) {
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             aria-label="Filter MT5 accounts"
-                            className="w-full h-9 rounded-lg bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 px-3 text-xs font-semibold text-gray-900 dark:text-white"
+                            className="w-full h-9 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 px-3 text-xs font-semibold text-gray-900 dark:text-white"
                         />
                     </div>
                 </div>
@@ -318,13 +318,13 @@ export function Mt5CloudAdminClient({ initialData }: Mt5CloudAdminClientProps) {
 
                                             <td className="py-3.5 px-4">
                                                 <div className="flex items-center gap-1.5">
-                                                    <span className="font-mono font-black text-gray-900 dark:text-white">
+                                                    <span className="font-mono tabular-nums font-black text-gray-900 dark:text-white">
                                                         {row.accountNumber}
                                                     </span>
                                                     <span
                                                         className={`rounded-lg px-1.5 py-0.5 text-[10px] font-bold ${
                                                             row.isDemo
-                                                                ? "bg-cyan-500/15 text-cyan-400"
+                                                                ? "bg-gold/10 text-amber-600 dark:text-gold border border-gold/20"
                                                                 : "bg-emerald-500/15 text-emerald-400"
                                                         }`}
                                                     >
@@ -341,7 +341,7 @@ export function Mt5CloudAdminClient({ initialData }: Mt5CloudAdminClientProps) {
                                                     <span
                                                         className={`h-2.5 w-2.5 rounded-full ${
                                                             row.status === "IDLE_SLEEP"
-                                                                ? "bg-cyan-400"
+                                                                ? "bg-amber-500"
                                                                 : row.status === "WAKING"
                                                                   ? "bg-amber-400 animate-pulse"
                                                                   : row.connected
@@ -349,7 +349,7 @@ export function Mt5CloudAdminClient({ initialData }: Mt5CloudAdminClientProps) {
                                                                     : "bg-gray-500"
                                                         }`}
                                                     />
-                                                    <span className="font-bold text-gray-900 dark:text-white">
+                                                    <span className="font-bold text-gray-900 dark:text-white font-mono tabular-nums">
                                                         {row.status === "IDLE_SLEEP"
                                                             ? `${row.datacenter} • Idle Sleep (0 MB)`
                                                             : row.status === "WAKING"
@@ -360,7 +360,7 @@ export function Mt5CloudAdminClient({ initialData }: Mt5CloudAdminClientProps) {
                                                     </span>
                                                 </div>
                                                 {row.lastQuoteUtc && (
-                                                    <div className="text-[11px] text-gray-400 mt-0.5">
+                                                    <div className="text-[11px] text-gray-400 mt-0.5 font-mono tabular-nums">
                                                         {formatDistanceToNow(
                                                             new Date(row.lastQuoteUtc),
                                                             { addSuffix: true }
@@ -370,7 +370,7 @@ export function Mt5CloudAdminClient({ initialData }: Mt5CloudAdminClientProps) {
                                             </td>
 
                                             <td className="py-3.5 px-4">
-                                                <div className="font-black text-gray-900 dark:text-white">
+                                                <div className="font-black text-gray-900 dark:text-white font-mono tabular-nums">
                                                     $
                                                     {row.equity.toLocaleString("en-US", {
                                                         minimumFractionDigits: 2,
@@ -390,7 +390,7 @@ export function Mt5CloudAdminClient({ initialData }: Mt5CloudAdminClientProps) {
                                                         )
                                                     </span>
                                                 </div>
-                                                <div className="text-[11px] text-gray-400 font-semibold mt-0.5">
+                                                <div className="text-[11px] text-gray-400 font-semibold mt-0.5 font-mono tabular-nums">
                                                     {row.openPositionsCount} open •{" "}
                                                     {row.totalLots.toFixed(2)} lots • Bal $
                                                     {row.balance.toLocaleString("en-US", {
@@ -429,7 +429,7 @@ export function Mt5CloudAdminClient({ initialData }: Mt5CloudAdminClientProps) {
                                             <td className="py-3.5 px-4">
                                                 <div className="text-[11px] text-gray-400 mb-2">
                                                     Until:{" "}
-                                                    <span className="font-bold text-gray-900 dark:text-white">
+                                                    <span className="font-bold text-gray-900 dark:text-white font-mono tabular-nums">
                                                         {row.accessExpiresAt
                                                             ? new Date(
                                                                   row.accessExpiresAt

@@ -43,7 +43,7 @@ function AccountCopyButton({
                     ? `Click to copy "${server} · ${accountNumber}"`
                     : `Click to copy account #${accountNumber}`
             }
-            className="h-auto inline-flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-[10px] font-mono font-medium text-gray-500 hover:text-primary hover:bg-primary/10 transition-colors border border-gray-200/80 dark:border-white/10 dark:text-gray-400 dark:hover:text-primary"
+            className="h-auto inline-flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-[10px] font-mono tabular-nums font-medium text-gray-500 hover:text-amber-600 dark:hover:text-gold hover:bg-gold/10 transition-colors border border-gray-200/80 dark:border-white/10 dark:text-gray-400"
         >
             {copied ? (
                 <>
@@ -215,7 +215,7 @@ export function UserAccountsList({
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h3 className="text-base font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                        <WalletCards size={18} className="text-primary" />
+                        <WalletCards size={18} className="text-amber-600 dark:text-gold" />
                         Trading Accounts & EA Telemetry
                     </h3>
                     <p className="text-xs text-gray-500 mt-0.5">
@@ -223,11 +223,11 @@ export function UserAccountsList({
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xs font-bold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 px-3 py-1 rounded-lg">
+                    <span className="font-mono tabular-nums text-xs font-bold text-gray-700 dark:text-gray-300 bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 px-3 py-1 rounded-lg">
                         {accounts.length} Total ({liveAccounts.length} Real)
                     </span>
                     {liveAccounts.length > 0 && (
-                        <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-3 py-1 rounded-lg font-mono">
+                        <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-3 py-1 rounded-lg font-mono tabular-nums">
                             ${totalBalance.toLocaleString(undefined, {
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 2,
@@ -244,7 +244,7 @@ export function UserAccountsList({
             </div>
 
             {accounts.length > 0 ? (
-                <div className="divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white shadow-sm dark:divide-white/10 dark:border-white/10 dark:bg-[#151925]">
+                <div className="divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white shadow-sm dark:divide-white/10 dark:border-white/10 dark:bg-[#1E2028]">
                     {accounts.map((acc) => {
                         const isDemo =
                             acc.accountType === "DEMO" ||
@@ -376,7 +376,7 @@ export function UserAccountsList({
                                                     }`}
                                                 />
                                             </span>
-                                            <span>
+                                            <span className="font-mono tabular-nums">
                                                 {lastActiveDate
                                                     ? `Telemetry ${formatDistanceToNow(
                                                           new Date(
@@ -403,7 +403,7 @@ export function UserAccountsList({
                                             accountNumber={acc.accountNumber}
                                         />
                                         <div className="text-right">
-                                            <p className="text-base font-black text-gray-800 dark:text-white font-mono">
+                                            <p className="text-base font-black text-gray-800 dark:text-white font-mono tabular-nums">
                                                 {new Intl.NumberFormat(
                                                     "en-US",
                                                     {
@@ -416,7 +416,7 @@ export function UserAccountsList({
                                                 ).format(acc.balance || 0)}
                                             </p>
                                             {typeof acc.equity === "number" && (
-                                                <p className="text-[11px] text-gray-500 font-mono">
+                                                <p className="text-[11px] text-gray-500 font-mono tabular-nums">
                                                     Eq:{" "}
                                                     {new Intl.NumberFormat(
                                                         "en-US",
@@ -438,7 +438,7 @@ export function UserAccountsList({
                     })}
                 </div>
             ) : (
-                <div className="rounded-xl border border-gray-200 bg-white p-12 text-center shadow-sm dark:border-white/10 dark:bg-[#151925]">
+                <div className="rounded-xl border border-gray-200 bg-white p-12 text-center shadow-sm dark:border-white/10 dark:bg-[#1E2028]">
                     <WalletCards
                         size={32}
                         className="mx-auto text-gray-400 mb-3"

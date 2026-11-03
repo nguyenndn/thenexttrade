@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
         <div className="bg-white dark:bg-[#1E2028] p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-2xl shadow-black/5 dark:shadow-black/20 transition-colors duration-300">
             {/* Admin Badge */}
             <div className="flex justify-center mb-6">
-                <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500/10 to-orange-500/10 dark:from-amber-500/5 dark:to-orange-500/5 border border-amber-200 dark:border-amber-500/20 rounded-full">
+                <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-lg">
                     <ShieldCheck
                         size={16}
                         className="text-amber-600 dark:text-amber-400"
@@ -65,18 +65,16 @@ export default function AdminLoginPage() {
                 <Input
                     name="email"
                     type="email"
-                    placeholder="admin@thenexttrade.com"
                     label="Email"
                     required
                     autoComplete="email"
                     startIcon={<Mail size={18} className="text-gray-400" />}
-                    className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white text-sm py-3 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 h-12 transition-colors rounded-lg"
+                    className="bg-gray-50/80 dark:bg-[#151925] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white text-sm py-3 focus:bg-white dark:focus:bg-[#151925] focus:border-primary/50 dark:focus:border-primary/50 h-12 transition-colors rounded-lg"
                 />
 
                 <Input
                     name="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
                     label="Password"
                     required
                     autoComplete="current-password"
@@ -99,7 +97,7 @@ export default function AdminLoginPage() {
                             )}
                         </Button>
                     }
-                    className="bg-gray-50 dark:bg-[#0B0E14] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white text-sm py-3 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary/50 dark:focus:border-primary/50 h-12 transition-colors rounded-lg"
+                    className="bg-gray-50/80 dark:bg-[#151925] border-gray-200 dark:border-white/10 text-gray-700 dark:text-white text-sm py-3 focus:bg-white dark:focus:bg-[#151925] focus:border-primary/50 dark:focus:border-primary/50 h-12 transition-colors rounded-lg"
                 />
 
                 <TurnstileWidget
